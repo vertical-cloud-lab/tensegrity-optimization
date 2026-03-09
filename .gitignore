@@ -17,8 +17,8 @@
 *.bcf
 *-blx.bib
 
-# PDF output (uncomment to track the compiled PDF)
-# *.pdf
+# Compiled PDF output (reference PDFs like MRG_2026.pdf are tracked separately)
+proposal.pdf
 
 # Editor backups
 *~

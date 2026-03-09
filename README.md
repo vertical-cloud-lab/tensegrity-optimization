@@ -1,27 +1,30 @@
-# BYU Mentored Research Grant Proposal: Tensegrity Structures for Energy Absorption
+# BYU Mentored Research Grant Proposal: Multi-Material 3D-Printed Tensegrity Structures
 
-**Bayesian Optimization of Tensegrity Structures for Energy Absorption: A Simulation-Guided Experimental Approach**
+**Bayesian Optimization of Multi-Material 3D-Printed Tensegrity Structures for Energy Absorption**
 
-BYU College of Engineering — Mentored Research Grant Proposal
+BYU Ira A. Fulton College of Engineering — Mentored Research Grant Proposal
 
 ## Overview
 
+- **PI:** Jeffrey R. Hill, Mechanical Engineering
+- **Co-PI:** Sterling G. Baird, Mechanical Engineering
 - **Duration:** 2 years
 - **Budget:** $25,000
-- **Students:** 2–3 undergraduates (+ graduate co-mentor)
+- **Students:** 2–3 undergraduates + 1 graduate co-mentor
 - **Focus:** Undergraduate mentored research
 
-This proposal develops a closed-loop framework integrating physics-based simulations with Bayesian optimization to design tensegrity structures optimized for energy absorption. Undergraduate students fabricate and experimentally validate optimized designs through controlled impact testing.
+This proposal develops a multifidelity Bayesian optimization framework to design multi-material 3D-printed tensegrity structures (PLA struts + TPU tension elements) optimized for energy absorption. Undergraduate students fabricate and experimentally validate optimized designs through compaction tests, drop tests, and wave propagation measurements.
 
 ## Repository Structure
 
 ```
-├── proposal.tex          # Main LaTeX document
-├── references.bib        # BibTeX bibliography
+├── proposal.tex              # Main LaTeX document
+├── references.bib            # BibTeX bibliography
 ├── sections/
-│   └── budget.tex        # Budget table and justification
-├── figures/              # Figures and diagrams
-├── Makefile              # Build commands
+│   ├── coverpage.tex         # MRG cover page (abstract, budget table, external funding)
+│   ├── budget.tex            # Budget table and justification
+│   └── biosketch.tex         # PI and Co-PI biographical sketches
+├── Makefile                  # Build commands
 ├── .gitignore
 └── README.md
 ```
@@ -41,18 +44,23 @@ pdflatex proposal
 pdflatex proposal
 ```
 
-## Key Sections
+## Proposal Structure (≤5 pages + cover page, references, bio sketches)
 
-- **Research Objectives** — Parameterize tensegrity unit cells, build simulations, run Bayesian optimization, fabricate & test
-- **Technical Approach** — Three phases: simulation development, fabrication & validation, analysis & dissemination
-- **Mentoring Plan** — Weekly meetings, progressive responsibility, skills development across experimental, computational, and communication domains
-- **Budget** — $25k split across student stipends, graduate mentoring, materials, sensors, travel
+- **Cover Page** — Title, PI/Co-PI, abstract, student counts, budget summary, relationship to external funding
+- **Research Motivation & Overview** — Multi-material 3D-printed tensegrity + multifidelity BO
+- **Background** — Tensegrity structures, Bayesian optimization, Mo et al. (2023) multifidelity framework
+- **Student Research Project 1** — Simulation & Bayesian optimization
+- **Student Research Project 2** — Fabrication, CAD, & experimental testing
+- **Mentoring Environment** — Weekly meetings, graduate co-mentor, peer mentoring, progressive responsibility
+- **Expected Research Outcomes** — UCUR, ASME IDETC, journal submission, NSF proposal
+- **Potential Impact** — Protective equipment, packaging, aerospace applications
+- **Timeline** — 4-semester project plan
+- **Budget** — $25k (undergraduate wages, graduate wages, supplies, travel, other)
+- **References** — (does not count toward page limit)
+- **Bio Sketches** — Hill & Baird (does not count toward page limit)
 
 ## TODO
 
-- [ ] Fill in PI name and department
-- [ ] Add PI qualifications section
-- [ ] Update placeholder bibliography entries with exact citations
 - [ ] Add figures (tensegrity schematic, BO loop diagram, test setup)
-- [ ] Review against grant submission guidelines for page/format requirements
+- [ ] Finalize PI/Co-PI bio sketch details (specific publications, appointments)
 - [ ] Get feedback from co-PI / collaborators

@@ -4,11 +4,13 @@ TEX = pdflatex
 BIB = bibtex
 MAIN = proposal
 
+SECTIONS = sections/coverpage.tex sections/budget.tex sections/biosketch.tex
+
 .PHONY: all clean
 
 all: $(MAIN).pdf
 
-$(MAIN).pdf: $(MAIN).tex references.bib sections/budget.tex
+$(MAIN).pdf: $(MAIN).tex references.bib $(SECTIONS)
 	$(TEX) $(MAIN)
 	$(BIB) $(MAIN)
 	$(TEX) $(MAIN)
