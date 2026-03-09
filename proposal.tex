@@ -1,0 +1,426 @@
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\usepackage{subcaption}
+\usepackage{titlesec}
+\usepackage{setspace}
+
+% --- Formatting ---
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0em}
+
+% --- Draft helpers (remove for final) ---
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
+
+% =============================================================================
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Bayesian Optimization of Tensegrity Structures \\
+    for Energy Absorption: A Simulation-Guided \\
+    Experimental Approach}} \\[1em]
+    {\large BYU College of Engineering --- Mentored Research Grant Proposal} \\[0.5em]
+    {\large PI: \todo{Faculty Name}, Department of \todo{Department}} \\
+    {\large Duration: 2 Years \quad | \quad Requested: \$25,000}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+% =============================================================================
+\section{Project Summary}
+% =============================================================================
+
+We propose a two-year mentored research program in which 2--3 undergraduate
+students investigate the design of tensegrity structures optimized for energy
+absorption using a closed-loop framework that integrates physics-based
+simulations with Bayesian optimization and physical validation experiments.
+
+Tensegrity (tensional integrity) structures---assemblies of rigid bars held in
+stable equilibrium by a network of tensioned cables---exhibit remarkable
+strength-to-weight ratios and tunable mechanical responses.  By varying
+structural parameters such as bar lengths, cable stiffnesses, angles, and
+induced curvature, a rich and high-dimensional design space emerges.  Navigating
+this space efficiently requires intelligent experimental design; Bayesian
+optimization provides exactly this capability by constructing a surrogate model
+of the structure--property relationship and guiding subsequent experiments toward
+optimal configurations.
+
+The project emphasizes \textbf{undergraduate mentoring} as its primary
+objective.  Students will gain hands-on experience in experimental mechanics,
+data acquisition, physics-based simulation, statistical modeling, CAD design, and
+scientific communication---skills directly transferable to graduate school and
+industry careers.
+
+% =============================================================================
+\section{Research Objectives}
+% =============================================================================
+
+\begin{enumerate}[label=\textbf{O\arabic*.}]
+    \item \textbf{Define and parameterize a tensegrity unit cell} with
+        systematically variable design parameters (bar length, bar thickness,
+        cable length, cable stiffness, number of bars/cables, bar/cable angles,
+        and curvature/induced buckling).
+
+    \item \textbf{Develop physics-based simulation models} (finite element or
+        analytical) of the tensegrity unit cell that predict force transmission,
+        deformation, and energy absorption under impact loading.
+
+    \item \textbf{Implement a Bayesian optimization loop} that uses simulation
+        predictions as the objective function to efficiently explore the design
+        space, identifying configurations that maximize energy absorption and
+        minimize transmitted force.
+
+    \item \textbf{Fabricate and experimentally validate} a set of approximately
+        five tensegrity structures, comparing measured force--time histories and
+        deformation responses against simulation predictions (ex-situ
+        validation).
+
+    \item \textbf{Characterize energy absorption performance} through
+        controlled drop tests at increasing heights, identifying the maximum
+        drop height sustainable without plastic deformation.
+
+    \item \textbf{(Stretch)} Quantify advanced metrics including specific energy
+        absorption (\si{J/kg}), effective spring constant per unit weight, and
+        effective spring constant per unit volume.
+\end{enumerate}
+
+% =============================================================================
+\section{Background and Motivation}
+% =============================================================================
+
+\subsection{Tensegrity Structures}
+
+Tensegrity structures, first described by Buckminster Fuller and artist Kenneth
+Snelson, consist of isolated compression members (bars or struts) suspended
+within a continuous network of tension members (cables or strings)
+\citep{skelton2009tensegrity, sultan2009tensegrity}.  Their defining
+characteristic---that no two rigid bars touch---yields lightweight assemblies
+with surprising load-bearing capacity and resilience.
+
+The mechanical response of a tensegrity structure is governed by a large number
+of design variables:
+\begin{itemize}
+    \item \textbf{Bar parameters:} length, cross-sectional thickness, material
+        stiffness, curvature (enabling induced buckling modes).
+    \item \textbf{Cable parameters:} length, cross-sectional thickness,
+        material stiffness (elastic modulus, yield strain).
+    \item \textbf{Topology:} number of bars and cables, connectivity pattern.
+    \item \textbf{Geometry:} angles between bars and cables, overall aspect
+        ratio, boundary conditions.
+\end{itemize}
+
+This results in a combinatorially large design space, making exhaustive
+experimental search impractical and motivating data-efficient optimization
+strategies.
+
+\subsection{Bayesian Optimization for Structural Design}
+
+Bayesian optimization (BO) is a sequential, model-based strategy for optimizing
+expensive-to-evaluate black-box functions \citep{shahriari2016taking,
+frazier2018tutorial}.  A Gaussian process (GP) surrogate model is fitted to
+observed data and an acquisition function (e.g., Expected Improvement) balances
+exploration of uncertain regions with exploitation of promising areas.  BO has
+been successfully applied to materials discovery \citep{lookman2019active},
+mechanical metamaterial design \citep{wang2022bayesian}, and structural
+optimization \citep{lee2023bayesian}.
+
+Incorporating physics-based simulations into the BO loop---sometimes called
+simulation-in-the-loop optimization---enables rapid surrogate updates without
+requiring a physical experiment for every candidate design
+\citep{perdikaris2017nonlinear}.  Physical experiments are reserved for
+validation, dramatically reducing cost and time.
+
+\subsection{Energy Absorption and Impact Mitigation}
+
+Quantifying energy absorption under impact is central to protective structure
+design.  Key metrics include:
+\begin{itemize}
+    \item \textbf{Peak transmitted force:} the maximum force recorded on the
+        distal side of the structure when subjected to an impact (e.g., a ball
+        drop).
+    \item \textbf{Force--time profile:} the full temporal evolution of
+        transmitted force, from which impulse and energy dissipation can be
+        computed.
+    \item \textbf{Deformation:} total displacement and residual (plastic)
+        deformation after impact.
+    \item \textbf{Critical drop height:} the maximum height from which the
+        structure can be impacted without exhibiting plastic (permanent)
+        deformation, determined via progressive drop tests starting from low
+        heights.
+\end{itemize}
+
+% =============================================================================
+\section{Technical Approach}
+% =============================================================================
+
+\subsection{Phase~1: Design Space Definition and Simulation (Months 1--8)}
+
+\subsubsection{Tensegrity Unit Cell Parameterization}
+
+We will define a parameterized tensegrity unit cell suitable for both simulation
+and fabrication.  The baseline topology will be a three-bar prismatic tensegrity
+\citep{skelton2009tensegrity}, chosen for its relative simplicity and
+well-understood mechanics, while still offering sufficient design freedom.
+
+The parameterization will include:
+\begin{itemize}
+    \item Bar lengths ($L_b$), thicknesses ($t_b$), and material properties
+    \item Cable lengths ($L_c$), thicknesses ($t_c$), and stiffnesses ($k_c$)
+    \item Number of bars ($n_b$) and cables ($n_c$)
+    \item Bar twist angle ($\alpha$) and cable attachment angles ($\beta$)
+    \item Induced bar curvature ($\kappa$) to explore pre-buckled
+        configurations
+\end{itemize}
+
+Each parameter will be assigned physically meaningful bounds based on
+manufacturing constraints and material availability.
+
+\subsubsection{Physics-Based Simulation}
+
+We will develop finite element models of the tensegrity unit cell using
+open-source tools (e.g., FEniCS, or a combination of Python with analytical
+stiffness matrix methods).  The simulation will:
+\begin{enumerate}
+    \item Accept the parameterized design vector as input.
+    \item Apply a transient impact load representative of a ball-drop
+        experiment.
+    \item Output the force--time history at the base, peak transmitted force,
+        total deformation, and absorbed energy.
+\end{enumerate}
+
+Simulation fidelity will be validated iteratively against early experimental
+results (see Phase~2).
+
+\subsubsection{Bayesian Optimization Implementation}
+
+A Bayesian optimization loop will be constructed using established Python
+libraries (e.g., BoTorch, Ax, or a custom GP implementation).  The simulation
+model serves as the objective function:
+
+\begin{equation}
+    \mathbf{x}^* = \arg\min_{\mathbf{x} \in \mathcal{X}} f_{\text{sim}}(\mathbf{x})
+\end{equation}
+
+\noindent where $\mathbf{x}$ is the design parameter vector, $\mathcal{X}$ is
+the feasible design space, and $f_{\text{sim}}(\mathbf{x})$ returns the peak
+transmitted force (or a composite objective incorporating deformation and energy
+metrics).  The optimization will proceed for a predetermined budget of
+simulation evaluations, after which the top-performing candidates will be
+selected for fabrication.
+
+\subsection{Phase~2: Fabrication and Experimental Validation (Months 6--20)}
+
+\subsubsection{Tensegrity Fabrication}
+
+Approximately five tensegrity structures will be fabricated based on the
+Bayesian-optimized designs and selected comparison baselines.  Structures will
+be:
+\begin{itemize}
+    \item Designed in CAD software (e.g., SolidWorks or Fusion 360) to ensure
+        dimensional accuracy and reproducibility.
+    \item Fabricated using a combination of 3D printing (for rigid bar
+        components) and commercially available cables/strings of known
+        stiffness.
+    \item Assembled with careful attention to dimensional tolerances, as
+        accuracy is critical for meaningful comparison with simulations.
+\end{itemize}
+
+\subsubsection{Impact Testing Protocol}
+
+Each structure will undergo a controlled impact test:
+\begin{enumerate}
+    \item A ball of known mass is dropped from a controlled height onto the top
+        of the tensegrity structure.
+    \item A force sensor (load cell) at the base records the transmitted
+        force--time history.
+    \item High-speed video (if available) or displacement sensors capture
+        deformation.
+    \item Tests begin at low drop heights and increase incrementally until
+        plastic deformation is detected, establishing the critical drop height.
+\end{enumerate}
+
+\textbf{Experimental rigor:} Students will be trained in proper experimental
+methodology, including:
+\begin{itemize}
+    \item Background and baseline measurements (e.g., force sensor calibration,
+        drop without a structure).
+    \item Repeatability studies (multiple drops per configuration at the same
+        height).
+    \item Systematic documentation of experimental conditions and anomalies.
+\end{itemize}
+
+\subsubsection{Ex-Situ Validation}
+
+Experimental results will be compared quantitatively against simulation
+predictions for the same design parameters.  Discrepancies will inform
+simulation model refinement and uncertainty quantification in the GP surrogate.
+
+\subsection{Phase~3: Analysis, Stretch Goals, and Dissemination (Months 16--24)}
+
+\begin{itemize}
+    \item \textbf{Data analysis:} Compare BO-optimized designs against naive
+        baselines; quantify improvement in energy absorption.
+    \item \textbf{Stretch goals:} If time permits, compute specific energy
+        absorption (\si{J/kg}), effective spring constant normalized by weight
+        ($k_{\text{eff}} / W$) and volume ($k_{\text{eff}} / V$).
+    \item \textbf{Dissemination:} Prepare results for conference presentation
+        (e.g., ASME IMECE, SES) and/or a journal publication.  Students will
+        lead the writing and presentation.
+\end{itemize}
+
+% =============================================================================
+\section{Mentoring Plan}
+\label{sec:mentoring}
+% =============================================================================
+
+\textbf{The mentoring of undergraduate researchers is the central objective of
+this proposal.}  The project is designed so that each student develops a broad
+skill set while contributing to a cohesive research effort.
+
+\subsection{Student Recruitment and Composition}
+
+We plan to recruit 2--3 undergraduate students, ideally from courses in
+mechanics of materials, machine design, kinematics, or compliant mechanisms.
+Recruitment will include brief presentations in relevant classes to attract
+students with appropriate background and genuine research interest.  We will
+actively seek to recruit students from underrepresented groups in engineering.
+
+\subsection{Mentoring Structure}
+
+\begin{itemize}
+    \item \textbf{Weekly meetings:} Individual 30-minute check-ins with each
+        student plus a weekly 1-hour group meeting for progress updates, paper
+        discussions, and skill-building workshops.
+    \item \textbf{Graduate student co-mentor:} A portion of the budget will
+        support a graduate student who provides day-to-day guidance, code
+        reviews, and hands-on lab training, modeling effective mentoring
+        practices.
+    \item \textbf{Progressive responsibility:} Students will begin with
+        structured tasks (running simulations with provided scripts, assembling
+        structures from detailed CAD plans) and progress to independent design
+        decisions and data interpretation.
+    \item \textbf{Peer learning:} Students will present to each other weekly,
+        developing scientific communication skills in a low-stakes environment
+        before presenting at group meetings or conferences.
+\end{itemize}
+
+\subsection{Skills Development}
+
+Each student will gain experience in multiple areas:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Skill Area} & \textbf{Activities} \\
+\midrule
+Experimental design  & Planning test matrices, background measurements, controls \\
+Data acquisition     & Force sensor operation, data logging, signal processing \\
+Simulation           & FEA modeling, Python scripting, parameter sweeps \\
+Statistical modeling & Gaussian processes, Bayesian optimization, uncertainty \\
+CAD and fabrication  & SolidWorks/Fusion 360, 3D printing, assembly \\
+Scientific communication & Lab notebooks, group presentations, conference talks \\
+\bottomrule
+\end{tabular}
+\caption{Skill areas and corresponding student activities.}
+\label{tab:skills}
+\end{table}
+
+\subsection{Assessment of Mentoring Effectiveness}
+
+We will track mentoring outcomes through:
+\begin{itemize}
+    \item Structured mid-semester and end-of-semester self-assessments where
+        students reflect on skills gained and confidence levels.
+    \item Faculty evaluation of student independence, scientific reasoning, and
+        communication growth.
+    \item Tracking of tangible outcomes: conference abstracts submitted, poster
+        presentations, and any manuscripts in preparation.
+    \item Graduate school and career outcomes for participating students
+        (tracked post-project).
+\end{itemize}
+
+% =============================================================================
+\section{Timeline}
+% =============================================================================
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Task} & \textbf{Y1 Fall} & \textbf{Y1 Winter} & \textbf{Y2 Fall} & \textbf{Y2 Winter} \\
+\midrule
+Student recruitment \& onboarding    & \(\bullet\) &           &           &           \\
+Literature review                     & \(\bullet\) & \(\bullet\) &           &           \\
+Tensegrity parameterization           & \(\bullet\) & \(\bullet\) &           &           \\
+Simulation model development          &             & \(\bullet\) & \(\bullet\) &           \\
+Bayesian optimization implementation  &             & \(\bullet\) & \(\bullet\) &           \\
+CAD design \& fabrication             &             &             & \(\bullet\) & \(\bullet\) \\
+Impact testing \& data collection     &             &             & \(\bullet\) & \(\bullet\) \\
+Simulation--experiment comparison     &             &             &             & \(\bullet\) \\
+Stretch goal analysis                 &             &             &             & \(\bullet\) \\
+Conference presentation / manuscript  &             &             &             & \(\bullet\) \\
+\bottomrule
+\end{tabular}
+\caption{Project timeline across four semesters.}
+\label{tab:timeline}
+\end{table}
+
+% =============================================================================
+\section{Budget}
+% =============================================================================
+
+\input{sections/budget}
+
+% =============================================================================
+\section{Broader Impacts}
+% =============================================================================
+
+\begin{itemize}
+    \item \textbf{Undergraduate development:} This project will directly mentor
+        2--3 undergraduates through a complete research arc, from literature
+        review to conference dissemination, preparing them for graduate study or
+        research-oriented careers.
+
+    \item \textbf{Interdisciplinary training:} Students will work at the
+        intersection of structural mechanics, computational modeling, and
+        data-driven optimization---a combination increasingly valued in both
+        academia and industry.
+
+    \item \textbf{Open science:} Simulation code, optimization scripts, and
+        experimental data will be made publicly available via GitHub, enabling
+        reproducibility and extending impact beyond BYU.
+
+    \item \textbf{Course integration:} Insights and demonstrations from this
+        project may be incorporated into mechanics of materials or machine
+        design courses, enriching the curriculum for future students.
+\end{itemize}
+
+% =============================================================================
+\section{Qualifications}
+% =============================================================================
+
+\todo{Add PI qualifications, relevant publications, and prior mentoring
+experience.  Emphasize past success mentoring undergraduates and any relevant
+expertise in mechanics, optimization, or computational methods.}
+
+% =============================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

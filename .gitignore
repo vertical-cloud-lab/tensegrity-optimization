@@ -1,0 +1,37 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.run.xml
+*.bcf
+*-blx.bib
+
+# PDF output (uncomment to track the compiled PDF)
+# *.pdf
+
+# Editor backups
+*~
+*.bak
+*.swp
+*.swo
+\#*\#
+.\#*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.code-workspace
