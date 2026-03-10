@@ -13,6 +13,7 @@
 \usepackage{subcaption}
 \usepackage{titlesec}
 \usepackage{setspace}
+\usepackage{wrapfig}
 
 % --- Formatting ---
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
@@ -67,21 +68,19 @@ will gain hands-on skills in CAD, multi-material 3D printing, impact testing,
 computational modeling, and data-driven optimization.  Each student will lead a
 scoped research project, present at conferences, and co-author a publication.
 
-% --- Placeholder for overview figure ---
-% TODO: Replace with actual figure before final submission
-\begin{figure}[ht]
-\centering
-\fbox{\parbox{0.85\textwidth}{\centering\vspace{1em}
-\textbf{Figure placeholder:} Tensegrity unit cell design $\to$ multi-material
-PLA/TPU printing with wrapping strategy $\to$ multifidelity BO loop.
-\vspace{1em}}}
-\caption{Conceptual overview of the proposed research and mentoring framework.}
-\label{fig:overview}
-\end{figure}
-
 % =============================================================================
 \section{Background}
 % =============================================================================
+
+% --- Overview figure (right-inset, floatable) ---
+\begin{wrapfigure}[12]{R}{0.4\textwidth}
+\centering
+\vspace{-1.2em}
+\includegraphics[width=0.38\textwidth]{figures/overview.png}
+\captionsetup{font=small}
+\caption{Research framework overview.}
+\label{fig:overview}
+\end{wrapfigure}
 
 \textbf{Tensegrity structures} consist of isolated compression members (struts)
 held in equilibrium by a continuous network of tension members
@@ -254,6 +253,20 @@ impact beyond BYU.
 % =============================================================================
 \section{Timeline}
 % =============================================================================
+
+The project spans two academic years plus two summers (Table~\ref{tab:timeline}).
+\textbf{Year~1} focuses on foundations: student recruitment and onboarding in
+Fall, followed by literature review, tensegrity parameterization in CAD, and
+initial 3D-print validation through Winter.  The first Summer term is a
+critical period for FEA simulation development, early impact testing, and the
+low-fidelity/high-fidelity correlation gate (Go/No-Go milestone).
+\textbf{Year~2} shifts to optimization and dissemination: multifidelity
+Bayesian optimization campaigns run through Fall and Winter alongside continued
+multi-material fabrication and mechanical testing.  Simulation--experiment
+comparisons in Winter validate surrogate accuracy.  Students present findings
+at UCUR and ASME IDETC in Year~2, and a journal manuscript is prepared during
+Winter and Summer.  Second-year students also mentor newly recruited
+undergraduates, ensuring continuity of expertise.
 
 \begin{table}[ht]
 \centering

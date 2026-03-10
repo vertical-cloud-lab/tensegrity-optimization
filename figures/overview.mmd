@@ -1,0 +1,14 @@
+graph TD
+    A["<b>Tensegrity Design</b>"]
+    B["<b>FEA Simulation</b><br/>(Low-Fidelity)"]
+    C["<b>3D Printing</b><br/>(High-Fidelity)"]
+    D["<b>Multifidelity BO</b>"]
+
+    A --> B & C
+    B & C --> D
+    D -->|"Next design"| A
+
+    style A fill:#4A90D9,stroke:#2C5F8A,color:#fff,stroke-width:2px
+    style B fill:#7BC67E,stroke:#4A8B4D,color:#fff,stroke-width:2px
+    style C fill:#F5A623,stroke:#C4841B,color:#fff,stroke-width:2px
+    style D fill:#9B59B6,stroke:#7D3C98,color:#fff,stroke-width:2px
