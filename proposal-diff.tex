@@ -1,4 +1,7 @@
 \documentclass[11pt]{article}
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL proposal-before.tex   Tue Mar 10 05:20:02 2026
+%DIF ADD proposal.tex          Tue Mar 10 06:11:51 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -25,6 +28,88 @@
 \newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
 
 % =============================================================================
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFaddtex}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdeltex}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+\providecommand{\DIFmodbegin}{} %DIF PREAMBLE
+\providecommand{\DIFmodend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF HYPERREF PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}} %DIF PREAMBLE
+\newcommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF COLORLISTINGS PREAMBLE %DIF PREAMBLE
+\RequirePackage{listings} %DIF PREAMBLE
+\RequirePackage{color} %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
+%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
+  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
+	language=DIFcode, %DIF PREAMBLE
+	basicstyle=\ttfamily, %DIF PREAMBLE
+	columns=fullflexible, %DIF PREAMBLE
+	keepspaces=true %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim}{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim*}{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
 \begin{document}
 
 % --- Cover Page (does not count toward 5-page limit) ---
@@ -36,20 +121,26 @@
 
 We propose a two-year mentored research program in which 2--3 undergraduate
 students design and optimize \textbf{multi-material 3D-printed
-tensegrity-inspired structures} for energy absorption.  Tensegrity (tensional
+\DIFdelbegin \DIFdel{tensegrity
+}\DIFdelend \DIFaddbegin \DIFadd{tensegrity-inspired }\DIFaddend structures} for energy absorption.  Tensegrity (tensional
 integrity) structures---assemblies of rigid compression members suspended within
 a continuous network of tension members---exhibit remarkable strength-to-weight
 ratios and tunable mechanical responses, making them attractive for protective
 equipment, packaging, and aerospace applications
 \citep{skelton2009tensegrity, fraternali2015tensegrity}.
-Recent work has shown that \emph{tensegrity-inspired} architectures can be
+\DIFaddbegin \DIFadd{Recent work has shown that }\emph{\DIFadd{tensegrity-inspired}} \DIFadd{architectures can be
 directly 3D-printed and retain desirable load-limiting behavior under impact
-\citep{pajunen2019design}.
+\mbox{%DIFAUXCMD
+\citep{pajunen2019design}}\hskip0pt%DIFAUXCMD
+.
+}\DIFaddend 
 
 Recent advances in multi-material 3D printing enable the fabrication of
-tensegrity-inspired structures on a single print platform, using PLA for rigid
+\DIFdelbegin \DIFdel{tensegrity-like }\DIFdelend \DIFaddbegin \DIFadd{tensegrity-inspired }\DIFaddend structures on a single print platform, using PLA for rigid
 struts and TPU for flexible tension elements
-\citep{ye2023multimaterial, khatri2024energy}.  This eliminates tedious manual
+\DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{ye2023multimaterial, khatri2024energy}}\hskip0pt%DIFAUXCMD
+}\DIFaddend .  This eliminates tedious manual
 assembly and opens a rich, high-dimensional design space.  Navigating this space
 efficiently requires intelligent experimental design; \textbf{multifidelity
 Bayesian optimization} (BO) provides exactly this capability by combining
@@ -89,15 +180,24 @@ struts) held in stable equilibrium by a continuous network of tension members
 defining characteristic---that no two rigid bars touch---yields lightweight
 assemblies with surprising load-bearing capacity, resilience, and tunable
 nonlinear responses \citep{amendola2014experimental, zhang2015tensegrity}.
-Pajunen et al.\ \citep{pajunen2019design} demonstrated that
-\emph{tensegrity-inspired} unit cells can be directly 3D-printed and exhibit
-load-limiting plateaus under drop-weight impact, confirming their potential for
-energy absorption without requiring manual cable assembly.
+\DIFdelbegin \DIFdel{Prior work has demonstrated }\DIFdelend \DIFaddbegin \DIFadd{Pajunen et al.\ \mbox{%DIFAUXCMD
+\citep{pajunen2019design} }\hskip0pt%DIFAUXCMD
+demonstrated that
+}\emph{\DIFadd{tensegrity-inspired}} \DIFadd{unit cells can be directly 3D-printed and exhibit
+load-limiting plateaus under drop-weight impact, confirming }\DIFaddend their potential for
+\DIFdelbegin \DIFdel{impact protection
+\mbox{%DIFAUXCMD
+\citep{fraternali2015tensegrity}}\hskip0pt%DIFAUXCMD
+, but design optimization remains largely
+unexplored due to the high-dimensional parameter space (bar/cable lengths,
+thicknesses, stiffnesses, topology, and geometry)}\DIFdelend \DIFaddbegin \DIFadd{energy absorption without requiring manual cable assembly.
 Prior work on multi-material rigid--soft printing
-\citep{ye2023multimaterial, khatri2024energy} has shown that PLA--TPU
+\mbox{%DIFAUXCMD
+\citep{ye2023multimaterial, khatri2024energy} }\hskip0pt%DIFAUXCMD
+has shown that PLA--TPU
 combinations printed on a single FDM platform can achieve tunable energy
 absorption, though interface durability under repeated impact remains an
-active area of investigation.
+active area of investigation}\DIFaddend .
 
 \textbf{Bayesian optimization} is a sequential, model-based strategy for
 optimizing expensive-to-evaluate black-box functions
@@ -110,9 +210,10 @@ Critically, Mo et al.\ \citep{mo2023accelerated} recently demonstrated
 simulations as a low-fidelity source and physical experiments as high-fidelity
 data.  We adopt this framework directly: finite element simulations serve as the
 low-fidelity source, and 3D-printed tensegrity impact tests provide
-high-fidelity validation.  An early calibration campaign will verify
+high-fidelity validation.  \DIFaddbegin \DIFadd{An early calibration campaign will verify
 low-fidelity--high-fidelity correlation before full optimization begins, since
 MFBO effectiveness depends on adequate correlation between fidelity levels.
+}\DIFaddend 
 
 % =============================================================================
 \section{Student Research Project~1: Simulation and Bayesian Optimization}
@@ -133,9 +234,9 @@ This student will develop and run the computational pipeline:
         tools (e.g., FEniCS) to predict force--displacement response and energy
         absorption under compaction and drop-test loading.  These simulations
         serve as the \emph{low-fidelity} source in the multifidelity framework.
-        An initial calibration set will validate simulation--experiment
+        \DIFaddbegin \DIFadd{An initial calibration set will validate simulation--experiment
         correlation before full optimization begins.
-    \item \textbf{Implement a multifidelity Bayesian optimization loop}
+    }\DIFaddend \item \textbf{Implement a multifidelity Bayesian optimization loop}
         (following Mo et al.\ \citep{mo2023accelerated}) using Python libraries
         (BoTorch/Ax) to efficiently explore the design space, fusing simulation
         predictions with experimental results from Student~2.
@@ -160,11 +261,13 @@ machine design, CAD, or compliant mechanisms.
 This student will lead fabrication and physical testing:
 
 \begin{enumerate}[nosep]
-    \item \textbf{Design tensegrity-inspired structures in CAD} (SolidWorks or
+    \item \textbf{Design \DIFdelbegin \DIFdel{tensegrity }\DIFdelend \DIFaddbegin \DIFadd{tensegrity-inspired }\DIFaddend structures in CAD} (SolidWorks or
         Fusion 360) for multi-material 3D printing, with PLA struts and TPU
-        tension elements printed on a single platform, incorporating
+        tension elements printed on a single platform\DIFaddbegin \DIFadd{, incorporating
         interface design strategies (e.g., interlocking geometries) to ensure
-        durable PLA--TPU bonds \citep{ye2023multimaterial}.
+        durable PLA--TPU bonds \mbox{%DIFAUXCMD
+\citep{ye2023multimaterial}}\hskip0pt%DIFAUXCMD
+}\DIFaddend .
     \item \textbf{Fabricate structures} using the department's multi-material
         3D printer, iterating on print parameters to achieve reliable
         tensegrity geometries.
