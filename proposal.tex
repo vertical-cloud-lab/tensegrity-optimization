@@ -134,11 +134,11 @@ This student will develop and run the computational pipeline:
         serve as the \emph{low-fidelity} source in the multifidelity framework.
     \item \textbf{Validate LF--HF correlation (Go/No-Go gate):} Before
         launching full optimization, the student will run a small calibration
-        set comparing simulation predictions against experimental results on
-        single unit cells.  If the correlation ($R^2$) between static
-        compliance and dynamic peak force is $<0.8$, the team will pivot to
-        single-fidelity experimental BO, ensuring feasibility regardless of
-        model accuracy.
+        set comparing simulated force--displacement curves against experimental
+        results on single unit cells.  If the correlation ($R^2$) between
+        simulated and measured energy absorption is $<0.8$, the team will
+        pivot to single-fidelity experimental BO, ensuring feasibility
+        regardless of model accuracy.
     \item \textbf{Implement a multifidelity Bayesian optimization loop}
         (following Mo et al.\ \citep{mo2023accelerated}) using Python libraries
         (BoTorch/Ax) to efficiently explore the design space, fusing simulation

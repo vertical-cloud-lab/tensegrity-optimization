@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL /tmp/proposal-before-edison-revplan.tex   Tue Mar 10 15:07:24 2026
-%DIF ADD proposal.tex                              Tue Mar 10 15:12:50 2026
+%DIF ADD proposal.tex                              Tue Mar 10 15:15:09 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -245,11 +245,11 @@ This student will develop and run the computational pipeline:
         set will validate simulation--experiment
         correlation before full optimization begins}\DIFdelend \DIFaddbegin \item \textbf{\DIFadd{Validate LF--HF correlation (Go/No-Go gate):}} \DIFadd{Before
         launching full optimization, the student will run a small calibration
-        set comparing simulation predictions against experimental results on
-        single unit cells.  If the correlation ($R^2$) between static
-        compliance and dynamic peak force is $<0.8$, the team will pivot to
-        single-fidelity experimental BO, ensuring feasibility regardless of
-        model accuracy}\DIFaddend .
+        set comparing simulated force--displacement curves against experimental
+        results on single unit cells.  If the correlation ($R^2$) between
+        simulated and measured energy absorption is $<0.8$, the team will
+        pivot to single-fidelity experimental BO, ensuring feasibility
+        regardless of model accuracy}\DIFaddend .
     \item \textbf{Implement a multifidelity Bayesian optimization loop}
         (following Mo et al.\ \citep{mo2023accelerated}) using Python libraries
         (BoTorch/Ax) to efficiently explore the design space, fusing simulation
