@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL proposal-before.tex   Tue Mar 10 05:20:02 2026
-%DIF ADD proposal.tex          Tue Mar 10 06:11:51 2026
+%DIF DEL /tmp/proposal-before-edison-revplan.tex   Tue Mar 10 15:07:24 2026
+%DIF ADD proposal.tex                              Tue Mar 10 15:12:50 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -121,26 +121,25 @@
 
 We propose a two-year mentored research program in which 2--3 undergraduate
 students design and optimize \textbf{multi-material 3D-printed
-\DIFdelbegin \DIFdel{tensegrity
-}\DIFdelend \DIFaddbegin \DIFadd{tensegrity-inspired }\DIFaddend structures} for energy absorption.  Tensegrity (tensional
+tensegrity-inspired structures} for energy absorption.  Tensegrity (tensional
 integrity) structures---assemblies of rigid compression members suspended within
 a continuous network of tension members---exhibit remarkable strength-to-weight
 ratios and tunable mechanical responses, making them attractive for protective
 equipment, packaging, and aerospace applications
 \citep{skelton2009tensegrity, fraternali2015tensegrity}.
-\DIFaddbegin \DIFadd{Recent work has shown that }\emph{\DIFadd{tensegrity-inspired}} \DIFadd{architectures can be
+Recent work has shown that \emph{tensegrity-inspired} architectures can be
 directly 3D-printed and retain desirable load-limiting behavior under impact
-\mbox{%DIFAUXCMD
-\citep{pajunen2019design}}\hskip0pt%DIFAUXCMD
-.
+\citep{pajunen2019design}.  \DIFaddbegin \DIFadd{Because multimaterial FDM TPU elements are not
+ideal cables, we target tensegrity-inspired architectures that reproduce key
+tensegrity-like mechanical responses while remaining manufacturable; notably,
+TPU's rate-dependent damping is an }\emph{\DIFadd{asset}} \DIFadd{for energy absorption rather
+than merely a deviation from idealized behavior.
 }\DIFaddend 
 
 Recent advances in multi-material 3D printing enable the fabrication of
-\DIFdelbegin \DIFdel{tensegrity-like }\DIFdelend \DIFaddbegin \DIFadd{tensegrity-inspired }\DIFaddend structures on a single print platform, using PLA for rigid
+tensegrity-inspired structures on a single print platform, using PLA for rigid
 struts and TPU for flexible tension elements
-\DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
-\citep{ye2023multimaterial, khatri2024energy}}\hskip0pt%DIFAUXCMD
-}\DIFaddend .  This eliminates tedious manual
+\citep{ye2023multimaterial, khatri2024energy}.  This eliminates tedious manual
 assembly and opens a rich, high-dimensional design space.  Navigating this space
 efficiently requires intelligent experimental design; \textbf{multifidelity
 Bayesian optimization} (BO) provides exactly this capability by combining
@@ -150,22 +149,29 @@ to guide the search toward optimal configurations
 
 \textbf{The primary objective of this project is to provide a rich,
 interdisciplinary mentored research experience for undergraduates.}  Students
-will gain hands-on experience in CAD design, multi-material 3D printing, impact
-testing, computational modeling, and data-driven optimization---skills directly
-transferable to graduate school and engineering careers.  Each student will
-lead a clearly scoped research project, present at conferences, and contribute
-to a peer-reviewed publication.
+will gain hands-on \DIFdelbegin \DIFdel{experience in CADdesign}\DIFdelend \DIFaddbegin \DIFadd{skills in CAD}\DIFaddend , multi-material 3D printing, impact testing,
+computational modeling, and data-driven \DIFdelbegin \DIFdel{optimization---skills directly
+transferable to graduate school and engineering careers}\DIFdelend \DIFaddbegin \DIFadd{optimization}\DIFaddend .  Each student will lead a
+\DIFdelbegin \DIFdel{clearly }\DIFdelend scoped research project, present at conferences, and \DIFdelbegin \DIFdel{contribute
+to a peer-reviewed }\DIFdelend \DIFaddbegin \DIFadd{co-author a }\DIFaddend publication.
 
 % --- Placeholder for overview figure ---
 % TODO: Replace with actual figure before final submission
 \begin{figure}[ht]
 \centering
-\fbox{\parbox{0.85\textwidth}{\centering\vspace{2em}
-\textbf{Figure placeholder:} Overview of project approach---tensegrity unit
+\fbox{\DIFdelbeginFL \parbox{0.85\textwidth}{%DIFDELCMD < \centering\vspace{2em}
+%DIFDELCMD < %%%
+\textbf{\DIFdelFL{Figure placeholder:}} %DIFAUXCMD
+\DIFdelFL{Overview of project approach---tensegrity unit
 cell design (left), multi-material 3D printing of PLA struts and TPU tension
 elements (center), and multifidelity Bayesian optimization loop connecting
 simulations to experiments (right).
-\vspace{2em}}}
+}%DIFDELCMD < \vspace{2em}%%%
+}%DIFAUXCMD
+\DIFdelendFL \DIFaddbeginFL \parbox{0.85\textwidth}{\centering\vspace{1em}
+\textbf{\DIFaddFL{Figure placeholder:}} \DIFaddFL{Tensegrity unit cell design $\to$ multi-material
+PLA/TPU printing with wrapping strategy $\to$ multifidelity BO loop.
+}\vspace{1em}}\DIFaddendFL }
 \caption{Conceptual overview of the proposed research and mentoring framework.}
 \label{fig:overview}
 \end{figure}
@@ -174,46 +180,47 @@ simulations to experiments (right).
 \section{Background}
 % =============================================================================
 
-\textbf{Tensegrity structures} consist of isolated compression members (bars or
-struts) held in stable equilibrium by a continuous network of tension members
-(cables or strings) \citep{skelton2009tensegrity, sultan2009tensegrity}.  Their
-defining characteristic---that no two rigid bars touch---yields lightweight
-assemblies with surprising load-bearing capacity, resilience, and tunable
-nonlinear responses \citep{amendola2014experimental, zhang2015tensegrity}.
-\DIFdelbegin \DIFdel{Prior work has demonstrated }\DIFdelend \DIFaddbegin \DIFadd{Pajunen et al.\ \mbox{%DIFAUXCMD
-\citep{pajunen2019design} }\hskip0pt%DIFAUXCMD
-demonstrated that
-}\emph{\DIFadd{tensegrity-inspired}} \DIFadd{unit cells can be directly 3D-printed and exhibit
-load-limiting plateaus under drop-weight impact, confirming }\DIFaddend their potential for
-\DIFdelbegin \DIFdel{impact protection
-\mbox{%DIFAUXCMD
-\citep{fraternali2015tensegrity}}\hskip0pt%DIFAUXCMD
-, but design optimization remains largely
-unexplored due to the high-dimensional parameter space (bar/cable lengths,
-thicknesses, stiffnesses, topology, and geometry)}\DIFdelend \DIFaddbegin \DIFadd{energy absorption without requiring manual cable assembly.
-Prior work on multi-material rigid--soft printing
-\mbox{%DIFAUXCMD
-\citep{ye2023multimaterial, khatri2024energy} }\hskip0pt%DIFAUXCMD
-has shown that PLA--TPU
-combinations printed on a single FDM platform can achieve tunable energy
-absorption, though interface durability under repeated impact remains an
-active area of investigation}\DIFaddend .
+\textbf{Tensegrity structures} consist of isolated compression members (\DIFdelbegin \DIFdel{bars or
+}\DIFdelend struts)
+held in \DIFdelbegin \DIFdel{stable }\DIFdelend equilibrium by a continuous network of tension members
+\DIFdelbegin \DIFdel{(cables or strings) }\DIFdelend \citep{skelton2009tensegrity, sultan2009tensegrity}.  Their defining
+\DIFdelbegin \DIFdel{characteristic---that no }\DIFdelend \DIFaddbegin \DIFadd{characteristic---no }\DIFaddend two rigid bars touch---yields lightweight assemblies with
+surprising load-bearing capacity \DIFdelbegin \DIFdel{, resilience, }\DIFdelend and tunable nonlinear responses
+\citep{amendola2014experimental, zhang2015tensegrity}.
+Pajunen et al.\ \citep{pajunen2019design} demonstrated that
+\emph{tensegrity-inspired} unit cells can be directly 3D-printed and exhibit
+load-limiting plateaus under drop-weight impact\DIFdelbegin \DIFdel{, confirming their potential for
+energy absorption without requiring manual cable assembly.
+Prior work on multi-material }\DIFdelend \DIFaddbegin \DIFadd{.
+Multi-material }\DIFaddend rigid--soft printing
+\citep{ye2023multimaterial, khatri2024energy} has shown that PLA--TPU
+combinations printed on a single FDM platform \DIFdelbegin \DIFdel{can }\DIFdelend achieve tunable energy
+absorption\DIFdelbegin \DIFdel{, though interface durability under repeated impact remains an
+active area of investigation}\DIFdelend \DIFaddbegin \DIFadd{.  Ye et al.\ demonstrated a wrapping-based strategy (rigid cores
+encapsulated by continuous soft skins) that prevents interface delamination and
+enables cyclic durability---a critical enabler for our fabrication approach}\DIFaddend .
 
-\textbf{Bayesian optimization} is a sequential, model-based strategy for
-optimizing expensive-to-evaluate black-box functions
-\citep{shahriari2016taking, frazier2018tutorial}.  A Gaussian process surrogate
-model is fitted to observed data, and an acquisition function balances
-exploration with exploitation.  BO has been applied to materials discovery
-\citep{lookman2019active} and metamaterial design \citep{wang2022bayesian}.
-Critically, Mo et al.\ \citep{mo2023accelerated} recently demonstrated
-\textbf{multifidelity BO} for architected materials, using inexpensive
-simulations as a low-fidelity source and physical experiments as high-fidelity
-data.  We adopt this framework directly: finite element simulations serve as the
-low-fidelity source, and 3D-printed tensegrity impact tests provide
-high-fidelity validation.  \DIFaddbegin \DIFadd{An early calibration campaign will verify
+\textbf{Bayesian optimization} \DIFaddbegin \DIFadd{(BO) }\DIFaddend is a sequential, model-based strategy for
+optimizing \DIFdelbegin \DIFdel{expensive-to-evaluate }\DIFdelend \DIFaddbegin \DIFadd{expensive }\DIFaddend black-box functions \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{shahriari2016taking, frazier2018tutorial}}\hskip0pt%DIFAUXCMD
+.  A }\DIFdelend \DIFaddbegin \DIFadd{using a }\DIFaddend Gaussian process surrogate
+\DIFdelbegin \DIFdel{model is fitted to observed data, and an acquisition function balances
+exploration with exploitation}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{shahriari2016taking, frazier2018tutorial}}\hskip0pt%DIFAUXCMD
+}\DIFaddend .  BO has been applied to
+materials discovery \citep{lookman2019active} and metamaterial design
+\citep{wang2022bayesian}.  \DIFdelbegin \DIFdel{Critically, }\DIFdelend Mo et al.\ \citep{mo2023accelerated} \DIFdelbegin \DIFdel{recently }\DIFdelend demonstrated
+\textbf{multifidelity BO} for architected materials, using \DIFdelbegin \DIFdel{inexpensive
+}\DIFdelend simulations as a
+low-fidelity source and \DIFdelbegin \DIFdel{physical }\DIFdelend experiments as high-fidelity data.  We adopt this
+framework\DIFdelbegin \DIFdel{directly: finite element }\DIFdelend \DIFaddbegin \DIFadd{: FEA }\DIFaddend simulations serve as the low-fidelity source, and 3D-printed
+tensegrity impact tests provide high-fidelity validation.  \DIFdelbegin \DIFdel{An early calibration campaign will verify
 low-fidelity--high-fidelity correlation before full optimization begins, since
-MFBO effectiveness depends on adequate correlation between fidelity levels.
-}\DIFaddend 
+}\DIFdelend \DIFaddbegin \DIFadd{Because }\DIFaddend MFBO
+effectiveness depends on adequate correlation between fidelity levels\DIFaddbegin \DIFadd{, we
+establish a Year~1 Go/No-Go decision gate: students will validate
+simulation--experiment correlation on a small calibration set before launching
+full optimization}\DIFaddend .
 
 % =============================================================================
 \section{Student Research Project~1: Simulation and Bayesian Optimization}
@@ -234,9 +241,16 @@ This student will develop and run the computational pipeline:
         tools (e.g., FEniCS) to predict force--displacement response and energy
         absorption under compaction and drop-test loading.  These simulations
         serve as the \emph{low-fidelity} source in the multifidelity framework.
-        \DIFaddbegin \DIFadd{An initial calibration set will validate simulation--experiment
-        correlation before full optimization begins.
-    }\DIFaddend \item \textbf{Implement a multifidelity Bayesian optimization loop}
+    \DIFdelbegin \DIFdel{An initial calibration
+        set will validate simulation--experiment
+        correlation before full optimization begins}\DIFdelend \DIFaddbegin \item \textbf{\DIFadd{Validate LF--HF correlation (Go/No-Go gate):}} \DIFadd{Before
+        launching full optimization, the student will run a small calibration
+        set comparing simulation predictions against experimental results on
+        single unit cells.  If the correlation ($R^2$) between static
+        compliance and dynamic peak force is $<0.8$, the team will pivot to
+        single-fidelity experimental BO, ensuring feasibility regardless of
+        model accuracy}\DIFaddend .
+    \item \textbf{Implement a multifidelity Bayesian optimization loop}
         (following Mo et al.\ \citep{mo2023accelerated}) using Python libraries
         (BoTorch/Ax) to efficiently explore the design space, fusing simulation
         predictions with experimental results from Student~2.
@@ -261,20 +275,33 @@ machine design, CAD, or compliant mechanisms.
 This student will lead fabrication and physical testing:
 
 \begin{enumerate}[nosep]
-    \item \textbf{Design \DIFdelbegin \DIFdel{tensegrity }\DIFdelend \DIFaddbegin \DIFadd{tensegrity-inspired }\DIFaddend structures in CAD} (SolidWorks or
+    \item \textbf{Design tensegrity-inspired structures in CAD} (SolidWorks or
         Fusion 360) for multi-material 3D printing, with PLA struts and TPU
-        tension elements printed on a single platform\DIFaddbegin \DIFadd{, incorporating
-        interface design strategies (e.g., interlocking geometries) to ensure
+        tension elements printed on a single platform\DIFdelbegin \DIFdel{, incorporating
+        interface design strategies (e.g.  , interlocking geometries) to ensure
         durable PLA--TPU bonds \mbox{%DIFAUXCMD
 \citep{ye2023multimaterial}}\hskip0pt%DIFAUXCMD
-}\DIFaddend .
+}\DIFdelend \DIFaddbegin \DIFadd{.  Following
+        \mbox{%DIFAUXCMD
+\citet{ye2023multimaterial}}\hskip0pt%DIFAUXCMD
+, we adopt a core-wrapping strategy where
+        rigid PLA struts are encapsulated by continuous TPU skins, ensuring
+        robust mechanical interlocking and preventing the interface
+        delamination common in simple layered deposition}\DIFaddend .
     \item \textbf{Fabricate structures} using the department's multi-material
         3D printer, iterating on print parameters to achieve reliable
         tensegrity geometries.
     \item \textbf{Conduct experimental testing:} compaction tests (quasi-static
-        compression), drop tests (dynamic impact), and wave propagation
+        compression) \DIFdelbegin \DIFdel{, }\DIFdelend \DIFaddbegin \DIFadd{and }\DIFaddend drop tests (dynamic impact) \DIFdelbegin \DIFdel{, and wave propagation
         measurements (hitting on one end and measuring time response on the
-        other).  These experiments serve as the \emph{high-fidelity} source.
+        other)}\DIFdelend \DIFaddbegin \DIFadd{following the drop-weight
+        protocol of \mbox{%DIFAUXCMD
+\citet{pajunen2019design}}\hskip0pt%DIFAUXCMD
+.  Primary performance metrics are
+        }\emph{\DIFadd{specific energy absorption}} \DIFadd{(SEA) and }\emph{\DIFadd{compaction
+        efficiency}} \DIFadd{(ratio of absorbed energy to peak force)---tangible,
+        operationally measurable outcomes suitable for undergraduate research}\DIFaddend .
+        These experiments serve as the \emph{high-fidelity} source.
     \item \textbf{Compare experimental results} against simulation predictions
         from Student~1, quantifying model accuracy and informing surrogate
         updates.
@@ -297,47 +324,51 @@ environment that develops students into independent, capable researchers.
 \subsection*{Recruitment}
 
 Students will be recruited from courses in mechanics of materials, machine
-design, kinematics, and compliant mechanisms through brief in-class
-presentations.  We target junior or senior undergraduates.  We will actively
-seek to recruit students from underrepresented groups in engineering.
+design, kinematics, and compliant mechanisms\DIFdelbegin \DIFdel{through brief in-class
+presentations}\DIFdelend .  We target \DIFdelbegin \DIFdel{junior or senior undergraduates.  We will actively seek to recruit students }\DIFdelend \DIFaddbegin \DIFadd{juniors/seniors and
+will actively recruit }\DIFaddend from underrepresented groups in engineering.
 
 \subsection*{Mentoring Structure}
 
 \begin{itemize}[nosep]
-    \item \textbf{Weekly individual meetings} (30 min) with faculty PI
-        (Prof.~Hill) and Co-PI (Prof.~Baird) for technical guidance,
-        troubleshooting, and professional development discussions.
-    \item \textbf{Weekly lab group meetings} (1 hour) including: progress
-        updates, student presentations on recent literature, career
-        discussions, and skill-building workshops (e.g., scientific writing,
-        conference presentation skills, research ethics).
-    \item \textbf{Graduate student co-mentor:} Prof.~Baird's master's student
-        will serve as day-to-day co-mentor, providing hands-on guidance in
-        simulation, coding, fabrication, and experimental technique.  This
-        layered mentoring model ensures students receive timely support while
-        the graduate student develops their own mentoring skills.
+    \item \textbf{Weekly individual meetings} (30 min) with \DIFdelbegin \DIFdel{faculty PI
+        (Prof}\DIFdelend \DIFaddbegin \DIFadd{Profs}\DIFaddend .~Hill \DIFdelbegin \DIFdel{) and
+        Co-PI (Prof.~Baird ) }\DIFdelend \DIFaddbegin \DIFadd{and
+        Baird }\DIFaddend for technical guidance \DIFdelbegin \DIFdel{,
+        troubleshooting, }\DIFdelend and professional development\DIFdelbegin \DIFdel{discussions}\DIFdelend .
+    \item \textbf{Weekly lab group meetings} (1 \DIFdelbegin \DIFdel{hour)including}\DIFdelend \DIFaddbegin \DIFadd{hr)}\DIFaddend : progress updates, student
+        \DIFdelbegin \DIFdel{presentations on recent literature , career
+        discussions, and }\DIFdelend \DIFaddbegin \DIFadd{literature presentations, }\DIFaddend skill-building workshops (\DIFdelbegin \DIFdel{e.g., }\DIFdelend scientific writing,
+        \DIFdelbegin \DIFdel{conference }\DIFdelend presentation skills, research ethics).
+    \item \textbf{Graduate \DIFdelbegin \DIFdel{student }\DIFdelend co-mentor:} Prof.~Baird's master's student \DIFdelbegin \DIFdel{will serve as }\DIFdelend \DIFaddbegin \DIFadd{provides
+        }\DIFaddend day-to-day \DIFdelbegin \DIFdel{co-mentor, providing hands-on }\DIFdelend guidance in simulation, coding, \DIFdelbegin \DIFdel{fabrication, }\DIFdelend and experimental technique.
+        This layered \DIFdelbegin \DIFdel{mentoring model ensures students receive }\DIFdelend \DIFaddbegin \DIFadd{model ensures }\DIFaddend timely support while the graduate student
+        develops \DIFdelbegin \DIFdel{their own }\DIFdelend mentoring skills.
     \item \textbf{Progressive responsibility:} Students begin with structured
-        tasks (running simulations with provided scripts, assembling structures
-        from detailed CAD plans) and progress to independent design decisions,
-        culminating in ownership of their research project.
-    \item \textbf{Peer mentoring:} In Year~2, experienced students will mentor
-        newly recruited freshmen or sophomores, reinforcing their own learning
-        while expanding the research group and creating a sustainable pipeline
-        of trained researchers.
+        tasks \DIFdelbegin \DIFdel{(running simulations with provided scripts, assembling structures
+        from detailed CAD plans) }\DIFdelend and progress to independent design decisions, culminating in
+        ownership of their research project.
+    \item \textbf{Peer mentoring:} In Year~2, experienced students \DIFdelbegin \DIFdel{will }\DIFdelend mentor newly
+        recruited \DIFdelbegin \DIFdel{freshmen or sophomores, reinforcing their own learning
+        while expanding the research group and }\DIFdelend \DIFaddbegin \DIFadd{sophomores, }\DIFaddend creating a sustainable pipeline of trained
+        researchers.
 \end{itemize}
 
 \subsection*{Student Development Outcomes}
 
-Students will develop a broad, transferable skill set spanning:
+\DIFdelbegin \DIFdel{Students will develop a broad, transferable skill set spanning}\DIFdelend \DIFaddbegin \DIFadd{Technical risk-mitigation activities are structured as learning modules that
+develop transferable skills}\DIFaddend :
 \begin{itemize}[nosep]
     \item \textbf{Technical:} experimental mechanics (test design, data
-        acquisition), computation (FEA modeling, Python, Bayesian
-        optimization), and design (CAD, multi-material 3D printing).
+        acquisition\DIFaddbegin \DIFadd{, interface characterization}\DIFaddend ), computation (FEA modeling,
+        Python, Bayesian optimization), and design (CAD, multi-material 3D
+        printing \DIFaddbegin \DIFadd{with wrapping strategies}\DIFaddend ).
     \item \textbf{Communication:} lab notebooks, group presentations,
         conference talks, and co-authoring a peer-reviewed manuscript.
-    \item \textbf{Professional:} project management, collaboration with
-        interdisciplinary teams, and preparation for graduate school or
-        industry careers.
+    \item \textbf{Professional:} project management, \DIFaddbegin \DIFadd{data-driven
+        decision-making (interpreting Go/No-Go correlation results),
+        }\DIFaddend collaboration with interdisciplinary teams, and preparation for
+        graduate school or industry careers.
 \end{itemize}
 
 % =============================================================================
@@ -364,19 +395,23 @@ Students will develop a broad, transferable skill set spanning:
 \section{Potential Impact of Work}
 % =============================================================================
 
-This project advances the design of architected materials for energy absorption
-with direct applications in \textbf{protective equipment} (helmets, body
-armor), \textbf{packaging} (shock-absorbing inserts), and \textbf{aerospace}
+This project advances \DIFdelbegin \DIFdel{the design of architected materials }\DIFdelend \DIFaddbegin \DIFadd{architected material design }\DIFaddend for energy absorption with
+\DIFdelbegin \DIFdel{direct }\DIFdelend applications in \textbf{protective equipment} (helmets, body armor),
+\textbf{packaging} (shock-absorbing inserts), and \textbf{aerospace}
 (lightweight impact-resistant structures).  By demonstrating that multifidelity
-Bayesian optimization can efficiently navigate the tensegrity design space, we
-establish a generalizable framework applicable to other classes of architected
+\DIFdelbegin \DIFdel{Bayesian optimization }\DIFdelend \DIFaddbegin \DIFadd{BO }\DIFaddend can efficiently navigate the tensegrity design space, we establish a
+generalizable framework \DIFdelbegin \DIFdel{applicable to other classes of architected
 materials and metamaterials.
+}%DIFDELCMD < 
 
-The interdisciplinary training---spanning structural mechanics, advanced
-manufacturing, and machine learning---prepares students for graduate study or
-careers in industries increasingly reliant on data-driven design.  The
-open-source dissemination of tools and data extends impact beyond BYU and
-enables other research groups to build on our work.
+%DIFDELCMD < %%%
+\DIFdel{The interdisciplinary training---spanning structural mechanics, advanced
+manufacturing, and machine learning---prepares }\DIFdelend \DIFaddbegin \DIFadd{for other metamaterial classes.
+The interdisciplinary training prepares }\DIFaddend students for graduate study or careers
+in \DIFdelbegin \DIFdel{industries increasingly reliant on }\DIFdelend data-driven design.  \DIFdelbegin \DIFdel{The
+open-source }\DIFdelend \DIFaddbegin \DIFadd{Open-source }\DIFaddend dissemination of tools and data extends
+impact beyond BYU\DIFdelbegin \DIFdel{and
+enables other research groups to build on our work}\DIFdelend .
 
 % =============================================================================
 \section{Timeline}
@@ -392,8 +427,10 @@ enables other research groups to build on our work.
 Student recruitment \& onboarding    & \(\bullet\) &           &           &           \\
 Literature review                     & \(\bullet\) & \(\bullet\) &           &           \\
 Tensegrity parameterization \& CAD   & \(\bullet\) & \(\bullet\) &           &           \\
-FEA simulation development           &             & \(\bullet\) & \(\bullet\) &           \\
-Multifidelity BO implementation      &             & \(\bullet\) & \(\bullet\) &           \\
+\DIFaddbeginFL \DIFaddFL{Interface testing \& print validation }& \DIFaddFL{\(\bullet\) }& \DIFaddFL{\(\bullet\) }&           &           \\
+\DIFaddendFL FEA simulation development           &             & \(\bullet\) & \(\bullet\) &           \\
+\DIFaddbeginFL \DIFaddFL{LF--HF correlation gate (Go/No-Go)   }&             & \DIFaddFL{\(\bullet\) }&           &           \\
+\DIFaddendFL Multifidelity BO implementation      &             &             \DIFdelbeginFL \DIFdelFL{\(\bullet\) }\DIFdelendFL & \(\bullet\) & \DIFaddbeginFL \DIFaddFL{\(\bullet\) }\DIFaddendFL \\
 Multi-material 3D printing \& fabrication &        & \(\bullet\) & \(\bullet\) & \(\bullet\) \\
 Impact testing \& data collection    &             &             & \(\bullet\) & \(\bullet\) \\
 Simulation--experiment comparison    &             &             &             & \(\bullet\) \\
