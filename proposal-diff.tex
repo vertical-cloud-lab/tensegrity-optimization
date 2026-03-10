@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/proposal-old.tex   Tue Mar 10 15:23:54 2026
-%DIF ADD proposal.tex            Tue Mar 10 15:23:30 2026
+%DIF DEL /tmp/proposal-old.tex   Tue Mar 10 15:35:03 2026
+%DIF ADD proposal.tex            Tue Mar 10 15:35:03 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -119,7 +119,7 @@
 \section{Research Motivation and Overview}
 % =============================================================================
 
-We propose a two-year mentored research program in which 2--3 undergraduate
+We propose a two-year mentored research program in which \DIFdelbegin \DIFdel{2--3 }\DIFdelend \DIFaddbegin \DIFadd{2 }\DIFaddend undergraduate
 students design and optimize \textbf{multi-material 3D-printed
 tensegrity-inspired structures} for energy absorption.  Tensegrity (tensional
 integrity) structures---assemblies of rigid compression members suspended within
@@ -281,17 +281,14 @@ manuscript.
 \label{sec:mentoring}
 % =============================================================================
 
-\DIFdelbegin \textbf{\DIFdel{The mentoring of undergraduate researchers is the central objective of
-this proposal.}}  %DIFAUXCMD
-\DIFdel{We are committed to providing a structured , supportive
-environment that develops students into independent , capable researchers}\DIFdelend \DIFaddbegin \DIFadd{Each student in this program follows a structured path from guided exploration
+Each student in this program follows a structured path from guided exploration
 to independent research ownership, supported by layered mentoring at every
-stage}\DIFaddend .
+stage.
 
 \subsection*{Recruitment}
 
 Students will be recruited from courses in mechanics of materials, machine
-design, kinematics, and compliant mechanisms\DIFdelbegin \DIFdel{.  We target juniors /seniors and will actively recruit from underrepresented groups in engineering}\DIFdelend \DIFaddbegin \DIFadd{, targeting juniors and seniors}\DIFaddend .
+design, kinematics, and compliant mechanisms, targeting juniors and seniors.
 
 \subsection*{Mentoring Structure}
 
@@ -335,7 +332,7 @@ develop transferable skills:
 % =============================================================================
 
 \begin{enumerate}[nosep]
-    \item \textbf{Trained undergraduate researchers:} 2--3 students with
+    \item \textbf{Trained undergraduate researchers:} \DIFdelbegin \DIFdel{2--3 }\DIFdelend \DIFaddbegin \DIFadd{2 }\DIFaddend students with
         hands-on experience in advanced manufacturing, computational modeling,
         and data-driven optimization, prepared for graduate study or engineering
         careers.
@@ -371,26 +368,46 @@ impact beyond BYU.
 \begin{table}[ht]
 \centering
 \small
-\begin{tabular}{@{}lcccc@{}}
+\DIFdelbeginFL %DIFDELCMD < \begin{tabular}{@{}lcccc@{}}
+%DIFDELCMD < \toprule
+%DIFDELCMD < \textbf{Task} & \textbf{Y1 Fall} & \textbf{Y1 Winter} & \textbf{Y2 Fall} & \textbf{Y2 Winter} \\
+%DIFDELCMD < \midrule
+%DIFDELCMD < Student recruitment \& onboarding    & \(\bullet\) &           &           &           \\
+%DIFDELCMD < Literature review                     & \(\bullet\) & \(\bullet\) &           &           \\
+%DIFDELCMD < Tensegrity parameterization \& CAD   & \(\bullet\) & \(\bullet\) &           &           \\
+%DIFDELCMD < Interface testing \& print validation & \(\bullet\) & \(\bullet\) &           &           \\
+%DIFDELCMD < FEA simulation development           &             & \(\bullet\) & \(\bullet\) &           \\
+%DIFDELCMD < LF--HF correlation gate (Go/No-Go)   &             & \(\bullet\) &           &           \\
+%DIFDELCMD < Multifidelity BO implementation      &             &             & \(\bullet\) & \(\bullet\) \\
+%DIFDELCMD < Multi-material 3D printing \& fabrication &        & \(\bullet\) & \(\bullet\) & \(\bullet\) \\
+%DIFDELCMD < Impact testing \& data collection    &             &             & \(\bullet\) & \(\bullet\) \\
+%DIFDELCMD < Simulation--experiment comparison    &             &             &             & \(\bullet\) \\
+%DIFDELCMD < Conference presentations (UCUR/IDETC)&             &             & \(\bullet\) & \(\bullet\) \\
+%DIFDELCMD < Journal manuscript preparation       &             &             &             & \(\bullet\) \\
+%DIFDELCMD < Peer mentoring of new students       &             &             & \(\bullet\) & \(\bullet\) \\
+%DIFDELCMD < \bottomrule
+%DIFDELCMD < \end{tabular}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \begin{tabular}{@{}lccccccc@{}}
 \toprule
-\textbf{Task} & \textbf{Y1 Fall} & \textbf{Y1 Winter} & \textbf{Y2 Fall} & \textbf{Y2 Winter} \\
+\textbf{Task} & \textbf{Y1 F} & \textbf{Y1 W} & \textbf{Y1 Su} & \textbf{Y2 F} & \textbf{Y2 W} & \textbf{Y2 Su} \\
 \midrule
-Student recruitment \& onboarding    & \(\bullet\) &           &           &           \\
-Literature review                     & \(\bullet\) & \(\bullet\) &           &           \\
-Tensegrity parameterization \& CAD   & \(\bullet\) & \(\bullet\) &           &           \\
-Interface testing \& print validation & \(\bullet\) & \(\bullet\) &           &           \\
-FEA simulation development           &             & \(\bullet\) & \(\bullet\) &           \\
-LF--HF correlation gate (Go/No-Go)   &             & \(\bullet\) &           &           \\
-Multifidelity BO implementation      &             &             & \(\bullet\) & \(\bullet\) \\
-Multi-material 3D printing \& fabrication &        & \(\bullet\) & \(\bullet\) & \(\bullet\) \\
-Impact testing \& data collection    &             &             & \(\bullet\) & \(\bullet\) \\
-Simulation--experiment comparison    &             &             &             & \(\bullet\) \\
-Conference presentations (UCUR/IDETC)&             &             & \(\bullet\) & \(\bullet\) \\
-Journal manuscript preparation       &             &             &             & \(\bullet\) \\
-Peer mentoring of new students       &             &             & \(\bullet\) & \(\bullet\) \\
+Student recruitment \& onboarding    & \(\bullet\) &           &           &           &           &           \\
+Literature review                     & \(\bullet\) & \(\bullet\) &           &           &           &           \\
+Tensegrity parameterization \& CAD   & \(\bullet\) & \(\bullet\) &           &           &           &           \\
+Interface testing \& print validation & \(\bullet\) & \(\bullet\) &           &           &           &           \\
+FEA simulation development           &             & \(\bullet\) & \(\bullet\) &           &           &           \\
+LF--HF correlation gate (Go/No-Go)   &             &             & \(\bullet\) &           &           &           \\
+Multifidelity BO implementation      &             &             & \(\bullet\) & \(\bullet\) & \(\bullet\) &           \\
+Multi-material 3D printing \& fabrication &        & \(\bullet\) & \(\bullet\) & \(\bullet\) & \(\bullet\) &           \\
+Impact testing \& data collection    &             &             & \(\bullet\) & \(\bullet\) & \(\bullet\) &           \\
+Simulation--experiment comparison    &             &             &             &             & \(\bullet\) &           \\
+Conference presentations (UCUR/IDETC)&             &             &             & \(\bullet\) & \(\bullet\) &           \\
+Journal manuscript preparation       &             &             &             &             & \(\bullet\) & \(\bullet\) \\
+Peer mentoring of new students       &             &             &             & \(\bullet\) & \(\bullet\) &           \\
 \bottomrule
 \end{tabular}
-\caption{Project timeline across four semesters.}
+\DIFaddendFL \caption{Project timeline across \DIFdelbeginFL \DIFdelFL{four semesters}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{two years (F = Fall, W = Winter, Su = Summer).  Summer terms support full-time research effort}\DIFaddendFL .}
 \label{tab:timeline}
 \end{table}
 
