@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/proposal-old2.tex   Tue Mar 10 15:37:11 2026
-%DIF ADD proposal.tex             Tue Mar 10 15:35:03 2026
+%DIF DEL /tmp/proposal-old.tex   Tue Mar 10 15:55:38 2026
+%DIF ADD proposal.tex            Tue Mar 10 15:53:21 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -207,30 +207,46 @@ mechanics of materials or computational methods.
 
 \subsection*{Scope and Deliverables}
 
-This student will develop and run the computational pipeline:
+This student will develop and run the computational pipeline\DIFdelbegin \DIFdel{:
+}%DIFDELCMD < 
 
-\begin{enumerate}[nosep]
-    \item \textbf{Parameterize a tensegrity unit cell} suitable for simulation
-        and multi-material 3D printing, including strut geometry (PLA), tension
-        element geometry (TPU), topology, and boundary conditions.
-    \item \textbf{Build finite element models} using ABAQUS or open-source FEA
-        tools (e.g., FEniCS) to predict force--displacement response and energy
-        absorption under compaction and drop-test loading.  These simulations
-        serve as the \emph{low-fidelity} source in the multifidelity framework.
-    \item \textbf{Validate LF--HF correlation (Go/No-Go gate):} Before
-        launching full optimization, the student will run a small calibration
-        set comparing simulated force--displacement curves against experimental
-        results on single unit cells.  If the correlation ($R^2$) between
-        simulated and measured energy absorption is $<0.8$, the team will
-        pivot to single-fidelity experimental BO, ensuring feasibility
-        regardless of model accuracy.
-    \item \textbf{Implement a multifidelity Bayesian optimization loop}
-        (following Mo et al.\ \citep{mo2023accelerated}) using Python libraries
-        (BoTorch/Ax) to efficiently explore the design space, fusing simulation
-        predictions with experimental results from Student~2.
-    \item \textbf{Identify optimal designs} and generate predictions for
+%DIFDELCMD < \begin{enumerate}[nosep]
+%DIFDELCMD <     \item %%%
+\DIFdelend \DIFaddbegin \DIFadd{.  The work begins
+with }\DIFaddend \textbf{\DIFdelbegin \DIFdel{Parameterize }\DIFdelend \DIFaddbegin \DIFadd{parameterizing }\DIFaddend a tensegrity unit cell}\DIFdelbegin \DIFdel{suitable for simulation
+        and multi-material 3D printing, including strut }\DIFdelend \DIFaddbegin \DIFadd{---strut }\DIFaddend geometry (PLA),
+tension element geometry (TPU), topology, and boundary \DIFdelbegin \DIFdel{conditions.  }%DIFDELCMD < \item %%%
+\DIFdelend \DIFaddbegin \DIFadd{conditions---suitable for
+both simulation and multi-material 3D printing.  The student will then
+}\DIFaddend \textbf{\DIFdelbegin \DIFdel{Build }\DIFdelend \DIFaddbegin \DIFadd{build }\DIFaddend finite element models} \DIFdelbegin \DIFdel{using ABAQUS or open-source FEA
+        tools (e.g., }\DIFdelend \DIFaddbegin \DIFadd{(ABAQUS or }\DIFaddend FEniCS) to predict
+force--displacement response and energy absorption under compaction and
+drop-test loading\DIFdelbegin \DIFdel{.  These }\DIFdelend \DIFaddbegin \DIFadd{; these }\DIFaddend simulations serve as the \emph{low-fidelity} source in
+the multifidelity framework.
+\DIFdelbegin %DIFDELCMD < \item %%%
+\textbf{\DIFdel{Validate LF--HF correlation (Go/No-Go gate):}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin 
+
+\DIFaddend Before launching full optimization, the student will \DIFdelbegin \DIFdel{run }\DIFdelend \DIFaddbegin \textbf{\DIFadd{validate LF--HF
+correlation (Go/No-Go gate)}} \DIFadd{by running }\DIFaddend a small calibration set comparing
+simulated \DIFdelbegin \DIFdel{force--displacement }\DIFdelend curves against experimental results on single unit cells.  If the
+correlation ($R^2$) between simulated and measured energy absorption \DIFdelbegin \DIFdel{is $<0.8$}\DIFdelend \DIFaddbegin \DIFadd{falls below
+0.8}\DIFaddend , the team will pivot to single-fidelity experimental BO, ensuring
+feasibility regardless of model accuracy.  \DIFdelbegin %DIFDELCMD < \item %%%
+\DIFdelend \DIFaddbegin \DIFadd{With correlation established, the
+student will }\DIFaddend \textbf{\DIFdelbegin \DIFdel{Implement }\DIFdelend \DIFaddbegin \DIFadd{implement }\DIFaddend a multifidelity \DIFdelbegin \DIFdel{Bayesian optimization }\DIFdelend \DIFaddbegin \DIFadd{BO }\DIFaddend loop} (following
+Mo et al.\ \citep{mo2023accelerated}) using \DIFdelbegin \DIFdel{Python libraries
+        (}\DIFdelend BoTorch/Ax\DIFdelbegin \DIFdel{) to efficiently explore the design space}\DIFdelend , fusing simulation
+predictions with experimental results from Student~\DIFdelbegin \DIFdel{2.
+    }%DIFDELCMD < \item %%%
+\textbf{\DIFdel{Identify optimal designs}} %DIFAUXCMD
+\DIFdel{and generate predictions for
         experimental validation.
-\end{enumerate}
+}%DIFDELCMD < \end{enumerate}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \DIFadd{2 to identify optimal
+designs.
+}\DIFaddend 
 
 \textbf{Mentoring outcomes:} The student will develop skills in finite element
 analysis, scientific computing (Python), and data-driven optimization.  They
@@ -246,30 +262,39 @@ machine design, CAD, or compliant mechanisms.
 
 \subsection*{Scope and Deliverables}
 
-This student will lead fabrication and physical testing:
+This student will lead fabrication and physical testing\DIFdelbegin \DIFdel{:
+}%DIFDELCMD < 
 
-\begin{enumerate}[nosep]
-    \item \textbf{Design tensegrity-inspired structures in CAD} (SolidWorks or
-        Fusion 360) for multi-material 3D printing, with PLA struts and TPU
-        tension elements printed on a single platform.  Following
-        \citet{ye2023multimaterial}, we adopt a core-wrapping strategy where
-        rigid PLA struts are encapsulated by continuous TPU skins, ensuring
-        robust mechanical interlocking and preventing the interface
-        delamination common in simple layered deposition.
-    \item \textbf{Fabricate structures} using the department's multi-material
-        3D printer, iterating on print parameters to achieve reliable
-        tensegrity geometries.
-    \item \textbf{Conduct experimental testing:} compaction tests (quasi-static
-        compression) and drop tests (dynamic impact) following the drop-weight
-        protocol of \citet{pajunen2019design}.  Primary performance metrics are
-        \emph{specific energy absorption} (SEA) and \emph{compaction
-        efficiency} (ratio of absorbed energy to peak force)---tangible,
-        operationally measurable outcomes suitable for undergraduate research.
-        These experiments serve as the \emph{high-fidelity} source.
-    \item \textbf{Compare experimental results} against simulation predictions
-        from Student~1, quantifying model accuracy and informing surrogate
-        updates.
-\end{enumerate}
+%DIFDELCMD < \begin{enumerate}[nosep]
+%DIFDELCMD <     \item %%%
+\DIFdelend \DIFaddbegin \DIFadd{.  The work begins with
+}\DIFaddend \textbf{\DIFdelbegin \DIFdel{Design }\DIFdelend \DIFaddbegin \DIFadd{designing }\DIFaddend tensegrity-inspired structures in CAD} (SolidWorks or
+Fusion\DIFaddbegin \DIFadd{~}\DIFaddend 360) for multi-material \DIFdelbegin \DIFdel{3D }\DIFdelend printing, with PLA struts and TPU tension
+elements \DIFdelbegin \DIFdel{printed }\DIFdelend on a single platform.  Following \citet{ye2023multimaterial}, we adopt
+a core-wrapping strategy where rigid PLA struts are encapsulated by continuous
+TPU skins, ensuring robust mechanical interlocking and preventing the interface
+delamination common in simple layered deposition.
+\DIFdelbegin %DIFDELCMD < \item %%%
+\DIFdelend \DIFaddbegin 
+
+\DIFadd{The student will }\DIFaddend \textbf{\DIFdelbegin \DIFdel{Fabricate }\DIFdelend \DIFaddbegin \DIFadd{fabricate }\DIFaddend structures} using the department's
+multi-material 3D printer, iterating on print parameters to achieve reliable
+\DIFdelbegin \DIFdel{tensegrity geometries.
+    }%DIFDELCMD < \item %%%
+\DIFdelend \DIFaddbegin \DIFadd{geometries, and then }\DIFaddend \textbf{\DIFdelbegin \DIFdel{Conduct }\DIFdelend \DIFaddbegin \DIFadd{conduct }\DIFaddend experimental testing\DIFdelbegin \DIFdel{:}\DIFdelend }\DIFdelbegin \DIFdel{compaction }\DIFdelend \DIFaddbegin \DIFadd{---compaction }\DIFaddend tests
+(quasi-static compression) and drop tests (dynamic impact) following the
+\DIFdelbegin \DIFdel{drop-weight
+        }\DIFdelend protocol of \citet{pajunen2019design}.  Primary \DIFdelbegin \DIFdel{performance }\DIFdelend metrics are \emph{specific
+energy absorption} (SEA) and \emph{compaction efficiency}\DIFdelbegin \DIFdel{(ratio of absorbed energy to peak force)}\DIFdelend ---tangible,
+operationally measurable outcomes suitable for undergraduate research.  These
+experiments serve as the \emph{high-fidelity} source.  \DIFdelbegin %DIFDELCMD < \item %%%
+\textbf{\DIFdel{Compare experimental results}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \DIFadd{Results are compared
+}\DIFaddend against simulation predictions from Student~1 \DIFdelbegin \DIFdel{, quantifying }\DIFdelend \DIFaddbegin \DIFadd{to quantify }\DIFaddend model accuracy and
+\DIFdelbegin \DIFdel{informing }\DIFdelend \DIFaddbegin \DIFadd{inform }\DIFaddend surrogate updates.
+\DIFdelbegin %DIFDELCMD < \end{enumerate}
+%DIFDELCMD < %%%
+\DIFdelend 
 
 \textbf{Mentoring outcomes:} The student will develop skills in CAD, additive
 manufacturing, test design, and data analysis.  They will present at
@@ -292,60 +317,88 @@ design, kinematics, and compliant mechanisms, targeting juniors and seniors.
 
 \subsection*{Mentoring Structure}
 
-\begin{itemize}[nosep]
-    \item \textbf{Weekly individual meetings} (30 min) with Profs.~Hill and
-        Baird for technical guidance and professional development.
-    \item \textbf{Weekly lab group meetings} (1 hr): progress updates, student
-        literature presentations, skill-building workshops (scientific writing,
-        presentation skills, research ethics).
-    \item \textbf{Graduate co-mentor:} Prof.~Baird's master's student provides
-        day-to-day guidance in simulation, coding, and experimental technique.
-        This layered model ensures timely support while the graduate student
-        develops mentoring skills.
-    \item \textbf{Progressive responsibility:} Students begin with structured
-        tasks and progress to independent design decisions, culminating in
-        ownership of their research project.
-    \item \textbf{Peer mentoring:} In Year~2, experienced students mentor newly
-        recruited sophomores, creating a sustainable pipeline of trained
-        researchers.
-\end{itemize}
+\DIFdelbegin %DIFDELCMD < \begin{itemize}[nosep]
+%DIFDELCMD <     \item %%%
+\textbf{\DIFdel{Weekly individual meetings}} %DIFAUXCMD
+\DIFdel{(30 min) }\DIFdelend \DIFaddbegin \DIFadd{Students meet individually }\DIFaddend with Profs.~Hill and Baird \DIFaddbegin \DIFadd{each week (30~min) }\DIFaddend for
+technical guidance and professional development\DIFdelbegin \DIFdel{.
+    }%DIFDELCMD < \item %%%
+\textbf{\DIFdel{Weekly lab group meetings}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \DIFadd{, and participate in weekly lab
+group meetings }\DIFaddend (1\DIFdelbegin \DIFdel{hr): }\DIFdelend \DIFaddbegin \DIFadd{~hr) that include }\DIFaddend progress updates, student literature
+presentations, \DIFaddbegin \DIFadd{and }\DIFaddend skill-building workshops \DIFdelbegin \DIFdel{(}\DIFdelend \DIFaddbegin \DIFadd{covering }\DIFaddend scientific writing,
+presentation skills, \DIFdelbegin \DIFdel{research ethics).  }%DIFDELCMD < \item %%%
+\textbf{\DIFdel{Graduate co-mentor:}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \DIFadd{and research ethics.  }\DIFaddend Prof.~Baird's master's student
+\DIFdelbegin \DIFdel{provides
+        }\DIFdelend \DIFaddbegin \DIFadd{serves as a graduate co-mentor, providing }\DIFaddend day-to-day guidance in simulation,
+coding, and experimental technique\DIFdelbegin \DIFdel{.
+        This }\DIFdelend \DIFaddbegin \DIFadd{; this }\DIFaddend layered model ensures timely support
+while the graduate student develops \DIFaddbegin \DIFadd{their own }\DIFaddend mentoring skills.  \DIFdelbegin %DIFDELCMD < \item %%%
+\textbf{\DIFdel{Progressive responsibility:}} %DIFAUXCMD
+\DIFdelend Students begin
+with structured tasks and progress to independent design decisions, culminating
+in ownership of their research project.  \DIFdelbegin %DIFDELCMD < \item %%%
+\textbf{\DIFdel{Peer mentoring:}} %DIFAUXCMD
+\DIFdelend In Year~2, experienced students mentor
+newly recruited sophomores, creating a sustainable pipeline of trained
+researchers.
+\DIFdelbegin %DIFDELCMD < \end{itemize}
+%DIFDELCMD < %%%
+\DIFdelend 
 
 \subsection*{Student Development Outcomes}
 
 Technical risk-mitigation activities are structured as learning modules that
-develop transferable skills:
-\begin{itemize}[nosep]
-    \item \textbf{Technical:} experimental mechanics (test design, data
-        acquisition, interface characterization), computation (FEA modeling,
-        Python, Bayesian optimization), and design (CAD, multi-material 3D
-        printing with wrapping strategies).
-    \item \textbf{Communication:} lab notebooks, group presentations,
-        conference talks, and co-authoring a peer-reviewed manuscript.
-    \item \textbf{Professional:} project management, data-driven
-        decision-making (interpreting Go/No-Go correlation results),
-        collaboration with interdisciplinary teams, and preparation for
-        graduate school or industry careers.
-\end{itemize}
+develop transferable skills\DIFdelbegin \DIFdel{:
+}%DIFDELCMD < \begin{itemize}[nosep]
+%DIFDELCMD <     \item %%%
+\textbf{\DIFdel{Technical:}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \DIFadd{.  On the }\emph{\DIFadd{technical}} \DIFadd{side, students gain
+experience in }\DIFaddend experimental mechanics (test design, data acquisition, interface
+characterization), computation (FEA modeling, Python, Bayesian optimization),
+and design (CAD, multi-material 3D printing with wrapping strategies).
+\DIFdelbegin %DIFDELCMD < \item %%%
+\textbf{\DIFdel{Communication:}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \emph{\DIFadd{Communication}} \DIFadd{skills develop through }\DIFaddend lab notebooks, group presentations,
+conference talks, and co-authoring a peer-reviewed manuscript.
+\DIFdelbegin %DIFDELCMD < \item %%%
+\textbf{\DIFdel{Professional:}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \emph{\DIFadd{Professional}} \DIFadd{development includes }\DIFaddend project management, data-driven
+decision-making (interpreting Go/No-Go correlation results), \DIFdelbegin \DIFdel{collaboration with interdisciplinary
+teams}\DIFdelend \DIFaddbegin \DIFadd{interdisciplinary
+collaboration}\DIFaddend , and preparation for graduate school or industry careers.
+\DIFdelbegin %DIFDELCMD < \end{itemize}
+%DIFDELCMD < %%%
+\DIFdelend 
 
 % =============================================================================
 \section{Expected Research Outcomes}
 % =============================================================================
 
-\begin{enumerate}[nosep]
-    \item \textbf{Trained undergraduate researchers:} 2 students with
-        hands-on experience in advanced manufacturing, computational modeling,
-        and data-driven optimization, prepared for graduate study or engineering
-        careers.
-    \item \textbf{Conference presentations:} Student-led presentations at
-        \textbf{UCUR} (Utah Conference on Undergraduate Research) and
-        \textbf{ASME IDETC} (International Design Engineering Technical
+\DIFdelbegin %DIFDELCMD < \begin{enumerate}[nosep]
+%DIFDELCMD <     \item %%%
+\DIFdelend \DIFaddbegin \DIFadd{The primary outcome is }\DIFaddend \textbf{\DIFdelbegin \DIFdel{Trained }\DIFdelend \DIFaddbegin \DIFadd{2 trained }\DIFaddend undergraduate researchers\DIFdelbegin \DIFdel{:}\DIFdelend } \DIFdelbegin \DIFdel{2 students }\DIFdelend with
+hands-on experience in advanced manufacturing, computational modeling, and
+data-driven optimization, prepared for graduate study or engineering careers.
+\DIFdelbegin %DIFDELCMD < \item %%%
+\DIFdelend \DIFaddbegin \DIFadd{Students will deliver }\DIFaddend \textbf{\DIFdelbegin \DIFdel{Conference }\DIFdelend \DIFaddbegin \DIFadd{conference }\DIFaddend presentations\DIFdelbegin \DIFdel{:}%DIFDELCMD < \MBLOCKRIGHTBRACE %%%
+\DIFdel{Student-led presentations at }\textbf{\DIFdel{UCUR}} %DIFAUXCMD
+\DIFdel{(Utah Conference on Undergraduate Research) and }\DIFdelend \DIFaddbegin } \DIFadd{at UCUR and ASME IDETC,
+and contribute as co-authors on a }\DIFaddend \textbf{\DIFdelbegin \DIFdel{ASME IDETC}%DIFDELCMD < \MBLOCKRIGHTBRACE %%%
+\DIFdel{(International Design Engineering Technical
         Conferences).
-    \item \textbf{Journal submission:} One peer-reviewed manuscript submitted to
-        the \emph{ASME Journal of Mechanical Design} or \emph{Smart Materials
-        and Structures}, with undergraduate students as co-authors.
-    \item \textbf{Open-source tools:} Simulation code, optimization scripts,
-        and experimental data published on GitHub for reproducibility.
-\end{enumerate}
+    }%DIFDELCMD < \item %%%
+\textbf{\DIFdel{Journal submission:}} %DIFAUXCMD
+\DIFdel{One }\DIFdelend peer-reviewed manuscript\DIFaddbegin } \DIFaddend submitted to
+the \emph{ASME Journal of Mechanical Design} or \emph{Smart Materials and
+Structures}\DIFdelbegin \DIFdel{, with undergraduate students as co-authors.  }%DIFDELCMD < \item %%%
+\textbf{\DIFdel{Open-source tools:}} %DIFAUXCMD
+\DIFdel{Simulation }\DIFdelend \DIFaddbegin \DIFadd{.  All simulation }\DIFaddend code, optimization scripts, and experimental data
+\DIFaddbegin \DIFadd{will be }\DIFaddend published on GitHub for reproducibility.
+\DIFdelbegin %DIFDELCMD < \end{enumerate}
+%DIFDELCMD < %%%
+\DIFdelend 
 
 % =============================================================================
 \section{Potential Impact of Work}
