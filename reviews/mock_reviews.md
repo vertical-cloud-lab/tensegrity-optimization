@@ -147,9 +147,9 @@ The experiment-driven BO framework is a compelling model for how undergraduates 
 ### Weaknesses
 
 1. **Only 2 undergraduate students for $25,000.** At $18,000 in undergraduate wages over two years, each student receives $9,000. This is reasonable for part-time + summer work, but the MRG is spending $12,500/student. Some reviewers may feel that more students should benefit for this level of investment. Could a third student be added in Year 2, even in a limited role?
-2. **Budget justification mentions "simulation" for undergrad work** (budget.tex line 34–35: "full-time during summer terms for simulation, 3D printing, and testing"), but the proposal body explicitly de-emphasizes simulation. This inconsistency, while minor, suggests the budget narrative was not fully updated after the proposal's strategic pivot to experiment-driven work.
+2. **Budget justification mentions "simulation" for undergrad work.** The budget section describes undergrad summer work as "for simulation, 3D printing, and testing" (`sections/budget.tex`), but the proposal body explicitly de-emphasizes simulation and frames the project as experiment-driven. This inconsistency, while minor, suggests the budget narrative was not fully updated after the proposal's strategic pivot to experiment-driven work.
 3. **No explicit assessment or evaluation plan.** How will the PIs know if the mentoring is successful? Student satisfaction surveys? Tracking of post-graduation outcomes? Conference paper acceptance rates? An evaluation plan, even brief, would strengthen the proposal.
-4. **Relationship to external funding section could be stronger.** The statement "If successful, the preliminary data may inform a future NSF proposal" is honest but may concern reviewers who worry the MRG is primarily serving as seed funding for external grants rather than as a standalone mentoring initiative.
+4. **Relationship to external funding section could be stronger.** The statement "If successful, the preliminary data may inform a future NSF proposal" (coverpage) is honest but may concern reviewers who worry the MRG is primarily serving as seed funding for external grants rather than as a standalone mentoring initiative.
 
 ### Suggestions for Improvement
 
