@@ -17,9 +17,6 @@
 *.bcf
 *-blx.bib
 
-# PDF output (uncomment to track the compiled PDF)
-# *.pdf
-
 # Editor backups
 *~
 *.bak

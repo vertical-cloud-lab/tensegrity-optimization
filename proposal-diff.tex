@@ -1,4 +1,7 @@
 \documentclass[11pt]{article}
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL proposal-old.tex   Tue Mar 10 17:23:06 2026
+%DIF ADD proposal.tex       Tue Mar 10 17:22:51 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -13,7 +16,10 @@
 \usepackage{subcaption}
 \usepackage{titlesec}
 \usepackage{setspace}
+%DIF 16a16
 \usepackage{wrapfig}
+ %DIF > 
+%DIF -------
 
 % --- Formatting ---
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
@@ -26,6 +32,95 @@
 \newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
 
 % =============================================================================
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFaddtex}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdeltex}[1]{{\protect\color{red}\sout{#1}}} %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+\providecommand{\DIFmodbegin}{} %DIF PREAMBLE
+\providecommand{\DIFmodend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF HYPERREF PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}} %DIF PREAMBLE
+\providecommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\providecommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\providecommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF AMSMATHULEM PREAMBLE %DIF PREAMBLE
+\makeatletter %DIF PREAMBLE
+\let\sout@orig\sout %DIF PREAMBLE
+\renewcommand{\sout}[1]{\ifmmode\text{\sout@orig{\ensuremath{#1}}}\else\sout@orig{#1}\fi} %DIF PREAMBLE
+\makeatother %DIF PREAMBLE
+%DIF COLORLISTINGS PREAMBLE %DIF PREAMBLE
+\RequirePackage{listings} %DIF PREAMBLE
+\RequirePackage{color} %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
+%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
+  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
+	language=DIFcode, %DIF PREAMBLE
+	basicstyle=\ttfamily, %DIF PREAMBLE
+	columns=fullflexible, %DIF PREAMBLE
+	keepspaces=true %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim}[1][]{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim*}[1][]{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
+\lstset{extendedchars=\true,inputencoding=utf8}
+
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
 \begin{document}
 
 % --- Cover Page (does not count toward 5-page limit) ---
@@ -68,21 +163,39 @@ will gain hands-on skills in CAD, multi-material 3D printing, impact testing,
 computational modeling, and data-driven optimization.  Each student will lead a
 scoped research project, present at conferences, and co-author a publication.
 
-% =============================================================================
+%DIF <  --- Placeholder for overview figure ---
+%DIF <  TODO: Replace with actual figure before final submission
+\DIFdelbegin %DIFDELCMD < \begin{figure}[ht]
+%DIFDELCMD < \centering
+%DIFDELCMD < %%%
+\DIFdelFL{\fbox{\parbox{0.85\textwidth}{\centering\vspace{1em}
+\textbf{Figure placeholder:} Tensegrity unit cell design $\to$ multi-material
+PLA/TPU printing with wrapping strategy $\to$ multifidelity BO loop.
+\vspace{1em}}}
+}%DIFDELCMD < \caption{%
+{%DIFAUXCMD
+\DIFdelFL{Conceptual overview of the proposed research and mentoring framework.}}
+%DIFAUXCMD
+%DIFDELCMD < \label{fig:overview}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdelend % =============================================================================
 \section{Background}
 % =============================================================================
 
-% --- Overview figure (right-inset, floatable) ---
-\begin{wrapfigure}[12]{R}{0.4\textwidth}
+%DIF >  --- Overview figure (right-inset, floatable) ---
+\DIFaddbegin \begin{wrapfigure}[12]{R}{0.4\textwidth}
 \centering
 \vspace{-1.2em}
 \includegraphics[width=0.38\textwidth]{figures/overview.png}
 \captionsetup{font=small}
-\caption{Research framework overview.}
+\caption{\DIFadd{Research framework overview.}}
 \label{fig:overview}
 \end{wrapfigure}
 
-\textbf{Tensegrity structures} consist of isolated compression members (struts)
+\DIFaddend \textbf{Tensegrity structures} consist of isolated compression members (struts)
 held in equilibrium by a continuous network of tension members
 \citep{skelton2009tensegrity, sultan2009tensegrity}.  Their defining
 characteristic---no two rigid bars touch---yields lightweight assemblies with
@@ -254,19 +367,23 @@ impact beyond BYU.
 \section{Timeline}
 % =============================================================================
 
-The project spans two academic years plus two summers (Table~\ref{tab:timeline}).
-\textbf{Year~1} focuses on foundations: student recruitment and onboarding in
+\DIFaddbegin 
+
+\DIFadd{The project spans two academic years plus two summers (Table~\ref{tab:timeline}).
+}\textbf{\DIFadd{Year~1}} \DIFadd{focuses on foundations: student recruitment and onboarding in
 Fall, followed by literature review, tensegrity parameterization in CAD, and
 initial 3D-print validation through Winter.  The first Summer term is a
 critical period for FEA simulation development, early impact testing, and the
 low-fidelity/high-fidelity correlation gate (Go/No-Go milestone).
-\textbf{Year~2} shifts to optimization and dissemination: multifidelity
+}\textbf{\DIFadd{Year~2}} \DIFadd{shifts to optimization and dissemination: multifidelity
 Bayesian optimization campaigns run through Fall and Winter alongside continued
 multi-material fabrication and mechanical testing.  Simulation--experiment
 comparisons in Winter validate surrogate accuracy.  Students present findings
 at UCUR and ASME IDETC in Year~2, and a journal manuscript is prepared during
 Winter and Summer.  Second-year students also mentor newly recruited
 undergraduates, ensuring continuity of expertise.
+
+}\DIFaddend 
 
 \begin{table}[ht]
 \centering
