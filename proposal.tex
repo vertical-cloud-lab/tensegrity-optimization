@@ -62,11 +62,10 @@ inexpensive simulations (low-fidelity) with physical experiments (high-fidelity)
 to guide the search toward optimal configurations
 \citep{mo2023accelerated, perdikaris2017nonlinear}.
 
-\textbf{The primary objective of this project is to provide a rich,
+\textbf{A primary objective of this project is to provide a rich,
 interdisciplinary mentored research experience for undergraduates.}  Students
 will gain hands-on skills in CAD, multi-material 3D printing, impact testing,
-computational modeling, and data-driven optimization.  Each student will lead a
-scoped research project, present at conferences, and co-author a publication.
+computational modeling, and data-driven optimization.  Each student will be responsible for defining design variables, executing experimental or computational campaigns, analyzing data, presenting results, and drafting manuscript sections.
 
 % =============================================================================
 \section{Background}
@@ -141,10 +140,10 @@ feasibility regardless of model accuracy.  With correlation established, the
 student will \textbf{implement a multifidelity BO loop} (following
 Mo et al.\ \citep{mo2023accelerated}) using BoTorch/Ax, fusing simulation
 predictions with experimental results from Student~2 to identify optimal
-designs.
+designs. This decision gate also provides a structured lesson in model validation and scientific risk management, training students to critically evaluate simulation accuracy rather than treating computational tools as unquestioned truth.
 
 \textbf{Mentoring outcomes:} The student will develop skills in finite element
-analysis, scientific computing (Python), and data-driven optimization.  They
+analysis, scientific computing (Python), and data-driven optimization. By the end of the project, the student will have independently constructed and validated a simulation pipeline, implemented multi-fidelity Bayesian optimization, and interpreted discrepancies between computational and experimental results. They
 will present results at \textbf{ASME IDETC} or \textbf{UCUR} and contribute as
 co-author on a journal manuscript.
 
@@ -163,13 +162,13 @@ Fusion~360) for multi-material printing, with PLA struts and TPU tension
 elements on a single platform.  Following \citet{ye2023multimaterial}, we adopt
 a core-wrapping strategy where rigid PLA struts are encapsulated by continuous
 TPU skins, ensuring robust mechanical interlocking and preventing the interface
-delamination common in simple layered deposition.
+delamination common in simple layered deposition. Because PLA–TPU interfaces are known to exhibit mixed-mode fracture behavior and potential void formation, print parameter validation and interface robustness will be explicitly evaluated during early testing.
 
 The student will \textbf{fabricate structures} using the department's
 multi-material 3D printer, iterating on print parameters to achieve reliable
 geometries, and then \textbf{conduct experimental testing}---compaction tests
 (quasi-static compression) and drop tests (dynamic impact) following the
-protocol of \citet{pajunen2019design}.  Primary metrics are \emph{specific
+protocol of \citet{pajunen2019design}.  Primary metrics include \emph{peak transmitted force} \emph{specific
 energy absorption} (SEA) and \emph{compaction efficiency}---tangible,
 operationally measurable outcomes suitable for undergraduate research.  These
 experiments serve as the \emph{high-fidelity} source.  Results are compared
@@ -206,8 +205,7 @@ serves as a graduate co-mentor, providing day-to-day guidance in simulation,
 coding, and experimental technique; this layered model ensures timely support
 while the graduate student develops their own mentoring skills.  Students begin
 with structured tasks and progress to independent design decisions, culminating
-in ownership of their research project.  In Year~2, experienced students mentor
-newly recruited sophomores, creating a sustainable pipeline of trained
+in ownership of their research project. Year 1 focuses on technical skill acquisition and guided execution; Year 2 emphasizes independent hypothesis generation, experimental design, and peer mentoring. In Year~2, experienced students mentor newly recruited sophomores, creating a sustainable pipeline of trained
 researchers.
 
 \subsection*{Student Development Outcomes}
@@ -227,11 +225,10 @@ collaboration, and preparation for graduate school or industry careers.
 \section{Expected Research Outcomes}
 % =============================================================================
 
-The primary outcome is \textbf{2 trained undergraduate researchers} with
+The primary outcome of this MRG is the \textbf{training of 2 undergraduate researchers} with
 hands-on experience in advanced manufacturing, computational modeling, and
 data-driven optimization, prepared for graduate study or engineering careers.
-Students will deliver \textbf{conference presentations} at UCUR and ASME IDETC,
-and contribute as co-authors on a \textbf{peer-reviewed manuscript} submitted to
+By completion, each undergraduate is expected to have participated in the design and testing of approximately 100+ tensegrity specimens, contributed to at least one \textbf{conference presentation} at UCUR and ASME IDETC, and contributed as a co-author on a \textbf{peer-reviewed manuscript} submitted to
 the \emph{ASME Journal of Mechanical Design} or \emph{Smart Materials and
 Structures}.  All simulation code, optimization scripts, and experimental data
 will be published on GitHub for reproducibility.
@@ -290,7 +287,7 @@ Journal manuscript preparation       &             &             &             &
 Peer mentoring of new students       &             &             &             & \(\bullet\) & \(\bullet\) &           \\
 \bottomrule
 \end{tabular}
-\caption{Project timeline across two years (F = Fall, W = Winter, Su = Summer).  Summer terms support full-time research effort.}
+\caption{Project timeline across two years (F = Fall, W = Winter, Su = Summer).  Summer terms support full-time research effort. Year 2 includes formal peer mentoring, where experienced students supervise newly recruited undergraduates.}
 \label{tab:timeline}
 \end{table}
 
