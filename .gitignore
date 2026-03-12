@@ -25,6 +25,9 @@
 \#*\#
 .\#*
 
+# Diff originals
+proposal-orig.tex
+
 # OS files
 .DS_Store
 Thumbs.db
