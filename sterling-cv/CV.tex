@@ -1,0 +1,510 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Medium Length Professional CV
+% LaTeX Template
+% Version 2.0 (8/5/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Rishi Shah 
+%
+% Important note:
+% This template requires the resume.cls file to be in the same directory as the
+% .tex file. The resume.cls file provides the resume style used for structuring the
+% document.
+%
+% Modified by Sterling G. Baird
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Teaching Interests
+% - https://mitcommlab.mit.edu/eecs/commkit/faculty-application-teaching-statement/
+% - https://careerservices.upenn.edu/application-materials-for-the-faculty-job-search/teaching-philosophies-for-faculty-job-applications/
+% - 
+% Research Interests
+% - https://mitcommlab.mit.edu/eecs/commkit/faculty-application-research-statement/
+% - https://mitcommlab.mit.edu/eecs/commkit/faculty-application
+% - https://gradschool.cornell.edu/career-and-professional-development/pathways-to-success/prepare-for-your-career/take-action/research-statement/
+%
+% CV
+% - https://mitcommlab.mit.edu/eecs/commkit/faculty-application-cv/
+
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{resume} % Use the custom resume.cls style
+
+\usepackage[left=0.75in,top=0.6in,right=0.75in,bottom=0.6in]{geometry} % Document margins
+\usepackage{hyperref}
+\usepackage{needspace}
+\usepackage{fontawesome5}
+\usepackage{academicons}
+
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\usepackage{doi}
+\usepackage{array}
+\usepackage [autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
+
+\usepackage[backend=biber, natbib=true, style=ieee, sorting=none, doi=true, isbn=false, url=true]{biblatex}
+
+% Redefine the urldate bibmacro to do nothing
+\renewbibmacro{urldate}{%
+  % Empty definition
+}
+
+\makeatletter
+% auxiliary bibfile
+\def\hlblx@bibfile@name{\jobname -boldnames.bib}
+\newwrite\hlblx@bibfile
+\immediate\openout\hlblx@bibfile=\hlblx@bibfile@name
+
+\newcounter{hlblx@name}
+\setcounter{hlblx@name}{0}
+
+\newcommand*{\hlblx@writenametobib}[1]{%
+  \stepcounter{hlblx@name}%
+  \edef\hlblx@tmp@nocite{%
+    \noexpand\AfterPreamble{%
+      \noexpand\setbox0\noexpand\vbox{%
+        \noexpand\hlblx@getmethehash{hlblx@name@\the\value{hlblx@name}}}}%
+  }%
+  \hlblx@tmp@nocite
+  \immediate\write\hlblx@bibfile{%
+    @misc{hlblx@name@\the\value{hlblx@name}, author = {\unexpanded{#1}}, %
+          options = {dataonly=true},}%
+  }%
+}
+
+\AtEndDocument{%
+  \closeout\hlblx@bibfile}
+
+\addbibresource{\hlblx@bibfile@name}
+
+\newcommand*{\hlbxl@boldhashes}{}
+\DeclareNameFormat{hlblx@hashextract}{%
+  \xifinlist{\thefield{hash}}{\hlbxl@boldhashes}
+    {}
+    {\listxadd{\hlbxl@boldhashes}{\thefield{fullhash}}}}
+
+\DeclareCiteCommand{\hlblx@getmethehash}
+  {}
+  {\printnames[hlblx@hashextract][1-999]{author}}
+  {}
+  {}
+
+% user-level macros
+\newcommand*{\addboldnames}{\forcsvlist\hlblx@writenametobib}
+\newcommand*{\resetboldnames}{\def\hlbxl@boldhashes{}}
+
+
+\newcommand*{\mkboldifhashinlist}[1]{%
+  \xifinlist{\thefield{hash}}{\hlbxl@boldhashes}
+    {\mkbibbold{#1}}
+    {#1}}
+\makeatother
+
+\DeclareNameWrapperFormat{given-family:hash:bold}{%
+  \renewcommand*{\mkbibcompletename}{\mkboldifhashinlist}%
+  #1}
+
+\DeclareCiteCommand{\printpublication}
+  {\usebibmacro{prenote}}
+  {\usedriver
+     {\DeclareNameAlias{sortname}{default}%
+      \DeclareNameWrapperAlias{default}{given-family:hash:bold}%
+      \defcounter{maxnames}{12}%
+      \defcounter{minnames}{3}}
+     {\thefield{entrytype}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+\addboldnames{{Baird, Sterling G.}}
+\addboldnames{{Baird, Sterling Gregory}}
+\addboldnames{{Baird, Sterling}}
+\addboldnames{{Baird*, Sterling}}
+\addbibresource{mypublications.bib}
+\addbibresource{custom-publications.bib}
+
+% \bibliography{mypublications.bib}
+
+\newcommand{\tab}[1]{\hspace{.2667\textwidth}\rlap{#1}}
+\newcommand{\itab}[1]{\hspace{0em}\rlap{#1}}
+
+\usepackage{longtable}
+
+\name{Sterling G. Baird} % Your name
+\address{4138 Devonshire Dr. Provo UT 84604} % Your address
+%\address{123 Pleasant Lane \\ City, State 12345} % Your secondary addess (optional)
+\address{+1(720)854-5562 \\ \href{mailto:sterling.baird@byu.edu}{sterling.baird@byu.edu} \\ \href{https://www.linkedin.com/in/sterling-baird/}{\faLinkedin\ } 
+    % \href{https://x.com/SterlingBaird1}{\faTwitter\ } 
+    \href{https://github.com/vertical-cloud-lab}{{\small\faFlask}\ }
+    \href{https://github.com/sgbaird}{\faGithub\ } \href{https://scholar.google.com/citations?hl=en&user=UACmnBgAAAAJ}{\aiGoogleScholar\ }
+    % \href{https://github.com/vertical-cloud-lab}{\faUsers\ }
+    } % Your phone number and email
+    
+% \address{\href{https://www.linkedin.com/in/sterling-baird/}{LinkedIn} \\ \href{https://x.com/SterlingBaird1}{X} \\ \href{https://github.com/sgbaird}{GitHub}} % LinkedIn, X, GitHub
+
+\begin{document}
+% \bibliographystyle{plainurl}
+% \nobibliography{my-publications.bib}
+%----------------------------------------------------------------------------------------
+%	EDUCATION SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{rSection}{Education}
+
+{\bf University of Utah (UoU), Salt Lake City, UT}
+\\ Ph.D. Materials Science and Engineering \hfill {\em August 2020 - August 2023}
+\\ Department of Materials Science and Engineering %\hfill {\em Cumulative GPA: 3.9}
+
+{\bf Brigham Young University (BYU), Provo, UT} 
+\\ M.S. Mechanical Engineering \hfill {\em August 2018 - April 2021}
+\\ Department of Mechanical Engineering %\hfill {\em Cumulative GPA: 3.6} \linebreak %3.59
+\\ B.S. Applied Physics \hfill {\em June 2011 - August 2018}
+\\ Department of Physics and Astronomy %\hfill {\em  Major GPA: 3.2} %3.18
+
+{\bf Colorado School of Mines (CSM), Golden, CO} \hfill {\em August 2015 - December 2015}
+%\\ Non-degree seeking \hfill {\em Cumulative GPA: 4.0}
+
+%Minor in Linguistics \smallskip \\
+%Member of Eta Kappa Nu \\
+%Member of Upsilon Pi Epsilon \\
+
+
+\end{rSection}
+
+%\begin{rSection}{Primary Objective}
+%To better standard of living through materials innovation.
+%\end{rSection}
+%--------------------------------------------------------------------------------
+%    Projects And Seminars
+%-----------------------------------------------------------------------------------------------
+% emphasize skills related to automation
+\Needspace{10\baselineskip} % Adjust the space needed accordingly
+\begin{rSection}{Research Experience}
+\begin{rSubsection}{Brigham Young University (Mech. Eng.), Assistant Professor}{Dec 2025 - present}{} \\
+\item Establishing the \href{https://github.com/vertical-cloud-lab}{Vertical Cloud Lab} for autonomous materials discovery and advanced manufacturing
+\item Focusing on autonomous alloy discovery via additive manufacturing for aerospace applications
+\item Developing cloud-accessible experimentation platforms with remote programmatic access
+\end{rSubsection}
+
+\begin{rSubsection}{Acceleration Consortium, Principal Investigator, Staff Scientist}{Mar 2025 - Dec 2025}{} \\
+\item Implemented adaptive experimentation strategies within the AC's core physical science facilities
+\item Led research initiatives within the AI \& Automation Lab
+\item Advanced autonomous laboratory methodologies for accelerated materials discovery
+\end{rSubsection}
+
+\begin{rSubsection}{Meta, Technical Consultant}{Nov 2024 - Jan 2025}{} \\
+\item Creating docs and refining code for the v1.0 release of Ax Platform, a Bayesian optimization package
+\item Providing insights and perspectives on Bayesian optimization applied to the physical sciences
+\end{rSubsection}
+
+\begin{rSubsection}{Acceleration Consortium, Director of Training and Programs}{Jun 2023 - Mar 2025}{} \\
+\item Developed \href{https://honegumi.readthedocs.io/en/latest/}{\texttt{Honegumi}}, an interactive script generator for materials-relevant Bayesian optimization
+% \item Leveraged AI and automation for accelerated stress testing in an electrolysis cell for fuel cell applications
+\item Developed \href{https://huggingface.co/collections/AccelerationConsortium/optimization-benchmarks-66a44daf10de1a0335f28826}{Bayesian optimization benchmarks/web apps} for chem/mat.sci. with Merck KGaA partner
+\item Leveraged AI and automation for accelerated stress testing in an electrolysis cell for fuel cell applications
+\item Leveraged AI and automation for autonomous battery slurry optimization of viscosity and aggregates
+\item Developed dozens of automation hardware APIs and tools (e.g., solid dosing, sample transfer)
+\item \href{https://github.com/ACC-HelloWorld/1-running-the-demo/}{Incorporated remote-access equipment} into autograded course workflows and assignments
+\item Built the \href{https://ac-training-lab.readthedocs.io/}{AC Dev Lab} from scratch, including \$600k of equipment (500 line items) over two years
+\item Conducted a feasibility study for the incorporation of vertical lift modules into wetlab environments % a "vertical lab" using a vertical lift module and a mobile manipulator
+\end{rSubsection}
+
+\begin{rSubsection}{UoU Sparks Group PhD Research Assistant}{Aug 2020 - Aug 2023}{} \\
+\item Developed alloy-focused microstructure informatics software for Fehrmann Materials GmbH
+\item \href{https://doi.org/10.21105/joss.04528}{Applied diffusion generative models} for novel crystal structure generation
+\item \href{https://www.nsf.gov/awardsearch/showAward?AWD_ID=2334411&HistoricalAwards=false}{Co-wrote} a successful 200k USD grant for scientific literature data extraction via LLMs
+\item Developed modular control, communication, data, and optimization solutions for self-driving labs
+\item Designed an off-the-shelf, low-cost "Hello World" for self-driving labs (350 kits in use)
+% \item Designed an off-the-shelf, low-cost flow reactor demonstration as a "Hello, World!" extension
+\item Co-wrote the structural materials section of a \href{10.1021/acs.chemrev.4c00055}{Chem. Rev. review paper} focused on self-driving labs
+% \item Wrote and managed a \href{https://doi.org/10.1039/D3DD00223C}{review paper for low-cost self-driving labs}
+% \item Created a tool to convert between crystal structure and PNG images for materials generative models
+\item \href{https://doi.org/10.1016/j.commatsci.2023.112134}{Applied constrained, high-dimensional Bayesian optimization} for solid rocket propellant simulations
+\item Created an \href{https://doi.org/10.1039/D1DD00028D}{adaptive design framework} for high-performance, chemically unique materials discovery
+% \item Created a brute-force computational geometry tool for atomic planar densities in arbitrary materials
+\item Collected and analyzed a \href{https://doi.org/10.1016/B978-0-12-823144-9.00079-0}{corpus of 50 validated materials discoveries} (computational and experimental)
+\end{rSubsection}
+
+\begin{rSubsection}{BYU Materials Innovation Lab Research Assistant}{Aug 2018 - Aug 2021}{} \\
+\item Developed a state-of-the-art package for grain boundary property prediction (50\% improvement)
+\item Numerically validated and gained new insights to a 20-year assumption about grain boundaries % \cite{baird_quantitative_2021}
+\item Designed a semi-automated, ultra-high temp./ultra-high purity induction furnace (2500 °C)
+\item Designed a semi-automated, 3D printed, two-cell electrochemical setup
+\item Performed image segmentation and multi-modal stitching on microscope and synchrotron data
+\item Used image-based techniques (e.g., mutual information) to infer subsurface grain boundary tilt angles % \cite{fullwood_determining_2021}
+\item Used Bayesian inference to infer local material properties from global network/graph measurements % \cite{kurniawan_grain_2019,snow_grain_2021,johnson_inference_2021}
+\end{rSubsection}
+
+\begin{rSubsection}{BYU Condensed Matter Research Assistant}{Jun 2015 - Aug 2018}{} \\
+% \item Synthesized structurally modified carbon nanotube samples for Si-anode Li-ion batteries
+\item Performed 100's of experiments using structurally modified carbon nanotubes in lithium-sulfur batteries
+\item Reviewed several hundred next-generation battery articles to create a visual database tool
+\end{rSubsection}
+\begin{rSubsection}{NASA Langley Research Center Intern}{Jan 2017 - May 2017}{} \\
+\item Fabricated/tested dozens of lithium-oxygen batteries using structurally modified graphene electrodes
+\item Performed Raman laser and FTIR spectroscopic studies on boron nitride nanotube materials
+\end{rSubsection}
+\begin{rSubsection}{CSM Research Assistant}{Sep 2015 - Oct 2015}{} \\
+\item Characterized thin-film solar cell materials via capacitance-voltage and X-ray diffraction measurements
+\end{rSubsection}
+\end{rSection}
+
+%-----------------------------------
+% LEADERSHIP EXPERIENCE
+%-----------------------------------
+% \pagebreak
+\Needspace{10\baselineskip} % Adjust the space needed accordingly
+\begin{rSection}{Leadership Experience}
+
+% \begin{rSubsection}{Brigham Young University (Mech. Eng.), Assistant Professor}{Dec 2025 - present}{} \\
+% \item Building a research group \href{https://github.com/vertical-cloud-lab}{Vertical Cloud Lab}
+% \end{rSubsection}
+
+\begin{rSubsection}{Brigham Young University (Mech. Eng.), Assistant Professor}{Dec 2025 - present}{} \\
+\item Supervising 8 undergraduate research assistants from mechanical engineering and applied math
+\end{rSubsection}
+\begin{rSubsection}{Acceleration Consortium, Principal Investigator and Staff Scientist}{Mar 2025 - Dec 2025}{} \\
+\item Supervised 8 students as lab liaisons for research projects (e.g., liquid-liquid extraction, drug discovery)
+\end{rSubsection}
+\begin{rSubsection}{Acceleration Consortium, Director of Training and Programs}{Jun 2023 - Mar 2025}{} \\
+\item Supervised 12 staff on training \& research projects (e.g., course dev., electrolysis, Bayesian opt.)
+\item Mentored two visiting Ph.D. MSE researchers in the \href{https://ac-training-lab.readthedocs.io/}{AC Dev Lab} (cumulative 10 weeks, full-time)
+\item Led the development of course content, workshops, and an in-person training facility
+\item Solo-organized the \href{https://ac-bo-hackathon.github.io/}{AC BO Hackathon} comprising 120 participants, 62 organizations, and 14 countries
+\item Spearheaded the \href{https://accelerated-discovery.org}{Accelerated Discovery forum} (31k page views, 270 users, \& 72 discussions in 8 months)
+\item Organized scientific technical content for Accelerate 2023 (60 speakers, 100 posters, 350 attendees)
+\item Organized nine \href{https://youtu.be/IVaWl2tL06c?si=DYrhZP6uvK5srQ58}{workshops} for data science, robotics, and software development topics
+\item Leading a community-curated \href{https://github.com/AccelerationConsortium/awesome-self-driving-labs}{set of resources} for autonomous experiments (126 GitHub stars)
+% \item Delivering industry workshops and technical advising to industry partners
+\end{rSubsection}
+\begin{rSubsection}{Review of low-cost self-driving laboratories}{July 2022 - Feb 2024}{} \NLS
+\item Led a \href{https://doi.org/10.1039/D3DD00223C}{review paper for low-cost self-driving labs} with 12 co-authors
+\end{rSubsection}
+\begin{rSubsection}{Generative Modeling for Crystal Structures}{Jun 2022 - Jun 2023}{} \\
+\item Led a team of four scientists/engineers in developing a tool for generative modeling of crystal structures
+% \item Supervision, project administration, conceptualization, and division of labor
+\end{rSubsection}
+\begin{rSubsection}{Data-driven materials discovery and synthesis}{Sep 2020 - Feb 2021}{} \NLS
+\item Led a team of three data scientists in creating a corpus of validated materials discovery articles
+\item Resulted in accepted publication in \textit{Comprehensive Inorganic Chemistry III}
+\end{rSubsection}
+\begin{rSubsection}{Five degree-of-freedom hydrogen permeation measurements}{Aug 2020 - Feb 2021}{} \\
+\item Led a team of three eng. students towards creating an experimental grain boundary $\mathrm{H}_2$ diffusion model
+\end{rSubsection}
+\begin{rSubsection}{Mentorships}{Aug 2020 - present}{} \\
+\item \textit{University of Utah}: Mentored grad, undergrad, and secondary students (accepted to Stanford, Yale) \smallskip
+\item \textit{Brigham Young University}: Mentored two students (wetlab, software skills, career advisement)
+\end{rSubsection}
+\end{rSection}
+
+%-----------------------------
+% TEACHING EXPERIENCE
+%-----------------------------
+\Needspace{10\baselineskip} % Adjust the space needed accordingly
+\begin{rSection}{Teaching Experience}
+
+\begin{rSubsection}{Brigham Young University (Mech. Eng.), Assistant Professor}{Dec 2025 - present}{} \\
+\item Instructor for Introduction to Materials Science
+\end{rSubsection}
+
+\begin{rSubsection}{Director of Training and Programs, Acceleration Consortium}{Jun 2023 - Mar 2025}{} \\
+\item Delivered 5000 person hours of training content to 700 unique individuals across 20 events
+\item Developed 200 hours of software and robotics course content for \href{https://ac-microcourses.readthedocs.io/}{\textit{Autonomous Systems for Discovery}}
+\item Built the \href{https://ac-training-lab.readthedocs.io/}{AC Dev Lab}, a teaching, prototyping, and research facility for self-driving labs
+\item Organized and delivered nine \href{https://youtu.be/IVaWl2tL06c?si=DYrhZP6uvK5srQ58}{workshops} for data science, robotics, and software development topics
+\end{rSubsection}
+\begin{rSubsection}{Instructor, Intro to Statistics for Engineers, University of Utah}{Aug 2021 - Dec 2021}{} \\
+\item  Instructed 37 undergraduate students in probability density functions, regression, etc.
+\item Conducted guided coding tutorials in Python and the Wolfram language using statistical functions
+\end{rSubsection}
+\begin{rSubsection}{Teaching Assistant, Intro to Materials Science, University of Utah}{Aug 2021 - Dec 2021}{} \\
+\item Assisted 22 first-year graduate students in understanding materials science concepts
+\end{rSubsection}
+\begin{rSubsection}{Teaching Assistant, Experimental Physics Lab, BYU}{Jun 2017 - Aug 2017}{} \\
+\item Assisted students in appreciating/learning physics via magnetism, electricity, and optics experiments
+\end{rSubsection}
+\begin{rSubsection}{Teaching Assistant, Physics Tutorial Lab, BYU}{Aug 2017 - Dec 2017}{} \\
+\item Assisted students with physics problems through fundamental theory and effective questions
+\end{rSubsection}
+\end{rSection}
+
+\Needspace{10\baselineskip}
+\begin{rSection}{Publications}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{m{15cm} m{1.3cm}}
+% 2026
+{\printpublication{cluff_quantifying_2026}} & {\em \hfill 2026} \\
+% 2025 preprints
+{\printpublication{sayeed_honegumi_2025}} & {\em \hfill 2025} \\
+{\printpublication{tang_multitask_2025}} & {\em \hfill 2025} \\
+{\printpublication{baird_bayesian_2025}} & {\em \hfill 2025} \\
+{\printpublication{pelkie_democratizing_2025}} & {\em \hfill 2025} \\
+{\printpublication{bairdHonegumiInterfaceAccelerating2025}} & {\em \hfill 2025} \\
+% 2024
+{\printpublication{tomSelfDrivingLaboratoriesChemistry2024}} & {\em \hfill 2024} \\
+{\printpublication{bairdMatbenchgenmetricsPythonLibrary2024}} & {\em \hfill 2024} \\
+{\printpublication{loReviewLowcostSelfdriving2024}} & {\em \hfill 2024} \\
+{\printpublication{sayeedNLPMeetsMaterials2024}} & {\em \hfill 2024} \\
+{\printpublication{alversonGenerativeAdversarialNetworks2024}} & {\em \hfill 2024} \\
+% 2023
+{\printpublication{seegmillerDiscoveringChemicallyNovel2023}} & {\em \hfill 2023} \\
+{\printpublication{bairdBuildingHelloWorld2023}} & {\em \hfill 2023} \\
+{\printpublication{bairdCompactnessMattersImproving2023a}} & {\em \hfill 2023} \\
+{\printpublication{bairdMaterialsScienceOptimization2023}} & {\em \hfill 2023} \\
+{\printpublication{baird_materials_2023a}} & {\em \hfill 2023} \\
+{\printpublication{sayeedStructureFeatureVectors2023}} & {\em \hfill 2023} \\
+% 2022
+{\printpublication{bairdWhatMinimalWorking2022}} & {\em \hfill 2022} \\
+{\printpublication{bairdXtal2pngPythonPackage2022}} & {\em \hfill 2022} \\
+{\printpublication{bairdHighdimensionalBayesianOptimization2022a}} & {\em \hfill 2022} \\
+{\printpublication{bairdComputationallyEfficientBarycentric2022}} & {\em \hfill 2022} \\
+{\printpublication{bairdDiSCoVeRMaterialsDiscovery2022}} & {\em \hfill 2022} \\
+{\printpublication{bairdHighthroughputCalculationAtomic2022}} & {\em \hfill 2022} \\
+{\printpublication{bairdDatadrivenMaterialsDiscovery2022}} & {\em \hfill 2022} \\
+{\printpublication{titiriciSustainableMaterialsRoadmap2022}} & {\em \hfill 2022} \\
+% 2021 and earlier
+{\printpublication{bairdQuantitativeCartographyGrain2021}} & {\em \hfill 2021} \\
+{\printpublication{bairdFiveDegreeoffreedomProperty2021}} & {\em \hfill 2021} \\
+{\printpublication{fullwoodDeterminingGrainBoundary2021}} & {\em \hfill 2021} \\
+{\printpublication{johnsonInferenceUncertaintyPropagation2021}} & {\em \hfill 2021} \\
+{\printpublication{snowGrainBoundaryStructureproperty2021}} & {\em \hfill 2021} \\
+{\printpublication{kurniawanGrainBoundaryStructure2019}} & {\em \hfill 2019} \\
+{\printpublication{barrettCarbonMonolithScaffolding2017}} & {\em \hfill 2017} \\
+\end{longtable}
+\end{rSection}
+
+\Needspace{10\baselineskip}
+\begin{rSection}{Presentations}
+\renewcommand{\arraystretch}{1.5}
+\begin{longtable}{m{13cm} m{3.5cm}}
+
+{\textit{An Autonomous Vertical Cloud Lab for Additively Manufactured Aerospace Alloys}. Materials Research Society (MRS) Fall Meeting, 2025. Oral Presentation.} & {\em \hfill Dec 2025 \par \hfill Boston, MA} \\
+{\textit{SDL101: Self-Driving Lab Fundamentals and Practical Implementation}. Accelerate Conference, 2025. Training Workshop (2.5 hr).} & {\em \hfill Aug 2025 \par \hfill Toronto, ON} \\
+{\textit{Autonomous Cloud Experimentation Demos at the AC Training Lab}. Acceleration Consortium Research Symposium, University of Toronto, 2024. Oral Presentation.} & {\em \hfill Oct 2024 \par \hfill Toronto, ON} \\
+{\textit{Teaching AI and Automation with Physical Hardware}. Accelerate Conference, University of British Columbia, 2024. Oral Presentation.} & {\em \hfill Aug 2024 \par \hfill Toronto, ON} \\
+{\textit{So, you want to build a self-driving lab?} Accelerate Conference, University of British Columbia, 2024. Oral Presentation.} & {\em \hfill Aug 2024 \par \hfill Toronto, ON} \\
+{\textit{So, you want to build a self-driving lab?} AC Undergraduate Professional Development Seminars, University of Toronto, 2024. Oral Presentation.} & {\em \hfill Jun 2024 \par \hfill Toronto, ON} \\
+{\textit{A Gentle Introduction to Bayesian Optimization}. Materials Science \& Engineering, North Carolina State University, 2024. Invited Guest Lecture.} & {\em \hfill Apr 2024 \par \hfill (virtual)} \\
+{\textit{A Gentle Introduction to Bayesian Optimization}. Computer Science, University of Chicago, 2024. Invited Guest Lecture.} & {\em \hfill Mar 2024 \par \hfill (virtual)} \\
+{\textit{Microcredentials Courses and Training Facility hosted by the Acceleration Consortium}. German-Canadian Materials Acceleration Centre (GCMAC) Summer School, 2023. Oral Presentation.} & {\em \hfill Sep 2023 \par \hfill Karlsruhe, Germany} \\
+{\textit{Real-world Bayesian Optimization in Materials Science}. German-Canadian Materials Acceleration Centre Summer School, 2023. Training Workshop (1.5 hr).} & {\em \hfill Sep 2023 \par \hfill Karlsruhe, Germany} \\
+{\textit{Review of Low-cost SDLs: The Frugal Twin Concept}. Accelerate Conference, 2023. Oral Presentation.} & {\em \hfill Aug 2023 \par \hfill Toronto, ON} \\
+{\textit{SDL Software Best Practices}. Accelerate Conference, 2023. Training Workshop (1.5 hr).} & {\em \hfill Aug 2023 \par \hfill Toronto, ON} \\
+{\textit{\href{https://youtu.be/IVaWl2tL06c?si=SsoNCR_Ny3tuPvFX}{Real-world Bayesian Optimization}}. Accelerate Conference, 2023. Training workshop (1.5 hr).} & {\em \hfill Aug 2023 \par \hfill Toronto, ON} \\
+{\textit{\href{https://youtu.be/LxIiWSfkhCE?si=9wVu4S7Ar8DhtuJ0&t=163}{Data-driven Materials Discovery: Novel Discovery, Bayesian Optimization, and Self-driving Labs}}. University of Utah Dissertation Defense, 2023. Virtual.} & {\em \hfill Aug 2023 \par \hfill Virtual} \\
+{\textit{Compactness Matters: Improving Bayesian Optimization Efficiency of Materials Formulations through Invariant Search Spaces}. 152nd Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2023. Oral Presentation.} & {\em \hfill Mar 2023 \par \hfill San Diego, CA} \\
+{\textit{What is a minimal working example for a self-driving laboratory?} 152nd Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2023. Oral Presentation.} & {\em \hfill Mar 2023 \par \hfill San Diego, CA} \\
+{\textit{Integrating Simulations and Experiments into a Materials Discovery Campaign: Case Studies in Multi-Fidelity Bayesian Optimization}. 152nd Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2023. Oral Presentation.} & {\em \hfill Mar 2023 \par \hfill San Diego, CA} \\
+{\textit{Inverse design through generative materials informatics via xtal2png}. 152nd Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2023. Oral Presentation.} & {\em \hfill Mar 2023 \par \hfill San Diego, CA} \\
+{\textit{How Should You Select an Algorithm for a Materials Discovery Campaign?} 152nd Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2023. Oral Presentation.} & {\em \hfill Mar 2023 \par \hfill San Diego, CA} \\
+{\textit{How Do You Optimize Your Parameters? Realistically Complex Hyperparameter Optimization of 23 Parameters of a Black Box Function over a Realistically Low Budget of 100 Iterations}. 152nd Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2023. Poster.} & {\em \hfill Mar 2023 \par \hfill San Diego, CA} \\
+{\textit{Data-driven Materials Discovery}. Materials Science \& Engineering Graduate Seminar, 2023. Oral Presentation.} & {\em \hfill Mar 2023 \par \hfill San Diego, CA} \\
+{\textit{Adaptive Experimentation for Science: A More Efficient Version of Design of Experiments}. 18th IEEE International Conference on e-Science, 2022. Virtual Tutorial (3 hr).} & {\em \hfill Oct 2022 \par \hfill Salt Lake City, UT} \\
+{\textit{\href{https://youtu.be/LNkRjByzeZg?si=04bLIokgA4k_HTFB&t=33}{What is a minimal working example for self-driving laboratories?}}. Accelerate Conference, 2022. Invited Talk.} & {\em \hfill Aug 2022 \par \hfill Salt Lake City, UT} \\
+{\textit{Materials Properties Prediction}. Machine Learning for Materials Hard and Soft, Erwin Schrödinger International Institute for Mathematics and Physics (ESI), University of Vienna, 2022. Oral Presentation/Tutorial (1.5 hr).} & {\em \hfill Jul 2022 \par \hfill Vienna, Austria} \\
+{\textit{Ensemble of State-of-the-art Property Prediction Machine Learning Algorithms}. 151st Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2022. Oral Presentation.} & {\em \hfill Mar 2022 \par \hfill Anaheim, CA} \\
+{\textit{5D Grain Boundary Energy Landscapes, Paths and Correlations from Bayesian Inference}. 151st Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2022. Oral Presentation.} & {\em \hfill Mar 2022 \par \hfill Anaheim, CA} \\
+{\textit{Bayesian Inference and Uncertainty Quantification of Grain Boundary Properties}. 150th Annual Meeting \& Exhibition of The Minerals, Metals \& Materials Society (TMS), 2021. Oral Presentation.} & {\em \hfill Mar 2021 \par \hfill Virtual} \\
+{\textit{Backtracking 5DOF Grain Boundary Hydrogen Diffusivities in High-Purity Nickel: Experimentation, Localization Techniques,
+and Inverse Problem Theory}. Materials Science \& Technology (MS\&T) 2019. Oral Presentation.} & {\em \hfill Oct 2019 \par \hfill Portland, OR} \\
+{\textit{Technical Criteria of Commercially Viable Batteries}. 2018 Annual Meeting of International Coalition for Energy Storage and Innovation (ICESI). Oral Presentation.} & {\em \hfill Jan 2018 \par \hfill Dalian, China} \\
+{\textit{Modified Graphene for Lithium-Air Battery Cathode}. NASA Langley Research Center. Advanced Materials and Processing Branch. Oral Presentation.} & {\em \hfill May 2017 \par \hfill Hampton, VA} \\
+{\textit{Carbon Nanotube Interlayer for High Coulombic Efficiency Lithium-Sulfur Batteries without Unsafe Additives}. Materials Science \& Technology (MS\&T) 2016 Poster Session.} & {\em \hfill Oct 2016 \par \hfill Salt Lake City, UT} \\
+{\textit{High Energy Lithium-Sulfur Batteries: An Application of Carbon Nanotubes}. Harold B. Lee Library Student Research Poster Competition.} & {\em \hfill Oct 2016 \par \hfill Provo, UT} \\
+\end{longtable}
+\end{rSection}
+
+\Needspace{10\baselineskip}
+\begin{rSection}{Community Contributions}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{m{13.9cm} m{2.3cm}}
+{\href{https://github.com/sgbaird}{17k Code Contributions} (15k commits, 1.5k issues, 913 pull requests, 151 discussions)} & {\em \hfill 2018-2024} \\
+{\href{https://github.com/sgbaird?tab=stars}{GitHub starred lists} comprising 1.7k repositories across 32 categories} & {\em \hfill 2018-2024} \\
+{\href{https://github.com/AccelerationConsortium}{Creation of Acceleration Consortium GitHub Organization} (external \& internal use)} & {\em \hfill 2023-2024} \\
+{Guest Editor for \textit{npj Computational Materials} collection: \textit{Self-driving Labs for Chemistry and Materials Science}} & {\em \hfill 2024-present} \\
+{Journal Reviewer: \textit{npj Computational Materials}, \textit{Nature Communications}, \textit{Digital Discovery}, \textit{Computational Materials Science}, \textit{Journal of Open Source Software}} & {\em \hfill 2020-present} \\
+{Review Panelist: National Science Foundation (NSF) TIP Directorate} & {\em \hfill 2026} \\
+\end{tabular}
+\end{rSection}
+
+\Needspace{10\baselineskip}
+\begin{rSection}{Grants}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{m{14.2cm} m{2.1cm}}
+{NSF EAGER SSMCDAT2023 (\textbf{US\$200,000}): Natural Language Processing and Large Language Models for Automated Extraction of Materials Chemistry Data from Scientific Literature} & {\em \hfill 2023-2025} \\
+Fehrmann Materials GmbH Research Contract (\textbf{US\$34,000}): Joint strength and ductility machine learning representations for aluminum alloys & {\em \hfill 2020} \\
+BYU ORCA grant (US\$1,500): Cell-level Comparisons between Literature and Industry for Lithium-Sulfur, Lithium-Ion, Lithium-Oxygen, and other Next-Gen Batteries & {\em \hfill 2017-2018} \\
+BYU Kennedy Center travel grant (US\$1,000): ICESI 2018 in Dalian, China & {\em \hfill 2018} \\
+\end{tabular}
+\end{rSection}
+
+\Needspace{10\baselineskip}
+\begin{rSection}{Awards}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{m{14.2cm} m{2.1cm}}
+{Outstanding Ph.D. Student, Materials Science \& Engineering, University of Utah} & {\em \hfill 2023} \\
+{"Call for Papers" winner --- invited talk and full travel sponsorship, Accelerate '22} & {\em \hfill 2022} \\
+{Graduate Student Recognition Award, Mech. Eng., Brigham Young University} & {\em \hfill 2021} \\
+{Gregory B. McKenna Fellowship, Materials Science \& Engineering, University of Utah} & {\em \hfill 2020-2023} \\
+\end{tabular}
+\end{rSection}
+
+\Needspace{10\baselineskip}
+\begin{rSection}{Skills}
+\begin{longtable}{ l l l }
+{\bf Software Tools} \\
+\hline
+Python & Mathematica & MATLAB \\
+LaTeX & git/GitHub & Slurm \\
+Command line interfaces & GitHub Actions & Unit testing (pytest) \\
+Visual Studio Code & Optimization (Bayesian, genetic) & Fusion 360 \\
+Ax Platform (Bayesian opt.) & Sphinx documentation & ReadtheDocs \\
+Prefect (workflow orchestration) & Streamlit web apps & Gradio web apps \\
+Jinja2 & Anaconda packaging & PyPI packaging \\
+Hugging Face & paho-mqtt (MQTT) & MicroPython \\
+Bash & Linux & Jupyter Notebooks \\
+OpenCV (Computer Vision) & AprilTag (fiducial markers) & GitHub Codespaces \\
+GitHub Classroom & NumPy & SciPy \\
+scikit-learn & Matplotlib & Plotly \\
+MongoDB Atlas (database) & Miniconda & Python debugging \\
+Markdown & PyScaffold (project templates) & AWS Lambda \\
+PreForm (SLA printing) & Bambu Studio (FDM printing) & Discourse \\
+RayTune & Numba & PyScript \\
+\\
+{\bf Synthesis} & &\\
+\hline
+Furnace design \& operation & high-vacuum design & Photolithography \\
+CVD operation \& maintenance & LPCVD operation \& maintenance & Thermal evaporation \\
+Glovebox operation \& maintenance & Picosecond laser machining & Optics design \\
+Etching (chemical, plasma) & Polishing (electro/mechanical) & FIB micro-machining \\
+Automated liquid handling & Automated solid dosing & Six-axis robotics
+\\
+\\
+{\bf Characterization} & & \\
+\hline
+Microscopy (optical, SEM) & EBSD & EDS \\
+XRD & Battery cycling & Laser interferometry \\ Raman spectroscopy & Electrochemical permeation & FTIR spectroscopy \\
+\end{longtable}
+\end{rSection}
+
+\end{document}
+
+%\begin{rSection}{Research Interests}
+%\end{rSection}
+
+%\begin{rSection}{Coursework}
+
+%\end{rSection}
