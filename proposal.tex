@@ -38,7 +38,7 @@
 We propose a two-year \textbf{experiment-driven} mentored research program in
 which 2 undergraduate students design, fabricate, and test \textbf{multi-material
 3D-printed tensegrity-inspired structures} for energy absorption.  Tensegrity
-(tensional integrity) structures---assemblies of rigid compression members
+structures---assemblies of rigid compression members
 suspended within a continuous network of tension members---exhibit remarkable
 strength-to-weight ratios and tunable mechanical responses, making them
 attractive for protective equipment, packaging, and aerospace applications
@@ -46,46 +46,46 @@ attractive for protective equipment, packaging, and aerospace applications
 Recent work has shown that \emph{tensegrity-inspired} architectures can be
 directly 3D-printed and retain desirable load-limiting behavior under impact
 \citep{pajunen2019design}.  Because multimaterial FDM TPU elements are not
-ideal cables, we target tensegrity-inspired architectures that reproduce key
+ideal cables, we target architectures that reproduce key
 tensegrity-like mechanical responses while remaining manufacturable; notably,
 TPU's rate-dependent damping is an \emph{asset} for energy absorption rather
 than merely a deviation from idealized behavior.
 
+% --- Overview figure (right-inset, floatable) ---
+\begin{wrapfigure}{R}{0.62\textwidth}
+\centering
+\vspace{-1em}
+\includegraphics[width=0.61\textwidth]{figures/overview-updated.png}
+\captionsetup{font=small}
+\caption{Research framework overview. Students design, print, and test tensegrity-inspired specimens in a closed-loop Bayesian optimization cycle that recommends the next designs to fabricate. Performance is evaluated via quasi-static compression and drop-weight impact tests.}
+\label{fig:overview}
+\end{wrapfigure}
+
 Multi-material 3D printing with PLA (rigid struts) and TPU (flexible tension
-elements) enables rapid fabrication of diverse tensegrity-inspired geometries on
-a single print platform \citep{ye2023multimaterial, khatri2024energy}.  Rather
-than relying on costly simulation campaigns, we leverage this manufacturing
-agility to pursue a \textbf{high-throughput experimental approach}: students
+elements) enables rapid fabrication of diverse tensegrity-inspired geometries
+\citep{ye2023multimaterial, khatri2024energy}.  Rather
+than relying on costly simulations, we leverage this manufacturing
+agility for a \textbf{high-throughput experimental approach}: students
 will print, test, and iterate on many candidate designs---we estimate 50--100+
 unique specimens over two years---generating high-quality physical data
 directly.  \textbf{Bayesian optimization} (BO) will guide the experimental
-search, selecting the most informative designs to print and test next based on
+search, selecting the most informative designs to test next based on
 prior results \citep{shahriari2016taking, frazier2018tutorial}.  This
-experiment-first strategy produces reliable, real-world performance data while
-keeping the project accessible to undergraduates at all levels---students can
-contribute meaningfully through hands-on printing and testing without requiring
+experiment-first strategy produces reliable performance data while
+keeping the project accessible to undergraduates where students can
+contribute meaningfully through hands-on printing and testing without
 advanced modeling expertise.
 
-\textbf{A primary objective of this project is to provide a rich,
+\textbf{A primary objective is to provide a rich,
 interdisciplinary mentored research experience for undergraduates.}  Through
-weekly one-on-one mentoring, structured lab meetings, and a progressive
-scaffolding model that moves students from guided tasks to independent research
-ownership, each student will gain hands-on skills in CAD, multi-material 3D
-printing, mechanical testing, and data-driven optimization. Each student will be responsible for defining design variables, executing experimental or computational campaigns, analyzing data, presenting results, and drafting manuscript sections.
+weekly one-on-one mentoring, structured lab meetings, and progressive
+scaffolding from guided tasks to independent research
+ownership, each student will gain skills in CAD, multi-material 3D
+printing, mechanical testing, and data-driven optimization. Each student will define design variables, execute experimental campaigns, analyze data, present results, and draft manuscript sections.
 
 % =============================================================================
 \section{Background}
 % =============================================================================
-
-% --- Overview figure (right-inset, floatable) ---
-\begin{wrapfigure}[12]{R}{0.65\textwidth}
-\centering
-\vspace{-1.2em}
-\includegraphics[width=0.63\textwidth]{figures/overview-updated.png}
-\captionsetup{font=small}
-\caption{Research framework overview.}
-\label{fig:overview}
-\end{wrapfigure}
 
 \textbf{Tensegrity structures} consist of isolated compression members (struts)
 held in equilibrium by a continuous network of tension members
@@ -98,29 +98,23 @@ Pajunen et al.\ \citep{pajunen2019design} demonstrated that
 load-limiting plateaus under drop-weight impact.
 Multi-material rigid--soft printing
 \citep{ye2023multimaterial, khatri2024energy} has shown that PLA--TPU
-combinations printed on a single FDM platform achieve tunable energy
-absorption.  Ye et al.\ demonstrated a wrapping-based strategy (rigid cores
+combinations on a single FDM platform achieve tunable energy
+absorption via a wrapping-based strategy (rigid cores
 encapsulated by continuous soft skins) that prevents interface delamination and
 enables cyclic durability---a critical enabler for our fabrication approach.
-These manufacturing advances mean that undergraduates can design, print, and
-test many configurations in rapid succession, making 3D printing the natural
-engine of experimental exploration.
 
 \textbf{Bayesian optimization} (BO) is a sequential, model-based strategy for
 optimizing expensive black-box functions using a Gaussian process surrogate
 \citep{shahriari2016taking, frazier2018tutorial}.  BO has driven breakthroughs
 across domains---from tuning hyperparameters of AlphaGo
 \citep{silver2016mastering} to optimizing sustainable concrete formulations
-\citep{ament2023sustainable} and discovering state-of-the-art organic laser
+\citep{ament2023sustainable} and discovering organic laser
 emitters \citep{striethkalthoff2024delocalized}---and has been applied to
 metamaterial design \citep{mo2023accelerated}.  In our framework, BO operates
 \emph{directly on experimental data}: each round of printing and testing
-provides observations that update a Gaussian process surrogate, which then
-recommends the next set of designs to fabricate.  This closed-loop
-print--test--optimize cycle eliminates the need for simulation as a prerequisite
-and keeps the workflow centered on physical experimentation---an approach that
-is both scientifically rigorous and naturally suited to mentoring undergraduates
-at all experience levels.
+updates a Gaussian process surrogate, which recommends the next designs to fabricate.  This closed-loop
+print--test--optimize cycle eliminates the need for simulation and
+keeps the workflow centered on physical experimentation---naturally suited to mentoring undergraduates.
 
 % =============================================================================
 \section{Student Research Project~1: Design, Fabrication, and Testing}
@@ -133,29 +127,22 @@ this project makes it an ideal entry point for students early in their studies.
 \subsection*{Scope and Deliverables}
 
 This student will lead the design-and-build cycle that forms the experimental
-backbone of the project.  Working under weekly one-on-one mentoring from
-Prof.~Hill, the student will begin by \textbf{parameterizing a family of
+backbone of the project.  Working under weekly mentoring from
+Prof.~Hill, the student will \textbf{parameterize a family of
 tensegrity-inspired unit cells} in CAD (SolidWorks or Fusion~360), defining key
 variables---strut diameter and length (PLA), tension-element cross-section
 (TPU), connectivity topology, and unit-cell tiling---that span the design space.
 Following \citet{ye2023multimaterial}, the designs use a core-wrapping strategy
 (rigid PLA struts encapsulated by continuous TPU skins) to ensure robust
-mechanical interlocking and prevent interface delamination. Because PLA–TPU interfaces are known to exhibit mixed-mode fracture behavior and potential void formation, print parameter validation and interface robustness will be explicitly evaluated during early testing.
+mechanical interlocking. PLA--TPU interface robustness will be validated during early print trials.
 
 The student will then \textbf{fabricate structures} using the department's
-multi-material FDM printer, systematically iterating on print parameters
-(layer height, infill, temperature) to achieve reliable geometries in both PLA
-and TPU.  By printing many candidate designs quickly, the student builds an
-expanding library of tested specimens and develops practical expertise in
-additive manufacturing---a transferable skill valued in both graduate research
-and industry.  The student works closely with Student~2, who tests each
-batch and returns performance data; this tight collaboration teaches both
-students the value of interdisciplinary teamwork and creates natural
-peer-mentoring opportunities as each develops complementary expertise.
-Throughout, Prof.~Baird's master's student serves as a day-to-day co-mentor,
-guiding the student through equipment operation, troubleshooting print failures,
-and interpreting early results, so that learning happens at multiple cadences:
-weekly faculty meetings for strategy and daily peer support for execution.
+multi-material FDM printer, iterating on print parameters
+to achieve reliable geometries.
+The student works closely with Student~2, who tests each
+batch and returns performance data.
+Prof.~Baird's master's student serves as a day-to-day co-mentor,
+guiding equipment operation and troubleshooting.
 
 \textbf{Mentoring outcomes:} The student will develop skills in CAD,
 multi-material additive manufacturing, and systematic experimental design.
@@ -175,25 +162,23 @@ coursework or interest in mechanics of materials or data analysis.
 
 This student will lead physical testing and the Bayesian optimization
 campaign, working under weekly one-on-one mentoring from Prof.~Baird.  The work
-begins with \textbf{conducting experimental testing} on structures fabricated by
-Student~1: quasi-static compaction tests and drop-weight impact tests following
-the protocol of \citet{pajunen2019design}.  Primary metrics include \emph{peak transmitted force}, \emph{specific
-energy absorption} (SEA), and \emph{compaction efficiency}---tangible,
-operationally measurable outcomes well suited to undergraduate research.
+begins with \textbf{experimental testing} on structures fabricated by
+Student~1: quasi-static compaction and drop-weight impact tests following
+\citet{pajunen2019design}.  Primary metrics include \emph{peak transmitted
+force}, \emph{specific energy absorption} (SEA), and \emph{compaction
+efficiency}.
 
-With an initial data set in hand, the student will \textbf{implement a
-single-fidelity Bayesian optimization loop} (BoTorch/Ax) that operates directly
-on experimental measurements.  After each BO iteration the surrogate recommends
+With initial data in hand, the student will \textbf{implement a BO loop}
+(BoTorch/Ax) that operates directly
+on experimental measurements.  After each iteration the surrogate recommends
 the next batch of designs; the student coordinates with Student~1 to print and
-test them, closing the loop.  This closed-loop
-\emph{design--print--test--optimize} cycle teaches the student data-driven
-decision-making in a concrete, physical context.  If time and student interest
-permit, lightweight simulations may be added as an optional low-fidelity data
+test them, closing the loop.  If time permits,
+lightweight simulations may be added as a low-fidelity data
 source to accelerate convergence \citep{mo2023accelerated}, but the campaign
-does not depend on simulation fidelity.
+does not depend on simulation.
 
 Prof.~Baird's master's student provides day-to-day co-mentoring in Python,
-data analysis, and BO implementation, creating a layered mentoring structure.
+data analysis, and BO implementation.
 In Year~2, both students mentor newly recruited undergraduates, reinforcing
 their own understanding while sustaining the research pipeline.
 
@@ -207,70 +192,60 @@ or \textbf{UCUR} and contribute as co-author on a journal manuscript.
 \label{sec:mentoring}
 % =============================================================================
 
-Each student in this program follows a structured path from guided exploration
-to independent research ownership, supported by layered mentoring at every
-stage.  Because the project is centered on hands-on experimentation---designing,
+Each student follows a structured path from guided exploration
+to independent research ownership, supported by layered mentoring.
+Because the project centers on hands-on experimentation---designing,
 printing, and testing physical structures---students engage with tangible
-problems from day one, building confidence and competence through rapid,
-concrete feedback loops.
+problems from day one.
 
 \subsection*{Recruitment}
 
 Students will be recruited from courses in mechanics of materials, machine
 design, kinematics, and compliant mechanisms, targeting sophomores through
 seniors.  The experiment-driven nature of the project lowers the barrier to
-entry: students need not have prior simulation or programming experience,
-broadening the pool of potential mentees.
+entry: students need not have prior simulation or programming experience.
 
 \subsection*{Mentoring Structure}
 
 Students meet individually with Profs.~Hill and Baird each week (30~min) for
 technical guidance and professional development, and participate in weekly lab
-group meetings (1~hr) that include progress updates, student literature
-presentations, and skill-building workshops covering scientific writing,
+group meetings (1~hr) that include progress updates, literature
+presentations, and skill-building workshops on scientific writing,
 presentation skills, and research ethics.  Prof.~Baird's master's student
 serves as a graduate co-mentor, providing day-to-day guidance in 3D printing,
-testing procedures, coding, and data interpretation; this layered model ensures
-timely support while the graduate student develops their own mentoring skills.
+testing, coding, and data interpretation.
 Students begin with structured tasks---replicating known tensegrity
 geometries and running standard test protocols---and progress to independent
-design decisions, culminating in ownership of their research project. Year~1 focuses on technical skill acquisition and guided execution; Year 2 emphasizes independent hypothesis generation, experimental design, and peer mentoring. In
-Year~2, experienced students mentor newly recruited sophomores, reinforcing
-their own knowledge and creating a sustainable pipeline of trained researchers.
+design decisions, culminating in ownership of their research project. Year~1 focuses on skill acquisition and guided execution; Year~2 emphasizes independent hypothesis generation, experimental design, and peer mentoring of newly recruited sophomores.
 
 \subsection*{Student Development Outcomes}
 
-The experiment-driven workflow structures mentoring around concrete milestones:
+Mentoring is structured around concrete milestones:
 a student's first successful multi-material print, first compression test,
-first data set fed into the BO loop.  On the \emph{technical} side, students
-gain experience in experimental mechanics (test design, data acquisition),
-additive manufacturing (CAD, multi-material 3D printing with wrapping
-strategies), and data-driven optimization (Python, Bayesian optimization).
+first data set fed into the BO loop.  \emph{Technical} skills include
+experimental mechanics, additive manufacturing (CAD, multi-material 3D printing),
+and data-driven optimization (Python, Bayesian optimization).
 \emph{Communication} skills develop through lab notebooks, group presentations,
 conference talks, and co-authoring a peer-reviewed manuscript.
 \emph{Professional} development includes project management, data-driven
-decision-making (interpreting optimization recommendations and selecting next
-experiments), interdisciplinary collaboration, and preparation for graduate
+decision-making, interdisciplinary collaboration, and preparation for graduate
 school or industry careers.
 
 % =============================================================================
 \section{Expected Research Outcomes}
 % =============================================================================
 
-The primary outcome of this MRG is the \textbf{training of 2 undergraduate
+The primary outcome is the \textbf{training of 2 undergraduate
 researchers} with hands-on experience in multi-material 3D printing, mechanical
-testing, and data-driven optimization, prepared for graduate study or
-engineering careers. By completion, each undergraduate is expected to have
+testing, and data-driven optimization. Each undergraduate is expected to have
 participated in the design and testing of approximately 100+ tensegrity
-specimens, contributed to at least one \textbf{conference presentation} at UCUR
-and ASME IDETC and contributed as a co-author on a peer-reviewed manuscript
+specimens, contributed to \textbf{conference presentations} at UCUR
+and ASME IDETC, and co-authored a peer-reviewed manuscript
 submitted to the \emph{ASME Journal of Mechanical Design} or \emph{Smart
-Materials and Structures}. By centering the project on experimentation, students
-will each complete dozens of design--print--test cycles over two years, building
-deep practical competence through iterative, mentor-guided problem solving. The
+Materials and Structures}. The
 experimental data set---spanning a wide range of tensegrity-inspired geometries
 with measured energy-absorption performance---will be published on GitHub
-alongside optimization scripts for reproducibility.  In Year~2, students will
+for reproducibility.  In Year~2, students will
 mentor incoming undergraduates, developing leadership skills and creating a
 self-sustaining research group.
 
@@ -281,40 +256,29 @@ self-sustaining research group.
 This project advances architected material design for energy absorption with
 applications in \textbf{protective equipment} (helmets, body armor),
 \textbf{packaging} (shock-absorbing inserts), and \textbf{aerospace}
-(lightweight impact-resistant structures).  By generating a large,
-systematically collected experimental data set of tensegrity-inspired
-structures, we provide the community with a resource for benchmarking and
-further optimization.  The experiment-driven Bayesian optimization framework
-demonstrates that undergraduates can meaningfully drive a closed-loop
+(lightweight impact-resistant structures).  The systematically collected
+experimental data set provides the community with a resource for benchmarking
+and further optimization.  The experiment-driven BO framework
+demonstrates that undergraduates can drive a closed-loop
 experimental campaign, establishing a replicable mentoring model for
-data-driven research in other metamaterial classes.  The layered
-mentoring structure---faculty, graduate co-mentor, and peer
-mentoring---can be adopted by other research groups seeking to involve
-undergraduates in hands-on engineering research.
-Open-source dissemination of data, code, and tested designs extends
-impact beyond BYU and enables other groups---including primarily
-undergraduate institutions---to build on this work.
+data-driven research.  Open-source dissemination of data, code, and tested designs extends
+impact beyond BYU.
 
 % =============================================================================
 \section{Timeline}
 % =============================================================================
 
 The project spans two academic years plus two summers (Table~\ref{tab:timeline}).
-\textbf{Year~1} focuses on experimental foundations: student recruitment and
-onboarding in Fall, followed by literature review, tensegrity parameterization
-in CAD, and initial multi-material print trials through Winter.  The first
-Summer term is a critical period of full-time research with intensive
-mentoring---faculty increase meeting frequency to twice weekly, and the
-graduate co-mentor works alongside students daily.  Students ramp up
-fabrication throughput, run systematic compression and drop-weight impact
-tests, and begin feeding results into the Bayesian optimization loop.
+\textbf{Year~1} focuses on experimental foundations: recruitment and
+onboarding in Fall, literature review and CAD parameterization through Winter, and a Summer term of full-time research with intensive
+mentoring where students ramp up
+fabrication, run systematic compression and impact
+tests, and begin feeding results into the BO loop.
 \textbf{Year~2} shifts to optimization and dissemination: BO-guided
-experimental campaigns continue through Fall and Winter, with students printing
-and testing progressively refined designs.  Students present findings at UCUR
-and ASME IDETC in Year~2, and a journal manuscript is prepared during Winter
-and Summer.  Throughout, experienced students mentor newly recruited
-undergraduates, reinforcing their own skills and ensuring continuity of
-expertise.
+campaigns continue through Fall and Winter with progressively refined designs.  Students present at UCUR
+and ASME IDETC, and a journal manuscript is prepared during Winter
+and Summer.  Experienced students mentor newly recruited
+undergraduates throughout Year~2.
 
 \begin{table}[ht]
 \centering
