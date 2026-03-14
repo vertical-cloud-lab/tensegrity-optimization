@@ -1,4 +1,7 @@
 \documentclass[11pt]{article}
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL proposal-old.tex   Fri Mar 13 13:28:14 2026
+%DIF ADD proposal.tex       Fri Mar 13 13:27:05 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -26,6 +29,95 @@
 \newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
 
 % =============================================================================
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFaddtex}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdeltex}[1]{{\protect\color{red}\sout{#1}}} %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+\providecommand{\DIFmodbegin}{} %DIF PREAMBLE
+\providecommand{\DIFmodend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF HYPERREF PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}} %DIF PREAMBLE
+\providecommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\providecommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\providecommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF AMSMATHULEM PREAMBLE %DIF PREAMBLE
+\makeatletter %DIF PREAMBLE
+\let\sout@orig\sout %DIF PREAMBLE
+\renewcommand{\sout}[1]{\ifmmode\text{\sout@orig{\ensuremath{#1}}}\else\sout@orig{#1}\fi} %DIF PREAMBLE
+\makeatother %DIF PREAMBLE
+%DIF COLORLISTINGS PREAMBLE %DIF PREAMBLE
+\RequirePackage{listings} %DIF PREAMBLE
+\RequirePackage{color} %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
+%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
+  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
+	language=DIFcode, %DIF PREAMBLE
+	basicstyle=\ttfamily, %DIF PREAMBLE
+	columns=fullflexible, %DIF PREAMBLE
+	keepspaces=true %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim}[1][]{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim*}[1][]{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
+\lstset{extendedchars=\true,inputencoding=utf8}
+
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
 \begin{document}
 
 % --- Cover Page (does not count toward 5-page limit) ---
@@ -42,7 +134,11 @@ which 2 undergraduate students design, fabricate, and test \textbf{multi-materia
 suspended within a continuous network of tension members---exhibit remarkable
 strength-to-weight ratios and tunable mechanical responses, making them
 attractive for protective equipment, packaging, and aerospace applications
-\citep{skelton2009tensegrity}.
+\DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{skelton2009tensegrity, fraternali2015tensegrity}}\hskip0pt%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{skelton2009tensegrity}}\hskip0pt%DIFAUXCMD
+}\DIFaddend .
 Recent work has shown that \emph{tensegrity-inspired} architectures can be
 directly 3D-printed and retain desirable load-limiting behavior under impact
 \citep{pajunen2019design}.  Because multimaterial FDM TPU elements are not
@@ -78,10 +174,10 @@ printing, mechanical testing, and data-driven optimization. Each student will be
 % =============================================================================
 
 % --- Overview figure (right-inset, floatable) ---
-\begin{wrapfigure}[12]{R}{0.65\textwidth}
+\begin{wrapfigure}[12]{R}{0.4\textwidth}
 \centering
 \vspace{-1.2em}
-\includegraphics[width=0.63\textwidth]{figures/overview-updated.png}
+\includegraphics[width=0.38\textwidth]{figures/overview.png}
 \captionsetup{font=small}
 \caption{Research framework overview.}
 \label{fig:overview}
@@ -92,7 +188,11 @@ held in equilibrium by a continuous network of tension members
 \citep{skelton2009tensegrity, sultan2009tensegrity}.  Their defining
 characteristic---no two rigid bars touch---yields lightweight assemblies with
 surprising load-bearing capacity and tunable nonlinear responses
-\citep{amendola2014experimental, zhang2018tensegrity}.
+\DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{amendola2014experimental, zhang2015tensegrity}}\hskip0pt%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{amendola2014experimental, zhang2018tensegrity}}\hskip0pt%DIFAUXCMD
+}\DIFaddend .
 Pajunen et al.\ \citep{pajunen2019design} demonstrated that
 \emph{tensegrity-inspired} unit cells can be directly 3D-printed and exhibit
 load-limiting plateaus under drop-weight impact.
@@ -113,7 +213,11 @@ across domains---from tuning hyperparameters of AlphaGo
 \citep{silver2016mastering} to optimizing sustainable concrete formulations
 \citep{ament2023sustainable} and discovering state-of-the-art organic laser
 emitters \citep{striethkalthoff2024delocalized}---and has been applied to
-metamaterial design \citep{mo2023accelerated}.  In our framework, BO operates
+metamaterial design \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{wang2022bayesian}}\hskip0pt%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{mo2023accelerated}}\hskip0pt%DIFAUXCMD
+}\DIFaddend .  In our framework, BO operates
 \emph{directly on experimental data}: each round of printing and testing
 provides observations that update a Gaussian process surrogate, which then
 recommends the next set of designs to fabricate.  This closed-loop
@@ -140,7 +244,7 @@ variables---strut diameter and length (PLA), tension-element cross-section
 (TPU), connectivity topology, and unit-cell tiling---that span the design space.
 Following \citet{ye2023multimaterial}, the designs use a core-wrapping strategy
 (rigid PLA struts encapsulated by continuous TPU skins) to ensure robust
-mechanical interlocking and prevent interface delamination. Because PLA–TPU interfaces are known to exhibit mixed-mode fracture behavior and potential void formation, print parameter validation and interface robustness will be explicitly evaluated during early testing.
+mechanical interlocking and prevent interface delamination. Because PLA\DIFdelbegin \DIFdel{???}\DIFdelend \DIFaddbegin \DIFadd{???}\DIFaddend TPU interfaces are known to exhibit mixed-mode fracture behavior and potential void formation, print parameter validation and interface robustness will be explicitly evaluated during early testing.
 
 The student will then \textbf{fabricate structures} using the department's
 multi-material FDM printer, systematically iterating on print parameters
