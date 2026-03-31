@@ -16,11 +16,18 @@
 \usepackage{wrapfig}
 
 % --- Formatting ---
-\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\normalfont\small\bfseries}{\thesubsection}{0.5em}{}
 \setlength{\parskip}{0.5em}
 \setlength{\parindent}{0em}
-
+\titlespacing{\section}
+    {0pt}
+    {0pt}
+    {0pt}
+    \titlespacing{\subsection}
+    {0pt}
+    {0pt}
+    {0pt}
 % --- Draft helpers (remove for final) ---
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 \newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
@@ -134,7 +141,7 @@ this project makes it an ideal entry point for students early in their studies.
 
 This student will lead the design-and-build cycle that forms the experimental
 backbone of the project.  Working under weekly one-on-one mentoring from
-Prof.~Hill, the student will begin by \textbf{parameterizing a family of
+Dr.~Hill, the student will begin by \textbf{parameterizing a family of
 tensegrity-inspired unit cells} in CAD (SolidWorks or Fusion~360), defining key
 variables---strut diameter and length (PLA), tension-element cross-section
 (TPU), connectivity topology, and unit-cell tiling---that span the design space.
@@ -152,7 +159,7 @@ and industry.  The student works closely with Student~2, who tests each
 batch and returns performance data; this tight collaboration teaches both
 students the value of interdisciplinary teamwork and creates natural
 peer-mentoring opportunities as each develops complementary expertise.
-Throughout, Prof.~Baird's master's student serves as a day-to-day co-mentor,
+Throughout, Dr.~Baird's master's student serves as a day-to-day co-mentor,
 guiding the student through equipment operation, troubleshooting print failures,
 and interpreting early results, so that learning happens at multiple cadences:
 weekly faculty meetings for strategy and daily peer support for execution.
@@ -162,7 +169,7 @@ multi-material additive manufacturing, and systematic experimental design.
 Structured mentoring scaffolds move the student from guided replication of
 existing designs to independent creation of novel geometries by mid-Year~1.
 The student will present results at \textbf{UCUR} or \textbf{ASME IDETC} and
-contribute as co-author on a journal manuscript.
+co-author a journal manuscript.
 
 % =============================================================================
 \section{Student Research Project~2: Mechanical Testing and Data-Driven Optimization}
@@ -174,7 +181,7 @@ coursework or interest in mechanics of materials or data analysis.
 \subsection*{Scope and Deliverables}
 
 This student will lead physical testing and the Bayesian optimization
-campaign, working under weekly one-on-one mentoring from Prof.~Baird.  The work
+campaign, working under weekly one-on-one mentoring from Dr.~Baird.  The work
 begins with \textbf{conducting experimental testing} on structures fabricated by
 Student~1: quasi-static compaction tests and drop-weight impact tests following
 the protocol of \citet{pajunen2019design}.  Primary metrics include \emph{peak transmitted force}, \emph{specific
@@ -187,12 +194,11 @@ on experimental measurements.  After each BO iteration the surrogate recommends
 the next batch of designs; the student coordinates with Student~1 to print and
 test them, closing the loop.  This closed-loop
 \emph{design--print--test--optimize} cycle teaches the student data-driven
-decision-making in a concrete, physical context.  If time and student interest
-permit, lightweight simulations may be added as an optional low-fidelity data
+decision-making in a concrete, physical context.  If time permits, lightweight simulations may be added as an optional low-fidelity data
 source to accelerate convergence \citep{mo2023accelerated}, but the campaign
 does not depend on simulation fidelity.
 
-Prof.~Baird's master's student provides day-to-day co-mentoring in Python,
+Dr.~Baird's master's student provides day-to-day co-mentoring in Python,
 data analysis, and BO implementation, creating a layered mentoring structure.
 In Year~2, both students mentor newly recruited undergraduates, reinforcing
 their own understanding while sustaining the research pipeline.
@@ -224,11 +230,11 @@ broadening the pool of potential mentees.
 
 \subsection*{Mentoring Structure}
 
-Students meet individually with Profs.~Hill and Baird each week (30~min) for
+Students meet individually with Drs.~Hill and Baird each week (30~min) for
 technical guidance and professional development, and participate in weekly lab
 group meetings (1~hr) that include progress updates, student literature
 presentations, and skill-building workshops covering scientific writing,
-presentation skills, and research ethics.  Prof.~Baird's master's student
+presentation skills, and research ethics.  Dr.~Baird's master's student
 serves as a graduate co-mentor, providing day-to-day guidance in 3D printing,
 testing procedures, coding, and data interpretation; this layered model ensures
 timely support while the graduate student develops their own mentoring skills.
@@ -347,6 +353,7 @@ Peer mentoring of new students       &             &             &             &
 
 % =============================================================================
 % --- References (do not count toward 5-page limit) ---
+\newpage
 \bibliographystyle{plainnat}
 \bibliography{references}
 
