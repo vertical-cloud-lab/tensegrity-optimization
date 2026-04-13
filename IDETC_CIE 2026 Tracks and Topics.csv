@@ -1,0 +1,862 @@
+﻿Topic Name,Track,Topic Description,Primary Topic Organizer First Name,Primary Topic Organizer Last Name,Primary Topic Organizer Email Address,Co-Organizer 1 First Name,Co-Organizer 1 Last Name,Co-Organizer 1 Email Address,Co-Organizer 2 First Name,Co-Organizer 2 Last Name,Co-Organizer 2 Email Address,Co-Organizer 3 First Name,Co-Organizer 3 Last Name,Co-Organizer 3 Email Address,Co-Organizer 4 First Name,Co-Organizer 4 Last Name,Co-Organizer 4 Email Address,Co-Organizer 5 First Name,Co-Organizer 5 Last Name,Co-Organizer 5 Email Address,Co-Organizer 6 First Name,Co-Organizer 6 Last Name,Co-Organizer 6 Email Address
+AVT-01: Advances in ground vehicle safety and ergonomics,AVT,"Topics include vehicle active safety such as adaptive cruise control, forward collision warning, lane departure warning or prevention, V2x technology developments, and passive safety developments of crashworthiness designs, accident reconstructions, restraint systems development & integration and robust structures for occupant and pedestrian protection during impacts (including under-body blast events). Other areas of research interest include the response and tolerance of the human body to vibration and impact, driver assistance systems, digital human modeling, human factors and driver behavior, critical technologies for future electronic certification of vehicle safety, driver fatigue prediction, long distance driving comfort, biomechanics studies, experimental and computational analysis of ride comfort, and prediction of comfort levels.",Costin,Untaroiu,costin@vt.edu,James,Yang,james.yang@ttu.edu,,,,,,,,,,,,,,,
+AVT-02: Advances in Ground Vehicles Dynamics and Controls,AVT,"Topics include advanced modeling methods and controls of multi-physics systems and multi-body dynamics, experimental evaluation and model validation tests, and advanced analytical and computational methods. Papers in the general area of dynamics and controls applications to vehicle systems and subsystems are welcome, including engine and transmissions, passive and controlled driveline and torque vectoring systems, ABS systems, active and semi-active suspension, intelligent rollover warning systems, active yaw control systems, emission control, vehicle drivability, intelligent transportation systems, perception system, and advanced propulsion control systems.",Siyuan,Zhang,szhang12@wpi.edu,Parth,Patel,ppatel3@wpi.edu,,,,,,,,,,,,,,,
+AVT-03: Advances in Intelligent Vehicles,AVT,"This symposium relates to state-of-the-art research and future trends for connected and autonomous vehicles. The topics include, but are not limited to: design of autonomous vehicles including advanced actuators and sensors; communications and networking (V2V, V2I, V2X) for connected vehicles; wireless technologies for connected vehicles; networked information processing, decision-making, and intelligent control; safe driving and accident avoidance; intelligent transportation, vehicle traffic modeling, decentralized congestion control, highway automation and platooning; cooperative driving and traffic management; vision and image processing; vehicle environment perception; pattern recognition for vehicles; automatic navigating control; driver behavior analysis and autonomous cooperative driving.",Liangyao,Yu,yly@tsinghua.edu.cn,Guangqiang,Wu,wuguangqiang@tongji.edu.cn,,,,,,,,,,,,,,,
+AVT-04: Advances in Methods for Ground Vehicle Systems Design,AVT,"Topics refer to optimal, reliable, and robust design of vehicles and their subsystems, including, but not limited to design of suspension systems, powertrain design, braking systems designs, integrated (mechatronics) systems development, and engineering applications referring to vehicle design. ",Massimiliano,Gobbi,massimiliano.gobbi@polimi.it,Saulius,Pakstys,saulius.pakstys@polito.it,,,,,,,,,,,,,,,
+"AVT-05: Advances in Off-road, Agriculture, Military and Commercial Ground Vehicle Design and Testing",AVT,"Topics include analytical computations, modeling & simulation, experimental and model validation test, design/analysis, and control methods for system/sub-system/components of military and commercial ground vehicles which includes, but are not limited to multi-body dynamics, tire-terrain interaction for on- and off-road vehicles, vehicle performance evaluation metrics development, on- and off-road mobility and stability, convoy mobility for single- and multi-unit military or commercial vehicles, vehicle survivability in severe environments, occupant safety (from blast and projectile armaments) during military events, etc. The vehicles may include logistical vehicles, military vehicles, heavy-duty for commercial/agricultural applications, all-terrain wheeled, tracked and unmanned ground vehicles.",Ole,Balling,oba@mpe.au.dk,Corina,Sandu,csandu@vt.edu,,,,,,,,,,,,,,,
+"AVT-06: Advances in the Design of Lightweight, Energy Efficient Vehicles",AVT,"Topics of the symposium are advanced modeling, simulation, testing, and identification methods for light vehicles including bicycles, motorcycles, three-wheeled vehicles and small cars. The focus is on the energetic performance and dynamic response of the whole system, on the mechanical properties of the subsystems of the vehicle (chassis, tires, suspensions). Topics of interest also include engines and electric motors for light vehicles, energy harvesting technologies and passive and mechatronic systems for the improvement of safety, comfort and efficiency.",Alberto,Doria,alberto.doria@unipd.it,Ole,Balling,oba@mpe.au.dk,,,,,,,,,,,,,,,
+AVT-07: Advances in vehicle electrification and powertrain design,AVT,"This symposium focuses on state-of-the-art research and future trends in the design, modeling, control, system integration and optimization of conventional and alternative energy propulsion and vehicular systems such as electric (EV), hybrid electric (HEV) and plug-in hybrid electric (PHEV), bio-fuel, LPG or CNG vehicles. Topics of interest also include energy storage and motor/power electronics components/systems, design and integration of the conventional and alternative energy propulsion and advanced vehicular systems, and state-of-the-art engine modeling and technology.",Angelo,Bonfitto,angelo.bonfitto@polito.it,Joel,Anstrom,jra2@psu.edu,,,,,,,,,,,,,,,
+CIE-01: Advanced Modeling and Simulation,CIE,"The Advanced Modeling and Simulation Symposium provides a venue for researchers to present the original research topics of modeling and simulation, such as:
+  • Theoretical Advances in Modeling & Simulation in Engineering
+  • Advances in Finite Element Methodology
+  • Novel Numerical Techniques
+  • Advances in Discretization
+  • Industrial Applications of Modeling & Simulation
+",Yujiang,Xiang,yujiang.xiang@okstate.edu,Dehao,Liu,dehaoliu@binghamton.edu,James,Yang,james.yang@ttu.edu,Ashish,Chaudhari,ashish.chaudhari@philips.com,,,,,,,,,
+CIE-02: AI/ML Data,CIE,"This session is broadly focused on the various aspects of data in AI and ML. It is intended to provide a forum for discussion of data-driven AI and ML methods, with a focus on the data used. Topics of interest include, but are not limited to, engineering domain-specific data sources for AI/ML, training data management and curation technologies, the generation and use of synthetic training datasets, and benchmarking data. The management, curation, and traceability of data in the AI/ML domain are also relevant topics. Papers and presentations addressing aspects of data security, privacy, and equity are also encouraged.",John,Steuben,john.c.steuben.civ@us.navy.mil,Athanasios,Iliopoulos,athanasios.iliopoulos.civ@us.navy.mil,Ashly,Joseph,ashlyelsy@gmail.com,,,,,,,,,,,,
+CIE-03: AI/ML General Session,CIE,"This session is seeking papers and presentations addressing emerging uses of AI and ML technologies within the domain of engineering. Papers addressing the development of new AI/ML techniques for engineering problems are encouraged, as are papers demonstrating the application of existing AI/ML techniques to novel engineering problems. Additional topics of interest for this session include identifying improved training data sources, acquisition approaches, and improvements to data pre- and post-processing. Papers exploring Digital Twin (DT) and the role of ML in DT technologies, including predictive modeling, real-time analytics, anomaly detection, and adaptive control within digital representations of physical systems, are encouraged. Papers addressing AI/ML for Extended Reality (XR) interfaces in advanced manufacturing and other engineering contexts are also welcome. Papers on AI/ML topics not explicitly outlined elsewhere are sought for this session.",Zhenghui ,Sha,zsha@austin.utexas.edu,Xingang,Li,xingangapply2018@outlook.com,,,,,,,,,,,,,,,
+CIE-04: AI/ML: AI-Driven Innovation and Discovery with Vision and Imaging,CIE,"This session focuses on the innovative integration of imaging technologies and artificial intelligence (AI), with particular attention to recent advancements in computer vision, 3D modeling, and specialized intelligence systems. We invite papers that explore best practices for applying these technologies across various domains, including engineering design, manufacturing, healthcare, and other complex systems. Submissions should emphasize how AI and machine learning (ML) are transforming image analysis and interpretation, highlighting novel methodologies, frameworks, or tools.",Anna,Ghidotti,anna.ghidotti@unibg.it,Davide,Ferrari,davide.ferrari@unibg.it,,,,,,,,,,,,,,,
+CIE-05: AI/ML: Generative AI and Large Language Model (LLM) for Engineering,CIE,"This session explores the transformative impact of Generative AI and Large Language Models (LLMs) on engineering. We invite submissions focusing on the development and adaptation of generative AI and LLMs for domain-specific engineering challenges, including advanced design, manufacturing, and foundational modeling technologies. Topics of interest include LLM-driven design optimization, process automation, natural language interfaces for engineering software such as CAD/CAM, AI-assisted engineering analysis, materials discovery, and advanced manufacturing applications like process optimization, predictive maintenance, quality control, and supply chain management. We strongly encourage submissions showcasing real-world applications of LLMs in mechanical engineering and other diverse disciplines such as aerospace, civil, electrical, chemical, and biomedical engineering. Case studies demonstrating the impact of these technologies on industry practices are highly valued.",Ashly,Joseph,ashlyelsy@gmail.com,Jithu,Paulose,jpaulose@cisco.com,Nowrin,Akter,nowrin0102@gmail.com,,,,,,,,,,,,
+CIE-06: AL/ML: AI and ML for System Engineering,CIE,"This session invites papers on AI/ML approaches that advance the engineering, analysis, and design of complex systems characterized by extreme scale, intricate interactions, and pervasive uncertainties shaped by such as physical, human, and social behaviors, etc. While traditional AI/ML has succeeded in domains where problems are well-bounded, for example, single-task traffic flow prediction with structured and complete datasets, modern systems like power grids, manufacturing systems, and global supply chains present greater challenges. These include massive, heterogeneous, and incomplete data streams that require scalable frameworks; dynamic, multi-layered socio-technical interactions that call for methods such as graph learning, multi-agent models, and hybrid approaches; and deep uncertainties from incomplete knowledge, evolving dynamics, and unpredictable behaviors that demand principled techniques like Bayesian ML, conformal prediction, and physics-informed learning. Compound AI/ML architectures that integrate simulation, prediction, control, and optimization are also emerging as promising paradigms beyond monolithic models. We welcome submissions introducing new methodologies, scalable algorithms, uncertainty-aware approaches, and real-world applications to advance AI/ML for complex systems.",Yinshuang,Xiao,yinshuang.xiao@colostate.edu,Ashly,Joseph,ashlyelsy@gmail.com,,,,,,,,,,,,,,,
+CIE-07: AMS/SEIKM/AIML: Engineering Knowledge and Physics-Informed AI and Machine Learning,CIE,"Artificial intelligence and machine learning (AI/ML) are transforming engineering practice, but their success critically depends on incorporating domain knowledge. Approaches informed by engineering heuristics, empirical models, and fundamental physics can address challenges such as data sparsity, improve predictive reliability, and ensure consistency with established principles. This emerging paradigm—engineering knowledge- and physics-informed AI/ML—offers scalable, interpretable, and trustworthy solutions for complex engineering problems.
+Engineering knowledge- and physics-informed AI/ML spans a broad spectrum, from embedding engineering design rules, heuristics, and empirical correlations to enforcing rigorous physical principles such as conservation laws, governing equations, and multi-physics constraints. Within this paradigm, physics-informed ML has gained momentum by embedding PDE-based constraints, constitutive laws, and process physics into ML models. These approaches not only reduce data requirements but also improve generalization and predictive robustness in real-world engineering systems.
+This joint session invites contributions on new methodologies, algorithms, and applications that leverage engineering and physics knowledge—from general engineering principles to fundamental physics—in AI/ML model development for engineering. We particularly encourage works that bridge the gap between data-driven and knowledge-driven approaches, enabling systematic and domain-adaptive AI/ML. We also welcome submissions highlighting novel case studies in cutting-edge engineering applications—such as robotics, biomedical systems, product design, advanced manufacturing, materials science, and system-level engineering—as well as studies that advance fundamental understanding of physical laws and governing equations relevant to engineering systems.",Hyunwoong,Ko,hyunwoong.ko@asu.edu,Dehao,Liu,dehaoliu@binghamton.edu,Mike,Xiang,,,,,,,,,,,,,
+CIE-08: CAPPD: Computational Design and Planning for Extreme Manufacturing,CIE,"This Symposium is focused on the fundamental research and development of computational tools related to extreme manufacturing. Extreme manufacturing focuses on systems with extremely high complexity or in extreme environmental conditions. The symposium seeks contributions addressing the challenges and breakthroughs in manufacturing for extreme conditions, including harsh environments, demanding tolerances, and specialized industries like aerospace, energy, and biomedical sectors. Papers should highlight advancements in efficiency, sustainability, and scalability in extreme manufacturing processes/ systems. Topics of interest include cutting-edge techniques and technologies used to push the boundaries and capabilities of traditional manufacturing, which include but are not limited to the following topics:
+-	In-Space and Aerospace Manufacturing 
+-	Biomass Manufacturing for Sustainability 
+-	Ceramic Manufacturing 
+-	Extreme-Scale Materials with Exceptional Properties for Extreme Environments
+-	Computational Methodologies for Extreme Manufacturing
+-	Design Methods, Principles, and Theory for Extreme Manufacturing",Jida,Huang,jida@uic.edu,Zipeng,Guo,zxgeie@rit.edu,Jun,Wang,jwang22@scu.edu,Satchit,Ramnath,sramnat@clemson.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,,,,,,
+CIE-09: CAPPD: Computer-Aided Product and Process Development (CAPPD General),CIE,"This Symposium is focused on the fundamental research and development of computational tools related to product and process realization. This includes research activities on all aspects of product and process development: design, analysis, optimization, process planning, inspection and manufacturing. Relevant work should place a special emphasis on the computational methodologies underlying research in these areas. 
+The Symposium is soliciting high quality research papers related to Computer-Aided Product and Process Development. They include but are not limited to the following topics:
+-	Computer-Aided Tools for Product and Process Design, Modeling, Validation and Verification
+-	CAD/CAM/CAPP/CAE/CIM Techniques
+-	Feature-Based Design and Feature Recognition
+-	Collaborative and Concurrent Engineering Techniques
+-	Geometric Modeling and Optimization for Product and Process Realization
+-	Computational and Knowledge-Based Reasoning and Representations in Product and Process Development
+-	Computer-Aided Tolerance Modeling and Analysis",Satchit,Ramnath,sramnat@clemson.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,Jun,Wang,jwang22@scu.edu,Jida,Huang,jida@uic.edu,Anand,Nellippallil,anellippallil@fit.edu,,,,,,
+CIE-10: CAPPD: Data-Driven Product Design and Fabrication,CIE,"The goal of this symposium is to highlight the fundamental research, developmental studies, and computational tools in data-driven product design and fabrication. With the advancement of digitalized manufacturing techniques, there is an increasing need for data-driven methods in the automated design and fabrication of complex, functional and user-centric products. In light of the digital twin, designing a product with functional objectives requires coherent computational specification and fabrication methods to achieve optimal configuration (object's shape, architecture, and material composition). Leveraging the potential of data-driven approaches, this symposium is calling for papers addressing a wide range of product design and fabrication problems in a data-driven paradigm. The topics of interest include (but not limited) to the followings:
+-	Machine learning and data-driven approaches in product and process design
+-	Generative design and inverse design for product development
+-	Fabrication-aware design and design for manufacturability
+-	Personalized product design and fabrication
+-	Computational geometry for products design and fabrication
+-	Virtual product design, simulation, and fabrication
+-	Product design and fabrication using large language models (LLMs)
+",Satchit,Ramnath,sramnat@clemson.edu,Jun,Wang,jwang22@scu.edu,Jida,Huang,jida@uic.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,,,,,,,,,
+CIE-11: CAPPD: Human-In-the Loop and Digital Human Modeling for Product Design and Manufacturing,CIE,"Despite the growing feasibility of automation across various use cases from smart manufacturing to healthcare, humans are expected to remain essential for designing products and operating manufacturing systems for the foreseeable future. This symposium aims to spotlight fundamental research, successful case studies and developed tools for the interaction of human-in-the-loop product design and automation. Transforming the way people interact with engineered systems involves considering human variability, advancing digital human modeling, and incorporating human factors into every stage of the design process. This session invites papers focused on human-in-the-loop product design and smart manufacturing technologies. Potential topics include, but are not limited to:
+-	Design for human variability
+-	Digital Human Modeling for product life-cycle management
+-	Human Factors in Design
+-	Interactive user interfaces for computer aided design and engineering
+-	Modeling human perception in design
+-	Human in the loop machine learning
+-	Human-automation interaction
+-	Human-robot/machine interaction
+-	Human-in the loop for informed inspection systems
+-	Virtual Physiological and Emotional Human Modeling
+-	Computer-Aided Ergonomics and Safety Analysis
+-	Human-AI teaming in Manufacturing and Healthcare
+-	Trustful Human-AI Teaming for Product Development and Manufacturing
+",Jida,Huang,jida@uic.edu,Giorgio,Colombo,giorgio.colombo@polimi.it,Daniel,Regazzoni,daniele.regazzoni@unibg.it,Satchit,Ramnath,sramnat@clemson.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,,,,,,
+CIE-12: CAPPD: Integrating LLMs into Smart Manufacturing Systems,CIE,"Recent advances in natural language processing, deep neural networks, and multimodal datasets are opening transformative possibilities for product and process optimization in design and manufacturing. As the design process increasingly generates rich streams of natural language data, there is an urgent need to push the boundaries of natural language–driven modeling to create new methods, tools, and knowledge. This symposium invites contributions that explore NLP for design automation and computational design in all forms - from novel model architectures and datasets to innovative frameworks and applications. We welcome papers that challenge existing paradigms and chart bold new directions for integrating language, data, and design. Potential topics include, but are not limited to:
+-	Natural Language-Based Design Automation
+-	Knowledge Extraction and Structuring from Design Documents
+-	Human-AI Collaboration and Co-Design through NLP
+-	Multimodal Data Integration across Text, CAD, and Sensor Sources
+-	Sentiment and Motion Analysis for Design Feedback Interpretation
+-	Multimodal Large Language Models for Process and Product Optimization
+-	GraphRAG for Design Knowledge Representation and Reasoning
+-	Vision-Language Models for Visual Design Understanding
+-	Large Language Models for Materials Discovery and Design
+-	Neurosymbolic AI for Reasoning and Decision Support in Design",Cheng,Chen,cc1115@uah.edu,Hemanth ,Manjunatha,hemanth.manjunatha@okstate.edu,Satchit,Ramnath,sramnat@clemson.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,,,,,,,,,
+"CIE-13: CAPPD: Inverse Design for Materials, Structures, Products, and Manufacturing Processes",CIE,"In recent years, widespread applications of inverse design concepts have been seen in the design of materials for targeted properties. From a materials design context, the focus has been on inverting quantitative relationships between processing paths, material structures, and properties and exploring feasible solutions that meet performance requirements. Recent approaches have focused on the collaborative intersections of inverse design with data-driven design, artificial intelligence and generative design, systems-based design, multidisciplinary optimization, design informatics, and decision-based design. This symposium focuses on computer-aided inverse design techniques that facilitate exploring and exploiting quantitative linkages in digital design to materials, products, and manufacturing process workflows. In such a context, the symposium is a venue for research papers promoting the discussion around computational methods and tools, applications, and theoretical issues featuring the inverse design for materials, structures, products, and manufacturing processes. Potential topics include, but are not limited to:
+-	Propagation of information between models across length and time scales
+-	Uncertainty management, sensitivity analysis, visualization and exploration of high-dimensional design spaces in low dimensions
+-	Use of generative models, co-design/co-optimization, concurrent design of materials and manufacturing processes
+-	Integrating materials linkages with computer-aided design and design for manufacture",Anand,Nellippallil,anellippallil@fit.edu,Jun,Wang,jwang22@scu.edu,Satchit,Ramnath,sramnat@clemson.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,Jida,Huang,jida@uic.edu,,,,,,
+CIE-14: CAPPD: Product and Process Design Automation for Industry 4.0,CIE,"The digital factory paradigm is transforming design and manufacturing together with the workforce and the work environment. Technologies are no longer a mere support for product development processes, but are integrated into components, machines, management systems, and environments that become more and more complex. Moreover, products, technologies, and processes must be designed, developed, and implemented to be able to seamlessly interact with the digital environment that features the current manufacturing landscape. In such a context, the tight integration between digital and physical assets plays a crucial role in being able to gather and manage huge amounts of data coming from the sensors, elaborate them to extract meaningful patterns and make efficient use within the computer-aided product development process. Besides, the automation of the design and process planning tasks represents an essential feature for a system that wants to operate successfully with digital data and virtual processes. 
+In such a context, the Symposium is a venue for research papers promoting the discussion around the wide spectrum of applications, theoretical issues, methods, and tools featuring the Product and Process Design Automation for Industry 4.0. The interest includes but are not limited to the following topics:
+-	Process Planning and Design Automation for Industry 4.0
+-	Data-driven and Simulation-driven Design and Manufacturing 
+-	Semantic Knowledge Integration and Ontologies in Design and Manufacturing 
+-	Artificial Intelligence and Big Data in the context of Industry 4.0 Product and Process Design. 
+-	Advances in Product Life Cycle Management Tools: Life-Cycle Assessment and integration of circular economy.
+",Anand,Nellippallil,anellippallil@fit.edu,Marco,Rossoni,marco.rossoni@polimi.it,Giovanni ,Berselli,giovanni.berselli@unige.it,Weiss,Cohen,miri@braude.ac.il,Satchit,Ramnath,sramnat@clemson.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,,,
+CIE-15: Graduate Student Poster Symposium,CIE,"The ASME-CIE Graduate Research Poster session is an opportunity for graduate students in the preliminary phase of their research programs (MS or within 2 years of starting a PhD) to present their current work to the CIE research community. This session provides the students a chance to obtain external feedback on their preliminary research that may not yet be ready for presentation at the conference in archival form. 
+Scope of the Research Posters 
+The research poster should be relevant to the areas of interest of one or more CIE Technical committees that are listed below: 
+-	Advanced Modeling and Simulation (AMS)
+-	Computer-Aided Product and Process Development (CAPPD)
+-	Systems Engineering, Information and Knowledge Management (SEIKM)
+-	Virtual Environments and Systems (VES) ",Cheng,Chen,cc1115@uah.edu,Guoxin,Fang,guoxinfang@mae.cuhk.edu.hk,Hemanth,Manjunatha,hemanth.manjunatha@okstate.edu,Satchit,Ramnath,sramnat@clemson.edu,Jun,Wang,jwang22@scu.edu,,,,,,
+CIE-16: Computational Multiphysics Applications,CIE,"Computational modeling and simulation of multiphysics systems pose grand challenges, to science and technology disciplines such as engineering, material science, and application sectors such as aerospace, marine, and automotive industries Most of the real-life systems involve interactions of multiple physical phenomena. In addition, the time and length scales of the individual processes involved often differ by orders of magnitude. Computational simulation of these multiphysics problems that involve multiple fields, scales, and domains, requires the development of sophisticated models and methods for their integration, as well as efficient numerical algorithms and advanced computational techniques.
+
+In the present symposium, papers are invited on computational Multiphysics modeling and simulation, along with their applications from leading international and interdisciplinary research communities. Topics include: 1) Coupled field problems, 2) Multiscale problems, 3) Multi-domain problems, and 4) combinations of all or some of the above.
+",Athanasios,Iliopoulos,athanasios.iliopoulos.civ@us.navy.mil,Yanglong,Lu,maeylu@ust.hk,,,,,,,,,,,,,,,
+"CIE-17: Design, Simulation and Optimization for Additive Manufacturing ",CIE,"Additive Manufacturing (AM) is a vital component of advanced manufacturing. AM encompasses various technologies that construct three-dimensional (3D) objects layer by layer from 3D solid models, eliminating the need for traditional tools. What sets AM apart from conventional manufacturing is its tool-less, layer-upon-layer approach, opening new possibilities for creating custom, intricately designed products with unique material distributions. This session covers the fundamental research in AM about 1) how to design AM parts, 2) how to optimize AM process, and 3) how to use simulation, either physics-based or data-driven, to reveal the physics of the AM processes. Specific topics of interest include, but are not limited to:
+− Part design for AM processes and applications;
+− Design rules and guidelines for AM;
+− Design optimization for AM;
+− Design of AM experiments;
+− AM information model;
+− Physics-based AM simulation using approaches such as FEA and CFD;
+− Data-driven AM models; and
+− System design and optimization for AM.
+",Dehao,Liu,dehaoliu@binghamton.edu,Zhuo ,Yang,zyang168@jh.edu,Jiarui,Xie,jiarui.xie@mail.mcgill.ca,Lisha,White,Lisha.white@nist.gov,,,,,,,,,
+CIE-18: Digital Twin: Advanced Human Modeling and Simulation in Engineering,CIE,"Most engineered products require human interaction at some point in their lifecycles. It is important to consider human factors related to using designed products in the early stages of design for many reasons. The first reason is to preserve human integrity and safety and to ensure comfort in all tasks. The second reason is to simulate or assess the performance of machines or robotic devices for human-machine/device collaboration/interaction, human performance augmentation, rehabilitation, or injury prevention. Thirdly, while performance may vary from user to user, energy consumption, expected life, sustainable user behavior, and maintenance behavior may also vary and significantly influence global lifecycle cost as well as environmental impacts. Finally, it is useful for human-centric design. Many human simulation models have been developed or are in the making such as skeletal, musculoskeletal, and finite element human models. These models can be interfaced with computer-aided design environments to test the designed products or devices to save time and money. Various methods have been proposed such as computational models, data-driven or optimization-based approaches. Applications of digital human modeling and simulation occur in industry, military, and clinical practice. The aim of this symposium is to provide a venue to present the state-of-the-art research results on human modeling and simulation in engineering. Topics include, but are not limited to, the following:
+•	3D human modeling, Whole body biomechanics, Crash models, Injury prediction;
+•	Anthropometric analysis, Advanced measuring methods;
+•	Machine learning/AI in human modeling and analysis;
+•	Modeling of comfort and discomfort, Modeling of human behavior, Simulation of usage compliance;
+•	Motion and posture prediction, Gait or movement analysis, Hand modeling and applications;
+•	Observation, Validation and verification of usage-related tasks;
+•	Whole-body vibration of digital humans, Fatigue modeling, Cloth modeling;
+•	Cognitive modeling, Virtual/mixed/augmented reality and human modeling;
+•	Bio-inspired design/human-centered design;
+•	Engineering ergonomics, Human factors;
+•	Exoskeletons, Exosuits, Human-machine interaction, and Human-robot collaboration.
+",James,Yang,james.yang@ttu.edu Yujiang Xiang,Yujiang,Xiang,yujiang.xiang@okstate.edu,Xianlian,Zhu,alexzhou@njit.edu,Tsz Ho,Kwok,tszho.kwok@concordia.ca,,,,,,,,,
+CIE-19: Inverse Problems in Science and Engineering,CIE,"Recent advances in laboratory and industrial automation methodologies, as well as the astonishing progress of computational technologies, have enabled significant growth of data-driven inverse methods for system characterization and design. Inverse problems can be classified according to what is desirable to be determined, i.e. unknown shapes, boundary/initial values, sources and forces, material properties, or even governing equation(s). If a sufficient amount and type of data and additional information are provided, the inverse problems can become sufficiently specified so that, with the use of appropriate algorithms, they can be solved. The algorithmic methods for the solution of inverse problems could be grouped into two basic approaches: pure inverse methods and optimization-based methods. That is, in some methods, sophisticated regularization formulations are used. In other methods, different optimization algorithms are used as tools to solve de-facto inverse problems. 
+
+In the present symposium, papers are invited on Inverse Problems and their applications from leading international and interdisciplinary research communities. Topics include 1) Shape design including Topology Optimization 2) Material properties and constitutive response determination 3) Boundary values/initial value identification 4) Force /source determination 5) Governing equation inference 6) Other topics related to inverse problems. Quality papers will be referred to the ASME Journal of Computing and Information Science in Engineering. 
+",Guanglu,Zhang,glzhang@cmu.edu,Brian,Dennis,dennisb@uta.edu,Athanasios,Iliopoulos,athanasios.iliopoulos.civ@us.navy.mil,,,,,,,,,,,,
+CIE-20: Manufacturing Systems and Supply Chains Design and Analysis,CIE,"Modern manufacturing systems and supply chains are becoming increasingly connected and complex to meet the growing demands of modern society. In addition to evolving products and manufacturing technologies, supply risks due to geo-political disruptions are also becoming increasingly common. Stakeholders also need to consider the growing environmental and human-health impact of manufacturing and supply chain operations. This symposium invites technical submissions that discuss frameworks, architectures, methods, metrics, and standards for creating, analyzing, integrating, configuring, reconfiguring, and maintaining manufacturing and supply chain systems such that the systems are more collaborative, intelligent, cost-effective, agile, responsive, sustainable, and resilient. Example topics of interest are identified below; however, all relevant research is invited:
+
+* Modeling and analysis approaches for manufacturing systems and supply chains
+* Enhancing supply chain resilience - including efficiency trade-offs
+* Integration of advanced manufacturing and digital technologies
+* Distributed manufacturing
+* Agile and reconfigurable manufacturing systems
+* Design and optimization of manufacturing processes
+* Internet of Things/digital thread implementation in manufacturing and distribution
+* Data-driven methods for supply chain management
+* Multi-attribute decision-making frameworks for resilient and sustainable manufacturing and supply chain systems design and operation
+* Comprehensive sustainability analysis frameworks for manufacturing systems and supply chains",Boonserm,Kulvatunyou,boonserm.kulvatunyou@nist.gov,Abheek,Chatterjee,chatterjee.abheek21@gmail.com,Farhad,Ameri,Farhad.Ameri@asu.edu,,,,,,,,,,,,
+CIE-21: Material Characterization Methods and Applications,CIE,"Material characterization is an important modeling process as its ability to capture material constitutive behavior physics has a huge impact on the correctness of computational simulation. While the user-guided physics-based modeling in conjunction with conventional uniaxial testing remains the most common approach, semi-automatic or fully automatic methodologies as well as the development of completely novel techniques that do not rely on the conventional physics-based modeling and uniaxial testing methodology have appeared recently. 
+
+This symposium aims at inviting researchers engaged in a wide range of material characterization issues including the development of methods and their applications and advancing material characterization for high-performance simulation in the areas of solid mechanics, heat and mass transfer, electromagnetics, and their combinations thereof. 
+",Athanasios,Iliopoulos,athanasios.iliopoulos.civ@us.navy.mil,Guanglu,Zhang,glzhang@cmu.edu,,,,,,,,,,,,,,,
+CIE-22: SEIKM: Artificial Intelligence and Machine Learning for Design and Manufacturing,CIE,"The rapid development and recent breakthroughs in AI and machine learning techniques have unlocked numerous opportunities for innovation in design and manufacturing. This session invites original research on the application of machine learning within advanced design and manufacturing. Specific areas of interest include, but are not limited to:
+- Neural networks, reinforcement learning, large language models, knowledge transfer, transfer learning, and domain adaptation for design and manufacturing
+-Applications such as generative design, process planning, real-time monitoring, control, fault identification and prediction, and process adaptation
+-Case studies in high-value domains, including (but not limited to) robot-based manufacturing, digital design and manufacturing, additive, subtractive, and formative processes, semiconductors, and in-space manufacturing",Hyunwoong,Ko,hyunwoong.ko@asu.edu,Jiarui,Xie,jiarui.xie@mail.mcgill.ca,Nowrin,Akter Surovi,nowrin0102@gmail.com,,,,,,,,,,,,
+"CIE-23: SEIKM: Digital Twin for Lifecycle Performance: Design, Manufacturing, and Supply Chain",CIE,"Digital twin has emerged as a transformative technology for enabling lifecycle performance across the full spectrum of product realization, including design, manufacturing, supply chain, and service. By integrating data, models, and simulation across multiple stages of the lifecycle, digital twins provide a dynamic and holistic representation of physical entities and systems. Leveraging in-situ industrial internet-of-things (IIoT) sensor data, non-destructive evaluation, machine learning models, and physics-based simulations, digital twin technologies offer unprecedented potential to improve design exploration, manufacturing quality, supply chain resilience, and sustainability outcomes. This symposium focuses on digital-twin modeling and analytics and their applications across lifecycle phases, bridging design, production, logistics, and operations. We cordially invite you to participate in this exciting symposium. Topics of interest include, but are not limited to:
+ Digital twins for design optimization, generative design, and early-stage decision-making
+ Digital-twin-enabled manufacturing process monitoring, quality assurance, and adaptive
+control
+ Lifecycle digital twins integrating product design, production, and supply chain
+management
+ Data-driven AI/ML for predictive lifecycle performance and maintenance scheduling
+ Physics-informed simulations supporting digital-twin modeling across lifecycle stages
+ Digital-twin-driven sustainability analysis and circular economy strategies
+ Integration of IIoT, cloud/edge computing, and simulations for scalable lifecycle twins
+ Digital twins for supply chain resilience, logistics optimization, and risk management
+ Multi-scale, multi-physics digital-twin frameworks for product and system lifecycle
+evaluation
+ Applications of digital twin in aerospace, automotive, agri-food, and semiconductor
+industries",Sheng,Yang,syang19@uoguelph.ca,Shengyen,Li,shengyen.li@nist.gov,Dehao,Liu,dehaoliu@binghamton.edu,,,,,,,,,,,,
+CIE-24: SEIKM: Informatics for Design & Manufacturing (LLMs & Agents),CIE,"Informatics for design and manufacturing turns data and engineering expertise into value-adding decisions throughout the product lifecycle. Modern knowledge capture must integrate raw data streams, deterministic and foundation models (LLMs, MLLMs/VLMs) with RAG and agentic workflows, and human operators into digital threads that support decision makers. New methods are needed to handle the volume, heterogeneity, and domain-specific information of engineering design and production. This session invites state-of-the-art research and practical case studies in:
+-Integration of knowledge engineering frameworks such as ontologies, knowledge graphs, LLMs, and systems models.
+-Search, querying, workflow automation, and traceable retrieval of multi-domain, multiscale product information represented across enterprise ecosystems.
+-Agentic workflows for data curation, change detection, and report generation.
+-Fusion and federation of product data streams such as sensors, enterprise databases, process models, and human activities.
+-Enterprise knowledge management, governance, privacy, and compliant deployment.",Farhad,Imani,farhad.imani@uconn.edu,Nowrin,Akter Surovi,nowrin0102@gmail.com,John,Morris,jhmrrs@clemson.edu,,,,,,,,,,,,
+"CIE-25: SEIKM: Knowledge Capture, Reuse, and Management",CIE,"The Knowledge Capture, Reuse, and Management track aims to discuss research issues related to transforming engineering design related information into a computable medium. Computable mediums can take various forms, each presenting unique challenges in accurately describing, using, and managing the knowledge set. This track's scope extends to transdisciplinary information in engineering design (e.g., bioinspired), which may inspire new approaches to knowledge capture, reuse, and management. Topics include:
+− Ontologies for knowledge capture, reuse, and management;
+− Visualization, curation, and cognitive considerations of knowledge capture and ontology use;
+− Semantic web applications;
+− Knowledge discovery from social media content;
+− Logics for knowledge capture, reuse, and management; and
+− Case studies in design knowledge management.",Farhad,Ameri,Farhad.Ameri@asu.edu,Farhad,Imani,farhad.imani@uconn.edu,Mutahar ,Safdar,mutahar.safdar@mail.mcgill.ca,,,,,,,,,,,,
+CIE-26: SEIKM: Systems Engineering and Complex Systems,CIE,"This symposium is focused on the integration of systems engineering within engineering organizations and across technical disciplines. This symposium seeks to discuss tools and methodologies related to enabling the interchange of knowledge, representations, and information between toolsets used in systems engineering and other technical engineering areas while fostering an effective interchange in the area of integrated systems engineering between industry, academic, and government participants on an international basis. This symposium aims to provide a context where theoretical approaches, concept demonstrations, and effective applications of integrated systems engineering can be published and presented. Systems engineering covers a wide range of complexity levels, from very simple systems to highly complex globe-spanning systems. Unique challenges exist at each level of complexity and are of interest to this track. An indicative (non-exhaustive) list of topics is:
+− Integrated systems engineering within engineering organizations
+− Model-based system design
+− Systems engineering toolsets and integration
+− Tradespace exploration and decision analysis
+− Information systems security
+− Systems of systems
+− Graph (or network) based engineering systems analysis and design
+− Infrastructure systems engineering
+− Space systems architectures
+− Case studies in systems engineering
+− Analysis tools, methods, and modern technologies for complex systems design
+− Multi-agent systems
+− Classification and characterization of complex systems
+− Systems engineering education
+− Approaches for security and control of cyber-physical systems and internet-of-things (IoT)
+− Verification and validation of systems across all levels of complexity
+− Engineering and design research in cyber-physical systems, sociotechnical systems, and smart and autonomous systems.
+− Approaches for managing complexity, interdisciplinary interactions, and distributed systems.
+− System interfaces and integration
+− Integration of machine learning and artificial intelligence into the system design process
+− Mission engineering",Douglas,Van Bossuyt,douglas.vanbossuyt@gmail.com,Shengyen,Li,shengyen.li@nist.gov,Abheek,Chatterjee,chatterjee.abheek21@gmail.com,,,,,,,,,,,,
+CIE-27: SEIKM: Systems Engineering Information Knowledge Management General,CIE,"SEIKM invites papers focused on systems engineering and knowledge & information management as they apply to design, manufacturing, infrastructure, aerospace, defense, and service systems. Areas of interest include (but are not limited to) system prognostics and health management, design informatics and intelligent information processing, product lifecycle management, project and lifecycle systems engineering, ontology engineering, information discovery, agent-based systems, knowledge and function representation, system engineering, manufacturing IT system architecture and case study, complex systems design and integration, and model-based design. This is the symposium that will host all papers that cannot be classified under any of the rest of the SEIKM topic areas.",Yan,Lu,yan.lu@nist.gov,Zhuo,Yang,zyang168@jh.edu,John,Morris,jhmrrs@clemson.edu,,,,,,,,,,,,
+CIE-28: Simulation in Advanced Manufacturing,CIE,"The objective of this Symposium is to provide a forum for researchers and industry practitioners who are interested in various aspects of advanced modeling and simulation to promote smart manufacturing.
+An indicative list of topics is: 
+•	Science-based physical modeling of manufacturing processes/systems
+•	Advanced measurement sciences and technologies for simulation, and analysis that support energy efficient manufacturing
+•	New engineering approaches for advanced simulation
+•	IT infrastructure and framework supporting advanced simulation, such as digital twin of value chains, factories and manufacturing systems
+•	Data modeling, integration and interoperability among modeling and simulation tools
+•	Information ecosystem encompassing gate-to-gate /cradle-to-cradle approaches, advanced data collection and integrated simulation methods
+•	Uncertainty and completeness approaches, reverse logistics and supply chains modeling
+•	Industry implementations and demonstrations that are founded on LCA and energy efficient simulations
+",Gaurav,Ameta,gaurav.ameta@siemens.com,Bjorn,Johansson,bjorn.johansson@chalmers.se,,,,,,,,,,,,,,,
+CIE-29: Uncertainty Quantification in ML/Simulation and Model Verification & Validation,CIE,"This Symposium aims to provide a forum for researchers and industry practitioners who are interested in various aspects of uncertainty quantification in modeling and simulation to improve the reliability and robustness of model prediction. An indicative list of topics is:
+•	New representations and analysis approaches to quantify variance (random errors) and bias (systematic errors) involved in model construction, numerical simulation, materials characterization, and experimental measurement
+•	Representations and analysis methods to quantify model-form and parameter uncertainty as well as input uncertainty and numerical errors in simulation models
+•	Efficient algorithms to predict uncertainties in large-scale simulations and high-performance computing environments 
+•	Scalable surrogate modeling (multi-fidelity, multi-objective) for high-dimensional problems 
+•	Uncertainty in machine learning models
+•	Uncertainty propagation in multiscale modeling
+•	Probabilistic and non-probabilistic inference to analyze simulation robustness
+•	Sensitivity analysis for deterministic and stochastic models 
+•	Optimization under uncertainty and PDE constraints
+•	Bayesian inference and calibration of physics-based models
+•	Monte Carlo approaches, including multi-level and multi-fidelity Monte Carlo methods and applications
+•	Code verification and simulation validation
+•	Evaluation methods to assess quality of uncertainty quantification 
+•	Model accreditation and software standardization
+•	Application and practice of reliable modeling and simulation (in the domains of mechanics, materials, dynamics, control, and robotics, for systems in extreme environments, as well as in the industries of aerospace, automotive, biomedical, energy, etc.)
+",Jie,Chen,jiechen@vt.edu,Zhimin,Xu,zhimin.xi@rutgers.edu,Chao ,Hu,chaohu@iastate.edu,Yan,Wang,yan.wang@me.gatech.edu,,,,,,,,,
+CIE-30: VARE: General Topics on Virtual and Augmented Reality,CIE,"This session explores the broad landscape of Virtual Reality (VR), Augmented Reality (AR), and Mixed Reality (MR), focusing on their technologies, applications, and future trends. Attendees will delve into the core concepts and development frameworks driving immersive experiences across these platforms. Discussions will cover the advancements in hardware, software, and user interfaces, as well as the role of VR and AR in industry and the latest advancement related to web-based technologies (WebXR) and Remote Rendering. This comprehensive overview is designed to equip professionals, developers, and enthusiasts with the knowledge and tools to understand the current state and potential of VR, AR, and MR technologies. Theoretical studies, position papers and case studies are welcome.",Marco,Rossoni,marco.rossoni@polimi.it,Xueting,Wang,xw4860@rit.edu,,,,,,,,,,,,,,,
+CIE-31: VARE: User Experience (UX) and Human-Machine Interaction,CIE,"User Experience (UX) and Human-Machine Interaction have been extensively studied to establish effective interaction and communication between extended reality systems and human users, with the goal of fostering trust and enhancing both actual and perceived safety, efficiency, comfort, and prosocial behavior. The design of user experiences in virtual environments is inherently predicated upon a fundamental understanding of human perception, cognition, behavior, and action. Systematic new and existing user interactions, spatial technologies (cameras, controllers, haptics devices), visual representations of geometric and contextual information, and user preferences (such as gesture elicitation, micro-gestures) is critical in order to gain insights for virtual environment design. This symposium seeks contributions that aim to enrich user experience in virtual environments through the development and evaluation of (a) new ways to interact with virtual objects, (b) new ways of interaction with other people in virtual spaces, (c) new ways to represent visual as well as non-visual information in virtual environments, and (d) new insights on how users behave and perform in virtual environments. Research efforts on defining, measuring, and understanding user experience in cyber-physical environments are also of interest. Specific topics of interest include (but are not limited to):
+
+•	Collaborative and multi-user virtual environments
+•	Integration of multi-touch and spatial user interfaces
+•	Mobile interactions and wearable technologies
+•	Large language models (LLMs) in XR Experiences
+•	Visualization of geometric data and non-geometric data evaluation metrics of user actions and performance
+•	Haptics- and gaze-based interactions in VR/AR/MR
+•	Utilizing physiological sensors (EEG, ECG, etc.) in virtual environments
+•	User experience and usability
+•	User comfort and trust in human-machine interface
+",Wenhao,Yang,wenhao.yang@lamar.edu,,,,,,,,,,,,,,,,,,
+"CIE-32: VARE: VR/AR Hardware, Accessibility, and Human Factors",CIE,"Advancements in VR/AR hardware, such as headsets, haptic devices, and tracking systems, are ongoing research areas. Improving the quality, affordability, and comfort of these devices is a primary concern. In addition, ensuring that VR/AR experiences are accessible to individuals with disabilities is an important research area. This includes developing adaptive technologies and inclusive design practices. This symposium aims to explore the intersection of cutting-edge hardware developments and inclusive design principles to make VR/AR experiences accessible to a diverse range of users. Topics of interest include, but are not limited to:
+•	Advancements in VR/AR Hardware
+•	Inclusive Design and User-Centered Approaches 
+•	Haptic Feedback and Sensory Interfaces
+•	Case Studies and Real-World Applications
+•	Ethical Considerations and Data Privacy",Pietro ,Piazzolla,pietro.piazzolla@polimi.it,,,,,,,,,,,,,,,,,,
+CIE-33: XR Applications,CIE,"User interfaces, interactions, and experiences are now pervasive in design, manufacturing, product inspection, customization, healthcare, education, technical training, and even daily consumer activities such as online purchases. The levels of user immersion possible within the reality-virtuality continuum affect how designers design, engineers produce, and users use products. It has applications in healthcare, from preoperative planning to surgical procedures support, to post operative care including pain management, physical therapy, and exposure therapy. It can also enhance education and training experiences. This is due to the unique affordances offered by the flexibility and intuitiveness of interaction with virtual objects and environments, the immersive experience and context-aware information visualization, perceptions about spatiality and dimensionality, and multi-modal (visual, auditory, and tangible) feedback. This symposium invites innovative research that incorporates technologies around virtual environments within concrete application contexts relevant to the domains of engineering and healthcare. Specific topics of interest include (but are not limited to): 
+
+•	Healthcare applications in VE 
+•	Designing VE for accessibility, disability, and wellbeing 
+•	Speech-driven interfaces for design & manufacturing 
+•	Virtual environments for decision making support
+•	Spatial reasoning, object recognition, and 3D tracking
+•	Human-machine/robot collaboration
+•	AR/VR-assisted assembly, disassembly, diagnosis, and equipment maintenance
+•	AR/VR and digital twins 
+•	Multi-user and distributed AR/VR systems in collaborative spaces
+•	Cyber physical system and Industry IoT with AR/VR
+•	Competence, performance, and usability assessment of AR/VR systems 
+•	Ergonomic analysis of AR/VR systems
+•	WebXR applications
+•	Virtual Classroom
+•	Immersive Training
+•	XR for Education 
+",Pietro,Piazzolla,pietro.piazzolla@polimi.it,Wenhao,Yang,wenhao.yang@lamar.edu,Marco,Rossini,marco.rossoni@polimi.it,,,,,,,,,,,,
+DAC-1: Control Co-Design,DAC,"The design of actively controlled dynamic engineering systems presents unique challenges and is playing an increasingly important role in society as active and other smart systems proliferate. This topic encompasses rigorous investigation of systematic control system design methods, as well as integrated methods that simultaneously address dynamic physical and control system design. The latter topic aims to achieve new levels of system performance and understanding through holistic design strategies. 
+
+Specific topics appropriate for this symposium may include:
+•	Investigation of systematic methods for control system design.
+•	Control co-design and other methods that generate system-optimal active system design solutions.
+•	Comprehensive treatment of physical system design elements in integrated active system design.
+•	Tradeoffs in shifting complexity between physical and control systems.
+•	Assessment of design coupling between physical and control system design.
+•	Dynamic system models appropriate for integrated physical and control system design.
+•	Optimal control advancements relevant to integrated active system design.
+•	Integrated design methods that account for the complexities of implementable real-time control systems (digital feedback control, stability, robustness, sensor/actuator dynamics, noise, and other limitations).
+•	Strategies for managing uncertainty in models, environment, use, manufacturing, and other sources of variation relevant to active dynamic systems.
+•	Testbeds and physical validation of active system design theory and methods.
+•	Emerging applications that benefit from integrated active system design.
+•	Development and validation of active system design guidelines and frameworks.",Daniel,Herber,daniel.herber@colostate.edu,Saeed,Azad,s-azad@onu.edu,,,,,,,,,,,,,,,
+DAC-2: AI & ML for Design/Synthesis with Real-World Complexity,DAC,"An important and emerging direction in design automation is the integration of the concepts of artificial intelligence (AI) and machine learning (ML) with engineering optimization to solve challenging real-world problems in engineering design and computational synthesis. With this session, the ASME Design Automation Committee thus invites researchers to submit papers that specifically involve solving design or computational synthesis problem(s) of real-world or similar complexity (and not solely toy or simple benchmark problems) through the application of AI and/or ML. The specific application problem and underlying models should be adequately described in these papers, along with a clear summary of why this design/synthesis problem is difficult or unviable to solve using non-ML/non-AI methods. Example application domains include (but are not limited to) aircraft systems, automobile systems, robotic systems, manufacturing systems, metamaterial systems, and clean energy systems. 
+
+Suggested topic areas covered under this session include:
+•	Deep-learning (DL) approaches in engineering design (incl. Bayesian DL, geometric DL, and reinforcement learning)
+•	Reasoning under uncertainty such as fuzzy-logic or Bayesian networks
+•	Physics-infused machine learning for design
+•	Bio-inspired algorithms (e.g., neuro-evolutionary and developmental systems) for complex system design
+•	Tree search algorithms applied to design problems
+•	Rule-based systems, graph or shape grammars systems
+•	Computational linguistics or logic methods applied to design",Manaswin,Oddiraju,manaswin.oddiraju@inl.gov,Steve,Paul,spaul@prescriptivedata.io,,,,,,,,,,,,,,,
+DAC-3: Novel AI or ML Frameworks for Design or Systems Science,DAC,"With this session, the ASME Design Automation Committee invites researchers to submit papers that specifically involve the use of AI and Machine Learning (ML) frameworks to advance design or systems science, by presenting new “general” ways for problem representation, formulation, modeling, solution and analysis of solutions. These could include fundamentally advancing the underlying AI/ML methods themselves, as long as those advancements are motivated by problem characteristics of interest to the design automation community. The presented frameworks are expected to apply to at least one or more significant class of design/systems problems, and are expected to be assessed via benchmark cases pertinent to that class of problems (including comparisons to existing approaches is recommended). A few examples of such classes of problems in design/systems science where AI/ML methods provide unique opportunities include computational synthesis, topology optimization, design under uncertainty, multidisciplinary design optimization (MDO), resource allocation, and operations planning and scheduling. 
+
+Suggested topic areas covered under this session include:
+•	Deep-learning (DL) approaches in design and systems science (incl. Bayesian DL, geometric DL and reinforcement learning)
+•	Physics-infused machine learning and scientific machine learning for design and systems science
+•	Design under uncertainty such as using Bayesian networks
+•	Bio-inspired AI algorithms for design space exploration
+•	Tree search algorithms and graph neural nets for design or systems representation (over topological and combinatorial spaces)
+•	Rule-based systems, computational linguistics and language models to support decision-making",Daniel,Selva,dselva@tamu.edu,Souma,Chowdhury,soumacho@buffalo.edu,JIe,Chen,jiechen@vt.edu,,,,,,,,,,,,
+DAC-4: Data-Driven Design,DAC,"Design is undergoing significant advances with the advent of big data. Designers now have access to large and diverse data sources, with examples ranging from increasingly detailed product usage data to completely new data sources such as social media and user-generated content. These data trends promise opportunities to improve how new products and systems are developed. However, despite the overabundance of digital design data and emphasis on knowledge representation, designers still face tremendous challenges in transforming data into actions. Data-Driven Design represents an emerging research area that aims to develop design tools and methods suited to discovering patterns in big data and transforming them into actionable decisions to improve the way products and systems are designed. Such capability will be achieved through statistical and machine learning models to discover and communicate meaningful patterns that influence design decisions and systematically search for innovation. 
+
+The ASME Design Automation Committee invites researchers to submit papers covering innovative approaches in this area, which may include: 
+•	Machine learning and data mining methodologies in product design 
+•	Supervised (e.g., classification, regression), semi-supervised (e.g., contrastive learning), and unsupervised (e.g., clustering, dimensionality reduction) data-driven approaches to improve or synthesize products 
+•	Data-driven inverse design for design generation and synthesis applications
+•	Exploring large and complex design spaces with machine learning methods 
+•	Visualization methods that lead to the identification of new or latent user needs or product relationships
+•	Data-driven approaches for analysis and design of socio-technical systems 
+•	Data collection and processing strategies, including crowdsourcing and related mechanisms for collecting user-generated, product-generated, or simulation data 
+•	New datasets and machine learning benchmarks to enable data-driven design
+•	Incorporating social media and user-generated content data in next-generation designs 
+•	Text mining and natural language processing algorithms for large and unstructured data sets 
+•	Data mining frameworks for single or multiple organizations and markets
+•	Integrating design data across company divisions (e.g., marketing, engineering, manufacturing) 
+•	Development and application of surrogate model techniques for design problems
+•	Design under multi-fidelity and noisy data sources 
+•	Methods and applications of interpretability in data-driven design
+•	Fairness, Accountability, and Transparency in data-driven design
+•	Implications of data security and privacy on the effectiveness of design analytics",Amir,Behjat,abehjat@prescriptivedata.io,Ferdous,Alam,mfalam@mit.edu,Hongrui,Chen,hongrui@mit.edu,,,,,,,,,,,,
+DAC-5: Design and Optimization of Energy Systems,DAC,"The numerous sources of energy and the various ways that humans consume it plays an important role in the design of many engineering systems. Growing concerns in recent years about climate change, predicted scarcity of fossil fuels, and energy security have triggered much interest in efficient energy generation, transmission/distribution, utilization and energy harvesting from sustainable resources. As government agencies and various industries make long term commitments to research and development in sustainable energy technologies, it falls to the design engineering community to promote, develop, and improve the appropriate modeling, design and optimization tools.
+
+The ASME Design Automation Committee and the session organizers invite papers focused on modeling, design and optimization of sustainable energy technologies. Topics of interest include, but are not limited to:
+
+•	Multidisciplinary design, analysis, and modeling of energy systems
+•	Optimal design of energy harvesting, storage and delivery systems
+•	Design and optimization of renewable energy systems, e.g. wind, solar, wave, tidal, geothermal, and hybrid systems (e.g., wind+storage, solar+storage, nuclear+renewable). 
+•	Design and optimization of electrical-thermal systems 
+•	Uncertainty quantification and resilience enhancement in energy systems
+•	Development of new/innovative energy technologies
+•	Socio-economic challenges in transitioning to renewable/sustainable energy technologies
+•	Economics, planning and project management of sustainable energy systems ",Ali,Mehmani,amehmani@prescriptivedata.io,Cong,Feng,Cong.Feng@nrel.gov,Roshni Anna,Jacob,Roshni.Jacob@utdallas.edu,Gulai,Shen,gulai_shen@gsd.harvard.edu,,,,,,,,,
+DAC-6/VIB-6: Design and Dynamics for the Blue Economy,DAC,"With this session, the ASME Design Automation Technical Committee and TC of Vibration and Sounds invite researchers to submit papers that focus on advancing design methods and systems science to address the emerging challenges and opportunities of the Blue Economy. The Blue Economy encompasses the sustainable use of ocean resources for economic growth, improved livelihoods, and ecosystem health, spanning domains such as marine renewable energy, aquaculture, marine transport, ocean monitoring, and coastal resilience. As global pressures on marine environments increase, design automation and systems approaches will play a crucial role in developing innovative, scalable, and resilient solutions.
+
+We welcome contributions that present new design representations, modeling approaches, dynamics, solution methods, and frameworks that extend the frontier of how engineering design can support sustainable ocean-based industries. Submissions may also highlight interdisciplinary integration, where engineering methods connect with ecological, social, and policy considerations. Approaches that enable optimization, control, uncertainty management, and lifecycle thinking for marine-related systems are particularly encouraged. Papers should demonstrate relevance through case studies, benchmarks, or comparative analyses that highlight how design automation and dynamics can directly contribute to advancing Blue Economy goals.
+
+Suggested topic areas covered under this session include:
+•	Design methodologies, dynamic modelling, prototypes, and testing for offshore renewable energy systems (wave, tidal, floating wind)
+•	Sustainable aquaculture systems and marine food production design
+•	Ocean-based carbon capture, sequestration, and monitoring systems
+•	Autonomous marine vehicles and robotics for exploration, monitoring, and operations
+•	Multi-objective design under uncertainty for coupled ocean–human systems
+•	Circular economy strategies for marine materials, products, and infrastructure
+•	Resilient coastal and port infrastructure design for the Blue Economy and climate adaptation
+•	Computational tools and frameworks for marine ecosystem services integration
+•	Systems-level analysis and optimization for ocean resource allocation and governance",Maha,Haji,mhaji@umich.edu,Daniel,Herber,Daniel.Herber@colostate.edu,Lei,Zuo,leizuo@umich.edu,,,,,,,,,,,,
+DAC-7/DFMLC-03: Joint Session with DFMLC: Design for Additive Manufacturing,DAC,"The ASME DFMLC and DAC Committees and the organizers of the session on Design for Additive Manufacturing invite full papers, reviews, and technical presentations in areas of layered manufacturing, rapid prototyping, environmental impacts of additive manufacturing, social impacts of additive manufacturing, design principles for additive manufacturing, design automation for AM, complexity modeling in AM, geometric modeling, AM standardization, design-process-properties interactions, synthesis and assemblies using AM, intellectual property, supply chain design of additive manufacturing, and related topics. Papers covering design automation, direct application of design for manufacturing principles to AM, and life cycle considerations for AM are of particular interest.",Xinyi,Zhao,xinyi.xiao@unt.edu,Ketki,Lichade,ketkilic@buffalo.edu,Hannah,Budinoff,hdb@arizona.edu,Monsuru ,Ramoni,monsuru.ramoni@utrgv.edu,,,,,,,,,
+DAC-8: Design for Resilience and Failure Recovery,DAC,"Resilience defines the ability of an engineered system to sense and withstand adverse events and recover from the effects of these events. Adapting resilience concepts to engineering design for creating resilient engineered systems is an emerging research area. This session on ""Design for Resilience and Failure Recovery"" calls for papers addressing a wide range of topics in the design of resilient engineered systems and processes. 
+
+The interest includes, but is not limited to, the following topics: 
+•	Advanced Systems Engineering research for resilience, such as engineering resilience modeling and quantification, cost-benefit analysis, and social and economic impacts analysis
+•	New performance measures for resilience, such as reliability, survivability, vulnerability, and recoverability or capability of failure mitigation/recovery 
+•	New design concepts and techniques for autonomous resilience realization through the design of complex engineered systems and processes 
+•	New approaches to integrating post-design failure recovery activities (e.g., condition monitoring, predictive maintenance, reconfiguration, and retrofits) in the early-stage design of engineered systems 
+•	Advanced system performance awareness and management techniques enabling engineering resilience, such as machine learning and deep learning techniques for condition monitoring, fault diagnosis, and failure prognosis, and decision-making methodologies/algorithms for failure mitigation/recovery 
+•	Advanced techniques for design integration towards engineering resilience, such as reliability-based design, sensing system development, advanced failure prediction techniques, failure mitigation/recovery, design considering system retrofits, reconfigurable system design, and open architecture products design 
+•	Successful applications of engineering resilience for complex engineered systems and processes (e.g., critical infrastructure systems and processes, computer networks, energy systems, power systems, transportation systems, and supply chains) ",Zequn,Wang,zequnwang@uestc.edu.cn,Zheng,Liu,zhengtl@umich.edu,Yanwen,Xu,Yanwen.Xu@utdallas.edu,,,,,,,,,,,,
+DAC-9: DAC/MESA Joint Symposium: Design of Complex Systems,DAC,"As the next generation of systems continues to grow in functionality and requirements, it becomes complex when the elements it is comprised of interact in a way that gives rise to emergent behavior. The objective is to advance the fundamental understanding of complex systems design so that this emergent behavior can be observed, anticipated, predicted, and eventually controlled. The ASME Design Automation Committee invites contributions that address topics of complex systems design, including, but not limited to:
+•	Characterization of complex systems
+•	Design and management of complex systems
+•	Uncertainty quantification and risk management in complex systems
+•	Complexity quantification, modeling, and management
+•	Validation of complex system designs
+•	Bio-inspired studies of complex systems
+•	Modeling and management of emergent behavior within the context of engineering design
+•	Economic paradigms for modeling complex systems
+•	Massive collaboration and crowd-sourcing methods for complex systems design
+•	Decentralization and self-organization in complex systems
+•	Network theory and applications in the design of complex systems
+•	Human factors and machine-human interactions in complex systems
+•	Applications of artificial intelligence to the design of complex systems
+This year, the Design Automation Conference (DAC) and the International Conference on Mechatronic and Embedded Systems and Applications (MESA) will jointly organize this session on ""Design of Complex Systems."" Both societies seek to foster collaboration and exchange of new ideas among researchers and practitioners across multidisciplinary fields such as aerospace engineering, energy systems, robotics and mechatronics, network engineering, manufacturing systems, industrial and system engineering, robotics, AI, cyber-physical systems, etc. This session aims to explore cutting-edge methodologies and technologies for designing and controlling complex and integrated systems that address real-world challenges.
+",Cheng,Chen,cc1115@uah.edu,Po Ting ,Lin,potinglin223@gmail.com,Yinshuang,Xiao,yinshuang.xiao@colostate.edu,,,,,,,,,,,,
+DAC-10: Design of Engineering Materials and Structures,DAC,"The ASME Design Automation Committee and the organizers of this Special Session invite papers that address the challenges of using modeling and simulation to design engineering materials and structures. 
+
+Representative topics include: 
+•	Simulation-based design methods for enabling accelerated development of engineering materials
+•	Multiscale and multiphysics modeling and simulation to support the design of advanced materials and structures
+•	Data-driven design of materials and structures
+•	Integrated design of products, fabrication processes, and materials
+•	Novel materials and structures by design and their applications
+•	New experimental results or new experimental techniques to support the design of materials and structures
+•	Topology optimization theory, methods, and applications
+•	Stochastic topology optimization and uncertainty quantification and management for materials and structures
+•	Manufacturing considerations in topology, size, and shape optimization
+•	High-performance computing for large-scale topology optimization
+•	Machine learning and AI methods for topology optimization
+",Hongyi,Xu,hongyi.3.xu@uconn.edu,Liwei,Wang,liweiw@andrew.cmu.edu,Kentaro,Yaji,yaji@mech.eng.osaka-u.ac.jp,,,,,,,,,,,,
+DAC-11/DFMLC-10: Joint Session Engineering for Sustainable Development,DAC,"Engineering for Sustainable Development (ESD) refers to the broad interdisciplinary practice of engineering to improve the quality of life of society and the environment worldwide. Our world faces challenges of unprecedented scale, such as climate change, food insecurity, disease, access to safe and reliable water, and growing economic inequality. Making progress towards solving such challenges requires interdisciplinary and transdisciplinary approaches from various backgrounds and fields. Engineers can play pivotal roles in addressing these challenges by reducing the progression of climate change, mitigating the impact of global and local emergencies, promoting economic development, reducing inequality, and advancing social justice and sustainable development. 
+
+Advancing engineering for sustainable development includes:
+•	Applying engineering principles and solutions to humanitarian aid, disaster response efforts, and community resilience.
+•	Advancing methods for improved economic, social, and environmental sustainability in product and systems design.
+•	Developing and applying methodologies that center community perspectives and environmental sustainability in design processes.
+•	Considering dynamic and interconnected systems by integrating contextual factors, such as social, institutional, and political considerations, into engineering design.
+•	Prioritizing social justice, diversity, equity, and inclusion in engineering, systems design, and product development.
+•	Using interdisciplinary and multi-stakeholder approaches in engineering.
+•	Mitigating and adapting to the effects of climate change, including advancing methods to reduce pollution and consumption.
+•	Developing tools and processes that can promote economic development and reduce poverty.
+•	Training and educating new and experienced engineers in ESD principles and methods.
+In particular, this year, the DFMLC and DAC technical committees have initiated a joint session on “Design for the Sustainable Development Goals across the Life Cycle” and invite full papers, reviews, and technical presentations related to design for one or more of the seventeen United Nations 2030 Sustainable Development Goals (SDGs) - across product, system, and/or service life cycles. Areas of interest include material processing, energy production, manufacturing, material recycling, remanufacturing, impact analysis, modeling, and related topics. Projects related to climate change, clean water and sanitation, clean energy, resilient infrastructure, sustainable cities, and sustainable consumption and production are of particular interest.
+",Natasha,Wright,natasha@umn.edu,Grace,Burleson,Grace.Burleson@colorado.edu,Amy,Bilton,bilton@mie.utoronto.ca,Abigail ,Clarke-Sather,abbie@d.umn.edu,,,,,,,,,
+DAC-12: Geometric Modeling and Algorithms for Design and Manufacturing,DAC,"The ASME Design Automation Committee and the Organizers of the Special Session on Geometric Modeling and Algorithms for Design and Manufacturing invite papers that deal with theoretical and/or applied geometric methods spanning all phases of the design and manufacturing process (i.e., conceptual design to validation), including:
+
+•	Geometric representations and algorithms for 3D shapes
+•	Heterogeneous material representations for design and process planning
+•	Data driven geometric reasoning and processing
+•	Generative shape synthesis
+•	Conceptual design
+•	Model and feature similarity, matching, retrieval, and reconstruction
+•	Geometric problems in manufacturing, including:
+•	Path planning for NC machining, additive manufacturing
+•	Manufacturability analysis and manufacturing process selection
+•	Manufacturing planning, fabrication and inspection
+•	Geometric modeling and algorithms using high performance/ distributed computing
+•	Multi-scale design and modeling
+•	Visual or haptic geometry rendering
+•	Geometric dimensioning and tolerancing
+•	Meshing
+•	Open problems and emerging issues
+",Horea,Ilies,ilies@engr.uconn.edu,,,,,,,,,,,,,,,,,,
+DAC-13: Multidisciplinary Design Optimization ,DAC,"The ASME Design Automation Committee invites papers on Multidisciplinary Design Optimization (MDO) with emphasis on multi-objective optimization, sensitivity analysis theory, and design of modular and reconfigurable systems. Papers submitted to this session should focus on the optimal design of complex engineering systems with the consideration of the interactions between multi-disciplinary system components, multiple design objectives, modular and reconfigurable systems. Sample topics of interest include, but are not limited to the following:
+
+•	Multi-objective, multi-disciplinary optimization
+•	Multi-objective, multi-disciplinary design under uncertainty
+•	Surrogate modeling for multi-objective, multi-disciplinary system design
+•	Local and global multi-objective sensitivity analysis
+•	Quality metrics for multi-objective solutions
+•	Multi-fidelity analysis and design
+•	System design problem formulation and decomposition
+•	Trade-off analysis
+•	Distributed/multi-level approaches
+•	Simulation process integration & automation
+•	Optimization and coordination algorithms
+•	Engineering design applications of multi-objective optimization and/or sensitivity analysis
+•	Design methods and tools for modular and reconfigurable systems
+•	Modeling and simulation for modular and reconfigurable systems 
+•	CAD and innovative simulation methods for modular and reconfigurable system design 
+•	Architecture management for modular and reconfigurable systems 
+•	Modeling and simulation assessment for complexity in modular and reconfigurable systems
+•	Optimization for modular and reconfigurable systems
+•	Cost evaluation approaches for modular and reconfigurable systems
+•	User-centered modeling and simulation for modular, reconfigurable systems
+•	New case studies for modular and reconfigurable systems in supply chains and services
+•	Practical applications in integrating modular and reconfigurable systems
+•	Parallel processing/high-performance computing
+•	Visualization and software implementation",Shiguang,Deng,sdeng@ku.edu,Seung Ki,Moon,skmoon@ntu.edu.sg,Chen,Zeng,czeng2@buffalo.edu,Kijung,Park,kjpark@inu.ac.kr,,,,,,,,,
+"DAC-14: Design, Generative Design, and Decision Making Under Uncertainty",DAC,"Uncertainty quantification plays a critical role in a wide range of design applications that have far-reaching impacts on aerial and ground transportation, large-scale structures, national security, medicine, and beyond. Motivated by this pressing need, we invite papers that investigate the theoretical and/or applied aspects of one or more of the following topic areas:
+
+•	Uncertainty quantification and propagation in complex engineering systems such as materials, meta-materials, and manufacturing processes
+•	Physics-informed uncertainty quantification in scarce data applications
+•	Uncertainty quantification and modeling in generative design
+•	Data collection and optimization under uncertainty including robust- and reliability-based design optimization
+•	Diagnostics for systems and uncertainty source identification
+•	Preference modeling and elicitation in design under uncertainty
+•	Multi-fidelity and surrogate modeling for design under uncertainty
+•	Quantification of model uncertainty in machine learning
+•	Uncertainty reduction and risk management in design
+•	Stochastic methods for the design of multiscale engineering systems
+•	Modeling, analysis, and design involving stochastic processes and/or random fields
+•	Lifecycle analysis and design under uncertainty
+•	Teaching design under uncertainty
+•	Case studies and industrial design applications that illustrate quantitative treatment of uncertainty
+",Ramin ,Bostanabad,raminb@uci.edu,Xiaoping,Du,duxp@purdue.edu,Leifur J,Leifsson,leifur@purdue.edu,Anton van,Beek,anton.vanbeek@ucd.ie,,,,,,,,,
+DAC-15: Human-AI Collaboration in Engineering System Design,DAC,"Powered by state-of-the-art machine learning methods, Artificial Intelligence (AI) systems can support human partners in new ways to address complex challenges in engineering design and systems engineering. These systems have the potential to be an integral part of our daily lives or future workforce in a physical form as intelligent vehicles or robots or in a virtual form as decision support systems. These systems can support individual decision-making or work with human partners in a team. The ASME Design Automation Committee and the organizers of this session invite researchers to submit papers that deal with the theoretical development and/or application of AI systems or methods that aim to support or work with human partners.
+
+Sample topics of interest include but are not limited to:
+ 
+•	Human-AI collaboration architectures
+•	Adaptive machine learning methods to collaborate with human partners
+•	Creative design process using LLMs
+•	Automated design with a human-in(on)-the-loop powered by Agentic AI
+•	Goal setting and goal reasoning for collaborative AI systems
+•	Decision support systems
+•	Human factors in human-AI collaboration, including trust, workload, cognitive biases, knowledge and awareness
+•	Division of labor, communication, and problem coordination in human-AI collaboration
+•	Safety in human-AI collaboration
+•	Design and application of human-AI teams and mixed-initiative systems
+•	Design of AI system characteristics for human use, including transparency, robustness, reliability, and fairness
+",A. Emrah ,Bayrak,bayrak@lehigh.edu,Namwoo,Kang,nwkang@kaist.ac.kr,Hemanth,Manjunatha,hemanth.manjunatha@okstate.edu,,,,,,,,,,,,
+DAC-16: Design of Autonomous Systems,DAC,"As the world is moving towards increasing the autonomy of engineered systems, from transportation to manufacturing to household appliances, there is also an increasing need for understanding how the design of these systems should evolve or change radically to allow safe, robust, and efficient autonomous operation.  In most engineering sectors, infusion of autonomy has often happened at the software level, supported by added sensors and computing hardware, while the fundamental physical design (geometry, structure, actuators, instrument layout, etc.) of these systems has remained only mildly altered from their earlier generations that were completely or partly human operated.  Hence, there is an important opportunity for design automation researchers to identify, develop, and test existing and novel representations and methodologies to design engineered autonomous systems, one in which the system design deliberately supports autonomous operation.  This symposium invites researchers to submit papers that address this opportunity, with application areas of interest including but not limited to advanced manufacturing, autonomous cars, autonomous ground and aerial vehicles, smart appliances, and cyber-physical systems (e.g., micro-grids). Topic areas of interest include: 
+•	Formal approaches to identify design specifications of autonomous systems 
+•	Architecture representations of engineered autonomous systems 
+•	Modeling of autonomy in engineered systems (e.g., in terms of independence, task complexity, and AI) 
+•	Safety, reliability, robustness, and trustworthiness characterization of engineered autonomous systems
+•	Analysis, modeling, and design for sensing network, detection, tracking, and control of autonomous systems
+•	Methods for hardware-software concurrent design (co-design) of robotic systems 
+•	Design for safe human-machine interactions in autonomous co-robotic or vehicular systems 
+•	Survey of design evolution of vehicular systems with increasing autonomy (cars, spacecraft, urban air mobility, etc.) 
+",Ehsan ,Esfahani,ehsanesf@buffalo.edu,Zhimin,Xi,zhimin.xi@rutgers.edu,Steve,Paul,stevepau@buffalo.edu,,,,,,,,,,,,
+DAC-17/DFMLC-11: Joint Session with DFMLC: Modeling and Optimization for Sustainable Design and Manufacturing,DAC,"The ASME Design Automation Committee and the Session Organizers of the Special Session on Sustainable Design invite papers that deal with the theoretical and/or applied aspects of environmental or social sustainability in engineering. Paper topics of interest include:
+•	Sustainable design principles
+•	Multidisciplinary factors in sustainable design
+•	Modeling and simulation methods for sustainable design 
+•	Resilient and sustainable systems
+•	Trade-offs in sustainable design
+•	Uncertainty in sustainable design
+•	Sustainable design of complex systems
+•	Economic, environmental, and social metrics in design
+•	Socio-economic systems in sustainable design
+•	Socio-technical systems in sustainable design
+",Daniel,Cooper,drcooper@umich.edu,Yong Hoon ,Lee,yhlee@memphis.edu,Chris ,Mabey,cmabey@clemson.edu,,,,,,,,,,,,
+DAC-18: The Automation of Artistic and Creative Design,DAC,"The synthesis and automated generation of art presents an interesting design automation problem because it involves exploring a design space without the ability to rely on traditional measures for quality and presents the opportunity for novel definitions of fitness during optimization. While this problem might seem trivial, the generation of art through machine intelligence surfaces a high degree of nuance and is becoming a problem of interest to the engineering design community. Common existing methods for automated art include procedural generation or unstructured connectivism approaches. However, many other methods have been developed by the design automation community in the past that could be applied in this domain. Additionally, previously overlooked approaches from fine art might be found to have applications in engineering design.
+The ASME Design Automation Committee and the session organizers invite papers focused on generative art, mathematical representations of artistic designs, or modeling creative decision-making. Topics of interest include, but are not limited to:
+•	Automated design synthesis for art
+•	Novel approaches to generative art
+•	Mathematical representations of creative processes
+•	Applications of techniques from fine art to design automation
+•	Machine learning for the creation of art
+•	Attempts to represent, capture, or create desired emotional responses to designs
+•	Design grammar for non-traditional engineering problems",Ada-Rhodes,Short,ada-rhodesshort@unomaha.edu,Bryony,DuPont,bryony.dupont@oregonstate.edu,,,,,,,,,,,,,,,
+DAC-19: UQ of ML Models for Data-Driven Design,DAC,"The advances in data collection, storage, and processing techniques, along with progress in algorithmic development and computational capabilities, have enabled data-driven design for even complex systems. However, such data-driven approaches are bound to have uncertainties associated with the amount of data, data quality, and the ability of model architectures. It is, therefore, increasingly important to enable decision-making based on model confidence. The ASME Design Automation Committee and the organizers of the special session on Uncertainty Quantification of Machine Learning Models for Data-Driven Design invite researchers to submit papers covering innovative approaches and development in:
+•	Bayesian and non-Bayesian methods for data-driven design
+•	Uncertainty quantification methods for machine learning and deep learning models
+•	Machine/Deep learning model architectures capturing uncertainty
+•	Methods for separating and quantifying aleatoric and epistemic uncertainty
+•	Verification and Validation of Machine Learning Models for data-driven design
+•	Procedures and metrics for evaluating the quality of uncertainty quantification
+•	Confidence- and risk-based decision making
+•	Explainable and trustworthy machine learning for engineering design, fault diagnosis, and failure prognosis
+•	Uncertainty quantification for supervised and semi-supervised deep learning
+•	Applications of uncertainty quantification of ML models to various engineering design domains such as reliability-based design, generative design, materials design, design for additive manufacturing, fault diagnosis, and failure prognosis",Zhen,Hu,zhennhu@umich.edu,Anh,Tran,anh.vt2@gmail.com,,,,,,,,,,,,,,,
+DAC-20: AI-Driven Design Innovation,DAC,"Design innovation in a traditional sense heavily relies on individuals’ capabilities and luck, which are highly uncertain. With advances in artificial intelligence (AI) and machine learning (ML), we can build tools that either inspire designers to generate new ideas or directly propose new solutions. This can significantly shorten the cycle of design innovation and reduce the uncertainty of its outcome. This session calls for papers that address the emerging need for AI-driven design innovation research. This includes AI, ML, statistical methods, or any other approaches that can (1) generate innovative solutions beyond existing ones, (2) extract generalizable knowledge that helps solve new problems effectively, and (3) inspire new design ideas. Particularly, this section will focus on AI’s functionality beyond the domain of training data by enabling better generalizability, uncertainty quantification, explainability, or reasoning capability. These capabilities allow AI to contribute to design innovation in two key ways: synthesizing creative solutions and extracting useful insights to foster creativity. Note that our scope is not limited to data-driven approaches. 
+
+Potential topics include, but are not limited to
+•	The effectiveness or limitations of generative AI (e.g., deep generative models, large language models, and agentic AI systems) in design innovation
+•	Trustworthy and explainable AI methods that support design innovation
+•	Generative design methodologies that promote creativity
+•	AI techniques for novel bio-inspired design discovery
+•	Symbolic reasoning and knowledge graphs for identifying design rules or governing mechanisms
+•	AI-driven tools that stimulate new design ideas
+•	Metrics and Methods to characterize and measure novelty and creativity in AI-generated designs
+•	AI/ML-based inverse design methods that are effective with sparse data and can generalize to a wider range of scenarios
+•	Reinforcement learning or evolutionary computation methods that can generate novel design solutions
+•	Methods to extract generalizable design principles 
+•	Studies on how human-AI collaboration can promote creativity",Wei (Wayne) ,Chen,w.chen@tamu.edu,Binyang ,Song,binyang.song@ntu.edu.sg,Ting,Liao,tliao@stevens.edu,,,,,,,,,,,,
+DAC-21: Early Career Research: Lightning Talks,DAC,"This special symposium aims to provide early career researchers, including junior scientists, research faculty, post-doctoral fellows, and junior assistant professors, a robust platform to present exciting Late Breaking Results. To be eligible for this symposium, the presenter must be within five years of receiving their Doctoral Degree. With this goal, we invite early career researchers to submit a presentation-only abstract that leads to a 15-minute talk highlighting exciting developments in their research. All Design Automation topics, as covered by the other sessions under DAC, are within the scope of this special symposium. ",Zhen,Hu,zhennhu@umich.edu,Zhenghui,Sha,zsha@austin.utexas.edu,Souma,Chowdhury,soumacho@buffalo.edu,,,,,,,,,,,,
+DAC-22: Cultivating Datasets for Engineering Design,DAC,"In today's rapidly evolving world, data has become crucial across industries, especially in engineering. Tools like ChatGPT, Claude, and Stable Diffusion have been enabled mostly by extensive and well-accessible datasets, and have shown to the greater public the capabilities of data-driven methods. In engineering design, data-driven methodologies have also contributed to advances in design theory, decision processes, optimization techniques, and educational programs. In particular, these approaches also enable faster design exploration and real-time operational management. However, implementing machine learning in engineering design faces several obstacles: a scarcity of publicly accessible datasets, insufficient sample sizes and feature counts in existing datasets, and a lack of high-quality datasets that incorporate functional performance metrics.
+The IDETC session on datasets would provide a platform for the design community to discuss what is high-quality data, publicly release datasets, and present methods for sampling, collecting, cleaning, and using data, to specifically address the needs of engineering designs. Some critical challenges in engineering dataset creation include multi-modality, user inputs, handling missing information, managing diverse data types, navigating dependencies among attributes, ensuring data quality, and integrating complex data structures and real-time data.
+To differentiate from other data-driven sessions, submissions to this session need to release a novel dataset as part of their submission and dedicate a section of their paper to describing the dataset and its relevance for engineering design.",Cyril ,Picard,cyrilp@mit.edu,,,,,,,,,,,,,,,,,,
+DAC-23: Digital Twin for Design and Decision-making,DAC,"Digital twin technology, often regarded as one of the most transformative developments in recent years, is reshaping both scientific discovery and industrial practices. By establishing a dynamic, bidirectional connection between physical systems and their virtual counterparts, digital twins offer a real-time, continuously updated model that evolves with its real-world counterpart. Unlike traditional modeling and simulation, digital twins allow for predictive capabilities that extend beyond existing data, offering critical insights to inform both automated and human decision-making processes.
+This session, organized by the ASME Design Automation Committee, serves as a premier platform for researchers, engineers, and industry professionals to share state-of-the-art developments in digital twin technology with applications for design automation and decision-making. We invite submissions that introduce innovative techniques, groundbreaking methodologies, and novel research directions in the development and application of digital twins. 
+
+Topics may include, but are not limited to:
+Topic 1: Digital Twin Fundamentals
+•	Concepts and theories
+•	Architecture and frameworks
+•	Methodology, lifecycle, and processes
+•	Data-driven modeling and technologies
+•	Validation, verification, and uncertainty quantification
+Topic 2: Digital Twin Interaction and Communication, Security, and Privacy
+•	Interaction between physical and virtual twins
+•	Distributed digital twin systems
+•	User interactions with digital twins
+•	Digital twins for cybersecurity
+Topic 3: Digital Twin Systems and Applications
+•	Automation and manufacturing
+•	Digital health and assisted systems
+•	Smart cities and transportation
+•	Automotive and aerospace
+•	Sustainable energy
+",Yanwen,Xu,Yanwen.Xu@UTDallas.edu,Anabel  ,Renteria,arenteriamarq@utep.edu,,,,,,,,,,,,,,,
+DAC-24: Design for E-Mobility,DAC,"The rapid growth of electric mobility—including electric vehicles, aircraft, and marine systems—requires breakthroughs in material design, battery innovation, structural optimization, and energy harvesting technologies. Artificial intelligence (AI) offers powerful tools for accelerating these advances by enabling data-driven modeling, generative design, and multi-scale optimization across materials, devices, and systems. This symposium will highlight the integration of AI into the design of next-generation e-mobility technologies, with emphasis on energy-efficient, sustainable, and high-performance solutions.
+
+Topics of interest include:
+•	AI-guided design automation for multifunctional components in electrified mobility platforms
+•	Data-driven modelling and optimization of battery and hybrid energy storage systems for transportation
+•	Design of structural systems for electric ground vehicles, urban air mobility, and marine platforms
+•	AI-enabled design for on-board energy harvesting and management in mobile systems
+•	Generative design and topology optimization targeting multifunctional e-mobility components
+•	Digital twins for real-time monitoring and predictive design of batteries, materials, and subsystems in mobility
+•	Lifecycle-aware design strategies for sustainable and circular e-mobility solutions
+•	System-level integration of propulsion, storage, and renewable charging infrastructures for mobility
+•	Application-driven case studies in electrified transportation ecosystems
+•	Quantum and high-performance computing for next-generation design automation in mobility systems",Wenhua,Yang,weyang@pvamu.edu,Xiaoshi,Su,xiaoshi.su@toyota.com,Lei,Chen,leichn@umich.edu,Paghava,Kommalapti,Rrkommalapati@pvamu.edu,,,,,,,,,
+DEC-01: AI in Design Education,DEC,AI in Design Education,Arlindo,Silva,arlindo_silva@sutd.edu.sg,Shraddha,Joshi,joshisp@jmu.edu,Rahul ,Renu,rrenu@austincollege.edu,Rohan,Prabhu,prabhur@lafayette.edu,,,,,,,,,
+DEC-02: Innovative Practices in Design Education,DEC,Innovative Practices in Design Education,Arlindo ,Silva,arlindo_silva@sutd.edu.sg,Shraddha ,Joshi,joshisp@jmu.edu,Rahul,renu,rrenu@austincollege.edu,Rohan,Prabhu,prabhur@lafayette.edu,,,,,,,,,
+DEC-03: Project-Based Design Education,DEC,Project-Based Design Education,Arlindo ,Silva,arlindo.silva@sutd.edu.sg,Shraddha,Joshi,joshisp@jmu.edu,Rahul,Renu,rrenu@austincollege.edu,Rohan ,Prabhu,prabhur@lafayette.edu,,,,,,,,,
+DEC-04: Research Across the Design Curriculum,DEC,Research Across the design curriculum,Arlindo ,Silva,arlindo_silva@sutd.edu.sg,Shraddha ,Joshi,joshisp@jmu.edu,Rahul,Renu,rrenu@austincollege.edu,Rohan,Prabhu,prabhur@lafayette.edu,,,,,,,,,
+DEC-05: Social Topics in Design Education,DEC,Social Topics in Design Education,Arlindo,Silva,arlindo_silva@sutd.edu.sg,Shraddha,Joshi,joshisp@jmu.edu,Rahul,Renu,rrenu@austincollege.edu,Rohan,Prabhu,prabhur@lafayette.edu,,,,,,,,,
+DFMLC-01: Circular Economy Design and Impact Assessment,DFMLC,"The ASME DFMLC Committee and the organizers of the session on Circular Economy Design and Impact Assessment invite full papers, reviews, and technical presentations in the areas of circular product design, circular supply chains, and measuring circularity impacts. Submissions may deal with modeling, methodology, cost estimation, standards and tools, case studies, and industrial applications.
+
+Concerns about overconsumption, overproduction, and waste generation have led to public policy and company commitments that pose a transition to a circular economy to alleviate these concerns. To ensure the successful implementation of circularity, new methods of measurement are needed to predict, characterize, and improve the environmental, economic, and social performance of existing and future product systems. The topics of this session will consider, but are not limited to, the following subjects: performance-driven circular product design, defining circularity for emerging industries, circularity assessment and measurement, social impact consideration for circularity, and supply chain coordination to support circularity. This year, we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies, as well as the scalability, both up and down, of solutions presented in their work.",Ashley,Hartwell,ashley.hartwell@nist.gov,Abigail,Clarke-Sather,abbie@d.umn.edu,,,,,,,,,,,,,,,
+DFMLC-02: Decision Making in Life Cycle and Human Factors Design,DFMLC,"The ASME DFMLC Committee and the organizers of the session on Life Cycle and Human Factors Decision Making invite full papers, reviews, and technical presentations on decision making in product life cycle management and service life cycles. Submissions may deal with domain modeling, methodology, standards and tools, case studies, and industrial applications. Typically, life cycle and human factor decisions are made under uncertainty, have great influences on the outcome, and often need to take into account the trade-offs involving different parameters, conflicting and changing requirements, and multiple stakeholders. Submissions related to visualization and communication during design and decision making are of particular interest. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Hao,Zhang,zhang9hx@jmu.edu,Paul,Egan,Paul.Egan@ttu.edu,Vincenzo,Ferrero,vjf@amazon.com,,,,,,,,,,,,
+DFMLC-03/DAC-7: Joint Session Design for Additive Manufacturing,DFMLC,"The ASME DFMLC and DAC Committees and the organizers of the session on Design for Additive Manufacturing invite full papers, reviews, and technical presentations in areas of layered manufacturing, rapid prototyping, environmental impacts of additive manufacturing, social impacts of additive manufacturing, design principles for additive manufacturing, design automation for AM, complexity modelling in AM, geometric modeling, AM standardization, design-process-properties interactions, synthesis and assemblies using AM, intellectual property, supply chain design of additive manufacturing, and related topics. Papers covering design automation, direct application of design for manfacturing principles to AM, and life cycle considerations for AM are of particular interest. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Fiona,Zhao,yaoyao.zhao@mcgill.ca,Hannah,Budinoff,hdb@arizona.edu,Monsuru,Ramoni,monsuru.ramoni@utrgv.edu,Xinyi ,Zhao,xinyi.zhao@unt.edu,Ketki ,Lichade,ketkilic@buffalo.edu,,,,,,
+DFMLC-04: Design for Large and Distributed Systems,DFMLC,"The ASME DFMLC Committee and the organizers of the session on Design for Large and Distributed Systems invite full papers, reviews, and technical presentations on the design, manufacturing, and realization of large and distributed systems with manufacturing and/or life cycle consideration. Submitted papers may deal with modeling, methods, policy, system integration, system interfaces, verification and validation, experimental design validation, system response to disruptions, design tools and other relevant areas. Topics of interest include but are not limited to manufacturing and production systems, large-area additive manufacturing, autonomous construction systems, distributed physical networks for communication and electrical vehicles, electrical grids, emergency response systems, mining and material production, waste collection and recycling systems, steel production systems, agricultural production systems, hybrid manufacturing systems , aircraft and space systems, shipping and ports, driverless vehicle networks, and similar large systems. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Charles,Peterson,cp44@illinois.edu,Albert ,Patterson,aepatterson5@tamu.edu,,,,,,,,,,,,,,,
+"DFMLC-05: Design for Manufacturing, Assembly, and Integration",DFMLC,"The ASME DFMLC Committee and the organizers of the session on Design for Manufacturing, Assembly, and Integration invite full papers, reviews, and technical presentations covering design principles for minimizing the number of parts, ease of fabrication, ease of assembly, ease of packaging, modular design, tolerance analysis, geometric dimensioning tolerancing (GD&T), and optimization of manufacturing and assembly processes. Submitted papers may deal with domain modeling, methodology, standards and tools, case studies, and industrial applications. Work that can contribute to new standards in the future is of particular interest. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Sara,Behdad,sara.behdad@essie.ufl.edu,Charul,Chadha,charul.chadha@wsu.edu,,,,,,,,,,,,,,,
+DFMLC-06: Design for Recycling and End-of-Life,DFMLC,"The ASME DFMLC Committee and the Organizers of the session on Design for Recycling and End-of-Life invite full papers, reviews, and technical presentations related to recycling and end-of-life considerations. Topics of interest include but are not limited to design for recycling and recovery of high-value materials, battery recycling, system decomissioning and reuse, system life and cost predictions considering retirement, used part re-validation and certification, recycling standards, use of recycled materials and parts in space, testing standards, part functionality degredation, and related areas. Submissions related to green energy technologies and electric vehicles are of particular interest. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Abigail,Clarke-Sather,abbie@d.umn.edu,,,,,,,,,,,,,,,,,,
+DFMLC-07: Design for Remanufacturing and Multiple Life Cycles,DFMLC,"The ASME DFMLC Committee and the organizers of the session on Design for Remanufacturing and Multiple Life Cycles invite full papers, reviews, and technical presentations related to remanufacturing and design for multiple life cycles. Areas of interest include remanufacturing and refurbishment of consumer products, redesign of legacy parts and systems for new manufacturing processes, recovery, cleaning, and reassembly processes, design of products and systems for remanufacturing, design of products for multiple life cycles, evaluation methods, modeling, cost and life cycle analysis related to remanufacturing, certification and re-certification processes, risk analysis, and related topics. Projects related to green energy technologies, batteries, and electric vehicles are of particular interest. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Daniel,Cooper,drcooper@umich.edu,Albert,Patterson,aepatterson5@tamu.edu,,,,,,,,,,,,,,,
+DFMLC-08: Design for Supply Chain and Mass Customization,DFMLC,"The ASME DFMLC Committee and the organizers of the session on Design for Supply Chain, Circular Economy, and Mass Customization invite full papers, reviews, and technical presentations in areas of the product supply chain, inventory management, mass customization, product disassembly, re-use, design for take-back management, design for upgrade, performance analysis of recovery operations, end-of-life (EOL) profitability, circular economy, market positioning and consumer preference modeling of used products, and related topics. Submitted papers may deal with domain modeling, automation, methodology, standards and tools, case studies, and industrial applications. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Sara,Behdad,sara.behdad@essie.ufl.edu,Paul,Egan,Paul.Egan@ttu.edu,Yongxian,Zhu,yongxian.zhu@anl.gov,,,,,,,,,,,,
+DFMLC-09: Design of Product-Service and Energy Systems,DFMLC,"The ASME DFMLC Committee and the organizers of the session on Design for Product-Service and Energy Systems invite full papers, reviews, and technical presentations in the areas of product mass customization and product-service systems. Submissions may deal with domain modeling, methodology, cost estimating of PSS, standards and tools, case studies, and industrial applications. Concerns over sustainable production and consumption have led to the transformation of market structures and competitive situations into the direction of customization, flexibility, and servitization, i.e. competing through services as opposed to competing through products. The topics of this session will consider but are not limited to the following subjects: Green buildings, energy-efficient industrial systems, renewable energy systems, electric power systems, life cycle in energy manufacturing systems, and power for transportation systems (aircrafts, automobiles, ships, trains). This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Amin,Mirkouei,amirkouei@uidaho.edu,Junfeng,Ma,ma@ise.msstate.edu,,,,,,,,,,,,,,,
+DFMLC-10/DAC-11: Joint Session Engineering for Sustainable Development (ESD),DFMLC,"Engineering for Sustainable Development (ESD) refers to the broad interdisciplinary practice of engineering to improve the quality of life of society and the environment worldwide. Our world faces challenges of unprecedented scale, such as climate change, food insecurity, disease, access to safe and reliable water, and growing economic inequality. Making progress towards solving such challenges requires interdisciplinary and transdisciplinary approaches from various backgrounds and fields. Engineers can play pivotal roles in addressing these challenges by reducing the progression of climate change, mitigating the impact of global and local emergencies, promoting economic development, reducing inequality, and advancing social justice and sustainable development. 
+
+In particular, the DFMLC and DAC technical committees have initiated a joint session on “Design for the Sustainable Development Goals across the Life Cycle” and invite full papers, reviews, and technical presentations related to design for one or more of the seventeen United Nations 2030 Sustainable Development Goals (SDGs) - across product, system, and/or service life cycles. Areas of interest include material processing, energy production, manufacturing, material recycling, remanufacturing, impact analysis, modeling, and related topics. Projects related to climate change, clean water and sanitation, clean energy, resilient infrastructure, sustainable cities, and sustainable consumption and production are of particular interest. This year we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Grace,Burleson,Grace.Burleson@colorado.edu,Amy,Bilton,bilton@mie.utoronto.ca,,,,,,,,,,,,,,,
+DFMLC-11/DAC-17: Joint Session Modeling and Optimization for Sustainable Design and Manufacturing,DFMLC,"The ASME DFMLC Committee and the organizers of the session on Modeling and Optimization for Sustainable Design and Manufacturing invite full papers, reviews, and technical presentations that deal with all topics relevant to sustainable design, sustainable manufacturing, and decision-support tools. This session focuses on the balance of the “triple-bottom-line” of social, environmental, and economic issues affecting a system throughout its lifecycle. It includes topics such as integrating sustainability into conceptual design, computer-enabled methods and tools to influence sustainable design, design for environmentally conscious manufacturing, design for remanufacturing and reuse, ecological design, decision-support tools for sustainability, incorporation of social decision factors, consumer preference modeling for sustainability, and use of novel materials and devices to create sustainable manufacturing processes. Submitted papers may deal with domain modeling, methodology, tools, metrics and indices, case studies, and industrial applications. Design and visualization tools, automated methods, and case studies are of particular interest. This year, we ask all authors to discuss knowledge or technology transfer across applications, domains, and geographies as well as scalability, both up and down, of solutions presented in their work.",Yong Hoon,Lee,yhlee@memphis.edu,Chris,Mabey,cmabey@clemson.edu,Daniel ,Cooper,drcooper@umich.edu,,,,,,,,,,,,
+DTM-01: Benchmarking Design Research Progress,DTM,"How do we measure progress in Design Research? What makes a design benchmark good or better compared to others? What would be a set of necessary or sufficient benchmarks needed to measure progress in design, and what is the field missing? What kind of research, technological, or social infrastructure do we need to develop as a community to enable better use, development, discovery, and prioritization of benchmarks? Do we encourage benchmarks that have broad industry applicability/relevance or that are approachable by researchers, or both, and what is needed to drive adoption? This session invites papers that address not just new benchmark or dataset development but also (1) comparative analysis of existing/recent benchmarks that propose gaps in our current portfolio, (2) studies of existing metrics or benchmarks that show how our existing benchmarks are not used properly or do not account for important/relevant design factors, (3) technological advances that enable better benchmarking across Design problems, (4) industry perspectives on why existing benchmarks or datasets produced by our community are missing critical elements, or even (5) papers that criticize the epistemological assumptions of using benchmarks to study design research progress.",Mark,Fuge,mafuge@ethz.ch,,,,,,,,,,,,,,,,,,
+DTM-02: Design Theory and Methodology in Practice and Industry,DTM,"This session explores current gaps and needs in design practice and industry, or reports on recent successes or failures in the application of emerging theories or methods in practice. Specifically, papers could include, but are not limited to, topics such as (1) analysis of existing gaps or needs within industry or practice that current research does not sufficiently address, (2) observed differences between laboratory and industrial environments or theory application, (3) critical empirical assessments of method application within a practical context, and (4) industry-driven discussions about necessary technologies, roadmaps, or problems for which advances in Design Theory and Methodology could be well equipped to solve.",Mark,Fuge,mafuge@ethz.ch,,,,,,,,,,,,,,,,,,
+DTM-03: Designer & Team Thinking and Behavior,DTM,"This topic solicits papers addressing mathematical, computational, or empirical work that builds or tests models of human thinking or behavior, whether in teams or as individuals. Such papers could include (but are not limited to) submissions on (1) experiments of designer behavior (e.g., protocol studies, randomized control trials), (2) analysis or interventions for modifying the cognitive state or ability of designers or design teams (including work on team management, creativity, work product, etc.), (3) testable models of human performance in the context of design activities, or (4) computational/mathematical theories or surrogates of human behavior relevant to a design context.  ",Mark,Fuge,mafuge@ethz.ch,,,,,,,,,,,,,,,,,,
+DTM-04: Human-AI Design Collaboration,DTM,"This session covers the growing intersection of Human-AI collaboration in the design process. This could include, but is not limited to, papers covering topics such as (1) proposed interaction models or approaches that can improve Human-AI interaction experience in a design context, (2) empirical studies of humans in the design process (whether they are designers or stakeholders) and how they currently interact with AI tools, or (3) theoretical, computational, or mathematical models that describe Human-AI interaction behavior or outcomes. ",Mark,Fuge,mafuge@ethz.ch,Bingling,Huang,bihuang@fullerton.edu,,,,,,,,,,,,,,,
+DTM-05: New Mathematical or Computational Models of Design,DTM,"This session focuses on new or updated mathematical or computational models of design, whether those be of designed artifacts themselves, of the design process, or of individual agents/actors doing design tasks. For example, submitted papers could include, but are not limited to, topics such as: (1) new mathematical representations of Function, Behaviors, or Structures with designed artifacts, (2) novel mathematical or computational representations of design processes, (3) predictive and testable models of agent behavior (human, AI, or hybrid) within a design context, and (4) multi- or cross-modal representations of design that enable more predictive and accurate theories of design from within or across lifecycle stages.",Mark,Fuge,mafuge@ethz.ch,,,,,,,,,,,,,,,,,,
+DTM-06: Rethinking Design in the Age of Artificial Intelligence,DTM,"Our current theories about, models of, and methods for design are largely based on how humans have historically practiced design or on human-centric theories about how design ought to be performed. Yet, rapid advances in Artificial Intelligence capabilities have fundamentally transformed how other fields approach discovery and innovation, whether that be in Software Engineering, new Material chemistries, Synthetic biology and protein engineering, Automated Theorem Proving, among many others. How should Engineering Design change and adapt to a possible future where AI is not just an active partner/collaborator with humans, but potentially even a leading agent? Do existing design processes that we currently teach and use -- such as the typical product development stages, iterative variants of them, user-centered approaches like Design Thinking, or classical Systems Engineering paradigms -- that were designed for humans, still make sense in a world where possibly tens or hundreds of agents can explore and refine millions of options or designs in parallel? This session invites papers that rethink, fundamentally transform, or debate our underlying design theories, methods, processes, and practices in a world where AI is not just collaborating, but potentially a driving decision-making force within the design process. Submitted paper topics can include, but are not limited to, (1) computational models of design processes that heavily leverage AI as a first-class citizen and comparisons to existing human-crafted design processes, (2) proposed metrics for measuring and evaluating AI-generated design processes or artifacts that differ significantly from established metrics, or (3) empirical studies of modifications to practice or teaching of design processes that leverage AI-driven approaches.",Mark,Fuge,mafuge@ethz.ch,,,,,,,,,,,,,,,,,,
+"DTM-07: Social, Justice, and Ethical Impacts within Design",DTM,"This session invites papers addressing how Design Theory and Methodology research intersects and impacts social, ethical, or justice related topics. Submitted papers can include, but are not limited to, topics such as (1) empirical analysis of existing data on impacts and what this implies for existing practice or research, (2) effective interventions, or proposed theories or testable models, that could predict or modify existing impacts, (3) novel frameworks or lenses that modify our understanding of existing impacts, or (4) metrics, testbeds, benchmarks, or datasets that could improve our ability to understand a broader range of design impacts than is presently easy to assess.",Mark,Fuge,mafuge@ethz.ch,,,,,,,,,,,,,,,,,,
+DTM-08: Theory Development in Design Research,DTM,"This session advances the development of theory in design research. Design “theory” is in DTM’s name, but the degree to which we build theory, or reflect on theory development, is relatively low compared to other fields, which has implications for the practical and scientific impacts of design research. Here, we understand theory development broadly, building from initial results, through frameworks and conceptual models toward more fully realised theory. We are soliciting both full-length and abstract-only papers with suggested topics that include: understandings of theory and theory development, approaches to developing theory, reflections on adaption or elaboration of theory from other fields, considerations for theory-methodology fit, methodological guidance for building or testing theory using qualitative work, simulations, experiments, etc., and characterizations of the use of theory in design research.",Mark,Fuge,mafuge@ethz.ch,,,,,,,,,,,,,,,,,,
+MNS-01: Dynamics and Control of Micro/Nano Systems ,MNS,"This symposium highlights recent advances in the dynamics, modeling, analysis, and control of micro- and nano-scale systems, with a focus on nonlinear phenomena, multiphysics interactions, and emerging applications. It aims to provide a forum for researchers from experimental, theoretical, and computational backgrounds to exchange ideas and foster collaborations in this rapidly evolving field.
+
+Micro- and nano-systems such as MEMS and NEMS often exhibit complex dynamics driven by coupled physical domains, nonlinearities, and collective behaviors. Understanding and controlling these phenomena is critical for enabling next-generation technologies in sensing, actuation, energy systems, and biomedical devices. The symposium “Dynamics and Control of Micro/Nano Systems” will cover, but not be limited to, the following topics:
+
+- Dynamics and vibration behavior of MEMS and NEMS
+- Control and modeling of multi-body micro- and nano-systems
+- Stability, robustness, and feedback control of micro/nano systems
+- Dynamics and control of coupled thermal, electrostatic, magnetic, and elastic MEMS/NEMS
+- Collective behaviors in MEMS/NEMS, such as localization and synchronization
+- Nonlinear dynamics and bifurcations in MEMS/NEMS
+- System identification, reduced-order modeling, and computational methods for dynamics and control
+- Innovative approaches to sensing and actuation based on nonlinear MEMS/NEMS
+- Adaptive, reconfigurable, and self-tuning micro/nano systems
+- Data-driven, machine learning, and intelligent control methods for MEMS/NEMS
+",Hanna,Cho,cho.867@osu.edu,Najib, KACEM,nkacem@univ-fcomte.fr,Lin ,Dong,lin.dong@njit.edu,,,,,,,,,,,,
+MNS-02: Micro/Nano Bioengineering and Fluidics,MNS,"This symposium highlights cutting-edge research at the intersection of micro/nano-scale engineering, fluid dynamics, and biological systems. With the rapid development of micro- and nano-technologies, new opportunities have emerged for advancing healthcare, biotechnology, and life sciences through novel diagnostic, therapeutic, and analytical platforms.
+
+Topics of interest span across microfluidics, nanofluidics, and bio-MEMS/NEMS, with particular emphasis on lab-on-a-chip devices, organ-on-chip models, biosensing platforms, and biomedical applications of micro- and nano-engineering. Contributions that integrate design, fabrication, experimental validation, and computational modeling are especially encouraged, as they enable transformative solutions to critical challenges in biology, medicine, and biotechnology. The symposium “Micro/Nano Bioengineering and Fluidics” will cover, but not be limited to, the following topics: 
+
+- Microfluidics and nanofluidics: transport phenomena, mixing, separation, and manipulation of fluids at small scales
+- Lab-on-a-chip and organ-on-chip platforms for diagnostics, drug discovery, and personalized medicine
+- MEMS/NEMS for biomedical applications, including implantable and wearable devices
+- Biosensors and bioactuators at the micro/nano scale
+- Micro/nano-scale manipulation of cells, biomolecules, and extracellular vesicles
+- Single-cell analysis, point-of-care testing, and minimally invasive diagnostics
+- Micro/nano-engineered platforms for tissue engineering, regenerative medicine, and organ modeling
+- Interaction of biological systems with micro/nano materials, surfaces, and structures
+- Micro/nano-scale fluid–structure interactions and soft matter systems
+- Computational modeling and simulation of bio-micro/nanofluidic systems
+- Emerging materials and fabrication techniques for bio-micro/nano devices
+- Integration of artificial intelligence, machine learning, and data analytics with bio-micro/nano systems
+",Mohammad,Shavezipur,mshavez@siue.edu,Lior,Medina,medina@tauex.tau.ac.il,Lin,Dong,lin.dong@njit.edu,,,,,,,,,,,,
+MNS-03: Micro/Nano Robotics,MNS,"This symposium explores the rapidly growing field of micro- and nano-robotics, focusing on advances in design, fabrication, modeling, control, and applications of robotic systems operating at extremely small scales. Micro/nano-robots are emerging as powerful tools for manipulation, sensing, and actuation in environments inaccessible to conventional robots, with broad impact in biomedical, industrial, and environmental domains.
+
+Special emphasis will be placed on bio-inspired and soft robotics, swarm and collective behaviors, autonomous systems, and strategies for microrobotic manipulation. Contributions that combine novel materials, innovative fabrication processes, intelligent control, and cross-disciplinary applications are particularly encouraged. The symposium “Micro/Nano Robotics” will cover, but not be limited to, the following topics:
+
+- Design, fabrication, and integration of micro/nano robotic systems
+- Actuation mechanisms at the micro/nano scale (magnetic, acoustic, optical, chemical, electrostatic, etc.)
+- Modeling, dynamics, and control of micro/nano robots
+- Bio-inspired and soft micro/nano robotic systems
+- Swarm robotics and collective behaviors of micro/nano robots
+- Autonomous navigation, sensing, and decision-making at small scales
+- Microrobotic manipulation of cells, biomolecules, and microscale structures
+- Applications in targeted drug delivery, minimally invasive surgery, and precision medicine
+- Micro/nano robots for environmental monitoring, inspection, and remediation
+- Advanced imaging, localization, and tracking techniques for micro/nano robotic systems
+- Emerging materials and fabrication methods for micro/nano robotics
+- Machine learning, AI, and data-driven control for intelligent micro/nano robotic systems
+- Hybrid platforms integrating micro/nano robots with MEMS, NEMS, and bio-microfluidic devices
+",IRENE,FASSI,irene.fassi@cnr.it,Nicola,Belfiore,nicolapio.belfiore@uniroma3.it,Lin,Dong,lin.dong@njit.edu,,,,,,,,,,,,
+MNS-04: Micro/Nano Materials and Manufacturing,MNS,"This symposium focuses on advances in materials, fabrication methods, and manufacturing technologies for MEMS, NEMS, and other micro/nano-scale devices. It aims to highlight innovative approaches that enhance the performance, functionality, and scalability of small-scale systems through novel materials, advanced processing techniques, and integrated manufacturing strategies. Contributions that combine experimental, computational, and theoretical approaches to solve critical challenges in micro/nano materials and manufacturing are particularly encouraged. The symposium “Micro/Nano Materials and Manufacturing” will cover, but not be limited to, the following topics:
+
+- Advanced micro- and nano-scale materials, including functional, composite, and hybrid materials
+- Additive manufacturing techniques for MEMS/NEMS (3D printing, micro-stereolithography, etc.)
+- Subtractive manufacturing and precision micromachining methods
+- Surface engineering, coatings, and functionalization strategies for micro/nano devices
+- Micro/nano-scale assembly and integration techniques
+- Scalable fabrication methods for high-throughput production
+- Materials and processes for flexible, stretchable, and soft micro/nano devices
+- Process optimization and reliability assessment of micro/nano manufacturing
+- Lithography, etching, and deposition methods for MEMS/NEMS fabrication
+- Multiphysics simulation and modeling for process design and optimization
+- Hybrid fabrication approaches combining top-down and bottom-up methods
+- Integration strategies for complex micro/nano systems and multi-functional devices
+- Characterization techniques for material properties, structural integrity, and device performance
+",Lin,Dong,lin.dong@njit.edu,Nicola,Belfiore,nicolapio.belfiore@uniroma3.it,Mohammad,Shavezipur,mshavez@siue.edu,,,,,,,,,,,,
+"MNS-05: Micro/Nano IoT, Sensors, and Computing",MNS,"This symposium focuses on recent advances in micro- and nano-scale sensing, data acquisition, processing, and computing systems for Internet of Things (IoT) and smart system applications. It aims to highlight innovations that enhance the performance, efficiency, reliability, and scalability of micro/nano systems for sensing, communication, and embedded computation. Contributions that integrate novel device design, low-power electronics, advanced data acquisition, and intelligent system architectures are particularly encouraged. The symposium “Micro/Nano IoT, Sensors, and Computing” will cover, but not be limited to, the following topics:
+
+- Design and fabrication of micro/nano sensors for physical, chemical, and biological sensing
+- Low-power electronics and energy-efficient circuits for IoT applications
+- Embedded computing, microcontrollers, and real-time processing at the micro/nano scale
+- Wireless communication and networking strategies for micro/nano IoT systems
+- Smart system integration, including sensor fusion, actuation, and feedback control
+- Data acquisition, signal processing, and machine learning for micro/nano systems
+- Edge and cloud computing solutions for micro/nano IoT devices
+- Security, privacy, and reliability of micro/nano-scale IoT networks
+- Energy harvesting and self-powered micro/nano sensors
+- MEMS/NEMS-enabled sensors and devices for real-world IoT applications
+- System-level design, optimization, and deployment strategies
+- Cross-disciplinary applications in environmental monitoring, healthcare, industrial automation, and smart cities
+",Mohammad,Shavezipur,mshavez@siue.edu,Nicola, Belfiore ,nicolapio.belfiore@uniroma3.it,Najib,KACEM,nkacem@univ-fcomte.fr,,,,,,,,,,,,
+ MR-01: Mechanism Synthesis and Analysis,MR,"This track focuses on the design, modeling, and performance evaluation of mechanical linkages and robotic architectures. Topics include dimensional synthesis, type synthesis, mobility analysis, motion generation, and optimization of mechanisms for innovative applications. Contributions that advance creative design methods including AI-based methods or reveal new insights into classical mechanism behavior are particularly welcome. ",Vu Linh,Nguyen,linh.nv2@vinuni.edu.vn,,,,,,,,,,,,,,,,,,
+ MR-02: Theoretical and Computational Kinematics (A. T. Yang Symposium),MR,"This track addresses fundamental advances in kinematic theory, computation, and geometry for mechanisms and robotic systems. Topics include configuration spaces, singularity analysis, motion interpolation, screw theory, algebraic and numerical methods for displacement analysis, and computational algorithms for spatial kinematics. Papers emphasizing mathematical rigor and theoretical innovation are encouraged.",Mario ,Baggetta,mario.baggetta@unige.it,,,,,,,,,,,,,,,,,,
+ MR-03: Compliant Mechanisms (A. Midha Symposium) ,MR,"Papers are solicited in all areas of compliant mechanism design and analysis. Topics include design, modeling, and optimization of compliant systems for precision engineering, energy harvesting, deployable structures, bio-inspired devices and other applications. Both analytical and experimental studies demonstrating innovative compliant behavior or fabrication techniques are welcome.",Giovanni,Berselli,giovanni.berselli@unige.it,Jared,Butler,butler@psu.edu,,,,,,,,,,,,,,,
+ MR-04: Origami-Based Engineering Design,MR,"This track focuses on the analysis, design, and application of origami and folding-inspired structures and mechanisms. Topics include fold pattern design, rigid and non-rigid origami mechanics, deployable systems, morphing structures, and novel manufacturing approaches. Papers that bridge geometry, materials, and mechanical functionality are particularly encouraged.",Jared,Butler,butler@psu.edu,,,,,,,,,,,,,,,,,,
+" MR-05: Motion Planning, Dynamics, and Control of Robots",MR,"Papers are solicited in the areas of motion planning, dynamics, and control of robots and mechanisms. Theoretical, experimental, and computational aspects are all invited. Topics of interest include, but are not limited to:
+●	Legged and mobile robots
+●	Serial and parallel robots
+●	Cable robot and tensegrity mechanism
+●	Dynamic analysis, modeling, and simulation
+●	Control methods and controller design
+●	Trajectory optimization and optimal control
+●	Applications of machine learning and AI
+●	Manipulation and locomotion planning
+●	Stability and efficiency
+●	Mission planning, path planning, and motion planning for robots and autonomous systems
+",Joo,Kim,joo.h.kim@nyu.edu,Andreas,Muller,a.mueller@jku.at,,,,,,,,,,,,,,,
+ MR-06: Medical and Rehabilitation Robotics,MR,"This track highlights robotic and mechatronic systems designed for medical, surgical, assistive, and rehabilitative applications. Topics include device design, human–robot interaction, control, sensing, and clinical validation. Submissions emphasizing patient-centered design, safety, and novel approaches to physical human–robot collaboration are especially welcome.",Abbas,Fattah,afattah@widener.edu,Anirban,Sinha,Anirban.Sinha1@geaerospace.com,,,,,,,,,,,,,,,
+" MR-07: Novel Mechanisms, Robots, and Applications ",MR,"This track invites papers presenting innovative mechanisms and robot designs that extend the boundaries of current applications. Topics include unconventional actuation and transmission systems, reconfigurable and modular robots, bio-inspired designs, and emerging applications in manufacturing, construction, agriculture, and exploration. Emphasis is placed on creativity, functionality, and demonstrated utility.",Guowu,Wei,G.Wei@salford.ac.uk,Reza,Fotouhi,ref260@mail.usask.ca,,,,,,,,,,,,,,,
+ MR-08: Soft and Continuous Mechanisms,MR,"This track focuses on the design, modeling, and control of mechanisms and robots with distributed compliance, continuum structures, or soft materials. Topics include modeling of continuum kinematics and dynamics, material-based actuation, sensing and control strategies, and novel fabrication techniques. Papers that advance the understanding or practical deployment of soft robotic systems are encouraged.",Vishesh,Vikas,vvikas@eng.ua.edu,,,,,,,,,,,,,,,,,,
+ MR-09: MR/MESA Joint Symposium on Translation Robotics,MR,This symposium focuses on use-inspired translational research that brings advances in robotics research to the practicing engineer by emphasizing creative solutions to real-world problems and sharing innovations in implementation details. It is expected that the research results are demonstrated with a minimally viable prototype or an experimental verification. The papers submitted to this symposium will have the option to be considered for publication in ASME Letters in Translational Robotics,Kuan-Lun,Hsu,kuanlunhsu@ntu.edu.tw,Damien,Chablat,damien.chablat@cnrs.fr,Po Ting,Lin,potinglin@mail.ntust.edu.tw,,,,,,,,,,,,
+MSNDC-01 Nonlinear Dynamics and Control of Smart Structures and Systems,MSNDC,"The Symposium is focused on Nonlinear Dynamics and Control of Smart Structures and Systems across different scales, from the nano- to the meso-scale, including nanocomposites and metamaterials-based structures, MEMS and NEMS, and the macro-scale, including complex mechanical systems. The relevant systems involve innovative applications in the field of mechanical engineering. The symposium gathers researchers from industry, academia, and government agencies working in the most innovative areas of nonlinear dynamics and vibration to discuss recent developments in experimental, analytical, and numerical techniques as applied to the synthesis, characterization, and control of Smart Materials and Structures, and Complex Systems. Papers are welcome in the area of analytical modeling and numerical simulations of linear and nonlinear dynamic phenomena, numerical and analytical studies on the dynamic stability of systems, wave propagation and absorption, vibration control and experimental characterization of nonlinear dynamic behaviors. The symposium also intends to encourage interactions between theoretical and applied researchers working in the most innovative areas of nonlinear dynamics. The symposium will also be a great opportunity for disseminating recent developments of experimental, analytical and numerical techniques, and for discussing novel phenomena and behaviors characterizing smart materials and structures. The symposium “Nonlinear Dynamics and Control of Smart Structures and Systems” will cover, but will not be limited to, the following topics:
+This symposium will cover, but will not be limited to, the following topics:
+    • characterization of the vibration and dynamic response of smart structures and systems.
+    • reduced-order modeling of smart structures and systems.
+    • nonlinear dynamics of continuous and discontinuous mechanical systems.
+    • nonlinear dynamic phenomena and interactions in mechanical systems and structures.
+    • dynamic stability of nonlinear systems due to multiphysics interaction.
+    • experimental studies of observed linear and nonlinear dynamic phenomena.
+    • wave propagation and absorption in smart structures and systems.
+    • bifurcations and chaos in dynamic systems.
+    • asymptotic methods in nonlinear dynamics.
+    • non-smooth systems.
+    • novel vibration control devices.
+    • hybrid techniques that blend active and passive vibration control.
+    • dynamics and vibrations of MEMS and NEMS
+    • dynamics and control of multi-body micro- and nano-systems
+    • dynamics and control of coupled thermal, electrostatic, magnetic, elastic MEMS/NEMS.
+    • collective behaviors, such as localization and synchronization in MEMS/ NEMS
+    • innovative concepts of sensing and actuating based on nonlinear MEMS/ NEMS.",Andrea,Arena,andrea.arena@uniroma1.it,Francesco,Danzi,fdanzi@ucmerced.edu,,,,,,,,,,,,,,,
+MSNDC-02 Nonlinear Dynamics of Systems and Nonlinear Phenomena,MSNDC,"Real-world problems seldom adhere to linear or nearly linear behaviors. Decades of work has led to the explorations of a galaxy of nonlinear dynamics phenomena, unveiling terrains for exciting applications across the spectrum of science and engineering. Today, we stand witness to the flourishing of significant and exciting new advances in nonlinear dynamics far beyond the known limitations. This forthcoming joint symposium is designed to serve as a forum for exchanging insights and discussions on recent breakthroughs in theoretical, computational, experimental, and applied aspects of modeling, analyzing, and controlling nonlinear systems. Papers in the following areas are particularly encouraged:
+
+    • Nonlinear Resonances, Phenomena, and Interactions  
+    • Dynamic Systems with Time-Variability, Delay, or Discontinuities  
+    • Reduced-Order Modelling  
+    • Fractional Dynamics  
+    • Structural Dynamics  
+    • Flexible Slender Structures 
+    • Nonlinear Energy Transfers and Harvesting 
+    • Vibration and Stability of Systems 
+    • Computational Methods 
+    • Optimization and Control 
+    • Sensitivity Analysis and Design
+    • Nonlinear Dynamics and Fracture of Composite Structures
+    • Nonlinear Metamaterials and Metastructures
+    • Soft Systems and Structures
+    • Nonlinear Noisy Systems",Dimitru,Caruntu,dumitru.caruntu@utrgv.edu,Ashu,Sharma,asharma@auburn.edu,,,,,,,,,,,,,,,
+MSNDC-03 Contact Dynamics of Mechanical Structures,MSNDC,"This symposium is focused on the study of mechanical joints, contact, friction, and damping.  The aim is to promote discussion, enhance understanding, and generate new insights into the connections between tribological-level friction, contact mechanics, and the dynamic responses of built-up assemblies with mechanical contact at a structural level. This symposium invites papers addressing all aspects of the dynamics and mechanics of contact and friction, with particular emphasis on the following challenges: reduced order modeling, advanced analytical/numerical methods, nonlinear analysis, nonlinear normal modes, data-driven methods, and reverse modeling and system identification. Other key areas of interest include hysteresis in jointed structures, the repeatability and variability of response, physical theories and studies of friction, measurements and predictions of energy dissipation and damping, methods to account for uncertainty and nonlinearity in structures with contact and friction, and the development and validation of predictive models of contact.",João Paulo,Flores Fernandes,pflores@dem.uminho.pt,,,,,,,,,,,,,,,,,,
+MSNDC-04 Data-Driven and Machine Learning Techniques in Vibrations and Dynamics,MSNDC,"This symposium aims to bring together researchers advancing the use of data-driven and machine learning techniques in the fields of vibrations and dynamics. These approaches have shown significant promise in advancing the fields of vibrations and dynamics, offering innovative techniques to model, understand, and control complex systems and structures. This symposium will highlight cutting-edge research, methodologies, and applications that leverage state-of-the-art data-driven methods and machine learning techniques within the domain of vibrations and dynamics. Topics to be covered include, but are not limited to, the following applications:
+    • Time series analysis and prediction;
+    • Dynamic modeling and vibration analysis of nonlinear systems and structures;
+    • Discovery of governing equations;
+    • Reduced-order modeling in vibrations and dynamics;
+    • Feature extraction for vibrations and dynamics;
+    • Integration of physics-based models with data-driven methods for improved understanding;
+    • Control of vibrations and dynamics;
+    • Predictive maintenance and condition monitoring of mechanical systems.",Amin,Ghadami,ghadami@usc.edu,Vipin,Kumar Agarwal,Vipin.A@memphis.edu,,,,,,,,,,,,,,,
+"MSNDC-05/VIB-05:  Joint Session Industry Applications of Vibration, Shock, Acoustics, and Dynamics",MSNDC,"The symposium on Industrial Applications of Vibration, Shock, Acoustics, and Dynamics provides a forum for sharing ideas, activities, best practices, and innovative solutions to applied problems faced by industry, national laboratories, academia, and related partners. Applications ranging from the automotive industry to national defense increasingly require innovative analysis, simulation and testing to solve complex problems involving vibration, acoustics, and dynamics phenomena. Abstracts are invited that cover standard and nonstandard, multi-disciplinary, and systems-level techniques in vibration, acoustics, dynamics, and related areas of application.",Ata,Donmez,ata.donmez@bilkent.edu.tr,Isaac,Hong,hong.250@osu.edu,Francesco,Trainotti,francesco.trainotti@tum.de,,,,,,,,,,,,
+"MSNDC-06 Dynamics of Biological, Bio-Inspired and Biomimetic Systems",MSNDC,"This symposium brings together a diverse set of researchers who are at the forefront of the emerging field of studying the dynamic aspects of Biological, Bio-inspired and Biomimetic Systems. Researchers conducting traditional or non-traditional academic research, or those driven by industrial applications present their experimental, analytical, and computational studies with Biological, Bio-Inspired and Biomimetic Systems at their focus.",James R.,Chadges,james.chagdes@miamioh.edu,Adam,Kłodowski,adam.klodowski@lut.fi,Sachin,Goyal,sgoyal2@ucmerced.edu,,,,,,,,,,,,
+MSNDC-07 Computational Methods and Software Tools in Multibody Systems and Nonlinear Dynamics,MSNDC,"The symposium focuses on recent advances in theoretical, computational, and applied aspects related to the synthesis, simulation, analysis, control, and optimization of multibody systems and nonlinear dynamics. The scope of the symposium encompasses theoretical developments and novel algorithms, implementation techniques, experimentation and validation, and practical applications. 
+
+Submissions are welcome on the following and related topics: efficient algorithms and computational strategies (including real-time simulation, Human/Hardware-in-the-Loop and System-in-the-Loop applications, reduced-order models and surrogate models); co-simulation problems (such as fluid/structure interaction and cyber-physical systems); sensitivity analysis and optimization strategies; uncertainty quantification, simulation and optimization under uncertainty; design of experiments and verification methods; and optimal design and control.",Francisco,González,f.gonzalez@udc.es,Grzegorz,Orzechowski,grzegorz.orzechowski@lut.fi,Andrea,Zanoni,andrea.zanoni@polimi.it,,,,,,,,,,,,
+"MSNDC-08 Motion Planning, Dynamics, and Control of Robots",MSNDC,"Papers are solicited in the areas of motion planning, dynamics, and control of robots and mechanisms. Theoretical, experimental, and computational aspects are all invited. Topics of interest include, but are not limited to:
+•	Legged and mobile robots
+•	Serial and parallel robots
+•	Cable robot and tensegrity mechanism
+•	Dynamic analysis, modeling, and simulation
+•	Control methods and controller design
+•	Trajectory optimization and optimal control
+•	Applications of machine learning and AI
+•	Manipulation and locomotion planning
+•	Stability and efficiency
+•	Mission planning, path planning, and motion planning for robots and autonomous systems
+",Andreas,Müller,a.mueller@jku.at,,,,,,,,,,,,,,,,,,
+MSNDC-09 Advances in Vehicle Dynamics and Control,MSNDC,"This symposium highlights recent developments in multibody modeling of vehicle dynamics, including control, stability and multi-physics domain computation. Submissions are welcome in the fields of tire/terrain and wheel/rail interactions, vehicle control, including autonomous mobility, intelligent transportation systems, ride comfort, vehicle subsystem modeling, next-generation simulation tools, validation and verification. The symposium aims to provide a platform to discuss the latest research developments, while also welcoming presentations on cutting-edge industrial applications in vehicle modeling for advanced design, the development of digital twins, and advanced control systems.",Hiroyuki,Sugiyama,sugiyama@uiowa.edu,Paramsothy,Jayakumar,paramsothy.jayakumar.civ@army.mil,Xinxin,Yu,xinxin.yu@tuni.fi,,,,,,,,,,,,
+MSNDC-10 Flexible Multibody Dynamics,MSNDC,"The symposium invites submissions on finite element methods in dynamics and formulations for flexible multibody systems, such as the floating frame of reference and absolute nodal coordinate formulation, including approaches for model order reduction. We are interested in contributions addressing the dynamics of solids and slender structures undergoing large deformations, as well as related topics. Additionally, we welcome research in flexible multibody dynamics covering computational methods, analytical or data-driven approaches, experimental techniques, and applications, e.g., in industrial or biomechanical contexts.",Frank,Naets,frank.naets@kuleuven.be,Andreas,Zwölfer,andreas.zwoelfer@tum.de,,,,,,,,,,,,,,,
+MSNDC-11/VIB-06: Joint Session Design for Blue Economy ,MSNDC,"With this session, the ASME Design Automation Technical Committee and TC of Vibration and Sounds invite researchers to submit papers that focus on advancing design methods and systems science to address the emerging challenges and opportunities of the Blue Economy. The Blue Economy encompasses the sustainable use of ocean resources for economic growth, improved livelihoods, and ecosystem health, spanning domains such as marine renewable energy, aquaculture, marine transport, ocean monitoring, and coastal resilience. As global pressures on marine environments increase, design automation and systems approaches will play a crucial role in developing innovative, scalable, and resilient solutions.
+We welcome contributions that present new design representations, modeling approaches, dynamics, solution methods, and frameworks that extend the frontier of how engineering design can support sustainable ocean-based industries. Submissions may also highlight interdisciplinary integration, where engineering methods connect with ecological, social, and policy considerations. Approaches that enable optimization, control, uncertainty management, and lifecycle thinking for marine-related systems are particularly encouraged. Papers should demonstrate relevance through case studies, benchmarks, or comparative analyses that highlight how design automation and dynamics can directly contribute to advancing Blue Economy goals.
+Suggested topic areas covered under this session include:
+•	Design methodologies, dynamic modelling, prototypes, and testing for offshore renewable energy systems (wave, tidal, floating wind)
+•	Sustainable aquaculture systems and marine food production design
+•	Ocean-based carbon capture, sequestration, and monitoring systems
+•	Autonomous marine vehicles and robotics for exploration, monitoring, and operations
+•	Multi-objective design under uncertainty for coupled ocean–human systems
+•	Circular economy strategies for marine materials, products, and infrastructure
+•	Resilient coastal and port infrastructure design for the Blue Economy and climate adaptation
+•	Computational tools and frameworks for marine ecosystem services integration
+•	Systems-level analysis and optimization for ocean resource allocation and governance
+",Lei,Zuo,leizuo@umich.edu,,,,,,,,,,,,,,,,,,
+"PTG 01: Bearings, Clutches, Couplings, and Splines",PTG,"Design, performance, and integration of key transmission components.",David,Talbot,talbot.11@osu.edu,,,,,,,,,,,,,,,,,,
+"PTG-02: Gear Analysis, Materials, and Fatigue",PTG,"Analytical and computational methods, material performance, and fatigue life prediction.",Isaac,Hong,hong.250@osu.edu,,,,,,,,,,,,,,,,,,
+PTG-03:  Gear Dynamics and Noise,PTG,"Modeling and control of vibration, transmission error, and noise reduction.",Ahmet,Kahraman,karhaman.1@osu.edu,Murat,Inalpolat,Murat_Inalpolat@uml.edu,,,,,,,,,,,,,,,
+PTG-04:  Gear Geometry,PTG,"Advances in macro- and micro-geometry design, optimization, and novel tooth forms.",Alfonso,Fuentes-Aznar,afeme@rit.edu,Qi,Fan,qfan@gleason.com,,,,,,,,,,,,,,,
+PTG-05:  Gear Manufacturing,PTG,"Innovations in hobbing, grinding, additive manufacturing, and process optimization.",Qi,Fan,qfan@gleason.com,,,,,,,,,,,,,,,,,,
+"PTG-06:  Gearbox Design, Reliability, and Diagnostics",PTG,"Concepts for robust gearbox design, health monitoring, and fault detection.",Yawen,Wang,yawen.wang@uta.edu,Murat,Inalpolat,Murat_Inalpolat@uml.edu,,,,,,,,,,,,,,,
+PTG-07:  Transmission Systems Including Novel Concepts,PTG,"Emerging architectures, hybrid/electric drives, and unconventional power transmission solutions.",Hai,Xu,hai.1.xu@gm.com,,,,,,,,,,,,,,,,,,
+PTG-08: Lubrication and Efficiency,PTG,"Tribology, lubricant formulations, and methods to improve power loss and thermal behavior.",Sheng,Li,sheng.li@wright.edu,,,,,,,,,,,,,,,,,,
+VIB-01: Nonlinear Dynamics and Control of Smart Structures and Systems,VIB,"The Symposium is focused on Nonlinear Dynamics and Control of Smart Structures and Systems across different scales, from the nano- to the meso-scale, including nanocomposites and metamaterials-based structures, MEMS and NEMS, and the macro-scale, including complex mechanical systems. The relevant systems involve innovative applications in the field of mechanical engineering. The symposium gathers researchers from industry, academia, and government agencies working in the most innovative areas of nonlinear dynamics and vibration to discuss recent developments in experimental, analytical, and numerical techniques as applied to the synthesis, characterization, and control of Smart Materials and Structures, and Complex Systems. Papers are welcome in the area of analytical modeling and numerical simulations of linear and nonlinear dynamic phenomena, numerical and analytical studies on the dynamic stability of systems, wave propagation and absorption, vibration control and experimental characterization of nonlinear dynamic behaviors. The symposium also intends to encourage interactions between theoretical and applied researchers working in the most innovative areas of nonlinear dynamics. The symposium will also be a great opportunity for disseminating recent developments of experimental, analytical and numerical techniques, and for discussing novel phenomena and behaviors characterizing smart materials and structures. The symposium “Nonlinear Dynamics and Control of Smart Structures and Systems” will cover, but will not be limited to, the following topics:
+This symposium will cover, but will not be limited to, the following topics:
+-characterization of the vibration and dynamic response of smart structures and systems.
+-reduced-order modeling of smart structures and systems.
+-nonlinear dynamics of continuous and discontinuous mechanical systems.
+-nonlinear dynamic phenomena and interactions in mechanical systems and structures.
+-dynamic stability of nonlinear systems due to multiphysics interaction.
+-experimental studies of observed linear and nonlinear dynamic phenomena.
+-wave propagation and absorption in smart structures and systems.
+-bifurcations and chaos in dynamic systems.
+-asymptotic methods in nonlinear dynamics.
+-non-smooth systems.
+-novel vibration control devices.
+-hybrid techniques that blend active and passive vibration control.
+-dynamics and vibrations of MEMS and NEMS
+-dynamics and control of multi-body micro- and nano-systems
+-dynamics and control of coupled thermal, electrostatic, magnetic, elastic MEMS/NEMS.
+-collective behaviors, such as localization and synchronization in MEMS/ NEMS
+-innovative concepts of sensing and actuating based on nonlinear MEMS/ NEMS.",Zhenhua ,Tian,tianz@vt.edu,Neda,Maghsoodi,maghsoodi@usc.edu,Wei-Che,Tai ,taiweich@msu.edu,,,,,,,,,,,,
+VIB-02: Nonlinear Dynamics of Systems and Nonlinear Phenomena,VIB,"Real-world problems seldom adhere to linear or nearly linear behaviors. Decades of work has led to the explorations of a galaxy of nonlinear dynamics phenomena, unveiling terrains for exciting applications across the spectrum of science and engineering. Today, we stand witness to the flourishing of significant and exciting new advances in nonlinear dynamics far beyond the known limitations. This forthcoming joint symposium is designed to serve as a forum for exchanging insights and discussions on recent breakthroughs in theoretical, computational, experimental, and applied aspects of modeling, analyzing, and controlling nonlinear systems. Papers in the following areas are particularly encouraged:
+•	Nonlinear Resonances, Phenomena, and Interactions  
+•	Dynamic Systems with Time-Variability, Delay, or Discontinuities  
+•	Reduced-Order Modelling  
+•	Fractional Dynamics  
+•	Structural Dynamics  
+•	Flexible Slender Structures 
+•	Nonlinear Energy Transfers and Harvesting 
+•	Vibration and Stability of Systems 
+•	Computational Methods 
+•	Optimization and Control 
+•	Sensitivity Analysis and Design
+•	Nonlinear Dynamics and Fracture of Composite Structures
+•	Nonlinear Metamaterials and Metastructures
+•	Soft Systems and Structures
+•	Nonlinear Noisy Systems",Gizem,Acar,gacar@stevens.edu,Vipin,Agarwal,vipin.a@memphis.edu,Chaitanya ,Borra,vborra@email.wcu.edu,,,,,,,,,,,,
+VIB-03: Contact Dynamics of Mechanical Structures,VIB,"This symposium is focused on the study of mechanical joints, contact, friction, and damping.  The aim is to promote discussion, enhance understanding, and generate new insights into the connections between tribological-level friction, contact mechanics, and the dynamic responses of built-up assemblies with mechanical contact at a structural level. This symposium invites papers addressing all aspects of the dynamics and mechanics of contact and friction, with particular emphasis on the following challenges: reduced order modeling, advanced analytical/numerical methods, nonlinear analysis, nonlinear normal modes, data-driven methods, and reverse modeling and system identification. Other key areas of interest include hysteresis in jointed structures, the repeatability and variability of response, physical theories and studies of friction, measurements and predictions of energy dissipation and damping, methods to account for uncertainty and nonlinearity in structures with contact and friction, and the development and validation of predictive models of contact.",Meng-Hsuan (Mark) ,Tien,mhtien@pme.nthu.edu.tw,Akira,Saito,asaito@meiji.ac.jp,,,,,,,,,,,,,,,
+VIB-04: Data-Driven and Machine Learning Techniques in Vibrations and Dynamics,VIB,"This symposium aims to bring together researchers advancing the use of data-driven and machine learning techniques in the fields of vibrations and dynamics. These approaches have shown significant promise in advancing the fields of vibrations and dynamics, offering innovative techniques to model, understand, and control complex systems and structures. This symposium will highlight cutting-edge research, methodologies, and applications that leverage state-of-the-art data-driven methods and machine learning techniques within the domain of vibrations and dynamics. Topics to be covered include, but are not limited to, the following applications:
+•            Time series analysis and prediction;
+•            Dynamic modeling and vibration analysis of nonlinear systems and structures;
+•            Discovery of governing equations;
+•            Reduced-order modeling in vibrations and dynamics;
+•            Feature extraction for vibrations and dynamics;
+•            Integration of physics-based models with data-driven methods for improved understanding;
+•            Control of vibrations and dynamics;
+•            Predictive maintenance and condition monitoring of mechanical systems.
+",Keegan,Moore,kmoore@gatech.edu,Nikhil ,Bajaj,nbajaj@pitt.edu,Feruza ,Amirkulova,feruza.amirkulova@sjsu.edu,,,,,,,,,,,,
+"VIB-05-MSNDC-05: Joint Session:  Industry Applications of Vibration, Shock, Acoustics and Dynamics ",VIB,"The symposium on Industrial Applications of Vibration, Shock, Acoustics, and Dynamics provides a forum for sharing ideas, activities, best practices, and innovative solutions to applied problems faced by industry, national laboratories, academia, and related partners. Applications ranging from the automotive industry to national defense increasingly require innovative analysis, simulation and testing to solve complex problems involving vibration, acoustics, and dynamics phenomena. Abstracts are invited that cover standard and nonstandard, multi-disciplinary, and systems-level techniques in vibration, acoustics, dynamics, and related areas of application.",Ryan,Monroe,ryanmonroe@oakland.edu,Brian,Olson,brian.olson@jhuapl.edu,Jason,Sammut,Jason.Sammut@jhuapl.edu,,,,,,,,,,,,
+VIB-06/MSNDC:-11: Joint Session Design for Blue Economy,VIB,"With this session, the ASME Design Automation Technical Committee and TC of Vibration and Sounds invite researchers to submit papers that focus on advancing design methods and systems science to address the emerging challenges and opportunities of the Blue Economy. The Blue Economy encompasses the sustainable use of ocean resources for economic growth, improved livelihoods, and ecosystem health, spanning domains such as marine renewable energy, aquaculture, marine transport, ocean monitoring, and coastal resilience. As global pressures on marine environments increase, design automation and systems approaches will play a crucial role in developing innovative, scalable, and resilient solutions.
+We welcome contributions that present new design representations, modeling approaches, dynamics, solution methods, and frameworks that extend the frontier of how engineering design can support sustainable ocean-based industries. Submissions may also highlight interdisciplinary integration, where engineering methods connect with ecological, social, and policy considerations. Approaches that enable optimization, control, uncertainty management, and lifecycle thinking for marine-related systems are particularly encouraged. Papers should demonstrate relevance through case studies, benchmarks, or comparative analyses that highlight how design automation and dynamics can directly contribute to advancing Blue Economy goals.
+Suggested topic areas covered under this session include:
+•	Design methodologies, dynamic modelling, prototypes, and testing for offshore renewable energy systems (wave, tidal, floating wind)
+•	Sustainable aquaculture systems and marine food production design
+•	Ocean-based carbon capture, sequestration, and monitoring systems
+•	Autonomous marine vehicles and robotics for exploration, monitoring, and operations
+•	Multi-objective design under uncertainty for coupled ocean–human systems
+•	Circular economy strategies for marine materials, products, and infrastructure
+•	Resilient coastal and port infrastructure design for the Blue Economy and climate adaptation
+•	Computational tools and frameworks for marine ecosystem services integration
+•	Systems-level analysis and optimization for ocean resource allocation and governance
+",Lei,Zuo,leizuo@umich.edu,,,,,,,,,,,,,,,,,,
+"VIB-07: Dynamics & Waves in Solids, Acoustic Metamaterials, and Architected Materials",VIB,"This symposium solicits papers in the broad area of dynamic phenomena of a wave-like nature in solids and metamaterials. Submissions are invited, but not limited to, papers addressing phononic crystals, acoustic metamaterials, metasurfaces, topological insulators, ultrasonics, nonlinear wave propagation, and wave-based devices. This can include studies of negative refractive index, acoustic cloaking, non-reciprocal wave transport, flat modes, topological edge states, quantum analogs, nonlinear behavior, and novel applications of acoustic materials aimed at solving contemporary problems. Other topics that may be of interest include novel fabrication and manufacturing technologies (e.g., self-assembly, additive manufacturing) which enable applications, new computational approaches for simulating wave propagation, and advances in experimental measurements of wave propagation in mechanical systems.",Michael,Leamy,michael.leamy@me.gatech.edu,Pai,Wang,u6025942@utah.edu,Carson,Willey,carson.willey.ctr@afrl.af.mil,Hrishikesh ,Danawe,hgdanawe@umich.edu,,,,,,,,,
+VIB-08: Energy Harvesting,VIB,"This symposium invites contributions that push the boundaries of innovation in capturing and converting ambient energy. The scope is vibrational energy harvesting from diverse sources including, but not limited to, mechanical vibrations, nonlinear dynamic behaviors, flow-induced vibrations, ocean waves, acoustic waves, aerodynamic instabilities, and other fluid-structure interactions.
+This symposium welcomes contributions that utilize analytical models, numerical simulations, or experimental breakthroughs. Topics of interest include advancements in energy circuits, cutting-edge storage technologies, and the potential of smart materials, metamaterials, and electromechanical transducers. Contributions exploring energy harvesting from these materials, as well as innovations in energy conversion mechanisms, power management circuits, and wearable technologies, are highly encouraged. This symposium seeks novel applications and solutions that have the potential to redefine the future of sustainable energy.
+",Feng,Qian,fjq5013@psu.edu,Mohammad,Bukhari,bukhari@wayne.edu,Xiaofan ,Li,lxiaofan@umich.edu,Dan,Feng,Dan.Feng@howard.edu,,,,,,,,,
+"VIB-09: Vibration Measurement, Signal Processing, and Structural Damage Detection",VIB,"This symposium focuses on, but is not limited to, vibration measurements using traditional methods and nontraditional methods such as laser vibrometry and high-speed digital image correlation; modal testing; signal processing; finite element modeling; model updating; and structural damage detection using vibration-, wave-, and acoustics-based methods.",Sichen ,Yuan,sichen.yuan@ua.edu,Weidong ,Zhu,wzhu@umbc.edu,Kai,Zhou,cee-kai.zhou@polyu.edu.hk,,,,,,,,,,,,
+"VIB-10: General Dynamics, Vibration, and Acoustics",VIB,"We invite papers on all aspects of dynamics, vibration, and acoustics. Contributions may be theoretical, computational, or experimental, and may address linear or nonlinear phenomena. Topics of interest include, but are not limited to:
+•	Modal analysis and experimental system identification
+•	Advanced computational methods and algorithms
+•	Energy-based (Lagrangian/Hamiltonian) and related variational approaches, including non-Hamiltonian systems
+•	Dynamics of conservative and non-conservative systems
+•	Vibration control, isolation, and mitigation strategies
+•	Cross-disciplinary and emerging applications
+•	Gear vibration and rotating machinery
+•	Topological acoustics (geometric phases, synthetic pseudospin) with applications in information encoding, RF devices, sensing, imaging, and beyond.
+•	Dynamics of Biological, Bio-Inspired and Biomimetic Systems
+We welcome submissions that push the boundaries of theory, modeling, and practical applications.",Thomas,Breunung,breunung@wisc.edu,M Arif,Hasan,hasan.arif@wayne.edu,,,,,,,,,,,,,,,
