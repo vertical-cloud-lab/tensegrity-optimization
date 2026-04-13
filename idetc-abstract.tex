@@ -27,42 +27,41 @@
 
 Tensegrity-inspired architectures, in which rigid struts are suspended
 within a continuous flexible network, can exhibit tunable nonlinear
-mechanical responses and favorable strength-to-weight characteristics,
-motivating their use in lightweight protective and energy-absorbing
-structures.  Multi-material fused deposition modeling (FDM) can now
-co-print rigid (PLA) struts and flexible (TPU) elements in a single
-build, but the resulting design space---spanning strut geometry,
-tension-element cross-section, connectivity topology, and unit-cell
-tiling---is too large for efficient trial-and-error experimentation.
+mechanical responses and high strength-to-weight ratios, motivating
+their use in lightweight protective and energy-absorbing structures.
+Multi-material fused deposition modeling (FDM) can co-print rigid (PLA)
+struts and flexible (TPU) elements in a single build, but the resulting
+design space---spanning strut geometry, tension-element cross-section,
+connectivity topology, and unit-cell tiling---is too large to explore
+efficiently by trial-and-error experimentation.
 
-This work presents a closed-loop experimental campaign guided by
-Bayesian optimization (BO) for developing multi-material 3D-printed
-tensegrity-inspired structures optimized for energy absorption under
+This work presents a closed-loop experimental campaign that uses
+Bayesian optimization (BO) to develop multi-material 3D-printed
+tensegrity-inspired structures for improved energy absorption under
 quasi-static compression and drop-weight impact loading.  The key
-contribution is a design--print--test loop that operates directly on
-physical measurements without relying on finite-element simulation: a
-Gaussian-process surrogate model is trained on experimental measurements
-of peak transmitted force, specific energy absorption (SEA), and
-compaction efficiency, and an acquisition function recommends the next
-batch of designs after each test round.  The workflow is largely
-automated---design generation, surrogate updating, and
-acquisition-function optimization proceed without operator input, while
-specimen loading and fixture placement remain the primary manual steps.
+contribution is a design--print--test workflow in which experimental
+measurements are used directly to update a Gaussian-process surrogate
+model, enabling sequential design selection without relying on
+finite-element simulation.  The surrogate is trained on peak transmitted
+force, specific energy absorption (SEA), and compaction efficiency, and
+a batch acquisition function recommends the next set of candidate
+designs after each test round.  The workflow combines automated model
+updating and experiment selection with manual specimen handling and test
+setup.
 
 We define a parameterized family of unit cells using a core-wrapping
-strategy in which rigid PLA struts are enclosed by continuous TPU skins
-to improve interfacial interlocking.  Design variables include strut
-diameter and length, tension-element width and thickness, number of
-struts per unit cell, and tiling pattern.  Specimens are fabricated on a
-consumer-grade multi-material FDM system and tested under quasi-static
-compression and instrumented drop-weight impact.
+architecture in which rigid PLA struts are enclosed by continuous TPU
+skins to improve interfacial interlocking.  Design variables include
+strut diameter and length, tension-element width and thickness, strut
+count per unit cell, and tiling pattern.  Specimens are fabricated on a
+multi-material FDM system and tested under quasi-static compression and
+instrumented drop-weight impact.
 
-We will report the progression of BO-selected designs across iterations,
-the evolution of the surrogate model as data accumulate, and
-Pareto-efficient trade-offs between SEA and peak transmitted force
-within the explored design space.  We will also discuss practical
-lessons for operating a closed-loop physical experiment, including
-print-failure handling, batch-to-batch variability, and
-exploration--exploitation balance.
+We will report how BO-selected designs evolve across iterations, how the
+surrogate model changes as data accumulate, and what Pareto-efficient
+trade-offs emerge between SEA and peak transmitted force within the
+explored design space.  We will also discuss practical lessons for
+operating the closed-loop workflow, including print-failure handling,
+batch-to-batch variability, and the exploration--exploitation trade-off.
 
 \end{document}
