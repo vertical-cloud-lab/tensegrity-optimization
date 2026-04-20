@@ -1,7 +1,7 @@
 \documentclass[10pt]{article}
 
 % --- Packages ---
-\usepackage[letterpaper,margin=0.75in]{geometry}
+\usepackage[letterpaper,margin=0.65in]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{parskip}
 \usepackage{graphicx}
@@ -11,14 +11,14 @@
 \usepackage[numbers,sort&compress]{natbib}
 
 % --- Formatting ---
-\setlength{\parskip}{0.4em}
+\setlength{\parskip}{0.2em}
 \setlength{\parindent}{0em}
 \titleformat*{\section}{\large\bfseries}
 \titleformat*{\subsection}{\normalsize\bfseries\itshape}
-\titlespacing*{\section}{0pt}{0.5em}{0.15em}
-\titlespacing*{\subsection}{0pt}{0.35em}{0.1em}
+\titlespacing*{\section}{0pt}{0.4em}{0.1em}
+\titlespacing*{\subsection}{0pt}{0.25em}{0.05em}
 \setlength{\emergencystretch}{2em}
-\setlength{\intextsep}{0.5em}
+\setlength{\intextsep}{0.2em}
 \bibliographystyle{abbrvnat}
 
 \begin{document}
@@ -34,9 +34,10 @@
 
 \section*{Abstract}
 Tensegrity-inspired architectures---rigid struts suspended within a
-continuous flexible network---exhibit tunable nonlinear responses and
-high strength-to-weight ratios, motivating their use in lightweight
-energy-absorbing and protective structures
+continuous flexible network---can exhibit tunable nonlinear
+force--displacement responses and favorable energy absorption per unit
+mass, motivating their use in lightweight energy-absorbing and protective
+structures
 \citep{skelton2009tensegrity,amendola2014experimental}.
 Multi-material fused deposition modeling (FDM) can co-print rigid (PLA)
 struts and flexible (TPU) elements in a single build
@@ -44,9 +45,10 @@ struts and flexible (TPU) elements in a single build
 space---strut geometry, tension-element cross-section, connectivity
 topology, and unit-cell tiling---is too large to explore by trial and
 error. We present a closed-loop experimental campaign that uses
-Bayesian optimization (BO) \citep{shahriari2016taking,frazier2018tutorial}
+Bayesian optimization (BO) \citep{shahriari2016taking}
 to drive a design--print--test workflow operating directly on physical
-measurements, without relying on finite-element simulation.
+measurements, without relying on finite-element
+simulation~\citep{shahriari2016taking}.
 
 \section{Introduction and Motivation}
 
@@ -74,22 +76,29 @@ gear~\citep{amendola2014experimental}. Idealized
 cable--strut tensegrities are difficult to manufacture at scale, but
 \emph{tensegrity-inspired} architectures fabricated by multi-material
 FDM retain much of the desirable mechanical
-behavior~\citep{pajunen2019design,khatri2024energy}. PLA provides
+behavior, reproducing load-limiting and progressive-collapse responses
+while enabling monolithic
+fabrication~\citep{pajunen2019design,khatri2024energy}. PLA provides
 rigid struts; TPU provides flexible, rate-dependent tension elements
-whose intrinsic damping is an asset for impact absorption.
+whose viscoelastic response can increase hysteretic energy dissipation
+under impact loading.
 
 The challenge is that small geometric and topological changes can
 produce large changes in the measured response, and high-fidelity
 simulation of multi-material FDM specimens---including interfacial
 slip, print defects, and TPU rate-dependence---is expensive and often
-unreliable~\citep{mo2023accelerated,perdikaris2017nonlinear}. Pure
+unreliable~\citep{mo2023accelerated}. Pure
 trial-and-error sweeps over the joint design space are also infeasible:
 even modest parameter resolutions yield thousands of candidates, each
 requiring print and test time. We instead treat the physical
 experiment as the source of truth and use BO to select which specimens
-are most informative to fabricate next, an approach that has produced
-substantial speed-ups in related closed-loop materials and structures
-campaigns~\citep{ament2023sustainable,mo2023accelerated}.
+are most informative to fabricate next---an approach used in related
+closed-loop materials and structures
+campaigns~\citep{mo2023accelerated,low2024evolution}.
+Unlike prior tensegrity-inspired studies that evaluate a fixed design
+set~\citep{pajunen2019design,khatri2024energy}, we adaptively select
+designs using parallel, noisy multi-objective BO driven by measured
+$F_{\mathrm{peak}}$, SEA, and $\eta$.
 
 \section{Approach}
 \subsection{Closed-Loop Workflow}
@@ -110,22 +119,29 @@ architecture in which rigid PLA struts are enclosed by continuous TPU
 skins to improve interfacial interlocking and reduce delamination at
 the rigid--flexible interface. The design vector $\mathbf{x}$ includes
 strut diameter and length, tension-element width and thickness, strut
-count per unit cell, connectivity topology, and unit-cell tiling
-pattern. Bounds are chosen to remain within the printer's resolution
-and overhang limits and to keep specimens in a common form factor for
-the test fixtures.
+count per unit cell, discrete connectivity topology, and unit-cell
+tiling pattern (mixed continuous--discrete, $d\approx8$ variables).
+Bounds are chosen to remain within the printer's resolution and overhang
+limits and to keep specimens in a common form factor for the test
+fixtures.
 
 \subsection{Surrogate and Acquisition}
 The GP surrogate is trained on three measured performance metrics:
 peak transmitted force $F_\mathrm{peak}$, specific energy absorption
 (SEA), and compaction efficiency $\eta$. We use independent GPs per
-objective with Mat\'ern kernels and learn length scales from the
-accumulated data~\citep{shahriari2016taking,frazier2018tutorial}. A
-batch, multi-objective acquisition function (e.g., $q$-noisy expected
-hypervolume improvement) selects the next set of candidates to balance
-multi-objective improvement against exploration of under-sampled
-regions of the design space. Print-failure outcomes are recorded as
-constraints rather than discarded.
+objective with Mat\'ern kernels; hyperparameters are fit by marginal
+likelihood with priors to avoid pathological length scales at small $n$.
+Categorical design choices (topology, tiling) are encoded explicitly so
+that the kernel respects the discrete structure of the design space.
+We use q-noisy expected hypervolume improvement (qNEHVI), which
+explicitly accounts for observation noise in parallel multi-objective
+BO~\citep{daulton2021nehvi}, to select the next set of candidates.
+Print failures are modeled as a probabilistic feasibility constraint and
+incorporated into constrained acquisition to limit sampling in infeasible
+regions~\citep{low2024evolution}. To mitigate numerical pathologies in
+improvement-based acquisitions as data and constraints accumulate, we
+apply numerically stable log-space
+reformulations~\citep{ament2023logei}.
 
 \section{Methods}
 \subsection{Fabrication}
@@ -145,8 +161,9 @@ a fixed impact energy; transmitted force is captured at high sample
 rate, and specimens are imaged before and after impact to document
 failure modes. From each test we extract $F_\mathrm{peak}$, SEA per
 unit mass, and compaction efficiency $\eta$, defined consistently
-across the campaign so that successive batches are directly
-comparable.
+across the campaign. A control specimen from an earlier batch is
+retested periodically to monitor and correct for TPU batch-to-batch
+drift.
 
 \section{Expected Outcomes and Discussion}
 We will report how BO-selected designs evolve across iterations, how
@@ -160,7 +177,7 @@ energy absorption, and the exploration--exploitation balance of the
 acquisition function under realistic experimental noise. We expect
 the campaign to clarify where physical experimentation is genuinely
 required versus where simpler analytical or multi-fidelity surrogate
-shortcuts~\citep{perdikaris2017nonlinear,mo2023accelerated} could be
+shortcuts~\citep{mo2023accelerated} could be
 substituted in future work.
 
 \section{Conclusion}
@@ -174,9 +191,9 @@ applicable to other multi-material additively manufactured
 architectures whose performance is dominated by hard-to-simulate
 effects.
 
-{\scriptsize
+{\tiny
 \renewcommand{\bibsection}{\section*{\normalsize References}\vspace{-0.4em}}
-\setlength{\bibsep}{0.05em plus 0.2ex}
+\setlength{\bibsep}{0pt plus 0.1ex}
 % Render DOIs as clickable doi.org hyperlinks for easy spot-checking;
 % keep \url{} as a clickable hyperlink (default natbib behavior).
 \providecommand{\doi}[1]{}
