@@ -1,61 +1,168 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
 % --- Packages ---
-\usepackage[margin=1in]{geometry}
+\usepackage[letterpaper,margin=0.75in]{geometry}
 \usepackage[hidelinks]{hyperref}
-\usepackage{setspace}
 \usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{titlesec}
+\usepackage{authblk}
 
-% --- Formatting ---
-\setlength{\parskip}{0.5em}
+% --- Formatting (ASME extended abstract style: two-column) ---
+\setlength{\parskip}{0.4em}
 \setlength{\parindent}{0em}
+\setlength{\columnsep}{0.3in}
+\setlength{\emergencystretch}{2em}
+\titleformat*{\section}{\normalsize\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries\itshape}
+\titlespacing*{\section}{0pt}{0.6em}{0.2em}
+\renewcommand{\Authsep}{, }
+\renewcommand{\Authand}{, }
+\renewcommand{\Authands}{, }
+
+\title{\vspace{-2em}\large\textbf{Closed-Loop Bayesian Optimization of Multi-Material
+3D-Printed Tensegrity-Inspired Energy Absorbers}\\[0.3em]
+\normalsize\textit{Extended Abstract --- ASME IDETC-CIE 2026}\\
+\normalsize\textit{Track DAC-10: Design of Engineering Materials and Structures}}
+\date{}
+\author{}
 
 \begin{document}
+\twocolumn[\maketitle\vspace{-2em}]
 
-\begin{center}
-{\Large \textbf{Closed-Loop Bayesian Optimization of Multi-Material\\
-3D-Printed Tensegrity-Inspired Energy Absorbers}}
+\section*{Abstract}
+Tensegrity-inspired architectures---rigid struts suspended within a
+continuous flexible network---exhibit tunable nonlinear responses and
+high strength-to-weight ratios, motivating their use in lightweight
+energy-absorbing and protective structures. Multi-material fused
+deposition modeling (FDM) can co-print rigid (PLA) struts and flexible
+(TPU) elements in a single build, but the resulting design space---strut
+geometry, tension-element cross-section, connectivity topology, and
+unit-cell tiling---is too large to explore by trial and error. We
+present a closed-loop experimental campaign that uses Bayesian
+optimization (BO) to drive a design--print--test workflow operating
+directly on physical measurements, without relying on finite-element
+simulation.
 
-\vspace{1em}
-\textit{ASME IDETC-CIE 2026 --- Presentation-Only Abstract}
+\section{Introduction and Motivation}
+Tensegrity structures combine compression-only members with a
+pre-tensioned tension network to achieve stiffness without rigid
+joinery~[1]. Their nonlinear, often load-limiting force--displacement
+response makes them attractive for impact mitigation, packaging, and
+wearable protective gear. Idealized cable--strut tensegrities are
+difficult to manufacture at scale, but \emph{tensegrity-inspired}
+architectures fabricated by multi-material FDM retain much of the
+desirable mechanical behavior while remaining manufacturable~[2,3]. PLA
+provides rigid struts; TPU provides flexible, rate-dependent tension
+elements whose intrinsic damping is an asset for energy absorption.
 
-\vspace{0.5em}
-\textit{Track: DAC-10 --- Design of Engineering Materials and Structures}
-\end{center}
+The challenge is that small geometric and topological changes can
+produce large changes in measured response, and high-fidelity
+simulation of multi-material FDM specimens---including interfacial
+slip, print defects, and TPU rate-dependence---is expensive and often
+unreliable. Pure trial-and-error sweeps over the joint design space are
+also infeasible: even modest parameter resolutions yield thousands of
+candidates, each requiring print and test time. We instead treat the
+physical experiment as the source of truth and use BO to select which
+specimens are most informative to fabricate next.
 
-\vspace{1em}
+\section{Approach}
+\subsection{Closed-Loop Workflow}
+Figure~\ref{fig:overview} summarizes the campaign. Each iteration
+proceeds in four steps: (i)~a parameterized unit-cell design is
+instantiated from a candidate vector $\mathbf{x}$; (ii)~the specimen
+is sliced and printed on a multi-material FDM system; (iii)~it is
+tested under quasi-static compression and instrumented drop-weight
+impact; and (iv)~the resulting performance metrics update a
+Gaussian-process (GP) surrogate, which a batch acquisition function
+queries to recommend the next set of candidates. Surrogate updating
+and experiment selection are automated; specimen handling, slicing,
+and test setup remain manual.
 
-Tensegrity-inspired architectures, in which rigid struts are suspended
-within a continuous flexible network, can exhibit tunable nonlinear
-responses and high strength-to-weight ratios, motivating their use in
-lightweight energy-absorbing structures.  Multi-material fused
-deposition modeling (FDM) can co-print rigid PLA struts and flexible TPU
-elements in a single build, but the resulting design space---spanning
-strut geometry, tension-element cross-section, topology, and unit-cell
-tiling---is too large to explore by trial and error.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/overview-updated.png}
+\caption{Closed-loop BO-driven workflow. Candidate tensegrity-inspired
+designs are printed and tested; measured metrics update a GP surrogate
+that proposes the next batch of designs.}
+\label{fig:overview}
+\end{figure}
 
-This work presents a closed-loop experimental campaign using Bayesian
-optimization (BO) to develop multi-material 3D-printed
-tensegrity-inspired structures for improved energy absorption under
-quasi-static compression and drop-weight impact.  A Gaussian-process
-surrogate trained on peak transmitted force, specific energy absorption
-(SEA), and compaction efficiency recommends each next batch of designs,
-enabling sequential design selection without finite-element simulation.
-The workflow combines automated surrogate updating and experiment
-selection with manual specimen handling and test setup.
+\subsection{Design Space}
+We parameterize a family of unit cells using a core-wrapping
+architecture in which rigid PLA struts are enclosed by continuous TPU
+skins to improve interfacial interlocking and reduce delamination at
+the rigid--flexible interface. The design vector $\mathbf{x}$ includes
+strut diameter and length, tension-element width and thickness, strut
+count per unit cell, connectivity topology, and unit-cell tiling
+pattern. Bounds are chosen to remain within the printer's resolution
+and overhang limits and to keep specimens in a common form factor for
+the fixtures.
 
-We parameterize a family of unit cells in which rigid PLA struts are
-enclosed by continuous TPU skins to improve interfacial interlocking.
-Design variables include strut diameter, length, tension-element width
-and thickness, strut count per cell, and tiling pattern.  Specimens are
-fabricated on a multi-material FDM system and tested under quasi-static
-compression and instrumented drop-weight impact.
+\subsection{Surrogate and Acquisition}
+The GP surrogate is trained on three measured performance metrics:
+peak transmitted force $F_\mathrm{peak}$, specific energy absorption
+(SEA), and compaction efficiency $\eta$. We use independent GPs per
+objective with Mat\'ern kernels and learn length scales from the
+accumulated data. A batch acquisition function (e.g., $q$-noisy
+expected hypervolume improvement) selects the next set of candidates
+to balance multi-objective improvement against exploration of
+under-sampled regions of the design space~[4]. Print-failure outcomes
+are recorded as constraints rather than discarded.
 
+\section{Methods}
+\subsection{Fabrication}
+Specimens are fabricated on a multi-material FDM system capable of
+co-printing PLA and TPU within a single build. Print parameters
+(temperature, line width, infill, retraction) are held fixed within a
+batch to isolate the effect of the design variables. Each specimen is
+weighed and dimensionally inspected prior to testing so that mass and
+geometric deviations are available as covariates.
+
+\subsection{Mechanical Testing}
+Quasi-static compression is performed on a screw-driven load frame at
+a fixed nominal strain rate, with force--displacement recorded to
+densification. Drop-weight impact testing uses an instrumented tup at
+a fixed impact energy; transmitted force is captured at high sample
+rate, and specimens are imaged before and after impact to document
+failure modes. From each test we extract $F_\mathrm{peak}$, SEA per
+unit mass, and compaction efficiency $\eta$, defined consistently
+across the campaign so that successive batches are directly
+comparable.
+
+\section{Expected Outcomes and Discussion}
 We will report how BO-selected designs evolve across iterations, how
-surrogate predictions change as data accumulate, and what
-Pareto-efficient trade-offs emerge between SEA and peak force.  We will
-also discuss practical lessons for the closed-loop workflow, including
-print-failure handling, batch variability, and exploration--exploitation
-balance.
+GP surrogate predictions and uncertainties change as data accumulate,
+and which Pareto-efficient trade-offs emerge between SEA and peak
+transmitted force within the explored design space. We will also
+discuss practical lessons for operating the closed-loop workflow,
+including handling of print failures, batch-to-batch variability in
+TPU response, the influence of the rigid--flexible interface on
+energy absorption, and the exploration--exploitation balance of the
+acquisition function under realistic experimental noise. We expect
+the campaign to highlight where physical experimentation is
+genuinely required versus where simpler analytical or surrogate
+shortcuts could be substituted in future work.
+
+\section{Conclusion}
+This work demonstrates a largely automated, experiment-driven
+closed-loop pipeline for designing multi-material 3D-printed
+tensegrity-inspired energy absorbers. By updating a GP surrogate
+directly from physical measurements, the workflow sidesteps the
+calibration burden of high-fidelity simulation while still providing
+principled, multi-objective design recommendations. The presented
+methodology is applicable to other multi-material additively
+manufactured architectures whose performance is dominated by
+hard-to-simulate effects.
+
+\section*{References}
+\small
+\begin{description}\itemsep0pt
+\item[{[1]}] Skelton, R.~E., and de~Oliveira, M.~C., 2009, \emph{Tensegrity Systems}, Springer.
+\item[{[2]}] Pajunen, K., Johanns, P., Pal, R.~K., Rimoli, J.~J., and Daraio, C., 2019, ``Design and impact response of 3D-printable tensegrity-inspired structures,'' \emph{Materials \& Design}, 182, 107966.
+\item[{[3]}] Khatri, N., et~al., 2024, ``Energy absorption of multi-material 3D-printed tensegrity-inspired structures,'' \emph{Additive Manufacturing}.
+\item[{[4]}] Daulton, S., Balandat, M., and Bakshy, E., 2021, ``Parallel Bayesian optimization of multiple noisy objectives with expected hypervolume improvement,'' \emph{NeurIPS}.
+\end{description}
 
 \end{document}
