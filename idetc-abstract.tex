@@ -1,7 +1,7 @@
 \documentclass[10pt]{article}
 
 % --- Packages ---
-\usepackage[letterpaper,margin=0.65in]{geometry}
+\usepackage[letterpaper,margin=0.6in]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{parskip}
 \usepackage{graphicx}
@@ -47,8 +47,8 @@ topology, and unit-cell tiling---is too large to explore by trial and
 error. We present a closed-loop experimental campaign that uses
 Bayesian optimization (BO) \citep{shahriari2016taking}
 to drive a design--print--test workflow operating directly on physical
-measurements, without relying on finite-element
-simulation~\citep{shahriari2016taking}.
+measurements, without relying on calibrated finite-element simulation
+for objective evaluation.
 
 \section{Introduction and Motivation}
 
@@ -75,13 +75,15 @@ attractive for impact mitigation, packaging, and wearable protective
 gear~\citep{amendola2014experimental}. Idealized
 cable--strut tensegrities are difficult to manufacture at scale, but
 \emph{tensegrity-inspired} architectures fabricated by multi-material
-FDM retain much of the desirable mechanical
-behavior, reproducing load-limiting and progressive-collapse responses
-while enabling monolithic
-fabrication~\citep{pajunen2019design,khatri2024energy}. PLA provides
+FDM can reproduce key tensegrity behaviors---including post-buckling
+stability and load-limiting force--displacement
+response---while enabling monolithic
+fabrication~\citep{pajunen2019design}. PLA provides
 rigid struts; TPU provides flexible, rate-dependent tension elements
-whose viscoelastic response can increase hysteretic energy dissipation
-under impact loading.
+whose viscoelasticity is expected to contribute hysteretic energy
+dissipation under impact loading, consistent with the energy-absorbing
+behavior reported for rigid--TPU multi-material
+prints~\citep{khatri2024energy}.
 
 The challenge is that small geometric and topological changes can
 produce large changes in the measured response, and high-fidelity
@@ -116,14 +118,18 @@ and test setup remain manual.
 \subsection{Design Space}
 We parameterize a family of unit cells using a core-wrapping
 architecture in which rigid PLA struts are enclosed by continuous TPU
-skins to improve interfacial interlocking and reduce delamination at
-the rigid--flexible interface. The design vector $\mathbf{x}$ includes
-strut diameter and length, tension-element width and thickness, strut
-count per unit cell, discrete connectivity topology, and unit-cell
-tiling pattern (mixed continuous--discrete, $d\approx8$ variables).
-Bounds are chosen to remain within the printer's resolution and overhang
-limits and to keep specimens in a common form factor for the test
-fixtures.
+skins; the wrapping rationale follows multi-material FDM strategies in
+which rigid panels are wrapped by stretchable soft material to improve
+load transfer at the rigid--flexible
+interface~\citep{ye2023multimaterial}. The design vector $\mathbf{x}$
+includes strut diameter and length, tension-element width and thickness,
+strut count per unit cell, discrete connectivity topology, and unit-cell
+tiling pattern, giving a mixed continuous--categorical space of roughly
+eight variables. Categorical choices (topology, tiling) are encoded
+explicitly rather than embedded in a continuous metric, and bounds on
+the continuous variables are chosen to remain within the printer's
+resolution and overhang limits and to keep specimens in a common form
+factor for the test fixtures.
 
 \subsection{Surrogate and Acquisition}
 The GP surrogate is trained on three measured performance metrics:
@@ -131,17 +137,16 @@ peak transmitted force $F_\mathrm{peak}$, specific energy absorption
 (SEA), and compaction efficiency $\eta$. We use independent GPs per
 objective with Mat\'ern kernels; hyperparameters are fit by marginal
 likelihood with priors to avoid pathological length scales at small $n$.
-Categorical design choices (topology, tiling) are encoded explicitly so
-that the kernel respects the discrete structure of the design space.
 We use q-noisy expected hypervolume improvement (qNEHVI), which
 explicitly accounts for observation noise in parallel multi-objective
 BO~\citep{daulton2021nehvi}, to select the next set of candidates.
-Print failures are modeled as a probabilistic feasibility constraint and
-incorporated into constrained acquisition to limit sampling in infeasible
-regions~\citep{low2024evolution}. To mitigate numerical pathologies in
-improvement-based acquisitions as data and constraints accumulate, we
-apply numerically stable log-space
-reformulations~\citep{ament2023logei}.
+Print failures are treated as a probabilistic feasibility constraint
+incorporated into constrained acquisition, following recent constrained
+multi-objective practice in self-driving
+labs~\citep{low2024evolution}. Where applicable, we use numerically
+stable log-space variants of improvement-based acquisitions to mitigate
+vanishing-gradient pathologies as data and constraints
+accumulate~\citep{ament2023logei}.
 
 \section{Methods}
 \subsection{Fabrication}
@@ -162,8 +167,7 @@ rate, and specimens are imaged before and after impact to document
 failure modes. From each test we extract $F_\mathrm{peak}$, SEA per
 unit mass, and compaction efficiency $\eta$, defined consistently
 across the campaign. A control specimen from an earlier batch is
-retested periodically to monitor and correct for TPU batch-to-batch
-drift.
+retested periodically to monitor TPU batch-to-batch and printer drift.
 
 \section{Expected Outcomes and Discussion}
 We will report how BO-selected designs evolve across iterations, how
@@ -181,19 +185,21 @@ shortcuts~\citep{mo2023accelerated} could be
 substituted in future work.
 
 \section{Conclusion}
-This work demonstrates a largely automated, experiment-driven
+This work demonstrates a partially automated, experiment-driven
 closed-loop pipeline for designing multi-material 3D-printed
-tensegrity-inspired energy absorbers. By updating a GP surrogate
-directly from physical measurements, the workflow sidesteps the
-calibration burden of high-fidelity simulation while still providing
-principled, multi-objective design recommendations. The methodology is
-applicable to other multi-material additively manufactured
+tensegrity-inspired energy absorbers, with surrogate updating and
+candidate selection automated and fabrication and testing kept manual.
+By updating a GP surrogate directly from physical measurements, the
+workflow avoids direct dependence on calibrated finite-element
+simulation for objective evaluation while still providing principled,
+multi-objective design recommendations. The same closed-loop pattern is
+expected to transfer to other multi-material additively manufactured
 architectures whose performance is dominated by hard-to-simulate
 effects.
 
 {\tiny
-\renewcommand{\bibsection}{\section*{\normalsize References}\vspace{-0.4em}}
-\setlength{\bibsep}{0pt plus 0.1ex}
+\renewcommand{\bibsection}{\section*{\normalsize References}\vspace{-0.5em}}
+\setlength{\bibsep}{-0.05em plus 0.1ex}
 % Render DOIs as clickable doi.org hyperlinks for easy spot-checking;
 % keep \url{} as a clickable hyperlink (default natbib behavior).
 \providecommand{\doi}[1]{}
