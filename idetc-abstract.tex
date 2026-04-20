@@ -38,7 +38,7 @@ continuous flexible network---can exhibit tunable nonlinear
 force--displacement responses and favorable energy absorption per unit
 mass, motivating their use in lightweight energy-absorbing and protective
 structures
-\citep{skelton2009tensegrity,amendola2014experimental}.
+\citep{skelton2009tensegrity,pajunen2019design}.
 Multi-material fused deposition modeling (FDM) can co-print rigid (PLA)
 struts and flexible (TPU) elements in a single build
 \citep{ye2023multimaterial,khatri2024energy}, but the resulting design
@@ -72,24 +72,24 @@ pre-tensioned tension network to achieve stiffness without rigid
 joinery~\citep{skelton2009tensegrity}. Their
 nonlinear, often load-limiting force--displacement response makes them
 attractive for impact mitigation, packaging, and wearable protective
-gear~\citep{amendola2014experimental}. Idealized
+gear~\citep{pajunen2019design}. Idealized
 cable--strut tensegrities are difficult to manufacture at scale, but
-\emph{tensegrity-inspired} architectures fabricated by multi-material
-FDM can reproduce key tensegrity behaviors---including post-buckling
-stability and load-limiting force--displacement
-response---while enabling monolithic
-fabrication~\citep{pajunen2019design}. PLA provides
-rigid struts; TPU provides flexible, rate-dependent tension elements
-whose viscoelasticity is expected to contribute hysteretic energy
-dissipation under impact loading, consistent with the energy-absorbing
-behavior reported for rigid--TPU multi-material
-prints~\citep{khatri2024energy}.
+\emph{tensegrity-inspired} architectures fabricated by single-material
+3D printing reproduce key tensegrity behaviors---including
+post-buckling stability and load-limiting force--displacement
+response~\citep{pajunen2019design}---motivating our extension to
+multi-material FDM for monolithic co-fabrication of rigid and flexible
+elements. PLA provides rigid struts; TPU provides flexible,
+rate-dependent tension elements whose viscoelasticity is expected to
+contribute hysteretic energy dissipation under impact loading,
+consistent with the energy-absorbing behavior reported for rigid--TPU
+multi-material prints~\citep{khatri2024energy}.
 
 The challenge is that small geometric and topological changes can
 produce large changes in the measured response, and high-fidelity
-simulation of multi-material FDM specimens---including interfacial
-slip, print defects, and TPU rate-dependence---is expensive and often
-unreliable~\citep{mo2023accelerated}. Pure
+simulation of FDM specimens is computationally expensive and often
+struggles to capture physical defects such as interfacial slip and
+TPU rate-dependence~\citep{mo2023accelerated}. Pure
 trial-and-error sweeps over the joint design space are also infeasible:
 even modest parameter resolutions yield thousands of candidates, each
 requiring print and test time. We instead treat the physical
@@ -119,17 +119,17 @@ and test setup remain manual.
 We parameterize a family of unit cells using a core-wrapping
 architecture in which rigid PLA struts are enclosed by continuous TPU
 skins; the wrapping rationale follows multi-material FDM strategies in
-which rigid panels are wrapped by stretchable soft material to improve
-load transfer at the rigid--flexible
+which rigid panels are wrapped by stretchable soft material to prevent
+delamination and improve interfacial bonding at the rigid--flexible
 interface~\citep{ye2023multimaterial}. The design vector $\mathbf{x}$
-includes strut diameter and length, tension-element width and thickness,
-strut count per unit cell, discrete connectivity topology, and unit-cell
-tiling pattern, giving a mixed continuous--categorical space of roughly
-eight variables. Categorical choices (topology, tiling) are encoded
-explicitly rather than embedded in a continuous metric, and bounds on
-the continuous variables are chosen to remain within the printer's
-resolution and overhang limits and to keep specimens in a common form
-factor for the test fixtures.
+comprises continuous geometric variables (strut diameter and length,
+tension-element width and thickness), an integer strut count per unit
+cell, and two categorical variables (connectivity topology, unit-cell
+tiling pattern). Categorical choices are encoded explicitly rather
+than embedded in a continuous metric, and bounds on the continuous
+variables are chosen to remain within the printer's resolution and
+overhang limits and to keep specimens in a common form factor for the
+test fixtures.
 
 \subsection{Surrogate and Acquisition}
 The GP surrogate is trained on three measured performance metrics:
@@ -137,15 +137,18 @@ peak transmitted force $F_\mathrm{peak}$, specific energy absorption
 (SEA), and compaction efficiency $\eta$. We use independent GPs per
 objective with Mat\'ern kernels; hyperparameters are fit by marginal
 likelihood with priors to avoid pathological length scales at small $n$.
-We use q-noisy expected hypervolume improvement (qNEHVI), which
-explicitly accounts for observation noise in parallel multi-objective
-BO~\citep{daulton2021nehvi}, to select the next set of candidates.
-Print failures are treated as a probabilistic feasibility constraint
-incorporated into constrained acquisition, following recent constrained
-multi-objective practice in self-driving
-labs~\citep{low2024evolution}. Where applicable, we use numerically
-stable log-space variants of improvement-based acquisitions to mitigate
-vanishing-gradient pathologies as data and constraints
+Heteroscedastic noise from TPU batch-to-batch variation and FDM
+interfacial defects motivates our use of q-noisy expected hypervolume
+improvement (qNEHVI), which explicitly accounts for observation noise
+in parallel multi-objective BO~\citep{daulton2021nehvi}, over standard
+expected-improvement variants. Print failures are treated as a
+probabilistic feasibility constraint: the acquisition score for each
+candidate is its qNEHVI improvement weighted by the GP-estimated
+probability of successful fabrication, following recent constrained
+multi-objective practice in self-driving labs~\citep{low2024evolution}.
+Where applicable, we use numerically stable log-space variants of
+improvement-based acquisitions to mitigate vanishing-gradient
+pathologies as data and constraints
 accumulate~\citep{ament2023logei}.
 
 \section{Methods}
