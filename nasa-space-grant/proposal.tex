@@ -1,0 +1,139 @@
+% =============================================================================
+% Utah NASA Space Grant Consortium Fellowship — Proposal Narrative
+% Applicant: Marcus Madsen (Undergraduate)
+% Faculty Advisor: Sterling G. Baird, Brigham Young University
+%
+% Scaffold (lorem-ipsum) template.  The narrative target is 3--5 pages per the
+% Utah NASA Space Grant Consortium guidelines.  References do not count toward
+% the page limit.  Specific NASA / space-priority alignment will be filled in
+% in a later revision.
+% =============================================================================
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{lipsum} % placeholder text — remove once narrative is written
+
+% --- Formatting ---
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\setlength{\parskip}{0.4em}
+\setlength{\parindent}{0em}
+
+% --- Draft helpers (remove for final) ---
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
+
+% =============================================================================
+\begin{document}
+
+% --- Title block (kept compact so it does not eat into the 3--5 page narrative) ---
+\begin{center}
+{\Large\textbf{Utah NASA Space Grant Consortium Fellowship Proposal}}\\[0.3em]
+{\large\textit{[Working Title — To Be Finalized]}}\\[0.4em]
+Marcus Madsen, Undergraduate Researcher \\
+Faculty Advisor: Sterling G.\ Baird, Department of Mechanical Engineering \\
+Brigham Young University \\
+\today
+\end{center}
+\vspace{0.5em}
+
+% =============================================================================
+\section{Introduction and Motivation}
+% =============================================================================
+\todo{Open with the problem statement and motivate why this research matters
+to NASA and the Utah NASA Space Grant Consortium's space-related priorities.
+Briefly state the long-term vision and the specific gap this work addresses.}
+
+\lipsum[1-2]
+
+% =============================================================================
+\section{Background and Relation to NASA / Space Priorities}
+% =============================================================================
+\todo{Summarize the relevant scientific and engineering background, cite prior
+work, and explicitly tie the proposed research to NASA mission priorities (for
+example: in-space manufacturing, lightweight deployable structures, impact
+protection for crew or payloads, autonomous experimentation for space
+exploration, etc.).  This subsection is currently a placeholder; the specific
+NASA alignment will be filled in in a later revision.}
+
+\lipsum[3]
+
+A representative early citation to verify the bibliography pipeline:
+\citep{nasa2020priorities,skelton2009tensegrity}.
+
+% =============================================================================
+\section{Research Objectives}
+% =============================================================================
+\todo{State 2--3 concrete, measurable objectives for the fellowship year.}
+
+\begin{enumerate}[leftmargin=1.5em,itemsep=0.2em]
+    \item \textbf{Objective 1.} \lipsum[4][1-2]
+    \item \textbf{Objective 2.} \lipsum[4][3-4]
+    \item \textbf{Objective 3.} \lipsum[4][5-6]
+\end{enumerate}
+
+% =============================================================================
+\section{Proposed Approach and Methods}
+% =============================================================================
+\todo{Describe the methodology: experimental setup, computational tools,
+data-collection plan, and analysis pipeline.  Highlight Marcus's specific
+role and contributions.}
+
+\lipsum[5-6]
+
+\subsection*{Task Plan}
+\todo{Replace placeholder tasks with the actual milestones.}
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Task} & \textbf{Q1} & \textbf{Q2} & \textbf{Q3} & \textbf{Q4} \\
+\midrule
+Literature review and scoping        & \(\bullet\) &           &           &           \\
+Experimental / computational setup    & \(\bullet\) & \(\bullet\) &           &           \\
+Data collection and analysis          &           & \(\bullet\) & \(\bullet\) &           \\
+UNSGC conference presentation         &           &           & \(\bullet\) &           \\
+Manuscript / final report             &           &           & \(\bullet\) & \(\bullet\) \\
+\bottomrule
+\end{tabular}
+\caption{Quarterly task plan for the 2026--2027 fellowship year (placeholder).}
+\label{tab:tasks}
+\end{table}
+
+% =============================================================================
+\section{Expected Outcomes and Broader Impact}
+% =============================================================================
+\todo{Describe deliverables (data sets, code, conference paper, manuscript,
+poster at the annual UNSGC conference) and the broader impact on NASA-relevant
+research, undergraduate training, and the Utah Space Grant mission.}
+
+\lipsum[7]
+
+% =============================================================================
+\section{Qualifications and Mentoring Plan}
+% =============================================================================
+\todo{Briefly describe Marcus's preparation (coursework, GPA, prior research
+or projects) and the advising structure with Prof.\ Baird, including weekly
+one-on-one meetings, lab group participation, and graduate co-mentoring.}
+
+\lipsum[8]
+
+% =============================================================================
+% --- References (do not count toward the 3--5 page limit) ---
+% =============================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
