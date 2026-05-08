@@ -82,7 +82,7 @@ density, and stroke.
 
 \textbf{Tensegrity-inspired structures}---networks of rigid struts suspended
 in a continuous web of tension elements---offer a programmable alternative.
-NASA Ames' NIAC-funded \emph{Super Ball Bot} project demonstrated that
+NASA Ames' NASA Innovative Advanced Concepts (NIAC)-funded \emph{Super Ball Bot} project demonstrated that
 tensegrity geometries can survive impacts on the order of 15~m/s and combine
 landing, payload protection, and surface mobility in a single packable
 structure \citep{caluwaerts2014superball,agogino2018superball,sabelhaus2015system,vespignani2018design},
@@ -91,12 +91,12 @@ and the concept has been extended to ocean-world rideshare rovers
 design and \emph{experimentally} validate tensegrity-inspired geometries
 against NASA-relevant impact scenarios.  Recent work shows that
 tensegrity-inspired unit cells can be directly 3D-printed on consumer-grade
-FDM hardware and retain a load-limiting plateau under drop-weight impact
+fused deposition modeling (FDM) hardware and retain a load-limiting plateau under drop-weight impact
 \citep{pajunen2019design}.  Multi-material rigid--soft FDM (rigid struts +
 flexible tension skins) yields tunable energy absorption without delamination
-\citep{ye2023multimaterial,khatri2024energy}, and our group has access to a
-dual-nozzle \textbf{Bambu Lab H2D} printer that makes this multi-material
-workflow practical for me to run as a single-student campaign.
+\citep{ye2023multimaterial,khatri2024energy}, and my lab has access to a
+dual-nozzle \textbf{Bambu Lab H2D} printer, which makes this multi-material
+workflow practical for a single-student campaign.
 
 I propose to use that capability to run a focused, year-long
 \textbf{print--test--optimize} campaign aimed squarely at two NASA-relevant
@@ -104,7 +104,7 @@ load cases: (1) low-velocity \emph{lander-class} crush attenuation and
 (2) launch-/deployment-class \emph{shock isolation} for small-payload
 (CubeSat-class) hardware.  This work directly supports the Utah NASA Space
 Grant Consortium's mission of preparing students for the NASA workforce and
-aligns with two STMD priorities visible across the Ames NIAC tensegrity line
+aligns with two Space Technology Mission Directorate (STMD) priorities visible across the Ames NIAC tensegrity line
 and the In-Space Manufacturing (ISM) / FabLab roadmap: lightweight
 load-limiting structures and multi-material additive manufacturing (AM)
 \citep{nasa2022strategic,prater2019summary,agogino2018superball}.
@@ -163,7 +163,7 @@ I have three concrete, measurable objectives for the fellowship year:
 \begin{enumerate}[leftmargin=1.5em,itemsep=0.2em]
     \item \textbf{Build a parameterized tensegrity-inspired unit-cell family}
     that prints reliably on the Bambu Lab H2D in PLA + TPU, with verified
-    geometric fidelity (CT or caliper-and-mass) on at least 5 baseline
+    geometric fidelity (computed tomography (CT) or caliper-and-mass) on at least 5 baseline
     geometries.
     \item \textbf{Quantify NASA-relevant impact response} for $\geq 30$
     distinct geometries via quasi-static compression and drop-weight tests,
@@ -184,12 +184,12 @@ I have three concrete, measurable objectives for the fellowship year:
 \textbf{Design.} I will parameterize a family of tensegrity-inspired unit
 cells in Fusion~360---strut diameter and length, TPU skin thickness,
 connectivity topology, and tiling pattern---following the wrapping-based
-core/skin strategy of Ye et al.\ \citep{ye2023multimaterial} so that PLA struts
+core/skin strategy in \citep{ye2023multimaterial} so that PLA struts
 remain mechanically interlocked with continuous TPU tension members and do
 not delaminate under cyclic loading \citep{khatri2024energy}.
 
 \textbf{Fabrication.} All specimens will be printed on the
-\textbf{Bambu Lab H2D} in our lab, using its dual-nozzle, multi-material
+\textbf{Bambu Lab H2D} in the Baird lab, using its dual-nozzle, multi-material
 capability to produce PLA + TPU parts in a single build.  I will keep a
 \textbf{print log} (slicer settings, AMS routing, post-print mass and
 geometric checks) so that downstream test data can be traced back to a
@@ -202,10 +202,10 @@ committing to full unit-cell prints.
     \item \emph{Quasi-static compression} on a benchtop universal testing
     machine to extract force--displacement curves, plateau stress, and
     densification strain (analogous to the characterization done for
-    honeycomb crush cores in EDL design).
+    honeycomb crush cores in entry, descent, and landing (EDL) design).
     \item \emph{Drop-weight impact} from instrumented fixed-mass drops to
     measure peak transmitted force and SEA at lander-relevant velocities,
-    following the protocol of Pajunen et al.\ \citep{pajunen2019design}.
+    following the protocol in \citep{pajunen2019design}.
     A piezoelectric accelerometer or load cell at the base captures the
     transmitted pulse.
 \end{itemize}
