@@ -126,6 +126,50 @@ Bambu Studio treats them very differently:
   the project / sliced split.) If you want to edit settings and re-slice
   in the GUI, open `slices/t3-prism.H2D.3mf` instead.
 
+### Print failure mode: top-cable bridge (and how to avoid it)
+
+The first H2D PETG print of `t3-prism.3mf` (385 layers @ 0.20 mm,
+flat-on-bed orientation, no supports) **failed with classic spaghetti
+detangling at the top cable layer**, exactly where the
+[Edison ANALYSIS](../../edison-trajectories/2026-05-08-t3-prism-bambu-import-25c1c897.md)
+of the geometry predicted. The failure mode is intrinsic to printing
+this geometry single-piece, single-material, flat, and unsupported:
+
+- Each top cable (`T_i → T_{i+1}`) is a **2.4 mm Ø horizontal cylinder
+  spanning ~43.3 mm** between two top-vertex joint spheres.
+- The first layer of that bridge is a chord of the cylinder bottom, so
+  it's only **~0.96 mm wide** (≈ 2 × 0.4 mm perimeters) — a sub-mm
+  PETG strand suspended over a 43 mm gap with no underlying mass.
+- The struts and saddles arrive at the top vertices `T_i` *before* the
+  top cable starts (around layer 362), so the joint spheres are solid
+  anchors — but the bridge sliver still has to span the gap on its own.
+
+Mitigations, in order of expected effectiveness, taken straight from
+the Edison analysis:
+
+1. **Re-orient so one strut lies flat on the build plate.** This kills
+   the 43 mm horizontal bridges entirely; cables instead print at
+   self-supporting 30°–60° diagonals, and PETG layer lines run
+   *along* the cable axis (much higher tensile strength along the
+   tension member).
+2. **Increase `cable_d` from 2.4 mm to 3.0–4.0 mm** (parameters at the
+   top of [`t3-prism.scad`](t3-prism.scad)) — wider bridge first layer,
+   more perimeters anchored across the gap. Still printable in pure
+   PETG / single-piece.
+3. **Tune PETG bridge settings** — 100% fan and the slicer's bridge
+   speed/flow overrides — if you stay in the flat-on-bed orientation.
+4. **Multi-material variant** (next section) sidesteps the problem
+   structurally: PLA-only struts can be oriented strut-flat; PETG
+   cables are printed in their own pass with tighter parameters; and
+   the PETG slot is the placeholder for TPU which is the actually
+   intended compliant tension member.
+
+The CLI-generated `slices/t3-prism.H2D-PETG.gcode.3mf` in this PR uses
+the BBL-bundled defaults (2 walls, 15% grid infill); the manually
+re-sliced `t3-prism.3mf` Marcus uploaded uses 3 walls + 25% gyroid.
+Neither is enough to save a 43 mm sub-mm bridge by itself — orientation
+or geometry change is the actual fix.
+
 ### Multi-material variant (PLA struts + PETG cables, IDEX)
 
 `slices/t3-prism.H2D-MM.3mf` is a Bambu Studio project that splits the
