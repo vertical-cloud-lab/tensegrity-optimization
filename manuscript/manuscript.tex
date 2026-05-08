@@ -12,58 +12,76 @@
 % Structures (SMS) as a backup venue.
 % =============================================================================
 
-% Class options:
-%   * Pass `final' for the typeset two-column ASME look.
-%   * Pass `review' (default below) for a wide-margin, double-spaced,
-%     line-numbered draft suitable for peer review and co-author markup.
-\documentclass[review,12pt,onecolumn]{asmejour}
+% PDF/A metadata (added in 2022; required by current asmejour for accessibility)
+\DocumentMetadata{%
+  lang        = en-US,
+  pdfstandard = A-3u,
+  pdfversion  = 1.7,
+}
 
-\JournalInfo{Journal of Mechanical Design}
-\PaperNo{MD-XX-XXXX}
-\Archive{Manuscript draft -- not for distribution}
+% Class options used here (see asmejour-template.pdf for the full list):
+%   * lineno       -- numbered lines for review markup (run pdflatex twice)
+%   * singlecolumn -- one column draft layout (drop for ASME two-column final)
+%   * nocopyright  -- suppress ASME copyright footer until acceptance
+%   * upint, varvw -- typographic preferences carried over from the template
+%   * hyphenate    -- allow hyphenation in typewriter font
+\documentclass[lineno,singlecolumn,nocopyright,upint,varvw,hyphenate]{asmejour}
 
-% --- Packages ---
+\allowdisplaybreaks % from amsmath; multiline equations may break across pages
+
+% --- Additional packages ---
+% asmejour already loads: graphicx, hyperref, natbib, amsmath, amssymb,
+% xcolor, booktabs, subcaption, caption, lineno, etc. Avoid re-loading those.
 \usepackage{lipsum}      % lorem ipsum filler -- REMOVE before submission
-\usepackage{booktabs}
 \usepackage{siunitx}
-\usepackage{subcaption}
 
 % --- Draft helpers (remove for final submission) ---
-\usepackage{xcolor}
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 \newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
 
-% =============================================================================
-% Front matter
-% =============================================================================
-\title{Bayesian Optimization of Multi-Material 3D-Printed Tensegrity
-       Structures for Energy Absorption}
-
-\SetAuthorBlock{Jeffrey R. Hill\thanks{Corresponding author. Email:
-  jeff.hill@byu.edu}}{
-  Department of Mechanical Engineering\\
-  Brigham Young University\\
-  Provo, Utah 84602\\
+% --- PDF metadata ---
+\hypersetup{%
+  pdfauthor   = {Jeffrey R. Hill and Sterling G. Baird},
+  pdftitle    = {Bayesian Optimization of Multi-Material 3D-Printed Tensegrity
+                 Structures for Energy Absorption},
+  pdfkeywords = {tensegrity, multi-material 3D printing, Bayesian optimization,
+                 multifidelity, energy absorption},
+  pdfsubject  = {Manuscript draft for ASME Journal of Mechanical Design},
 }
 
-\SetAuthorBlock{Sterling G. Baird}{
-  Department of Mechanical Engineering\\
-  Brigham Young University\\
-  Provo, Utah 84602\\
-}
-
-\keywords{tensegrity, multi-material 3D printing, Bayesian optimization,
-          multifidelity, energy absorption}
+% --- Journal name (printed in the running head; omit "Journal of") ---
+\JourName{Mechanical Design}
 
 \begin{document}
 
-\maketitle
+% =============================================================================
+% Author block(s) -- one \SetAuthorBlock per author (or per shared affiliation)
+% Mark corresponding author(s) with \CorrespondingAuthor (no space before).
+% =============================================================================
+\SetAuthorBlock{Jeffrey R. Hill\CorrespondingAuthor}{%
+  Department of Mechanical Engineering,\\
+  Brigham Young University,\\
+  Provo, UT 84602, USA\\
+  email: jeff.hill@byu.edu
+}
+
+\SetAuthorBlock{Sterling G. Baird}{%
+  Department of Mechanical Engineering,\\
+  Brigham Young University,\\
+  Provo, UT 84602, USA\\
+  email: sterling.baird@byu.edu
+}
+
+\title{Bayesian Optimization of Multi-Material 3D-Printed Tensegrity
+       Structures for Energy Absorption}
+
+% Keywords are printed at the end of the abstract; must precede \end{abstract}.
+\keywords{tensegrity, multi-material 3D printing, Bayesian optimization,
+          multifidelity, energy absorption}
 
 % -----------------------------------------------------------------------------
-% Abstract
-% -----------------------------------------------------------------------------
-% JMD requires a 150--200 word abstract using only Latin characters
-% (no math/special symbols). Cover: background, approach, results, conclusions.
+% Abstract -- JMD requires 150--200 words, Latin characters only (no math),
+% structured as background, approach, results, conclusions.
 % -----------------------------------------------------------------------------
 \begin{abstract}
 \todo{Write a 150--200 word abstract covering background, approach, results,
@@ -71,8 +89,10 @@ and conclusions. Lorem ipsum follows as a length placeholder.}
 \lipsum[1][1-9]
 \end{abstract}
 
+\maketitle
+
 % =============================================================================
-% Body
+% Body -- IMRaD structure per JMD submission instructions
 % =============================================================================
 \section{Introduction}
 \label{sec:introduction}
@@ -112,12 +132,14 @@ and conclusions. Lorem ipsum follows as a length placeholder.}
 % =============================================================================
 % Back matter
 % =============================================================================
-\section*{Acknowledgments}
+\section*{Acknowledgment} % ASME requests this exact spelling, singular.
 \todo{Acknowledge funding sources (e.g., BYU MRG, NASA Utah Space Grant
 Consortium), facilities, and individual contributors.}
 
 \section*{Funding Data}
-\todo{List grant numbers per ASME Funding Data requirements.}
+\begin{itemize}
+  \item \todo{Grant name and number (per ASME Funding Data requirements).}
+\end{itemize}
 
 \section*{Conflict of Interest}
 The authors declare no conflict of interest.
