@@ -151,7 +151,7 @@ class PrintableDesign:
     @property
     def is_class_1(self) -> bool:
         """True iff struts do not interpenetrate (true tensegrity)."""
-        return 2.0 * (0.5 * self.strut_diameter_m) < self.strut_pair_min_distance_m
+        return self.strut_diameter_m < self.strut_pair_min_distance_m
 
     @property
     def class_1_margin_m(self) -> float:
