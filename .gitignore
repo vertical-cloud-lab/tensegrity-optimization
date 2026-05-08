@@ -35,3 +35,6 @@ Thumbs.db
 # IDE
 .vscode/
 *.code-workspace
+
+# CAD scratch/scratch slicer outputs (committed slices live under cad/*/slices/)
+/tmp/t3-prism/

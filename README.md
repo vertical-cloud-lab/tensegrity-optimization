@@ -24,6 +24,8 @@ This proposal develops a multifidelity Bayesian optimization framework to design
 │   ├── coverpage.tex         # MRG cover page (abstract, budget table, external funding)
 │   ├── budget.tex            # Budget table and justification
 │   └── biosketch.tex         # PI and Co-PI biographical sketches
+├── cad/
+│   └── t3-prism/             # T3-prism (3-strut tensegrity), PETG, Bambu-sliced
 ├── Makefile                  # Build commands
 ├── .gitignore
 └── README.md
