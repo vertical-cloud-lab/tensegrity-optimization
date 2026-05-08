@@ -38,6 +38,8 @@ simulations/
 ├── mujoco_sweep.py       # 1-D parameter sweep --> BO objective stub
 ├── regimes.py            # Application regime dataclasses (crutch + NASA) + Lansmont M23 envelope
 ├── run_regimes.py        # Drives MuJoCo through both regimes; produces 4 figures + 2 CSVs
+├── printable_design.py   # PETG strut + TPU 95A tendon material model + class-1 check
+├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 └── outputs/
     ├── mujoco_drop_energy.png
     ├── mujoco_drop_data.npz
@@ -50,7 +52,11 @@ simulations/
     ├── regime_crutch_tip_timeseries.png
     ├── regime_crutch_tip_sweep.{png,csv}
     ├── regime_nasa_lander_timeseries.png
-    └── regime_nasa_lander_sweep.{png,csv}
+    ├── regime_nasa_lander_sweep.{png,csv}
+    ├── regime_crutch_tip_printable_{heatmap,pareto}.png
+    ├── regime_crutch_tip_printable.csv
+    ├── regime_nasa_lander_printable_{heatmap,pareto}.png
+    └── regime_nasa_lander_printable.csv
 ```
 
 Run any script directly:
@@ -61,6 +67,7 @@ python simulations/mujoco_drop.py
 python simulations/pybullet_drop.py
 python simulations/mujoco_sweep.py
 python simulations/run_regimes.py     # both application regimes, MuJoCo
+python simulations/printable_sweep.py # PETG/TPU printable-design sweep, MuJoCo
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
@@ -139,6 +146,56 @@ NTRT/MuJoCo rigid-strut models are good for topology screening but
 cannot resolve TPU-mediated energy absorption. Crutch design and
 quantitative SEA optimization motivate moving to Edison's Recommendation B
 (DiffPD) or A (PolyFEM + IPC) for the next iteration.
+
+## PETG strut + TPU "string" printable design (Bambu H2D)
+
+The lab fabricates the unit cell on a Bambu Lab H2D (0.4 mm nozzle,
+PETG + TPU 95A in IDEX), so cable stiffness is not a free abstract
+parameter — it is set by the printable tendon diameter `d_t` and the
+TPU 95A modulus:
+
+```
+k = E_TPU * pi * (d_t / 2)^2 / L     with E_TPU ≈ 25 MPa (95A secant)
+```
+
+`simulations/printable_design.py` exposes this and three companion
+checks the operator needs *before* printing:
+
+1. **Class-1 / true-tensegrity check.** A genuine Snelson tensegrity is
+   *class-1* — no two struts touch.  In an FDM build with finite strut
+   diameter `d_s` the constraint becomes `d_s < d_min(r, h, twist)`,
+   the closest-approach distance between any two of the three struts.
+   `PrintableDesign.is_class_1` returns the boolean and
+   `class_1_margin_m` the signed margin.  Both regime defaults pass:
+   crutch margin 10.9 mm, lander margin 103 mm.  If the margin goes
+   negative the structure is *tensegrity-like* (some load bypasses the
+   tendons through strut-strut contact) and the BO objective stops
+   reflecting the design intent — `printable_sweep.py` filters those
+   designs out of its Pareto fronts.
+2. **H2D printability bounds.**  Tendon Ø ∈ [1.2, 6.0] mm (3-perimeter
+   minimum at 0.4 mm nozzle … switch to multi-strand above); strut Ø
+   ≥ 2.0 mm.
+3. **TPU break-stress bound.**  `prestrain × E_TPU < σ_break (~30 MPa)`,
+   so prestrain ≲ 50 % is mechanically allowed — but we cap the sweep
+   at 8 % since beyond that the small-strain `k = EA/L` model breaks
+   down (Mullins effect dominates).
+
+`simulations/printable_sweep.py` then runs a 7 × 5 grid over (`d_t`,
+`prestrain`) for each regime, holding strut diameter at the regime
+default, and writes a heatmap of peak |a| (g) and SEA (J/kg) plus a
+Pareto cloud of peak vs SEA coloured by tendon Ø.  Findings:
+
+| Regime | Best class-1 design (peak ≤ target, max SEA)               |
+|---|---|
+| `crutch_tip`  | **None** in this rigid-strut model — the printable k range ~1.1–28 kN/m at the 25 mm strut length still leaves the rigid-prism floor-contact impulse > 8 g. Confirms the same Edison Rec C limitation: design needs DiffPD/IPC or a redesigned cell (e.g. an underlying TPU shell carrying the contact load). |
+| `nasa_lander` | `d_t = 4.0 mm`, prestrain 0 % → peak 92 g, SEA 1.03 J/kg, well under the 1500 g GEVS target. Comfortably printable. |
+
+The point of this driver is not the rigid-strut peak g (we already know
+that's contact-pinned) — it is to expose the **printable / class-1 /
+H2D-feasible region** of the BO search space so that whoever wires up
+the actual BO loop next session does it on the right axes (`d_t`,
+`prestrain`, strut Ø) instead of an abstract `k`, and so the sim
+warns them when their proposed design is not a true tensegrity.
 
 ## Other notable simulators (not yet downloaded)
 
