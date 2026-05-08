@@ -48,6 +48,8 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCAD="${HERE}/t3-prism.scad"
 STL="${HERE}/t3-prism.stl"
+STL_STRUTS="${HERE}/t3-prism-struts.stl"
+STL_CABLES="${HERE}/t3-prism-cables.stl"
 PNG="${HERE}/t3-prism-iso.png"
 SLICES_DIR="${HERE}/slices"
 SCRATCH="${SCRATCH:-/tmp/t3-prism}"
@@ -59,13 +61,25 @@ BAMBU_APPIMAGE="${BAMBU_APPIMAGE:-${SCRATCH}/bambu.AppImage}"
 BAMBU_URL="${BAMBU_URL:-https://github.com/bambulab/BambuStudio/releases/download/${BAMBU_VERSION}/BambuStudio_ubuntu-24.04-${BAMBU_VERSION}-20260417160415.AppImage}"
 
 # ----------------------------------------------------------------------------
-# 1. SCAD -> STL
+# 1. SCAD -> STL (single-material full body + per-part halves for MM)
 # ----------------------------------------------------------------------------
-echo "==> OpenSCAD render -> ${STL##*/}"
+echo "==> OpenSCAD render -> ${STL##*/} (single-material, both materials fused)"
 xvfb-run -a openscad -o "${STL}" --export-format=binstl "${SCAD}"
+
+echo "==> OpenSCAD render -> ${STL_STRUTS##*/} (multi-material: rigid half / PLA, bed-centered)"
+xvfb-run -a openscad -o "${STL_STRUTS}" --export-format=binstl \
+    -D 'part="struts"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
+
+echo "==> OpenSCAD render -> ${STL_CABLES##*/} (multi-material: tension half / PETG, bed-centered)"
+xvfb-run -a openscad -o "${STL_CABLES}" --export-format=binstl \
+    -D 'part="cables"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
 
 echo "==> admesh manifold check"
 admesh -fundecvb "${SCRATCH}/t3-prism-clean.stl" "${STL}" \
+    | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
+admesh -fundecvb "${SCRATCH}/t3-prism-struts-clean.stl" "${STL_STRUTS}" \
+    | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
+admesh -fundecvb "${SCRATCH}/t3-prism-cables-clean.stl" "${STL_CABLES}" \
     | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
 
 # ----------------------------------------------------------------------------
@@ -173,6 +187,66 @@ for plate in r.get('sliced_plates', []):
     cp "${sliced_outdir}/${sliced_3mf}" "${SLICES_DIR}/${sliced_3mf}"
 }
 
+slice_bambu_mm () {
+    # Multi-material H2D variant (PLA struts + PETG cables, IDEX).
+    #
+    # The two STLs (`t3-prism-struts.stl`, `t3-prism-cables.stl`) are
+    # rendered above in the SAME world coordinates (both pre-translated to
+    # the H2D bed centre) so they form a true assembled tensegrity, not two
+    # separate objects on the bed. To get BambuStudio to treat them as
+    # parts of one object we:
+    #
+    #   1. Run with `--assemble` (no `--slice`) to merge both STLs into a
+    #      single Bambu Studio project (`<object>` with two `<part>`s).
+    #      `--assemble + --slice + manual filament map` is unstable in
+    #      v02.06.00.51 (segfaults on `--load-filament-ids` with merged
+    #      objects), so the slice happens in a follow-up pass.
+    #   2. Patch the resulting `Metadata/model_settings.config` so the
+    #      cables part is assigned to extruder 2 (PETG) while the struts
+    #      part stays on extruder 1 (PLA). The defaults from `--assemble`
+    #      put both parts on extruder 1.
+    #   3. The resulting `slices/t3-prism.H2D-MM.3mf` opens in Bambu
+    #      Studio with both parts already merged into one object and the
+    #      correct PLA/PETG extruder assignment per part — the user just
+    #      hits Slice / Send to printer.
+    #
+    # We do NOT emit a sliced `.gcode.3mf` for the multi-material variant
+    # from the CLI, because BambuStudio v02.06.00.51's headless slice path
+    # does not honour per-part extruder assignment when re-loading a
+    # project 3mf as input. The Bambu Studio GUI handles this correctly.
+    local tag="$1" machine_leaf="$2" process_leaf="$3"
+    local f1_leaf="$4" f2_leaf="$5"
+    local m="${SCRATCH}/${tag}_machine_flat.json"
+    local p="${SCRATCH}/${tag}_process_flat.json"
+    local f1="${SCRATCH}/${tag}_filament1_flat.json"
+    local f2="${SCRATCH}/${tag}_filament2_flat.json"
+    local proj_3mf="t3-prism.${tag}.3mf"
+    local proj_outdir="${SCRATCH}/proj_${tag}"
+
+    echo "==> [${tag}] Flatten profiles (PLA + PETG dual-filament)"
+    flatten machine  "${machine_leaf}" "${m}"
+    flatten process  "${process_leaf}" "${p}"
+    flatten filament "${f1_leaf}"      "${f1}"
+    flatten filament "${f2_leaf}"      "${f2}"
+    patch_bed "${m}"
+
+    echo "==> [${tag}] BambuStudio CLI --assemble -> ${proj_3mf} (one object, two parts)"
+    rm -rf "${proj_outdir}" && mkdir -p "${proj_outdir}"
+    LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe \
+    xvfb-run -a -s "-screen 0 1280x1024x24" "${BAMBU_APPIMAGE}" \
+        --assemble \
+        --load-settings  "${m};${p}" \
+        --load-filaments "${f1};${f2}" \
+        --export-3mf "${proj_3mf}" \
+        --outputdir "${proj_outdir}" \
+        "${STL_STRUTS}" "${STL_CABLES}" 2>&1 | tail -2
+
+    echo "==> [${tag}] Patch model_settings.config: cables part -> extruder 2 (PETG)"
+    python3 "${HERE}/patch_mm_extruder.py" "${proj_outdir}/${proj_3mf}" \
+        "t3-prism-cables.stl=2" "t3-prism-struts.stl=1"
+    cp "${proj_outdir}/${proj_3mf}" "${SLICES_DIR}/${proj_3mf}"
+}
+
 # Bambu Lab H2D — the lab's only printer (see `.github/copilot-instructions.md`).
 # Settings match Marcus's `cad/t3-prism/t3-prism.3mf` Bambu Studio project
 # (PETG Basic on left extruder, no supports).
@@ -181,9 +255,26 @@ slice_bambu "H2D" \
     "0.20mm Standard @BBL H2D" \
     "Bambu PETG Basic @BBL H2D 0.4 nozzle"
 
+# Multi-material H2D variant (PLA struts + PETG cables). PLA gives the
+# rigid compression skeleton (eventually keeps its role); PETG handles the
+# tension cables and is the placeholder for the eventual TPU swap. The
+# tensegrity analogy: stiff bars in compression, compliant strings in
+# tension, no two compression members touching.
+slice_bambu_mm "H2D-MM" \
+    "Bambu Lab H2D 0.4 nozzle" \
+    "0.20mm Standard @BBL H2D" \
+    "Bambu PLA Basic @BBL H2D" \
+    "Bambu PETG Basic @BBL H2D 0.4 nozzle"
+
 echo
 echo "==> Done."
-echo "    STL:     ${STL}"
-echo "    Iso:     ${PNG}"
-echo "    Project: ${SLICES_DIR}/t3-prism.H2D.3mf            (Bambu Studio re-importable)"
-echo "    Sliced:  ${SLICES_DIR}/t3-prism.H2D-PETG.gcode.3mf (printer upload)"
+echo "    STL:        ${STL}"
+echo "    STL struts: ${STL_STRUTS}"
+echo "    STL cables: ${STL_CABLES}"
+echo "    Iso:        ${PNG}"
+echo "    Single-material (PETG, full pipeline incl. sliced print job):"
+echo "      Project:  ${SLICES_DIR}/t3-prism.H2D.3mf            (Bambu Studio re-importable)"
+echo "      Sliced:   ${SLICES_DIR}/t3-prism.H2D-PETG.gcode.3mf (printer upload)"
+echo "    Multi-material (PLA struts + PETG cables, IDEX, project only):"
+echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-MM.3mf         (open in Bambu Studio,"
+echo "                                                           Slice + Send to printer)"

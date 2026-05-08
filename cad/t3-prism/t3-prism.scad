@@ -49,6 +49,29 @@ cable_d    = 2.4;  // cable (tension member) diameter -- >= 2*nozzle for FDM
 joint_d    = 7;    // small sphere diameter at each vertex for clean joints
 $fn        = 48;
 
+// `part` selects which subset of members to emit. Used by render_print.sh
+// to export the single-material STL ("all") and the two halves of the
+// multi-material H2D variant ("struts" -> rigid filament e.g. PLA on
+// extruder 1, "cables" -> tougher filament e.g. PETG / eventually TPU on
+// extruder 2). The two halves are rendered in the SAME world coordinates
+// so the slicer assembles them into the original geometry without any
+// per-part transform. The joint vertex spheres travel with the struts so
+// the rigid skeleton owns the load-bearing nodes; the cables tie into the
+// joints via their own end-cap spheres (`member` adds spheres at both
+// ends), giving a multi-material interlock at every vertex.
+part       = "all";  // "all" | "struts" | "cables"
+
+// Optional rigid translation applied AFTER part selection. Used by
+// render_print.sh for the multi-material variant: both the struts STL
+// and the cables STL are pre-translated to the H2D bed centre and lifted
+// so the lowest joint sphere sits on the bed (z=0). With the same offset
+// applied to both halves, BambuStudio CLI's `--orient 0 --arrange 0` keeps
+// them co-located and the slicer treats them as a single assembly with
+// per-object filament assignment via `--load-filament-ids`.
+offset_x   = 0;
+offset_y   = 0;
+offset_z   = 0;
+
 // ---- Vertex positions ------------------------------------------------------
 function bottom_pt(i) = [R*cos(90 + 120*i),         R*sin(90 + 120*i),         0];
 function top_pt(i)    = [R*cos(90 + 120*i + twist), R*sin(90 + 120*i + twist), H];
@@ -70,15 +93,20 @@ module member(p1, p2, d) {
 }
 
 // ---- T3-prism assembly -----------------------------------------------------
-module t3_prism() {
+module t3_prism_struts() {
     union() {
-        // Joint nodes (bottom + top), keep all members fused into a single body
+        // Joint nodes (bottom + top) — bonded into the rigid strut body.
         for (i = [0:2]) {
             translate(bottom_pt(i)) sphere(d=joint_d);
             translate(top_pt(i))    sphere(d=joint_d);
         }
         // Struts: B_i -> T_i  (compression members)
         for (i = [0:2]) member(bottom_pt(i),   top_pt(i),         strut_d);
+    }
+}
+
+module t3_prism_cables() {
+    union() {
         // Bottom cables: B_i -> B_{i+1}
         for (i = [0:2]) member(bottom_pt(i),   bottom_pt((i+1)%3), cable_d);
         // Top cables:    T_i -> T_{i+1}
@@ -89,4 +117,13 @@ module t3_prism() {
     }
 }
 
-t3_prism();
+module t3_prism() {
+    union() {
+        t3_prism_struts();
+        t3_prism_cables();
+    }
+}
+
+if      (part == "struts") translate([offset_x, offset_y, offset_z]) t3_prism_struts();
+else if (part == "cables") translate([offset_x, offset_y, offset_z]) t3_prism_cables();
+else                       translate([offset_x, offset_y, offset_z]) t3_prism();
