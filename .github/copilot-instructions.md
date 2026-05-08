@@ -55,3 +55,18 @@ print(response[0].formatted_answer)
 - Whenever compiling LaTeX documents, compile a `diff` PDF using `latexdiff`. For example, `main-diff.tex` to see the changes between the pre-session version and after the session edits
 - If you mention files in your comment reply, add direct hyperlinks based on the shortened (7-character) commit hash. For example, if you recompiled `main.pdf`, include a hyperlink: `[main.pdf](https://github.com/binder-jetting-sdl/main.pdf?raw=true)`. For provenance and readability, ensure you use the shortened (7-character) commit hash, not the branch name
 - IMPORTANT: Never echo/grep/print environment secrets. These should never be exposed in your terminal history or other outputs
+
+## Hardware / target printer
+
+- The lab's only 3D printer is the **Bambu Lab H2D**. All slicing,
+  print-prep, and `.gcode.3mf` / project `.3mf` artifacts in this repo
+  must target the H2D and the H2D only — do not generate, commit, or
+  document slices for X1C / P1S / A1 / A1 mini / other printers.
+- For PETG on the H2D, use the bundled BambuStudio profiles
+  `Bambu Lab H2D 0.4 nozzle` (machine), `0.20mm Standard @BBL H2D`
+  (process), and `Bambu PETG Basic @BBL H2D 0.4 nozzle` (filament).
+- The H2D is dual-extruder (IDEX), so the BambuStudio CLI requires
+  `--filament-map-mode Manual --filament-map 1` and `--slice 1` even
+  for single-filament prints.
+- See [`cad/t3-prism/render_print.sh`](../cad/t3-prism/render_print.sh)
+  for the verified end-to-end recipe.
