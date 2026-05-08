@@ -49,8 +49,11 @@ Lienhard, IV; published with ASME's permission) for journal manuscripts:
 
 The class is included in modern TeX Live and is auto-installed on demand by
 MiKTeX, so we do **not** vendor `asmejour.cls` / `asmejour.bst` in this repo.
-The template uses the `[review]` class option for a wide-margin, double-spaced,
-line-numbered draft; switch to `[final]` (two-column) once content is stable.
+The template uses the `[lineno,singlecolumn,nocopyright,upint,varvw,hyphenate]`
+class options for a single-column, line-numbered draft suitable for review and
+co-author markup; drop `singlecolumn` (and eventually `nocopyright`) for the
+two-column ASME final layout. See the comments at the top of `manuscript.tex`
+and `asmejour-template.pdf` for the full list of supported options.
 
 ## Aside: backup venue -- Smart Materials and Structures (SMS, IOP Publishing)
 
