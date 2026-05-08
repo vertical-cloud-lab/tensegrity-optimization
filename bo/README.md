@@ -19,8 +19,10 @@ of the project.
 |------|---------|
 | [`generate_scaffold.py`](generate_scaffold.py) | Wraps the `honegumi` Python API, declares our `CONFIG`, and writes `tensegrity_bo.py`. |
 | [`tensegrity_bo.py`](tensegrity_bo.py) | **Generated** Ax/BoTorch BO loop. Has a Branin-style placeholder objective that must be replaced with the experimental energy-absorption measurement (see *Customization* below). |
+| [`tensegrity_campaign.py`](tensegrity_campaign.py) | **Hand-customized** companion to `tensegrity_bo.py`: real design variables (strut diameter / length, TPU skin thickness / width, struts per cell, connectivity topology, tiling) and real objectives (`F_peak`, `SEA`, `eta`) drawn from `proposal.tex`, `idetc-abstract.tex`, `nasa-space-grant/proposal.tex`, and PR #24. Ships an analytical dummy specimen evaluator so it runs end-to-end without experimental data. |
 | [`requirements.txt`](requirements.txt) | Pinned dependency set verified to render and run the scaffold without errors. |
 | [`tests/test_generate_scaffold.py`](tests/test_generate_scaffold.py) | Smoke test that re-renders the script via honegumi and checks for the key sections. |
+| [`tests/test_tensegrity_campaign.py`](tests/test_tensegrity_campaign.py) | Smoke test for the customized campaign: dummy evaluator, search space, and a 2-iteration BO loop. |
 
 ## Quick start
 
@@ -38,7 +40,42 @@ MPLBACKEND=Agg python bo/tensegrity_bo.py
 # 3b. Faster verification: render and run a short variant (≈ 5 BO iterations)
 python bo/generate_scaffold.py --smoke-test -o /tmp/smoke.py
 MPLBACKEND=Agg python /tmp/smoke.py
+
+# 4. Run the customized campaign (real design variables + objectives,
+#    analytical dummy evaluator). Writes bo/campaign_pareto.png.
+MPLBACKEND=Agg python bo/tensegrity_campaign.py            # 5 BO iterations
+MPLBACKEND=Agg python bo/tensegrity_campaign.py --full     # 21 BO iterations
 ```
+
+## Customized campaign (`tensegrity_campaign.py`)
+
+`tensegrity_campaign.py` is a hand-edited Ax script that mirrors the structure
+of the honegumi-generated loop but replaces the Branin placeholder with the
+design variables and objectives that recur across the project's existing
+artifacts:
+
+* **Objectives** (multi-objective, qNEHVI-style hypervolume search):
+  * `F_peak_N` — peak transmitted force during impact (minimize).
+  * `SEA_J_per_g` — specific energy absorption per unit mass (maximize).
+  * `eta` — compaction efficiency, ∈ [0, 1] (maximize).
+* **Continuous design variables** (PLA struts + TPU tension skins):
+  strut diameter (1.5–6.0 mm), strut length (15–50 mm), TPU skin thickness
+  (0.4–2.0 mm), TPU skin width (1.0–6.0 mm).
+* **Integer design variable** (encoded as an ordered choice):
+  struts per unit cell ∈ {3, 4, 6, 8, 12}.
+* **Categorical design variables**:
+  connectivity topology ∈ {3-bar prism, 4-bar prism, octahedron, icosahedron}
+  and unit-cell tiling ∈ {1×1×1, 2×2×1, 2×2×2}.
+* **Pilot data** seeds the GP with five plausible baseline designs (consistent
+  with the NASA Space Grant proposal's "≥ 5 baseline geometries" goal).
+
+The dummy evaluator `simulate_specimen` is a closed-form, geometry-driven
+surrogate (mass + topology stiffness + tiling factor + saturating skin
+contribution + heteroscedastic noise). It is **not** a calibrated FE model —
+it exists only so that the BO loop has something to optimize before the first
+batch of physical tests lands. Replace it with a call into the experimental
+data layer (or an FE surrogate) when ready; the BO loop in `run_campaign`
+does not need to change.
 
 ## Honegumi configuration
 

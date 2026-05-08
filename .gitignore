@@ -41,3 +41,6 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 *.egg-info/
+
+# BO campaign artifacts
+bo/campaign_pareto.png
