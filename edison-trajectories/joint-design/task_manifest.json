@@ -1,0 +1,45 @@
+{
+  "phase1": [
+    {
+      "slug": "A-anchor-bulb",
+      "name": "Anchor-bulb spherical node (PETG sphere with through-holes; TPU cable terminated in a printed-in-place TPU bulb)",
+      "task_id": "0b5d7ba2-847e-47b3-bddf-127e2ed170d3"
+    },
+    {
+      "slug": "B-dovetail",
+      "name": "Co-printed mechanical interlock (PETG dovetail/T-slot strut tip + TPU dovetail/T-head cable head)",
+      "task_id": "ccb7b854-718c-4ac4-bf15-61c1fe522c7d"
+    },
+    {
+      "slug": "C-tpu-sleeve-overmold",
+      "name": "TPU overmolded sleeve over a knurled / grooved PETG strut tip (Ye 2023 / Khatri 2024-style PETG-TPU wrap)",
+      "task_id": "5a7ffce4-a8a0-49d6-9b43-3d0ea38d23f9"
+    },
+    {
+      "slug": "D-eyelet-loop",
+      "name": "Captive TPU loop threaded through a printed PETG eyelet (chain-link, topological constraint only)",
+      "task_id": "727a449d-d2af-4540-acfa-9b964f98689f"
+    },
+    {
+      "slug": "E-tpu-rebar",
+      "name": "TPU 'rebar' embedded several mm into the PETG strut tip (mechanical pullout, 'rebar in concrete')",
+      "task_id": "ae373eb5-90e3-4543-b354-9e9990d76042"
+    }
+  ],
+  "phase2": {
+    "literature_high": {
+      "task_id": "be6768ab-a4ca-433b-8bec-059819e3e368"
+    },
+    "analysis": {
+      "task_id": "c38a2046-a37b-497f-aebb-efc2f35004de",
+      "attached_phase1_outputs": [
+        "C-tpu-sleeve-overmold-5a7ffce4-a8a0-49d6-9b43-3d0ea38d23f9.md",
+        "C-tpu-sleeve-overmold-5a7ffce4-a8a0-49d6-9b43-3d0ea38d23f9.json",
+        "D-eyelet-loop-727a449d-d2af-4540-acfa-9b964f98689f.md",
+        "D-eyelet-loop-727a449d-d2af-4540-acfa-9b964f98689f.json",
+        "E-tpu-rebar-ae373eb5-90e3-4543-b354-9e9990d76042.md",
+        "E-tpu-rebar-ae373eb5-90e3-4543-b354-9e9990d76042.json"
+      ]
+    }
+  }
+}
