@@ -52,8 +52,24 @@ MiKTeX, so we do **not** vendor `asmejour.cls` / `asmejour.bst` in this repo.
 The template uses the `[lineno,singlecolumn,nocopyright,upint,varvw,hyphenate]`
 class options for a single-column, line-numbered draft suitable for review and
 co-author markup; drop `singlecolumn` (and eventually `nocopyright`) for the
-two-column ASME final layout. See the comments at the top of `manuscript.tex`
-and `asmejour-template.pdf` for the full list of supported options.
+two-column ASME final layout. See the comments at the top of
+`manuscript-body.tex` and `asmejour-template.pdf` for the full list of
+supported options.
+
+### Two builds (todonotes toggle)
+
+The body of the manuscript lives in `manuscript-body.tex` and is included
+by two thin wrapper files that flip a single flag:
+
+| Wrapper                | `\TODOOPTS`  | Use case                                     | Output                  |
+|------------------------|--------------|----------------------------------------------|-------------------------|
+| `manuscript.tex`       | `disable`    | Reader-friendly clean PDF (todonotes hidden) | `manuscript.pdf`        |
+| `manuscript-todos.tex` | (empty)      | Review PDF with margin TODOs and `\listoftodos` | `manuscript-todos.pdf`  |
+
+The `\todo{...}` and `\figplaceholder{...}` / `\tabplaceholder{...}` macros
+in the body are emitted by `todonotes` and vanish automatically when the
+flag is `disable`, so both PDFs share the same numbered structure but
+differ only in the visibility of the placeholder annotations.
 
 ## Aside: backup venue -- Smart Materials and Structures (SMS, IOP Publishing)
 
@@ -79,8 +95,14 @@ If we end up retargeting to SMS, swap the class line and bibliography style
 The manuscript is wired into the top-level `Makefile`:
 
 ```bash
-# Full BibTeX build (pdflatex / bibtex / pdflatex / pdflatex)
+# Clean PDF (todonotes disabled): manuscript/manuscript.pdf
 make manuscript
+
+# Review PDF (todonotes enabled, with \listoftodos): manuscript/manuscript-todos.pdf
+make manuscript-todos
+
+# Both at once
+make manuscript-all
 
 # Clean intermediates / output
 make clean-manuscript
@@ -88,14 +110,19 @@ make distclean-manuscript
 ```
 
 A LaTeX distribution (MiKTeX or TeX Live) with `pdflatex` and `bibtex` is
-required; MiKTeX will install `asmejour` automatically the first time you
-build.
+required; MiKTeX will install `asmejour` and `todonotes` automatically the
+first time you build.
 
 ## Files
 
 ```
 manuscript/
-├── manuscript.tex   # Main LaTeX source (lorem-ipsum scaffold)
-├── references.bib   # BibTeX database (placeholder entry only)
-└── README.md        # This file -- venue notes and author guidelines
+├── manuscript-body.tex   # Shared body (\input{} by both wrappers)
+├── manuscript.tex        # Wrapper -- todonotes disabled (clean build)
+├── manuscript-todos.tex  # Wrapper -- todonotes enabled (review build)
+├── manuscript.pdf        # Built output, todos hidden
+├── manuscript-todos.pdf  # Built output, todos visible
+├── references.bib        # BibTeX database (consolidated from
+│                         #   proposal + Edison literature PRs)
+└── README.md             # This file -- venue notes and author guidelines
 ```

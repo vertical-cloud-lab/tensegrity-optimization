@@ -1,0 +1,529 @@
+% =============================================================================
+% manuscript-body.tex -- Shared body for the JMD journal manuscript.
+%
+% Do NOT compile this file directly; it is \input{} by two thin wrappers:
+%   * manuscript.tex         -- todonotes disabled (clean PDF)
+%   * manuscript-todos.tex   -- todonotes enabled (review PDF with margin
+%                               annotations and \listoftodos)
+%
+% Both wrappers must define a single command before \input{manuscript-body}:
+%   \def\TODOOPTS{disable}    % manuscript.tex
+%   \def\TODOOPTS{}           % manuscript-todos.tex
+% =============================================================================
+
+% PDF/A metadata (added in 2022; required by current asmejour for accessibility)
+\DocumentMetadata{%
+  lang        = en-US,
+  pdfstandard = A-3u,
+  pdfversion  = 1.7,
+}
+
+% Class options (see asmejour-template.pdf for the full list):
+%   * lineno       -- numbered lines for review markup (run pdflatex twice)
+%   * singlecolumn -- one-column draft layout (drop for ASME two-column final)
+%   * nocopyright  -- suppress ASME copyright footer until acceptance
+%   * upint, varvw -- typographic preferences carried over from the template
+%   * hyphenate    -- allow hyphenation in typewriter font
+\documentclass[lineno,singlecolumn,nocopyright,upint,varvw,hyphenate]{asmejour}
+
+\allowdisplaybreaks % from amsmath; multiline equations may break across pages
+
+% --- Additional packages ---
+% asmejour already loads: graphicx, hyperref, natbib, amsmath, amssymb,
+% xcolor, booktabs, subcaption, caption, lineno, etc. Avoid re-loading those.
+\usepackage{siunitx}
+% todonotes for in-margin TODO/figure-placeholder markers; toggled by the
+% wrapper file (\TODOOPTS = "disable" hides everything; "" shows all).
+\usepackage[\TODOOPTS,colorinlistoftodos,textsize=footnotesize]{todonotes}
+\setlength{\marginparwidth}{2cm}
+
+% Convenience macros that vanish along with todonotes when [disable] is set.
+\newcommand{\figplaceholder}[3][]{%
+  % #1 = optional [width]; #2 = label; #3 = caption / what to draw
+  \begin{figure}[ht]
+    \centering
+    \fbox{\parbox[c][3.2cm][c]{0.85\linewidth}{\centering\textit{Figure
+        placeholder: #3}}}%
+    \caption{\textit{Placeholder.} #3}
+    \label{fig:#2}
+  \end{figure}%
+  \todo[inline,color=orange!30]{Figure \texttt{#2}: #3}%
+}
+
+\newcommand{\tabplaceholder}[2]{%
+  % #1 = label; #2 = caption / contents description
+  \begin{table}[ht]
+    \centering
+    \caption{\textit{Placeholder.} #2}
+    \label{tab:#1}
+    \begin{tabular}{@{}lll@{}}
+      \toprule
+      Column A & Column B & Column C \\
+      \midrule
+      \multicolumn{3}{c}{\textit{(table contents pending)}} \\
+      \bottomrule
+    \end{tabular}
+  \end{table}%
+  \todo[inline,color=orange!30]{Table \texttt{#1}: #2}%
+}
+
+% --- PDF metadata ---
+\hypersetup{%
+  pdfauthor   = {Jeffrey R. Hill and Sterling G. Baird},
+  pdftitle    = {Bayesian Optimization of Multi-Material 3D-Printed Tensegrity
+                 Structures for Energy Absorption},
+  pdfkeywords = {tensegrity, multi-material 3D printing, Bayesian optimization,
+                 energy absorption, design of experiments},
+  pdfsubject  = {Manuscript draft for ASME Journal of Mechanical Design},
+}
+
+% --- Journal name (printed in the running head; omit "Journal of") ---
+\JourName{Mechanical Design}
+
+\begin{document}
+
+% =============================================================================
+% Author block(s) -- one \SetAuthorBlock per author (or per shared affiliation)
+% Mark corresponding author(s) with \CorrespondingAuthor (no space before).
+% =============================================================================
+\SetAuthorBlock{Jeffrey R. Hill\CorrespondingAuthor}{%
+  Department of Mechanical Engineering,\\
+  Brigham Young University,\\
+  Provo, UT 84602, USA\\
+  email: jeff.hill@byu.edu
+}
+
+\SetAuthorBlock{Sterling G. Baird}{%
+  Department of Mechanical Engineering,\\
+  Brigham Young University,\\
+  Provo, UT 84602, USA\\
+  email: sterling.baird@byu.edu
+}
+
+\title{Bayesian Optimization of Multi-Material 3D-Printed Tensegrity-Inspired
+       Structures for Energy Absorption}
+
+% Keywords are printed at the end of the abstract; must precede \end{abstract}.
+\keywords{tensegrity, multi-material 3D printing, Bayesian optimization,
+          energy absorption, design of experiments}
+
+% -----------------------------------------------------------------------------
+% Abstract -- JMD requires 150--200 words, Latin characters only (no math),
+% structured as background, approach, results, conclusions.
+% -----------------------------------------------------------------------------
+\begin{abstract}
+Tensegrity-inspired architectures combine rigid compression members with a
+continuous network of soft tension elements, yielding lightweight assemblies
+with tunable nonlinear responses that are attractive for energy-absorbing
+applications such as protective equipment, packaging, and aerospace landing
+structures. Multi-material fused-deposition modeling (FDM) of polylactic
+acid (PLA) struts and thermoplastic polyurethane (TPU) tension elements
+makes it possible to fabricate diverse tensegrity-inspired geometries
+rapidly enough to support a high-throughput experimental search, while
+the rate-dependent damping of TPU is itself an asset for impact mitigation.
+We report an experiment-driven Bayesian optimization (BO) framework in
+which a Gaussian-process surrogate is trained directly on physical
+quasi-static compression and drop-weight impact data and used to
+recommend the next batch of designs to print and test. The framework
+parameterizes a family of tensegrity-inspired unit cells over strut
+geometry, tension-element cross-section, connectivity topology, and
+unit-cell tiling, and optimizes peak transmitted force, specific energy
+absorption, and compaction efficiency.
+\todo[inline]{Tighten abstract to 150--200 words with concrete numerical
+results once the experimental campaign is complete.}
+\end{abstract}
+
+\maketitle
+
+% =============================================================================
+% Body -- IMRaD structure per JMD submission instructions
+% =============================================================================
+\section{Introduction}
+\label{sec:introduction}
+
+Tensegrity structures are assemblies of rigid compression members
+suspended within a continuous network of tension members; their defining
+property---no two rigid bars touch---yields lightweight assemblies with
+remarkable strength-to-weight ratios and tunable nonlinear mechanical
+responses~\citep{skelton2009tensegrity, sultan2009tensegrity}. These
+properties have made tensegrity attractive across scales, from
+metamaterial unit cells~\citep{amendola2014experimental,
+zhang2018tensegrity, fraternali2015tensegrity} to compliant impact-absorbing
+robots developed for planetary landing~\citep{agogino2018superball,
+caluwaerts2014superball, sabelhaus2015system, vespignani2018design,
+deitrich2022titan}. Recent work has shown that \emph{tensegrity-inspired}
+unit cells can be directly 3D-printed and exhibit load-limiting plateaus
+under drop-weight impact~\citep{pajunen2019design}, opening a path
+toward additively manufactured architected absorbers.
+
+Multi-material fused-deposition modeling (FDM) using polylactic acid
+(PLA) for rigid struts and thermoplastic polyurethane (TPU) for flexible
+tension elements enables rapid fabrication of diverse tensegrity-inspired
+geometries on a single platform~\citep{ye2023multimaterial,
+khatri2024energy}. Although extruded TPU does not behave as an idealized
+inextensible cable, its rate-dependent damping is a desirable property
+for impact-absorption applications and complements the elastic stiffness
+of the PLA compression members rather than competing with it.
+
+Designing such architected absorbers is fundamentally a
+\emph{design-of-experiments} problem: the configuration space spanned by
+strut geometry, tension-element cross-section, connectivity, and
+unit-cell tiling is large; each candidate must be physically printed
+and tested; and the relevant performance metrics---peak transmitted
+force, specific energy absorption (SEA), and compaction
+efficiency---are noisy and partially correlated. Bayesian optimization
+(BO) is well-matched to this regime, having driven breakthroughs from
+hyperparameter tuning of AlphaGo~\citep{silver2016mastering} to
+sustainable concrete~\citep{ament2023sustainable}, autonomous
+discovery of organic laser emitters~\citep{striethkalthoff2024delocalized},
+and architected materials~\citep{mo2023accelerated, wang2022bayesian,
+lee2023bayesian, zhang2021bo}.
+\todo{Add 1--2 sentences clearly stating the gap this paper closes vs.\
+\citet{pajunen2019design} (single fabrication condition, no closed-loop
+optimization) and \citet{mo2023accelerated} (multifidelity BO, but
+simulation-only).}
+
+\paragraph{Contributions.} This paper makes the following contributions:
+\begin{enumerate}[leftmargin=*]
+  \item A parameterized family of multi-material 3D-printable
+    tensegrity-inspired unit cells with PLA compression members and
+    TPU tension elements wrapped using the core-encapsulation strategy
+    of \citet{ye2023multimaterial} to ensure cyclic interface
+    durability.
+  \item An experiment-driven BO loop, built on
+    BoTorch/Ax~\citep{balandat2020botorch}, that operates directly on
+    physical quasi-static compression and drop-weight impact
+    measurements, recommending the next designs to fabricate without
+    requiring an accurate forward simulator.
+  \item \todo{Quantitative outcome statement, e.g.\ ``a $X\%$ improvement
+    in SEA over the best baseline within $N$ rounds of physical
+    experiments.''}
+\end{enumerate}
+
+\figplaceholder{overview}{Closed-loop, experiment-driven design framework:
+  parameterized PLA/TPU tensegrity-inspired unit cells are printed,
+  tested under quasi-static compression and drop-weight impact, and the
+  resulting performance data drive a Gaussian-process surrogate that
+  recommends the next batch of designs.}
+
+The remainder of the paper is organized as follows.
+Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
+3D printing for energy absorption, and Bayesian optimization with an
+emphasis on multi-objective and noise-robust acquisition functions.
+Section~\ref{sec:methods} introduces the design parameterization,
+fabrication workflow, experimental protocols, and BO loop.
+Section~\ref{sec:results} reports the results of the closed-loop
+experimental campaign, and Section~\ref{sec:discussion} discusses the
+implications and limitations of the approach. Section~\ref{sec:conclusions}
+concludes.
+
+% =============================================================================
+\section{Background}
+\label{sec:background}
+% =============================================================================
+
+\subsection{Tensegrity-Inspired Architectures for Energy Absorption}
+
+Tensegrity prisms and their planar extensions exhibit
+softening--stiffening response under
+compression~\citep{amendola2014experimental, zhang2018tensegrity,
+fraternali2015tensegrity}, characteristics desirable for impact
+mitigation because the structure can absorb a large fraction of the
+input energy at a controlled, sub-injurious force plateau.
+\citet{santos2023towardanovel} recently characterized a tensegrity
+energy-dissipation metamaterial reporting equivalent viscous damping
+on the order of $\sim$23\% with negligible residual strain per impact,
+underscoring the suitability of tensegrity-inspired architectures for
+repeated-impact use cases.
+The space program literature documents large-scale tensegrity-inspired
+absorbers for planetary landing~\citep{agogino2018superball,
+caluwaerts2014superball, sabelhaus2015system, vespignani2018design,
+deitrich2022titan} and a long history of crushable energy-absorbing
+landing systems~\citep{cloutier1966landing, adams2004merairbag,
+jackson2014honeycomb}. \citet{pajunen2019design} demonstrated that
+truncated-tetrahedral tensegrity-inspired unit cells can be directly
+3D-printed and exhibit load-limiting plateaus, motivating the present
+focus on additively manufactured TPU/PLA composites.
+
+\subsection{Multi-Material 3D Printing of PLA/TPU Composites}
+
+Multi-material rigid--soft FDM~\citep{ye2023multimaterial,
+khatri2024energy} enables PLA--TPU combinations on a single platform
+with tunable energy absorption. Crucially, \citet{ye2023multimaterial}
+introduced a \emph{wrapping-based} strategy in which rigid cores are
+encapsulated by continuous soft skins, preventing interface delamination
+and enabling cyclic durability---a critical enabler for our fabrication
+approach. Recent multi-material PLA/TPU sandwich and layered
+composites~\citep{arifvianto2022mechanicalpropertiesof,
+ruwais2025mechanicalperformanceof} report quantitative bounds on
+stiffness, strength, and energy absorption for the same PLA--TPU pair
+used here, while FFF-PLA fatigue
+data~\citep{ezeh2018onthefatigue, vanaei2021multiscaledamageanalysis}
+inform conservative design bounds for the rigid struts.
+Architected multi-material lattices with co-printed compliant skins
+have been explicitly designed for high specific energy
+absorption~\citep{yavas2022designandfabrication}, and recent surveys
+catalogue the rapidly expanding additively manufactured
+polymeric energy-absorption literature~\citep{bustihan2026recentadvancesin,
+liu2026threedimensionalprintedlattice}. \todo{Add a short paragraph on
+relevant TPU/PETG tensegrity search-space bounds once the Edison
+literature task \texttt{5ae24eaf-5b6e-45cf-9f6c-1c7fbd881738}
+synthesis is integrated.}
+
+\subsection{Bayesian Optimization for Architected-Material Design}
+
+Bayesian optimization is a sequential, model-based strategy for
+optimizing expensive black-box functions using a Gaussian-process
+surrogate~\citep{shahriari2016taking, frazier2018tutorial}. Modern
+implementations such as BoTorch~\citep{balandat2020botorch} support
+parallel batched evaluations and a wide variety of acquisition
+functions; recent algorithmic advances include log-EI for numerical
+robustness~\citep{ament2023logei}, noisy expected hypervolume
+improvement for multi-objective settings~\citep{daulton2021nehvi},
+input-noise-robust acquisitions~\citep{daulton2022robust}, and
+evolution-guided constrained multi-objective BO for self-driving
+labs~\citep{low2024evolution}. BO has been applied to mechanical
+metamaterial and structural design~\citep{wang2022bayesian,
+lee2023bayesian, mo2023accelerated} and to additive
+manufacturing~\citep{zhang2021bo}. \citet{mo2023accelerated} in
+particular established a multifidelity BO framework for architected
+materials by fusing low-fidelity simulations with high-fidelity
+ground truth via nonlinear information-fusion
+priors~\citep{perdikaris2017nonlinear}; the present work shifts the
+emphasis from simulation surrogates to direct experimental data,
+appropriate for materials whose constitutive response is difficult to
+calibrate from first principles.
+
+% =============================================================================
+\section{Materials and Methods}
+\label{sec:methods}
+% =============================================================================
+
+\subsection{Design Parameterization}
+\label{sec:methods:parameterization}
+
+We parameterize a family of tensegrity-inspired unit cells via four
+groups of design variables:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{PLA compression members.} Strut diameter $d_s$ and
+    length $\ell_s$, with the slenderness ratio $\ell_s / d_s$ bounded
+    away from buckling-dominated regimes.
+  \item \textbf{TPU tension elements.} Cross-sectional area $A_t$ (or
+    equivalent diameter $d_t$ for circular cross-sections) and
+    pre-tension geometry imposed during printing.
+  \item \textbf{Connectivity topology.} Selected from a discrete set of
+    candidate unit cells (e.g., truncated-tetrahedral, prism-based, and
+    octahedral variants); the design vector encodes a categorical
+    choice.
+  \item \textbf{Unit-cell tiling.} Number of cells $N_x \times N_y
+    \times N_z$ and the orientation of each cell relative to the impact
+    direction.
+\end{itemize}
+\todo{Specify exact lower/upper bounds, manufacturing-feasibility
+constraints, and the categorical-encoding scheme used by the BO loop.
+Pull from the Edison TPU/PETG search-space synthesis once available.}
+
+\tabplaceholder{design-vars}{Design variables, units, lower/upper bounds,
+  manufacturing feasibility constraints, and categorical encoding.}
+
+\subsection{Multi-Material Fabrication}
+\label{sec:methods:fabrication}
+
+Specimens are fabricated on a multi-material FDM printer using PLA for
+the rigid struts and TPU for the soft tension elements. Following
+\citet{ye2023multimaterial}, the design uses a core-wrapping strategy
+in which each PLA strut is encapsulated by continuous TPU skin to
+provide robust mechanical interlocking and prevent interface
+delamination during cyclic loading. \todo{Document slicer profile
+(layer height, infill, print speed, nozzle temperatures, retraction
+settings) and validation prints used to characterize PLA--TPU interface
+strength.}
+
+\figplaceholder{fab-workflow}{Fabrication workflow: parameter $\to$ CAD
+  $\to$ slicer $\to$ multi-material print $\to$ post-process and
+  inspect.}
+
+\subsection{Experimental Characterization}
+\label{sec:methods:testing}
+
+Each printed specimen is subjected to two physical tests:
+
+\paragraph{Quasi-static compression.} A uniaxial load--displacement
+curve is recorded on a benchtop electromechanical load frame at a
+controlled crosshead rate. Reported metrics are
+\begin{equation}
+  \mathrm{SEA} \;=\; \frac{1}{m}\!\int_{0}^{\delta_d}\! F(\delta)\,
+  \mathrm{d}\delta,
+  \qquad
+  \eta_c \;=\; \frac{\int_{0}^{\delta_d}\! F(\delta)\,\mathrm{d}\delta}{F_{\max}\,\delta_d},
+\end{equation}
+where $m$ is the specimen mass, $\delta_d$ is the densification
+displacement, $F_{\max}$ is the peak transmitted force, and $\eta_c$ is
+the compaction efficiency.
+
+\paragraph{Drop-weight impact.} Following \citet{pajunen2019design},
+specimens are subjected to drop-weight impact tests with instrumented
+load cells; we report the peak transmitted force and the energy-absorption
+plateau characteristics.
+
+\todo{Specify the exact test fixtures, load-cell ranges, sampling rate,
+DAQ, drop heights, and the protocol for averaging replicate prints.}
+
+\subsection{Experiment-Driven Bayesian Optimization Loop}
+\label{sec:methods:bo}
+
+The optimization loop maintains a Gaussian-process (GP) surrogate over
+the design space defined in
+Section~\ref{sec:methods:parameterization}. After each round of physical
+experiments, the GP is updated and an acquisition function is maximized
+to recommend the next batch of designs to fabricate. Implementation
+uses BoTorch~\citep{balandat2020botorch} with the
+log-Expected-Improvement (LogEI) acquisition~\citep{ament2023logei} for
+the single-objective baseline and noisy Expected Hypervolume Improvement
+(qNEHVI)~\citep{daulton2021nehvi} for the multi-objective case
+(simultaneously maximizing SEA and compaction efficiency while
+constraining peak transmitted force). When experimental noise dominates
+(e.g., between-print variability), we additionally evaluate the
+input-noise-robust acquisition of~\citet{daulton2022robust} and
+the evolution-guided constrained variant of~\citet{low2024evolution}.
+
+\todo{Add: kernel choice (e.g.\ Mat\'ern-5/2), input warping, normalization,
+batch size $q$, total budget $T$, initialization strategy (LHS or
+Sobol), and seed protocol.}
+
+\figplaceholder{bo-loop}{Closed-loop BO schematic: design proposal
+  $\to$ multi-material print $\to$ compression and drop-weight tests
+  $\to$ GP update and acquisition maximization $\to$ next proposal.}
+
+% =============================================================================
+\section{Results}
+\label{sec:results}
+% =============================================================================
+
+\todo[inline,color=red!30]{Populate Results section once the
+experimental campaign produces data. Suggested subsections follow.}
+
+\subsection{Convergence of the BO Loop}
+\todo{Plot best-so-far performance vs.\ number of physical experiments
+for each acquisition function, with confidence intervals over random
+seeds.}
+\figplaceholder{convergence}{Best-so-far SEA (and Pareto hypervolume
+  for the multi-objective runs) vs.\ number of physical experiments,
+  averaged over random seeds; baselines: LHS and random search.}
+
+\subsection{Pareto-Optimal Designs}
+\todo{Show 3--5 representative geometries from along the Pareto front
+trading SEA against peak transmitted force.}
+\figplaceholder{pareto}{Pareto front in (peak transmitted force, SEA)
+  space; representative geometries annotated.}
+
+\subsection{Reproducibility Across Print Replicates}
+\todo{Report between-print variability (CV) for top-ranked designs;
+informs the choice of input-noise-robust acquisition.}
+\tabplaceholder{repeatability}{Mean and CV of SEA, peak force, and
+compaction efficiency across $n$ replicate prints for the top-$k$
+designs.}
+
+% =============================================================================
+\section{Discussion}
+\label{sec:discussion}
+% =============================================================================
+
+\todo[inline,color=red!30]{Populate Discussion section once Results are
+in. Anchor against the gaps identified in Section~\ref{sec:introduction}
+and the prior work cited in Section~\ref{sec:background}.}
+
+Topics to address:
+\begin{itemize}[leftmargin=*]
+  \item Comparison to the simulation-driven multifidelity framework of
+    \citet{mo2023accelerated} and the single-condition fabrication study
+    of \citet{pajunen2019design}.
+  \item Practical considerations: TPU--PLA interface durability under
+    cyclic loading; sensitivity of optimal designs to print parameters
+    (extrusion temperature, layer height); transferability to TPU/PETG
+    or other high-temperature thermoplastics.
+  \item Path forward toward integrated tread+lattice
+    structures, miniaturization to crutch-tip envelopes
+    (\todo{19--25\,mm} from the Edison crutch-tip synthesis), and
+    field testing. Long-term crutch use is associated with substantial
+    upper-extremity overuse injury and ground-reaction-force
+    impulses~\citep{requejo2005upperextremitykinetics,
+    rasouli2020walkingassistanceusing, manocha2021injuriesassociatedwith,
+    brasilbarrosdasilva2022painmappingand,
+    dozono2015peripheralneuropathiesin}; existing
+    spring-loaded~\citep{segura2007mechanicsofambulation,
+    zhang2011biomechanicalevaluationof} and
+    polymer-damped~\citep{macgillivray2016theinfluenceof} tip designs
+    reduce loading rate but not peak transmitted force, leaving an
+    open design opportunity that an architected
+    tensegrity-inspired insert is well-positioned to address. Recent
+    open-source 3D-printed crutch
+    work~\citep{mottaghi2025opensource3dprintable} and expert
+    evaluations of orthopaedic
+    caps~\citep{stasiakcieslak2025expertevaluationof} suggest a
+    plausible translation path; adjacent footwear and orthotic
+    lattice studies~\citep{wang2025porouslatticestructure,
+    zhang2024pressurereducingdesignof,
+    janarthanan2024additivemanufacturingof} provide additional
+    transferable design heuristics.
+\end{itemize}
+
+\paragraph{Limitations.} \todo{Identify limitations: design space
+size relative to experimental budget; reliance on a single fabrication
+platform; metric selection (axial impact only).}
+
+% =============================================================================
+\section{Conclusions}
+\label{sec:conclusions}
+% =============================================================================
+
+We have presented an experiment-driven Bayesian-optimization framework
+for designing multi-material 3D-printed tensegrity-inspired energy
+absorbers using PLA struts and TPU tension elements. The framework
+parameterizes a family of unit cells, fabricates each candidate on a
+single multi-material FDM platform using a core-wrapping
+strategy~\citep{ye2023multimaterial}, characterizes the response under
+quasi-static compression and drop-weight impact, and updates a
+Gaussian-process surrogate~\citep{balandat2020botorch} that recommends
+the next batch of designs. \todo{Two-sentence quantitative summary of
+the headline outcome (e.g., improvement in SEA over baselines within
+$N$ rounds; identification of a Pareto-optimal geometry validated by
+replicate prints).} The approach is broadly applicable to architected
+absorbers whose constitutive response is difficult to calibrate from
+first principles and where physical experiments---rather than
+simulations---are the natural ground truth.
+
+% =============================================================================
+% Back matter
+% =============================================================================
+\section*{Acknowledgment} % ASME requests this exact spelling, singular.
+
+This work was supported by the Brigham Young University Mentored
+Research Grant program. The authors thank the undergraduate researchers
+who carried out the multi-material printing and impact testing, and the
+graduate co-mentor who supported day-to-day operations.
+\todo{Confirm exact grant numbers and acknowledge any
+NASA/Utah-Space-Grant-Consortium support per
+acknowledgment-text guidelines.}
+
+\section*{Funding Data}
+\begin{itemize}
+  \item Brigham Young University Mentored Research Grant
+        (\todo{award number}).
+  \item \todo{Add Utah NASA Space Grant Consortium award if applicable.}
+\end{itemize}
+
+\section*{Conflict of Interest}
+The authors declare no conflict of interest.
+
+% Print the list of pending TODOs at the end -- the [disable] option
+% on todonotes hides this automatically in the clean wrapper.
+\listoftodos[Pending TODOs and figure/table placeholders]
+
+% -----------------------------------------------------------------------------
+% References (ASME numeric style; uses asmejour.bst)
+% -----------------------------------------------------------------------------
+\bibliographystyle{asmejour}
+\bibliography{references}
+
+\end{document}

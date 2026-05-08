@@ -1,14 +1,667 @@
-% References for the JMD manuscript.
-% Lorem-ipsum placeholders; replace with real entries.
-% asmejour.bst expects standard BibTeX entry types.
+% =============================================================================
+% references.bib -- Bibliography for the journal manuscript
+%   (target venue: ASME Journal of Mechanical Design)
+%
+% This file aggregates all distinct entries that have appeared in
+% references.bib across the various Edison-derived literature PR branches
+% in this repository, plus the running proposal bibliography:
+%
+%   * proposal references                       -- main / copilot/create-manuscript-template
+%   * Edison PRECEDENT review (BO algorithms)   -- copilot/write-draft-abstract
+%   * Edison NASA / aerospace literature        -- copilot/create-latex-template-proposal
+%                                                  (nasa-space-grant/references.bib)
+%   * Earlier tensegrity-impact additions       -- copilot/increase-experimentation-mentoring
+%                                                  / overleaf-2026-03-31-2045
+%
+% Not every entry is cited yet -- they are kept here intentionally as a
+% working bibliography for the technical-content pass.
+% =============================================================================
 
-@article{placeholder2024,
-  author  = {Lorem, A. and Ipsum, B.},
-  title   = {Placeholder reference for the {ASME} {JMD} manuscript template},
-  journal = {Journal of Placeholder Research},
-  volume  = {1},
-  number  = {1},
-  pages   = {1--10},
-  year    = {2024},
-  doi     = {10.0000/placeholder},
+% ---------------------------------------------------------------------------
+% Tensegrity background
+% ---------------------------------------------------------------------------
+
+@book{skelton2009tensegrity,
+  title     = {Tensegrity Systems},
+  author    = {Skelton, Robert E. and de Oliveira, Mauricio C.},
+  year      = {2009},
+  publisher = {Springer},
+  address   = {New York},
+  doi       = {10.1007/978-0-387-74242-7}
 }
+
+@article{sultan2009tensegrity,
+  title     = {Tensegrity: 60 Years of Art, Science, and Engineering},
+  author    = {Sultan, Cornel},
+  journal   = {Advances in Applied Mechanics},
+  volume    = {43},
+  pages     = {69--145},
+  year      = {2009},
+  publisher = {Elsevier},
+  doi       = {10.1016/S0065-2156(09)43002-3}
+}
+
+@article{amendola2014experimental,
+  title     = {Experimental Investigation of the Softening--Stiffening Response
+               of Tensegrity Prisms under Compressive Loading},
+  author    = {Amendola, Ada and Carpentieri, Gerardo and de Oliveira, Mauricio C.
+               and Skelton, Robert E. and Fraternali, Fernando},
+  journal   = {Composite Structures},
+  volume    = {117},
+  pages     = {234--243},
+  year      = {2014},
+  doi       = {10.1016/j.compstruct.2014.06.022}
+}
+
+@article{zhang2018tensegrity,
+  title     = {Tensegrity Cell Mechanical Metamaterial with Metal Rubber},
+  author    = {Zhang, Qicheng and Zhang, Dayi and Dobah, Yousef and Scarpa, Fabrizio
+               and Fraternali, Fernando and Skelton, Robert E.},
+  journal   = {Applied Physics Letters},
+  volume    = {113},
+  number    = {3},
+  pages     = {031906},
+  year      = {2018},
+  doi       = {10.1063/1.5040850}
+}
+
+@article{fraternali2015tensegrity,
+  title     = {Tensegrity Ring Structures for Impact Protection},
+  author    = {Fraternali, Fernando and Carpentieri, Gerardo and Amendola, Ada},
+  journal   = {International Journal of Solids and Structures},
+  volume    = {65--66},
+  pages     = {232--243},
+  year      = {2015},
+  doi       = {10.1016/j.ijsolstr.2015.03.024}
+}
+
+@article{pajunen2019design,
+  title     = {Design and Impact Response of {3D}-Printable Tensegrity-Inspired
+               Structures},
+  author    = {Pajunen, Kirsti and Johanns, Paul and Pal, Raj Kumar and Rimoli,
+               Julian J. and Daraio, Chiara},
+  journal   = {Materials \& Design},
+  volume    = {182},
+  pages     = {107966},
+  year      = {2019},
+  doi       = {10.1016/j.matdes.2019.107966}
+}
+
+% ---------------------------------------------------------------------------
+% Multi-material 3D printing for energy absorption
+% ---------------------------------------------------------------------------
+
+@article{ye2023multimaterial,
+  title     = {Multimaterial {3D} Printed Self-Locking Thick-Panel Origami
+               Metamaterials},
+  author    = {Ye, Haitao and Liu, Qingjiang and Cheng, Jianxiang and Li, Honggeng
+               and Jian, Bingcong and Wang, Rong and Sun, Zechu and Lu, Yang and Ge, Qi},
+  journal   = {Nature Communications},
+  volume    = {14},
+  pages     = {1607},
+  year      = {2023},
+  doi       = {10.1038/s41467-023-37343-w}
+}
+
+@article{khatri2024energy,
+  title     = {Energy Absorption of {3D} Printed {ABS} and {TPU} Multimaterial
+               Honeycomb Structures},
+  author    = {Khatri, Nava Raj and Egan, Paul F.},
+  journal   = {3D Printing and Additive Manufacturing},
+  volume    = {11},
+  pages     = {e840--e850},
+  year      = {2024},
+  doi       = {10.1089/3dp.2022.0196}
+}
+
+% ---------------------------------------------------------------------------
+% Bayesian optimization -- methods
+% ---------------------------------------------------------------------------
+
+@article{shahriari2016taking,
+  title     = {Taking the Human Out of the Loop: A Review of {B}ayesian Optimization},
+  author    = {Shahriari, Bobak and Swersky, Kevin and Wang, Ziyu and Adams, Ryan P.
+               and de Freitas, Nando},
+  journal   = {Proceedings of the IEEE},
+  volume    = {104},
+  number    = {1},
+  pages     = {148--175},
+  year      = {2016},
+  doi       = {10.1109/JPROC.2015.2494218}
+}
+
+@article{frazier2018tutorial,
+  title     = {A Tutorial on {B}ayesian Optimization},
+  author    = {Frazier, Peter I.},
+  journal   = {arXiv preprint arXiv:1807.02811},
+  year      = {2018},
+  url       = {https://arxiv.org/abs/1807.02811}
+}
+
+@inproceedings{balandat2020botorch,
+  title     = {{BoTorch}: A Framework for Efficient {M}onte-{C}arlo {B}ayesian
+               Optimization},
+  author    = {Balandat, Maximilian and Karrer, Brian and Jiang, Daniel R. and
+               Daulton, Samuel and Letham, Benjamin and Wilson, Andrew Gordon and
+               Bakshy, Eytan},
+  booktitle = {Advances in Neural Information Processing Systems 33 (NeurIPS 2020)},
+  year      = {2020},
+  url       = {https://arxiv.org/abs/1910.06403}
+}
+
+@article{perdikaris2017nonlinear,
+  title     = {Nonlinear Information Fusion Algorithms for Data-Efficient
+               Multi-Fidelity Modelling},
+  author    = {Perdikaris, Paris and Raissi, Maziar and Damianou, Andreas and
+               Lawrence, Neil D. and Karniadakis, George Em},
+  journal   = {Proceedings of the Royal Society A},
+  volume    = {473},
+  number    = {2198},
+  pages     = {20160751},
+  year      = {2017},
+  doi       = {10.1098/rspa.2016.0751}
+}
+
+% ---------------------------------------------------------------------------
+% Bayesian optimization -- multi-objective / robust acquisition (Edison
+% PRECEDENT review on copilot/write-draft-abstract)
+% ---------------------------------------------------------------------------
+
+@inproceedings{daulton2021nehvi,
+  title     = {Parallel {B}ayesian Optimization of Multiple Noisy Objectives
+               with Expected Hypervolume Improvement},
+  author    = {Daulton, Samuel and Balandat, Maximilian and Bakshy, Eytan},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {34},
+  pages     = {2187--2200},
+  year      = {2021},
+  url       = {https://arxiv.org/abs/2105.08195}
+}
+
+@inproceedings{daulton2022robust,
+  title     = {Robust Multi-Objective {B}ayesian Optimization Under Input Noise},
+  author    = {Daulton, Samuel and Cakmak, Sait and Balandat, Maximilian and
+               Osborne, Michael A. and Zhou, Enlu and Bakshy, Eytan},
+  booktitle = {Proceedings of the 39th International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {162},
+  pages     = {4831--4866},
+  year      = {2022},
+  url       = {https://arxiv.org/abs/2202.07549}
+}
+
+@inproceedings{ament2023logei,
+  title     = {Unexpected Improvements to Expected Improvement for {B}ayesian
+               Optimization},
+  author    = {Ament, Sebastian and Daulton, Samuel and Eriksson, David and
+               Balandat, Maximilian and Bakshy, Eytan},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {36},
+  year      = {2023},
+  doi       = {10.52202/075280-0904}
+}
+
+@article{low2024evolution,
+  title     = {Evolution-guided {B}ayesian Optimization for Constrained
+               Multi-Objective Optimization in Self-Driving Labs},
+  author    = {Low, Andre K. Y. and Mekki-Berrada, Flore and Ostudin, Aleksandr
+               and Xie, Jiaxun and Vissol-Gaudin, Eleonore and Lim, Yee-Fun
+               and Gupta, Abhishek and Li, Qianxiao and Ong, Yew Soon
+               and Khan, Saif A. and Hippalgaonkar, Kedar},
+  journal   = {npj Computational Materials},
+  volume    = {10},
+  pages     = {1--11},
+  year      = {2024},
+  doi       = {10.1038/s41524-024-01274-x}
+}
+
+@article{zhang2021bo,
+  title     = {{B}ayesian Optimisation for Sequential Experimental Design with
+               Applications in Additive Manufacturing},
+  author    = {Zhang, Mimi and Parnell, Andrew and Brabazon, Anthony and Benavoli,
+               Alessio},
+  journal   = {arXiv preprint arXiv:2107.12809},
+  year      = {2021},
+  doi       = {10.48550/arXiv.2107.12809}
+}
+
+% ---------------------------------------------------------------------------
+% Bayesian optimization -- exemplar applications
+% ---------------------------------------------------------------------------
+
+@article{silver2016mastering,
+  title     = {Mastering the Game of {Go} with Deep Neural Networks and Tree Search},
+  author    = {Silver, David and Huang, Aja and Maddison, Chris J. and Guez, Arthur
+               and Sifre, Laurent and van den Driessche, George and Schrittwieser,
+               Julian and Antonoglou, Ioannis and Panneershelvam, Veda and Lanctot,
+               Marc and others},
+  journal   = {Nature},
+  volume    = {529},
+  number    = {7587},
+  pages     = {484--489},
+  year      = {2016},
+  doi       = {10.1038/nature16961}
+}
+
+@article{ament2023sustainable,
+  title     = {Sustainable Concrete via {B}ayesian Optimization},
+  author    = {Ament, Sebastian and Witte, Andrew and Garg, Nishant and Kusuma, Julius},
+  journal   = {arXiv preprint arXiv:2310.18288},
+  year      = {2023},
+  note      = {NeurIPS 2023 Workshop on Adaptive Experimental Design and Active
+               Learning in the Real World},
+  url       = {https://arxiv.org/abs/2310.18288}
+}
+
+@article{striethkalthoff2024delocalized,
+  title     = {Delocalized, Asynchronous, Closed-Loop Discovery of Organic Laser
+               Emitters},
+  author    = {Strieth-Kalthoff, Felix and Hao, Han and Rathore, Vandana and Derasp,
+               Joshua and Gaudin, Th{\'e}ophile and Angello, Nicholas H. and Seifrid,
+               Martin and Trushina, Ekaterina and Guy, Mason and Liu, Junliang and others},
+  journal   = {Science},
+  volume    = {384},
+  number    = {6697},
+  pages     = {eadk9227},
+  year      = {2024},
+  doi       = {10.1126/science.adk9227}
+}
+
+@article{mo2023accelerated,
+  title     = {Accelerated Design of Architected Materials with Multifidelity
+               {B}ayesian Optimization},
+  author    = {Mo, Changyu and Perdikaris, Paris and Raney, Jordan R.},
+  journal   = {Journal of Engineering Mechanics},
+  volume    = {149},
+  number    = {6},
+  pages     = {04023028},
+  year      = {2023},
+  publisher = {ASCE},
+  doi       = {10.1061/JENMDT.EMENG-7033}
+}
+
+@article{wang2022bayesian,
+  title     = {Bayesian Optimization for the Design of Mechanical Metamaterials},
+  author    = {Wang, Yue and others},
+  journal   = {Journal of the Mechanics and Physics of Solids},
+  volume    = {159},
+  pages     = {104734},
+  year      = {2022},
+  doi       = {10.1016/j.jmps.2021.104734}
+}
+
+@article{lee2023bayesian,
+  title     = {Bayesian Optimization for Structural Design Problems},
+  author    = {Lee, Seunghye and others},
+  journal   = {Structural and Multidisciplinary Optimization},
+  volume    = {66},
+  number    = {2},
+  pages     = {47},
+  year      = {2023},
+  doi       = {10.1007/s00158-023-03495-0}
+}
+
+% ---------------------------------------------------------------------------
+% Tensegrity for aerospace landing / planetary exploration
+% (Edison NASA literature -- nasa-space-grant/references.bib)
+% ---------------------------------------------------------------------------
+
+@techreport{agogino2018superball,
+  title       = {Super {B}all {B}ot --- Structures for Planetary Landing and Exploration},
+  author      = {Agogino, Adrian K. and SunSpiral, Vytas and Atkinson, David},
+  institution = {NASA Ames Research Center},
+  type        = {NIAC Phase II Final Report},
+  year        = {2018},
+  url         = {https://www.nasa.gov/general/super-ball-bot/}
+}
+
+@inproceedings{caluwaerts2014superball,
+  title     = {{SUPERball}: Exploring Tensegrities for Planetary Probes},
+  author    = {Caluwaerts, Ken and Agogino, Adrian M. and SunSpiral, Vytas},
+  booktitle = {Proceedings of the 12th International Symposium on Artificial
+               Intelligence, Robotics and Automation in Space (i-SAIRAS)},
+  year      = {2014}
+}
+
+@inproceedings{sabelhaus2015system,
+  title     = {System Design and Locomotion of {SUPERball}, an Untethered
+               Tensegrity Robot},
+  author    = {Sabelhaus, Andrew P. and Bruce, Jonathan and Caluwaerts, Ken
+               and Manovi, Pavlo and Firoozi, Roya Fallah and Dobi, Sarah and
+               Agogino, Alice M. and SunSpiral, Vytas},
+  booktitle = {2015 IEEE International Conference on Robotics and Automation (ICRA)},
+  pages     = {2867--2873},
+  year      = {2015},
+  doi       = {10.1109/ICRA.2015.7139590}
+}
+
+@article{vespignani2018design,
+  title     = {Design of {SUPERball v2}, a Compliant Tensegrity Robot for
+               Absorbing Large Impacts},
+  author    = {Vespignani, Massimo and Friesen, Jeffrey M. and SunSpiral, Vytas
+               and Bruce, Jonathan},
+  booktitle = {2018 IEEE/RSJ International Conference on Intelligent Robots and
+               Systems (IROS)},
+  pages     = {2865--2871},
+  year      = {2018},
+  doi       = {10.1109/IROS.2018.8594374}
+}
+
+@inproceedings{deitrich2022titan,
+  title     = {A Rideshare Tensegrity Rover Concept to Explore {T}itan's Lands
+               and Oceans},
+  author    = {Deitrich, Nicholas and Baldonado, Krystal M. and Khan, Aman and
+               Cook, Jacob and Rizzo, Lorenzo},
+  booktitle = {AIAA SciTech Forum},
+  year      = {2022},
+  publisher = {NASA Langley Research Center / Ames Research Center}
+}
+
+@inproceedings{adams2004merairbag,
+  title     = {{M}ars {E}xploration {R}over Airbag Landing Loads Testing and
+               Analysis},
+  author    = {Adams, Douglas S.},
+  booktitle = {45th AIAA/ASME/ASCE/AHS/ASC Structures, Structural Dynamics and
+               Materials Conference},
+  year      = {2004},
+  doi       = {10.2514/6.2004-1795}
+}
+
+@article{cloutier1966landing,
+  title     = {Landing Impact Energy Absorption Using Anisotropic Crushable
+               Materials},
+  author    = {Cloutier, Gerald J.},
+  journal   = {Journal of Spacecraft and Rockets},
+  volume    = {3},
+  number    = {12},
+  pages     = {1755--1761},
+  year      = {1966},
+  doi       = {10.2514/3.28743}
+}
+
+@article{jackson2014honeycomb,
+  title     = {Simulating the Response of a Composite Honeycomb Energy Absorber:
+               {I}.~{D}ynamic Crushing of Components and Multiterrain Impacts},
+  author    = {Jackson, Karen E. and Fasanella, Edwin L. and Polanco, Michael A.},
+  journal   = {Journal of Aerospace Engineering},
+  volume    = {27},
+  number    = {3},
+  pages     = {424--436},
+  year      = {2014},
+  doi       = {10.1061/(ASCE)AS.1943-5525.0000357}
+}
+
+% ---------------------------------------------------------------------------
+% NASA in-space manufacturing / standards
+% ---------------------------------------------------------------------------
+
+@article{prater2019summary,
+  title     = {Summary Report on Phase {I} and Phase {II} Results From the
+               {3D} Printing in Zero-G Technology Demonstration Mission},
+  author    = {Prater, Tracie and Werkheiser, Niki and Ledbetter, Frank and
+               Timucin, Doga and Wheeler, Kevin and Snyder, Michael},
+  journal   = {The International Journal of Advanced Manufacturing Technology},
+  volume    = {101},
+  pages     = {391--417},
+  year      = {2019},
+  doi       = {10.1007/s00170-018-2827-7}
+}
+
+@article{finckenor2023misse,
+  title     = {Space Environmental Effects on Additively Manufactured Materials ---
+               Results from {MISSE-9} and {MISSE-10}},
+  author    = {Finckenor, Miria M. and McElderry, Jonathan R.},
+  journal   = {NASA Marshall Space Flight Center Technical Report},
+  year      = {2023},
+  url       = {https://ntrs.nasa.gov/citations/20230002423}
+}
+
+@article{witze2023osirisrex,
+  title     = {{NASA}'s {OSIRIS-REx} Delivers Asteroid Sample to {Earth}},
+  author    = {Witze, Alexandra},
+  journal   = {Nature},
+  volume    = {622},
+  pages     = {220--221},
+  year      = {2023},
+  doi       = {10.1038/d41586-023-02993-9}
+}
+
+@misc{nasa2022strategic,
+  title        = {{NASA} 2022 Strategic Plan},
+  author       = {{National Aeronautics and Space Administration}},
+  year         = {2022},
+  howpublished = {NP-2022-02-3066-HQ},
+  url          = {https://www.nasa.gov/wp-content/uploads/2023/09/fy-22-strategic-plan-1.pdf}
+}
+
+@misc{nasagsfc2018gevs,
+  title        = {General Environmental Verification Standard ({GEVS}) for
+                  {GSFC} Flight Programs and Projects},
+  author       = {{NASA Goddard Space Flight Center}},
+  year         = {2019},
+  howpublished = {GSFC-STD-7000B},
+  url          = {https://standards.nasa.gov/standard/GSFC/GSFC-STD-7000}
+}
+% --- Edison literature: crutch-tip prior art and biomechanics (PR #18) ---
+% Extracted from Edison LITERATURE_HIGH trajectories on the
+%   copilot/explore-impact-absorption-crutches branch:
+%   * edison-trajectories/01-tensegrity-crutch-tip-feasibility.md
+%       (task 39708fbc-5964-4fb5-a042-9b13b3475d40)
+%   * edison-trajectories/02-medical-motivation-and-prior-art-beyond-tensegrity.md
+%       (task 9832f01a-6bb9-4488-bd88-3131d915f96a)
+% Author lists/initials/titles preserved as parsed from the trajectories;
+% verify against the DOI before final submission.
+
+@article{arifvianto2022mechanicalpropertiesof,
+  author  = {Budi Arifvianto, Baikhati E. Satiti, Urip A. Salim, Suyitno, Archadian Nuryanti, and Muslim Mahardika},
+  title   = {Mechanical properties of the fff sandwich-structured parts made of pla/tpu multi-material},
+  journal = {Progress in Additive Manufacturing, 7:1213-1223, Apr 2022},
+  year    = {2022},
+  doi     = {10.1007/s40964-022-00295-6},
+}
+
+@article{brasilbarrosdasilva2022painmappingand,
+  author  = {Danielle Brasil-Barros-da-Silva and Emerson Fachin-Martins},
+  title   = {Pain mapping and health-related conditions in relation to forearm crutch usage: a cross-sectional study},
+  journal = {Assistive Technology, 34:334-340, Oct 2022},
+  year    = {2022},
+  doi     = {10.1080/10400435.2020.1819914},
+}
+
+@article{bustihan2026recentadvancesin,
+  author  = {Alin Bustihan and Ioan Botiz},
+  title   = {Recent advances in additively manufactured polymeric structures for mechanical energy absorption},
+  journal = {Polymers, 18:1019, Apr 2026},
+  year    = {2026},
+  doi     = {10.3390/polym18091019},
+}
+
+@article{dozono2015peripheralneuropathiesin,
+  author  = {Koichiro Dozono, Akiko Hachisuka, Futoshi Wada, and Kenji Hachisuka},
+  title   = {Peripheral neuropathies in nonparetic upper extremities of stroke patients induced by excessive use of a walking device},
+  journal = {Journal of stroke and cerebrovascular diseases : the official journal of National Stroke Association, 24 8:1841-7, Aug 2015},
+  year    = {2015},
+  doi     = {10.1016/j.jstrokecerebrovasdis.2015.04.022},
+}
+
+@article{edelstein2019canescrutchesand,
+  author  = {Joan Edelstein},
+  title   = {Canes, crutches, and walkers},
+  journal = {Atlas of Orthoses and Assistive Devices, pages 377-382.e3, Jan 2019},
+  year    = {2019},
+  doi     = {10.1016/b978-0-323-48323-0.00036-6},
+}
+
+@article{ezeh2018onthefatigue,
+  author  = {O. H. Ezeh and L. Susmel},
+  title   = {On the fatigue strength of 3d-printed polylactide (pla)},
+  journal = {Procedia structural integrity, 9:29-36, Jan 2018},
+  year    = {2018},
+  doi     = {10.1016/j.prostr.2018.06.007},
+}
+
+@article{farooq2015modificationsandupper,
+  author  = {DS Farooq},
+  title   = {Modifications and upper extremity orthotics for the lofstrand crutch},
+  journal = {Unknown journal, 2015},
+  year    = {2015},
+}
+
+@article{hugle2017prospectiveclinicalevaluation,
+  author  = {Thomas Hügle, Ansgar Arnieri, Margerita Bünter, Stefan Schären, and Annegret Mündermann},
+  title   = {Prospective clinical evaluation of a novel anatomic cuff for forearm crutches in patients with osteoarthritis},
+  journal = {BMC Musculoskeletal Disorders, Mar 2017},
+  year    = {2017},
+  doi     = {10.1186/s12891-017-1459-7},
+}
+
+@article{janarthanan2024additivemanufacturingof,
+  author  = {Aravind Kanna Kundumani Janarthanan and Bala Vaidhyanathan},
+  title   = {Additive manufacturing of smart footwear components for healthcare applications},
+  journal = {Micromachines, 16:30, Dec 2024},
+  year    = {2024},
+  doi     = {10.3390/mi16010030},
+}
+
+@article{kuntze2023theeffectof,
+  author  = {Gregor Kuntze, Monica Russell, Shaine Jivan, Janet Lenore Ronsky, and Ranita Harpreet Kaur Manocha},
+  title   = {The effect of axillary crutch length on upper limb kinematics during swing‐through gait},
+  journal = {PM\&R, 15:570-578, Jun 2023},
+  year    = {2023},
+  doi     = {10.1002/pmrj.12809},
+}
+
+@article{liu2026threedimensionalprintedlattice,
+  author  = {Jing Liu, R. Seidu, Lingtao Hu, Cheng Cheng, Shiyang Yan, Luming Yang, and Shou-xiang Jiang},
+  title   = {Three-dimensional printed lattice structures for next generation of wearable technology},
+  journal = {Fashion and Textiles, Mar 2026},
+  year    = {2026},
+  doi     = {10.1186/s40691-026-00466-x},
+}
+
+@article{macgillivray2016theinfluenceof,
+  author  = {Megan K. MacGillivray, Ranita H.K. Manocha, and Bonita Sawatzky},
+  title   = {The influence of a polymer damper on swing-through crutch gait biomechanics},
+  journal = {Medical engineering & physics, 38 3:275-9, Mar 2016},
+  year    = {2016},
+  doi     = {10.1016/j.medengphy.2015.12.010},
+}
+
+@article{manocha2021injuriesassociatedwith,
+  author  = {Ranita H. K. Manocha, Megan K. MacGillivray, Mehdi Eshraghi, and Bonita J. Sawatzky},
+  title   = {Injuries associated with crutch use: a narrative review},
+  journal = {PM\&R, 13:1176-1192, Dec 2021},
+  year    = {2021},
+  doi     = {10.1002/pmrj.12514},
+}
+
+@article{mottaghi2025opensource3dprintable,
+  author  = {Maryam Mottaghi, Morgan C. Woods, Laura Danier, Anita So, Jacob M. Reeves, and Joshua M. Pearce},
+  title   = {Open-source 3d printable forearm crutch},
+  journal = {PLOS ONE, Nov 2025},
+  year    = {2025},
+  doi     = {10.1371/journal.pone.0318987},
+}
+
+@article{orishimo2021comparisonofhip,
+  author  = {Karl Orishimo, Amir Shapira, Ian Kremenic, Malachy McHugh, and Stephen Nicholas},
+  title   = {Comparison of hip and low back loads between normal gait, axillary crutch ambulation and walking with a hands-free crutch in a healthy population},
+  journal = {International Journal of Sports Physical Therapy, 16:1454-1458, Dec 2021},
+  year    = {2021},
+  doi     = {10.26603/001c.29517},
+}
+
+@article{rasouli2020walkingassistanceusing,
+  author  = {Fatemeh Rasouli and Kyle B. Reed},
+  title   = {Walking assistance using crutches: a state of the art review},
+  journal = {Journal of Biomechanics, 98:109489, Jan 2020},
+  year    = {2020},
+  doi     = {10.1016/j.jbiomech.2019.109489},
+}
+
+@article{requejo2005upperextremitykinetics,
+  author  = {Philip S. Requejo, David P. Wahl, Ernest L. Bontrager, Craig J. Newsam, JoAnne K. Gronley, Sara J. Mulroy, and Jacquelin Perry},
+  title   = {Upper extremity kinetics during lofstrand crutch-assisted gait},
+  journal = {Medical engineering & physics, 27 1:19-29, Jan 2005},
+  year    = {2005},
+  doi     = {10.1016/j.medengphy.2004.08.008},
+}
+
+@article{ruwais2025mechanicalperformanceof,
+  author  = {A Ruwais and N Naveed},
+  title   = {Mechanical performance of layered pla–tpu composites using multi-material additive manufacturing},
+  journal = {Unknown journal, 2025},
+  year    = {2025},
+}
+
+@article{santos2023towardanovel,
+  author  = {Filipe A. Santos},
+  title   = {Toward a novel energy‐dissipation metamaterial with tensegrity architecture},
+  journal = {Advanced Materials, May 2023},
+  year    = {2023},
+  doi     = {10.1002/adma.202300639},
+}
+
+@article{segura2007mechanicsofambulation,
+  author  = {Adriana Segura and Stephen J. Piazza},
+  title   = {Mechanics of ambulation with standard and spring-loaded crutches},
+  journal = {Archives of physical medicine and rehabilitation, 88 9:1159-63, Sep 2007},
+  year    = {2007},
+  doi     = {10.1016/j.apmr.2007.05.026},
+}
+
+@article{stasiakcieslak2025expertevaluationof,
+  author  = {Beata Stasiak-Cieślak and Piotr Malawko},
+  title   = {Expert evaluation of attachments (caps) for orthopaedic equipment dedicated to pedestrian road users},
+  journal = {Open Engineering, Jan 2025},
+  year    = {2025},
+  doi     = {10.1515/eng-2024-0104},
+}
+
+@article{vanaei2021multiscaledamageanalysis,
+  author  = {Hamid Reza Vanaei, Mohammadali Shirinbayan, Saeedeh Vanaei, Joseph Fitoussi, Sofiane Khelladi, and Abbas Tcharkhtchi},
+  title   = {Multi-scale damage analysis and fatigue behavior of pla manufactured by fused deposition modeling (fdm)},
+  journal = {Rapid Prototyping Journal, 27:371-378, Jan 2021},
+  year    = {2021},
+  doi     = {10.1108/rpj-11-2019-0300},
+}
+
+@article{wang2025porouslatticestructure,
+  author  = {Hai-Yang Wang, Long Wu, Jing Qi, Jun-Tao Ding null, and Yue Wang},
+  title   = {Porous lattice structure optimization in 3d printed insole design},
+  journal = {Journal of Fiber Bioengineering and Informatics, 18:29-39, Jun 2025},
+  year    = {2025},
+  doi     = {10.3993/jfbim03231},
+}
+
+@article{xiao2017pneumaticergonomiccrutches,
+  author  = {C Xiao},
+  title   = {Pneumatic ergonomic crutches},
+  journal = {Unknown journal, 2017},
+  year    = {2017},
+}
+
+@article{yavas2022designandfabrication,
+  author  = {Denizhan Yavas, Qingyang Liu, Ziyang Zhang, and Dazhong Wu},
+  title   = {Design and fabrication of architected multi-material lattices with tunable stiffness, strength, and energy absorption},
+  journal = {Materials \& Design, 217:110613, May 2022},
+  year    = {2022},
+  doi     = {10.1016/j.matdes.2022.110613},
+}
+
+@article{zhang2011biomechanicalevaluationof,
+  author  = {Yanxin Zhang, Guangyu Liu, Shengquan Xie, and Aurélien Liger},
+  title   = {Biomechanical evaluation of an innovative spring-loaded axillary crutch design},
+  journal = {Assistive Technology, 23:225-231, Dec 2011},
+  year    = {2011},
+  doi     = {10.1080/10400435.2011.614676},
+}
+
+@article{zhang2024pressurereducingdesignof,
+  author  = {Jifa Zhang, Shizhu Lu, Yinyin Lin, Yang Wang, Xiaolie Yi, and Wencheng Fang},
+  title   = {Pressure-reducing design of 3d-printed diabetic shoe midsole utilizing auxetic lattice structure},
+  journal = {Applied Sciences, 14:5291, Jun 2024},
+  year    = {2024},
+  doi     = {10.3390/app14125291},
+}
+
