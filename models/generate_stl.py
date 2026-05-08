@@ -281,8 +281,12 @@ def main() -> None:
     )
     parser.add_argument("--strut-radius", type=float, default=2.5,
                         help="strut cylinder radius in mm (default: 2.5)")
-    parser.add_argument("--cable-radius", type=float, default=0.5,
-                        help="cable cylinder radius in mm (default: 0.5)")
+    parser.add_argument("--cable-radius", type=float, default=1.2,
+                        help="cable cylinder radius in mm (default: 1.2; "
+                             "matches the 2.4 mm-Ø TPU cables in cad/t3-prism). "
+                             "Cables are not literal strings -- they will be "
+                             "printed in TPU -- so a non-trivial diameter is "
+                             "needed to be physically realistic")
     parser.add_argument("--segments", type=int, default=24,
                         help="cylinder facet count (default: 24)")
     args = parser.parse_args()

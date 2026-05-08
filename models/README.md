@@ -18,9 +18,11 @@ Closes [#21](https://github.com/vertical-cloud-lab/byu-mentored-research-tensegr
 | [`stl/icosahedron.stl`](stl/icosahedron.stl) | 6-strut tensegrity icosahedron (Jessen's orthogonal icosahedron / "expanded octahedron") | 12 | 6 | 24 | Strut/cable length ratio `√(8/3) ≈ 1.633`. Used in NASA SUPERball lineage and most "tensegrity-ball" designs. |
 
 All STL files are **binary STL**, units in millimetres, with struts
-rendered as 5 mm-diameter cylinders (PLA) and cables rendered as 1
-mm-diameter cylinders (TPU placeholder) so the full topology is
-captured in a single watertight file. Default sizes are chosen to fit
+rendered as 5 mm-diameter cylinders (PLA / PETG) and cables rendered
+as **2.4 mm-diameter** cylinders (TPU — these are not literal strings;
+the eventual fabricated cables are printed in TPU and need a
+realistic finite cross-section, matching the cable diameter used in
+[`cad/t3-prism/`](../cad/t3-prism/)). Default sizes are chosen to fit
 within a typical 200 mm-cube print bed.
 
 ## Regenerating the STL files
@@ -34,7 +36,7 @@ python models/generate_stl.py
 # optional flags:
 #   --out-dir models/stl          # output directory
 #   --strut-radius 2.5            # strut cylinder radius (mm)
-#   --cable-radius 0.5            # cable cylinder radius (mm)
+#   --cable-radius 1.2            # cable cylinder radius (mm; ~TPU)
 #   --segments 24                 # cylinder facet count
 ```
 
