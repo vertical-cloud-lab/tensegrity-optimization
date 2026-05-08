@@ -24,6 +24,10 @@ This proposal develops a multifidelity Bayesian optimization framework to design
 │   ├── coverpage.tex         # MRG cover page (abstract, budget table, external funding)
 │   ├── budget.tex            # Budget table and justification
 │   └── biosketch.tex         # PI and Co-PI biographical sketches
+├── manuscript/               # Lorem-ipsum journal manuscript scaffold (ASME JMD)
+│   ├── manuscript.tex
+│   ├── references.bib
+│   └── README.md             # Venue notes + author guidelines
 ├── Makefile                  # Build commands
 ├── .gitignore
 └── README.md
@@ -43,6 +47,10 @@ bibtex proposal
 pdflatex proposal
 pdflatex proposal
 ```
+
+The lorem-ipsum scaffold for the journal manuscript (targeting ASME Journal of
+Mechanical Design) lives in [`manuscript/`](manuscript/README.md) and builds
+with `make manuscript`.
 
 ## Proposal Structure (≤5 pages + cover page, references, bio sketches)
 

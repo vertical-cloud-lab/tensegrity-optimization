@@ -1,0 +1,131 @@
+% =============================================================================
+% Journal manuscript template -- ASME Journal of Mechanical Design (JMD)
+%
+% Target venue : ASME Journal of Mechanical Design
+% Class file   : asmejour.cls (CTAN: https://ctan.org/pkg/asmejour)
+%                Auto-installed on demand by MiKTeX; provided by TeX Live.
+% Documentation: https://mirrors.ctan.org/macros/latex/contrib/asmejour/asmejour-template.pdf
+%
+% This is a lorem-ipsum scaffold. Technical content has intentionally been
+% omitted (see issue: "Manuscript venues and template"). See README.md for
+% a summary of JMD author guidelines and an aside on Smart Materials and
+% Structures (SMS) as a backup venue.
+% =============================================================================
+
+% Class options:
+%   * Pass `final' for the typeset two-column ASME look.
+%   * Pass `review' (default below) for a wide-margin, double-spaced,
+%     line-numbered draft suitable for peer review and co-author markup.
+\documentclass[review,12pt,onecolumn]{asmejour}
+
+\JournalInfo{Journal of Mechanical Design}
+\PaperNo{MD-XX-XXXX}
+\Archive{Manuscript draft -- not for distribution}
+
+% --- Packages ---
+\usepackage{lipsum}      % lorem ipsum filler -- REMOVE before submission
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{subcaption}
+
+% --- Draft helpers (remove for final submission) ---
+\usepackage{xcolor}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
+
+% =============================================================================
+% Front matter
+% =============================================================================
+\title{Bayesian Optimization of Multi-Material 3D-Printed Tensegrity
+       Structures for Energy Absorption}
+
+\SetAuthorBlock{Jeffrey R. Hill\thanks{Corresponding author. Email:
+  jeff.hill@byu.edu}}{
+  Department of Mechanical Engineering\\
+  Brigham Young University\\
+  Provo, Utah 84602\\
+}
+
+\SetAuthorBlock{Sterling G. Baird}{
+  Department of Mechanical Engineering\\
+  Brigham Young University\\
+  Provo, Utah 84602\\
+}
+
+\keywords{tensegrity, multi-material 3D printing, Bayesian optimization,
+          multifidelity, energy absorption}
+
+\begin{document}
+
+\maketitle
+
+% -----------------------------------------------------------------------------
+% Abstract
+% -----------------------------------------------------------------------------
+% JMD requires a 150--200 word abstract using only Latin characters
+% (no math/special symbols). Cover: background, approach, results, conclusions.
+% -----------------------------------------------------------------------------
+\begin{abstract}
+\todo{Write a 150--200 word abstract covering background, approach, results,
+and conclusions. Lorem ipsum follows as a length placeholder.}
+\lipsum[1][1-9]
+\end{abstract}
+
+% =============================================================================
+% Body
+% =============================================================================
+\section{Introduction}
+\label{sec:introduction}
+\lipsum[1-3]
+
+\section{Background}
+\label{sec:background}
+\subsection{Tensegrity Structures}
+\lipsum[4]
+
+\subsection{Multifidelity Bayesian Optimization}
+\lipsum[5]
+
+\section{Methods}
+\label{sec:methods}
+\subsection{Design Parameterization and Fabrication}
+\lipsum[6]
+
+\subsection{Simulation and Experimental Characterization}
+\lipsum[7]
+
+\subsection{Multifidelity Bayesian Optimization Framework}
+\lipsum[8]
+
+\section{Results}
+\label{sec:results}
+\lipsum[9-10]
+
+\section{Discussion}
+\label{sec:discussion}
+\lipsum[11]
+
+\section{Conclusions}
+\label{sec:conclusions}
+\lipsum[12]
+
+% =============================================================================
+% Back matter
+% =============================================================================
+\section*{Acknowledgments}
+\todo{Acknowledge funding sources (e.g., BYU MRG, NASA Utah Space Grant
+Consortium), facilities, and individual contributors.}
+
+\section*{Funding Data}
+\todo{List grant numbers per ASME Funding Data requirements.}
+
+\section*{Conflict of Interest}
+The authors declare no conflict of interest.
+
+% -----------------------------------------------------------------------------
+% References (ASME numeric style; uses asmejour.bst)
+% -----------------------------------------------------------------------------
+\bibliographystyle{asmejour}
+\bibliography{references}
+
+\end{document}
