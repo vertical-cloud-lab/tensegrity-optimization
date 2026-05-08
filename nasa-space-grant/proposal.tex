@@ -3,15 +3,13 @@
 % Applicant: Marcus Madsen (Undergraduate, Mechanical Engineering, BYU)
 % Faculty Advisor: Sterling G. Baird, Department of Mechanical Engineering
 %
-% Narrative target: 3--5 pages.  References do not count toward the page limit.
+% Hard upper limit: 5 pages total (including references).
 % Written in the first person from Marcus's perspective.
-% NASA-priority language and citations will be expanded once the Edison
-% literature synthesis (issue #16) finishes.
 % =============================================================================
 \documentclass[11pt]{article}
 
 % --- Packages ---
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.9in]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
@@ -286,9 +284,12 @@ the lab.  The PI will provide the required 50\% non-federal cost share from
 laboratory startup funds.
 
 % =============================================================================
-% --- References (do not count toward the 3--5 page limit) ---
+% --- References (kept compact; total document is capped at 5 pages) ---
 % =============================================================================
-\bibliographystyle{plainnat}
+{\small
+\setlength{\bibsep}{0pt plus 0.3ex}
+\bibliographystyle{abbrvnat}
 \bibliography{references}
+}
 
 \end{document}
