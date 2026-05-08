@@ -19,6 +19,8 @@
 \usepackage{xcolor}
 \usepackage{titlesec}
 \usepackage{setspace}
+\usepackage{wrapfig}
+\usepackage{caption}
 
 % --- Formatting ---
 \titleformat{\section}{\normalfont\large\bfseries}{\thesection}{1em}{}
@@ -50,8 +52,19 @@ Brigham Young University \hspace{1em}\textbar\hspace{1em} \today
 \section{Introduction and Motivation}
 % =============================================================================
 
+% --- Overview figure (right-inset, reused from the MRG proposal) ---
+\begin{wrapfigure}{R}{0.42\textwidth}
+\centering
+\vspace{-0.6em}
+\includegraphics[width=0.41\textwidth]{../figures/overview-updated.png}
+\captionsetup{font=footnotesize}
+\caption{Closed-loop print--test--optimize workflow I will run on the Bambu Lab H2D: parameterized PLA + TPU tensegrity-inspired specimens are fabricated, characterized under quasi-static compression and drop-weight impact, and fed back to a Bayesian optimizer that recommends the next geometries to print.}
+\label{fig:overview}
+\vspace{-0.6em}
+\end{wrapfigure}
+
 I am applying for a Utah NASA Space Grant Consortium fellowship to support a
-year of focused undergraduate research on \textbf{multi-material 3D-printed
+year of focused research on \textbf{multi-material 3D-printed
 tensegrity-inspired structures for spacecraft and payload energy absorption}.
 Every NASA mission that lands on a planet, returns a sample to Earth, or
 deploys a CubeSat from a launch vehicle has to dissipate a large pulse of
@@ -83,7 +96,7 @@ FDM hardware and retain a load-limiting plateau under drop-weight impact
 flexible tension skins) yields tunable energy absorption without delamination
 \citep{ye2023multimaterial,khatri2024energy}, and our group has access to a
 dual-nozzle \textbf{Bambu Lab H2D} printer that makes this multi-material
-workflow practical at undergraduate-friendly throughput.
+workflow practical for me to run as a single-student campaign.
 
 I propose to use that capability to run a focused, year-long
 \textbf{print--test--optimize} campaign aimed squarely at two NASA-relevant
@@ -248,7 +261,7 @@ of all Space Grant fellows) and a draft journal manuscript targeting
 Design}.
 
 The broader impact is twofold.  Scientifically, this is an early empirical
-demonstration that an undergraduate, with a single multi-material FDM printer
+demonstration that a single student, with one multi-material FDM printer
 and a Bayesian optimization loop, can systematically discover impact
 attenuators that out-perform a NASA-incumbent geometry on a relevant load
 case.  The resulting dataset and methodology are designed to seed follow-on
@@ -286,7 +299,7 @@ laboratory startup funds.
 % =============================================================================
 % --- References (kept compact; total document is capped at 5 pages) ---
 % =============================================================================
-{\small
+{\footnotesize
 \setlength{\bibsep}{0pt plus 0.3ex}
 \bibliographystyle{abbrvnat}
 \bibliography{references}
