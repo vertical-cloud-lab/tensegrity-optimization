@@ -1,9 +1,14 @@
 # Edison trajectory: 01-tensegrity-crutch-tip-feasibility
 
 - **Task ID:** `39708fbc-5964-4fb5-a042-9b13b3475d40`
-- **Job:** `LITERATURE_HIGH`
+- **Job:** `job-futurehouse-paperqa3-high`
 - **Status:** `success`
+- **Successful answer:** `True`
+- **Created at:** `2026-05-08T16:45:39.864044+00:00`
+- **Edison platform link:** https://platform.edisonscientific.com/tasks/39708fbc-5964-4fb5-a042-9b13b3475d40
 - **Summary:** Initial LITERATURE_HIGH query: tensegrity crutch-tip impact-absorber feasibility (prior art, biomechanics, injuries, materials, regulatory, go/no-go).
+
+> The block below is the verbatim `formatted_answer` returned by the Edison client, which includes the original Question, the cited Answer, and the full numbered References list. The raw JSON dump of the response is in the sibling `*.json` file.
 
 ---
 

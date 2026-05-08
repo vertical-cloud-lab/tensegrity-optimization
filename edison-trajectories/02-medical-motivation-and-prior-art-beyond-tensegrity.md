@@ -1,9 +1,14 @@
 # Edison trajectory: 02-medical-motivation-and-prior-art-beyond-tensegrity
 
 - **Task ID:** `9832f01a-6bb9-4488-bd88-3131d915f96a`
-- **Job:** `LITERATURE_HIGH`
+- **Job:** `job-futurehouse-paperqa3-high`
 - **Status:** `success`
+- **Successful answer:** `True`
+- **Created at:** `2026-05-08T16:48:21.869778+00:00`
+- **Edison platform link:** https://platform.edisonscientific.com/tasks/9832f01a-6bb9-4488-bd88-3131d915f96a
 - **Summary:** LITERATURE_HIGH follow-up: medical motivation for better crutches and prior-art impact absorption beyond tensegrity (footwear lattices, shock-absorbing tips, prosthetic feet, metamaterials, ISO 11334 / FDA).
+
+> The block below is the verbatim `formatted_answer` returned by the Edison client, which includes the original Question, the cited Answer, and the full numbered References list. The raw JSON dump of the response is in the sibling `*.json` file.
 
 ---
 
