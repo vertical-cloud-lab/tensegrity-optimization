@@ -3,18 +3,22 @@
 // =============================================================================
 // PETG sphere at each tensegrity vertex with through-holes; TPU cable threads
 // through and is terminated in a printed-in-place TPU bulb on the far side.
-// Per Edison ANALYSIS c38a2046 / followup ce84ddf8 geometry recommendations:
-//   - Node OD ≈ 8.5–9.0 mm (here: 9.0 mm)
-//   - Through-bore Ø ≈ 2.8–3.0 mm (here: 2.9 mm; +0.5 mm clearance over 2.4 mm cable)
-//   - Bulb OD ≈ 4.0 mm (printed-in-place TPU on the far side)
+// Per Edison Phase-3 ANALYSIS 19e0c868 §3 (CAD review) geometry, which
+// supersedes the earlier c38a2046 / ce84ddf8 numbers (raises bulb-to-bore
+// pull-through ratio from 1.38× to 1.71×):
+//   - Node OD ≈ 9.5 mm (was 9.0; cleanly encases the 2.8 mm bore while
+//     preserving perimeter thickness)
+//   - Through-bore Ø ≈ 2.8 mm (0.4 mm clearance over 2.4 mm cable)
+//   - Bulb OD ≈ 4.8 mm (printed-in-place TPU on the far side; 1.71× bore,
+//     full 1.0 mm radial TPU bearing against the PETG face)
 // One PETG strut enters the node from -Z; one TPU cable passes through it
 // horizontally along +X, terminated in a bulb on the +X side.
 // =============================================================================
 include <_common.scad>
 
-node_d  = 9.0;       // PETG node sphere outer diameter
-bore_d  = 2.9;       // through-hole diameter (cable_d + 0.5 mm clearance)
-bulb_d  = 4.0;       // TPU bulb outer diameter at far end of cable
+node_d  = 9.5;       // PETG node sphere outer diameter
+bore_d  = 2.8;       // through-hole diameter (cable_d + 0.4 mm clearance)
+bulb_d  = 4.8;       // TPU bulb outer diameter at far end of cable (1.71× bore)
 bulb_off = node_d/2 + 1.5;  // bulb center distance from node center along +X
 
 module designA_petg() {

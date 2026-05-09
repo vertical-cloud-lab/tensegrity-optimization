@@ -77,7 +77,12 @@
         "joint-design-README.md": "data_entry:cdc0c051-b060-4167-89f5-76d79c1b2473",
         "task-manifest.json": "data_entry:6f3967a1-b986-44d0-b666-ef07f2e710ff"
       },
-      "next_session_action": "Fetch task 19e0c868 with EdisonClient.get_task(); if status=='success' write md + json to edison-trajectories/joint-design/PHASE3-cad-review-19e0c868-*.{md,json}; apply any actionable CAD refinements to cad/joint-design/B_dovetail.scad / A_anchor_bulb.scad and re-run cad/joint-design/render.sh."
+      "next_session_action": "Fetch task 19e0c868 with EdisonClient.get_task(); if status=='success' write md + json to edison-trajectories/joint-design/PHASE3-cad-review-19e0c868-*.{md,json}; apply any actionable CAD refinements to cad/joint-design/B_dovetail.scad / A_anchor_bulb.scad and re-run cad/joint-design/render.sh.",
+      "status": "success",
+      "fetched_at": "2026-05-09T12:45:00Z",
+      "result_md": "edison-trajectories/joint-design/PHASE3-cad-review-19e0c868-3587-440d-ba4a-07da4dddf99a.md",
+      "result_json": "edison-trajectories/joint-design/PHASE3-cad-review-19e0c868-3587-440d-ba4a-07da4dddf99a.json",
+      "headline": "Refines B (dovetail) primary geometry to node 12mm, slot_mouth 5.4, slot_inner 7.06, slot_height 4.0, depth 6.0, flank 22.5deg, clear_lat 0.20, clear_roof 0.30; refines A (bulb) backup to node 9.5, bore 2.8, bulb 4.8 (1.71x ratio). Cites Wang 2026, Frascio 2024, Ermolai 2024, Mu 2024, Monti 2025."
     }
   }
 }

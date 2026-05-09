@@ -3,25 +3,34 @@
 // =============================================================================
 // PETG strut tip ends in a captive dovetail / T-slot socket; the TPU cable is
 // terminated in a matching dovetail / T-head co-printed inside the socket.
-// Per Edison ANALYSIS followup ce84ddf8 §4 geometry:
-//   - Slot mouth width:        6.4 mm (in a ~7 mm node envelope)
-//   - TPU head width (undercut): 7.4 mm (0.5 mm capture per side)
-//   - Slot internal height:    3.6 mm
-//   - Slot depth (along strut axis): 5.0 mm
-//   - Dovetail flank angle:    25° (lower stress concentration than 90° T)
-//   - Running clearance:       0.25 mm per side on non-load-bearing faces
+// Per Edison Phase-3 ANALYSIS 19e0c868 §2 (CAD review) geometry, which
+// supersedes the earlier ce84ddf8 §4 numbers:
+//   - Node OD:                 12.0 mm (was 9.0; needed for >=2 perimeters
+//                                       on the lateral PETG cheeks)
+//   - Slot mouth width:         5.4 mm (allows solid bridging over the gap)
+//   - TPU head width (undercut):7.06 mm (≈0.83 mm undercut per side)
+//   - Slot internal height:     4.0 mm
+//   - Slot depth (along strut): 6.0 mm (>=4-6 mm engagement plateau, Wang 2026)
+//   - Dovetail flank angle:    22.5° (Wang 2026 shear-strength optimum for
+//                                     bi-material FDM rigid-flexible interlock)
+//   - Lateral (Y) clearance:    0.20 mm per face (load-bearing fit, Ermolai 2024)
+//   - Roof (Z) clearance:       0.30 mm (bridge sag tolerance, Ermolai 2024)
+//   - +X exit fillet:           0.5 mm (de-notches TPU cable redirection,
+//                                       Frascio 2024)
 // Strut runs along +Z; cable exits along +X. The PETG cap above the head
 // (the "roof") is the print-in-place bridge that captures the TPU dovetail.
 // =============================================================================
 include <_common.scad>
 
-slot_mouth   = 6.4;
-slot_inner   = 7.4;
-slot_height  = 3.6;
-slot_depth   = 5.0;       // along strut axis (Z)
-flank_deg    = 25;        // half-flank, measured from vertical wall
-clear        = 0.25;      // running clearance on non-load-bearing faces
-node_d       = 9.0;       // PETG socket outer diameter near tip
+slot_mouth   = 5.4;
+slot_inner   = 7.06;
+slot_height  = 4.0;
+slot_depth   = 6.0;       // along strut axis (Z)
+flank_deg    = 22.5;      // half-flank, measured from vertical wall
+clear_lat    = 0.20;      // lateral (Y, load-bearing) running clearance per face
+clear_roof   = 0.30;      // roof (Z) clearance per face — bridge-sag tolerance
+mouth_fillet = 0.5;       // PETG slot-mouth +X exit fillet (TPU de-notch)
+node_d       = 12.0;      // PETG socket outer diameter near tip
 
 // Dovetail / T-head extruded along +X (X = depth into slot).
 // The cross-section in (Y,Z) is wider at the bottom (slot_inner) than the
@@ -43,14 +52,15 @@ module designB_petg() {
             translate([0, 0, -strut_l])
                 cylinder(h=strut_l - slot_depth, d=strut_d);
         }
-        // Dovetail pocket — wide at the bottom (captive). Add `clear` per side
-        // on the non-load-bearing faces.
+        // Dovetail pocket — wide at the bottom (captive). Differential clearance:
+        // tight on the lateral (Y) load-bearing flanks (`clear_lat`), looser on
+        // the roof (Z) for bridge-sag tolerance (`clear_roof`).
         translate([-(node_d/2 + 0.1), 0, -slot_depth/2 - 0.5])
             rotate([90, 0, 90])
-                linear_extrude(height = node_d + 0.2 + clear)
-                    dovetail_xs(slot_mouth + 2*clear,
-                                slot_inner + 2*clear,
-                                slot_height + 2*clear);
+                linear_extrude(height = node_d + 0.2 + clear_lat)
+                    dovetail_xs(slot_mouth + 2*clear_lat,
+                                slot_inner + 2*clear_lat,
+                                slot_height + 2*clear_roof);
     }
 }
 

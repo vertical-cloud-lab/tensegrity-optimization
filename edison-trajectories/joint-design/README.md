@@ -31,7 +31,37 @@ Each query attached the same eight context files (`proposal.pdf`, `MRG_2026.pdf`
 | --- | --- | --- | --- |
 | `be6768ab-a4ca-433b-8bec-059819e3e368` | `LITERATURE_HIGH` | High-effort prior-art survey ranking the five designs by **strength of published precedent** | [md](PHASE2-literature-high-be6768ab-a4ca-433b-8bec-059819e3e368.md), [json](PHASE2-literature-high-be6768ab-a4ca-433b-8bec-059819e3e368.json) |
 | `c38a2046-a37b-497f-aebb-efc2f35004de` | `ANALYSIS` | Synthesis + design-for-test recommendation. **Caveat:** at submission time only Phase-1 outputs C, D, E were complete; A and B were attached as task-IDs with a "fetch from platform if you can" note. The agent fetched and inlined them anyway, but a follow-up ANALYSIS with the full set of Phase-1 outputs is queued (see below). | [md](PHASE2-analysis-c38a2046-a37b-497f-aebb-efc2f35004de.md), [json](PHASE2-analysis-c38a2046-a37b-497f-aebb-efc2f35004de.json) |
-| `ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa` | `ANALYSIS` (follow-up) | Re-run of the synthesis with **all five Phase-1 outputs** plus the `LITERATURE_HIGH` reply and the prior `ANALYSIS` reply attached for cross-checking. **Non-blocking — fetch next session.** | (pending) |
+| `ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa` | `ANALYSIS` (follow-up) | Re-run of the synthesis with **all five Phase-1 outputs** plus the `LITERATURE_HIGH` reply and the prior `ANALYSIS` reply attached for cross-checking. **Inverts** the recommendation to **B (dovetail) primary + A (anchor-bulb) backup**. | [md](PHASE2-analysis-followup-ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa.md), [json](PHASE2-analysis-followup-ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa.json) |
+
+### Phase 3 — `ANALYSIS` CAD review (post OpenSCAD modeling + visual prior-art comparison)
+
+| Edison task | Job | Topic | Files |
+| --- | --- | --- | --- |
+| `19e0c868-3587-440d-ba4a-07da4dddf99a` | `ANALYSIS` | Visual + technical review of the five OpenSCAD CAD models in [`cad/joint-design/`](../../cad/joint-design/) (5 `.scad` + section variants + 13 PNG renders + 5 STL + 3 montages + 5 reference JPEGs). Recommends concrete dimensional refinements for B-dovetail (primary) and A-anchor-bulb (backup), updates the drop-test screening matrix, and surfaces 2024–2026 bibliographic gaps. **Refinements applied** to `B_dovetail.scad` and `A_anchor_bulb.scad`; `render.sh` re-run. | [md](PHASE3-cad-review-19e0c868-3587-440d-ba4a-07da4dddf99a.md), [json](PHASE3-cad-review-19e0c868-3587-440d-ba4a-07da4dddf99a.json) |
+
+#### Phase-3 dimensional refinements applied to the CAD
+
+**Design B — co-printed dovetail (primary).** Phase-3 flagged the original 9.0 mm node as under-constrained (lateral PETG cheeks <2 perimeters; implied flank only 15.5° vs. the documented 25°). Updated `B_dovetail.scad` parameters:
+
+| Parameter | Pre-Phase-3 | Post-Phase-3 | Source |
+| --- | :---: | :---: | --- |
+| `node_d` | 9.0 mm | **12.0 mm** | Phase-3 §2 (≥2-perimeter PETG cheek) |
+| `slot_mouth` | 6.4 mm | **5.4 mm** | Phase-3 §2 (solid bridging over the gap) |
+| `slot_inner` | 7.4 mm | **7.06 mm** | Phase-3 §2 (≈0.83 mm undercut/side) |
+| `slot_height` | 3.6 mm | **4.0 mm** | Phase-3 §2 |
+| `slot_depth` | 5.0 mm | **6.0 mm** | Wang 2026 (4–6 mm engagement plateau) |
+| `flank_deg` | 25° | **22.5°** | Wang 2026 (shear-strength optimum, ~24 MPa) |
+| `clear_lat` (Y, load-bearing) | 0.25 mm | **0.20 mm** | Ermolai 2024 |
+| `clear_roof` (Z, bridge) | 0.25 mm | **0.30 mm** | Ermolai 2024 (bridge-sag tolerance) |
+| `mouth_fillet` (+X exit) | — | **0.5 mm** | Frascio 2024 (TPU de-notch) |
+
+**Design A — anchor-bulb (backup).** Phase-3 §1 noted the original 4.0 mm bulb / 2.9 mm bore = 1.38× ratio with only 0.55 mm radial engagement was vulnerable to high-g pull-through. Updated `A_anchor_bulb.scad` parameters:
+
+| Parameter | Pre-Phase-3 | Post-Phase-3 | Notes |
+| --- | :---: | :---: | --- |
+| `node_d` | 9.0 mm | **9.5 mm** | cleanly encases the new bore |
+| `bore_d` | 2.9 mm | **2.8 mm** | 0.4 mm clearance over 2.4 mm cable |
+| `bulb_d` | 4.0 mm | **4.8 mm** | 1.71× pull-through ratio, 1.0 mm radial bearing |
 
 `task_manifest.json` carries the full machine-readable list of submitted Edison tasks and which files were attached to each.
 
