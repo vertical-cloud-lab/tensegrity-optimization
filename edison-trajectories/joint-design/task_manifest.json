@@ -43,7 +43,7 @@
     },
     "analysis_followup": {
       "task_id": "ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa",
-      "reason": "Re-ran ANALYSIS with all 5 Phase-1 outputs attached (original c38a2046 only had 3/5 because A and B had not completed at submission time).",
+      "reason": "Re-ran ANALYSIS with all 5 Phase-1 outputs attached (original c38a2046 only had 3/5 because A and B had not completed at submission time). FETCHED + committed; result inverted ranking to B (dovetail) primary + A (anchor-bulb) backup.",
       "attached_phase1_outputs": [
         "A-anchor-bulb-0b5d7ba2-847e-47b3-bddf-127e2ed170d3.md",
         "A-anchor-bulb-0b5d7ba2-847e-47b3-bddf-127e2ed170d3.json",
@@ -60,6 +60,24 @@
         "PHASE2-literature-high-be6768ab.md",
         "PHASE2-analysis-c38a2046.md"
       ]
+    }
+  },
+  "phase3": {
+    "cad_review": {
+      "task_id": "19e0c868-3587-440d-ba4a-07da4dddf99a",
+      "name": "ANALYSIS",
+      "submitted_at_utc": "2026-05-09T05:15Z",
+      "status_at_session_end": "in progress",
+      "submission_script": "scripts/edison/submit_joint_cad_review.py",
+      "submission_record": "edison-trajectories/joint-design/PHASE3-cad-review-SUBMITTED.json",
+      "purpose": "Visual + technical CAD review against published prior art; concrete dimensional refinements for new primary B-dovetail and backup A-anchor-bulb before first H2D PETG+TPU multi-material print.",
+      "attached_files": {
+        "cad-joint-design.zip": "data_entry:95de1583-341d-4905-b054-d212ba1322c2",
+        "analysis-followup-ce84ddf8.md": "data_entry:2f615951-23da-44bc-84a7-59f0a9cb8bdc",
+        "joint-design-README.md": "data_entry:cdc0c051-b060-4167-89f5-76d79c1b2473",
+        "task-manifest.json": "data_entry:6f3967a1-b986-44d0-b666-ef07f2e710ff"
+      },
+      "next_session_action": "Fetch task 19e0c868 with EdisonClient.get_task(); if status=='success' write md + json to edison-trajectories/joint-design/PHASE3-cad-review-19e0c868-*.{md,json}; apply any actionable CAD refinements to cad/joint-design/B_dovetail.scad / A_anchor_bulb.scad and re-run cad/joint-design/render.sh."
     }
   }
 }
