@@ -27,18 +27,20 @@ bridges that hardware reality with the simulation parameters consumed by
 The two materials and their published-typical FFF-print properties:
 
 ================================  ===========  ============
-Property                          PETG         TPU 95A
+Property                          PETG         TPU 85A
 ================================  ===========  ============
 Density (kg / m^3)                ~1270        ~1200
-Young's modulus E (MPa)           ~2000        ~25 (secant)
-Yield / break stress (MPa)        ~50          ~30 (break)
-Strain to break (%)               ~5–10        ~400–550
+Young's modulus E (MPa)           ~2000        ~12 (secant)
+Yield / break stress (MPa)        ~50          ~26 (break)
+Strain to break (%)               ~5–10        ~550–660
 ================================  ===========  ============
 
-(TPU 95A E is the small-strain secant; the large-strain stiffness is
-strongly nonlinear / Mullins-affected.  For printable axial-spring k it
-is the relevant quantity for the BO sweep here, where prestrain stays
-small.)
+(TPU 85A E ≈ 12 MPa is the small-strain secant — NinjaFlex-class soft
+elastomer; large-strain stiffness is strongly nonlinear /
+Mullins-affected.  For the printable axial-spring k used by the BO
+sweep — where prestrain stays ≤ 8 % — the secant value is the
+right quantity.  For comparison, TPU 95A would be ~25 MPa, ~2× stiffer
+per unit cross-section.)
 """
 from __future__ import annotations
 
@@ -61,8 +63,12 @@ class Material:
 
 PETG = Material("PETG",   young_MPa=2000.0, density_kgm3=1270.0,
                 yield_break_MPa=50.0)
-TPU95A = Material("TPU95A", young_MPa=25.0, density_kgm3=1200.0,
-                  yield_break_MPa=30.0)
+TPU85A = Material("TPU85A", young_MPa=12.0, density_kgm3=1200.0,
+                  yield_break_MPa=26.0)
+# Backward-compatibility alias: an earlier draft mis-specified the lab's
+# TPU as 95A.  The lab actually prints 85A (per @sgbaird-yolo, PR
+# comment 4411433938); 95A is ~2x stiffer per A.
+TPU = TPU85A
 
 
 # --- Hardware (Bambu H2D) constraints -------------------------------------
@@ -76,15 +82,15 @@ MIN_PRINTABLE_STRUT_DIA_M  = 2.0e-3   # PETG strut needs wall + infill
 # --- Derived helpers ------------------------------------------------------
 
 def tpu_cable_stiffness_Npm(diameter_m: float, length_m: float,
-                            material: Material = TPU95A) -> float:
+                            material: Material = TPU85A) -> float:
     """Axial-spring stiffness ``k = E * A / L`` for an FFF tendon.
 
-    Sanity for TPU 95A, 1 mm dia, 0.20 m strut length:
-        E A / L = 25e6 * pi (0.5e-3)^2 / 0.20 = 98 N/m.
-    For a 3 mm dia tendon it is ~880 N/m.  This sets the *physically
+    Sanity for TPU 85A, 1 mm dia, 0.20 m strut length:
+        E A / L = 12e6 * pi (0.5e-3)^2 / 0.20 = 47 N/m.
+    For a 3 mm dia tendon it is ~424 N/m.  This sets the *physically
     achievable* range of the cable_stiffness sweep in ``run_regimes.py``
-    (~ 50-2000 N/m for a crutch-tip cell, much less than the abstract
-    sweep ranges we explored before).
+    (~ 25-1000 N/m for a crutch-tip cell, much less than the abstract
+    sweep ranges we explored before; ~2x softer than the TPU 95A draft).
     """
     A = np.pi * (0.5 * diameter_m) ** 2
     return float(material.young_MPa * 1e6 * A / length_m)
@@ -184,11 +190,11 @@ class PrintableDesign:
                 f"printable {MIN_PRINTABLE_STRUT_DIA_M*1e3:.2f} mm."
             )
         # Cable stress at prestrain must be within TPU break stress.
-        sigma = self.prestrain * TPU95A.young_MPa
-        if sigma > TPU95A.yield_break_MPa:
+        sigma = self.prestrain * TPU85A.young_MPa
+        if sigma > TPU85A.yield_break_MPa:
             issues.append(
                 f"Prestrain {self.prestrain*100:.1f}% gives "
-                f"sigma~{sigma:.1f} MPa > TPU break {TPU95A.yield_break_MPa} MPa."
+                f"sigma~{sigma:.1f} MPa > TPU break {TPU85A.yield_break_MPa} MPa."
             )
         return issues
 

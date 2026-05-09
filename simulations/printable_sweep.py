@@ -14,7 +14,7 @@ chooses at design / print time:
 The peak deceleration / specific-energy-absorbed metrics are then
 re-computed by re-using the same MuJoCo backend as ``run_regimes.py``,
 but with cable stiffness derived as ``k = E_TPU * pi (d_t/2)^2 / L``
-using the TPU 95A modulus (~25 MPa).
+using the TPU 85A modulus (~12 MPa).
 
 Two figures per regime are written to ``outputs/``:
 
@@ -38,7 +38,7 @@ import numpy as np
 import run_regimes
 from printable_design import (
     MAX_PRINTABLE_TENDON_DIA_M, MIN_PRINTABLE_TENDON_DIA_M,
-    PrintableDesign, TPU95A, tpu_cable_stiffness_Npm,
+    PrintableDesign, TPU85A, tpu_cable_stiffness_Npm,
 )
 from regimes import CRUTCH, NASA_LANDER, Regime
 from tprism_geometry import EQUILIBRIUM_TWIST
@@ -106,7 +106,7 @@ def plot_heatmap(rows: list[dict], regime: Regime,
         fig.colorbar(im, ax=ax, label=label)
     fig.suptitle(f"{regime.name}: printable design sweep "
                  f"(PETG strut Ø{regime.strut_radius_m*2*1e3:.1f} mm + "
-                 f"TPU 95A tendons; E={TPU95A.young_MPa:.0f} MPa)")
+                 f"TPU 85A tendons; E={TPU85A.young_MPa:.0f} MPa)")
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, fname), dpi=120)
     plt.close(fig)
@@ -136,7 +136,7 @@ def plot_pareto(rows: list[dict], regime: Regime, fname: str) -> None:
 
 
 def main():
-    print(f"TPU 95A E = {TPU95A.young_MPa} MPa, "
+    print(f"TPU 85A E = {TPU85A.young_MPa} MPa, "
           f"PETG E = 2000 MPa.  Sweeping printable design vars.\n")
 
     tendon_dias_m = np.array([1.2, 1.6, 2.0, 2.5, 3.0, 4.0, 5.0]) * 1e-3

@@ -22,6 +22,7 @@ together with the application-regime sweeps described in
 | **MuJoCo** (DeepMind) | 3.8.0 | `pip install mujoco` | ✅ runs | Native `<spatial>` tendon primitive (Hookean + damping). Ideal first stop. |
 | **PyBullet** (Bullet 3) | 3.x (May 2026 build) | `pip install pybullet` | ✅ runs | No native tendon; cables implemented as unilateral spring forces applied via `applyExternalForce`. This is the same approach used historically by NASA's NTRTsim. |
 | **PyChrono** (Project Chrono 10.0) | 10.0 | `conda install -c projectchrono -c conda-forge pychrono` | ✅ runs | First-class `ChLinkTSDA` springs; FEA cable elements (`ChElementCableANCF`) and IGA beams also available for higher fidelity. **Do not** install the homonymous PyPI package `pychrono` — it is unrelated. |
+| **Newton** (NVIDIA, on Warp) | 1.1.0 | `pip install newton` | ✅ runs (Edison Rec B / DiffPD-tier) | Differentiable GPU-accelerated multi-physics. We use it as the all-particle XPBD stand-in for DiffPD: TPU-85A tendons are explicit Hookean springs in series with the impact load path (payload internally suspended from all 6 prism nodes), so peak g and SEA respond to tendon Ø, unlike the rigid-strut engines above. |
 
 All three reproduce the same baseline experiment (a 3-bar Snelson T-prism
 dropped from 1 m onto a flat floor). Cross-engine agreement: settled COM
@@ -35,10 +36,11 @@ simulations/
 ├── mujoco_drop.py        # MuJoCo MJCF + drop simulation (✅ baseline)
 ├── pybullet_drop.py      # PyBullet rigid-body + manual spring cables (✅)
 ├── pychrono_drop.py      # Project Chrono ChLinkTSDA (✅, conda install required)
+├── newton_drop.py        # NVIDIA Newton (Warp) all-particle XPBD; tendons in load path
 ├── mujoco_sweep.py       # 1-D parameter sweep --> BO objective stub
 ├── regimes.py            # Application regime dataclasses (crutch + NASA) + Lansmont M23 envelope
 ├── run_regimes.py        # Drives MuJoCo through both regimes; produces 4 figures + 2 CSVs
-├── printable_design.py   # PETG strut + TPU 95A tendon material model + class-1 check
+├── printable_design.py   # PETG strut + TPU 85A tendon material model + class-1 check
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 └── outputs/
     ├── mujoco_drop_energy.png
@@ -150,12 +152,12 @@ quantitative SEA optimization motivate moving to Edison's Recommendation B
 ## PETG strut + TPU "string" printable design (Bambu H2D)
 
 The lab fabricates the unit cell on a Bambu Lab H2D (0.4 mm nozzle,
-PETG + TPU 95A in IDEX), so cable stiffness is not a free abstract
+PETG + TPU 85A in IDEX), so cable stiffness is not a free abstract
 parameter — it is set by the printable tendon diameter `d_t` and the
-TPU 95A modulus:
+TPU 85A modulus:
 
 ```
-k = E_TPU * pi * (d_t / 2)^2 / L     with E_TPU ≈ 25 MPa (95A secant)
+k = E_TPU * pi * (d_t / 2)^2 / L     with E_TPU ≈ 12 MPa (85A secant)
 ```
 
 `simulations/printable_design.py` exposes this and three companion
@@ -196,6 +198,82 @@ H2D-feasible region** of the BO search space so that whoever wires up
 the actual BO loop next session does it on the right axes (`d_t`,
 `prestrain`, strut Ø) instead of an abstract `k`, and so the sim
 warns them when their proposed design is not a true tensegrity.
+
+## Mid-fidelity escalation: Newton (Warp) — Edison Rec B / DiffPD-tier
+
+Per @sgbaird-yolo's request to "attempt running DiffPD and PolyFEM+IPC",
+we escalated from the rigid-strut engines above to **NVIDIA Newton**
+(`pip install newton`, built on Warp). Newton stood in for **Edison
+Recommendation B (DiffPD)** because:
+
+* DiffPD itself (MIT GFX, SIGGRAPH 2021) is not on PyPI — only as a
+  C++/Pangolin-based source repo whose CMake build fails on the lab's
+  Linux runners (no GPU drivers, no Pangolin).
+* Newton provides the same critical capabilities DiffPD was wanted for:
+  rigid + particle + spring + soft-body **co-simulation with full
+  bidirectional coupling** (tendons actually in the load path), a
+  GPU-accelerated XPBD/VBD/Featherstone solver stack with soft contact,
+  and **autodiff via Warp tapes** for future BO-gradient access.
+
+`simulations/newton_drop.py` builds the same Snelson T-prism as an
+all-particle network: 6 prism nodes (mass 5 g each), 1 payload node
+(1 kg), 3 stiff PETG strut springs, 9 TPU-85A tendon springs, and
+**6 internal TPU-85A tendons suspending the payload from every prism
+node** (the SUPERball / NASA TBR architecture). The whole thing is
+dropped 100 mm onto Newton's ground plane with a soft-contact pipeline
+(`soft_contact_ke = 5e4`).
+
+A 3-point tendon-Ø mini-sweep at the lander cell shows the cables are
+now genuinely in the load path (peak g monotonically responds to the
+TPU 85A tendon Ø, in contrast to the rigid-strut engines where peak g
+was floor-pinned at ±2 % across three decades of `k`):
+
+| Tendon Ø | Newton peak \|payload accel\| (g) |
+|---:|---:|
+| 1.5 mm | ~2,400 |
+| 3.0 mm | ~4,200 |
+| 5.0 mm | ~11,400 |
+
+Absolute numbers are still high (over the M23 5,000 g envelope at the
+stiff end) because TPU 85A is very soft (E ≈ 12 MPa) and the payload
+can free-fall deep into the prism before the suspension tendons engage,
+giving a rope-snap profile. Two refinements still pending for
+quantitative crutch-tip BO:
+
+1. Add tendon prestrain so the suspension is taut at rest (current
+   model is slack; matches the "rest = L0" cross-engine convention but
+   a real assembly is sewn under tension).
+2. Replace the all-particle prism with rigid bodies for the PETG struts
+   (Newton supports `add_body` + `add_shape_capsule`); this removes the
+   numerical PETG-spring impedance and lets the cable-network
+   compliance dominate the integration.
+
+Both are mechanical refinements rather than tooling escalations; the
+key tooling step — getting from rigid-strut Tier C to coupled-soft
+Tier B — is delivered by `newton_drop.py`.
+
+### Edison Rec A (PolyFEM + IPC) — install attempt
+
+`pip install polyfempy` fails on the runner: the PyPI sdist is missing
+its `CMakeLists.txt`, so the build can't start. The maintained route is
+the Polyfem GitHub repo (`polyfem/polyfem`), which needs CMake + Eigen
+\+ libigl + Catch2 + ipc-toolkit + suite-sparse, takes ~25 min to
+configure-and-build, and uses ~6 GB of disk. This was outside the
+sandbox time budget for this PR but is the right next step for
+*high-fidelity* (IPC barrier-method) contact at the prism-floor and
+inter-strand interfaces. Reproducing this attempt:
+
+```bash
+$ pip install polyfempy
+...
+CMake Error: The source directory ".../polyfempy_..." does not appear to
+contain CMakeLists.txt.
+ERROR: Could not build wheels for polyfempy
+```
+
+The next agent who picks this up should clone `polyfem/polyfem` and
+build manually, or evaluate Genesis (`pip install genesis-world`) which
+ships an MPM + FEM + IPC-style stack pre-built.
 
 ## Other notable simulators (not yet downloaded)
 
