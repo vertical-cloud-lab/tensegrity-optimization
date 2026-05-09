@@ -15,20 +15,18 @@ This document has two parts:
    metamaterials + assistive devices* manuscript -- with the rough mix of
    reviewer subfields the editor will assemble, and the implication for which
    sections of the paper need to land for which reader.
-2. **A candidate reviewer pool**, synthesized by walking every Edison trajectory
-   committed across the repo's PR branches (literature, precedent, and analysis
-   tasks) and the consolidated `manuscript/references.bib` from PR #20, then
-   keeping authors who (a) appear two or more times in our existing bibliography
-   and (b) match a relevant subfield. A second, longer pool of well-known
-   senior names per subfield is included for completeness.
-
-A separate, **non-blocking Edison `LITERATURE_HIGH` query** (task ID
-`9cc7db18-10b5-457e-9b7c-9a3ecb2b9f14`) was submitted in this session asking
-specifically for current JMD Associate Editors who handle data-driven design /
-DfAM / architected mechanisms / assistive devices, plus 10-15 named candidate
-reviewers with representative recent papers. The committed `.md` / `.json`
-trajectory (and the corresponding update to this file) will land when that
-task completes -- see the placeholder in *Section 3* below.
+2. **A candidate reviewer pool**, anchored in a dedicated Edison
+   `LITERATURE_HIGH` query (task `9cc7db18-10b5-457e-9b7c-9a3ecb2b9f14`,
+   committed at `edison-trajectories/2026-05-09-target-audience-9cc7db18.md`
+   + `.json`) that asked Edison to (i) name current JMD Associate Editors by
+   coverage area, (ii) propose 10-15 specific candidate reviewers with
+   representative JMD-relevant papers and DOIs, (iii) flag obvious COIs for a
+   BYU-affiliated team, and (iv) repeat for SMS as the backup venue. Every
+   recommendation in §3 is anchored to at least one paper in JMD, a sister
+   ASME journal, or a directly comparable domain-leading peer-reviewed venue
+   (Composite Structures, *Adv. Mater.*, *Sci. Adv.*, *Addit. Manuf.*,
+   *Extreme Mech. Lett.*, *npj Comput. Mater.*, *Struct. Multidiscip. Optim.*,
+   *J. Eng. Mech.*).
 
 ## 1. Why this question matters for our PR #20 manuscript
 
@@ -84,84 +82,123 @@ below**. Our manuscript needs to anticipate all four.
 
 ## 3. Candidate reviewer pool
 
-### 3a. Pool synthesized from existing Edison trajectories and `manuscript/references.bib`
+> **All candidates below are grounded in the Edison `LITERATURE_HIGH`
+> trajectory `edison-trajectories/2026-05-09-target-audience-9cc7db18.md`
+> (task `9cc7db18-10b5-457e-9b7c-9a3ecb2b9f14`, fetched 2026-05-09), with each
+> recommendation anchored to at least one paper in JMD or a directly relevant
+> domain-leading peer-reviewed journal (Composite Structures, Advanced
+> Materials, Science Advances, Additive Manufacturing, Extreme Mechanics
+> Letters, npj Computational Materials, Structural and Multidisciplinary
+> Optimization, Journal of Engineering Mechanics, Journal of Applied
+> Mechanics, Journal of Mechanisms and Robotics).** That trajectory's full
+> question, answer, and 25-entry numbered reference list (with DOIs and
+> citation counts) is committed alongside this file. The matched `.json`
+> (`model_dump_json`) artifact is committed in the same directory for full
+> structured reproducibility, per the repo's Edison-trajectory convention.
 
-These authors appear **two or more times** in our existing project bibliography
-(PR #20's consolidated `references.bib`, plus the literature trajectories
-committed across PR branches `copilot/explore-impact-absorption-crutches`,
-`copilot/explore-tpu-petg-variables`, `copilot/explore-simulations-for-tensegrity`,
-`copilot/explore-joint-design-for-petg-tpu`, `copilot/create-repo-project-name`,
-and `copilot/create-manuscript-template`). Each is a candidate the AE could
-plausibly assign **because they have already published in venues directly cited
-by our paper**, which is the strongest objective signal of profile match. Do
-**not** suggest authors with whom either PI has co-authored, advised, or been
-advised by within the last 4 years (standard ASME COI window).
+### 3a. Likely JMD Associate Editor coverage
 
-| Subfield | Author (last name)                | Existing-corpus venue overlap                                  |
+The Edison trajectory identifies these AE-coverage areas and likely AEs /
+JMD-active researchers (current AE rosters should be confirmed on the live
+ASME JMD editorial-board page before submission, since Edison flagged that it
+could not independently verify the 2025-2026 board roster from publications
+alone):
+
+| AE-coverage area                                  | Likely AE / key JMD-active researcher        | Representative JMD paper(s) |
 |---|---|---|
-| **(B) Tensegrity mechanics** | Skelton           | Composite Structures, Applied Physics Letters                  |
-| **(B) Tensegrity mechanics** | Fraternali         | Composite Structures, Int. J. Solids and Structures, APL       |
-| **(B) Tensegrity mechanics** | Amendola           | Composite Structures, Int. J. Solids and Structures            |
-| **(B) Tensegrity mechanics** | Carpentieri        | Composite Structures, Int. J. Solids and Structures            |
-| **(B) Tensegrity robotics**  | SunSpiral          | i-SAIRAS, ICRA, IROS (NASA Ames "tensegrity rover" lineage)     |
-| **(B) Tensegrity robotics**  | Caluwaerts         | i-SAIRAS, ICRA                                                  |
-| **(B) Tensegrity robotics**  | Bruce              | ICRA, IROS                                                      |
-| **(B) Tensegrity robotics**  | Agogino            | i-SAIRAS, ICRA                                                  |
-| **(A) BO / surrogate models** | Balandat          | NeurIPS, ICML (BoTorch core author)                             |
-| **(A) BO / surrogate models** | Daulton           | NeurIPS, ICML (qNEHVI / qEHVI author)                           |
-| **(A) BO / surrogate models** | Bakshy            | NeurIPS, ICML (Ax/BoTorch lead)                                 |
-| **(A) BO / surrogate models** | Ament             | NeurIPS, arXiv 2310.18288 (sustainability of GP BO)             |
-| **(A) Multi-fidelity surrogates** | Perdikaris    | Proc. Royal Soc. A, J. Eng. Mechanics                           |
-| **(C) AM / FFF process & interfaces** | Vanaei      | Rapid Prototyping Journal (PETG / multi-material FFF)           |
-| **(C) AM / data-driven materials**    | Khan        | npj Computational Materials, AIAA SciTech                       |
-| **(D) Crutch biomechanics / assistive** | Sawatzky  | Medical Eng. & Physics, PM&R (shock-absorbing crutch tips)      |
-| **(D) Crutch biomechanics / assistive** | MacGillivray | Medical Eng. & Physics, PM&R                                |
-| **(D) Crutch / mobility-aid usage**     | Manocha   | PM&R (multiple), Medical Eng. & Physics                         |
-| **(D) Stroke / mobility outcomes**      | Hachisuka | J. Stroke and Cerebrovascular Diseases (×2)                     |
+| Design optimization & data-driven design          | **Wei Chen** (Northwestern)                  | Wang, Yerramilli, Iyer, Apley, Zhu, Chen, *J. Mech. Des.* (2022) — scalable GPs for data-driven design with categorical factors; Lee, Chen, Wang, Chan, Chen, *Adv. Mater.* review (2024) on data-driven design for metamaterials |
+| Bayesian optimization in JMD                      | **Christopher Hoyle** (Oregon State)         | Biswas & Hoyle, *J. Mech. Des.* (2021); Jetton, Campbell, Hoyle, *J. Mech. Des.* (2024) on feasibility-aware constrained BO |
+| Multi-fidelity surrogates                         | **Pingfeng Wang** (UIUC)                     | Xu, Wu, Liu, Wang, Li, *J. Mech. Des.* (2024) on multi-fidelity multi-task learning |
+| Generative / AI-assisted design                   | **Faez Ahmed** (MIT)                         | Chan, Ahmed, Wang, Chen, "METASET," *J. Mech. Des.* (2021); Regenwetter, Nobari, Ahmed, *J. Mech. Des.* (2022) |
+| Design automation & multi-objective optimization  | **James T. Allison** (UIUC)                  | Peddada, Allison et al., *J. Mech. Des.* (2023) — co-design |
+| Compliant / origami / metamaterial mechanisms     | **Larry Howell** (BYU) / **Pooya Sareh**     | Brown, Ynchausti, Lytle, Howell, Magleby, *J. Mech. Des.* (2022); Chen et al., Sareh, *J. Mech. Des.* (2023) — *Howell is a clear COI for a BYU team* |
+| Additive manufacturing / DfAM                     | **David Rosen** (formerly Georgia Tech) / **Levent B. Kara** (CMU) | Liang et al., *J. Mech. Des.* (2023); Wang, Rosen et al., *J. Mech. Des.* (2023) on generative design embedding topology optimization |
 
-A larger but lower-priority pool (Wang, Liu, Zhang, Cheng, Li, Lu, Wu, Jiang,
-Xie, Adams) appears with high frequency but with surnames common enough that
-the AE will need an institutional affiliation and a specific paper anchor to
-pick the right person. **Disambiguation rule for promoting any of these into
-Section 3a:** the candidate must (i) be uniquely identifiable by an
-`{affiliation, representative-paper venue+year}` pair, and (ii) be confirmed
-either by the pending Edison query (task `9cc7db18-...`) or by a manual
-ORCID/Google-Scholar pass before the manuscript's "Suggested Reviewers" list
-is finalized.
+### 3b. Recommended candidate reviewers (14 named, journal-grounded)
 
-### 3b. Senior / well-known additional names per subfield (*not yet in our bibliography*)
+These 14 candidates are the Edison-returned recommendation set, every one of
+them anchored to a paper in a JMD-relevant peer-reviewed journal (no
+NeurIPS/ICML-only software contributors). Group by subtopic when populating
+the manuscript "Suggested Reviewers" field; the trajectory recommends 4-6
+names with at least 2 from the design-optimization community and 2 from the
+tensegrity / architected-materials community.
 
-These are reviewer names the AE is statistically likely to consider for a
-JMD submission of this type, based on the field's publication record. They are
-**candidates for the manuscript "Suggested Reviewers" field**, pending the
-pending Edison query's check for recency and COI flags.
+#### Tensegrity mechanics & architected metamaterials
 
-- **(A) BO / data-driven design at JMD:** Frazier (Cornell), Gardner (NYU),
-  Joseph F. Wang / Mark Fuge / Faez Ahmed (Maryland / MIT, JMD regulars on
-  data-driven design), Doolen / Iyer.
-- **(B) Architected materials & metamaterials:** Greer (Caltech), Valdevit
-  (UC Irvine), Portela (MIT), Meza, Berger, Schaedler (HRL), Compton, Gibson
-  (MIT), Tankasala. Tensegrity-specific: Rimoli (Georgia Tech), Goyal /
-  Sultan (Texas A&M), Pajunen (CMU), Rieffel (Union), Friesen.
-- **(C) Multi-material AM of polymers / lattices:** Lewis (Harvard), Mueller
-  (Columbia / Apple), Bauer (KIT), Compton (ORNL), Boyer.
-- **(D) Assistive-device biomechanics:** beyond the in-corpus authors above,
-  the JMD AE will commonly recruit from the *J. Biomechanical Engineering*
-  pool (a sister ASME journal); names should be drawn from the pending Edison
-  query rather than guessed.
+| Reviewer                       | Affiliation                              | Representative paper(s) (venue, year)                                                                                              |
+|---|---|---|
+| **Julian J. Rimoli**           | Georgia Tech                             | Bauer, Kraus, Crook, Rimoli, Valdevit, *Adv. Mater.* (2021); Zhang, Ohsaki, Rimoli, Kogiso, *Compos. Struct.* (2021)                |
+| **Lorenzo Valdevit**           | UC Irvine                                | Bauer et al., *Adv. Mater.* (2021); Bauer, Sala-Casanovas, Amiri, Valdevit, *Sci. Adv.* (2022)                                      |
+| **Fernando Fraternali**        | Università di Salerno                    | Micheletti, Intrigila, Nodargi, Artioli, Fraternali, Bisegna (COMPDYN, 2021); de Castro Motta, Fraternali, Saccomandi, *Meccanica* (2025) |
+| **Kirsti Pajunen**             | formerly Caltech (Daraio group)          | Pajunen, Celli, Daraio, *Extreme Mech. Lett.* (2021) — prestrain-induced bandgap tuning in 3D-printed tensegrity-inspired lattices |
+| **Filipe A. Santos**           | Universidade NOVA de Lisboa              | Santos, *Adv. Mater.* (2023) — tensegrity energy-dissipation metamaterial with 3D-printed prototypes                              |
+| **Andrea Micheletti**          | Università di Roma Tor Vergata           | Intrigila, Micheletti et al., *Addit. Manuf.* (2022) — bistable tensegrity-like unit fabrication & test                            |
+| **Edwin A. Peraza Hernandez**  | UCF (formerly Texas A&M)                 | Pham & Peraza Hernandez, *J. Mech. & Robotics* (2021); Goyal, Peraza Hernandez, Skelton, *J. Appl. Mech.* (2020)                    |
 
-### 3c. Pending Edison query
+#### Bayesian / multi-objective optimization for materials & structures (journal-publishing, *not* BoTorch/Ax tooling)
 
-> **Edison `LITERATURE_HIGH` task `9cc7db18-10b5-457e-9b7c-9a3ecb2b9f14`** was
-> submitted in this session and is non-blocking. It asks Edison to (i) name the
-> current JMD AEs whose published / handled portfolios cover (A)-(D) above,
-> (ii) propose 10-15 specific candidate reviewers with one or two representative
-> recent papers each (with venue and year), (iii) flag obvious COIs for a
-> BYU-based author team, and (iv) repeat the exercise for SMS as the backup
-> venue. The task `.md` (verbatim `formatted_answer`) and `.json`
-> (`model_dump_json`) will be committed to `edison-trajectories/` next session,
-> per the repo's Edison-trajectory convention, and Section 3a/3b above will be
-> updated to reconcile the two pools.
+| Reviewer                       | Affiliation                              | Representative paper(s) (venue, year)                                                                                              |
+|---|---|---|
+| **Liwei Wang**                 | U. Michigan (formerly Northwestern)      | Wang et al., *J. Mech. Des.* (2022) — scalable GPs with categorical factors; Wang et al., *PNAS* (2022)                            |
+| **Zacharias Vangelatos**       | UC Berkeley (Grigoropoulos group)        | Vangelatos et al., *Sci. Adv.* (2021) — Bayesian optimization of architected materials achieving 12,464× SED gain                   |
+| **Haris Moazam Sheikh**        | UC Berkeley                              | Sheikh & Marcus, *Struct. Multidiscip. Optim.* (2022) — MixMOBO, mixed-variable multi-objective BO for architected materials       |
+| **Chengyang Mo**               | U. Pennsylvania (Raney group)            | Mo, Perdikaris, Raney, *J. Eng. Mech.* (2023) — multi-fidelity BO for architected-material design                                  |
+| **Danial Khatamsaz**           | Texas A&M                                | Khatamsaz et al., *npj Comput. Mater.* (2023) — constrained multi-objective BO for materials design                                |
+| **Faez Ahmed**                 | MIT                                      | Chan, Ahmed, Wang, Chen, *J. Mech. Des.* (2021); Regenwetter, Nobari, Ahmed, *J. Mech. Des.* (2022)                                 |
+
+#### Impact / energy-absorption design optimization for AM lattices
+
+| Reviewer                       | Affiliation                              | Representative paper(s) (venue, year)                                                                                              |
+|---|---|---|
+| **Nathan Hertlein**            | (affiliation per Edison trajectory; verify before submission) | Hertlein, Vemaganti, Anand, *J. Mech. Des.* (2024) — design optimization of lattice structures under impact loading for AM         |
+
+### 3c. Conflict-of-interest screen (BYU Mechanical Engineering)
+
+Per the Edison trajectory, no direct BYU co-authorship signal was found for
+any of the 14 named candidates above. Apply the standard ASME COI window
+(co-author / advisor / advisee / shared-grant collaborator within the last
+4 years) before submitting the suggested-reviewer list. **Hard exclusions
+known so far:**
+
+- **Larry L. Howell (BYU)** — same institution; do *not* suggest.
+- **Brian Jensen (BYU)** — same institution; do *not* suggest.
+
+### 3d. Backup venue: Smart Materials and Structures (IOP)
+
+Edison flagged the SMS metamaterials / phononic-crystals and smart structural
+systems sections as the right home if JMD declines, and surfaced these
+directly relevant SMS-published priors as orientation: Hosseinabadi et al.,
+*SMS* (2023) on negative-stiffness 3D-printed meta-structures, and Ding et
+al., *SMS* (2025) on tensegrity D-bar metamaterials. Suggested SMS
+reviewers (3-5):
+
+1. **Filipe A. Santos** (NOVA Lisbon) — tensegrity energy-dissipation metamaterials, *Adv. Mater.* (2023).
+2. **Fernando Fraternali** (Salerno) — tensegrity wave dynamics & metamaterial building blocks.
+3. **Andrea Micheletti** (Roma Tor Vergata) — 3D-printed bistable tensegrity units, *Addit. Manuf.* (2022).
+4. **Kirsti Pajunen** — 3D-printed tensegrity-inspired lattice dynamics, *Extreme Mech. Lett.* (2021).
+5. **Anna Al Sabouni-Zawadzka** (Warsaw University of Technology) — 3D-printed tensegrity-inspired metamaterial experimental characterization (2022).
+
+If retargeting to SMS, the framing also needs to pivot from the BO-workflow
+contribution to the *novel metamaterial behavior and tunable energy
+absorption* — SMS reviewers are more likely to ask about dynamic-testing
+methodology, constitutive modeling, and comparison with other metamaterial
+architectures than about acquisition-function choice or surrogate scalability.
+
+### 3e. Why the prior "BoTorch/Ax authors" pool was dropped
+
+The earlier draft of this section listed Balandat, Daulton, Bakshy, and Ament
+(authors of the BoTorch / Ax / qNEHVI software stack) as candidates because
+they appeared frequently in our consolidated `references.bib`. They are
+**out of scope** as JMD reviewers: their publication venues are NeurIPS / ICML
+/ JMLR (machine-learning conferences and a software framework at Meta), not
+ASME design or mechanics journals. A JMD AE has no good signal to pick them
+for a *design / mechanics / AM* manuscript review. They remain valuable as
+methodology citations but should not appear in the "Suggested Reviewers"
+field. The same caution applies to any future reviewer suggestion: every
+candidate must have at least one paper in JMD, a sister ASME journal, or
+a directly comparable domain-leading peer-reviewed venue (Composite
+Structures, *Adv. Mater.*, *Sci. Adv.*, *Addit. Manuf.*, *Extreme Mech. Lett.*,
+*npj Comput. Mater.*, *Struct. Multidiscip. Optim.*, *J. Eng. Mech.*).
 
 ## 4. Most-cited venues across our existing literature corpus (signal for AE assignment)
 
@@ -188,10 +225,17 @@ J. Mech. and Robotics, J. Applied Mechanics, and Structural and
 Multidisciplinary Optimization to thicken the core-design-theory layer of the
 bibliography. This will (i) make the manuscript read as if its authors are
 talking to the JMD community and (ii) generate additional in-corpus reviewer
-candidates for the table in Section 3a.
+candidates for the named-reviewer table in §3b.
 
 ## 5. Sources
 
+- **Edison `LITERATURE_HIGH` task `9cc7db18-10b5-457e-9b7c-9a3ecb2b9f14`**
+  (fetched 2026-05-09): `edison-trajectories/2026-05-09-target-audience-9cc7db18.md`
+  + `.json` -- the primary source for §3a-§3d (named JMD AEs, 14 named
+  candidate reviewers with representative JMD/JMR/JAM/Compos. Struct./
+  Adv. Mater./Sci. Adv./Addit. Manuf./Extreme Mech. Lett./npj Comput. Mater./
+  S&MO/J. Eng. Mech. papers, COI screen, SMS analog, JMD-rejection-reason
+  analysis).
 - `manuscript/references.bib` (PR #20, branch `copilot/create-manuscript-template`).
 - `edison-trajectories/01..04*.md` (branch `copilot/explore-impact-absorption-crutches`,
   PR #18 lineage).
@@ -205,5 +249,3 @@ candidates for the table in Section 3a.
 - `edison-trajectories/60470477-*-naming.md`
   (branch `copilot/create-repo-project-name`).
 - `reviews/mock_reviews.md` (committee-style mock review of the proposal).
-- Pending: Edison task `9cc7db18-10b5-457e-9b7c-9a3ecb2b9f14`
-  (`LITERATURE_HIGH`, JMD AEs + named reviewer candidates + SMS analog).
