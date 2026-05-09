@@ -36,3 +36,5 @@ Thumbs.db
 # IDE
 .vscode/
 *.code-workspace
+manuscript/manuscript.tdo
+manuscript/manuscript-todos.tdo
