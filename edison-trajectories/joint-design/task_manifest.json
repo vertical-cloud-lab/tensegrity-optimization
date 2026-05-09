@@ -40,6 +40,26 @@
         "E-tpu-rebar-ae373eb5-90e3-4543-b354-9e9990d76042.md",
         "E-tpu-rebar-ae373eb5-90e3-4543-b354-9e9990d76042.json"
       ]
+    },
+    "analysis_followup": {
+      "task_id": "ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa",
+      "reason": "Re-ran ANALYSIS with all 5 Phase-1 outputs attached (original c38a2046 only had 3/5 because A and B had not completed at submission time).",
+      "attached_phase1_outputs": [
+        "A-anchor-bulb-0b5d7ba2-847e-47b3-bddf-127e2ed170d3.md",
+        "A-anchor-bulb-0b5d7ba2-847e-47b3-bddf-127e2ed170d3.json",
+        "B-dovetail-ccb7b854-718c-4ac4-bf15-61c1fe522c7d.md",
+        "B-dovetail-ccb7b854-718c-4ac4-bf15-61c1fe522c7d.json",
+        "C-tpu-sleeve-overmold-5a7ffce4-a8a0-49d6-9b43-3d0ea38d23f9.md",
+        "C-tpu-sleeve-overmold-5a7ffce4-a8a0-49d6-9b43-3d0ea38d23f9.json",
+        "D-eyelet-loop-727a449d-d2af-4540-acfa-9b964f98689f.md",
+        "D-eyelet-loop-727a449d-d2af-4540-acfa-9b964f98689f.json",
+        "E-tpu-rebar-ae373eb5-90e3-4543-b354-9e9990d76042.md",
+        "E-tpu-rebar-ae373eb5-90e3-4543-b354-9e9990d76042.json"
+      ],
+      "also_attached": [
+        "PHASE2-literature-high-be6768ab.md",
+        "PHASE2-analysis-c38a2046.md"
+      ]
     }
   }
 }
