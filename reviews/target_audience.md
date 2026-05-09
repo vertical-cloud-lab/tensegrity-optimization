@@ -121,8 +121,13 @@ advised by within the last 4 years (standard ASME COI window).
 
 A larger but lower-priority pool (Wang, Liu, Zhang, Cheng, Li, Lu, Wu, Jiang,
 Xie, Adams) appears with high frequency but with surnames common enough that
-the AE will need a specific paper anchor; we will let the pending Edison query
-disambiguate those before listing them as recommendations.
+the AE will need an institutional affiliation and a specific paper anchor to
+pick the right person. **Disambiguation rule for promoting any of these into
+Section 3a:** the candidate must (i) be uniquely identifiable by an
+`{affiliation, representative-paper venue+year}` pair, and (ii) be confirmed
+either by the pending Edison query (task `9cc7db18-...`) or by a manual
+ORCID/Google-Scholar pass before the manuscript's "Suggested Reviewers" list
+is finalized.
 
 ### 3b. Senior / well-known additional names per subfield (*not yet in our bibliography*)
 
@@ -168,8 +173,8 @@ direct proxy for which JMD AE silo is the best fit.
 
 | Frequency tier | Venues |
 |---|---|
-| **High (>=10 hits)** | Polymers; Materials & Design; Additive Manufacturing; Science / Science Advances; Assistive Technology |
-| **Medium (4-10)**     | IEEE ICRA / IROS; Advanced Materials; Rapid Prototyping Journal; Journal of Biomechanics |
+| **High (>=10 hits)** | Polymers; Materials & Design; Additive Manufacturing; Science; Science Advances; Assistive Technology |
+| **Medium (4-10)**     | IEEE ICRA; IEEE IROS; Advanced Materials; Rapid Prototyping Journal; Journal of Biomechanics |
 | **Low (1-3)**         | Composite Structures; Int. J. Solids and Structures; J. Mechanics and Physics of Solids; Smart Materials and Structures (×1); ASME J. Mechanisms and Robotics (×1); Structural and Multidisciplinary Optimization; Soft Robotics; Nature Communications; npj Computational Materials |
 
 **Read of this table:** our existing literature pull is *materials- and
