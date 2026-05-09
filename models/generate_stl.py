@@ -427,9 +427,10 @@ def geiger_cable_dome(
     bottom_idx = [[0] * n for _ in rings]
     top_idx = [[0] * n for _ in rings]
     for r, (radius, h) in enumerate(zip(rings, strut_lengths)):
-        # The bottom of each strut sits on a continuous outer-tension
-        # net at z = (r * 0.0); we accumulate height inward to model
-        # the dome curvature.
+        # Accumulate height inward to model the dome curvature; the
+        # 0.25 factor is a visual aspect-ratio scalar (it sets the
+        # dome's rise per unit nested-ring strut accumulation -- not
+        # a physical prestress quantity).
         z_base = sum(strut_lengths[:r]) * 0.25
         z_top = z_base + h
         for i in range(n):
@@ -641,6 +642,10 @@ def bistable_double_prism(
     characterisation of a bistable tensegrity-like unit for lattice
     metamaterials."  Additive Manufacturing 57:102946, Sep 2022.
     """
+    # Both half-prisms use the standard self-equilibrated T3 twist
+    # angle (pi/2 - pi/n with n = 3 -> pi/6 rad = 30 deg). The top
+    # half mirrors the bottom so the shared middle ring is the
+    # twisted apex of both prisms (the snap-through "hinge ring").
     twist = math.pi / 2.0 - math.pi / 3.0
     bottom = [(radius * math.cos(2 * math.pi * i / 3),
                radius * math.sin(2 * math.pi * i / 3),

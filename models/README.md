@@ -98,6 +98,7 @@ source PDFs would be needed (and a domain expert may need to confirm):
 - **US 6,441,801 B1 (Knight et al. antenna)**: Figs. 2–4 of the
   patent give exact strut/tie ratios and the screw-motion deployment
   schedule; not all variables are determined by topology alone.
+  Patent PDF: <https://patents.google.com/patent/US6441801B1>.
 - **Bistable double-prism**: the snapping-mechanism hinge
   cross-sections and triggering-force calibration are reported in
   Intrigila et al. *Add. Manuf.* 57:102946 (2022), Figs. 6–9.
