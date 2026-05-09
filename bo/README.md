@@ -74,7 +74,7 @@ surrogate (mass + topology stiffness + tiling factor + saturating skin
 contribution + heteroscedastic noise). It is **not** a calibrated FE model —
 it exists only so that the BO loop has something to optimize before the first
 batch of physical tests lands. Replace it with a call into the experimental
-data layer (or an FE surrogate) when ready; the BO loop in `run_campaign`
+data layer (or an FE surrogate) when ready; the BO loop in `main` does not
 does not need to change.
 
 ## Honegumi configuration

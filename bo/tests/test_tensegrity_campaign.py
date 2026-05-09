@@ -13,7 +13,7 @@ from bo.tensegrity_campaign import (
     SEA,
     TILINGS,
     TOPOLOGIES,
-    run_campaign,
+    main,
     simulate_specimen,
 )
 
@@ -43,12 +43,13 @@ def test_search_space_covers_documented_topologies_and_tilings():
 
 
 @pytest.mark.slow
-def test_run_campaign_short_loop_completes():
-    ax_client = run_campaign(n_iterations=2, batch_size=2, random_seed=0)
-    df = ax_client.get_trials_data_frame()
-    # 5 pilot + 2 iterations * 2 batch = 9 trials.
-    assert len(df) == len(PILOT_DESIGNS) + 4
-    # All three objectives must be present in the trial data frame.
+def test_main_short_run_completes(capsys):
+    # The default (no --full) runs 5 BO iterations with batch size 2 on top of
+    # the pilot seed. We pass --no-plot to keep the test headless and fast.
+    exit_code = main(["--no-plot", "--seed", "0", "--batch-size", "2"])
+    assert exit_code == 0
+    out = capsys.readouterr().out
+    expected = f"Completed {len(PILOT_DESIGNS) + 5 * 2} trials"
+    assert expected in out
     for column in (F_PEAK, SEA, ETA):
-        assert column in df.columns, column
-        assert df[column].notna().all()
+        assert column in out

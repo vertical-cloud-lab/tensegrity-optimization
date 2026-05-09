@@ -192,7 +192,7 @@ def simulate_specimen(
     This is the **placeholder** evaluation function. Replace it with either a
     call into the experimental data layer (looking up a fabricated specimen's
     drop-weight test results) or a calibrated FE surrogate. The signature is
-    intentionally minimal so the BO loop in :func:`run_campaign` does not need
+    intentionally minimal so the BO loop in :func:`main` does not need
     to change when the real evaluator lands.
 
     The model is hand-tuned to give the BO loop a non-trivial Pareto front:
@@ -326,55 +326,8 @@ PILOT_DESIGNS: list[dict] = [
 
 
 # ----------------------------------------------------------------------------
-# BO campaign
+# Plotting
 # ----------------------------------------------------------------------------
-
-
-def build_ax_client(*, random_seed: int | None = 0) -> AxClient:
-    """Create the :class:`AxClient` configured for our MOO campaign."""
-    ax_client = AxClient(random_seed=random_seed)
-    ax_client.create_experiment(
-        name="tensegrity_energy_absorber",
-        parameters=PARAMETERS,
-        objectives=OBJECTIVES,
-        overwrite_existing_experiment=True,
-    )
-    return ax_client
-
-
-def attach_pilot_data(
-    ax_client: AxClient,
-    *,
-    rng: np.random.Generator | None = None,
-) -> None:
-    """Seed the surrogate with the simulated pilot specimen responses."""
-    rng = rng if rng is not None else np.random.default_rng(0)
-    for parameterization in PILOT_DESIGNS:
-        _, trial_index = ax_client.attach_trial(parameterization)
-        response = simulate_specimen(parameterization, rng=rng)
-        ax_client.complete_trial(trial_index=trial_index, raw_data=response.as_raw_data())
-
-
-def run_campaign(
-    *,
-    n_iterations: int = 21,
-    batch_size: int = 2,
-    random_seed: int = 0,
-) -> AxClient:
-    """Run the closed-loop BO campaign with the dummy specimen evaluator."""
-    rng = np.random.default_rng(random_seed)
-    ax_client = build_ax_client(random_seed=random_seed)
-    attach_pilot_data(ax_client, rng=rng)
-
-    for _ in range(n_iterations):
-        parameterizations, _complete = ax_client.get_next_trials(batch_size)
-        for trial_index, parameterization in parameterizations.items():
-            response = simulate_specimen(parameterization, rng=rng)
-            ax_client.complete_trial(
-                trial_index=trial_index, raw_data=response.as_raw_data()
-            )
-
-    return ax_client
 
 
 def plot_pareto(ax_client: AxClient, output: Path | None = None) -> Path | None:
@@ -448,11 +401,35 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     n_iterations = 21 if args.full else 5
-    ax_client = run_campaign(
-        n_iterations=n_iterations,
-        batch_size=args.batch_size,
-        random_seed=args.seed,
+    rng = np.random.default_rng(args.seed)
+
+    # AxClient is itself the high-level wrapper around the BO loop, so the
+    # campaign is written inline rather than behind further helpers.
+    ax_client = AxClient(random_seed=args.seed)
+    ax_client.create_experiment(
+        name="tensegrity_energy_absorber",
+        parameters=PARAMETERS,
+        objectives=OBJECTIVES,
+        overwrite_existing_experiment=True,
     )
+
+    # Seed the surrogate with the pilot specimens (NASA grant's "≥ 5 baseline
+    # geometries"), evaluated through the dummy specimen response.
+    for parameterization in PILOT_DESIGNS:
+        _, trial_index = ax_client.attach_trial(parameterization)
+        response = simulate_specimen(parameterization, rng=rng)
+        ax_client.complete_trial(
+            trial_index=trial_index, raw_data=response.as_raw_data()
+        )
+
+    # Closed-loop BO: ask the surrogate for the next batch, evaluate, repeat.
+    for _ in range(n_iterations):
+        parameterizations, _complete = ax_client.get_next_trials(args.batch_size)
+        for trial_index, parameterization in parameterizations.items():
+            response = simulate_specimen(parameterization, rng=rng)
+            ax_client.complete_trial(
+                trial_index=trial_index, raw_data=response.as_raw_data()
+            )
 
     pareto = ax_client.get_pareto_optimal_parameters(use_model_predictions=False)
     df = ax_client.get_trials_data_frame()
