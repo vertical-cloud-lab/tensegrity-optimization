@@ -268,6 +268,117 @@ def six_strut_icosahedron(
     return nodes, struts, cables
 
 
+def stacked_prism(
+    n: int = 3,
+    bays: int = 3,
+    radius: float = 30.0,
+    bay_height: float = 60.0,
+    alternate_chirality: bool = True,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for a stacked n-bar tensegrity column.
+
+    Multiple ``n``-bar prisms are stacked vertically (Snelson "Needle
+    Tower" / mast topology) by sharing the top polygon of bay ``k`` with
+    the bottom polygon of bay ``k+1``.  When ``alternate_chirality`` is
+    True the twist sign flips between successive bays (the chirality
+    pattern of Snelson's Needle Tower I/II, 1968-69), which is the
+    classical configuration for self-equilibrated stacked tensegrity
+    masts.  Each bay contributes ``n`` struts and ``3n`` cables; the top
+    polygon of bay ``k`` doubles as the bottom polygon of bay ``k+1`` so
+    only one polygon ring per junction is added.
+
+    Reference: Snelson, K., *Needle Tower I/II*; Skelton & de Oliveira,
+    *Tensegrity Systems* (2009), sec. 2.6 (stacked prisms).
+    """
+    if n < 3:
+        raise ValueError("stacked prism requires n >= 3")
+    if bays < 1:
+        raise ValueError("stacked prism requires bays >= 1")
+    twist0 = math.pi / 2.0 - math.pi / n  # stable single-bay twist
+    nodes: List[Vec3] = []
+    # Generate bays + 1 polygon rings, applying cumulative twist.
+    cum_twist = 0.0
+    for k in range(bays + 1):
+        z = k * bay_height
+        for i in range(n):
+            ang = 2.0 * math.pi * i / n + cum_twist
+            nodes.append((radius * math.cos(ang), radius * math.sin(ang), z))
+        if k < bays:
+            cum_twist += -twist0 if (alternate_chirality and k % 2 == 1) else twist0
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    for k in range(bays):
+        b = k * n          # bottom-ring index offset
+        t = (k + 1) * n    # top-ring index offset
+        for i in range(n):
+            struts.append((b + i, t + i))                       # strut
+            cables.append((b + i, b + (i + 1) % n))             # bottom ring
+            cables.append((b + i, t + (i + 1) % n))             # saddle
+        # Add the top ring of the very last bay (otherwise shared with next bay)
+        if k == bays - 1:
+            for i in range(n):
+                cables.append((t + i, t + (i + 1) % n))
+    return nodes, struts, cables
+
+
+def truncated_octahedron_tensegrity(
+    scale: float = 12.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the 12-strut truncated-octahedron tensegrity.
+
+    The Rimoli/Pajunen tensegrity-inspired metamaterial unit cell.  The
+    24 nodes are the vertices of the regular truncated octahedron --
+    all permutations of ``(0, +/-1, +/-2)``.  The 12 struts are the
+    diagonals of the 6 square faces (2 per square; in the
+    self-equilibrated configuration the two diagonals of a square do
+    not physically intersect because of slight prestress-induced node
+    offsets, but the topology is treated as class-1 in the original
+    references).  The 36 cables are the polyhedron edges (24 hexagonal
+    + 12 square).  Strut/cable length ratio is ``2 / sqrt(2) = sqrt(2)``.
+
+    References: Rimoli, J. J., "On the impact tolerance of tensegrity-based
+    planetary landers", AIAA SciTech 2016; Pajunen, K. et al., "Design
+    and impact response of 3D-printable tensegrity-inspired structures",
+    *Materials & Design* 182:107966, 2019.
+    """
+    raw: List[Vec3] = []
+    base = (0.0, 1.0, 2.0)
+    seen = set()
+    # Generate the 24 unique permutations of (0, +/-1, +/-2).
+    from itertools import permutations
+    for sx in (1, -1):
+        for sy in (1, -1):
+            for sz in (1, -1):
+                triple = (sx * base[0], sy * base[1], sz * base[2])
+                for p in permutations(triple):
+                    if p not in seen:
+                        seen.add(p)
+                        raw.append(p)
+    raw.sort()
+    nodes = [_scale(v, scale) for v in raw]
+    # Edges of the truncated octahedron have length sqrt(2) (in raw coords).
+    edge_len = math.sqrt(2.0) * scale
+    # Square-face diagonals have length 2 (in raw coords).
+    diag_len = 2.0 * scale
+    tol = 1e-3 * scale
+    cables: List[Tuple[int, int]] = []
+    struts: List[Tuple[int, int]] = []
+    for i in range(len(nodes)):
+        for j in range(i + 1, len(nodes)):
+            d = _norm(_sub(nodes[i], nodes[j]))
+            if abs(d - edge_len) < tol:
+                cables.append((i, j))
+            elif abs(d - diag_len) < tol:
+                # Only square-face diagonals have this length; in the
+                # truncated octahedron there are exactly 12 such pairs
+                # (one pair per square face of which there are 6,
+                # contributing 2 diagonals each).
+                struts.append((i, j))
+    assert len(struts) == 12, f"expected 12 struts, got {len(struts)}"
+    assert len(cables) == 36, f"expected 36 cables, got {len(cables)}"
+    return nodes, struts, cables
+
+
 # ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
@@ -302,9 +413,21 @@ def main() -> None:
             "4-bar tensegrity prism (T4)",
             n_bar_prism(n=4, radius=30.0, height=60.0),
         ),
+        "6bar_prism.stl": (
+            "6-bar tensegrity prism (T6)",
+            n_bar_prism(n=6, radius=30.0, height=60.0),
+        ),
         "icosahedron.stl": (
             "6-strut tensegrity icosahedron (Jessen's orthogonal icosahedron)",
             six_strut_icosahedron(scale=15.0),
+        ),
+        "stacked_t3_column.stl": (
+            "Stacked 3-bay T3 column (Snelson 'Needle Tower' mast topology)",
+            stacked_prism(n=3, bays=3, radius=20.0, bay_height=40.0),
+        ),
+        "truncated_octahedron.stl": (
+            "Truncated-octahedron tensegrity (Rimoli/Pajunen unit cell)",
+            truncated_octahedron_tensegrity(scale=12.0),
         ),
     }
 

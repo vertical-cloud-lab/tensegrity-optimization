@@ -15,7 +15,10 @@ Closes [#21](https://github.com/vertical-cloud-lab/byu-mentored-research-tensegr
 | --- | --- | ---: | ---: | ---: | --- |
 | [`stl/3bar_prism.stl`](stl/3bar_prism.stl)   | 3-bar tensegrity prism (T3, "Snelson simplex") | 6 | 3 | 9 | Smallest non-trivial 3D tensegrity. Twist `θ = π/2 − π/3 = 30°`. |
 | [`stl/4bar_prism.stl`](stl/4bar_prism.stl)   | 4-bar tensegrity prism (T4)                    | 8 | 4 | 12 | Twist `θ = π/2 − π/4 = 45°`. |
+| [`stl/6bar_prism.stl`](stl/6bar_prism.stl)   | 6-bar tensegrity prism (T6)                    | 12 | 6 | 18 | Twist `θ = π/2 − π/6 = 60°`. Building block for stacked masts. |
 | [`stl/icosahedron.stl`](stl/icosahedron.stl) | 6-strut tensegrity icosahedron (Jessen's orthogonal icosahedron / "expanded octahedron") | 12 | 6 | 24 | Strut/cable length ratio `√(8/3) ≈ 1.633`. Used in NASA SUPERball lineage and most "tensegrity-ball" designs. |
+| [`stl/stacked_t3_column.stl`](stl/stacked_t3_column.stl) | Stacked 3-bay T3 column (Snelson "Needle Tower" / mast topology) | 12 | 9 | 21 | 3 stacked T3 bays with alternating chirality (Snelson 1968–69; Tibert & Pellegrino deployable masts). |
+| [`stl/truncated_octahedron.stl`](stl/truncated_octahedron.stl) | Truncated-octahedron tensegrity (Rimoli/Pajunen unit cell) | 24 | 12 | 36 | Space-tileable energy-absorbing metamaterial cell. Rank-#1 BYU recommendation for impact absorption (Pajunen et al. 2019; Bauer et al. 2021). |
 
 All STL files are **binary STL**, units in millimetres, with struts
 rendered as 5 mm-diameter cylinders (PLA / PETG) and cables rendered
@@ -40,10 +43,29 @@ python models/generate_stl.py
 #   --segments 24                 # cylinder facet count
 ```
 
-The script also exposes `n_bar_prism(n, radius, height)` and
-`six_strut_icosahedron(scale)` for direct use as design seeds in the
-Bayesian optimization loop (`(nodes, struts, cables)` tuples that map
-directly onto the BO parameterization in the proposal).
+The script also exposes `n_bar_prism(n, radius, height)`,
+`six_strut_icosahedron(scale)`, `stacked_prism(n, bays, radius,
+bay_height)`, and `truncated_octahedron_tensegrity(scale)` for direct
+use as design seeds in the Bayesian optimization loop (`(nodes,
+struts, cables)` tuples that map directly onto the BO parameterization
+in the proposal).
+
+## Literature survey
+
+A high-effort Edison Scientific literature survey of canonical and
+non-canonical tensegrity designs (T-bar/D-bar class-k cells, polyhedral
+tensegrities, Geiger/Levy cable-domes, Snelson Needle Tower, NASA
+SUPERball/ULTRA-Spine, Rimoli/Pajunen truncated-octahedron metamaterial,
+Liu et al. cuboctahedron tessellation, bistable double-prism, Levin/
+Ingber biotensegrity, deployable masts, and topology-generation methods)
+is committed at
+[`edison-trajectories/2026-05-09-tensegrity-designs-fad054b3.md`](../edison-trajectories/2026-05-09-tensegrity-designs-fad054b3.md)
+along with the structured references file
+[`...-references.md`](../edison-trajectories/2026-05-09-tensegrity-designs-fad054b3-references.md)
+and the full task JSON. The 3 new designs added in this update
+(T6 prism, stacked T3 column, truncated-octahedron cell) are the most
+promising buildable additions identified in that survey for the
+PETG-strut + TPU-tendon BO workflow.
 
 ## Geometric definitions
 
