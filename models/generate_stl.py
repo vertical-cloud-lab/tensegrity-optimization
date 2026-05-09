@@ -380,6 +380,350 @@ def truncated_octahedron_tensegrity(
 
 
 # ---------------------------------------------------------------------------
+# Additional design families from the Edison literature survey
+# (cable-domes, biotensegrity, robots, deployable masts, patents,
+#  bistable, cuboctahedron metamaterials).  See ``models/README.md``
+# and ``edison-trajectories/2026-05-09-tensegrity-designs-fad054b3.md``.
+# ---------------------------------------------------------------------------
+
+
+def geiger_cable_dome(
+    n_radial: int = 12,
+    rings: Sequence[float] = (60.0, 40.0, 20.0),
+    strut_lengths: Sequence[float] = (20.0, 30.0, 40.0),
+    apex_height: float = 50.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for a Geiger-type radial cable-dome.
+
+    Reproduces the canonical Geiger Aspension Dome topology used in the
+    Seoul Olympic Gymnastics and Fencing Arenas (1986/88) and described
+    by Fu (2005).  ``n_radial`` radial ribs each carry vertical struts
+    of decreasing height as they progress inward across the
+    concentrically nested cable rings (``rings`` = outer-to-inner radii,
+    ``strut_lengths`` = corresponding strut lengths).  Each rib is
+    completed by ridge cables (top of strut to top of next inner
+    strut), diagonal cables (top of strut to bottom of next inner
+    strut), and hoop cables (between adjacent ribs at each ring).  The
+    central oculus is closed by a single tension hub at ``apex_height``.
+
+    NB: a Geiger dome is technically a *cable-dome* rather than a
+    pure class-1 tensegrity (the outer compression ring is not
+    embedded in the cable network); we emit the inner radial+hoop
+    cable + vertical strut pattern that *is* tensegrity-like.
+
+    Reference: Fu, F. "Structural behavior and design methods of
+    tensegrity domes."  J. Constructional Steel Research 61(1):23-35,
+    2005.  Geiger, D., US Patent 4,736,553 (1988).
+    """
+    n = int(n_radial)
+    if n < 6:
+        raise ValueError("Geiger dome requires n_radial >= 6")
+    if len(rings) != len(strut_lengths) or len(rings) < 2:
+        raise ValueError("rings and strut_lengths must match (length >= 2)")
+    nodes: List[Vec3] = []
+    # For each ring we have n bottom (= node on prior outer-ring's top
+    # for inner ribs) and n top (= apex of the strut at that ring).
+    # Build all rings' top/bottom nodes.
+    bottom_idx = [[0] * n for _ in rings]
+    top_idx = [[0] * n for _ in rings]
+    for r, (radius, h) in enumerate(zip(rings, strut_lengths)):
+        # The bottom of each strut sits on a continuous outer-tension
+        # net at z = (r * 0.0); we accumulate height inward to model
+        # the dome curvature.
+        z_base = sum(strut_lengths[:r]) * 0.25
+        z_top = z_base + h
+        for i in range(n):
+            ang = 2.0 * math.pi * i / n
+            bx, by = radius * math.cos(ang), radius * math.sin(ang)
+            bottom_idx[r][i] = len(nodes)
+            nodes.append((bx, by, z_base))
+            top_idx[r][i] = len(nodes)
+            nodes.append((bx, by, z_top))
+    # Apex hub
+    apex = len(nodes)
+    nodes.append((0.0, 0.0, apex_height))
+
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    for r in range(len(rings)):
+        for i in range(n):
+            # Vertical strut at every (ring, rib) station
+            struts.append((bottom_idx[r][i], top_idx[r][i]))
+            # Hoop cable connecting bottom rings (outer compression ring
+            # for r==0 is treated as a hoop here; physically it is a
+            # rigid ring, but topologically treating it as a hoop
+            # cable keeps the STL simple and printable).
+            cables.append((bottom_idx[r][i], bottom_idx[r][(i + 1) % n]))
+            # Hoop cable connecting top of struts at this ring
+            cables.append((top_idx[r][i], top_idx[r][(i + 1) % n]))
+            # Ridge cable: top of this strut -> top of next inner strut
+            if r + 1 < len(rings):
+                cables.append((top_idx[r][i], top_idx[r + 1][i]))
+                # Diagonal cable: top of this strut -> bottom of next
+                # inner strut, providing the dome's prestress
+                cables.append((top_idx[r][i], bottom_idx[r + 1][i]))
+        # Innermost ring: cables to apex hub
+        if r == len(rings) - 1:
+            for i in range(n):
+                cables.append((top_idx[r][i], apex))
+    return nodes, struts, cables
+
+
+def biotensegrity_spine(
+    vertebrae: int = 4,
+    scale: float = 12.0,
+    spacing: float = 36.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for a stacked-icosahedron spine.
+
+    A simplified Levin / Flemons biotensegrity spinal column: each
+    "vertebra" is a 6-strut tensegrity icosahedron (Jessen's orthogonal
+    icosahedron) and the vertebrae are stacked along ``+z`` with
+    inter-vertebral cables connecting the top-most 4 nodes of one
+    icosahedron to the bottom-most 4 nodes of the next.  This produces
+    the classic tensegrity-spine topology pursued by Tom Flemons,
+    Stephen Levin (Biotensegrity Archive), and the Berkeley ULTRA-Spine
+    project.
+
+    Reference: Levin, S. M., "Biotensegrity: the mechanics of fascia",
+    in *Fascia: The Tensional Network of the Human Body*, 2nd ed.,
+    Elsevier (2021).  Sabelhaus et al., "Inverse statics optimization
+    for compound tensegrity robots", IEEE RA-L 5(3):3982-3989, 2020.
+    """
+    if vertebrae < 2:
+        raise ValueError("spine requires >= 2 vertebrae")
+    nodes: List[Vec3] = []
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    per_vert = 12  # nodes per icosahedron
+    for v in range(vertebrae):
+        v_nodes, v_struts, v_cables = six_strut_icosahedron(scale=scale)
+        offset = len(nodes)
+        z_off = v * spacing
+        for x, y, z in v_nodes:
+            nodes.append((x, y, z + z_off))
+        for a, b in v_struts:
+            struts.append((offset + a, offset + b))
+        for a, b in v_cables:
+            cables.append((offset + a, offset + b))
+        if v > 0:
+            # Connect 4 highest nodes of previous vertebra to 4 lowest
+            # nodes of this vertebra (inter-vertebral disc cables).
+            prev_offset = offset - per_vert
+            zs_prev = sorted(range(per_vert),
+                             key=lambda i: nodes[prev_offset + i][2],
+                             reverse=True)[:4]
+            zs_cur = sorted(range(per_vert),
+                            key=lambda i: nodes[offset + i][2])[:4]
+            for a, b in zip(zs_prev, zs_cur):
+                cables.append((prev_offset + a, offset + b))
+    return nodes, struts, cables
+
+
+def superball_with_payload(
+    scale: float = 18.0,
+    payload_scale: float = 6.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the SUPERball-with-payload variant.
+
+    The 6-strut Jessen icosahedron (the SUPERball outer structure)
+    with an inner 6-strut "mini-icosahedron" suspended at the centre
+    by 12 payload cables (one per outer cable's midpoint) -- the
+    payload-suspension variant described by SunSpiral et al. (2015),
+    used to protect the avionics box during planetary-lander rolling
+    impact.
+
+    Reference: SunSpiral, V. et al., "SUPERball: Modular Robotics for
+    Planetary Exploration", NASA Ames Tech Report, 2015; Sabelhaus,
+    A. P. et al., IEEE ICRA, 2015.
+    """
+    outer_nodes, outer_struts, outer_cables = six_strut_icosahedron(scale)
+    pay_nodes, pay_struts, pay_cables = six_strut_icosahedron(payload_scale)
+    nodes = list(outer_nodes)
+    pay_offset = len(nodes)
+    nodes.extend(pay_nodes)
+    struts = list(outer_struts) + [(pay_offset + a, pay_offset + b)
+                                    for a, b in pay_struts]
+    cables = list(outer_cables) + [(pay_offset + a, pay_offset + b)
+                                    for a, b in pay_cables]
+    # Payload suspension: connect each payload node to the nearest
+    # outer node (12 inner spring-cable assemblies).
+    for i, p in enumerate(pay_nodes):
+        # find nearest outer node
+        best, best_d = 0, float("inf")
+        for j, o in enumerate(outer_nodes):
+            d = _norm(_sub(p, o))
+            if d < best_d:
+                best, best_d = j, d
+        cables.append((pay_offset + i, best))
+    return nodes, struts, cables
+
+
+def tibert_pellegrino_mast(
+    n: int = 3,
+    bays: int = 6,
+    radius: float = 18.0,
+    bay_height: float = 30.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for a Tibert/Pellegrino deployable mast.
+
+    A taller (default 6-bay) stacked n-prism mast with alternating
+    chirality, matching the topology used in Tibert and Pellegrino's
+    deployable tensegrity mast study (2003).  This is the same topology
+    as ``stacked_prism`` but with parameters tuned to a slender mast
+    aspect ratio (height ~10x diameter) appropriate for deployable
+    space-mast applications.
+
+    Reference: Tibert, A. G. and Pellegrino, S. "Review of Form-Finding
+    Methods for Tensegrity Structures."  Int. J. Space Structures
+    18(4):209-223, 2003.  Skelton & de Oliveira, ch. 2.6.
+    """
+    return stacked_prism(n=n, bays=bays, radius=radius,
+                         bay_height=bay_height, alternate_chirality=True)
+
+
+def patent_us6441801_antenna(
+    n_sides: int = 6,
+    bottom_radius: float = 50.0,
+    top_radius: float = 30.0,
+    height: float = 60.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the Knight et al. tensegrity antenna.
+
+    Reproduces the parallel-platform topology of US 6,441,801 B1
+    (Knight, Duffy, Crane, "Deployable Antenna Reflector with
+    Tensegrity Support Architecture", 2002): an upper hexagonal
+    platform of radius ``top_radius`` connected to a lower hexagonal
+    base of radius ``bottom_radius`` by 6 compression strut + 6
+    tension tie pairs in a screw-motion-driven configuration.  Each
+    upper node ``i`` is connected to lower node ``i`` by a strut and
+    to lower node ``(i+1) mod n`` by a tension tie; in addition the
+    upper and lower polygon edges form 12 boundary cables.
+
+    Reference: Knight, B., Duffy, J., Crane, C. D., U.S. Patent
+    6,441,801 B1, "Deployable Antenna Reflector", 27 Aug 2002.
+    """
+    n = int(n_sides)
+    if n < 3:
+        raise ValueError("antenna requires n_sides >= 3")
+    nodes: List[Vec3] = []
+    bottom = [(bottom_radius * math.cos(2 * math.pi * i / n),
+               bottom_radius * math.sin(2 * math.pi * i / n),
+               0.0) for i in range(n)]
+    top = [(top_radius * math.cos(2 * math.pi * i / n + math.pi / n),
+            top_radius * math.sin(2 * math.pi * i / n + math.pi / n),
+            height) for i in range(n)]
+    nodes.extend(bottom)
+    nodes.extend(top)
+    struts: List[Tuple[int, int]] = [(i, n + i) for i in range(n)]
+    cables: List[Tuple[int, int]] = []
+    for i in range(n):
+        cables.append((i, (i + 1) % n))                 # bottom polygon
+        cables.append((n + i, n + (i + 1) % n))         # top polygon
+        cables.append((i, n + (i - 1) % n))             # tension tie
+    return nodes, struts, cables
+
+
+def bistable_double_prism(
+    radius: float = 25.0,
+    bay_height: float = 45.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the Intrigila bistable double-prism.
+
+    Two T3 prisms stacked back-to-back so their apex (twisted) polygons
+    coincide, producing the bistable snap-through unit cell of
+    Intrigila et al. (2022). The shared middle polygon plays the role
+    of a compliant "hinge ring"; in the stereolithographically-printed
+    monolithic version the snapping mechanism is realized by locally
+    reduced cross-sections at the shared nodes.
+
+    Reference: Intrigila, C. et al. "Fabrication and experimental
+    characterisation of a bistable tensegrity-like unit for lattice
+    metamaterials."  Additive Manufacturing 57:102946, Sep 2022.
+    """
+    twist = math.pi / 2.0 - math.pi / 3.0
+    bottom = [(radius * math.cos(2 * math.pi * i / 3),
+               radius * math.sin(2 * math.pi * i / 3),
+               0.0) for i in range(3)]
+    middle = [(radius * math.cos(2 * math.pi * i / 3 + twist),
+               radius * math.sin(2 * math.pi * i / 3 + twist),
+               bay_height) for i in range(3)]
+    # Top polygon untwisted relative to middle (mirror of bottom prism)
+    top = [(radius * math.cos(2 * math.pi * i / 3),
+            radius * math.sin(2 * math.pi * i / 3),
+            2.0 * bay_height) for i in range(3)]
+    nodes = bottom + middle + top
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    # Bottom T3 prism
+    for i in range(3):
+        struts.append((i, 3 + i))                               # strut
+        cables.append((i, (i + 1) % 3))                         # bottom ring
+        cables.append((3 + i, 3 + (i + 1) % 3))                 # middle ring
+        cables.append((i, 3 + (i + 1) % 3))                     # saddle
+    # Top T3 prism (mirror)
+    for i in range(3):
+        struts.append((3 + i, 6 + i))                           # strut (mirror)
+        cables.append((6 + i, 6 + (i + 1) % 3))                 # top ring
+        cables.append((3 + i, 6 + (i - 1) % 3))                 # mirror saddle
+    return nodes, struts, cables
+
+
+def cuboctahedron_tessellation(
+    scale: float = 18.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the Liu et al. cuboctahedron cell.
+
+    The 12 vertices of a regular cuboctahedron are the cyclic
+    permutations of ``(+/-1, +/-1, 0)`` (and their permutations); the
+    cell has 24 edges (length sqrt(2)) which we emit as cables, and
+    we add a central node connected to the 12 vertices by 12
+    additional cables (modelling the central tension hub of Liu et
+    al.'s 96-cable / 13-strut tessellation block in a simplified
+    1-block representation).  6 long struts span between opposite
+    vertex pairs (length 2*sqrt(2)) acting as the discontinuous
+    compression skeleton.
+
+    NB: This is a *simplified single-block representation* of Liu et
+    al.'s 13-strut/96-cable tessellation (which in the original paper
+    is built up by tessellating multiple cuboctahedral cells with
+    shared tendon-network connectivity and 12 prestress states); we
+    emit one cell so it is printable and comparable in scale to the
+    other unit-cell STLs in this directory.
+
+    Reference: Liu, K., Zegard, T., Pratapa, P. P., Paulino, G. H.
+    "Unraveling tensegrity tessellations for metamaterials with
+    tunable stiffness and bandgaps."  J. Mech. Phys. Solids 131:147-166,
+    2019.
+    """
+    raw: List[Vec3] = []
+    for sx in (1.0, -1.0):
+        for sy in (1.0, -1.0):
+            raw.append((sx * 1.0, sy * 1.0, 0.0))
+            raw.append((sx * 1.0, 0.0, sy * 1.0))
+            raw.append((0.0, sx * 1.0, sy * 1.0))
+    nodes: List[Vec3] = [_scale(v, scale) for v in raw]
+    edge_len = math.sqrt(2.0) * scale
+    diag_len = 2.0 * math.sqrt(2.0) * scale
+    tol = 1e-3 * scale
+    cables: List[Tuple[int, int]] = []
+    struts: List[Tuple[int, int]] = []
+    for i in range(len(nodes)):
+        for j in range(i + 1, len(nodes)):
+            d = _norm(_sub(nodes[i], nodes[j]))
+            if abs(d - edge_len) < tol:
+                cables.append((i, j))
+            elif abs(d - diag_len) < tol:
+                struts.append((i, j))
+    # Central tension hub
+    hub = len(nodes)
+    nodes.append((0.0, 0.0, 0.0))
+    for i in range(hub):
+        cables.append((i, hub))
+    return nodes, struts, cables
+
+
+# ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
 
@@ -428,6 +772,38 @@ def main() -> None:
         "truncated_octahedron.stl": (
             "Truncated-octahedron tensegrity (Rimoli/Pajunen unit cell)",
             truncated_octahedron_tensegrity(scale=12.0),
+        ),
+        "geiger_cable_dome.stl": (
+            "Geiger cable-dome (Seoul Olympic Hall topology)",
+            geiger_cable_dome(n_radial=12,
+                              rings=(60.0, 40.0, 20.0),
+                              strut_lengths=(20.0, 25.0, 30.0),
+                              apex_height=55.0),
+        ),
+        "biotensegrity_spine.stl": (
+            "Biotensegrity spine (4 stacked Jessen-icosahedron vertebrae)",
+            biotensegrity_spine(vertebrae=4, scale=12.0, spacing=36.0),
+        ),
+        "superball_with_payload.stl": (
+            "NASA SUPERball with inner payload (6-strut + payload icosahedron)",
+            superball_with_payload(scale=18.0, payload_scale=6.0),
+        ),
+        "tibert_pellegrino_mast.stl": (
+            "Tibert/Pellegrino deployable mast (6-bay alternating-chirality)",
+            tibert_pellegrino_mast(n=3, bays=6, radius=18.0, bay_height=30.0),
+        ),
+        "patent_us6441801_antenna.stl": (
+            "Knight et al. tensegrity antenna (US 6,441,801 B1)",
+            patent_us6441801_antenna(n_sides=6, bottom_radius=50.0,
+                                     top_radius=30.0, height=60.0),
+        ),
+        "bistable_double_prism.stl": (
+            "Bistable double-prism (Intrigila 2022)",
+            bistable_double_prism(radius=25.0, bay_height=45.0),
+        ),
+        "cuboctahedron_tessellation.stl": (
+            "Cuboctahedron tensegrity tessellation cell (Liu et al. 2019)",
+            cuboctahedron_tessellation(scale=18.0),
         ),
     }
 

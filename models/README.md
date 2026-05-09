@@ -9,6 +9,13 @@ Closes [#21](https://github.com/vertical-cloud-lab/byu-mentored-research-tensegr
 
 ![Preview of generated tensegrity models](../figures/tensegrity_models_preview.png)
 
+The 7 additional design families from the Edison literature survey
+(cable-domes, biotensegrity, robots, deployable masts, patents, bistable,
+cuboctahedron metamaterials) are rendered in
+[`figures/tensegrity_models_extended_preview.png`](../figures/tensegrity_models_extended_preview.png):
+
+![Extended preview of additional tensegrity design families](../figures/tensegrity_models_extended_preview.png)
+
 ## Contents
 
 | File | Structure | Nodes | Struts | Cables | Notes |
@@ -19,6 +26,13 @@ Closes [#21](https://github.com/vertical-cloud-lab/byu-mentored-research-tensegr
 | [`stl/icosahedron.stl`](stl/icosahedron.stl) | 6-strut tensegrity icosahedron (Jessen's orthogonal icosahedron / "expanded octahedron") | 12 | 6 | 24 | Strut/cable length ratio `√(8/3) ≈ 1.633`. Used in NASA SUPERball lineage and most "tensegrity-ball" designs. |
 | [`stl/stacked_t3_column.stl`](stl/stacked_t3_column.stl) | Stacked 3-bay T3 column (Snelson "Needle Tower" / mast topology) | 12 | 9 | 21 | 3 stacked T3 bays with alternating chirality (Snelson 1968–69; Tibert & Pellegrino deployable masts). |
 | [`stl/truncated_octahedron.stl`](stl/truncated_octahedron.stl) | Truncated-octahedron tensegrity (Rimoli/Pajunen unit cell) | 24 | 12 | 36 | Space-tileable energy-absorbing metamaterial cell. Rank-#1 BYU recommendation for impact absorption (Pajunen et al. 2019; Bauer et al. 2021). |
+| [`stl/geiger_cable_dome.stl`](stl/geiger_cable_dome.stl) | Geiger radial cable-dome (Seoul Olympic Hall topology) | 73 | 36 | 132 | 3 concentric rings × 12 radial ribs + apex hub. Cable-dome (not pure class-1); per Fu (2005), Geiger US Pat. 4,736,553. |
+| [`stl/biotensegrity_spine.stl`](stl/biotensegrity_spine.stl) | Biotensegrity spine (4 stacked Jessen-icosahedron vertebrae) | 48 | 24 | 108 | Levin/Flemons stacked-icosahedron spinal-column model; basis for Berkeley ULTRA-Spine. |
+| [`stl/superball_with_payload.stl`](stl/superball_with_payload.stl) | NASA SUPERball with inner payload icosahedron | 24 | 12 | 60 | 6-strut outer + inner mini-icosahedron + 12 payload-suspension cables (SunSpiral et al. 2015). |
+| [`stl/tibert_pellegrino_mast.stl`](stl/tibert_pellegrino_mast.stl) | Tibert/Pellegrino deployable mast (6-bay) | 21 | 18 | 39 | Slender alternating-chirality stacked-prism mast (Tibert & Pellegrino, *Int. J. Space Struct.* 2003). |
+| [`stl/patent_us6441801_antenna.stl`](stl/patent_us6441801_antenna.stl) | Knight et al. tensegrity antenna (US 6,441,801 B1) | 12 | 6 | 18 | Hexagonal upper platform / hexagonal lower base + 6 strut-tie pairs. Knight, Duffy, Crane US Pat. 6,441,801 B1 (2002). |
+| [`stl/bistable_double_prism.stl`](stl/bistable_double_prism.stl) | Bistable double-prism unit cell | 9 | 6 | 15 | Two T3 prisms joined at a shared compliant hinge ring (Intrigila et al., *Add. Manuf.* 2022). |
+| [`stl/cuboctahedron_tessellation.stl`](stl/cuboctahedron_tessellation.stl) | Cuboctahedron tessellation cell (simplified) | 13 | 6 | 36 | Single-block representation of Liu et al.'s 13-strut/96-cable bandgap-tunable tessellation (J. Mech. Phys. Solids 2019). |
 
 All STL files are **binary STL**, units in millimetres, with struts
 rendered as 5 mm-diameter cylinders (PLA / PETG) and cables rendered
@@ -45,10 +59,59 @@ python models/generate_stl.py
 
 The script also exposes `n_bar_prism(n, radius, height)`,
 `six_strut_icosahedron(scale)`, `stacked_prism(n, bays, radius,
-bay_height)`, and `truncated_octahedron_tensegrity(scale)` for direct
-use as design seeds in the Bayesian optimization loop (`(nodes,
-struts, cables)` tuples that map directly onto the BO parameterization
-in the proposal).
+bay_height)`, `truncated_octahedron_tensegrity(scale)`,
+`geiger_cable_dome(n_radial, rings, strut_lengths, apex_height)`,
+`biotensegrity_spine(vertebrae, scale, spacing)`,
+`superball_with_payload(scale, payload_scale)`,
+`tibert_pellegrino_mast(n, bays, radius, bay_height)`,
+`patent_us6441801_antenna(n_sides, bottom_radius, top_radius, height)`,
+`bistable_double_prism(radius, bay_height)`, and
+`cuboctahedron_tessellation(scale)` for direct use as design seeds in
+the Bayesian optimization loop (`(nodes, struts, cables)` tuples that
+map directly onto the BO parameterization in the proposal).
+
+## Caveats and clarifications needed
+
+The 7 extended-preview families are emitted as **first-principles
+parametric STLs reconstructed from the geometric specifications stated
+in the cited papers/patents**.  They are intended as topology-correct
+visual / FEM-import seeds; for fully validated geometry — especially
+prestress states and equilibrium-shape coordinates — the following
+source PDFs would be needed (and a domain expert may need to confirm):
+
+- **Geiger cable-dome**: full prestress-state coordinates require
+  Geiger's US Pat. 4,736,553 (1988) or Fu (2005).  Best contact:
+  Feng Fu (City, Univ. of London) for cable-dome design.
+- **Biotensegrity spine / ULTRA-Spine**: detailed inter-vertebral
+  cable connectivity and prestress states require Sabelhaus et al.
+  IEEE RA-L 5(3):3982-3989 (2020) or the Berkeley ULTRA-Spine repo
+  (<https://github.com/BerkeleyExpertSystemTechnologiesLab/ultra-spine-simulations>).
+  Best contact: Andrew Sabelhaus (Boston Univ.).
+- **NASA SUPERball v2 with payload**: the inner spring-cable count and
+  payload-cable routing was reported as "12 inner spring-cable
+  assemblies" but the per-node connectivity needs the SunSpiral 2015
+  NASA tech report or the NTRT JSON
+  (<https://github.com/NASA-Tensegrity-Robotics-Toolkit/NTRTsim>).
+- **Tibert/Pellegrino mast**: only topology is reproduced here; the
+  full equilibrium-manifold deployment trajectory needs Sultan &
+  Skelton (2003) or Bel Hadj Ali et al. (2010).
+- **US 6,441,801 B1 (Knight et al. antenna)**: Figs. 2–4 of the
+  patent give exact strut/tie ratios and the screw-motion deployment
+  schedule; not all variables are determined by topology alone.
+- **Bistable double-prism**: the snapping-mechanism hinge
+  cross-sections and triggering-force calibration are reported in
+  Intrigila et al. *Add. Manuf.* 57:102946 (2022), Figs. 6–9.
+- **Cuboctahedron tessellation (Liu et al.)**: the full 13-strut /
+  96-cable / 12-prestress-state form-finding requires the Liu et al.
+  *J. Mech. Phys. Solids* 131:147–166 (2019) paper and (ideally) the
+  tessellation force-density matrix; the STL committed here is a
+  **simplified single-block representation** of just the cuboctahedron
+  + central tension hub.
+
+If full validated geometries (with form-found coordinates and prestress
+states) are needed for any of the above, please flag and either
+(a) point at the relevant supplementary material, or
+(b) name a contact whose published code we can integrate.
 
 ## Literature survey
 
