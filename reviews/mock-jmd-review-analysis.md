@@ -153,3 +153,48 @@ calls in the relevant Background subsections.
 A second Edison ANALYSIS pass after #1–#5 is closed will give a clean
 read on whether the remaining issues are still major or have dropped
 to minor / editorial.
+
+---
+
+## Update: blocker fixes applied (this PR)
+
+The following blockers from §3 have been addressed in source:
+
+- **`(author?)` bibtex artefacts** — root cause was `\citet{...}` calls
+  resolving against the `asmejour.bst` output, which emits raw author
+  text without natbib's `\bibinfo{author}{...}` annotation. All eight
+  `\citet{...}` calls in `manuscript-body.tex` were rewritten to
+  inline-author form (e.g. `Pajunen et~al.~\cite{...}`). Verified via
+  `pdftotext manuscript.pdf | grep '(author?)'` → 0 hits. Two
+  pre-existing unescaped `&` in `references.bib` `journal` fields
+  (`requejo2005upperextremitykinetics`, `macgillivray2016theinfluenceof`)
+  were also fixed (`& physics` → `\& physics`).
+- **Blank third Contributions bullet** — replaced the bare `\todo{}`
+  bullet with a substantive third contribution describing the planned
+  two-fidelity escalation path (pretensioned tensegrity assemblies with
+  true cables / measured pretension); the choice between co-Kriging
+  and nonlinear information-fusion surrogates is left as a
+  `\todo{}` per Sterling's note that this is "somewhat TBD".
+- **Bibliographic gaps from the AE letter** — added inline cites and
+  bib entries for ISO 11334-4 (`iso11334-4`, walking-aid test methods,
+  Methods §3.3 Drop-weight subsection); Caminero et~al. 2019
+  (`caminero2019printingparameters`, FFF interface adhesion, Background
+  §2.2); Garrido-Merch\'an \& Hern\'andez-Lobato 2020
+  (`garridomerchan2020dealingwithcategorical`) and Baptista \&
+  Poloczek 2018 BOCS (`baptista2018bocs`) — both cited in the BO
+  Background and Methods subsections to address the categorical-variable
+  treatment gap. (FFF resolution-limits ref was *not* added — left as a
+  `\todo{}` placeholder pending a vetted citation; we did not want to
+  guess.)
+- **PLA → PETG global rewrite** — deferred to issue #45 per Sterling's
+  comment.
+- **Multifidelity claim** — kept, but reframed in the third Contribution
+  as a *planned* two-rung escalation backed by pretensioned tensegrity
+  assemblies (Sterling: "could be based on making an actual tensegrity
+  structure out of it (pretensioned, actual cables, etc.). Somewhat
+  TBD"); the fusion strategy is now an explicit `\todo{}`.
+
+The methodological gaps (BO rigor table, FFF process-parameter table,
+SEA→peak-force mapping, cyclic/off-axis loading) remain `\todo{}`
+placeholders in `manuscript-body.tex` per Sterling's instruction not
+to guess.

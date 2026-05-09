@@ -179,25 +179,31 @@ discovery of organic laser emitters~\citep{striethkalthoff2024delocalized},
 and architected materials~\citep{mo2023accelerated, wang2022bayesian,
 lee2023bayesian, zhang2021bo}.
 \todo{Add 1--2 sentences clearly stating the gap this paper closes vs.\
-\citet{pajunen2019design} (single fabrication condition, no closed-loop
-optimization) and \citet{mo2023accelerated} (multifidelity BO, but
-simulation-only).}
+Pajunen et~al.~\cite{pajunen2019design} (single fabrication condition,
+no closed-loop optimization) and Mo et~al.~\cite{mo2023accelerated}
+(multifidelity BO, but simulation-only).}
 
 \paragraph{Contributions.} This paper makes the following contributions:
 \begin{enumerate}
   \item A parameterized family of multi-material 3D-printable
     tensegrity-inspired unit cells with PLA compression members and
     TPU tension elements wrapped using the core-encapsulation strategy
-    of \citet{ye2023multimaterial} to ensure cyclic interface
+    of Ye et~al.~\cite{ye2023multimaterial} to ensure cyclic interface
     durability.
   \item An experiment-driven BO loop, built on
     BoTorch/Ax~\citep{balandat2020botorch}, that operates directly on
     physical quasi-static compression and drop-weight impact
     measurements, recommending the next designs to fabricate without
     requiring an accurate forward simulator.
-  \item \todo{Quantitative outcome statement, e.g.\ ``a $X\%$ improvement
-    in SEA over the best baseline within $N$ rounds of physical
-    experiments.''}
+  \item A two-fidelity escalation path that pairs the
+    direct-experimental loop above with a planned higher-fidelity rung
+    based on \emph{pretensioned} tensegrity assemblies (true cables and
+    measured pretension) for selected Pareto-optimal designs; the
+    specific surrogate / fusion strategy is left
+    open.\todo{Decide between (a) co-Kriging or nonlinear
+    information-fusion priors~\citep{perdikaris2017nonlinear} once
+    pretensioned-assembly data are available, or (b) keep this work
+    single-fidelity and report the pretensioned campaign separately.}
 \end{enumerate}
 
 \figplaceholder{overview}{Closed-loop, experiment-driven design framework:
@@ -230,7 +236,7 @@ compression~\citep{amendola2014experimental, zhang2018tensegrity,
 fraternali2015tensegrity}, characteristics desirable for impact
 mitigation because the structure can absorb a large fraction of the
 input energy at a controlled, sub-injurious force plateau.
-\citet{santos2023towardanovel} recently characterized a tensegrity
+Santos~\cite{santos2023towardanovel} recently characterized a tensegrity
 energy-dissipation metamaterial reporting equivalent viscous damping
 on the order of $\sim$23\% with negligible residual strain per impact,
 underscoring the suitability of tensegrity-inspired architectures for
@@ -240,7 +246,7 @@ absorbers for planetary landing~\citep{agogino2018superball,
 caluwaerts2014superball, sabelhaus2015system, vespignani2018design,
 deitrich2022titan} and a long history of crushable energy-absorbing
 landing systems~\citep{cloutier1966landing, adams2004merairbag,
-jackson2014honeycomb}. \citet{pajunen2019design} demonstrated that
+jackson2014honeycomb}. Pajunen et~al.~\cite{pajunen2019design} demonstrated that
 truncated-tetrahedral tensegrity-inspired unit cells can be directly
 3D-printed and exhibit load-limiting plateaus, motivating the present
 focus on additively manufactured TPU/PLA composites.
@@ -249,7 +255,8 @@ focus on additively manufactured TPU/PLA composites.
 
 Multi-material rigid--soft FDM~\citep{ye2023multimaterial,
 khatri2024energy} enables PLA--TPU combinations on a single platform
-with tunable energy absorption. Crucially, \citet{ye2023multimaterial}
+with tunable energy absorption. Crucially, Ye
+et~al.~\cite{ye2023multimaterial}
 introduced a \emph{wrapping-based} strategy in which rigid cores are
 encapsulated by continuous soft skins, preventing interface delamination
 and enabling cyclic durability---a critical enabler for our fabrication
@@ -262,9 +269,12 @@ data~\citep{ezeh2018onthefatigue, vanaei2021multiscaledamageanalysis}
 inform conservative design bounds for the rigid struts.
 Architected multi-material lattices with co-printed compliant skins
 have been explicitly designed for high specific energy
-absorption~\citep{yavas2022designandfabrication}, and recent surveys
-catalogue the rapidly expanding additively manufactured
-polymeric energy-absorption literature~\citep{bustihan2026recentadvancesin,
+absorption~\citep{yavas2022designandfabrication}, with FFF-specific
+multimaterial interface adhesion (notably TPU bonded to rigid
+co-printed substrates) characterized
+in~\citep{caminero2019printingparameters}; recent surveys catalogue the
+rapidly expanding additively manufactured polymeric energy-absorption
+literature~\citep{bustihan2026recentadvancesin,
 liu2026threedimensionalprintedlattice}. \todo{Add a short paragraph on
 relevant TPU/PETG tensegrity search-space bounds once the Edison
 literature task \texttt{5ae24eaf-5b6e-45cf-9f6c-1c7fbd881738}
@@ -282,10 +292,15 @@ robustness~\citep{ament2023logei}, noisy expected hypervolume
 improvement for multi-objective settings~\citep{daulton2021nehvi},
 input-noise-robust acquisitions~\citep{daulton2022robust}, and
 evolution-guided constrained multi-objective BO for self-driving
-labs~\citep{low2024evolution}. BO has been applied to mechanical
-metamaterial and structural design~\citep{wang2022bayesian,
-lee2023bayesian, mo2023accelerated} and to additive
-manufacturing~\citep{zhang2021bo}. \citet{mo2023accelerated} in
+labs~\citep{low2024evolution}. Mixed/categorical search spaces—needed
+here for the discrete connectivity-topology variable—have dedicated
+treatments in BOCS~\citep{baptista2018bocs} and the
+one-hot-with-rounded-kernel construction
+of~\citep{garridomerchan2020dealingwithcategorical}. BO has been
+applied to mechanical metamaterial and structural
+design~\citep{wang2022bayesian, lee2023bayesian, mo2023accelerated}
+and to additive manufacturing~\citep{zhang2021bo}.
+Mo et~al.~\cite{mo2023accelerated} in
 particular established a multifidelity BO framework for architected
 materials by fusing low-fidelity simulations with high-fidelity
 ground truth via nonlinear information-fusion
@@ -331,7 +346,7 @@ Pull from the Edison TPU/PETG search-space synthesis once available.}
 
 Specimens are fabricated on a multi-material FDM printer using PLA for
 the rigid struts and TPU for the soft tension elements. Following
-\citet{ye2023multimaterial}, the design uses a core-wrapping strategy
+Ye et~al.~\cite{ye2023multimaterial}, the design uses a core-wrapping strategy
 in which each PLA strut is encapsulated by continuous TPU skin to
 provide robust mechanical interlocking and prevent interface
 delamination during cyclic loading. \todo{Document slicer profile
@@ -361,10 +376,15 @@ where $m$ is the specimen mass, $\delta_d$ is the densification
 displacement, $F_{\max}$ is the peak transmitted force, and $\eta_c$ is
 the compaction efficiency.
 
-\paragraph{Drop-weight impact.} Following \citet{pajunen2019design},
+\paragraph{Drop-weight impact.} Following Pajunen
+et~al.~\cite{pajunen2019design},
 specimens are subjected to drop-weight impact tests with instrumented
 load cells; we report the peak transmitted force and the energy-absorption
-plateau characteristics.
+plateau characteristics. Slip resistance and traction at the
+specimen--floor interface—governed by the tip geometry rather than the
+internal lattice—follow the test methodology of ISO
+11334-4~\citep{iso11334-4} for walking-aid tips and are out of scope
+for the present axial-impact study.
 
 \todo{Specify the exact test fixtures, load-cell ranges, sampling rate,
 DAQ, drop heights, and the protocol for averaging replicate prints.}
@@ -384,8 +404,15 @@ the single-objective baseline and noisy Expected Hypervolume Improvement
 (simultaneously maximizing SEA and compaction efficiency while
 constraining peak transmitted force). When experimental noise dominates
 (e.g., between-print variability), we additionally evaluate the
-input-noise-robust acquisition of~\citet{daulton2022robust} and
-the evolution-guided constrained variant of~\citet{low2024evolution}.
+input-noise-robust acquisition of Daulton
+et~al.~\cite{daulton2022robust} and
+the evolution-guided constrained variant of Low
+et~al.~\cite{low2024evolution}.
+The discrete connectivity-topology variable is handled with the
+mixed-search-space construction
+of~\citep{garridomerchan2020dealingwithcategorical}; the BOCS
+combinatorial baseline of~\citep{baptista2018bocs} is reported for
+comparison.
 
 \todo{Add: kernel choice (e.g.\ Mat\'ern-5/2), input warping, normalization,
 batch size $q$, total budget $T$, initialization strategy (LHS or
@@ -436,8 +463,9 @@ and the prior work cited in Section~\ref{sec:background}.}
 Topics to address:
 \begin{itemize}
   \item Comparison to the simulation-driven multifidelity framework of
-    \citet{mo2023accelerated} and the single-condition fabrication study
-    of \citet{pajunen2019design}.
+    Mo et~al.~\cite{mo2023accelerated} and the single-condition
+    fabrication study of Pajunen
+    et~al.~\cite{pajunen2019design}.
   \item Practical considerations: TPU--PLA interface durability under
     cyclic loading; sensitivity of optimal designs to print parameters
     (extrusion temperature, layer height); transferability to TPU/PETG
