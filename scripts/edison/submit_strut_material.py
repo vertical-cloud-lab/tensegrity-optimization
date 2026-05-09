@@ -94,7 +94,13 @@ can ingest them into a BibTeX file.
 
 
 def main() -> None:
-    client = EdisonClient()
+    import os
+    # Newer edison-client looks for EDISON_PLATFORM_API_KEY, but our env uses
+    # EDISON_API_KEY (the documented name). Forward whichever is set.
+    api_key = os.environ.get("EDISON_PLATFORM_API_KEY") or os.environ.get(
+        "EDISON_API_KEY"
+    )
+    client = EdisonClient(api_key=api_key) if api_key else EdisonClient()
     task = {"name": JobNames.LITERATURE_HIGH, "query": QUERY}
     print("Submitting LITERATURE_HIGH task (blocking)...")
     responses = client.run_tasks_until_done(task)
