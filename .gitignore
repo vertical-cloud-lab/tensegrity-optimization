@@ -28,6 +28,9 @@
 # Diff originals
 proposal-orig.tex
 
+# latexdiff generated source
+idetc-abstract-diff.tex
+
 # OS files
 .DS_Store
 Thumbs.db
