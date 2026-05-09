@@ -11,6 +11,18 @@ single-detector LDVs on dark, rough, curved, biological, or otherwise
 "difficult" surfaces. Single-point QTec heads are sold under the
 **VibroFlex QTec** product line.
 
+## Stock photos
+
+| | |
+| --- | --- |
+| ![VibroFlex QTec sensor head VFX-I-160](images/vibroflex_qtec_sensor_head_vfx-i-160.webp) | ![VibroFlex Connect VFX-F-110 front end](images/vibroflex_connect_frontend_vfx-f-110.webp) |
+| VFX-I-160 single-point QTec sensor head | VibroFlex Connect VFX-F-110 front end |
+| ![QTec multipath interferometry SNR diagram](images/qtec_multipath_interferometry_snr.webp) | ![VibroFlex modular family overview](images/vibroflex_modular_overview_2024.webp) |
+| QTec multipath interferometry — SNR advantage | VibroFlex modular family overview (2024) |
+
+(Vendor stock images from Polytec's public product website. Full provenance and
+licensing in [`images/SOURCES.md`](images/SOURCES.md).)
+
 ## Datasheet in this folder
 
 - [`Polytec_Datasheet_VibroFlex_QTec.pdf`](Polytec_Datasheet_VibroFlex_QTec.pdf)
@@ -67,13 +79,11 @@ soft TPU.
 
 ## Literature
 
-A LITERATURE_HIGH Edison query covering peer-reviewed work that uses the
-Polytec QTec (and the broader Polytec single-point LDV family) for impact /
-shock characterization of architected materials, lattices, foams, tensegrity,
-prosthetics / footwear, and 3D-printed energy absorbers has been submitted
-(task `1a0f4a70-3297-44d1-860a-dfcdd551e561`, shared with the M23 query).
-Results will be written to [`literature.md`](literature.md) in the next
-session.
+See [`literature.md`](literature.md) for the highlights of the Edison
+`LITERATURE_HIGH` survey (task `1a0f4a70-3297-44d1-860a-dfcdd551e561`,
+2026-05-08), and
+[`../../edison-trajectories/2026-05-08-equipment-m23-qtec-1a0f4a70.md`](../../edison-trajectories/2026-05-08-equipment-m23-qtec-1a0f4a70.md)
+for the full verbatim answer.
 
 [i27]: https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/27
 [i27c]: https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/27#issuecomment-4408498939

@@ -3,6 +3,14 @@
 Programmable free-fall shock tester ("drop tower") that Jeff (@Jeffrayhill1) has
 identified as the impact instrument we will use for this project (issue [#27][i27]).
 
+## Stock photo
+
+![Lansmont M23 Shock Test System (vendor product photo)](images/m23_lansmont_datasheet_photo.png)
+
+(Vendor product photo of the M23 with TouchTest Shock II controller, extracted
+from the official Oct-2025 data sheet PDF. Full provenance and licensing in
+[`images/SOURCES.md`](images/SOURCES.md).)
+
 ## Datasheets in this folder
 
 - [`Lansmont_M23_Shock.pdf`](Lansmont_M23_Shock.pdf) — the M23 brochure
@@ -65,11 +73,11 @@ survey (see `literature.md`).
 
 ## Literature
 
-A LITERATURE_HIGH Edison query covering peer-reviewed work that uses the M23
-specifically (and the broader Lansmont shock-tester family) for architected
-materials, foams, cushions, tensegrity, prosthetics/crutch tips, and 3D-printed
-energy absorbers has been submitted (task `1a0f4a70-3297-44d1-860a-dfcdd551e561`).
-Results will be written to [`literature.md`](literature.md) in the next session.
+See [`literature.md`](literature.md) for the highlights of the Edison
+`LITERATURE_HIGH` survey (task `1a0f4a70-3297-44d1-860a-dfcdd551e561`,
+2026-05-08), and
+[`../../edison-trajectories/2026-05-08-equipment-m23-qtec-1a0f4a70.md`](../../edison-trajectories/2026-05-08-equipment-m23-qtec-1a0f4a70.md)
+for the full verbatim answer.
 
 [i27]: https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/27
 [i27c]: https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/27#issuecomment-4408498939
