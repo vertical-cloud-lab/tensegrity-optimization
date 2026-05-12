@@ -44,6 +44,9 @@ simulations/
 ├── run_regimes.py        # Drives MuJoCo through both regimes; produces 4 figures + 2 CSVs
 ├── printable_design.py   # PETG strut + TPU 85A tendon material model + class-1 check
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
+├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
+├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
+├── render_regimes.py     # 3D slow-mo GIF/MP4 of both regime drops
 └── outputs/
     ├── mujoco_drop_energy.png
     ├── mujoco_drop_data.npz
@@ -105,6 +108,25 @@ and the cable-stiffness sweep is nearly flat (40 ± 1 g across two decades);
 making the metric BO-meaningful will require also varying strut length,
 prism height, drop height and softer/explicit ground compliance, plus
 reporting an integrated metric such as `∫ a(t) dt` or jerk.
+
+### 3D animations (offscreen renders)
+
+`render_mujoco_drop.py` and `render_regimes.py` re-run the same MJCF
+scenes through `mujoco.Renderer` (OSMesa offscreen) and write GIF + MP4
+animations with the cables recoloured every frame by their tensile
+strain (red = tensioned, blue = slack), so the videos visualise both
+the rigid-body deformation on impact and the time-dependent cable
+stress gradient.
+
+| Scene | Output stem | Notes |
+|---|---|---|
+| 1 m drop, basic prism | `outputs/mujoco_drop.{gif,mp4}` | 60 fps, 1.5 s of sim, tracks COM. |
+| Crutch-tip regime | `outputs/regime_crutch_tip_drop.{gif,mp4}` | 75 kg payload @ 1.4 m/s; 25 ms of sim played back as 4 s slow-motion. |
+| NASA-lander regime | `outputs/regime_nasa_lander_drop.{gif,mp4}` | 5 kg payload @ 9.8 m/s (M23 max ΔV); 40 ms of sim slow-mo. |
+
+Run via `MUJOCO_GL=osmesa python3 render_mujoco_drop.py` (or
+`render_regimes.py`).  Requires `imageio[ffmpeg]` for the MP4; the GIF
+falls back to Pillow.
 
 ## Application regimes (issues #18 / #14 / #16 / #28)
 
