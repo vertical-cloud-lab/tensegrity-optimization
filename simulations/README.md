@@ -35,6 +35,7 @@ height 0.094–0.106 m and peak kinetic energy 0.95–1.04 J (≈ `m·g·h ≈ 1
 ```
 simulations/
 ├── tprism_geometry.py    # 3-bar Snelson prism node/edge generator (no deps beyond numpy)
+├── tprism_mesh.py        # gmsh OCC volumetric mesher: 3 PETG struts + 9 TPU tendons fused
 ├── mujoco_drop.py        # MuJoCo MJCF + drop simulation (✅ baseline)
 ├── pybullet_drop.py      # PyBullet rigid-body + manual spring cables (✅)
 ├── pychrono_drop.py      # Project Chrono ChLinkTSDA (✅, conda install required)
@@ -305,6 +306,29 @@ out to `PolyFEM_bin -j drop.json`. The script then walks the per-step
 `step_*.vtm`/`step_*.vtu` outputs through `meshio` to recover the COM
 trajectory and writes `outputs/polyfem_drop.{png,npz}`. End-to-end runtime
 on a 4-core x86_64 runner is ~3 min for 120 ms of simulated time.
+
+#### T-prism geometry (`--geometry tprism`) — PETG struts + TPU 85A tendons
+
+`simulations/tprism_mesh.py` uses gmsh's OCC kernel to build the actual
+3-bar Snelson T-prism as three Ø3 mm PETG strut cylinders plus nine
+Ø1.5 mm TPU 85A tendon cylinders connecting the canonical strut endpoints.
+Each tendon is shortened by ~60 % of the strut diameter at each end so its
+side wall fuses with the strut side wall (rather than coinciding with the
+strut endcap, which trips a tetgen PLC error); `gmsh.model.occ.fragment`
+then splits the overlap into shared-face sub-volumes. The resulting Gmsh
+4.1 `.msh` carries two physical-volume groups (`1 = PETG_strut`,
+`2 = TPU_tendon`) which PolyFEM picks up to apply per-element NeoHookean
+materials (PETG E = 2 GPa, ρ = 1270; TPU 85A E = 12 MPa, ρ = 1200). Then
+the same IPC barrier-method contact handles strut–floor and strut–strut
+interactions in the same run:
+
+```bash
+python simulations/polyfem_drop.py --geometry tprism
+# writes outputs/polyfem_drop_tprism.{png,npz}
+```
+
+Mesh stats at default settings: ~5.5 k tets, 15 PETG sub-volumes + 9 TPU
+sub-volumes, drop time ~40 ms simulated.
 
 Compared to the rigid-strut MuJoCo / PyBullet / PyChrono engines and the
 particle-spring Newton stand-in, this gives the project the IPC-grade

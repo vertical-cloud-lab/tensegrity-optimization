@@ -1,11 +1,16 @@
 """PolyFEM + IPC drop sim — Edison Recommendation A (high-fidelity contact).
 
-Drops a soft NeoHookean cube (TPU 85A) of the crutch-tip prism cell size
-onto a horizontal ground plane through PolyFEM's Implicit-Newmark / IPC
-barrier-method contact solver. PolyFEM (Schneider et al., ACM TOG 2019)
-is the reference Edison Rec A — penalty-free, intersection-free contact
-that the rigid-strut MuJoCo / PyBullet / PyChrono engines and the
-particle-spring Newton stand-in can't deliver.
+Two geometries are supported:
+
+* ``--geometry cube`` (default, smoke-test): a single TPU 85A NeoHookean cube
+  of the crutch-tip prism cell size dropped onto a planar IPC ground.
+* ``--geometry tprism``: the actual 3-bar Snelson T-prism, meshed by
+  :mod:`tprism_mesh` as PETG strut volumes (E=2 GPa, ρ=1270) welded to TPU
+  85A tendon volumes (E=12 MPa, ρ=1200) via fragmented gmsh OCC cylinders,
+  then dropped through PolyFEM's IPC barrier-method contact onto a ground
+  plane. This delivers the IPC-grade strut-strut + strut-floor contact in
+  the same run that the rigid-strut MuJoCo / PyBullet / PyChrono and the
+  particle-spring Newton engines cannot.
 
 The PyPI `polyfempy` sdist is broken (no `CMakeLists.txt`); we build the
 C++ binary from `polyfem/polyfem` with CMake + the bundled CPM ipc-toolkit /
@@ -17,10 +22,12 @@ recipe.
 Run:
     export POLYFEM_BIN=/path/to/PolyFEM_bin
     export POLYFEM_DATA_DIR=/path/to/polyfem-data   # for cube.msh + plane.obj
-    python simulations/polyfem_drop.py
+    python simulations/polyfem_drop.py                       # cube
+    python simulations/polyfem_drop.py --geometry tprism     # T-prism
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import shutil
@@ -117,6 +124,52 @@ def build_input_json(cube_msh: Path, plane_obj: Path,
     }
 
 
+def build_prism_input_json(prism_msh: Path, plane_obj: Path,
+                            E_petg_pa: float = 2.0e9, nu_petg: float = 0.40,
+                            rho_petg: float = 1270.0,
+                            E_tpu_pa: float = 12.0e6, nu_tpu: float = 0.45,
+                            rho_tpu: float = 1200.0,
+                            dt: float = 5e-4, n_steps: int = 80) -> dict:
+    """PolyFEM JSON for the welded PETG-strut + TPU-tendon T-prism drop.
+
+    The .msh produced by :mod:`tprism_mesh` has two physical-volume groups:
+    1 = PETG strut, 2 = TPU 85A tendon.  PolyFEM picks the per-element
+    material from the matching ``id`` in the ``materials`` list.
+    """
+    return {
+        "geometry": [
+            {"mesh": str(prism_msh), "volume_selection": [1, 2]},
+            {"mesh": str(plane_obj), "is_obstacle": True,
+             "transformation": {"translation": [0.0, 0.0, 0.0],
+                                "dimensions": [0.4, 0.0, 0.4]}},
+        ],
+        "time": {"tend": dt * n_steps, "dt": dt, "integrator": "ImplicitEuler"},
+        "contact": {"enabled": True, "dhat": 5e-5},
+        "boundary_conditions": {"rhs": [0.0, -9.81, 0.0]},
+        "materials": [
+            {"id": 1, "type": "NeoHookean",
+             "E": E_petg_pa, "nu": nu_petg, "rho": rho_petg},
+            {"id": 2, "type": "NeoHookean",
+             "E": E_tpu_pa,  "nu": nu_tpu,  "rho": rho_tpu},
+        ],
+        "solver": {
+            "linear": {"solver": "Eigen::SimplicialLDLT"},
+            "nonlinear": {"line_search": {"method": "Backtracking"},
+                          "max_iterations": 30},
+            "advanced": {"lump_mass_matrix": True},
+        },
+        "output": {
+            "paraview": {
+                "file_name": "drop.pvd",
+                "options": {"velocity": True, "acceleration": True,
+                            "scalar_values": False, "tensor_values": False,
+                            "discretization_order": False, "nodes": False},
+            },
+            "advanced": {"save_time_sequence": True},
+        },
+    }
+
+
 def _read_vtu_points_means(vtu_path: Path) -> tuple[np.ndarray, np.ndarray]:
     """Read PolyFEM .vtu via meshio: return COM position + mean velocity."""
     import meshio
@@ -156,14 +209,27 @@ def _collect_timeseries(out_dir: Path, n_steps: int, dt: float) -> dict:
     return {"t": times, "com_y": com_y, "com_vy": com_vy, "com_ay": com_ay}
 
 
-def run_drop(work_dir: Path | None = None, **kwargs) -> dict:
+def run_drop(work_dir: Path | None = None, geometry: str = "cube",
+             prism_msh: Path | None = None, **kwargs) -> dict:
     binary, cube, plane = _resolve_paths()
-    work_dir = Path(work_dir or "/tmp/polyfem_drop")
+    work_dir = Path(work_dir or f"/tmp/polyfem_{geometry}_drop")
     if work_dir.exists():
         shutil.rmtree(work_dir)
     work_dir.mkdir(parents=True)
 
-    cfg = build_input_json(cube, plane, **kwargs)
+    if geometry == "cube":
+        cfg = build_input_json(cube, plane, **kwargs)
+    elif geometry == "tprism":
+        if prism_msh is None:
+            from tprism_mesh import build_tprism_msh
+            prism_msh = work_dir / "tprism.msh"
+            info = build_tprism_msh(prism_msh)
+            print(f"[polyfem] meshed prism: {info['tets']} tets, "
+                  f"{info['petg_volumes']} PETG vols + {info['tpu_volumes']} TPU vols")
+        cfg = build_prism_input_json(Path(prism_msh), plane, **kwargs)
+    else:
+        raise SystemExit(f"unknown geometry: {geometry!r}")
+
     cfg_path = work_dir / "drop.json"
     cfg_path.write_text(json.dumps(cfg, indent=2))
 
@@ -184,7 +250,13 @@ def run_drop(work_dir: Path | None = None, **kwargs) -> dict:
 
 
 def main():
-    res = run_drop()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--geometry", choices=("cube", "tprism"), default="cube",
+                        help="cube = TPU85A NeoHookean cube smoke-test (default); "
+                             "tprism = welded PETG-strut + TPU-tendon T-prism.")
+    args = parser.parse_args()
+
+    res = run_drop(geometry=args.geometry)
     if res["t"].size == 0:
         raise SystemExit("PolyFEM produced no time-step output.")
 
@@ -205,13 +277,15 @@ def main():
     axes[2].set_ylabel("COM ay (g)")
     axes[2].set_xlabel("time (ms)")
     axes[2].grid(True, alpha=0.3)
-    fig.suptitle(f"PolyFEM + IPC TPU-85A cube drop (peak {peak_g:.1f} g)")
+    title_geom = "T-prism (PETG + TPU 85A)" if args.geometry == "tprism" else "TPU-85A cube"
+    fig.suptitle(f"PolyFEM + IPC {title_geom} drop (peak {peak_g:.1f} g)")
     fig.tight_layout()
-    out_png = OUTDIR / "polyfem_drop.png"
+    suffix = "_tprism" if args.geometry == "tprism" else ""
+    out_png = OUTDIR / f"polyfem_drop{suffix}.png"
     fig.savefig(out_png, dpi=120)
     print(f"  wrote {out_png}")
 
-    np.savez(OUTDIR / "polyfem_drop.npz",
+    np.savez(OUTDIR / f"polyfem_drop{suffix}.npz",
              t=res["t"], com_y=res["com_y"],
              com_vy=res["com_vy"], com_ay=res["com_ay"])
 
