@@ -177,8 +177,8 @@ slice_bambu () {
     #   2. <tag>-PETG.gcode.3mf — sliced print job (with `--slice 1` and IDEX
     #                              manual filament-map for the H2D), uploaded
     #                              to the printer over LAN/cloud.
-    # Optional 6th arg: STL path override (defaults to ${STL}).
-    # Optional 7th arg: "supports" to enable tree-auto supports.
+    # Optional 5th arg: STL path override (defaults to ${STL}).
+    # Optional 6th arg: "supports" to enable tree-auto supports.
     local tag="$1" machine_leaf="$2" process_leaf="$3" filament_leaf="$4"
     local stl_in="${5:-${STL}}"
     local supports="${6:-}"
