@@ -186,7 +186,7 @@ about lander-style designs and studies, ranked by directness of fit:**
 | 7 | **Robert E. Skelton** / **Cornel Sultan** | TAMU / Virginia Tech | Class-1 tensegrity lander concepts, foundational form-finding theory. Best contact if outreach is framed as theory/rigidity rather than hardware. |
 | 8 | **Jamshid Bayandor** | Virginia Tech (CRASH Lab) | TANDEM tensegrity-lander simulation (2017): 180–260 kg payloads, 1 m diameter, 10–30 m/s, 35–224 g peak. Best contact for *scaled-up* lander work. |
 | 9 | **Jing Zhang** *(et al., Harbin Institute of Technology)* | HIT | *Design and cushioning performance analysis of spherical tensegrity structures*, *Aerospace* (2025) — class-II spherical tensegrity with centrally suspended egg payload, drops to 5 m, failure at 6 m. Most recent peer-reviewed egg-payload drop analog. |
-| 10 | **Madhumati Anand** | (per arXiv 2212.11625, 2022) | Biodegradable tensegrity (wicker/bamboo + jute + coir) protecting fragile medical payloads in 25–75 m drops onto pavement — single-use, holds the highest published drag-free survival height for a fragile payload. Best contact for the *biodegradable / single-use* framing. |
+| 10 | **Madhumati Anand** | affiliation not in trajectory; verify via arXiv 2212.11625 (2022) | Biodegradable tensegrity (wicker/bamboo + jute + coir) protecting fragile medical payloads in 25–75 m drops onto pavement — single-use, holds the highest published drag-free survival height for a fragile payload. Best contact for the *biodegradable / single-use* framing. |
 
 **Suggested first-contact set (3 names):** Rimoli (peer-reviewed
 lander-mechanics anchor), Agogino (direct egg-drop SUPERball heritage),
