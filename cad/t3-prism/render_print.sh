@@ -125,6 +125,28 @@ json.dump(d, open(p, 'w'), indent=2)
 " "$1"
 }
 
+enable_supports () {
+    # Enable supports in a flattened process profile. After the first H2D PETG
+    # print (no supports) spaghetti'd on the top-cable bridge and the user's
+    # follow-up (auto-supports, only attached to the struts) still left the
+    # top cables waving, we explicitly turn supports ON and pick auto-detected
+    # tree(auto) supports. Bambu Studio's auto-support logic is conservative
+    # at cable_d=2.4 mm (it skipped the cables), so even with cable_d=3.0 mm
+    # we force \`enable_support=1\` and \`support_threshold_angle=30\` to make
+    # sure the horizontal top cables get scaffolded.
+    python3 -c "
+import json, sys
+p = sys.argv[1]
+d = json.load(open(p))
+d['enable_support']           = '1'
+d['support_type']             = 'tree(auto)'
+d['support_threshold_angle']  = '30'
+d['support_on_build_plate_only'] = '0'
+d['tree_support_branch_angle']   = '40'
+json.dump(d, open(p, 'w'), indent=2)
+" "$1"
+}
+
 slice_bambu () {
     # Produce TWO H2D artifacts in one call:
     #   1. <tag>.3mf            — project file (no `--slice`), re-importable
@@ -146,6 +168,7 @@ slice_bambu () {
     flatten process  "${process_leaf}"  "${p}"
     flatten filament "${filament_leaf}" "${f}"
     patch_bed "${m}"
+    enable_supports "${p}"
 
     echo "==> [${tag}] BambuStudio CLI -> ${proj_3mf} (project, re-importable)"
     rm -rf "${proj_outdir}" && mkdir -p "${proj_outdir}"

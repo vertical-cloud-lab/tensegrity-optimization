@@ -45,7 +45,14 @@ R          = 25;   // radius of the circumscribing circle of each end triangle
 H          = 70;   // distance between bottom and top triangle planes
 twist      = 60;   // rotation of the top triangle relative to the bottom
 strut_d    = 6;    // strut (compression member) diameter
-cable_d    = 2.4;  // cable (tension member) diameter -- >= 2*nozzle for FDM
+// Cable diameter bumped 2.4 -> 3.0 mm after the first H2D PETG print spaghetti'd
+// on layer ~362 of the top-cable bridge (PR #16 review). Edison ANALYSIS
+// `25c1c897` recommended 3.0–4.0 mm and Marcus's follow-up print empirically
+// confirmed the threshold: at scale 1.3x (cable_d ≈ 3.12 mm), Bambu Studio's
+// auto-support logic finally tagged the top cables as needing supports; at the
+// original 2.4 mm it skipped them and they sagged/waved. 3.0 mm sits inside
+// Edison's window while keeping the tensegrity-cable feel.
+cable_d    = 3.0;  // cable (tension member) diameter -- >= 2*nozzle for FDM
 joint_d    = 7;    // small sphere diameter at each vertex for clean joints
 $fn        = 48;
 

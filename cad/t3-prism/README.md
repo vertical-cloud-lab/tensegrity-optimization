@@ -21,9 +21,9 @@ Connectivity (`i ∈ {0,1,2}`, mod 3):
 | Member               | Endpoints       | Diameter |
 | -------------------- | --------------- | -------- |
 | Strut `i`            | `B_i  → T_i`    | 6.0 mm   |
-| Bottom cable `i`     | `B_i  → B_{i+1}` | 2.4 mm   |
-| Top cable `i`        | `T_i  → T_{i+1}` | 2.4 mm   |
-| Saddle/vertical `i`  | `B_{i+1} → T_i` | 2.4 mm   |
+| Bottom cable `i`     | `B_i  → B_{i+1}` | 3.0 mm   |
+| Top cable `i`        | `T_i  → T_{i+1}` | 3.0 mm   |
+| Saddle/vertical `i`  | `B_{i+1} → T_i` | 3.0 mm   |
 
 Strut `i` and saddle `i` meet at top vertex `T_i` but originate from
 *different* bottom vertices — the defining "no two compression members
@@ -37,10 +37,10 @@ Default parameters (editable at the top of [`t3-prism.scad`](t3-prism.scad)):
 | `H`        | 70 mm | inter-triangle height |
 | `twist`    | 60°   | top-triangle rotation |
 | `strut_d`  | 6 mm  | compression member diameter |
-| `cable_d`  | 2.4 mm | tension member diameter (≥ 2 × 0.4 mm nozzle) |
+| `cable_d`  | 3.0 mm | tension member diameter (bumped 2.4 → 3.0 mm after the layer-362 spaghetti failure on the top-cable bridge; see [Print failure mode](#print-failure-mode-top-cable-bridge-and-how-to-avoid-it)) |
 | `joint_d`  | 7 mm  | sphere at each vertex for clean joints |
 
-Bounding box ≈ **50 × 50 × 77 mm**, volume ≈ **8.7 cm³** of solid material.
+Bounding box ≈ **50 × 50 × 77 mm**, volume ≈ **9.8 cm³** of solid material.
 Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate.
 
 ## Single-piece, pure-PETG
@@ -126,49 +126,75 @@ Bambu Studio treats them very differently:
   the project / sliced split.) If you want to edit settings and re-slice
   in the GUI, open `slices/t3-prism.H2D.3mf` instead.
 
-### Print failure mode: top-cable bridge (and how to avoid it)
+### Print failure mode: top-cable bridge (history + current mitigation)
 
 The first H2D PETG print of `t3-prism.3mf` (385 layers @ 0.20 mm,
-flat-on-bed orientation, no supports) **failed with classic spaghetti
-detangling at the top cable layer**, exactly where the
-[Edison ANALYSIS](../../edison-trajectories/2026-05-08-t3-prism-bambu-import-25c1c897.md)
-of the geometry predicted. The failure mode is intrinsic to printing
-this geometry single-piece, single-material, flat, and unsupported:
+flat-on-bed orientation, **2.4 mm cables**, no supports) **failed with
+classic spaghetti detangling at the top cable layer**, exactly where
+the [Edison ANALYSIS](../../edison-trajectories/2026-05-08-t3-prism-bambu-import-25c1c897.md)
+of the geometry predicted. A follow-up print enabled Bambu Studio's
+auto-supports — supports got attached to the struts but the slicer's
+auto-detector **skipped the top cables** (a 2.4 mm Ø horizontal
+cylinder didn't trip the threshold), the cables waved/sagged, and only
+scaling the print to 1.3× (≈ 3.12 mm cables) finally got auto-supports
+attached to the top cables. The failure mode is intrinsic to printing
+this geometry single-piece, flat, with thin cables:
 
-- Each top cable (`T_i → T_{i+1}`) is a **2.4 mm Ø horizontal cylinder
-  spanning ~43.3 mm** between two top-vertex joint spheres.
-- The first layer of that bridge is a chord of the cylinder bottom, so
-  it's only **~0.96 mm wide** (≈ 2 × 0.4 mm perimeters) — a sub-mm
-  PETG strand suspended over a 43 mm gap with no underlying mass.
+- Each top cable (`T_i → T_{i+1}`) is a **horizontal cylinder spanning
+  ~43.3 mm** between two top-vertex joint spheres.
+- At `cable_d = 2.4 mm`, the first layer of that bridge is a chord of
+  the cylinder bottom only **~0.96 mm wide** (≈ 2 × 0.4 mm perimeters)
+  — a sub-mm PETG strand suspended over a 43 mm gap.
 - The struts and saddles arrive at the top vertices `T_i` *before* the
   top cable starts (around layer 362), so the joint spheres are solid
   anchors — but the bridge sliver still has to span the gap on its own.
 
-Mitigations, in order of expected effectiveness, taken straight from
-the Edison analysis:
+**Applied in this revision** (both mitigations active by default):
 
-1. **Re-orient so one strut lies flat on the build plate.** This kills
-   the 43 mm horizontal bridges entirely; cables instead print at
-   self-supporting 30°–60° diagonals, and PETG layer lines run
-   *along* the cable axis (much higher tensile strength along the
-   tension member).
-2. **Increase `cable_d` from 2.4 mm to 3.0–4.0 mm** (parameters at the
-   top of [`t3-prism.scad`](t3-prism.scad)) — wider bridge first layer,
-   more perimeters anchored across the gap. Still printable in pure
-   PETG / single-piece.
-3. **Tune PETG bridge settings** — 100% fan and the slicer's bridge
-   speed/flow overrides — if you stay in the flat-on-bed orientation.
-4. **Multi-material variant** (next section) sidesteps the problem
-   structurally: PLA-only struts can be oriented strut-flat; PETG
-   cables are printed in their own pass with tighter parameters; and
-   the PETG slot is the placeholder for TPU which is the actually
-   intended compliant tension member.
+1. **`cable_d` bumped 2.4 → 3.0 mm** in `t3-prism.scad`. This sits
+   inside the Edison-recommended 3.0–4.0 mm window and matches the
+   ≈ 3.12 mm point at which Marcus's follow-up scale-1.3 print
+   empirically triggered auto-supports on the top cables. The first-
+   layer bridge chord roughly doubles in width and ~3 perimeters now
+   span the gap. Volume goes from ~8.7 → ~9.8 cm³ (≈ 6.7 → 7.6 g PETG
+   before supports).
+2. **Supports forced ON** in `render_print.sh::enable_supports` for the
+   H2D PETG slice (`enable_support=1`, `support_type=tree(auto)`,
+   `support_threshold_angle=30`, `support_on_build_plate_only=0`,
+   `tree_support_branch_angle=40`). The lower threshold + non-
+   build-plate-only flag means the top cables get scaffolded even when
+   the auto-detector is on the fence. Sliced job is now ≈ 1 h 41 min /
+   11.6 g PETG including supports (vs. the previous 1 h 31 min / 6.7 g
+   without supports).
 
-The CLI-generated `slices/t3-prism.H2D-PETG.gcode.3mf` in this PR uses
-the BBL-bundled defaults (2 walls, 15% grid infill); the manually
-re-sliced `t3-prism.3mf` Marcus uploaded uses 3 walls + 25% gyroid.
-Neither is enough to save a 43 mm sub-mm bridge by itself — orientation
-or geometry change is the actual fix.
+Optional further mitigations not applied here but documented for
+re-runs:
+
+3. **Re-orient so one strut lies flat on the build plate** — kills the
+   43 mm horizontal bridges entirely; cables print at self-supporting
+   30°–60° diagonals.
+4. **Tune PETG bridge settings** — 100% fan + slicer bridge speed/flow
+   overrides.
+5. **Multi-material variant** (next section) — PLA struts can then be
+   oriented separately, and the PETG slot is the TPU placeholder
+   anyway.
+
+### Can the BambuStudio CLI add supports?
+
+Yes. Supports are a process-profile setting (`enable_support`,
+`support_type`, `support_threshold_angle`, `support_on_build_plate_only`,
+`tree_support_branch_angle`, …) in `Metadata/project_settings.config`
+inside the `.3mf`. The `enable_supports()` helper in
+[`render_print.sh`](render_print.sh) patches these fields into the
+flattened process JSON before the CLI's slice pass, so the resulting
+`.gcode.3mf` includes generated support g-code (we verified
+`enable_support='1'` and `support_type='tree(auto)'` in the committed
+`slices/t3-prism.H2D-PETG.gcode.3mf`'s
+`Metadata/project_settings.config`). Both manual (`grid`/`normal(auto)`)
+and tree (`tree(auto)`/`tree(hybrid)`) supports are reachable through
+the same JSON knobs, and `support_filament` can route them to a
+specific extruder on the IDEX H2D if you want PLA scaffolding under
+PETG cables.
 
 ### Multi-material variant (PLA struts + PETG cables, IDEX)
 
