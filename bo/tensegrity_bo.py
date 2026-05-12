@@ -82,8 +82,8 @@ ax_client.create_experiment(
 for i in range(n_train):
     parameterization = X_train.iloc[i].to_dict()
 
-    ax_client.attach_trial(parameterization)
-    ax_client.complete_trial(trial_index=i, raw_data=y_train[i])
+    _, trial_index = ax_client.attach_trial(parameterization)
+    ax_client.complete_trial(trial_index=trial_index, raw_data=y_train[i])
 
 
 batch_size = 2

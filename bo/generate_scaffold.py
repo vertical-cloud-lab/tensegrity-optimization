@@ -29,8 +29,9 @@ re-running this script.
 Reproduce with::
 
     pip install -r bo/requirements.txt
-    python bo/generate_scaffold.py            # writes bo/tensegrity_bo.py
-    SMOKE_TEST=true python bo/tensegrity_bo.py  # quick smoke run
+    python bo/generate_scaffold.py                       # writes bo/tensegrity_bo.py
+    python bo/generate_scaffold.py --smoke-test -o /tmp/smoke.py  # render short variant
+    MPLBACKEND=Agg python /tmp/smoke.py                  # quick smoke run
 
 References
 ----------
@@ -90,6 +91,25 @@ def build_engine() -> Honegumi:
     )
 
 
+def _patch_existing_data_trial_index(script: str) -> str:
+    """Use the ``trial_index`` returned by ``attach_trial`` instead of the loop counter.
+
+    Honegumi's ``existing_data`` template assumes Ax assigns trial indices that
+    match the loop counter ``i``. That happens in practice today but isn't part
+    of Ax's public contract, so we capture the returned index defensively. The
+    substitution is idempotent and a no-op when the template changes.
+    """
+    needle = (
+        "    ax_client.attach_trial(parameterization)\n"
+        "    ax_client.complete_trial(trial_index=i, raw_data=y_train[i])"
+    )
+    replacement = (
+        "    _, trial_index = ax_client.attach_trial(parameterization)\n"
+        "    ax_client.complete_trial(trial_index=trial_index, raw_data=y_train[i])"
+    )
+    return script.replace(needle, replacement)
+
+
 def render_script(
     config: dict[str, object] | None = None, smoke_test: bool = False
 ) -> str:
@@ -102,7 +122,7 @@ def render_script(
     engine = build_engine()
     options = engine.OptionsModel(**(config or CONFIG))
     if not smoke_test:
-        return engine.generate(options)
+        return _patch_existing_data_trial_index(engine.generate(options))
 
     # Honegumi's public ``generate`` always forces dummy=False on rendered
     # scripts (it only honours SMOKE_TEST for its own test suite). To produce a
@@ -110,7 +130,8 @@ def render_script(
     selections = engine.process_selections(options)
     selections[core_cst.DUMMY_KEY] = True
     script = engine.template.render(selections)
-    return format_file_contents(script, fast=False, mode=FileMode())
+    formatted = format_file_contents(script, fast=False, mode=FileMode())
+    return _patch_existing_data_trial_index(formatted)
 
 
 def main(argv: list[str] | None = None) -> int:

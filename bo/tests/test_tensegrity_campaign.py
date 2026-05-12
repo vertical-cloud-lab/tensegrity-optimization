@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from bo.tensegrity_campaign import (
     ETA,
@@ -42,7 +41,6 @@ def test_search_space_covers_documented_topologies_and_tilings():
         assert required in by_name, required
 
 
-@pytest.mark.slow
 def test_main_short_run_completes(capsys):
     # The default (no --full) runs 5 BO iterations with batch size 2 on top of
     # the pilot seed. We pass --no-plot to keep the test headless and fast.

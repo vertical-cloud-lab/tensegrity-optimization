@@ -230,8 +230,9 @@ def simulate_specimen(
     # Peak transmitted force (N). Scaled so that a small 3-bar-prism cell is
     # ~500 N and an aggressive icosahedron 2x2x2 reaches several kN.
     # Cushion factor in (0, 1]: thicker/wider TPU skins lower the peak. The
-    # denominator's `4.0 mm^2` is a reference skin cross-section that gives a
-    # ~50% cushion at t*w = 4 mm^2 — re-fit against pilot data when available.
+    # denominator's `4.0 mm^2` is a reference skin cross-section that gives
+    # cushion = 1/(1+0.6) ≈ 0.625 at t*w = 4 mm^2 (~38% peak reduction) —
+    # re-fit against pilot data when available.
     cushion = 1.0 / (1.0 + 0.6 * t * w / 4.0)
     f_peak = (
         180.0 * topo_k * tile_k * (d**2) / max(L, 1e-3) * (n_struts / 4.0) * cushion

@@ -7,3 +7,7 @@ ax-platform==0.4.3
 numpy<2
 pandas<2.3
 matplotlib
+# `black` is imported directly by bo/generate_scaffold.py to format the
+# honegumi-rendered script. Pinned to a version compatible with the rest of
+# the toolchain (any modern black accepts the rendered Ax script).
+black>=24.0
