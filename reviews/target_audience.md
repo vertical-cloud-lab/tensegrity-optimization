@@ -213,10 +213,13 @@ mind? For example, external validation."
 
 **Throwaway sentences only — expect to rewrite per recipient.** A
 companion Edison `LITERATURE_HIGH` query (task
-`f18aca01-00bb-4ca7-a8e9-f6312dfaaff7`, submitted 2026-05-12) was sent
-to enumerate per-archetype asks anchored to each contact's own
-publications; results will land at
-`edison-trajectories/2026-05-12-outreach-topics-f18aca01-*.{md,json}`.
+`f18aca01-00bb-4ca7-a8e9-f6312dfaaff7`, fetched 2026-05-12, ~50 KB) was
+run alongside this draft and returned 7 archetype clusters, per-contact
+ask routing for all 9 named contacts, plus a "stretch" section of
+collaborative mechanisms we hadn't considered. Full results at
+`edison-trajectories/2026-05-12-outreach-topics-f18aca01-00bb-4ca7-a8e9-f6312dfaaff7.{md,json}`
+— prefer those over the throwaway sentences below for any actual
+outreach email body.
 
 The aspects below are synthesized across this PR, PR #20 (manuscript),
 PR #28 (Lansmont M23 + QTec/LDV instrumentation), PR #38/#43 (PETG-TPU
