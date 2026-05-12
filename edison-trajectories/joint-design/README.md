@@ -112,7 +112,22 @@ The full per-design list of which simulator assumption each joint design violate
 
 Note the existing `simulations/run_regimes.py` finding ([PR #33](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/33)) that **peak g is dominated by floor contact** and is essentially flat across three decades of cable stiffness in the rigid-strut model — but **SEA does vary ~10×**. The joint-physics corrections above only matter for SEA-driven optimization (i.e. *most* of what the BO loop in PR [#30](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/30) actually optimizes); peak g still requires the DiffPD / IPC fidelity escalation Edison "Recommendation B" called for.
 
-## Outstanding work
+## Lander-context (egg-drop / planetary-lander demo, issue [#16](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/16)) recommendation
+
+The Phase-3-refined geometry tables above pick the joint **best by published shear/pull strength** (B-dovetail, 6–24 MPa; Ermolai 2024, Zhang 2021), which is the right answer for a *uni-axial* tendon load case (e.g. a crutch tip pushed nominally along the strut axis). For the lander/egg-drop demo (issue [#16](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/16), egg-drop benchmark in [`edison-trajectories/egg-drop-tensegrity-1b90208d.md`](../egg-drop-tensegrity-1b90208d.md) and [`egg-drop-followup-f41b7034.md`](../egg-drop-followup-f41b7034.md)) the operating envelope is different: SUPERball-lineage 6-bar, **omnidirectional** impact, every node lands once, every tendon sees a different mix of pull/lateral-shear/twist per drop. Two implications:
+
+1. **Per-node load symmetry is more valuable than uni-axial peak.** B-dovetail's flank is anisotropic (Wang 2026 22.5° optimum is for sliding-shear extraction along the slot axis only). A spherical anchor-bulb (A) has rotational symmetry about the bore and tolerates any incident tendon angle without reduction in pull-out capacity.
+2. **Reusability matters.** The egg-drop FoM is `h_crit` over n≥20 Bruceton drops + secondary `N_reuse` (per [`egg-drop-followup-f41b7034.md`](../egg-drop-followup-f41b7034.md)). Dovetail FDM joints typically degrade after one tooth-shear event; printed-in-place TPU bulbs against a printed PETG bore degrade more gracefully (Pajunen 2019 reported reusable behavior to 8+ drops on similar topologies).
+
+**Recommended joint for the lander/egg-drop print:** **A (anchor-bulb), with the Phase-3-refined geometry** (`node_d` 9.5 mm / `bore_d` 2.8 mm / `bulb_d` 4.8 mm — pull-through ratio 1.71×). **B (dovetail) remains the recommendation for the uni-axial crutch-tip print.** The drop-test screening matrix below then loads B-dovetail in the `crutch_tip` regime and A-anchor-bulb in the `nasa_lander` regime, which still gives both designs apples-to-apples coverage.
+
+Also worth noting: per issue [#45](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/45) the strut material is now planned to be **PLA** rather than PETG. The Phase-3 dovetail interlock numbers (Ermolai 2024 dovetail shear) were measured on PLA-PLA and PETG-PETG and are similar within 10–15 %; the Frascio 2024 TPU-PETG fillet recommendation transfers to PLA-TPU because the "de-notch" is geometric, not a chemical-bond improvement. The anchor-bulb (A) is largely material-agnostic: it is a mechanical pull-through with no requirement for chemical adhesion across the PETG/PLA-TPU interface (peer-reviewed PLA-TPU interface data exists; PETG-TPU does not — see [`strut-material-selection-5bb5e5d3-…md`](../strut-material-selection-5bb5e5d3-b386-4ece-a894-9c87f0d67036.md)). Both designs port to PLA struts without dimensional changes.
+
+## Multi-plane orthogonal cross-sections
+
+To make the captive interior geometry unambiguous (e.g. confirm B-dovetail head-to-cable continuity and D-eyelet chain-link topology from a single sheet, per PR comment 4427543897), `cad/joint-design/render.sh` now emits **three orthogonal cuts per design** (Y=0, X=0, Z=−2) plus the iso view, and assembles them into [`cad/joint-design/renders/all_multiplane_section_montage.png`](../../cad/joint-design/renders/all_multiplane_section_montage.png). Per-design files: `*_section_{X,Y,Z}.scad`.
+
+
 
 - [ ] Fetch ANALYSIS follow-up `ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa` (re-run with all 5 Phase-1 outputs attached) and commit `.md` + `.json`
 - [ ] Update [`cad/t3-prism/t3-prism.scad`](../../cad/t3-prism/t3-prism.scad) with primary (E, barbed rebar) and backup (A, anchor-bulb) joint geometry parameters once issue [#37](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/37) (H2D PETG+TPU IDEX setup) lands a working multi-material print

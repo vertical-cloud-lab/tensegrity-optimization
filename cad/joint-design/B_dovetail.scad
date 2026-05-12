@@ -65,13 +65,17 @@ module designB_petg() {
 }
 
 module designB_tpu() {
-    // Head: dovetail cross-section extruded along the slot depth.
+    // Head: dovetail cross-section extruded along the slot depth (the -X half of
+    // the through-slot, x ∈ [-node_d/2, -node_d/2 + slot_depth] = [-6, 0]).
     translate([-node_d/2, 0, -slot_depth/2 - 0.5])
         rotate([90, 0, 90])
             linear_extrude(height = slot_depth)
                 dovetail_xs(slot_mouth, slot_inner, slot_height);
-    // Cable exits the slot mouth on the +X side
-    translate([node_d/2 - 0.5, 0, 0]) rotate([0, 90, 0])
+    // Cable exits the +X face of the node along the slot centerline (Z = head
+    // center, NOT z=0). Starts at x=0 (the +X face of the head) so the cable
+    // is mechanically continuous with the dovetail head and emerges through
+    // the slot mouth on the +X face of the PETG node.
+    translate([0, 0, -slot_depth/2 - 0.5]) rotate([0, 90, 0])
         cylinder(h=cable_l, d=cable_d);
 }
 
