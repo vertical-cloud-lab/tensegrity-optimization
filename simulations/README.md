@@ -23,6 +23,8 @@ together with the application-regime sweeps described in
 | **PyBullet** (Bullet 3) | 3.x (May 2026 build) | `pip install pybullet` | ✅ runs | No native tendon; cables implemented as unilateral spring forces applied via `applyExternalForce`. This is the same approach used historically by NASA's NTRTsim. |
 | **PyChrono** (Project Chrono 10.0) | 10.0 | `conda install -c projectchrono -c conda-forge pychrono` | ✅ runs | First-class `ChLinkTSDA` springs; FEA cable elements (`ChElementCableANCF`) and IGA beams also available for higher fidelity. **Do not** install the homonymous PyPI package `pychrono` — it is unrelated. |
 | **Newton** (NVIDIA, on Warp) | 1.1.0 | `pip install newton` | ✅ runs (Edison Rec B / DiffPD-tier) | Differentiable GPU-accelerated multi-physics. We use it as the all-particle XPBD stand-in for DiffPD: TPU-85A tendons are explicit Hookean springs in series with the impact load path (payload internally suspended from all 6 prism nodes), so peak g and SEA respond to tendon Ø, unlike the rigid-strut engines above. |
+| **DiffPD** (MIT GFX, SIGGRAPH 2021) | `mit-gfx/diff_pd_public` HEAD | source build (CMake + SWIG; no Pangolin/OpenGL needed for the sim core) | ✅ runs (Edison Rec B) | Original projective-dynamics differentiable solver. We drop a TPU-85A NeoHookean hex cube against a planar barrier; see `diffpd_drop.py`. |
+| **PolyFEM + IPC** (NYU CIMS) | `polyfem/polyfem` HEAD | source build (CMake; ~25 min, ~10 GB build dir, ~160 MB binary) | ✅ runs (Edison Rec A) | Reference high-fidelity contact (IPC barrier method, intersection-free). PyPI `polyfempy` sdist is broken; `simulations/polyfem_drop.py` shells out to the built `PolyFEM_bin` with a NeoHookean TPU-85A cube + ground-plane drop JSON. |
 
 All three reproduce the same baseline experiment (a 3-bar Snelson T-prism
 dropped from 1 m onto a flat floor). Cross-engine agreement: settled COM
@@ -252,16 +254,44 @@ Both are mechanical refinements rather than tooling escalations; the
 key tooling step — getting from rigid-strut Tier C to coupled-soft
 Tier B — is delivered by `newton_drop.py`.
 
-### Edison Rec A (PolyFEM + IPC) — install attempt
+### Edison Rec A (PolyFEM + IPC) — built and smoke-tested
 
-`pip install polyfempy` fails on the runner: the PyPI sdist is missing
-its `CMakeLists.txt`, so the build can't start. The maintained route is
-the Polyfem GitHub repo (`polyfem/polyfem`), which needs CMake + Eigen
-\+ libigl + Catch2 + ipc-toolkit + suite-sparse, takes ~25 min to
-configure-and-build, and uses ~6 GB of disk. This was outside the
-sandbox time budget for this PR but is the right next step for
-*high-fidelity* (IPC barrier-method) contact at the prism-floor and
-inter-strand interfaces. Reproducing this attempt:
+`pip install polyfempy` fails on the runner (the PyPI sdist is missing its
+`CMakeLists.txt`), so we build the C++ binary directly from
+`polyfem/polyfem`. CMake fetches Eigen, libigl, Catch2, ipc-toolkit,
+suite-sparse, hypre, hdf5 and friends through CPM; the configure step takes
+~3.5 min and the parallel build (`-j4`) takes ~25 min and produces a
+~160 MB `PolyFEM_bin` (~10 GB build dir).
+
+```bash
+git clone --depth 1 https://github.com/polyfem/polyfem.git
+mkdir -p polyfem/build && cd polyfem/build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j4 PolyFEM_bin
+# meshes used by the smoke test (cube.msh + plane.obj):
+git clone --depth 1 https://github.com/polyfem/polyfem-data.git
+export POLYFEM_BIN=$(pwd)/PolyFEM_bin
+export POLYFEM_DATA_DIR=$(realpath ../../polyfem-data)
+python simulations/polyfem_drop.py
+```
+
+`simulations/polyfem_drop.py` writes a small JSON describing a NeoHookean
+TPU-85A cube (E = 12 MPa, ν = 0.45, ρ = 1200 kg/m³) of the crutch-tip
+prism cell size, drops it onto the bundled `plane.obj` ground obstacle
+through PolyFEM's IPC barrier-method contact (`dhat = 1e-4 m`), and shells
+out to `PolyFEM_bin -j drop.json`. The script then walks the per-step
+`step_*.vtm`/`step_*.vtu` outputs through `meshio` to recover the COM
+trajectory and writes `outputs/polyfem_drop.{png,npz}`. End-to-end runtime
+on a 4-core x86_64 runner is ~3 min for 120 ms of simulated time.
+
+Compared to the rigid-strut MuJoCo / PyBullet / PyChrono engines and the
+particle-spring Newton stand-in, this gives the project the IPC-grade
+contact response (intersection-free, penalty-free, friction-coupled)
+needed for credible peak-g predictions at the prism-floor and
+inter-strand interfaces — Edison Recommendation A's headline capability.
+
+The original `pip install polyfempy` failure mode (kept for the next agent
+who tries the PyPI wheel route):
 
 ```bash
 $ pip install polyfempy
@@ -271,9 +301,30 @@ contain CMakeLists.txt.
 ERROR: Could not build wheels for polyfempy
 ```
 
-The next agent who picks this up should clone `polyfem/polyfem` and
-build manually, or evaluate Genesis (`pip install genesis-world`) which
-ships an MPM + FEM + IPC-style stack pre-built.
+### Edison Rec B (DiffPD) — built and smoke-tested
+
+DiffPD (Du et al., SIGGRAPH 2021) is not on PyPI, only as the
+`mit-gfx/diff_pd_public` C++/SWIG repo. The README warns about Pangolin /
+OpenGL, but those are only needed by the bundled `pbrt-v3` *renderer*; the
+projective-dynamics solver itself builds fine headless:
+
+```bash
+git clone --recursive https://github.com/mit-gfx/diff_pd_public.git
+cd diff_pd_public/cpp/core/src && swig -c++ -python py_diff_pd_core.i
+cd ../../ && mkdir -p build && cd build && cmake -DPARDISO_AVAILABLE=OFF .. && make -j4
+cd .. && mv core/src/py_diff_pd_core.py ../python/py_diff_pd/core/
+mv build/libpy_diff_pd_core.so ../python/py_diff_pd/core/_py_diff_pd_core.so
+printf "root_path = '$(pwd)/..'\n" > ../python/py_diff_pd/common/project_path.py
+export PYTHONPATH=$(pwd)/../python:$PYTHONPATH
+python -c "import py_diff_pd.common.common"   # smoke-import
+python <repo>/simulations/diffpd_drop.py
+```
+
+`simulations/diffpd_drop.py` drops a TPU-85A NeoHookean (corotated +
+volume) hex cube of the crutch-tip cell size onto a planar frictional
+boundary and reads back the COM trajectory through DiffPD's `PyForward`
+(`pd_eigen` solver, BFGS line search). DiffPD predates NumPy 2.0
+(`np.int` removed); the script monkey-patches that back at import time.
 
 ## Other notable simulators (not yet downloaded)
 
