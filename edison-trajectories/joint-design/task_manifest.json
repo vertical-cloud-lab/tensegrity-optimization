@@ -84,5 +84,30 @@
       "result_json": "edison-trajectories/joint-design/PHASE3-cad-review-19e0c868-3587-440d-ba4a-07da4dddf99a.json",
       "headline": "Refines B (dovetail) primary geometry to node 12mm, slot_mouth 5.4, slot_inner 7.06, slot_height 4.0, depth 6.0, flank 22.5deg, clear_lat 0.20, clear_roof 0.30; refines A (bulb) backup to node 9.5, bore 2.8, bulb 4.8 (1.71x ratio). Cites Wang 2026, Frascio 2024, Ermolai 2024, Mu 2024, Monti 2025."
     }
+  },
+  "phase4": {
+    "context_recommendation": {
+      "task_id": "f9804247-51f3-43de-a676-94b4b008b886",
+      "name": "LITERATURE_HIGH",
+      "submitted_at_utc": "2026-05-12T05:35Z",
+      "status_at_session_end": "in progress",
+      "submission_script": "scripts/edison/submit_joint_phase4.py",
+      "submission_record": "edison-trajectories/joint-design/PHASE4-context-SUBMITTED.json",
+      "purpose": "Project-context-aware single-joint recommendation given PLA per #45, TPU 85A, lander/egg-drop per #16, H2D printer constraints.",
+      "next_session_action": "Fetch task f9804247 and write md+json to edison-trajectories/joint-design/PHASE4-context-f9804247-*.{md,json}.",
+      "trigger": "PR comment 4427608763 (@sgbaird-yolo): 'Send a follow-up edison query asking for recommendations based on project context.'"
+    },
+    "vision_review": {
+      "task_id": "e9a1f4cc-7509-41b4-89e7-3f63ef406333",
+      "name": "ANALYSIS",
+      "submitted_at_utc": "2026-05-12T05:35Z",
+      "status_at_session_end": "in progress",
+      "submission_script": "scripts/edison/submit_joint_phase4.py",
+      "submission_record": "edison-trajectories/joint-design/PHASE4-vision-SUBMITTED.json",
+      "purpose": "Per-design individual tile vision review (iso + 3 cross-sections per design, no mosaics) - confirm B-dovetail cable continuity and D-eyelet chain-link topology.",
+      "attached_tiles": "27 (5 .scad + 5 iso PNG + 15 section_{X,Y,Z} PNG + _common.scad + README.md)",
+      "next_session_action": "Fetch task e9a1f4cc and write md+json to edison-trajectories/joint-design/PHASE4-vision-e9a1f4cc-*.{md,json}.",
+      "trigger": "PR comment 4427608763 (@sgbaird-yolo): 'Send an additional edison analysis with individual panels and cross-sections of A-E (don't send the full mosaic, send individual tiles so that vision model can read it better).'"
+    }
   }
 }
