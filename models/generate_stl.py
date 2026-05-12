@@ -674,6 +674,205 @@ def bistable_double_prism(
     return nodes, struts, cables
 
 
+def snelson_x_module(
+    scale: float = 30.0,
+    separation: float = 4.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for Snelson's planar X-module.
+
+    The "X-piece" is the smallest planar tensegrity module: two struts
+    crossed in an "X" pattern, held by four perimeter cables along the
+    quadrilateral that connects the four strut endpoints.  Because the
+    struts are non-touching, they are offset in ``z`` by ``separation``
+    so that the two diagonals of the unit square lie in different
+    parallel planes (this is the physical Snelson realization of the
+    module; in the topology graph they are class-1 disjoint).
+
+    The X-module is the seed of Snelson's planar weave compositions
+    (his X-piece sculpture lineage) and of the X-column / X-tower
+    family.  It is the most buildable next addition for layered
+    PETG+TPU pads: it lies flat, prints in a single planar pass, and
+    tessellates trivially in 2D.
+
+    Reference: Motro, R., *Tensegrity: Structural Systems for the
+    Future* (2003), ch. 1-2.  Snelson, K., US Patent 3,169,611 (1965).
+    Cowcher, S., "Design and analysis of single-layer tensegrity
+    structures" (PhD thesis, 2015), pp. 11-15, 120-124.
+    """
+    s = scale
+    h = 0.5 * separation
+    nodes: List[Vec3] = [
+        (0.0, 0.0, -h),     # 0: lower-left  (strut A start)
+        (s,   0.0,  h),     # 1: lower-right (strut B start)
+        (s,   s,   -h),     # 2: upper-right (strut A end)
+        (0.0, s,    h),     # 3: upper-left  (strut B end)
+    ]
+    struts: List[Tuple[int, int]] = [(0, 2), (1, 3)]  # the two diagonals (do not touch)
+    cables: List[Tuple[int, int]] = [(0, 1), (1, 2), (2, 3), (3, 0)]
+    return nodes, struts, cables
+
+
+def pugh_diamond_column(
+    n: int = 3,
+    bays: int = 3,
+    radius: float = 20.0,
+    bay_height: float = 40.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the Pugh "diamond" stacked column.
+
+    The diamond pattern is one of two canonical cable-routing schemes
+    catalogued by Anthony Pugh (*An Introduction to Tensegrity*, 1976,
+    ch. 3): each strut's bottom end is joined to **both adjacent**
+    struts' bottom ends, and similarly for its top end, so the cable
+    network on the side surface of a stacked prism is made up of
+    diamond-shaped rhombi.  This is achieved by adding *two* saddles
+    per strut between successive polygon rings (the "+1" and "-1"
+    neighbours), in contrast to the single saddle of a plain stacked
+    Snelson prism.
+
+    Reference: Pugh, A., *An Introduction to Tensegrity*, UC Press
+    (1976), ch. 3 ("Diamond Pattern").
+    """
+    if n < 3:
+        raise ValueError("pugh_diamond_column requires n >= 3")
+    if bays < 1:
+        raise ValueError("pugh_diamond_column requires bays >= 1")
+    twist0 = math.pi / 2.0 - math.pi / n
+    nodes: List[Vec3] = []
+    cum_twist = 0.0
+    for k in range(bays + 1):
+        z = k * bay_height
+        for i in range(n):
+            ang = 2.0 * math.pi * i / n + cum_twist
+            nodes.append((radius * math.cos(ang), radius * math.sin(ang), z))
+        if k < bays:
+            cum_twist += -twist0 if (k % 2 == 1) else twist0
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    for k in range(bays):
+        b = k * n
+        t = (k + 1) * n
+        for i in range(n):
+            struts.append((b + i, t + i))
+            cables.append((b + i, b + (i + 1) % n))     # bottom polygon
+            # Diamond saddles: each strut bottom -> both adjacent strut tops
+            cables.append((b + i, t + (i + 1) % n))
+            cables.append((b + i, t + (i - 1) % n))
+        if k == bays - 1:
+            for i in range(n):
+                cables.append((t + i, t + (i + 1) % n))
+    return nodes, struts, cables
+
+
+def pugh_zigzag_column(
+    n: int = 3,
+    bays: int = 3,
+    radius: float = 20.0,
+    bay_height: float = 40.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the Pugh "zig-zag" stacked column.
+
+    The zig-zag (or "circuit") pattern of Pugh 1976 routes a single
+    continuous cable in alternating up/down passes that connect each
+    strut's bottom end to the *opposite* end of the next strut.  This
+    produces a Z-shaped side panel between adjacent struts instead of
+    the diamond / rhombus of the diamond pattern.  In the assembled
+    column this is realized as ``n`` zig-zag cables per bay (each
+    bottom-end ``i`` -> top-end ``(i+1) mod n`` of the same bay,
+    followed by top-end ``(i+1) mod n`` -> bottom-end ``(i+2) mod n``
+    of the next bay above).
+
+    Reference: Pugh, A., *An Introduction to Tensegrity*, UC Press
+    (1976), ch. 3 ("Zig-Zag Pattern").
+    """
+    if n < 3:
+        raise ValueError("pugh_zigzag_column requires n >= 3")
+    if bays < 1:
+        raise ValueError("pugh_zigzag_column requires bays >= 1")
+    twist0 = math.pi / 2.0 - math.pi / n
+    nodes: List[Vec3] = []
+    cum_twist = 0.0
+    for k in range(bays + 1):
+        z = k * bay_height
+        for i in range(n):
+            ang = 2.0 * math.pi * i / n + cum_twist
+            nodes.append((radius * math.cos(ang), radius * math.sin(ang), z))
+        if k < bays:
+            cum_twist += -twist0 if (k % 2 == 1) else twist0
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    for k in range(bays):
+        b = k * n
+        t = (k + 1) * n
+        for i in range(n):
+            struts.append((b + i, t + i))
+            cables.append((b + i, b + (i + 1) % n))     # bottom polygon
+            # Zig-zag: saddle skips one strut (jump of 2) instead of the
+            # plain-prism jump of 1, producing the continuous Z-fold
+            # cable pattern on each side panel.
+            cables.append((b + i, t + (i + 2) % n))
+        if k == bays - 1:
+            for i in range(n):
+                cables.append((t + i, t + (i + 1) % n))
+    return nodes, struts, cables
+
+
+def pentagonal_tensegrity_ring(
+    n_sides: int = 5,
+    radius: float = 30.0,
+    height: float = 20.0,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the Rhode-Barbarigos pentagonal ring.
+
+    Approximate first-principles reconstruction of the "pentagonal
+    hollow rope" / tensegrity-ring module of Rhode-Barbarigos et al.
+    (Eng. Struct. 2010 / J. Struct. Eng. 2012): a closed-ring module
+    with a single strut circuit and a hollow central void, used as
+    the basis for the EPFL tensegrity footbridge.  Topology used here:
+    ``n_sides=5`` (pentagonal) yields 10 nodes (5 top + 5 bottom),
+    5 struts arranged as a zig-zag circuit between alternating top
+    and bottom nodes, and 15 cables = 5 top-polygon + 5 bottom-polygon
+    + 5 vertical cables.
+
+    NB: This is the **simplified single-module topology** (consistent
+    with Cowcher 2015 ch. 3 description); the full ``15 / 30 / 15``
+    count quoted in Rhode-Barbarigos 2010 refers to the *deployable*
+    variant with two-layer hollow-rope strands -- see the "Caveats and
+    clarifications needed" section in ``models/README.md`` for the
+    figures from the paper that would be needed to refine this.
+
+    Reference: Rhode-Barbarigos, L. et al., "Designing tensegrity
+    modules for pedestrian bridges", *Eng. Struct.* 32(4):1158-1167,
+    2010, doi:10.1016/j.engstruct.2009.12.042.
+    """
+    n = int(n_sides)
+    if n < 3:
+        raise ValueError("pentagonal_tensegrity_ring requires n_sides >= 3")
+    nodes: List[Vec3] = []
+    # Bottom ring (n nodes at z=0)
+    for i in range(n):
+        ang = 2.0 * math.pi * i / n
+        nodes.append((radius * math.cos(ang), radius * math.sin(ang), 0.0))
+    # Top ring (n nodes at z=height, twisted by pi/n for zig-zag connection)
+    twist = math.pi / n
+    for i in range(n):
+        ang = 2.0 * math.pi * i / n + twist
+        nodes.append((radius * math.cos(ang), radius * math.sin(ang), height))
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    # Single zig-zag strut circuit visiting alternating bottom/top nodes
+    for i in range(n):
+        struts.append((i, n + i))  # bottom-i -> top-i (the circuit "rungs")
+    # Bottom + top polygon cables
+    for i in range(n):
+        cables.append((i, (i + 1) % n))
+        cables.append((n + i, n + (i + 1) % n))
+    # Vertical / connecting cables (top-i -> bottom-(i+1) mod n)
+    for i in range(n):
+        cables.append((n + i, (i + 1) % n))
+    return nodes, struts, cables
+
+
 def cuboctahedron_tessellation(
     scale: float = 18.0,
 ) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
@@ -809,6 +1008,22 @@ def main() -> None:
         "cuboctahedron_tessellation.stl": (
             "Cuboctahedron tensegrity tessellation cell (Liu et al. 2019)",
             cuboctahedron_tessellation(scale=18.0),
+        ),
+        "snelson_x_module.stl": (
+            "Snelson planar X-module (2 struts, 4 cables)",
+            snelson_x_module(scale=60.0, separation=6.0),
+        ),
+        "pugh_diamond_column.stl": (
+            "Pugh diamond-pattern stacked column (3-bay T3)",
+            pugh_diamond_column(n=3, bays=3, radius=20.0, bay_height=40.0),
+        ),
+        "pugh_zigzag_column.stl": (
+            "Pugh zig-zag-pattern stacked column (3-bay T3)",
+            pugh_zigzag_column(n=3, bays=3, radius=20.0, bay_height=40.0),
+        ),
+        "pentagonal_tensegrity_ring.stl": (
+            "Pentagonal tensegrity-ring module (Rhode-Barbarigos 2010, simplified)",
+            pentagonal_tensegrity_ring(n_sides=5, radius=30.0, height=20.0),
         ),
     }
 

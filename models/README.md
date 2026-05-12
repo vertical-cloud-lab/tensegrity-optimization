@@ -16,6 +16,19 @@ cuboctahedron metamaterials) are rendered in
 
 ![Extended preview of additional tensegrity design families](../figures/tensegrity_models_extended_preview.png)
 
+A second follow-up Edison literature survey (task
+`6226a551-b46a-49b4-936a-bca600cd8d30`, May 2026; see
+[`edison-trajectories/2026-05-12-tensegrity-design-gaps-6226a551-b46a-49b4-936a-bca600cd8d30.md`](../edison-trajectories/2026-05-12-tensegrity-design-gaps-6226a551-b46a-49b4-936a-bca600cd8d30.md))
+identified 18 additional design families missing from the original
+survey.  The 4 most reconstructable-from-first-principles members of
+that gap list are committed here as parametric STLs (Snelson planar
+X-module, Pugh diamond pattern, Pugh zig-zag pattern, Rhode-Barbarigos
+pentagonal ring); the remaining families require source-paper
+figures/tables/supplementary materials and are listed under
+"Caveats and clarifications needed" below.
+
+![Gap-followup preview](../figures/tensegrity_models_gapfollowup_preview.png)
+
 ## Contents
 
 | File | Structure | Nodes | Struts | Cables | Notes |
@@ -33,6 +46,10 @@ cuboctahedron metamaterials) are rendered in
 | [`stl/patent_us6441801_antenna.stl`](stl/patent_us6441801_antenna.stl) | Knight et al. tensegrity antenna (US 6,441,801 B1) | 12 | 6 | 18 | Hexagonal upper platform / hexagonal lower base + 6 strut-tie pairs. Knight, Duffy, Crane US Pat. 6,441,801 B1 (2002). |
 | [`stl/bistable_double_prism.stl`](stl/bistable_double_prism.stl) | Bistable double-prism unit cell | 9 | 6 | 15 | Two T3 prisms joined at a shared compliant hinge ring (Intrigila et al., *Add. Manuf.* 2022). |
 | [`stl/cuboctahedron_tessellation.stl`](stl/cuboctahedron_tessellation.stl) | Cuboctahedron tessellation cell (simplified) | 13 | 6 | 36 | Single-block representation of Liu et al.'s 13-strut/96-cable bandgap-tunable tessellation (J. Mech. Phys. Solids 2019). |
+| [`stl/snelson_x_module.stl`](stl/snelson_x_module.stl) | Snelson planar X-module | 4 | 2 | 4 | Smallest planar tensegrity, seed of Snelson's X-piece weave / X-column compositions (Snelson US Pat. 3,169,611, 1965). Struts are z-offset so the two diagonals don't touch. |
+| [`stl/pugh_diamond_column.stl`](stl/pugh_diamond_column.stl) | Pugh "diamond" stacked column (3-bay T3) | 12 | 9 | 30 | Two saddle cables per strut → diamond-shaped side panels (Pugh 1976, ch. 3). |
+| [`stl/pugh_zigzag_column.stl`](stl/pugh_zigzag_column.stl) | Pugh "zig-zag" stacked column (3-bay T3) | 12 | 9 | 21 | Single saddle per strut with a "skip-1" jump → Z-fold side panels (Pugh 1976, ch. 3). |
+| [`stl/pentagonal_tensegrity_ring.stl`](stl/pentagonal_tensegrity_ring.stl) | Pentagonal tensegrity-ring module (Rhode-Barbarigos 2010, simplified) | 10 | 5 | 15 | Closed-ring "hollow-rope" module; basis for EPFL deployable tensegrity footbridge (Rhode-Barbarigos et al., Eng. Struct. 2010). |
 
 All STL files are **binary STL**, units in millimetres, with struts
 rendered as 5 mm-diameter cylinders (PLA / PETG) and cables rendered
@@ -113,6 +130,83 @@ If full validated geometries (with form-found coordinates and prestress
 states) are needed for any of the above, please flag and either
 (a) point at the relevant supplementary material, or
 (b) name a contact whose published code we can integrate.
+
+### Source materials needed for the remaining gap-followup families
+
+The Edison gap-followup survey (task `6226a551`) recommended 18 new
+families.  Four were buildable from first-principles geometric
+specifications alone and are committed in
+`figures/tensegrity_models_gapfollowup_preview.png`; the remaining
+high-priority ones require the following specific figures / tables /
+supplementary materials before they can be emitted as faithful STLs
+(direct links provided for convenience):
+
+- **Oster 2021 reentrant 3-periodic auxetic tensegrity** — needs the
+  vertex coordinates and connectivity tables from the supplementary
+  material of Oster, M. *et al.* "Reentrant 3-periodic tensegrity
+  metamaterials with auxetic response", paper preferred figures:
+  **Fig. 1 (unit-cell schematic), Fig. 2 (vertex-coordinate table),
+  Fig. S1-S4 (SI: full strut/cable connectivity)**.  Likely venue:
+  *Adv. Funct. Mater.* / *Sci. Adv.*; cited in our Edison survey as
+  Oster 2021.  Verified DOIs in the area:
+  doi:[10.1002/adfm.202106941](https://doi.org/10.1002/adfm.202106941)
+  (Bauer et al. *Adv. Funct. Mater.* 2021) and
+  doi:[10.1126/sciadv.aba9874](https://doi.org/10.1126/sciadv.aba9874)
+  (related 3-periodic tensegrity-lattice work).  Please confirm which
+  Oster paper is intended and send the PDF + SI.
+- **Pajunen 2019 impact-absorbing tensegrity cell** — needs the full
+  prestress-state ratios from Pajunen, K., Johanns, P., Pal, R. K.,
+  Rimoli, J. J., Daraio, C., "Design and impact response of
+  3D-printable tensegrity-inspired structures", *Mater. Design*
+  182:107966, 2019.  Required: **Fig. 2 (unit-cell geometry table),
+  Fig. 4 (strut/cable diameter ratios), Table 1 (prestress states)**.
+  PDF: doi:[10.1016/j.matdes.2019.107966](https://doi.org/10.1016/j.matdes.2019.107966)
+  (also on arXiv as 1812.10468).
+- **Rhode-Barbarigos pentagonal ring (full deployable variant)** —
+  the committed STL is a 1-layer 10-node simplification.  The full
+  15-node / 30-cable two-layer deployable hollow-rope module needs
+  Rhode-Barbarigos, L., Bel Hadj Ali, N., Motro, R., Smith, I. F. C.,
+  "Designing tensegrity modules for pedestrian bridges", *Eng.
+  Struct.* 32(4):1158-1167, 2010 — **Fig. 2 (module geometry),
+  Fig. 3 (node-numbering scheme), Table 1 (element lengths)**.
+  doi:[10.1016/j.engstruct.2009.12.042](https://doi.org/10.1016/j.engstruct.2009.12.042).
+  Companion paper: Rhode-Barbarigos *et al.*, *J. Struct. Eng.* 138(5):
+  539-548, 2012, doi:[10.1061/(ASCE)ST.1943-541X.0000485](https://doi.org/10.1061/(ASCE)ST.1943-541X.0000485)
+  (deployment trajectory).
+- **Hanaor double-layer tensegrity grid** — needs Hanaor, A.,
+  "Double-layer tensegrity grids as deployable structures", *Int. J.
+  Space Struct.* 8(1-2):135-143, 1993 — **Fig. 3 (square-base unit),
+  Fig. 7 (grid-assembly node connectivity)**.
+  doi:[10.1177/0266351193008001-216](https://doi.org/10.1177/0266351193008001-216).
+  Also: Hanaor 1987 *J. Struct. Eng.* 113(2):260-274,
+  doi:[10.1061/(ASCE)0733-9445(1987)113:2(260)](https://doi.org/10.1061/(ASCE)0733-9445(1987)113:2(260)).
+- **Levy/Suspen-dome** (Tianjin-arena lineage) — needs Levy, M. P.,
+  "Floating fabric over Georgia Dome", *Civ. Eng. ASCE* 61(11):34-37,
+  1991 (architectural drawing) and Kang, W. *et al.*, "Static and
+  seismic performance of suspen-domes", *Eng. Struct.* 25(13):
+  1685-1695, 2003 — **Fig. 2 (radial-vs-spatial cable layout),
+  Table 1 (cable-prestress vector)**.
+  doi:[10.1016/j.engstruct.2003.06.001](https://doi.org/10.1016/j.engstruct.2003.06.001).
+- **Tensegrity torus** — needs Kim, K., Agogino, A. K., Toghyan, A.,
+  Moon, D., Taneja, L., Agogino, A. M., "Robust learning of tensegrity
+  robot control for locomotion through form-finding", IROS 2015 —
+  **Fig. 2 (torus topology), Fig. 4 (node coords)**.
+  doi:[10.1109/IROS.2015.7354168](https://doi.org/10.1109/IROS.2015.7354168).
+- **DNA-origami tensegrity** — Liedl, T., Hogberg, B., Tytell, J.,
+  Ingber, D. E., Shih, W. M., "Self-assembly of three-dimensional
+  prestressed tensegrity structures from DNA", *Nat. Nanotechnol.*
+  5:520-524, 2010 — **Fig. 1c (strut/tendon coordinates),
+  Fig. S5-S7 (SI: scaffold routing)**.  Nano-scale; we'd only use
+  for topology, not for printing.
+  doi:[10.1038/nnano.2010.107](https://doi.org/10.1038/nnano.2010.107).
+- **US20240351370A1 six-bar wheel** (Skelton patent, 2024) —
+  the published US patent application PDF gives complete strut/cable
+  connectivity in Fig. 3 + Fig. 5: <https://patents.google.com/patent/US20240351370A1>.
+  No paywall; can be added in next pass without a request.
+
+If you can grab any of those PDFs / SI ZIPs (or share via the repo
+under `papers/`), the corresponding STL is then a 1-2 hour update —
+flag which subset is highest priority.
 
 ## Literature survey
 
