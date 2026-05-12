@@ -48,6 +48,7 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCAD="${HERE}/t3-prism.scad"
 STL="${HERE}/t3-prism.stl"
+STL_THICK="${HERE}/t3-prism-thick.stl"
 STL_STRUTS="${HERE}/t3-prism-struts.stl"
 STL_CABLES="${HERE}/t3-prism-cables.stl"
 PNG="${HERE}/t3-prism-iso.png"
@@ -66,6 +67,19 @@ BAMBU_URL="${BAMBU_URL:-https://github.com/bambulab/BambuStudio/releases/downloa
 echo "==> OpenSCAD render -> ${STL##*/} (single-material, both materials fused)"
 xvfb-run -a openscad -o "${STL}" --export-format=binstl "${SCAD}"
 
+# Thick-cable variant (cable_d 2.4 -> 3.5 mm) -- the print-failure-mode
+# section of README.md (and the Edison ANALYSIS) recommends 3.0-4.0 mm
+# to widen the top-cable bridges so PETG can span them and so Bambu
+# Studio's auto-support actually catches the overhangs (in the first
+# H2D test print with auto-support the 2.4 mm cables were thin enough
+# that auto-support skipped them; @achris0520 found scaling the model
+# to 1.3x re-enabled support generation on the strings, which is
+# equivalent to bumping cable_d by ~1.5x). 3.5 mm is the midpoint of
+# the recommended range.
+echo "==> OpenSCAD render -> ${STL_THICK##*/} (thick-cable variant, cable_d=3.5)"
+xvfb-run -a openscad -o "${STL_THICK}" --export-format=binstl \
+    -D 'cable_d=3.5' "${SCAD}"
+
 echo "==> OpenSCAD render -> ${STL_STRUTS##*/} (multi-material: rigid half / PLA, bed-centered)"
 xvfb-run -a openscad -o "${STL_STRUTS}" --export-format=binstl \
     -D 'part="struts"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
@@ -76,6 +90,8 @@ xvfb-run -a openscad -o "${STL_CABLES}" --export-format=binstl \
 
 echo "==> admesh manifold check"
 admesh -fundecvb "${SCRATCH}/t3-prism-clean.stl" "${STL}" \
+    | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
+admesh -fundecvb "${SCRATCH}/t3-prism-thick-clean.stl" "${STL_THICK}" \
     | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
 admesh -fundecvb "${SCRATCH}/t3-prism-struts-clean.stl" "${STL_STRUTS}" \
     | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
@@ -125,6 +141,35 @@ json.dump(d, open(p, 'w'), indent=2)
 " "$1"
 }
 
+patch_supports () {
+    # Enable tree (auto) supports on the flattened process profile.
+    #
+    # In the first H2D PETG print the BBL-default `enable_support=0` left
+    # the top-cable bridges (43 mm horizontal sub-mm strands) unsupported
+    # and the print spaghetti-failed at layer 362. The second print
+    # @me-madsen ran with supports on (Bambu Studio GUI default tree-auto)
+    # succeeded everywhere except the top "strings" -- BambuStudio's
+    # auto-support filtered those out because the 2.4 mm cables present
+    # too small an overhang area to trip the threshold. @achris0520
+    # confirmed scaling the model to 1.3x re-enabled support generation on
+    # the strings, which is geometrically equivalent to bumping cable_d
+    # from 2.4 mm to ~3.1 mm. We use the thick-cable STL (cable_d=3.5)
+    # together with these support settings to make sure auto-support
+    # actually catches the top-cable bridges.
+    python3 -c "
+import json, sys
+p = sys.argv[1]
+d = json.load(open(p))
+d['enable_support']                 = '1'
+d['support_type']                   = 'tree(auto)'
+d['support_threshold_angle']        = '30'
+d['support_on_build_plate_only']    = '0'
+d['support_critical_regions_only']  = '0'
+d['bridge_no_support']              = '0'
+json.dump(d, open(p, 'w'), indent=2)
+" "$1"
+}
+
 slice_bambu () {
     # Produce TWO H2D artifacts in one call:
     #   1. <tag>.3mf            — project file (no `--slice`), re-importable
@@ -132,12 +177,21 @@ slice_bambu () {
     #   2. <tag>-PETG.gcode.3mf — sliced print job (with `--slice 1` and IDEX
     #                              manual filament-map for the H2D), uploaded
     #                              to the printer over LAN/cloud.
+    # Optional 6th arg: STL path override (defaults to ${STL}).
+    # Optional 7th arg: "supports" to enable tree-auto supports.
     local tag="$1" machine_leaf="$2" process_leaf="$3" filament_leaf="$4"
+    local stl_in="${5:-${STL}}"
+    local supports="${6:-}"
     local m="${SCRATCH}/${tag}_machine_flat.json"
     local p="${SCRATCH}/${tag}_process_flat.json"
     local f="${SCRATCH}/${tag}_filament_flat.json"
     local proj_3mf="t3-prism.${tag}.3mf"
-    local sliced_3mf="t3-prism.${tag}-PETG.gcode.3mf"
+    local sliced_3mf
+    if [[ "${supports}" == "supports" ]]; then
+        sliced_3mf="t3-prism.${tag}-PETG-supports.gcode.3mf"
+    else
+        sliced_3mf="t3-prism.${tag}-PETG.gcode.3mf"
+    fi
     local proj_outdir="${SCRATCH}/proj_${tag}"
     local sliced_outdir="${SCRATCH}/sliced_${tag}"
 
@@ -146,6 +200,10 @@ slice_bambu () {
     flatten process  "${process_leaf}"  "${p}"
     flatten filament "${filament_leaf}" "${f}"
     patch_bed "${m}"
+    if [[ "${supports}" == "supports" ]]; then
+        echo "==> [${tag}] Patch process profile: enable tree(auto) supports"
+        patch_supports "${p}"
+    fi
 
     echo "==> [${tag}] BambuStudio CLI -> ${proj_3mf} (project, re-importable)"
     rm -rf "${proj_outdir}" && mkdir -p "${proj_outdir}"
@@ -156,7 +214,7 @@ slice_bambu () {
         --load-filaments "${f}" \
         --export-3mf "${proj_3mf}" \
         --outputdir "${proj_outdir}" \
-        "${STL}" 2>&1 | tail -2
+        "${stl_in}" 2>&1 | tail -2
     cp "${proj_outdir}/${proj_3mf}" "${SLICES_DIR}/${proj_3mf}"
 
     echo "==> [${tag}] BambuStudio CLI -> ${sliced_3mf} (sliced print job)"
@@ -172,7 +230,7 @@ slice_bambu () {
         --slice 1 \
         --export-3mf "${sliced_3mf}" \
         --outputdir "${sliced_outdir}" \
-        "${STL}" 2>&1 | tail -2
+        "${stl_in}" 2>&1 | tail -2
 
     # Surface the slice stats (return_code, time, weight) and copy the 3MF in.
     python3 -c "
@@ -255,6 +313,20 @@ slice_bambu "H2D" \
     "0.20mm Standard @BBL H2D" \
     "Bambu PETG Basic @BBL H2D 0.4 nozzle"
 
+# Thick-cable variant + tree(auto) supports. Addresses the spaghetti
+# failure on the original print and the "auto-support skipped the top
+# strings" failure mode @me-madsen / @achris0520 reported on the
+# follow-up GUI re-slice (PR #35 comment 4426810002): cable_d 2.4 -> 3.5
+# widens the bridges, and the patched process profile turns on
+# tree(auto) supports with `support_critical_regions_only=0` so even
+# the relatively-thin top cables register as overhangs.
+slice_bambu "H2D-thick" \
+    "Bambu Lab H2D 0.4 nozzle" \
+    "0.20mm Standard @BBL H2D" \
+    "Bambu PETG Basic @BBL H2D 0.4 nozzle" \
+    "${STL_THICK}" \
+    supports
+
 # Multi-material H2D variant (PLA struts + PETG cables). PLA gives the
 # rigid compression skeleton (eventually keeps its role); PETG handles the
 # tension cables and is the placeholder for the eventual TPU swap. The
@@ -269,12 +341,16 @@ slice_bambu_mm "H2D-MM" \
 echo
 echo "==> Done."
 echo "    STL:        ${STL}"
+echo "    STL thick:  ${STL_THICK}"
 echo "    STL struts: ${STL_STRUTS}"
 echo "    STL cables: ${STL_CABLES}"
 echo "    Iso:        ${PNG}"
 echo "    Single-material (PETG, full pipeline incl. sliced print job):"
 echo "      Project:  ${SLICES_DIR}/t3-prism.H2D.3mf            (Bambu Studio re-importable)"
 echo "      Sliced:   ${SLICES_DIR}/t3-prism.H2D-PETG.gcode.3mf (printer upload)"
+echo "    Thick-cable variant (cable_d=3.5 mm, tree(auto) supports on):"
+echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-thick.3mf                       (Bambu Studio re-importable)"
+echo "      Sliced:   ${SLICES_DIR}/t3-prism.H2D-thick-PETG-supports.gcode.3mf   (printer upload)"
 echo "    Multi-material (PLA struts + PETG cables, IDEX, project only):"
 echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-MM.3mf         (open in Bambu Studio,"
 echo "                                                           Slice + Send to printer)"
