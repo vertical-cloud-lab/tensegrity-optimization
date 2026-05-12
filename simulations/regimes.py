@@ -46,7 +46,7 @@ class Regime:
     radius_m: float               # T-prism circumscribing radius
     height_m: float               # T-prism height
     strut_radius_m: float         # strut cross-section radius
-    strut_density_kgm3: float     # PETG ≈ 1270, Al-6061 ≈ 2700
+    strut_density_kgm3: float     # PLA ≈ 1240 (default per #45), PETG ≈ 1270
     cable_stiffness_Npm: float    # representative TPU tendon spring const.
     cable_damping_Nspm: float
     cable_pretension_frac: float   # rest = (1 - frac) * L0; frac=0 -> slack
@@ -68,7 +68,8 @@ CRUTCH = Regime(
     radius_m=0.012,               # 24 mm OD envelope (issue #18 task 7a21d00e)
     height_m=0.025,
     strut_radius_m=0.0015,
-    strut_density_kgm3=1270.0,    # PETG
+    strut_density_kgm3=1240.0,    # PLA (per #45; peer-reviewed PLA-TPU bond
+                                  # data exists, no published PETG-TPU data)
     cable_stiffness_Npm=2.0e3,    # soft TPU tendon
     cable_damping_Nspm=4.0,
     cable_pretension_frac=0.05,   # 5% prestrain; engages tendons in compression
@@ -92,8 +93,8 @@ NASA_LANDER = Regime(
     radius_m=0.10,                # ≈ deployable / 1U CubeSat scale
     height_m=0.20,
     strut_radius_m=0.006,
-    strut_density_kgm3=1270.0,    # PETG (heritage NASA prefers PEI/PEKK;
-                                   # PETG is a printability stand-in)
+    strut_density_kgm3=1240.0,    # PLA (per #45; printability stand-in for
+                                   # heritage NASA PEI/PEKK; PETG/PEEK Phase-2)
     cable_stiffness_Npm=8.0e3,
     cable_damping_Nspm=5.0,
     cable_pretension_frac=0.05,

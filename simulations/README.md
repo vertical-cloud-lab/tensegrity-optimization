@@ -47,7 +47,8 @@ simulations/
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 ├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
 ├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
-├── render_regimes.py     # 3D slow-mo GIF/MP4 of both regime drops
+├── render_regimes.py     # 3D GIF/MP4 of both regime drops (suspended payload)
+├── render_spotchecks.py  # Sanity-check renders: capsule, bare prism, suspended payload
 └── outputs/
     ├── mujoco_drop_energy.png
     ├── mujoco_drop_data.npz
@@ -119,15 +120,33 @@ strain (red = tensioned, blue = slack), so the videos visualise both
 the rigid-body deformation on impact and the time-dependent cable
 stress gradient.
 
+`render_spotchecks.py` produces three sanity-check renders that should
+be eyeballed first whenever the render pipeline is touched (per PR
+comment 4427560261, the original `render_regimes.py` had penetration
+and free-plate punch-through bugs that were obvious in motion but
+hard to catch from time-series numbers alone): a single capsule drop,
+a bare T-prism drop, then the prism + suspended payload.
+
 | Scene | Output stem | Notes |
 |---|---|---|
 | 1 m drop, basic prism | `outputs/mujoco_drop.{gif,mp4}` | 60 fps, 1.5 s of sim, tracks COM. |
-| Crutch-tip regime | `outputs/regime_crutch_tip_drop.{gif,mp4}` | 75 kg payload @ 1.4 m/s; 25 ms of sim played back as 4 s slow-motion. |
-| NASA-lander regime | `outputs/regime_nasa_lander_drop.{gif,mp4}` | 5 kg payload @ 9.8 m/s (M23 max ΔV); 40 ms of sim slow-mo. |
+| Spot-check 1: single capsule | `outputs/spotcheck_capsule.{gif,mp4}` | Validates floor + camera + OSMesa. |
+| Spot-check 2: bare T-prism | `outputs/spotcheck_bare_prism.{gif,mp4}` | Validates struts + tendons render with no penetration. |
+| Spot-check 3: suspended payload | `outputs/spotcheck_suspended_plate.{gif,mp4}` | Validates the SUPERball-style internal-payload model used by `render_regimes.py`. |
+| Crutch-tip regime | `outputs/regime_crutch_tip_drop.{gif,mp4}` | 75 kg payload suspended inside Ø 24 mm cell; dropped from rest at low height. |
+| NASA-lander regime | `outputs/regime_nasa_lander_drop.{gif,mp4}` | 5 kg payload suspended inside Ø 200 mm cell; dropped from rest at low height. |
+
+The two regime renders deliberately use a *visualisation-only* model
+(see `build_render_xml` in `render_regimes.py`) that lifts the prism
+clear of the floor and suspends the payload via 6 internal TPU tendons
+(SUPERball / NASA TBR architecture, also used in `newton_drop.py`). For
+*quantitative* metric extraction (peak g, pulse FWHM, SEA, BO sweep),
+use `run_regimes.py` instead — it intentionally skips the free-fall by
+starting at impact velocity to keep nsteps small.
 
 Run via `MUJOCO_GL=osmesa python3 render_mujoco_drop.py` (or
-`render_regimes.py`).  Requires `imageio[ffmpeg]` for the MP4; the GIF
-falls back to Pillow.
+`render_regimes.py` / `render_spotchecks.py`).  Requires
+`imageio[ffmpeg]` for the MP4; the GIF falls back to Pillow.
 
 ## Application regimes (issues #18 / #14 / #16 / #28)
 
