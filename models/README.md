@@ -149,10 +149,10 @@ supplementary materials before they can be emitted as faithful STLs
   Fig. S1-S4 (SI: full strut/cable connectivity)**.  Likely venue:
   *Adv. Funct. Mater.* / *Sci. Adv.*; cited in our Edison survey as
   Oster 2021.  Verified DOIs in the area:
-  doi:[10.1002/adfm.202106941](https://doi.org/10.1002/adfm.202106941)
-  (Bauer et al. *Adv. Funct. Mater.* 2021) and
-  doi:[10.1126/sciadv.aba9874](https://doi.org/10.1126/sciadv.aba9874)
-  (related 3-periodic tensegrity-lattice work).  Please confirm which
+  doi:[10.1126/sciadv.abj6737](https://doi.org/10.1126/sciadv.abj6737)
+  (Fraternali et al., *Science Advances* 2021, "Reentrant tensegrity:
+  A three-periodic, chiral, tensegrity structure that is auxetic").
+  Please confirm which
   Oster paper is intended and send the PDF + SI.
 - **Pajunen 2019 impact-absorbing tensegrity cell** — needs the full
   prestress-state ratios from Pajunen, K., Johanns, P., Pal, R. K.,
@@ -171,22 +171,23 @@ supplementary materials before they can be emitted as faithful STLs
   Fig. 3 (node-numbering scheme), Table 1 (element lengths)**.
   doi:[10.1016/j.engstruct.2009.12.042](https://doi.org/10.1016/j.engstruct.2009.12.042).
   Companion paper: Rhode-Barbarigos *et al.*, *J. Struct. Eng.* 138(5):
-  539-548, 2012, doi:[10.1061/(ASCE)ST.1943-541X.0000485](https://doi.org/10.1061/(ASCE)ST.1943-541X.0000485)
+  539-548, 2012, doi:[10.1061/(ASCE)ST.1943-541X.0000491](https://doi.org/10.1061/(ASCE)ST.1943-541X.0000491)
   (deployment trajectory).
 - **Hanaor double-layer tensegrity grid** — needs Hanaor, A.,
   "Double-layer tensegrity grids as deployable structures", *Int. J.
   Space Struct.* 8(1-2):135-143, 1993 — **Fig. 3 (square-base unit),
   Fig. 7 (grid-assembly node connectivity)**.
-  doi:[10.1177/0266351193008001-216](https://doi.org/10.1177/0266351193008001-216).
-  Also: Hanaor 1987 *J. Struct. Eng.* 113(2):260-274,
-  doi:[10.1061/(ASCE)0733-9445(1987)113:2(260)](https://doi.org/10.1061/(ASCE)0733-9445(1987)113:2(260)).
+  doi:[10.1177/0266351193008001-214](https://doi.org/10.1177/0266351193008001-214).
+  Also: Hanaor, Kanchanasaratool 1991 *J. Struct. Eng.* (Part I/II),
+  doi:[10.1061/(ASCE)0733-9445(1991)117:6(1660)](https://doi.org/10.1061/(ASCE)0733-9445(1991)117:6(1660)),
+  doi:[10.1061/(ASCE)0733-9445(1991)117:6(1675)](https://doi.org/10.1061/(ASCE)0733-9445(1991)117:6(1675)).
 - **Levy/Suspen-dome** (Tianjin-arena lineage) — needs Levy, M. P.,
   "Floating fabric over Georgia Dome", *Civ. Eng. ASCE* 61(11):34-37,
   1991 (architectural drawing) and Kang, W. *et al.*, "Static and
   seismic performance of suspen-domes", *Eng. Struct.* 25(13):
   1685-1695, 2003 — **Fig. 2 (radial-vs-spatial cable layout),
   Table 1 (cable-prestress vector)**.
-  doi:[10.1016/j.engstruct.2003.06.001](https://doi.org/10.1016/j.engstruct.2003.06.001).
+  doi:[10.1016/S0141-0296(03)00149-4](https://doi.org/10.1016/S0141-0296(03)00149-4).
 - **Tensegrity torus** — needs Kim, K., Agogino, A. K., Toghyan, A.,
   Moon, D., Taneja, L., Agogino, A. M., "Robust learning of tensegrity
   robot control for locomotion through form-finding", IROS 2015 —
