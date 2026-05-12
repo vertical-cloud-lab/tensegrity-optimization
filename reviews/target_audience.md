@@ -163,6 +163,45 @@ known so far:**
 - **Larry L. Howell (BYU)** — same institution; do *not* suggest.
 - **Brian Jensen (BYU)** — same institution; do *not* suggest.
 
+### 3d′. "Lander"-style designs / drag-free impact survival (egg-drop demo, PR #47)
+
+Source: Edison `LITERATURE_HIGH` trajectories committed on branch
+`copilot/explore-egg-drop-idea` (PR #47): `egg-drop-tensegrity-1b90208d.md`
+(task `1b90208d-3555-4479-9db0-512d67e69f5f`) and the drag-free /
+V·m-benchmark follow-up `egg-drop-followup-f41b7034.md` (task
+`f41b7034-439e-45de-b97f-4bf1d85b9811`). These two trajectories surfaced a
+specific cluster of researchers who have actually published peer-reviewed
+*lander*- or *drag-free-drop*-flavored tensegrity work — distinct from the
+crutch-tip / quasi-static SEA cluster in §3b. **Best contacts to reach out to
+about lander-style designs and studies, ranked by directness of fit:**
+
+| Rank | Contact | Affiliation | Why they're the right person for "lander"-style outreach |
+|---|---|---|---|
+| 1 | **Julian J. Rimoli** | Georgia Tech | *On the impact tolerance of tensegrity-based planetary landers* (AIAA SciTech, 2016) — the canonical peer-reviewed virtual-drop study of a tensegrity lander. Also senior author on Bauer 2021 *Adv. Mater.* tensegrity-metamaterial paper and Pajunen 2019 *Mater. & Des.* impact-response paper. *Single best person to contact.* |
+| 2 | **Adrian K. Agogino** | NASA Ames Research Center | NIAC SUPERball Phase 2 final report (2018) — the only published egg-payload tensegrity drop with quantitative deceleration data (~10 m, <25 G simulated at 15 m/s). Direct egg-drop heritage. |
+| 3 | **Vytas SunSpiral** | formerly NASA Ames; now Stoke Space / RGo Robotics | NIAC SUPERball PI; co-author on Agogino 2018 and SunSpiral 2015 NIAC reports. Most lineage-aware contact for the SUPERball-class architecture our demo inherits from. |
+| 4 | **Mark W. Mueller** | UC Berkeley HiPeRLab | Zha, Wu, Dimick, Mueller, *IEEE/ASME Trans. Mechatronics* (2024) and Zha et al., IROS (2020) — collision-resilient icosahedron tensegrity aerial vehicle; the most recent peer-reviewed hardware/control work on tensegrity impact survival. |
+| 5 | **Andrew (AS) Zhang** + **Brian Cera** | UC Berkeley (Agogino group, lineage) | Zhang, *Design of Impact-Resistant Tensegrity Landers* (UC Berkeley dissertation, 2022) — best instrumented public dataset (10 m / 11.8 m/s / 155 g; 20 m / 14.3 m/s / 235 g; ~20 reusable drops). Cera + Zhang + Agogino, *Characterization of six-bar spherical tensegrity lattice topologies* (2018). |
+| 6 | **Massimo Vespignani** | formerly NASA Ames | Vespignani et al., *Design of SUPERball v2* (2018) — fully actuated 2 m / 36 kg six-bar with cable-stiffness sweep; useful for the "what cable stiffness do we pick?" framing of our BO loop. |
+| 7 | **Robert E. Skelton** / **Cornel Sultan** | TAMU / Virginia Tech | Class-1 tensegrity lander concepts, foundational form-finding theory. Best contact if outreach is framed as theory/rigidity rather than hardware. |
+| 8 | **Jamshid Bayandor** | Virginia Tech (CRASH Lab) | TANDEM tensegrity-lander simulation (2017): 180–260 kg payloads, 1 m diameter, 10–30 m/s, 35–224 g peak. Best contact for *scaled-up* lander work. |
+| 9 | **Jing Zhang** *(et al., Harbin Institute of Technology)* | HIT | *Design and cushioning performance analysis of spherical tensegrity structures*, *Aerospace* (2025) — class-II spherical tensegrity with centrally suspended egg payload, drops to 5 m, failure at 6 m. Most recent peer-reviewed egg-payload drop analog. |
+| 10 | **Madhumati Anand** | (per arXiv 2212.11625, 2022) | Biodegradable tensegrity (wicker/bamboo + jute + coir) protecting fragile medical payloads in 25–75 m drops onto pavement — single-use, holds the highest published drag-free survival height for a fragile payload. Best contact for the *biodegradable / single-use* framing. |
+
+**Suggested first-contact set (3 names):** Rimoli (peer-reviewed
+lander-mechanics anchor), Agogino (direct egg-drop SUPERball heritage),
+Mueller (newest collision-resilient hardware). Rimoli already appears in §3b
+as a JMD candidate reviewer — for the egg-drop / lander demo, the framing
+should foreground his AIAA 2016 lander paper and Pajunen 2019 *Mater. & Des.*
+impact paper rather than the Bauer 2021 metamaterial work.
+
+**Implication for the manuscript:** none of these names overlaps with the
+crutch-tip / assistive-device cluster, and only Rimoli + Pajunen are
+shared with the JMD / SMS pools above. If the demo gets folded into the
+manuscript as a secondary case study, expect the AE to add a *space-systems
+or aerospace-mechanisms* reviewer drawn from this list (most plausibly Rimoli
+or Mueller via the IEEE/ASME T-Mech route).
+
 ### 3d. Backup venue: Smart Materials and Structures (IOP)
 
 Edison flagged the SMS metamaterials / phononic-crystals and smart structural
@@ -236,6 +275,14 @@ candidates for the named-reviewer table in §3b.
   Adv. Mater./Sci. Adv./Addit. Manuf./Extreme Mech. Lett./npj Comput. Mater./
   S&MO/J. Eng. Mech. papers, COI screen, SMS analog, JMD-rejection-reason
   analysis).
+- **Edison `LITERATURE_HIGH` tasks `1b90208d-3555-4479-9db0-512d67e69f5f` and
+  `f41b7034-439e-45de-b97f-4bf1d85b9811`** (egg-drop / drag-free lander
+  benchmark, branch `copilot/explore-egg-drop-idea`, PR #47):
+  `edison-trajectories/egg-drop-tensegrity-1b90208d.{md,json}` and
+  `edison-trajectories/egg-drop-followup-f41b7034.{md,json}` — primary source
+  for §3d′ (lander-style outreach contacts: Rimoli, Agogino, SunSpiral,
+  Mueller, Zhang/Cera, Vespignani, Skelton/Sultan, Bayandor, Jing Zhang,
+  Anand).
 - `manuscript/references.bib` (PR #20, branch `copilot/create-manuscript-template`).
 - `edison-trajectories/01..04*.md` (branch `copilot/explore-impact-absorption-crutches`,
   PR #18 lineage).
