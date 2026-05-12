@@ -202,6 +202,148 @@ manuscript as a secondary case study, expect the AE to add a *space-systems
 or aerospace-mechanisms* reviewer drawn from this list (most plausibly Rimoli
 or Mueller via the IEEE/ASME T-Mech route).
 
+### 3d″. First-contact talking points (draft sentences for outreach emails)
+
+Drafted in response to PR comment 4427252364: "what aspects would be best
+to seek feedback/help about? Consider all PRs in this repo. For example,
+tech transfer, what some of the real-world challenges are, any immediate
+'gotchas' that come to mind. Draft just a couple sentences each. ... Is
+there also some way they could contribute collaboratively that comes to
+mind? For example, external validation."
+
+**Throwaway sentences only — expect to rewrite per recipient.** A
+companion Edison `LITERATURE_HIGH` query (task
+`f18aca01-00bb-4ca7-a8e9-f6312dfaaff7`, submitted 2026-05-12) was sent
+to enumerate per-archetype asks anchored to each contact's own
+publications; results will land at
+`edison-trajectories/2026-05-12-outreach-topics-f18aca01-*.{md,json}`.
+
+The aspects below are synthesized across this PR, PR #20 (manuscript),
+PR #28 (Lansmont M23 + QTec/LDV instrumentation), PR #38/#43 (PETG-TPU
+joint design + CAD review), and PR #47 (egg-drop demo).
+
+#### A. Technical / scientific feedback to seek
+
+1. **Sim-to-experiment fidelity gap on impact.** "Our rigid-strut
+   tensegrity sims (MuJoCo / PyBullet / Newton-XPBD) show peak-g is
+   essentially insensitive to cable stiffness because floor-contact
+   stiffness dominates the impulse, while SEA varies by ~10× across
+   three decades of cable stiffness. Before we invest in DiffPD or
+   PolyFEM+IPC, does your group's experience suggest a cheaper
+   intermediate (e.g. lumped-mass + Hertzian contact, or a calibrated
+   floor-stiffness term in a rigid solver) is good enough for BO inner
+   loops?" *Best contact: Rimoli (Pajunen 2019 Mater. & Des. impact
+   data); Mueller (collision-resilient hardware control loop).*
+2. **PETG–TPU multi-material interface characterization.** "We could
+   not find peer-reviewed PETG-TPU bond data — only PLA-TPU
+   (Lopes 2018, Zhang 2026, Ruwais 2025: butt 6.5 MPa, alt-deposition
+   7.4 MPa, mechanical-interlock shear ~24 MPa). Do you have, or know
+   of, characterization data for PETG-TPU butt / overmold / barbed
+   joints printed on a Bambu H2D-class IDEX, and is the PLA-TPU
+   shear-vs-interlock ratio a defensible extrapolation?" *Best
+   contact: Valdevit / Crook (Bauer 2021 Adv. Mater. metamaterials),
+   or any AM lab with multi-material FFF instrumentation.*
+3. **Standardized drag-free egg-drop benchmark.** "No formal
+   egg-drop benchmark exists in the literature; the SUPERball NIAC
+   1-foot staircase, Zhang 2022 fixed-height, and Anand 2022
+   single-altitude protocols are not directly comparable. We are
+   proposing a Bruceton h_crit (n>=20, Δh = 0.5 m, randomized
+   orientation) on a 200 mm bounding-sphere / <=500 g / 55 g egg
+   shared-constraint set. Would your group co-author or endorse this
+   as a community protocol?" *Best contact: Agogino + SunSpiral
+   (SUPERball NIAC); Jing Zhang (HIT, Aerospace 2025).*
+4. **Class-1 vs class-2 classification under FFF print constraints.**
+   "Our printable strut diameter floor (≥2.0 mm at 0.4 mm nozzle) plus
+   tendon Ø in [1.2, 6.0] mm pushes us toward class-2 (struts touch)
+   for the smallest unit cells — does this materially change the
+   form-finding and impact-mechanics intuition that has been built up
+   on class-1 SUPERball geometries?" *Best contact: Skelton / Sultan
+   (class-1 theory); Cera + Zhang (six-bar lattice topologies, 2018).*
+5. **BO acquisition for noisy h_crit.** "h_crit from a Bruceton
+   staircase is a noisy ordinal observation, not a continuous
+   objective. Have you found a single-fidelity GP + qNEI workable
+   here, or do we need a censored / Bernoulli observation model and a
+   multi-fidelity stack (cheap rigid-strut sim → DiffPD → physical
+   drop)?" *Best contact: Mueller (HW/control noise modeling);
+   Bayandor (TANDEM scaled-payload sim).*
+
+#### B. Tech-transfer / commercialization angles
+
+1. **NIAC successor / NASA SBIR-STTR space systems.** "The SUPERball
+   NIAC ended in 2018; is there appetite at NASA Ames or via a SBIR
+   topic for an FFF-printable, BO-optimized successor demo at the
+   200 mm scale that doesn't require custom rod stock?" *Best
+   contact: SunSpiral, Agogino, Vespignani.*
+2. **DoT / FAA drone-cargo airdrop and biomedical sample drop.**
+   "Anand 2022 demonstrated 75 m biodegradable tensegrity drops for
+   medical payloads. Would a reusable FFF-printable 200 mm version
+   be of interest to a drone-cargo or rural-clinic sample-transport
+   program?" *Best contact: Anand; Mueller (HiPeRLab UAV pipeline).*
+3. **Assistive-device OEM pull (PR #20).** "Our primary
+   application thread is a crutch-tip / orthotic energy-absorber.
+   Is there a lab-to-OEM bridge (Permobil, Ottobock, Össur) you've
+   used to take a tensegrity-derived component into a clinical
+   pilot?" *Best contact: any with biomechanics / rehab adjacency;
+   most likely Mueller via the BYU MRG biomechanics audience.*
+
+#### C. Immediate "gotchas" to invite the recipient to call out
+
+1. **Floor-contact stiffness swamps the cable signal.** "We expect
+   you to push back on impact-mechanics claims drawn from a
+   rigid-strut + tendon model; we will pre-empt by showing the
+   3-decade cable-stiffness sweep in which peak-g moves <2%."
+2. **TPU 85A creep shifts prestress between drops.** "Our reusability
+   FoM (N_reuse) is sensitive to viscoelastic relaxation of the TPU
+   tendons; we currently re-tension between drops and have not
+   characterized the relaxation curve."
+3. **Bambu H2D filament-swap interface as the dominant failure
+   mode.** "Strut-tendon interface delamination at the IDEX hand-off
+   is our most common print failure; this is upstream of any joint
+   topology choice (anchor-bulb vs dovetail vs barbed rebar)."
+4. **Bruceton staircase needs randomized orientations.** "A worst-case
+   orientation alone is not a defensible h_crit, and isotropy claims
+   for 6-bar tensegrity rest on Zhang 2022's three-orientation
+   sweep — we need a larger orientation set."
+5. **Embedded-egg / mid-print egg fixturing pitfalls.** "Mid-print
+   embedding cooks shells at PETG print temps; we use post-print TPU
+   85A cradles, and would value a sanity check on cradle compliance
+   vs egg fracture envelope (Trnka 2012: 24.6-53.5 N, weakest at
+   equator)."
+
+#### D. Collaborative-contribution mechanisms
+
+1. **External validation against published datasets.** Re-run our BO
+   loop's "best" geometry through their solver of record (e.g.
+   Rimoli's bar-buckling sim, Vespignani's SUPERball v2 model,
+   Bayandor's TANDEM solver) and report the cross-tool delta as a
+   joint short paper or supplementary.
+2. **Inter-lab specimen exchange.** Print 5-10 of our top-of-curve
+   geometries on the Bambu H2D and ship to UC Berkeley HiPeRLab /
+   NASA Ames / Georgia Tech for independent drop testing on their
+   instrumented rigs (Agogino-style staircase, Mueller HiPeRLab
+   pendulum, etc.).
+3. **Instrument-time swap.** Trade time on our Lansmont M23 +
+   Polytec / QTec LDV (PR #28; closest analog Grétarsson & Lindell
+   2023) for time on a partner's high-speed video / DIC / shake table.
+4. **Shared standardized egg-drop benchmark.** Co-author the
+   200 mm / 500 g / 55 g / Bruceton-staircase protocol so subsequent
+   tensegrity-vs-foam-vs-lattice papers report comparable numbers.
+5. **GitHub-hosted reproducible BO loop.** Publish the geometry-→-print-
+   →-drop-→-update pipeline as a reusable Ax/BoTorch + Newton + slicer
+   recipe so collaborators can swap in their own objective and get a
+   first BO trajectory in <1 day.
+6. **Co-supervised undergraduate / capstone or REU project.** A
+   well-bounded scope (e.g. "characterize PETG-TPU barbed-joint pull-
+   out vs barb count") fits a one-semester student project at either
+   end and gives both labs a co-authored publication.
+7. **Joint workshop / invited session.** Propose a session at IDETC
+   (DAC + DfMLC), SMASIS, or AIAA SciTech on "BO-optimized
+   tensegrity / metamaterial impact absorbers — what is and isn't
+   transferable across labs?"
+8. **Cross-citation in revision.** Lowest-cost ask: explicit pointer
+   to their most directly relevant paper in our intro / discussion in
+   exchange for a comment on a draft section.
+
 ### 3d. Backup venue: Smart Materials and Structures (IOP)
 
 Edison flagged the SMS metamaterials / phononic-crystals and smart structural
