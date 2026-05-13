@@ -289,6 +289,23 @@ slice_bambu_mm "H2D-MM" \
     "Bambu PLA Basic @BBL H2D" \
     "Bambu PETG Basic @BBL H2D 0.4 nozzle"
 
+# Multi-material H2D variant with the materials swapped: PETG struts +
+# **PLA cables**. Requested in PR #35 comment 4445480059 ("create a
+# version of the T3-prism with the cables made of PLA"). PLA on the
+# tension members gives a much stiffer "string" (PLA E ≈ 3.3 GPa vs
+# PETG E ≈ 2 GPa) and lets the team A/B-test which polymer pair best
+# previews the eventual TPU 85A swap. Filament order is swapped relative
+# to `H2D-MM`: f1 = PETG (struts/extruder 1), f2 = PLA (cables/extruder
+# 2). The mechanical-interlock-at-the-joint discussion (TPU "glove"
+# wrapping the strut ends) is being tracked separately in PR #39 — this
+# slice keeps the same parametric SCAD geometry and just swaps the
+# per-part filament assignment.
+slice_bambu_mm "H2D-MM-PLAcables" \
+    "Bambu Lab H2D 0.4 nozzle" \
+    "0.20mm Standard @BBL H2D" \
+    "Bambu PETG Basic @BBL H2D 0.4 nozzle" \
+    "Bambu PLA Basic @BBL H2D"
+
 echo
 echo "==> Done."
 echo "    STL:        ${STL}"
@@ -300,4 +317,8 @@ echo "      Project:  ${SLICES_DIR}/t3-prism.H2D.3mf            (Bambu Studio re
 echo "      Sliced:   ${SLICES_DIR}/t3-prism.H2D-PETG.gcode.3mf (printer upload)"
 echo "    Multi-material (PLA struts + PETG cables, IDEX, project only):"
 echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-MM.3mf         (open in Bambu Studio,"
+echo "                                                           Slice + Send to printer)"
+echo "    Multi-material swap (PETG struts + PLA cables, IDEX, project only):"
+echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-MM-PLAcables.3mf"
+echo "                                                          (open in Bambu Studio,"
 echo "                                                           Slice + Send to printer)"
