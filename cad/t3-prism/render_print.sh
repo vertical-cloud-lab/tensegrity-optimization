@@ -126,23 +126,52 @@ json.dump(d, open(p, 'w'), indent=2)
 }
 
 enable_supports () {
-    # Enable supports in a flattened process profile. After the first H2D PETG
-    # print (no supports) spaghetti'd on the top-cable bridge and the user's
-    # follow-up (auto-supports, only attached to the struts) still left the
-    # top cables waving, we explicitly turn supports ON and pick auto-detected
-    # tree(auto) supports. Bambu Studio's auto-support logic is conservative
-    # at cable_d=2.4 mm (it skipped the cables), so even with cable_d=3.0 mm
-    # we force \`enable_support=1\` and \`support_threshold_angle=30\` to make
-    # sure the horizontal top cables get scaffolded.
+    # Enable supports in a flattened process profile. Iteration history:
+    #
+    #   * 9f28b57: turned supports ON with `support_threshold_angle=30`.
+    #     Caught the horizontal top cables (90° overhang) but skipped every
+    #     near-vertical member.
+    #   * THIS REVISION (PR #35 comment 4464152505): the user's photo of the
+    #     scaled-up print shows supports only under the lower triangle and
+    #     under the horizontal top cables — nothing scaffolding the three
+    #     struts (B_i -> T_i) or the three saddle cables (B_{i+1} -> T_i),
+    #     which then wave during printing because TPU 85A can't hold itself.
+    #
+    # Geometry at scale_factor=1.5 (`R=30`, `H=75`): the strut chord between
+    # B_i and T_i has horizontal run = 2*R*sin(30°) = 30 mm and vertical run
+    # = 75 mm, so the strut tilts only ~21.8° from vertical (~68.2° from
+    # horizontal). Bambu's `support_threshold_angle` is the *overhang angle
+    # from vertical*; a feature gets supports when its tilt EXCEEDS the
+    # threshold. With the default 30° threshold the strut at 21.8° falls
+    # BELOW the trigger, so the slicer skips it entirely. Saddle cables sit
+    # in the same regime.
+    #
+    # Fix: drop the threshold to 10° so anything tilted more than 10° from
+    # vertical is scaffolded (catches all struts + saddles + top cables),
+    # densify the tree branches (`tree_support_branch_distance` 5.0 -> 2.0
+    # so multiple branches encircle each thin pillar instead of one lonely
+    # branch per region), beef up the trunks (`tree_support_branch_diameter`
+    # 2.0 -> 3.0, `tree_support_wall_count` 0 -> 2 for stiffer scaffolding
+    # against the TPU pulling sideways), and disable
+    # `support_critical_regions_only` so the slicer doesn't restrict
+    # supports to the most-extreme overhangs and skip everything in
+    # between. Adds two interface layers (`support_interface_top_layers`)
+    # so removing the supports leaves a cleaner cable surface.
     python3 -c "
 import json, sys
 p = sys.argv[1]
 d = json.load(open(p))
-d['enable_support']           = '1'
-d['support_type']             = 'tree(auto)'
-d['support_threshold_angle']  = '30'
-d['support_on_build_plate_only'] = '0'
-d['tree_support_branch_angle']   = '40'
+d['enable_support']                    = '1'
+d['support_type']                      = 'tree(auto)'
+d['support_threshold_angle']           = '10'
+d['support_on_build_plate_only']       = '0'
+d['support_critical_regions_only']     = '0'
+d['tree_support_branch_angle']         = '40'
+d['tree_support_branch_distance']      = '2'
+d['tree_support_branch_diameter']      = '3'
+d['tree_support_wall_count']           = '2'
+d['support_interface_top_layers']      = '2'
+d['support_interface_bottom_layers']   = '2'
 json.dump(d, open(p, 'w'), indent=2)
 " "$1"
 }
