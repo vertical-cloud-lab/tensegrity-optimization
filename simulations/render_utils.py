@@ -70,7 +70,8 @@ def patch_xml(xml: str, *, floor_size: float = 2.0) -> str:
     out = re.sub(
         r'<geom name="floor"[^/]*/>',
         f'<geom name="floor" type="plane" '
-        f'size="{floor_size:.2f} {floor_size:.2f} 0.1" material="grid"/>'
+        f'size="{floor_size:.2f} {floor_size:.2f} 0.1" material="grid" '
+        f'solref="0.005 1" solimp="0.95 0.99 0.001"/>'
         '<light name="top" pos="0 0 2" dir="0 0 -1" diffuse="0.7 0.7 0.7"/>'
         '<light name="side" pos="1.5 1.0 1.2" dir="-0.7 -0.5 -0.7"'
         ' diffuse="0.5 0.5 0.5"/>',
