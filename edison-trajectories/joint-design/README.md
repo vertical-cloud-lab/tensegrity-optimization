@@ -144,7 +144,20 @@ Per PR comment [4445476374](https://github.com/vertical-cloud-lab/tensegrity-opt
 
 See [`cad/joint-design/A_variants/README.md`](../../cad/joint-design/A_variants/README.md) for the full motivation, geometry parameters, and the open print-process / topology questions deferred to the pending Phase-4 Edison `f9804247` (project-context recommendation) and `e9a1f4cc` (per-design vision review).
 
+## Design F — captive TPU core inside PETG/PLA outer shell
 
+Per PR comment [4461700096](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/38#issuecomment-4461700096): a *non-feed-through* anchor in which the TPU "knot" lives entirely inside an outer PETG/PLA shell (inner ball / mass surrounded by an outer ball), with a teardrop strut/shell fillet for stress-riser relief and inter-material layer-interlock teeth (per @achris0520, [byu-vcl#82](https://github.com/vertical-cloud-lab/byu-vcl/issues/82#issuecomment-4456499040)) so the materials interlock mechanically without needing chemical bond.
+
+Key geometry (full table + rationale at [`cad/joint-design/F_captive_core.md`](../../cad/joint-design/F_captive_core.md)):
+- shell OD 12 mm, cavity ID 8 mm, captive TPU core OD 7 mm
+- single-sided cable exit bore 2.8 mm on +X (cable Ø 2.4 mm)
+- pull-out ratio (core / bore) = **2.5×** vs. **1.71×** for Phase-3 A
+- teardrop strut→shell fillet via convex hull (no sharp re-entrant corner)
+- two staggered rings of 8 radial interlock teeth (PETG inward at z=+0.6, TPU outward at z=−0.6, 22.5° rotational stagger) so the captive core cannot translate ±Z relative to the shell
+
+![Design F — iso + 3 orthogonal cuts](../../cad/joint-design/renders/F_captive_core_grid_montage.png)
+
+Reproduce with `bash cad/joint-design/render_F.sh`. SCAD sources at [`cad/joint-design/F_captive_core.scad`](../../cad/joint-design/F_captive_core.scad) + `_section_{X,Y,Z}.scad`.
 
 - [ ] Fetch ANALYSIS follow-up `ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa` (re-run with all 5 Phase-1 outputs attached) and commit `.md` + `.json`
 - [ ] Update [`cad/t3-prism/t3-prism.scad`](../../cad/t3-prism/t3-prism.scad) with primary (E, barbed rebar) and backup (A, anchor-bulb) joint geometry parameters once issue [#37](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/37) (H2D PETG+TPU IDEX setup) lands a working multi-material print
