@@ -1,54 +1,34 @@
 // =============================================================================
-// Full tensioning test array — all 12 specimens on a single build plate.
+// Full tensioning test array — 15 A3-countersunk specimens (3 node sizes
+// × 5 air gaps) on a single build plate, oriented for horizontal-cable
+// printing.
 //
-// Layout: 3 rows x 4 columns, 35 mm pitch in X and 20 mm pitch in Y.
-//   Row Y- : Axis A (air gap)        — TA-G0  TA-G1  TA-G2  TA-G3
-//   Row Y0 : Axis A continued + B    — TA-G4  TA-G5  TA-L0  TA-L1
-//   Row Y+ : Axis B + Axis C         — TA-L2  TA-R0  TA-R1  TA-R2
+// Layout: rows = node size (Y axis), columns = air gap (X axis).
+//   Row Y- : node Ø  7.5 mm — H-S0G0 H-S0G1 H-S0G2 H-S0G3 H-S0G4
+//   Row Y0 : node Ø  9.5 mm — H-S1G0 H-S1G1 H-S1G2 H-S1G3 H-S1G4
+//   Row Y+ : node Ø 12.0 mm — H-S2G0 H-S2G1 H-S2G2 H-S2G3 H-S2G4
 //
-// A single multi-material print of this plate yields one specimen of every
-// candidate interface treatment.  After the print, soak the PVA-sleeve row
-// (TA-R0..TA-R2) in tap water for 30-60 min, then pull-test every specimen
-// with a hand-held force gauge gripping the TPU pull handle above the
-// frustum and the PLA tab clamped in a vise (see README.md).
+// All specimens share the cable orientation (+Y) so cables emerge from
+// neighbouring rows on the same side of the plate — easier to clamp the
+// row's worth of pull handles in a single jig if desired.
 // =============================================================================
 include <_common.scad>
 
-pitch_x = 35;
-pitch_y = 20;
+pitch_x = 22;   // X spacing between gap columns
+pitch_y = 60;   // Y spacing between size rows (room for cable handle + entry tail)
 
-// Axis A (air gap) — 6 specimens at 0.0 .. 0.6 mm radial
-axisA_gaps = [0.0, 0.1, 0.2, 0.3, 0.4, 0.6];
+sizes      = [7.5, 9.5, 12.0];
+size_lbls  = ["S0", "S1", "S2"];
+gaps       = [0.1, 0.2, 0.3, 0.4, 0.6];
+gap_lbls   = ["G0", "G1", "G2", "G3", "G4"];
 
-// Axis B (pause+lubricate) — 3 specimens at lower / mid / upper bore
-axisB_pause = [18.5, 20.75, 25.0];
-
-// Axis C (sacrificial sleeve) — 3 specimens at 0.2 / 0.4 / 0.6 mm wall
-axisC_sleeve = [0.2, 0.4, 0.6];
-
-// Render rows --------------------------------------------------------------
-// Row 1 (Y = -pitch_y): TA-G0 .. TA-G3
-for (i = [0:3])
-    translate([(i - 1.5) * pitch_x, -pitch_y, 0])
-        specimen_A1(id = str("TA-G", i),
-                    gap_r = axisA_gaps[i], pause_z = 0, sleeve_t = 0);
-
-// Row 2 (Y = 0): TA-G4, TA-G5, TA-L0, TA-L1
-translate([-1.5 * pitch_x, 0, 0])
-    specimen_A1(id = "TA-G4", gap_r = axisA_gaps[4], pause_z = 0,            sleeve_t = 0);
-translate([-0.5 * pitch_x, 0, 0])
-    specimen_A1(id = "TA-G5", gap_r = axisA_gaps[5], pause_z = 0,            sleeve_t = 0);
-translate([ 0.5 * pitch_x, 0, 0])
-    specimen_A1(id = "TA-L0", gap_r = 0.2,           pause_z = axisB_pause[0], sleeve_t = 0);
-translate([ 1.5 * pitch_x, 0, 0])
-    specimen_A1(id = "TA-L1", gap_r = 0.2,           pause_z = axisB_pause[1], sleeve_t = 0);
-
-// Row 3 (Y = +pitch_y): TA-L2, TA-R0, TA-R1, TA-R2
-translate([-1.5 * pitch_x,  pitch_y, 0])
-    specimen_A1(id = "TA-L2", gap_r = 0.2, pause_z = axisB_pause[2], sleeve_t = 0);
-translate([-0.5 * pitch_x,  pitch_y, 0])
-    specimen_A1(id = "TA-R0", gap_r = 0.0, pause_z = 0, sleeve_t = axisC_sleeve[0]);
-translate([ 0.5 * pitch_x,  pitch_y, 0])
-    specimen_A1(id = "TA-R1", gap_r = 0.0, pause_z = 0, sleeve_t = axisC_sleeve[1]);
-translate([ 1.5 * pitch_x,  pitch_y, 0])
-    specimen_A1(id = "TA-R2", gap_r = 0.0, pause_z = 0, sleeve_t = axisC_sleeve[2]);
+for (si = [0:2]) {
+    for (gi = [0:4]) {
+        translate([(gi - 2) * pitch_x, (si - 1) * pitch_y, 0])
+            specimen_A3(
+                id     = str("H-", size_lbls[si], gap_lbls[gi]),
+                node_d = sizes[si],
+                gap_r  = gaps[gi]
+            );
+    }
+}

@@ -1,161 +1,173 @@
 // =============================================================================
-// Shared parameters for the anchor-bulb (A1 frustum) tensioning test array.
+// Shared parameters for the anchor-bulb (A3 countersunk) tensioning test array.
 //
-// Background: PR #39 explored five anchor-upset shape variants for joint
-// design A (anchor-bulb).  A1 (truncated cone / frustum / "rivet head") is
-// the leading candidate for *pre-tensioning* because the flat bearing face
-// loads up cleanly when the cable is pulled through the bore and seats the
-// upset against the +X face of the PLA node (issue #84).
+// Background: per PR #84 review (comment 4462368734), the joint geometry under
+// study is the **A3 countersunk** anchor head from PR #39 — a 90° conical TPU
+// head that mates a matching countersink cut into the +Y exit of the PLA bore.
+// Compared to the A1 frustum it gives a flush far face (no protruding snag
+// feature on impact), self-centres the cable as the joint loads, and roughly
+// 2.6x the bearing-wall area at the same OD (~8.8 mm^2 conical wall).
 //
-// Pre-tensioning by pull-through requires the PLA-to-TPU bond inside the bore
-// to fail at a *finite* load — too tight and the TPU tears, too loose and the
-// upset can't seat at all.  This file parameterises a single A1 specimen so
-// the array script can vary the *interface treatment* between the PLA bore
-// wall and the TPU cable along three independent axes:
+// The single interface-treatment knob is the **radial air gap** between the
+// PLA bore wall and the TPU cable, swept against **joint size** (node OD;
+// bore is sized to clear a 2.4 mm cable plus the gap). The second axis tests
+// whether bigger nodes (and thus longer bores) tolerate a different gap than
+// smaller ones — a longer cable run inside the PLA gives more contact length
+// for layer-to-layer fusion to form, so the same gap may behave very
+// differently on a short vs. long bore.
 //
-//   Axis A — radial air gap        (`gap_r`,  mm)
-//   Axis B — pause-and-lubricate   (`pause_z`, mm above strut top; 0 = none)
-//   Axis C — sacrificial sleeve    (`sleeve_t`, mm wall in 3rd material;
-//                                    0 = none, e.g. PVA / BVOH on AMS Pro)
+// Pause-and-lubricate and PVA-sleeve treatments from the first revision of
+// this array were dropped because: (1) the H2D has IDEX (two extruders),
+// not three nozzles, and the AMS Pro is just a filament store, so a
+// sacrificial 3rd material is not realistic; (2) Bambu does have an
+// Edinburgh-style cable on each side, but pause-and-lubricate is a manual
+// workflow that doesn't survive a multi-specimen plate cleanly. Focus on
+// air gap for this DOE.
 //
-// Coordinate convention for THIS array (differs from cad/joint-design/_common.scad
-// which keeps the cable along +X for visual comparison):
-//   +Z  = print-up direction = cable axis = pull direction
-//   X-Y = build plate
-// This orientation matches the recommended print orientation for the actual
-// pull-test (cable axis vertical, frustum on top, anchor tab on bed) so the
-// rendered geometry is exactly what comes off the printer.
+// **Print / pull-test orientation: HORIZONTAL CABLE.**
+// In the previous (vertical-cable) revision the TPU was deposited *along*
+// the print Z axis and gravity pulled it straight onto the underlying TPU
+// — an air gap could be left and the cable would still print fine. In the
+// real horizontal-cable use case (e.g. T3 prism tendons, lander tendons)
+// the TPU has to bridge the bore *horizontally*, with gravity pulling it
+// down into the air gap as it extrudes — i.e. intentional spaghetti /
+// stringing across the bore length. The failure mode this array is
+// designed to expose is exactly that: at what gap does the TPU cable
+// no longer print as a clean cylinder through the bore?
 //
-// All dimensions are in millimetres.
+// Coordinate convention:
+//   +Z = print-up direction.  Strut is vertical (+Z); tab lies on the bed.
+//   +Y = horizontal cable axis (in the build plate).  Cable enters at -Y,
+//        bore runs through the node along +Y, conical head mates a
+//        countersink at the +Y face, pull handle continues along +Y.
+//   X  = lateral spacing between specimens on the plate.
+//
+// All dimensions are in mm.
 // =============================================================================
 
 $fn = 64;
 
 // ----- Materials ------------------------------------------------------------
 PLA_RGB   = [0.95, 0.55, 0.20];   // rigid strut/node (PLA per issue #45)
-TPU_RGB   = [0.10, 0.55, 0.55];   // flexible cable + frustum upset (TPU 85A)
-PVA_RGB   = [0.75, 0.78, 0.85];   // sacrificial release sleeve (AMS Pro 3rd nozzle)
+TPU_RGB   = [0.10, 0.55, 0.55];   // flexible cable + conical head (TPU 85A)
 
 module pla() { color(PLA_RGB) children(); }
 module tpu() { color(TPU_RGB) children(); }
-module pva() { color(PVA_RGB) children(); }
 
-// ----- A1-frustum joint geometry (Phase-3 refined per PR #39) ---------------
-node_d        = 9.5;     // PLA spherical node OD
-bore_d_ref    = 2.8;     // reference bore Ø (0.4 mm clearance over 2.4 mm cable)
+// ----- Fixed geometry (constant across the DOE) -----------------------------
 cable_d       = 2.4;     // TPU 85A cable Ø
-frustum_base  = 4.8;     // upset OD at the +Z face of the node (1.71x bore)
-frustum_top   = 3.6;     // 75% of base — 30deg half-angle, self-supporting in TPU85A
-frustum_h     = 2.4;     // 6 layers at 0.4 mm
-
 strut_d       = 6.0;     // PLA strut OD
-strut_l       = 12.0;    // strut length below the node (anchored in pull tab)
+strut_l       = 14.0;    // strut length above the tab (anchors the node)
+
+// Countersink head: 90deg included angle (45deg half-angle), so the cone
+// axial depth equals (mouth_d - root_d)/2.
+head_top_h    = 0.6;     // small flat above +Y face purely for render visibility
+                         // (0 = perfectly flush — recommended for real print)
 
 // ----- Pull-test tab (PLA, on the build plate) ------------------------------
-// Each specimen sits on a small rectangular tab whose +Z face captures the
-// strut.  The tab gives the operator/clamp something to grab while the TPU
-// cable above is pulled with a force gauge; the tab is large enough to bond
-// to the bed via brim and small enough to fit 12 specimens on a 250x250 plate.
-tab_l         = 26.0;    // X (long axis — points outward in the array layout)
-tab_w         = 16.0;    // Y
-tab_h         = 4.0;     // Z (~10 layers)
+// The tab gives the operator something to clamp in a vise while the TPU
+// pull-handle is gripped by a force gauge.  The tab is shifted along -Y so
+// the strut sits at the +Y edge of the tab — this puts the cable entry side
+// (-Y) clear of the tab footprint so a pull-side cable still lies on the bed.
+tab_l_y       = 26.0;    // Y depth (along cable axis)
+tab_w_x       = 16.0;    // X width
+tab_h         = 4.0;     // Z height (~10 layers)
 tab_label_h   = 0.6;     // emboss depth of the specimen ID label
+strut_y       = tab_l_y / 2 - strut_d;   // strut origin Y (offset toward +Y side)
 
-// ----- Cable lengths --------------------------------------------------------
-// Visible cable above the upset frustum = pull-handle (gripped by force gauge).
-// Cable below the upset = bore section + slack inside the strut/tab.
-cable_above   = 28.0;    // pull handle above frustum top
-strut_top_z   = tab_h + strut_l;                    // top of strut (= bottom of node)
-node_centre_z = strut_top_z + node_d/2;             // centre of node sphere
-upset_z       = node_centre_z + node_d/2;           // base of frustum on +Z face
-cable_top_z   = upset_z + frustum_h + cable_above;
-cable_bot_z   = 0;                                  // anchored at bed (cable slack)
+// ----- Cable layout along Y -------------------------------------------------
+// Cable enters at -Y (entry tail), passes through the bore (length = node_d),
+// emerges on the +Y face into the countersink, and continues as the pull handle.
+cable_entry_l = 18.0;    // cable tail on -Y side (extends past the tab)
+cable_pull_l  = 26.0;    // pull handle past the +Y face of the node
 
 // =============================================================================
-// One A1-frustum specimen, fully parameterised for interface treatment.
+// One A3-countersunk specimen, parameterised on (node_d, gap_r).
 //
 // Parameters:
-//   id        text label embossed into the tab
-//   gap_r     additional radial air gap (mm) added to bore_d_ref/2.
-//             0    => bore Ø = 2.8 mm (Phase-3 default, ~0.2 mm radial clearance)
-//             0.1  => bore Ø = 3.0 mm
-//             ...
-//   pause_z   if > 0, embossed fingertip well at this absolute Z height
-//             on the side of the strut/node that marks the operator's
-//             pause-and-lubricate plane. 0 disables.
-//   sleeve_t  if > 0, sacrificial PVA tubular sleeve of this wall thickness
-//             between the bore wall and the cable, full bore length.  0 disables.
+//   id        text label embossed onto the top face of the tab
+//   node_d    PLA node OD (sphere diameter).  Bore depth = node_d.
+//   gap_r     additional radial air gap (mm) added to cable_d/2.
+//             bore_d = cable_d + 2*gap_r.  Sweep gap_r in 0.1..0.6 mm.
 // =============================================================================
-// PLA-only body for one specimen (tab + strut + node, with bore + optional
-// pause-and-lubricate finger well + embossed ID).
-module specimen_A1_pla(id = "TA-?", gap_r = 0.2, pause_z = 0, sleeve_t = 0) {
-    bore_d = cable_d + 2*max(gap_r, 0) + (sleeve_t > 0 ? 2*sleeve_t : 0);
+module specimen_A3_pla(id = "TS-?", node_d = 9.5, gap_r = 0.2) {
+    bore_d        = cable_d + 2*max(gap_r, 0);
+    cs_mouth_d    = bore_d + 2.0;                  // 1.0 mm wider than bore on each side
+    cs_root_d     = bore_d;                        // cone root = bore Ø
+    cs_depth      = (cs_mouth_d - cs_root_d) / 2;  // 45deg half-angle => 1.0 mm
+    node_centre_z = tab_h + strut_l + node_d/2;
+
     difference() {
         union() {
-            translate([-tab_l/2, -tab_w/2, 0])
-                cube([tab_l, tab_w, tab_h]);
-            translate([0, 0, tab_h])
-                cylinder(h=strut_l, d=strut_d);
-            translate([0, 0, node_centre_z])
-                sphere(d=node_d);
+            // tab: shifted in -Y so strut sits near +Y edge (cable entry tail
+            // is free of the tab footprint).
+            translate([-tab_w_x/2, strut_y - tab_l_y, 0])
+                cube([tab_w_x, tab_l_y, tab_h]);
+            // strut along +Z
+            translate([0, strut_y, tab_h])
+                cylinder(h = strut_l, d = strut_d);
+            // node sphere
+            translate([0, strut_y, node_centre_z])
+                sphere(d = node_d);
         }
-        translate([0, 0, -1])
-            cylinder(h=cable_top_z + 2, d=bore_d);
-        if (pause_z > 0) {
-            translate([0, node_d/2, pause_z])
-                rotate([90, 0, 0])
-                    cylinder(h=1.6, d=3.0);
-        }
-        translate([0, -tab_w/2 + 3.5, tab_h - tab_label_h + 0.01])
+        // horizontal through-bore along +Y (length spans the whole node)
+        translate([0, strut_y - node_d, node_centre_z])
+            rotate([-90, 0, 0])
+                cylinder(h = 2*node_d, d = bore_d);
+        // 90deg countersink cut into the +Y face of the node
+        translate([0, strut_y + node_d/2 - cs_depth, node_centre_z])
+            rotate([-90, 0, 0])
+                cylinder(h = cs_depth + 0.02, d1 = cs_root_d, d2 = cs_mouth_d);
+        // embossed specimen ID on top of the tab
+        translate([0, strut_y - tab_l_y + 3.5, tab_h - tab_label_h + 0.01])
             linear_extrude(height = tab_label_h + 0.02)
-                text(id, size = 3.2, halign = "center", valign = "baseline",
+                text(id, size = 3.0, halign = "center", valign = "baseline",
                      font = "Liberation Sans:style=Bold");
     }
 }
 
-// TPU-only body for one specimen (cable column + frustum upset + pull handle).
-module specimen_A1_tpu() {
-    translate([0, 0, cable_bot_z])
-        cylinder(h = cable_top_z - cable_bot_z, d = cable_d);
-    translate([0, 0, upset_z])
-        cylinder(h = frustum_h, d1 = frustum_base, d2 = frustum_top);
+module specimen_A3_tpu(node_d = 9.5, gap_r = 0.2) {
+    bore_d        = cable_d + 2*max(gap_r, 0);
+    cs_mouth_d    = bore_d + 2.0;
+    cs_root_d     = bore_d;
+    cs_depth      = (cs_mouth_d - cs_root_d) / 2;
+    node_centre_z = tab_h + strut_l + node_d/2;
+
+    // entry tail at -Y, through the bore, plus a stub past the +Y face
+    translate([0, strut_y - node_d/2 - cable_entry_l, node_centre_z])
+        rotate([-90, 0, 0])
+            cylinder(h = cable_entry_l + node_d - cs_depth, d = cable_d);
+    // conical head filling the countersink
+    translate([0, strut_y + node_d/2 - cs_depth, node_centre_z])
+        rotate([-90, 0, 0])
+            cylinder(h = cs_depth, d1 = cs_root_d, d2 = cs_mouth_d);
+    // small flat top above the +Y face for visibility (set head_top_h=0 for flush)
+    translate([0, strut_y + node_d/2, node_centre_z])
+        rotate([-90, 0, 0])
+            cylinder(h = head_top_h, d = cs_mouth_d);
+    // pull handle continuing on +Y
+    translate([0, strut_y + node_d/2 + head_top_h, node_centre_z])
+        rotate([-90, 0, 0])
+            cylinder(h = cable_pull_l, d = cable_d);
 }
 
-// Optional PVA-only sacrificial sleeve in the bore.  Returns no geometry
-// when sleeve_t == 0 so callers can unconditionally invoke it.
-module specimen_A1_pva(sleeve_t = 0) {
-    if (sleeve_t > 0) {
-        translate([0, 0, tab_h])
-            difference() {
-                cylinder(h = upset_z - tab_h, d = cable_d + 2*sleeve_t);
-                translate([0, 0, -0.1])
-                    cylinder(h = upset_z - tab_h + 0.2, d = cable_d);
-            }
-    }
+// Coloured single specimen (use this in the array layout and individual
+// per-specimen files).
+module specimen_A3(id = "TS-?", node_d = 9.5, gap_r = 0.2) {
+    pla() specimen_A3_pla(id = id, node_d = node_d, gap_r = gap_r);
+    tpu() specimen_A3_tpu(node_d = node_d, gap_r = gap_r);
 }
 
-// Coloured single specimen.  Use this in the array layout and in individual
-// per-specimen scad files.  Section-cut files should call the per-material
-// modules above so that intersection() preserves per-material colours.
-module specimen_A1(id = "TA-?", gap_r = 0.2, pause_z = 0, sleeve_t = 0) {
-    pla() specimen_A1_pla(id, gap_r, pause_z, sleeve_t);
-    tpu() specimen_A1_tpu();
-    pva() specimen_A1_pva(sleeve_t);
-}
-
-// Coloured Y=0 cutaway of a single specimen, with per-material intersection so
-// PLA / TPU / PVA all retain their colours in the cut view.
-module specimen_A1_section_Y(id = "TA-?", gap_r = 0.2, pause_z = 0, sleeve_t = 0) {
+// X=0 cutaway (cable axis stays in view, front X half removed) so the bore /
+// countersink / cable interface is visible. Per-material intersection keeps
+// colours intact in the cut view.
+module specimen_A3_section_X(id = "TS-?", node_d = 9.5, gap_r = 0.2) {
     pla() intersection() {
-        specimen_A1_pla(id, gap_r, pause_z, sleeve_t);
-        translate([-50, -50, -1]) cube([100, 50, 80]);
+        specimen_A3_pla(id = id, node_d = node_d, gap_r = gap_r);
+        translate([-50, -50, -1]) cube([50, 100, 80]);
     }
     tpu() intersection() {
-        specimen_A1_tpu();
-        translate([-50, -50, -1]) cube([100, 50, 80]);
-    }
-    pva() intersection() {
-        specimen_A1_pva(sleeve_t);
-        translate([-50, -50, -1]) cube([100, 50, 80]);
+        specimen_A3_tpu(node_d = node_d, gap_r = gap_r);
+        translate([-50, -50, -1]) cube([50, 100, 80]);
     }
 }

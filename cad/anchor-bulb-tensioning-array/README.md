@@ -1,114 +1,127 @@
 # Anchor-bulb tensioning test print array
 
-A 12-specimen DOE-style print plate that sweeps the three candidate
-**PLA-strut → TPU-cable interface treatments** for pre-tensioning the
-**A1 frustum / "rivet head"** anchor-bulb joint from
+A 15-specimen DOE-style print plate that sweeps **radial air gap × joint
+size** for the **A3 countersunk** anchor head from
 [PR #39](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/39)
-([`cad/joint-design/A_variants/A1_frustum.scad`](../joint-design/A_variants/A1_frustum.scad)).
+([`cad/joint-design/A_variants/A3_countersunk.scad`](../joint-design/A_variants/A3_countersunk.scad)),
+oriented for **horizontal-cable printing** so the worst-case TPU-bridging
+failure mode is exposed in the test.
 
 Closes [#84](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/84).
 
+## What changed from the first revision
+
+Per [@sgbaird-yolo's review](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/85#discussion-on-comment-4462368734)
+of the original 12-specimen plate:
+
+| Old | New | Why |
+|---|---|---|
+| **A1 frustum** rivet-head upset | **A3 countersunk** 90° conical head mating a countersink in the +Y face | Flush, self-centring, ~2.6× the bearing-wall area at the same OD; matches the design called out in [PR #39 comment 4461680803](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/39#issuecomment-4461680803). |
+| **Vertical cable** (cable along print +Z) | **Horizontal cable** (cable along build-plate +Y, strut along print +Z) | Vertical-cable printing leaves the air gap trivial — the TPU is laid down on top of itself. The realistic failure mode is **horizontal**, where the TPU has to bridge the bore against gravity → intentional spaghetti / stringing into the gap. This is the failure mode the array is now designed to expose. |
+| 3 axes (air gap, pause+lube, PVA sleeve) | **1 axis (air gap) × 1 axis (joint size)** | The H2D has IDEX (two extruders) and the AMS Pro is just a filament store, so a sacrificial-PVA 3rd material is not realistic. Pause+lube is a manual workflow that doesn't survive a multi-specimen plate cleanly. Focus on what works. |
+| 12 specimens (TA-G\*/L\*/R\*) | **15 specimens (H-S{0..2}G{0..4})** — 3 node sizes × 5 gaps | Lets us see whether bigger nodes (longer bores) tolerate a different gap than smaller ones. |
+
 ## Why we need it
 
-Pre-tensioning the A1 anchor-bulb works by gripping the TPU cable above the
-frustum and pulling, so the cable strains until the printed-in-place upset
-seats against the +Z face of the PLA node and locks. **This only works if
-the bond between the PLA bore wall and the TPU cable inside the bore is
-weak enough to fail at a tractable pull force.** Issue #84 names three
-candidate ways to weaken that bond; this print plate tests all three at
-once so we can pick the winner from a single H2D job.
+Pre-tensioning the A3 anchor-bulb works by gripping the TPU cable past
+the conical head and pulling, so the cable strains until the cone seats
+into its countersink and locks. **This only works if the bond between the
+PLA bore wall and the TPU cable inside the bore is weak enough to fail at
+a tractable pull force.** Plus, since we now print horizontally, we have
+a second constraint: the air gap must also be small enough that the TPU
+cable still prints as a recognisable cylinder through the bore instead
+of stringing/sagging into the gap during the horizontal bore-crossing
+extrusion pass.
 
-| Axis | Concept | Treatment varied | Reference |
-|---|---|---|---|
-| **A** | Air film between PLA and TPU | Radial clearance `gap_r` (mm) | issue #84 bullet 1 |
-| **B** | Pause-and-lubricate during print | Pause-Z plane (mm above bed) | issue #84 bullet 2 |
-| **C** | Sacrificial 3rd-material sleeve | PVA / BVOH wall thickness (mm) | issue #84 bullet 3 + AMS Pro multi-material |
+## Specimen DOE — 3 node sizes × 5 air gaps
 
-## Specimen DOE
+All 15 specimens share the **A3 countersunk** head (90° conical TPU head
+mating a 90° countersink cut into the +Y face of the PLA node) and a
+**2.4 mm TPU 85A cable**, a **6 mm PLA strut**, and a **16 × 26 × 4 mm
+anchor tab** (clamped in a vise during the pull test). The DOE varies
+only the air gap and the node size.
 
-All 12 specimens share the **A1-frustum joint geometry** from PR #39 Phase-3
-(node Ø 9.5 mm, frustum base Ø 4.8 mm = 1.71× pull-through ratio, frustum
-top Ø 3.6 mm, frustum height 2.4 mm), the **2.4 mm TPU 85A cable**, the
-**6 mm PLA strut**, and a **26 × 16 × 4 mm anchor tab** (clamped in a vise
-during the pull test). The only thing that varies between specimens is the
-interface treatment.
+| ID | Node Ø (mm) | Air gap (mm) | Bore Ø (mm) | Through-bore length (= node Ø, mm) |
+|---|:---:|:---:|:---:|:---:|
+| **H-S0G0** | 7.5  | 0.1 | 2.6 | 7.5 |
+| **H-S0G1** | 7.5  | 0.2 | 2.8 | 7.5 |
+| **H-S0G2** | 7.5  | 0.3 | 3.0 | 7.5 |
+| **H-S0G3** | 7.5  | 0.4 | 3.2 | 7.5 |
+| **H-S0G4** | 7.5  | 0.6 | 3.6 | 7.5 |
+| **H-S1G0** | 9.5  | 0.1 | 2.6 | 9.5 |
+| **H-S1G1** | 9.5  | 0.2 | 2.8 | 9.5 |
+| **H-S1G2** | 9.5  | 0.3 | 3.0 | 9.5 |
+| **H-S1G3** | 9.5  | 0.4 | 3.2 | 9.5 |
+| **H-S1G4** | 9.5  | 0.6 | 3.6 | 9.5 |
+| **H-S2G0** | 12.0 | 0.1 | 2.6 | 12.0 |
+| **H-S2G1** | 12.0 | 0.2 | 2.8 | 12.0 |
+| **H-S2G2** | 12.0 | 0.3 | 3.0 | 12.0 |
+| **H-S2G3** | 12.0 | 0.4 | 3.2 | 12.0 |
+| **H-S2G4** | 12.0 | 0.6 | 3.6 | 12.0 |
 
-| ID | Axis | `gap_r` (mm) | `pause_z` (mm) | `sleeve_t` (mm) | Bore Ø (mm) | What it tests |
-|---|:---:|:---:|:---:|:---:|:---:|---|
-| **TA-G0** | A | 0.0 | — | — | 2.4 | Interference fit baseline (likely tears the cable) |
-| **TA-G1** | A | 0.1 | — | — | 2.6 | Minimum air-film hypothesis |
-| **TA-G2** | A | 0.2 | — | — | 2.8 | Phase-3 default (PR #39) |
-| **TA-G3** | A | 0.3 | — | — | 3.0 | Slight extra clearance |
-| **TA-G4** | A | 0.4 | — | — | 3.2 | Loose fit |
-| **TA-G5** | A | 0.6 | — | — | 3.6 | Very loose — does the upset still self-centre? |
-| **TA-L0** | B | 0.2 | 18.5  | — | 2.8 | Pause + lube *before* the bore — full-length lube film |
-| **TA-L1** | B | 0.2 | 20.75 | — | 2.8 | Pause + lube at the *node centre* — partial lube zone |
-| **TA-L2** | B | 0.2 | 25.0  | — | 2.8 | Pause + lube *just before* the upset — only upset/node interface |
-| **TA-R0** | C | 0.0 | — | 0.2 | 2.8 | Thinnest survivable PVA sleeve |
-| **TA-R1** | C | 0.0 | — | 0.4 | 3.2 | Mid PVA sleeve |
-| **TA-R2** | C | 0.0 | — | 0.6 | 3.6 | Thick PVA sleeve — easy water release, more cable rattle |
-
-`pause_z` is the absolute Z height of an embossed 3 mm × 1.6 mm fingertip
-well on the +Y side of the strut/node, at the layer where the operator
-should pause the print and apply lubricant (recommended: PTFE dry spray;
-fall-back: silicone oil; cheap fall-back: a dab of mineral oil on a
-cotton-bud tip).
+S1 (node Ø 9.5 mm) matches the PR #39 Phase-3-refined geometry; S2
+(node Ø 12.0 mm) matches the dovetail node OD; S0 (node Ø 7.5 mm) is the
+smallest sphere that still leaves ≥ 2 PLA wall perimeters around a 3.6 mm
+bore at the equator.
 
 ## Renders
 
-Iso view of the full plate (12 specimens, 3 × 4 grid, 35 mm pitch X × 20 mm
-pitch Y, ~115 × 75 mm footprint — fits any H2D plate with room to spare):
+Iso view of the full plate (~110 × 130 mm footprint, fits any H2D plate):
 
 ![Full array iso](renders/tensioning_array_iso.png)
 
-Iso contact-sheet with each specimen labeled:
+Iso contact-sheet (rows = node size, columns = air gap):
 
 ![All specimens montage](renders/all_specimens_montage.png)
 
-Y=0 cross-section through one representative specimen of each axis (PLA
-bore-and-cable interface, pause-well, and PVA sleeve are all visible —
-note: OpenSCAD 2021.01 preview shades cut interiors dark; the orange/cyan
-edges are the meaningful boundaries):
+X=0 cross-section through one specimen per node size (mid-gap = 0.3 mm),
+showing the bore + countersink + conical head:
 
 ![Section montage](renders/section_montage.png)
 
-Per-specimen iso PNG, Y=0 section PNG (TA-G2 / TA-L1 / TA-R1), and
-**STL** (one per specimen + `tensioning_array.stl` for the whole plate)
-also live in `renders/`.
+Per-specimen iso PNG and **STL** (one per specimen + `tensioning_array.stl`
+for the whole plate) also live in `renders/`.
 
 ## Print recipe (Bambu H2D + AMS Pro)
 
-| Slot | Material | Used in | Notes |
-|---|---|---|---|
-| 1 | **PLA** (any brand) | tab + strut + node + bore | per issue #45 |
-| 2 (dedicated) | **TPU 85A** (NinjaFlex-class) | cable + frustum upset | dedicated nozzle, no purges |
-| 3 | **PVA** (or BVOH) | sleeve in TA-R0 / R1 / R2 only | only loaded for the C-axis specimens |
+| Extruder | Material | Used in |
+|---|---|---|
+| **L (left, AMS-fed)** | **PLA** (any brand) | tab + strut + node + bore + countersink |
+| **R (right, direct)** | **TPU 85A** (NinjaFlex-class) | cable + conical head + pull handle |
 
-- **Layer height** 0.2 mm (matches the 6-layer frustum height = 2.4 mm)
+The H2D has **two extruders** (IDEX), not three; the AMS Pro is a filament
+store that switches between PLA brands/colours on the L extruder. The TPU
+sits on the R extruder full-time.
+
+- **Layer height** 0.2 mm
 - **Wall count** 3 perimeters everywhere
-- **Brim** 5 mm on the tab footprint to keep specimens bed-bonded during the
-  pull test prep
-- **Pause M-codes** for axis-B specimens: insert an M0/M601 at slicing
-  time at Z = 18.5 mm (TA-L0), Z = 20.75 mm (TA-L1), Z = 25.0 mm (TA-L2).
-  The embossed fingertip well is the visual cue for where to apply lubricant.
+- **Orientation** as drawn — strut vertical (+Z), cable horizontal (+Y),
+  tab on the bed
+- **Brim** 5 mm on each tab footprint
+- **Important** — at the bore-crossing layer the TPU extruder has to lay
+  down a 2.4 mm cylinder horizontally across an unsupported gap of
+  `bore_d - cable_d = 2 × gap_r` mm with a span equal to the node Ø (= 7.5 /
+  9.5 / 12.0 mm). This is exactly the failure mode the DOE is testing,
+  so **do not** add support material inside the bore.
 
 ## Pull-test protocol
 
-1. Snip the brim. **For the C-axis specimens (TA-R0/R1/R2)** soak the
-   plate in tap water at room temperature for 30–60 min, agitating gently,
-   until the PVA sleeve washes out of the bore. Pat dry.
-2. Clamp the PLA tab in a vise (long axis horizontal, frustum pointing up).
-3. Grip the TPU pull handle ~25 mm above the frustum with a hand-held
+1. Snip the brim and inspect each specimen visually: was the cable
+   recognisably cylindrical through the bore, or did it sag/string?
+   Photograph each specimen at the bore-crossing layer **before** pulling.
+2. Clamp the PLA tab in a vise (long axis horizontal, cable axis pointing
+   away from the vise).
+3. Grip the TPU pull handle ~15 mm past the conical head with a hand-held
    force gauge (e.g. Mark-10 M5-2 or AOSITE 50 N).
-4. Pull steadily upward at ~10 mm/s and record the **peak force** at the
-   instant the upset seats against the +Z node face. This is the
+4. Pull steadily horizontally at ~10 mm/s and record the **peak force**
+   at the instant the cone seats against the countersink. This is the
    pre-tensioning load `F_pre`.
-5. Inspect: did the cable tear (failure), did the upset deform plastically
-   (suboptimal), did the upset seat cleanly with the cable still able to
+5. Inspect: did the cable tear (failure), did the cone deform plastically
+   (suboptimal), or did it seat cleanly with the cable still able to
    carry tendon load (success)?
 
-**Success criterion:** smallest `F_pre` that still reliably seats the
-upset without cable damage, ideally in the 5–25 N range so a human can
+**Success criterion:** smallest `F_pre` that reliably seats the cone
+without cable damage, ideally in the 5–25 N range so a human can
 pre-tension by hand.
 
 ## Reproducing the renders
@@ -117,9 +130,9 @@ pre-tension by hand.
 bash cad/anchor-bulb-tensioning-array/render.sh
 ```
 
-Outputs land in `cad/anchor-bulb-tensioning-array/renders/`: 12 `*_iso.png`,
-3 `*_section_Y_iso.png`, 12 `*.stl`, the full-plate `tensioning_array_iso.png`
-+ `tensioning_array.stl`, and three contact-sheet montages
+Outputs land in `cad/anchor-bulb-tensioning-array/renders/`: 15 `*_iso.png`,
+3 `*_section_X_iso.png`, 15 `*.stl`, the full-plate `tensioning_array_iso.png`
++ `tensioning_array.stl`, and two contact-sheet montages
 (`all_specimens_montage.png`, `section_montage.png`).
 
 Requires `openscad` and `imagemagick` (`montage`); on a headless runner it
@@ -130,29 +143,28 @@ auto-wraps in `xvfb-run`.
 ```
 cad/anchor-bulb-tensioning-array/
 ├── _common.scad              shared geometry + parameterised specimen module
-├── tensioning_array.scad     all 12 specimens on a single build plate
-├── TA-G0.scad … TA-G5.scad   axis A (air gap, 6 specimens)
-├── TA-L0.scad … TA-L2.scad   axis B (pause + lubricant, 3 specimens)
-├── TA-R0.scad … TA-R2.scad   axis C (sacrificial PVA sleeve, 3 specimens)
-├── TA-G2_section_Y.scad      Y=0 cutaway of one representative per axis
-├── TA-L1_section_Y.scad
-├── TA-R1_section_Y.scad
+├── tensioning_array.scad     all 15 specimens on a single build plate
+├── H-S{0,1,2}G{0..4}.scad    15 specimens — size index × gap index
+├── H-S{0,1,2}G2_section_X.scad   X=0 cutaway per node size, at mid gap (0.3 mm)
 ├── render.sh                 builds renders/ from the SCAD sources
 ├── renders/                  PNGs, STLs, and contact-sheet montages
 └── README.md                 this file
 ```
 
-## Open questions / next steps
+## Notes / next steps
 
-- The DOE assumes the three axes are independent. If pull-through fails on
-  every axis A specimen, the next plate should add **factorial combinations**
-  (e.g. air gap × pause+lube) rather than another single-axis sweep.
-- All specimens print with the cable axis vertical and the frustum on top.
-  The horizontal-cable orientation (cable along +X with the strut along +Z,
-  matching `cad/joint-design/A_variants/A1_frustum.scad`) is also worth
-  testing once we have a winning interface treatment, because the H2D IDEX
-  toolchanger behaves differently for horizontal vs vertical TPU cables.
-- The anchor-bulb is the **lander / egg-drop primary** joint per PR #39's
-  lander-context recommendation. The winning interface treatment from this
-  array directly feeds the next-generation lander prototype and the
-  unit-cell builds in [#43](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/43).
+- **Alternative path raised by [@sgbaird-alt](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/85#discussion-on-comment-4462314872):**
+  manually thread an elastic cable into single-material PLA prints
+  (no co-print of TPU, no anchor-bulb necessary). This array does not
+  obviate that path — it is complementary, and stays useful even if the
+  manual-threading approach turns out to be the right call for early
+  builds, because for any future co-printed tendon (#54) we still need
+  to know the limiting air gap.
+- The DOE assumes the air-gap response is monotonic in joint size. If the
+  three rows disagree on which gap is the winner, the next plate should
+  add an intermediate node size (e.g. 10.5 mm) rather than another gap
+  value.
+- **A3 countersunk** is the chosen geometry per the PR review. If the
+  countersink walls themselves fuse to the conical head and prevent
+  pull-through at every gap, the fallback is A4 (lobed) or A0 (sphere)
+  with the same air-gap × size DOE.
