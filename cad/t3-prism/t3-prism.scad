@@ -189,14 +189,24 @@ module t3_prism() {
 }
 
 // ---- PLA scaffold pillars under the TPU cables ----------------------------
-// One vertical pillar from z=0 up to a touch-point on a cable. The pillar
-// fuses into the cable at the top (no air gap) so a slice of PLA cradles
-// the TPU; PLA-TPU bond is weak enough to break away cleanly post-print.
+// One vertical pillar up to a touch-point on a cable. The pillar fuses into
+// the cable at the top (no air gap) so a slice of PLA cradles the TPU;
+// PLA-TPU bond is weak enough to break away cleanly post-print.
+//
+// IMPORTANT: the bottom of the pillar sits at SCAD z = -joint_d/2 — the same
+// height as the underside of the bottom-triangle joint spheres, which is the
+// lowest point of the strut/cable model. Bambu Studio (and the BambuStudio
+// CLI's `--arrange 1`) lifts the imported assembly so its lowest point sits
+// on the build plate; with the pillars rooted at the same z as the joint
+// undersides, every pillar reaches the bed instead of floating ~joint_d/2 mm
+// above it (PR #35 comment 4464399849).
 module pillar_to(target) {
-    z = target[2] - scaffold_d_top * 0.4;  // sink the cone tip slightly into the cable
-    if (z >= scaffold_min_h) {
-        translate([target[0], target[1], 0])
-            cylinder(h=z, d1=scaffold_d_bot, d2=scaffold_d_top);
+    z_base = -joint_d / 2;
+    z_top  = target[2] - scaffold_d_top * 0.4;  // sink the cone tip slightly into the cable
+    h      = z_top - z_base;
+    if (h >= scaffold_min_h) {
+        translate([target[0], target[1], z_base])
+            cylinder(h=h, d1=scaffold_d_bot, d2=scaffold_d_top);
     }
 }
 
