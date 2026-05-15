@@ -252,6 +252,12 @@ slice_bambu_mm () {
     flatten filament "${f1_leaf}"      "${f1}"
     flatten filament "${f2_leaf}"      "${f2}"
     patch_bed "${m}"
+    # Force tree(auto) supports for the MM project too — the top-cable
+    # bridges still need scaffolding regardless of which filament fills
+    # them (PETG/PLA struts/cables, or the production PLA + TPU pairing).
+    # Without this the project opens in Bambu Studio with supports OFF
+    # and the user has to remember to flip the toggle before slicing.
+    enable_supports "${p}"
 
     echo "==> [${tag}] BambuStudio CLI --assemble -> ${proj_3mf} (one object, two parts)"
     rm -rf "${proj_outdir}" && mkdir -p "${proj_outdir}"
