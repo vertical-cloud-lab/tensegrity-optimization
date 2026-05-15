@@ -18,30 +18,34 @@ out and the relative twist visible in the Wikipedia reference image).
 
 Connectivity (`i ∈ {0,1,2}`, mod 3):
 
-| Member               | Endpoints       | Diameter |
+| Member               | Endpoints       | Diameter (scale 1.5) |
 | -------------------- | --------------- | -------- |
-| Strut `i`            | `B_i  → T_i`    | 6.0 mm   |
-| Bottom cable `i`     | `B_i  → B_{i+1}` | 3.0 mm   |
-| Top cable `i`        | `T_i  → T_{i+1}` | 3.0 mm   |
-| Saddle/vertical `i`  | `B_{i+1} → T_i` | 3.0 mm   |
+| Strut `i`            | `B_i  → T_i`    | 9.0 mm   |
+| Bottom cable `i`     | `B_i  → B_{i+1}` | 4.5 mm   |
+| Top cable `i`        | `T_i  → T_{i+1}` | 4.5 mm   |
+| Saddle/vertical `i`  | `B_{i+1} → T_i` | 4.5 mm   |
 
 Strut `i` and saddle `i` meet at top vertex `T_i` but originate from
 *different* bottom vertices — the defining "no two compression members
 touch" property of a tensegrity (the struts are kept apart by the cables).
 
-Default parameters (editable at the top of [`t3-prism.scad`](t3-prism.scad)):
+Default parameters (editable at the top of [`t3-prism.scad`](t3-prism.scad)).
+All linear dimensions are `*_base * scale_factor`:
 
-| Parameter  | Value | Notes |
-| ---------- | ----- | --- |
-| `R`        | 25 mm | end-triangle circumradius |
-| `H`        | 70 mm | inter-triangle height |
-| `twist`    | 60°   | top-triangle rotation |
-| `strut_d`  | 6 mm  | compression member diameter |
-| `cable_d`  | 3.0 mm | tension member diameter (bumped 2.4 → 3.0 mm after the layer-362 spaghetti failure on the top-cable bridge; see [Print failure mode](#print-failure-mode-top-cable-bridge-and-how-to-avoid-it)) |
-| `joint_d`  | 7 mm  | sphere at each vertex for clean joints |
+| Parameter      | Base   | × `scale_factor` (1.5) | Notes |
+| -------------- | -----: | ---------------------: | --- |
+| `R_base`       | 25 mm  | **37.5 mm** | end-triangle circumradius |
+| `H_base`       | 70 mm  | **105 mm**  | inter-triangle height |
+| `twist`        | 60°    | 60°         | top-triangle rotation (not scaled) |
+| `strut_d_base` | 6 mm   | **9.0 mm**  | compression member diameter |
+| `cable_d_base` | 3.0 mm | **4.5 mm**  | tension member diameter (see [Print failure mode](#print-failure-mode-top-cable-bridge-and-how-to-avoid-it) and [Scale-up](#scale-up-to-15-cable_d-30--45-mm) below) |
+| `joint_d_base` | 7 mm   | **10.5 mm** | sphere at each vertex for clean joints |
+| `scale_factor` | —      | **1.5**     | uniform scale on every linear dim |
 
-Bounding box ≈ **50 × 50 × 77 mm**, volume ≈ **9.8 cm³** of solid material.
-Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate.
+Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
+solid material. Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
+— and 4 copies fit in a 2 × 2 grid for batch printing
+([Batch printing](#batch-printing-for-the-optimization-campaign) below).
 
 ## Single-piece, pure-PETG
 
@@ -96,9 +100,10 @@ Verified slice statistics for `t3-prism.H2D-PETG.gcode.3mf` (read from
 `Metadata/plate_1.gcode` inside the archive; BambuStudio CLI returns
 `return_code: 0, error_string: "Success."`):
 
-| Layers | Filament | Print time | Supports |
-| -----: | -------: | ---------: | -------- |
-| 385 @ 0.20 mm | 6.74 g PETG | 1 h 30 m 46 s | off (matches Marcus's project) |
+| Layers | Filament | Print time | Supports | Scale |
+| -----: | -------: | ---------: | -------- | ----- |
+| 385 @ 0.20 mm | 6.74 g PETG | 1 h 30 m 46 s | off (matches Marcus's project) | 1.0 (legacy) |
+| ~575 @ 0.20 mm | 31.6 g PETG | ≈ 2 h 41 min | tree(auto) on, threshold 30° | **1.5 (default)** — see [Scale-up](#scale-up-to-15-cable_d-30--45-mm) |
 
 ### About the two `.3mf` flavors (and the import error)
 
@@ -151,35 +156,92 @@ this geometry single-piece, flat, with thin cables:
   top cable starts (around layer 362), so the joint spheres are solid
   anchors — but the bridge sliver still has to span the gap on its own.
 
-**Applied in this revision** (both mitigations active by default):
+**Applied in this revision** (all three mitigations active by default):
 
 1. **`cable_d` bumped 2.4 → 3.0 mm** in `t3-prism.scad`. This sits
    inside the Edison-recommended 3.0–4.0 mm window and matches the
    ≈ 3.12 mm point at which Marcus's follow-up scale-1.3 print
    empirically triggered auto-supports on the top cables. The first-
    layer bridge chord roughly doubles in width and ~3 perimeters now
-   span the gap. Volume goes from ~8.7 → ~9.8 cm³ (≈ 6.7 → 7.6 g PETG
-   before supports).
+   span the gap.
 2. **Supports forced ON** in `render_print.sh::enable_supports` for the
    H2D PETG slice (`enable_support=1`, `support_type=tree(auto)`,
    `support_threshold_angle=30`, `support_on_build_plate_only=0`,
    `tree_support_branch_angle=40`). The lower threshold + non-
    build-plate-only flag means the top cables get scaffolded even when
-   the auto-detector is on the fence. Sliced job is now ≈ 1 h 41 min /
-   11.6 g PETG including supports (vs. the previous 1 h 31 min / 6.7 g
-   without supports).
+   the auto-detector is on the fence. **The same `enable_supports()`
+   patch is now also applied to all three multi-material project
+   `.3mf`s** (`H2D-MM`, `H2D-MM-PLAcables`, `H2D-MM-PLAstruts-TPUcables`),
+   so dragging any of them into Bambu Studio and hitting *Slice plate*
+   produces supports without needing to flip the toggle.
+3. **Scale up 1.0 → 1.5×** (see [Scale-up](#scale-up-to-15-cable_d-30--45-mm)
+   below). At scale 1.5 the cables become 4.5 mm Ø — comfortably above
+   Bambu's auto-support threshold (verified at scale 1.3 ↔ ≈ 3.9 mm)
+   and large enough that TPU 85A can self-bridge the top-triangle
+   spans without supports.
+
+### Scale-up to 1.5× (`cable_d` 3.0 → 4.5 mm)
+
+After the team imported `slices/t3-prism.H2D-MM-PLAstruts-TPUcables.3mf`
+into Bambu Studio and tried to slice
+([PR #35 comment 4461996817](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4461996817):
+"not seeing any supports… the design itself is just too small, if it
+were bigger then we don't necessarily need supports on the TPU"), it
+became clear that even with `enable_support=1` baked into the project
+config, Bambu Studio's auto-detector still skipped the 3.0 mm top cables
+on the production-target slice — exactly the auto-detector boundary
+@achris0520 originally observed at scale 1.0 ↔ 1.3.
+
+So we added a **`scale_factor`** parameter (default **1.5**) at the top
+of [`t3-prism.scad`](t3-prism.scad) that multiplies every linear
+dimension. At scale 1.5:
+
+| Dim         | Scale 1.0 | Scale 1.5 (default) | Why bigger helps |
+| ----------- | --------: | --------: | --- |
+| `cable_d`   |    3.0 mm | **4.5 mm** | 50% wider first-layer bridge chord; well above the auto-detector threshold and within the 1.2–6.0 mm printable-tendon window. TPU 85A self-bridges 4.5 mm cylinders without supports. |
+| `strut_d`   |    6.0 mm | **9.0 mm** | proportional — keeps the strut-to-cable ratio constant. |
+| `R`, `H`    | 25, 70 mm | **37.5, 105 mm** | bounding box ~75 × 75 × 115 mm — still fits 4-up on the 350 × 320 mm H2D plate (see [Batch printing](#batch-printing-for-the-optimization-campaign)). |
+| Print time  | ≈ 1 h 41 m | ≈ 2 h 41 m | single-material PETG with supports, ≈ 31.6 g vs ≈ 11.6 g. |
+
+To revert to the old size for a quick test print, run
+`openscad -D 'scale_factor=1.0' …` or change the constant in
+`t3-prism.scad`.
 
 Optional further mitigations not applied here but documented for
 re-runs:
 
-3. **Re-orient so one strut lies flat on the build plate** — kills the
-   43 mm horizontal bridges entirely; cables print at self-supporting
-   30°–60° diagonals.
-4. **Tune PETG bridge settings** — 100% fan + slicer bridge speed/flow
+4. **Re-orient so one strut lies flat on the build plate** — kills the
+   horizontal top-triangle bridges entirely; cables print at
+   self-supporting 30°–60° diagonals.
+5. **Tune PETG bridge settings** — 100% fan + slicer bridge speed/flow
    overrides.
-5. **Multi-material variant** (next section) — PLA struts can then be
-   oriented separately, and the PETG slot is the TPU placeholder
-   anyway.
+
+### Batch printing (for the optimization campaign)
+
+Per [PR #35 comment 4461855403](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4461855403)
+("we can definitely start doing batch prints for these since it won't
+take an exorbitant amount of time longer per print than doing a single
+print … in general we can do batch prints during the optimization
+campaign #29 #30 #23 #24"), the H2D's 350 × 320 mm plate fits a 2 × 2
+grid of scale-1.5 prisms (each ~75 × 75 mm) with comfortable spacing —
+or a 3 × 2 grid if oriented strut-flat. Recommended workflow:
+
+1. Open `slices/t3-prism.H2D-MM-PLAstruts-TPUcables.3mf` in Bambu Studio.
+2. Right-click the assembled object → *Clone* → enter the desired count
+   (4 for 2 × 2, 6 for 3 × 2). Bambu Studio will auto-arrange.
+3. *Slice plate* (supports already on from this PR) → *Send to printer*.
+
+A single 4-up batch on the H2D takes ≈ 4 × the per-part filament but
+only ≈ 1.3–1.5× the per-part time (motion + heat-up + bridge purge are
+amortised across the batch), so for the optimization campaign DoE
+([#23](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/23),
+[#24](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/24),
+[#29](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/29),
+[#30](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/30))
+this is the obvious path to higher throughput. We deliberately keep the
+committed `slices/*.3mf` as **single-instance** projects so the team can
+choose 1, 4, or 6 copies per print interactively in Bambu Studio
+depending on filament budget and which DoE corner they're sampling.
 
 ### Can the BambuStudio CLI add supports?
 

@@ -41,10 +41,12 @@
 // ============================================================================
 
 // ---- Parameters (mm / degrees) --------------------------------------------
-R          = 25;   // radius of the circumscribing circle of each end triangle
-H          = 70;   // distance between bottom and top triangle planes
-twist      = 60;   // rotation of the top triangle relative to the bottom
-strut_d    = 6;    // strut (compression member) diameter
+// Base (unscaled) geometry. The actual printed dimensions are
+// (R, H, strut_d, cable_d, joint_d) * scale_factor.
+R_base       = 25;   // radius of the circumscribing circle of each end triangle
+H_base       = 70;   // distance between bottom and top triangle planes
+twist        = 60;   // rotation of the top triangle relative to the bottom
+strut_d_base = 6;    // strut (compression member) diameter
 // Cable diameter bumped 2.4 -> 3.0 mm after the first H2D PETG print spaghetti'd
 // on layer ~362 of the top-cable bridge (PR #16 review). Edison ANALYSIS
 // `25c1c897` recommended 3.0–4.0 mm and Marcus's follow-up print empirically
@@ -52,9 +54,29 @@ strut_d    = 6;    // strut (compression member) diameter
 // auto-support logic finally tagged the top cables as needing supports; at the
 // original 2.4 mm it skipped them and they sagged/waved. 3.0 mm sits inside
 // Edison's window while keeping the tensegrity-cable feel.
-cable_d    = 3.0;  // cable (tension member) diameter -- >= 2*nozzle for FDM
-joint_d    = 7;    // small sphere diameter at each vertex for clean joints
-$fn        = 48;
+cable_d_base = 3.0;  // cable (tension member) diameter -- >= 2*nozzle for FDM
+joint_d_base = 7;    // small sphere diameter at each vertex for clean joints
+$fn          = 48;
+
+// Uniform scale factor applied to ALL linear dimensions (R, H, strut/cable/joint
+// diameters). Bumped 1.0 -> 1.5 per PR #35 comment 4461996817 from @sgbaird:
+// "not seeing any supports... the design itself is just too small, if it were
+// bigger then we don't necessarily need supports on the TPU." At scale 1.0 the
+// 3.0 mm top cables sat just below Bambu Studio's auto-support detection
+// threshold, so when the team imported the MM project .3mf and sliced it, the
+// slicer skipped supports on the TPU cables and the bridges sagged. At scale
+// 1.5 the cables become 4.5 mm Ø — well above Bambu's threshold (verified at
+// scale 1.3 ↔ cable_d ≈ 3.9 mm by @achris0520) — and large enough that TPU
+// can self-bridge the top-triangle spans without needing supports at all.
+// Bounding box at scale 1.5: ~75 × 75 × 115 mm (still fits 4-up on the H2D's
+// 350 × 320 mm plate for batch printing — see PR #35 comment 4461855403).
+scale_factor = 1.5;
+
+R       = R_base       * scale_factor;
+H       = H_base       * scale_factor;
+strut_d = strut_d_base * scale_factor;
+cable_d = cable_d_base * scale_factor;
+joint_d = joint_d_base * scale_factor;
 
 // `part` selects which subset of members to emit. Used by render_print.sh
 // to export the single-material STL ("all") and the two halves of the
