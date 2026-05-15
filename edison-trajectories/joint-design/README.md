@@ -127,6 +127,23 @@ Also worth noting: per issue [#45](https://github.com/vertical-cloud-lab/tensegr
 
 To make the captive interior geometry unambiguous (e.g. confirm B-dovetail head-to-cable continuity and D-eyelet chain-link topology from a single sheet, per PR comment 4427543897), `cad/joint-design/render.sh` now emits **three orthogonal cuts per design** (Y=0, X=0, Z=−2) plus the iso view, and assembles them into [`cad/joint-design/renders/all_multiplane_section_montage.png`](../../cad/joint-design/renders/all_multiplane_section_montage.png). Per-design files: `*_section_{X,Y,Z}.scad`.
 
+## Design A — anchor-upset shape variants (why a *bulb*?)
+
+Per PR comment [4445476374](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/38#issuecomment-4445476374), "anchor-bulb" is just shorthand for *any* printed-in-place TPU upset wider than the bore on the far side; a sphere is the laziest defensible shape, not a principled optimum. Five alternative upset shapes are visualized side-by-side at [`cad/joint-design/A_variants/`](../../cad/joint-design/A_variants/) (each preserves the Phase-3 1.71× pull-through ratio, only the shape changes):
+
+| # | Shape | Functional advantage over A0 sphere |
+|---|---|---|
+| **A0** | sphere (the existing reference) | baseline, ~3.4 mm² projected bearing, zero free design params |
+| **A1** | truncated cone / "rivet head" | flat bearing annulus 6.0 mm² (~75 % more); flat top lays down cleanly on H2D top-layer pass |
+| **A2** | torus / donut | distributed annular bearing → lower peak contact stress per drop |
+| **A3** | conical countersunk head (90°) | **flush** — no protrusion; self-centring; ~8.8 mm² conical wall |
+| **A4** | 6-lobed / star / knurled head | rotational keying — can't spin against bore exit (matters for Bruceton n≥20 reuse) |
+| **A5** | mushroom / tee-head with 0.4 mm radiused undercut (Frascio 2024) | maximum mechanical interlock per gram of TPU; necks the cap base, not the bore lip |
+
+![Design A upset variants — iso + Y=0 cutaway grid](../../cad/joint-design/A_variants/renders/all_variants_grid_montage.png)
+
+See [`cad/joint-design/A_variants/README.md`](../../cad/joint-design/A_variants/README.md) for the full motivation, geometry parameters, and the open print-process / topology questions deferred to the pending Phase-4 Edison `f9804247` (project-context recommendation) and `e9a1f4cc` (per-design vision review).
+
 
 
 - [ ] Fetch ANALYSIS follow-up `ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa` (re-run with all 5 Phase-1 outputs attached) and commit `.md` + `.json`
