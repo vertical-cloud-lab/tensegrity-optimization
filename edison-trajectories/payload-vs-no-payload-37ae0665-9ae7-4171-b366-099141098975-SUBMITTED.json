@@ -1,0 +1,17 @@
+{
+  "trajectory_id": "37ae0665-9ae7-4171-b366-099141098975",
+  "submitted_at": "2026-05-15T18:55:32Z",
+  "job": "LITERATURE_HIGH",
+  "topic": "payload vs no-payload in tensegrity drop sims",
+  "related_issues": [
+    46,
+    47,
+    50,
+    16,
+    28,
+    18,
+    49,
+    14,
+    45
+  ]
+}

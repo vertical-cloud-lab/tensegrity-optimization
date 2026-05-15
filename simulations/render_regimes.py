@@ -146,11 +146,19 @@ def build_render_xml(r: Regime, *, drop_height: float,
     # contacts are well-resolved visually.  Heavier viz payload → smaller
     # dt so the stiff floor contact stays stable.
     dt = min(r.sim_dt_s, 2.0e-5 if m_payload >= 5 else 5.0e-5)
+    # ASTM D5276 / GSFC GEVS impact-surface convention: rigid concrete pad
+    # (>= 150 mm thick, on >= 1 m^3 concrete/steel base; E_concrete ~ 30 GPa
+    # >> E_PETG/PLA ~ 3.5 GPa, so contact compliance is dominated by the
+    # strut, not the floor).  Modelled here as an infinite rigid MuJoCo
+    # ``plane`` with critically-damped contact (solref tau=2 ms, beta=1)
+    # and a sliding friction tuple representative of PLA/PETG-on-concrete
+    # (mu_s ~ 0.55-0.65, mu_torsion ~ 0.005, mu_roll ~ 1e-4).
     return f"""
     <mujoco model="render_{r.name}">
       <option gravity="0 0 -9.81" timestep="{dt}" integrator="RK4"/>
       <worldbody>
         <geom name="floor" type="plane" size="2 2 0.1" rgba="0.85 0.85 0.85 1"
+              friction="0.6 0.005 0.0001"
               solref="0.002 1" solimp="0.98 0.999 0.0001"/>
         {''.join(bodies)}
       </worldbody>
