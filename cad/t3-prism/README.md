@@ -90,6 +90,7 @@ Outputs (committed):
 | [`slices/t3-prism.H2D-PETG.gcode.3mf`](slices/t3-prism.H2D-PETG.gcode.3mf) | **Sliced print job** for the H2D — the file you upload to the printer over LAN/cloud. Contains `Metadata/plate_1.gcode`. *Not* re-importable as a Bambu Studio project (see below). |
 | [`slices/t3-prism.H2D-MM.3mf`](slices/t3-prism.H2D-MM.3mf) | **Multi-material** (PLA struts + PETG cables, IDEX) Bambu Studio project file. One assembled object with two parts: struts on extruder 1 (PLA), cables on extruder 2 (PETG). Open in Bambu Studio, hit *Slice plate* + *Send to printer* — no GUI fiddling required. See "Multi-material variant" below. |
 | [`slices/t3-prism.H2D-MM-PLAcables.3mf`](slices/t3-prism.H2D-MM-PLAcables.3mf) | **Multi-material swap** (PETG struts + **PLA cables**, IDEX) Bambu Studio project file — same `--assemble`d two-part object as `H2D-MM.3mf` but with the per-part filament assignment swapped: struts on extruder 1 (PETG), cables on extruder 2 (PLA). Requested in PR #35 comment 4445480059 ("create a version of the T3-prism with the cables made of PLA"). See "Multi-material variant" below. |
+| [`slices/t3-prism.H2D-MM-PLAstruts-TPUcables.3mf`](slices/t3-prism.H2D-MM-PLAstruts-TPUcables.3mf) | **Multi-material — production target** (PLA struts + **TPU 85A cables**, IDEX) Bambu Studio project file. Same two-part assembled object: struts on extruder 1 (PLA), cables on extruder 2 (TPU 85A). Requested in PR #35 comment 4455977731 ("a design that uses PLA for the struts and TPU for the cables so [the team] can slice and print this file directly"). PLA↔TPU has the best peer-reviewed inter-material bond data (see `edison-trajectories/strut-material-selection-*`). Drag in, hit *Slice plate* + *Send to printer*. See "Multi-material variant — production target" below. |
 
 Verified slice statistics for `t3-prism.H2D-PETG.gcode.3mf` (read from
 `Metadata/plate_1.gcode` inside the archive; BambuStudio CLI returns
@@ -272,6 +273,46 @@ discussed in
 [PR #39 comment 4427586306](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/39#issuecomment-4427586306)
 will need a small SCAD addition (a thin TPU sleeve around the upper
 end of each strut) to be tracked there, not here.
+
+### Multi-material variant — production target (PLA struts + TPU 85A cables, IDEX)
+
+`slices/t3-prism.H2D-MM-PLAstruts-TPUcables.3mf` is the **production
+target** pairing — what the team will actually print when they want a
+real-feeling tensegrity demonstrator. Requested in
+[PR #35 comment 4455977731](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4455977731)
+("a design that uses PLA for the struts and TPU for the cables so
+[@me-madsen / @achris0520 / @ctrhjk] can slice and print this file
+directly"):
+
+| Part | Filament | H2D extruder | Tensegrity role |
+| ---- | -------- | -----------: | --------------- |
+| `t3-prism-struts.stl` (3 struts + 6 joint vertex spheres) | **PLA** (`Bambu PLA Basic @BBL H2D`) | 1 (left) | rigid compression skeleton |
+| `t3-prism-cables.stl` (3 bottom + 3 top + 3 saddle cables) | **TPU 85A** (`Bambu TPU 85A @BBL H2D 0.4 nozzle`) | 2 (right) | compliant tension members (E ≈ 12 MPa secant, σ_break ≈ 26 MPa) |
+
+This is the closest single-print analog to a real tensegrity: stiff PLA
+bars carry compression, soft TPU 85A "strings" carry tension, and the
+two are mechanically locked at each joint sphere.
+
+**Open in Bambu Studio**, hit *Slice plate*, then *Send to printer* —
+the per-part extruder assignment, filament types, and bed type are all
+baked in. Same parametric SCAD geometry as the rest of this directory
+(`cable_d = 3.0 mm`, supports forced on by the H2D process recipe so the
+top-cable bridges get scaffolded — TPU especially needs the support).
+
+**PLA↔TPU bond strength** is the best-characterized FFF inter-material
+bond in the literature: PLA–TPU butt-fusion 6.5 MPa, alternating-deposition
+7.4 MPa, mechanical-interlock shear ~24 MPa (Lopes 2018, Zhang 2026,
+Ruwais 2025; see
+[`edison-trajectories/strut-material-selection-5bb5e5d3-*.md`](../../edison-trajectories/strut-material-selection-5bb5e5d3-b386-4ece-a894-9c87f0d67036.md)).
+This is why this MM pairing is the one to print first — the alternative
+PETG–TPU pairing has *no* peer-reviewed bond data.
+
+**Joint design** — the vertex spheres in this slice are simple unioned
+overlaps. The TPU "glove" / barbed-rebar mechanical interlocks under
+discussion in [PR #39](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/39)
+and the joint-design Phase-3/4 Edison work (issue #38) will land in a
+follow-up SCAD revision; for the first PLA+TPU print the union joint
+plus PLA↔TPU adhesion should hold for handling and demonstration loads.
 
 ### CLI gotchas (from powder-doser PR #23)
 

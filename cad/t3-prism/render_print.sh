@@ -306,6 +306,26 @@ slice_bambu_mm "H2D-MM-PLAcables" \
     "Bambu PETG Basic @BBL H2D 0.4 nozzle" \
     "Bambu PLA Basic @BBL H2D"
 
+# Multi-material H2D variant — the **production-target** pairing: PLA struts
+# + **TPU 85A cables**. Requested in PR #35 comment 4455977731 ("a design
+# that uses PLA for the struts and TPU for the cables so [the team] can
+# slice and print this file directly"). PLA gives the rigid compression
+# skeleton; TPU 85A (NinjaFlex-class, E ≈ 12 MPa secant) gives the
+# compliant tension cables that mimic real tensegrity strings. Filament
+# slot 1 = PLA (struts/extruder 1), slot 2 = TPU 85A (cables/extruder 2).
+# The PLA↔TPU interface has the best peer-reviewed bond data (PLA–TPU butt
+# 6.5 MPa, alt-deposition 7.4 MPa, mech-interlock shear ~24 MPa; see
+# `edison-trajectories/strut-material-selection-5bb5e5d3-*.md`), making
+# this the lowest-risk MM combination for a single-print tensegrity. Per
+# PR #39 comment 4427586306, the TPU "glove" / mechanical-interlock joint
+# is being tracked separately under joint-design (issue #38) and is not
+# baked into the geometry here.
+slice_bambu_mm "H2D-MM-PLAstruts-TPUcables" \
+    "Bambu Lab H2D 0.4 nozzle" \
+    "0.20mm Standard @BBL H2D" \
+    "Bambu PLA Basic @BBL H2D" \
+    "Bambu TPU 85A @BBL H2D 0.4 nozzle"
+
 echo
 echo "==> Done."
 echo "    STL:        ${STL}"
@@ -320,5 +340,9 @@ echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-MM.3mf         (open in Bambu S
 echo "                                                           Slice + Send to printer)"
 echo "    Multi-material swap (PETG struts + PLA cables, IDEX, project only):"
 echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-MM-PLAcables.3mf"
+echo "                                                          (open in Bambu Studio,"
+echo "                                                           Slice + Send to printer)"
+echo "    Multi-material production target (PLA struts + TPU 85A cables, IDEX, project only):"
+echo "      Project:  ${SLICES_DIR}/t3-prism.H2D-MM-PLAstruts-TPUcables.3mf"
 echo "                                                          (open in Bambu Studio,"
 echo "                                                           Slice + Send to printer)"
