@@ -86,7 +86,7 @@ def build_render_xml(r: Regime, *, drop_height: float,
     m_payload = float(payload_mass_kg) if payload_mass_kg is not None \
         else r.payload_mass_kg
     # Distribute payload as extra mass on each of the 3 struts; combined
-    # with the PETG/PLA strut self-mass (densely small), this gives the
+    # with the PLA strut self-mass (densely small), this gives the
     # prism the inertia of a real cell + crutch user / lander payload.
     extra_mass_per_strut = m_payload / 3.0
 
@@ -148,10 +148,10 @@ def build_render_xml(r: Regime, *, drop_height: float,
     dt = min(r.sim_dt_s, 2.0e-5 if m_payload >= 5 else 5.0e-5)
     # ASTM D5276 / GSFC GEVS impact-surface convention: rigid concrete pad
     # (>= 150 mm thick, on >= 1 m^3 concrete/steel base; E_concrete ~ 30 GPa
-    # >> E_PETG/PLA ~ 3.5 GPa, so contact compliance is dominated by the
+    # >> E_PLA ~ 3.5 GPa, so contact compliance is dominated by the
     # strut, not the floor).  Modelled here as an infinite rigid MuJoCo
     # ``plane`` with critically-damped contact (solref tau=2 ms, beta=1)
-    # and a sliding friction tuple representative of PLA/PETG-on-concrete
+    # and a sliding friction tuple representative of PLA-on-concrete
     # (mu_s ~ 0.55-0.65, mu_torsion ~ 0.005, mu_roll ~ 1e-4).
     return f"""
     <mujoco model="render_{r.name}">

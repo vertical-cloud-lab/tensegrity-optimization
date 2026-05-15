@@ -5,7 +5,7 @@
 
 This directory contains a first pass at downloading, installing and **actually
 running** open-source simulators capable of modelling the multi-material
-3D-printed tensegrity structures targeted by this MRG project (PLA/PETG struts
+3D-printed tensegrity structures targeted by this MRG project (PLA struts
 + TPU tendons, optimised for impact / energy absorption).
 
 A complementary high-effort literature survey was submitted to Edison
@@ -35,7 +35,7 @@ height 0.094–0.106 m and peak kinetic energy 0.95–1.04 J (≈ `m·g·h ≈ 1
 ```
 simulations/
 ├── tprism_geometry.py    # 3-bar Snelson prism node/edge generator (no deps beyond numpy)
-├── tprism_mesh.py        # gmsh OCC volumetric mesher: 3 PETG struts + 9 TPU tendons fused
+├── tprism_mesh.py        # gmsh OCC volumetric mesher: 3 PLA struts + 9 TPU tendons fused
 ├── mujoco_drop.py        # MuJoCo MJCF + drop simulation (✅ baseline)
 ├── pybullet_drop.py      # PyBullet rigid-body + manual spring cables (✅)
 ├── pychrono_drop.py      # Project Chrono ChLinkTSDA (✅, conda install required)
@@ -43,7 +43,7 @@ simulations/
 ├── mujoco_sweep.py       # 1-D parameter sweep --> BO objective stub
 ├── regimes.py            # Application regime dataclasses (crutch + NASA) + Lansmont M23 envelope
 ├── run_regimes.py        # Drives MuJoCo through both regimes; produces 4 figures + 2 CSVs
-├── printable_design.py   # PETG strut + TPU 85A tendon material model + class-1 check
+├── printable_design.py   # PLA strut + TPU 85A tendon material model + class-1 check
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 ├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
 ├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
@@ -76,7 +76,7 @@ python simulations/mujoco_drop.py
 python simulations/pybullet_drop.py
 python simulations/mujoco_sweep.py
 python simulations/run_regimes.py     # both application regimes, MuJoCo
-python simulations/printable_sweep.py # PETG/TPU printable-design sweep, MuJoCo
+python simulations/printable_sweep.py # PLA/TPU printable-design sweep, MuJoCo
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
@@ -193,10 +193,10 @@ cannot resolve TPU-mediated energy absorption. Crutch design and
 quantitative SEA optimization motivate moving to Edison's Recommendation B
 (DiffPD) or A (PolyFEM + IPC) for the next iteration.
 
-## PETG strut + TPU "string" printable design (Bambu H2D)
+## PLA strut + TPU "string" printable design (Bambu H2D)
 
 The lab fabricates the unit cell on a Bambu Lab H2D (0.4 mm nozzle,
-PETG + TPU 85A in IDEX), so cable stiffness is not a free abstract
+PLA + TPU 85A in IDEX, per #45), so cable stiffness is not a free abstract
 parameter — it is set by the printable tendon diameter `d_t` and the
 TPU 85A modulus:
 
@@ -261,7 +261,7 @@ Recommendation B (DiffPD)** because:
 
 `simulations/newton_drop.py` builds the same Snelson T-prism as an
 all-particle network: 6 prism nodes (mass 5 g each), 1 payload node
-(1 kg), 3 stiff PETG strut springs, 9 TPU-85A tendon springs, and
+(1 kg), 3 stiff PLA strut springs, 9 TPU-85A tendon springs, and
 **6 internal TPU-85A tendons suspending the payload from every prism
 node** (the SUPERball / NASA TBR architecture). The whole thing is
 dropped 100 mm onto Newton's ground plane with a soft-contact pipeline
@@ -287,9 +287,9 @@ quantitative crutch-tip BO:
 1. Add tendon prestrain so the suspension is taut at rest (current
    model is slack; matches the "rest = L0" cross-engine convention but
    a real assembly is sewn under tension).
-2. Replace the all-particle prism with rigid bodies for the PETG struts
+2. Replace the all-particle prism with rigid bodies for the PLA struts
    (Newton supports `add_body` + `add_shape_capsule`); this removes the
-   numerical PETG-spring impedance and lets the cable-network
+   numerical PLA-spring impedance and lets the cable-network
    compliance dominate the integration.
 
 Both are mechanical refinements rather than tooling escalations; the
@@ -326,18 +326,18 @@ out to `PolyFEM_bin -j drop.json`. The script then walks the per-step
 trajectory and writes `outputs/polyfem_drop.{png,npz}`. End-to-end runtime
 on a 4-core x86_64 runner is ~3 min for 120 ms of simulated time.
 
-#### T-prism geometry (`--geometry tprism`) — PETG struts + TPU 85A tendons
+#### T-prism geometry (`--geometry tprism`) — PLA struts + TPU 85A tendons
 
 `simulations/tprism_mesh.py` uses gmsh's OCC kernel to build the actual
-3-bar Snelson T-prism as three Ø3 mm PETG strut cylinders plus nine
+3-bar Snelson T-prism as three Ø3 mm PLA strut cylinders plus nine
 Ø1.5 mm TPU 85A tendon cylinders connecting the canonical strut endpoints.
 Each tendon is shortened by ~60 % of the strut diameter at each end so its
 side wall fuses with the strut side wall (rather than coinciding with the
 strut endcap, which trips a tetgen PLC error); `gmsh.model.occ.fragment`
 then splits the overlap into shared-face sub-volumes. The resulting Gmsh
-4.1 `.msh` carries two physical-volume groups (`1 = PETG_strut`,
+4.1 `.msh` carries two physical-volume groups (`1 = PLA_strut`,
 `2 = TPU_tendon`) which PolyFEM picks up to apply per-element NeoHookean
-materials (PETG E = 2 GPa, ρ = 1270; TPU 85A E = 12 MPa, ρ = 1200). Then
+materials (PLA E = 3.5 GPa, ρ = 1240; TPU 85A E = 12 MPa, ρ = 1200). Then
 the same IPC barrier-method contact handles strut–floor and strut–strut
 interactions in the same run:
 
@@ -346,7 +346,7 @@ python simulations/polyfem_drop.py --geometry tprism
 # writes outputs/polyfem_drop_tprism.{png,npz}
 ```
 
-Mesh stats at default settings: ~5.5 k tets, 15 PETG sub-volumes + 9 TPU
+Mesh stats at default settings: ~5.5 k tets, 15 PLA sub-volumes + 9 TPU
 sub-volumes, drop time ~40 ms simulated.
 
 Compared to the rigid-strut MuJoCo / PyBullet / PyChrono engines and the

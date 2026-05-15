@@ -1,9 +1,11 @@
-"""PETG strut + TPU "string" tensegrity-like design module.
+"""PLA strut + TPU "string" tensegrity-like design module.
 
-The lab will fabricate the unit cell on a Bambu H2D as **PETG struts +
+The lab will fabricate the unit cell on a Bambu H2D as **PLA struts +
 TPU tendons** (an FFF-printed approximation of a Snelson tensegrity, not
-a pure tensegrity built from machined rods + Spectra cord).  This module
-bridges that hardware reality with the simulation parameters consumed by
+a pure tensegrity built from machined rods + Spectra cord).  Per issue
+#45 the strut material is PLA (peer-reviewed PLA-TPU bond data exists;
+no published PETG-TPU interface data).  This module bridges that
+hardware reality with the simulation parameters consumed by
 ``run_regimes.py``, so that:
 
 1. **Cable stiffness is derived from a printable geometry** (tendon
@@ -27,12 +29,12 @@ bridges that hardware reality with the simulation parameters consumed by
 The two materials and their published-typical FFF-print properties:
 
 ================================  ===========  ============
-Property                          PETG         TPU 85A
+Property                          PLA          TPU 85A
 ================================  ===========  ============
-Density (kg / m^3)                ~1270        ~1200
-Young's modulus E (MPa)           ~2000        ~12 (secant)
-Yield / break stress (MPa)        ~50          ~26 (break)
-Strain to break (%)               ~5–10        ~550–660
+Density (kg / m^3)                ~1240        ~1200
+Young's modulus E (MPa)           ~3500        ~12 (secant)
+Yield / break stress (MPa)        ~60          ~26 (break)
+Strain to break (%)               ~5–7         ~550–660
 ================================  ===========  ============
 
 (TPU 85A E ≈ 12 MPa is the small-strain secant — NinjaFlex-class soft
@@ -61,10 +63,15 @@ class Material:
     yield_break_MPa: float
 
 
-PETG = Material("PETG",   young_MPa=2000.0, density_kgm3=1270.0,
-                yield_break_MPa=50.0)
+PLA = Material("PLA",   young_MPa=3500.0, density_kgm3=1240.0,
+               yield_break_MPa=60.0)
 TPU85A = Material("TPU85A", young_MPa=12.0, density_kgm3=1200.0,
                   yield_break_MPa=26.0)
+# Backward-compatibility alias: an earlier draft used PETG for the strut
+# (E ≈ 2 GPa, ρ ≈ 1270, σ_break ≈ 50 MPa).  The lab actually prints PLA
+# (per #45; peer-reviewed PLA-TPU bond data exists, no published PETG-TPU
+# data).  PETG remains a Phase-2 candidate pending interface validation.
+PETG = PLA
 # Backward-compatibility alias: an earlier draft mis-specified the lab's
 # TPU as 95A.  The lab actually prints 85A (per @sgbaird-yolo, PR
 # comment 4411433938); 95A is ~2x stiffer per A.
@@ -76,7 +83,7 @@ TPU = TPU85A
 H2D_NOZZLE_M = 0.4e-3       # 0.4 mm nozzle (per stored repo memory)
 MIN_PRINTABLE_TENDON_DIA_M = 1.2e-3   # ~3 perimeters wide; rule of thumb
 MAX_PRINTABLE_TENDON_DIA_M = 6.0e-3   # bigger -> use multi-strand instead
-MIN_PRINTABLE_STRUT_DIA_M  = 2.0e-3   # PETG strut needs wall + infill
+MIN_PRINTABLE_STRUT_DIA_M  = 2.0e-3   # PLA strut needs wall + infill
 
 
 # --- Derived helpers ------------------------------------------------------
@@ -121,7 +128,7 @@ def strut_pair_min_distance(nodes: np.ndarray) -> float:
 
 @dataclass(frozen=True)
 class PrintableDesign:
-    """A printable PETG-strut + TPU-tendon Snelson cell design."""
+    """A printable PLA-strut + TPU-tendon Snelson cell design."""
     radius_m: float
     height_m: float
     twist_rad: float

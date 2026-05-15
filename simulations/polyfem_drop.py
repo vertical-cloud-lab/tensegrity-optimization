@@ -5,7 +5,7 @@ Two geometries are supported:
 * ``--geometry cube`` (default, smoke-test): a single TPU 85A NeoHookean cube
   of the crutch-tip prism cell size dropped onto a planar IPC ground.
 * ``--geometry tprism``: the actual 3-bar Snelson T-prism, meshed by
-  :mod:`tprism_mesh` as PETG strut volumes (E=2 GPa, ρ=1270) welded to TPU
+  :mod:`tprism_mesh` as PLA strut volumes (E=3.5 GPa, ρ=1240) welded to TPU
   85A tendon volumes (E=12 MPa, ρ=1200) via fragmented gmsh OCC cylinders,
   then dropped through PolyFEM's IPC barrier-method contact onto a ground
   plane. This delivers the IPC-grade strut-strut + strut-floor contact in
@@ -125,15 +125,15 @@ def build_input_json(cube_msh: Path, plane_obj: Path,
 
 
 def build_prism_input_json(prism_msh: Path, plane_obj: Path,
-                            E_petg_pa: float = 2.0e9, nu_petg: float = 0.40,
-                            rho_petg: float = 1270.0,
+                            E_pla_pa: float = 3.5e9, nu_pla: float = 0.36,
+                            rho_pla: float = 1240.0,
                             E_tpu_pa: float = 12.0e6, nu_tpu: float = 0.45,
                             rho_tpu: float = 1200.0,
                             dt: float = 5e-4, n_steps: int = 80) -> dict:
-    """PolyFEM JSON for the welded PETG-strut + TPU-tendon T-prism drop.
+    """PolyFEM JSON for the welded PLA-strut + TPU-tendon T-prism drop.
 
     The .msh produced by :mod:`tprism_mesh` has two physical-volume groups:
-    1 = PETG strut, 2 = TPU 85A tendon.  PolyFEM picks the per-element
+    1 = PLA strut, 2 = TPU 85A tendon.  PolyFEM picks the per-element
     material from the matching ``id`` in the ``materials`` list.
     """
     return {
@@ -148,7 +148,7 @@ def build_prism_input_json(prism_msh: Path, plane_obj: Path,
         "boundary_conditions": {"rhs": [0.0, -9.81, 0.0]},
         "materials": [
             {"id": 1, "type": "NeoHookean",
-             "E": E_petg_pa, "nu": nu_petg, "rho": rho_petg},
+             "E": E_pla_pa, "nu": nu_pla, "rho": rho_pla},
             {"id": 2, "type": "NeoHookean",
              "E": E_tpu_pa,  "nu": nu_tpu,  "rho": rho_tpu},
         ],
@@ -225,7 +225,7 @@ def run_drop(work_dir: Path | None = None, geometry: str = "cube",
             prism_msh = work_dir / "tprism.msh"
             info = build_tprism_msh(prism_msh)
             print(f"[polyfem] meshed prism: {info['tets']} tets, "
-                  f"{info['petg_volumes']} PETG vols + {info['tpu_volumes']} TPU vols")
+                  f"{info['pla_volumes']} PLA vols + {info['tpu_volumes']} TPU vols")
         cfg = build_prism_input_json(Path(prism_msh), plane, **kwargs)
     else:
         raise SystemExit(f"unknown geometry: {geometry!r}")
@@ -253,7 +253,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--geometry", choices=("cube", "tprism"), default="cube",
                         help="cube = TPU85A NeoHookean cube smoke-test (default); "
-                             "tprism = welded PETG-strut + TPU-tendon T-prism.")
+                             "tprism = welded PLA-strut + TPU-tendon T-prism.")
     args = parser.parse_args()
 
     res = run_drop(geometry=args.geometry)
@@ -277,7 +277,7 @@ def main():
     axes[2].set_ylabel("COM ay (g)")
     axes[2].set_xlabel("time (ms)")
     axes[2].grid(True, alpha=0.3)
-    title_geom = "T-prism (PETG + TPU 85A)" if args.geometry == "tprism" else "TPU-85A cube"
+    title_geom = "T-prism (PLA + TPU 85A)" if args.geometry == "tprism" else "TPU-85A cube"
     fig.suptitle(f"PolyFEM + IPC {title_geom} drop (peak {peak_g:.1f} g)")
     fig.tight_layout()
     suffix = "_tprism" if args.geometry == "tprism" else ""

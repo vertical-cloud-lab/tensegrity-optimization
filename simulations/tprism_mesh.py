@@ -1,6 +1,6 @@
 """Build a volumetric tet mesh of a 3-bar Snelson T-prism for PolyFEM + IPC.
 
-The prism consists of three PETG strut cylinders (Ø ``strut_d``) and nine TPU
+The prism consists of three PLA strut cylinders (Ø ``strut_d``) and nine TPU
 85A tendon cylinders (Ø ``tendon_d``) following the canonical connectivity
 from :mod:`tprism_geometry`.
 
@@ -11,11 +11,11 @@ tendon_inset_factor`` at each end so its cylinder side wall fuses with the
 strut side wall instead of trying to coincide with the strut endcap (which
 hits a tetgen PLC error).  ``gmsh.model.occ.fragment`` then splits the
 overlap into shared-face sub-volumes; the original input volumes' fragment
-maps tell us which sub-volumes came from struts (-> physical group 1, PETG)
+maps tell us which sub-volumes came from struts (-> physical group 1, PLA)
 versus tendons (-> physical group 2, TPU 85A).
 
 The output is a Gmsh 4.1 ``.msh`` file with two physical-volume groups
-(``PETG_strut`` = 1, ``TPU_tendon`` = 2) consumable by PolyFEM via the
+(``PLA_strut`` = 1, ``TPU_tendon`` = 2) consumable by PolyFEM via the
 ``volume_selection`` field on the geometry block.
 """
 from __future__ import annotations
@@ -76,16 +76,16 @@ def build_tprism_msh(out_msh: str | Path,
     gmsh.model.occ.synchronize()
 
     n_struts = len(strut_tags)
-    petg, tpu = [], []
+    pla, tpu = [], []
     for i, frags in enumerate(out_map):
         for dim, tag in frags:
             if dim != 3:
                 continue
-            (petg if i < n_struts else tpu).append(tag)
-    petg = sorted(set(petg))
-    tpu = sorted(t for t in set(tpu) if t not in set(petg))
+            (pla if i < n_struts else tpu).append(tag)
+    pla = sorted(set(pla))
+    tpu = sorted(t for t in set(tpu) if t not in set(pla))
 
-    gmsh.model.addPhysicalGroup(3, petg, tag=1, name="PETG_strut")
+    gmsh.model.addPhysicalGroup(3, pla, tag=1, name="PLA_strut")
     gmsh.model.addPhysicalGroup(3, tpu,  tag=2, name="TPU_tendon")
 
     gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 4)
@@ -104,7 +104,7 @@ def build_tprism_msh(out_msh: str | Path,
 
     return {
         "msh": str(out_msh),
-        "petg_volumes": len(petg),
+        "pla_volumes": len(pla),
         "tpu_volumes": len(tpu),
         "tets": nelem,
         "nodes": n_nodes,

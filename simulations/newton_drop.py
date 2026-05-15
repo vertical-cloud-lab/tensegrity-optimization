@@ -20,7 +20,7 @@ Geometry
 --------
 The 3-bar Snelson T-prism from ``tprism_geometry.py`` is built as
 **all-particle**: 6 prism nodes + 1 payload node.  Each strut is a
-high-stiffness spring (PETG, E ≈ 2 GPa, A from strut Ø) and each cable
+high-stiffness spring (PLA, E ≈ 3.5 GPa, A from strut Ø) and each cable
 is a TPU-85A spring (E ≈ 12 MPa secant).  The payload is rigidly
 coupled to the three top nodes by additional stiff springs.  The whole
 thing is dropped from height ``drop_height`` onto the Newton ground
@@ -44,7 +44,7 @@ import numpy as np
 import newton
 import warp as wp
 
-from printable_design import PETG, TPU85A
+from printable_design import PLA, TPU85A
 from tprism_geometry import (
     BOTTOM_CABLES, EQUILIBRIUM_TWIST, STRUTS, TOP_CABLES, VERT_CABLES,
     tprism_nodes,
@@ -88,9 +88,9 @@ def build_model(*, radius_m=0.10, height_m=0.20,
     A_strut = np.pi * (0.5 * strut_dia_m) ** 2
     A_tendon = np.pi * (0.5 * tendon_dia_m) ** 2
 
-    # Strut springs: PETG, very stiff -> behave as rigid at our regime.
+    # Strut springs: PLA, very stiff -> behave as rigid at our regime.
     strut_len = float(np.linalg.norm(nodes[STRUTS[0][0]] - nodes[STRUTS[0][1]]))
-    ke_strut = axial_spring_ke(PETG.young_MPa, A_strut, strut_len)
+    ke_strut = axial_spring_ke(PLA.young_MPa, A_strut, strut_len)
     for (a, b) in STRUTS:
         builder.add_spring(pids[a], pids[b], ke=ke_strut, kd=0.0, control=0.0)
 
@@ -161,7 +161,7 @@ def simulate(builder, payload_pid, *, sim_time_s=0.10, dt=2.5e-5):
 
 def main():
     print("Newton (Warp) mid-fidelity tensegrity drop sim")
-    print(f"  PETG E = {PETG.young_MPa:.0f} MPa   "
+    print(f"  PLA E = {PLA.young_MPa:.0f} MPa   "
           f"TPU 85A E = {TPU85A.young_MPa:.0f} MPa\n")
 
     builder, _pids, payload_pid = build_model(

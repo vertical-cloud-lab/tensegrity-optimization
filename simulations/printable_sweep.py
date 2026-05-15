@@ -1,4 +1,4 @@
-"""Sweep over *printable* PETG-strut + TPU-tendon design variables.
+"""Sweep over *printable* PLA-strut + TPU-tendon design variables.
 
 Where ``run_regimes.py`` swept an abstract cable stiffness ``k`` (N/m),
 this driver instead sweeps over the variables the operator actually
@@ -105,7 +105,7 @@ def plot_heatmap(rows: list[dict], regime: Regime,
         ax.set_title(f"{regime.name}: {label}")
         fig.colorbar(im, ax=ax, label=label)
     fig.suptitle(f"{regime.name}: printable design sweep "
-                 f"(PETG strut Ø{regime.strut_radius_m*2*1e3:.1f} mm + "
+                 f"(PLA strut Ø{regime.strut_radius_m*2*1e3:.1f} mm + "
                  f"TPU 85A tendons; E={TPU85A.young_MPa:.0f} MPa)")
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, fname), dpi=120)
@@ -137,21 +137,21 @@ def plot_pareto(rows: list[dict], regime: Regime, fname: str) -> None:
 
 def main():
     print(f"TPU 85A E = {TPU85A.young_MPa} MPa, "
-          f"PETG E = 2000 MPa.  Sweeping printable design vars.\n")
+          f"PLA E = 3500 MPa.  Sweeping printable design vars.\n")
 
     tendon_dias_m = np.array([1.2, 1.6, 2.0, 2.5, 3.0, 4.0, 5.0]) * 1e-3
     prestrains    = np.array([0.0, 0.02, 0.04, 0.06, 0.08])
 
     summary = []
     for regime in (CRUTCH, NASA_LANDER):
-        # PETG strut diameter from the regime's strut_radius_m.
+        # PLA strut diameter from the regime's strut_radius_m.
         strut_dia_m = 2.0 * regime.strut_radius_m
 
         # Sanity print: scan a representative design and report class-1.
         ref = regime_to_design(regime, tendon_dia_m=2.0e-3,
                                strut_dia_m=strut_dia_m, prestrain=0.04)
         print(f"=== {regime.name} ===")
-        print(f"   strut ØPETG    = {strut_dia_m*1e3:.2f} mm")
+        print(f"   strut ØPLA     = {strut_dia_m*1e3:.2f} mm")
         print(f"   strut length   = {ref.strut_length_m*1e3:.1f} mm")
         print(f"   strut-strut Δ  = {ref.strut_pair_min_distance_m*1e3:.2f} mm "
               f"({'class-1 OK' if ref.is_class_1 else 'CLASS-2 COLLISION'})")

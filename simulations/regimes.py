@@ -46,7 +46,7 @@ class Regime:
     radius_m: float               # T-prism circumscribing radius
     height_m: float               # T-prism height
     strut_radius_m: float         # strut cross-section radius
-    strut_density_kgm3: float     # PLA ≈ 1240 (default per #45), PETG ≈ 1270
+    strut_density_kgm3: float     # PLA ≈ 1240 (default per #45)
     cable_stiffness_Npm: float    # representative TPU tendon spring const.
     cable_damping_Nspm: float
     cable_pretension_frac: float   # rest = (1 - frac) * L0; frac=0 -> slack
@@ -94,7 +94,7 @@ NASA_LANDER = Regime(
     height_m=0.20,
     strut_radius_m=0.006,
     strut_density_kgm3=1240.0,    # PLA (per #45; printability stand-in for
-                                   # heritage NASA PEI/PEKK; PETG/PEEK Phase-2)
+                                   # heritage NASA PEI/PEKK; PEEK Phase-2)
     cable_stiffness_Npm=8.0e3,
     cable_damping_Nspm=5.0,
     cable_pretension_frac=0.05,
