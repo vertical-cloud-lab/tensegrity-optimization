@@ -260,6 +260,40 @@ the same JSON knobs, and `support_filament` can route them to a
 specific extruder on the IDEX H2D if you want PLA scaffolding under
 PETG cables.
 
+#### Verifying supports are *natively* in the sliced g-code
+
+Per [PR #35 comment 4462414588][c-supports-render]'s ask ("we'll
+likely start sending these prints programmatically [#31][i31] /
+[powder-doser PR #23][pd23] rather than using Bambu Studio… show me
+a render of your sliced file so I can verify supports actually
+exist"), the pipeline also emits a colour-coded 3D render of
+`plate_1.gcode` after each slice:
+
+![Native tree(auto) supports in the H2D PETG slice](t3-prism.H2D-PETG-supports.png)
+
+The render is produced by [`render_supports.py`](render_supports.py),
+which parses every `G0`/`G1`/`G2`/`G3` extrusion move in
+`Metadata/plate_1.gcode` and bins it by the BambuStudio `; FEATURE:`
+marker. For `slices/t3-prism.H2D-PETG.gcode.3mf` (scale 1.5×,
+`cable_d = 4.5 mm`, supports forced on by `enable_supports()`) the
+parser counts **36 788 support extrusion moves + 2 563 support-
+interface moves out of 184 133 total extrusion moves** — confirming
+that the BambuStudio CLI (`--slice 1`) actually wrote the tree(auto)
+scaffolding into the g-code, not just toggled a flag in
+`project_settings.config`. The tree branches under the lower triangle
+and the dense fan under the top triangle (which carries the three
+horizontal top cables) are both clearly visible in red, with
+support-interface caps in orange right under the model overhang.
+
+This step runs at the end of [`render_print.sh`](render_print.sh)
+without any GUI dependency, so the same verification can be performed
+unattended in CI / on a headless render host.
+
+[c-supports-render]: https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4462414588
+[i31]: https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/31
+[pd23]: https://github.com/vertical-cloud-lab/powder-doser/pull/23
+
+
 ### Multi-material variant (PLA struts + PETG cables, IDEX)
 
 `slices/t3-prism.H2D-MM.3mf` is a Bambu Studio project that splits the

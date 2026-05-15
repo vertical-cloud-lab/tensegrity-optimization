@@ -333,6 +333,13 @@ slice_bambu_mm "H2D-MM-PLAstruts-TPUcables" \
     "Bambu TPU 85A @BBL H2D 0.4 nozzle"
 
 echo
+echo "==> Render support-extrusion verification PNG (supports baked into g-code)"
+python3 "${HERE}/render_supports.py" \
+    "${SLICES_DIR}/t3-prism.H2D-PETG.gcode.3mf" \
+    "${HERE}/t3-prism.H2D-PETG-supports.png" \
+    "t3-prism.H2D-PETG.gcode.3mf (scale 1.5x, cable_d 4.5mm, supports=tree/auto, baked natively by BambuStudio CLI --slice 1)"
+
+echo
 echo "==> Done."
 echo "    STL:        ${STL}"
 echo "    STL struts: ${STL_STRUTS}"
