@@ -11,6 +11,7 @@ Edison Scientific (FutureHouse) literature-search outputs supporting issue
 | `instron-stiffness-<task_id>.md` | Human-readable Edison brief: 8-objective plan + three structured artifacts (standards comparison table, first-test protocol checklist, published-analogs table). |
 | `instron-stiffness-<task_id>.json` | Full raw `TaskResponseVerbose` dump (status, agent trace, references). ~2 MB. |
 | `instron-stiffness-<task_id>.references.bib` | 81 unique BibTeX entries auto-extracted from the agent trajectory, ready for inclusion in the project bibliography. |
+| [`equipment-selection.md`](./equipment-selection.md) | Maps the brief's abstract recommendations onto the **actually-available BYU CB 123 tensile-test equipment** (1 kip / 3 kip / 20 kip / 100 kip frames + AOX optical extensometer). Primary recommendation: **1 kip Mini Tensile Tester + 100 lb load cell + AOX**. |
 
 ## Headline findings (issue #49 — first-round Instron stiffness tests)
 
