@@ -49,6 +49,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCAD="${HERE}/t3-prism.scad"
 STL="${HERE}/t3-prism.stl"
 STL_STRUTS="${HERE}/t3-prism-struts.stl"
+STL_STRUTS_SCAFFOLD="${HERE}/t3-prism-struts-scaffold.stl"
 STL_CABLES="${HERE}/t3-prism-cables.stl"
 PNG="${HERE}/t3-prism-iso.png"
 SLICES_DIR="${HERE}/slices"
@@ -74,12 +75,26 @@ echo "==> OpenSCAD render -> ${STL_CABLES##*/} (multi-material: tension half / P
 xvfb-run -a openscad -o "${STL_CABLES}" --export-format=binstl \
     -D 'part="cables"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
 
+# Production MM variant (PLA struts + TPU cables) needs PLA scaffold pillars
+# *modeled* into the strut/PLA half so the slicer can't omit them. Bambu's
+# tree(auto) supports skip near-vertical features and even with the most
+# permissive thresholds will not scaffold the long unsupported runs of TPU
+# cable that wave around mid-print. The scaffold-augmented strut STL emits
+# the strut bodies + 7 thin PLA pillars from z=0 up to evenly-spaced
+# touch-points on each of the 6 non-bottom cables (the bottom triangle is
+# already on the build plate). Per PR #35 comment 4464251671.
+echo "==> OpenSCAD render -> ${STL_STRUTS_SCAFFOLD##*/} (struts + 7-point PLA scaffold under TPU cables)"
+xvfb-run -a openscad -o "${STL_STRUTS_SCAFFOLD}" --export-format=binstl \
+    -D 'part="struts_scaffold"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
+
 echo "==> admesh manifold check"
 admesh -fundecvb "${SCRATCH}/t3-prism-clean.stl" "${STL}" \
     | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
 admesh -fundecvb "${SCRATCH}/t3-prism-struts-clean.stl" "${STL_STRUTS}" \
     | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
 admesh -fundecvb "${SCRATCH}/t3-prism-cables-clean.stl" "${STL_CABLES}" \
+    | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
+admesh -fundecvb "${SCRATCH}/t3-prism-struts-scaffold-clean.stl" "${STL_STRUTS_SCAFFOLD}" \
     | grep -E '(Number of parts|disconnected|Degenerate|Volume)' | head -6
 
 # ----------------------------------------------------------------------------
@@ -268,6 +283,9 @@ slice_bambu_mm () {
     # project 3mf as input. The Bambu Studio GUI handles this correctly.
     local tag="$1" machine_leaf="$2" process_leaf="$3"
     local f1_leaf="$4" f2_leaf="$5"
+    local struts_stl="${6:-${STL_STRUTS}}"
+    local struts_stl_basename
+    struts_stl_basename="$(basename "${struts_stl}")"
     local m="${SCRATCH}/${tag}_machine_flat.json"
     local p="${SCRATCH}/${tag}_process_flat.json"
     local f1="${SCRATCH}/${tag}_filament1_flat.json"
@@ -297,11 +315,11 @@ slice_bambu_mm () {
         --load-filaments "${f1};${f2}" \
         --export-3mf "${proj_3mf}" \
         --outputdir "${proj_outdir}" \
-        "${STL_STRUTS}" "${STL_CABLES}" 2>&1 | tail -2
+        "${struts_stl}" "${STL_CABLES}" 2>&1 | tail -2
 
     echo "==> [${tag}] Patch model_settings.config: cables part -> extruder 2 (PETG)"
     python3 "${HERE}/patch_mm_extruder.py" "${proj_outdir}/${proj_3mf}" \
-        "t3-prism-cables.stl=2" "t3-prism-struts.stl=1"
+        "t3-prism-cables.stl=2" "${struts_stl_basename}=1"
     cp "${proj_outdir}/${proj_3mf}" "${SLICES_DIR}/${proj_3mf}"
 }
 
@@ -359,7 +377,8 @@ slice_bambu_mm "H2D-MM-PLAstruts-TPUcables" \
     "Bambu Lab H2D 0.4 nozzle" \
     "0.20mm Standard @BBL H2D" \
     "Bambu PLA Basic @BBL H2D" \
-    "Bambu TPU 85A @BBL H2D 0.4 nozzle"
+    "Bambu TPU 85A @BBL H2D 0.4 nozzle" \
+    "${STL_STRUTS_SCAFFOLD}"
 
 echo
 echo "==> Render support-extrusion verification PNG (supports baked into g-code)"

@@ -382,12 +382,31 @@ directly"):
 
 | Part | Filament | H2D extruder | Tensegrity role |
 | ---- | -------- | -----------: | --------------- |
-| `t3-prism-struts.stl` (3 struts + 6 joint vertex spheres) | **PLA** (`Bambu PLA Basic @BBL H2D`) | 1 (left) | rigid compression skeleton |
+| `t3-prism-struts-scaffold.stl` (3 struts + 6 joint spheres + 42 PLA scaffold pillars) | **PLA** (`Bambu PLA Basic @BBL H2D`) | 1 (left) | rigid compression skeleton + sacrificial supports under the TPU cables |
 | `t3-prism-cables.stl` (3 bottom + 3 top + 3 saddle cables) | **TPU 85A** (`Bambu TPU 85A @BBL H2D 0.4 nozzle`) | 2 (right) | compliant tension members (E ≈ 12 MPa secant, σ_break ≈ 26 MPa) |
 
 This is the closest single-print analog to a real tensegrity: stiff PLA
 bars carry compression, soft TPU 85A "strings" carry tension, and the
 two are mechanically locked at each joint sphere.
+
+**Modeled-in PLA scaffold under the TPU cables.** Per
+[PR #35 comment 4464251671](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4464251671)
+("we want to put PLA support points at 7 points along the length of the
+TPU to keep it upright"), the PLA half of the production variant now
+includes **7 thin PLA pillars rising from the build plate up to
+evenly-spaced touch-points on each of the 6 non-bottom-triangle cables**
+(3 saddle + 3 top = 42 pillars total). The bottom-triangle cables sit
+on the bed and don't need scaffolding, so their would-be pillars are
+filtered out by the `scaffold_min_h` cutoff. Pillar geometry: truncated
+cone, 3.0 mm Ø at the bed (stable base), 1.4 mm Ø at the cable contact
+(snaps off cleanly post-print). Because the pillars are *modeled into
+the geometry* and routed to the PLA extruder, the slicer cannot omit
+them the way the tree(auto) auto-detector does for near-vertical
+features; and because the PLA-TPU interface bond is weak in shear
+(~6.5 MPa butt) the user can break the pillars off after the print
+without scarring the TPU surface.
+
+![scaffold geometry](t3-prism-iso-with-scaffold.png)
 
 **Open in Bambu Studio**, hit *Slice plate*, then *Send to printer* —
 the per-part extruder assignment, filament types, and bed type are all

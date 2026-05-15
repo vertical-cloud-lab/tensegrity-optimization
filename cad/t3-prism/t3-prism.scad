@@ -88,7 +88,42 @@ joint_d = joint_d_base * scale_factor;
 // the rigid skeleton owns the load-bearing nodes; the cables tie into the
 // joints via their own end-cap spheres (`member` adds spheres at both
 // ends), giving a multi-material interlock at every vertex.
-part       = "all";  // "all" | "struts" | "cables"
+part       = "all";  // "all" | "struts" | "cables" | "scaffold" | "struts_scaffold" | "all_scaffold"
+
+// ---- Modeled-in PLA scaffold for the TPU cables ---------------------------
+// The Bambu CLI's tree(auto) supports reliably scaffold horizontal overhangs
+// (lower-triangle and the three top-triangle bridges at the new scale 1.5x)
+// but they leave the *near-vertical* members untouched: each strut tilts only
+// ~22 deg from vertical, the saddle cables are similar, and Bambu's overhang
+// detector measures angle from vertical, so anything below the threshold is
+// skipped — even when the slicer is told `support_critical_regions_only=0`
+// and `support_threshold_angle=10`. The result on the production
+// PLA-struts/TPU-cables print is exactly what @sgbaird-alt's photos show:
+// supports under the bottom triangle, but the TPU saddle and top cables
+// (and even the strut shafts) wave around mid-print because nothing is
+// holding them upright.
+//
+// Per PR #35 comment 4464251671 ("We want to put PLA support points at 7
+// points along the length of the TPU to keep it upright"), we now MODEL the
+// scaffolding directly into the geometry as PLA pillars rising from the
+// build plate up to evenly-spaced touch-points on each TPU cable. Because
+// they are part of the model the slicer cannot omit them, and because they
+// are routed to the PLA extruder in the multi-material variant they peel
+// off the TPU cleanly post-print (the PLA-TPU bond is weak in shear, ~6.5
+// MPa butt; see edison-trajectories/strut-material-selection-5bb5e5d3-*).
+//
+// `n_scaffolds` interior touch-points per cable, evenly spaced at
+// fractions k/(n_scaffolds+1) along the cable's length. Pillars are
+// truncated cones (wider at the bed for stability, narrower at the
+// touch-point so they snap off without scarring the TPU).
+n_scaffolds          = 7;            // touch-points along each TPU cable
+scaffold_d_top_base  = 1.4;          // pillar Ø at the cable contact
+scaffold_d_bot_base  = 3.0;          // pillar Ø at the bed (taper for stability)
+scaffold_min_h_base  = 4.0;          // skip pillars shorter than this (mm, post-scale)
+
+scaffold_d_top = scaffold_d_top_base * scale_factor;
+scaffold_d_bot = scaffold_d_bot_base * scale_factor;
+scaffold_min_h = scaffold_min_h_base * scale_factor;
 
 // Optional rigid translation applied AFTER part selection. Used by
 // render_print.sh for the multi-material variant: both the struts STL
@@ -153,6 +188,40 @@ module t3_prism() {
     }
 }
 
-if      (part == "struts") translate([offset_x, offset_y, offset_z]) t3_prism_struts();
-else if (part == "cables") translate([offset_x, offset_y, offset_z]) t3_prism_cables();
-else                       translate([offset_x, offset_y, offset_z]) t3_prism();
+// ---- PLA scaffold pillars under the TPU cables ----------------------------
+// One vertical pillar from z=0 up to a touch-point on a cable. The pillar
+// fuses into the cable at the top (no air gap) so a slice of PLA cradles
+// the TPU; PLA-TPU bond is weak enough to break away cleanly post-print.
+module pillar_to(target) {
+    z = target[2] - scaffold_d_top * 0.4;  // sink the cone tip slightly into the cable
+    if (z >= scaffold_min_h) {
+        translate([target[0], target[1], 0])
+            cylinder(h=z, d1=scaffold_d_bot, d2=scaffold_d_top);
+    }
+}
+
+module t3_prism_scaffold() {
+    // Touch-points at k/(n+1) for k=1..n along each cable. Bottom-triangle
+    // cables sit on the bed (z = 0) so their pillars are filtered out by
+    // the `scaffold_min_h` cutoff inside `pillar_to`. The remaining 6
+    // cables (3 top-triangle + 3 saddle) each get `n_scaffolds` PLA props.
+    union() {
+        for (i = [0:2]) {
+            for (k = [1:n_scaffolds]) {
+                t = k / (n_scaffolds + 1);
+                pillar_to(bottom_pt(i)     + t * (bottom_pt((i+1)%3) - bottom_pt(i)));
+                pillar_to(top_pt(i)        + t * (top_pt((i+1)%3)    - top_pt(i)));
+                pillar_to(bottom_pt((i+1)%3) + t * (top_pt(i)        - bottom_pt((i+1)%3)));
+            }
+        }
+    }
+}
+
+if      (part == "struts")          translate([offset_x, offset_y, offset_z]) t3_prism_struts();
+else if (part == "cables")          translate([offset_x, offset_y, offset_z]) t3_prism_cables();
+else if (part == "scaffold")        translate([offset_x, offset_y, offset_z]) t3_prism_scaffold();
+else if (part == "struts_scaffold") translate([offset_x, offset_y, offset_z])
+                                        union() { t3_prism_struts(); t3_prism_scaffold(); }
+else if (part == "all_scaffold")    translate([offset_x, offset_y, offset_z])
+                                        union() { t3_prism(); t3_prism_scaffold(); }
+else                                translate([offset_x, offset_y, offset_z]) t3_prism();
