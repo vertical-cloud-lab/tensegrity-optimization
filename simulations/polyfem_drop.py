@@ -138,7 +138,7 @@ def build_prism_input_json(prism_msh: Path, plane_obj: Path,
     """
     return {
         "geometry": [
-            {"mesh": str(prism_msh), "volume_selection": [1, 2]},
+            {"mesh": str(prism_msh)},
             {"mesh": str(plane_obj), "is_obstacle": True,
              "transformation": {"translation": [0.0, 0.0, 0.0],
                                 "dimensions": [0.4, 0.0, 0.4]}},
