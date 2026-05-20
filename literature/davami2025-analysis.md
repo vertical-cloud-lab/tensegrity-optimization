@@ -92,10 +92,14 @@ deliverable is a *closed-loop pipeline*, not a single tested geometry.
 
 ### 3.4 Class-1 prism focus vs. broader connectivity-topology search
 
-Davami restrict to one Class-1 double-T3 prism topology. Our framework
-includes connectivity topology and unit-cell tiling as discrete design
-variables, leveraging the much wider tensegrity-design landscape catalogued
-in our earlier Edison literature surveys (Snelson X-module, Pajunen 2019
+Davami restrict to one Class-1 double-T3 prism topology (and Intrigila et al.
+2022, *Addit. Manuf.* 57:102946, already demonstrated the *quasi-static*
+bistable response of essentially the same SLA Tough 2000 double-T3 unit —
+so Davami's contribution over Intrigila is principally the high-rate SHPB
+extension, not the geometry itself). Our framework instead includes
+connectivity topology and unit-cell tiling as discrete design variables,
+leveraging the much wider tensegrity-design landscape catalogued in our
+earlier Edison literature surveys (Snelson X-module, Pajunen 2019
 truncated-octa cell, Oster 2021 reentrant auxetic, Rhode-Barbarigos
 pentagonal ring, Pugh diamond/zig-zag, tensegrity torus, Hanaor
 double-layer grid; see `edison-trajectories/2026-05-12-tensegrity-design-gaps-…`
@@ -157,13 +161,39 @@ Per the issue, an Edison `LITERATURE_HIGH` query was submitted asking for
 articles *similar to* Davami et al. 2025 across themes (a) high-strain-rate
 AM tensegrity, (b) bistable snap-through tensegrity prisms, (c)
 multi-material AM tensegrity / rigid + TPU, (d) optimization of tensegrity
-for impact, (e) wave-propagation reviews. See the script at
-[`scripts/edison/submit_davami2025_followup.py`](../scripts/edison/submit_davami2025_followup.py)
-and submitted artifacts under
+for impact, (e) wave-propagation reviews. Submission script:
+[`scripts/edison/submit_davami2025_followup.py`](../scripts/edison/submit_davami2025_followup.py);
+fetched artifacts under
 [`edison-trajectories/davami2025-followup/`](../edison-trajectories/davami2025-followup/).
 
-If the task completed in-session, fetched artifacts are committed as
-`davami2025-followup-<task_id>.{md,json}`; otherwise a
-`SUBMITTED-<task_id>.json` marker is committed and the results should be
-fetched in a follow-up session (consistent with the convention used for
-prior Edison submissions in this repository's sibling branches).
+- **Task ID:** `0944224d-2b57-47a9-a525-0a7da79b7a86` (status: **success**,
+  formatted answer ≈ 36 KB, 16 ranked articles).
+- **Artifacts:**
+  [`davami2025-followup-0944224d-…md`](../edison-trajectories/davami2025-followup/davami2025-followup-0944224d-2b57-47a9-a525-0a7da79b7a86.md),
+  [`…json`](../edison-trajectories/davami2025-followup/davami2025-followup-0944224d-2b57-47a9-a525-0a7da79b7a86.json).
+
+### 5.1 Edison-ranked closest analogs (highlights)
+
+The full ranked table (16 articles, themes a–e) is in the artifact; the most
+useful additions for our differentiation argument:
+
+| Rank | Article | Why it sharpens our positioning |
+| --- | --- | --- |
+| 1 | **Pajunen et al. 2019** *Mater. Des.* 182:107966 — SLS, drop-weight impact on monolithic tensegrity-inspired lattice | Cleanest *single-material AM + dynamic* baseline; together with Davami it forms the "monolithic AM tensegrity under impact" precedent we differentiate against. |
+| 2 | **Amendola et al. 2018** *Front. Mater.* 5:22 — EBM Ti6Al4V struts + Spectra cables, drop impact | Confirms that **real flexible cables** materially change the dynamic response — but requires manual post-tensioning. Our PLA + TPU FDM approach is the *automated, monolithic-build* analog. |
+| 4 | **Intrigila et al. 2022** *Addit. Manuf.* 57:102946 — SLA Tough 2000, bistable double-T3, **quasi-static only** | Closest possible analog: same resin, same unit cell, same φ-range as Davami, but no dynamic regime and no flexible tendons. Confirms Davami's *only* novel axis vs. Intrigila is the high-rate SHPB extension. |
+| 5 | **Bauer et al. 2021** *Adv. Mater.* 33:2005647 — TPP monolithic, structural optimization of tension/compression members | Direct precedent that optimizing member-type assignment amplifies energy absorption — supports our multifidelity-BO framing. |
+| 7 | **Yavas et al. 2022** *Mater. Des.* 217:110613 — **FFF PLA + TPU** coaxial-strut multi-material lattice | Validates the exact material system (PLA + TPU on FDM) for energy absorption, *but in a conventional lattice, not a tensegrity*. Our project = Yavas's material system × Davami's tensegrity architecture × BO. |
+| 8 | **Amendola et al. 2015** *Compos. Struct.* 131:66 — bi-material EBM + post-tensioned Spectra | Shows the manufacturing burden of manual post-tensioning that monolithic dual-extrusion FDM eliminates. |
+| 9 | **Zhang et al. 2021** *Compos. Struct.* 267:113903 — numerical optimization of truncated-octahedral tensegrity for E.A. | Numerical-only precedent for tensegrity E.A. optimization; we close the loop with experiments and a multifidelity surrogate. |
+| 10–11 | **Goyal et al. 2019, 2020** — analytical mass-efficient tensegrity E.A. | Provides analytical low-fidelity baselines suitable for the *cheap fidelity* of our multifidelity stack. |
+| 12 | **Pajunen et al. 2021** *Extreme Mech. Lett.* 44:101236 — prestrain-tunable bandgaps in monolithic tensegrity-inspired lattices | Hints that TPU-tendon prestress could become a *dynamic* design variable for our BO — beyond impact E.A. alone. |
+
+The clearest "white space" the Edison survey confirms for us:
+**no published article combines (i) true rigid + flexible-tendon tensegrity
+architecture, (ii) monolithic multi-material FDM (PLA + TPU), (iii) impact /
+high-strain-rate energy-absorption testing, and (iv) data-efficient
+(multifidelity Bayesian) optimization of geometry, material assignment, and
+prestress.** Yavas covers (ii); Amendola covers (i) but with manual
+post-tensioning + EBM; Davami covers (iii) with monolithic SLA; Zhang /
+Goyal cover (iv) numerically only. The union is open.
