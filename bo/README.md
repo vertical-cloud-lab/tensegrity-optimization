@@ -19,7 +19,7 @@ of the project.
 |------|---------|
 | [`generate_scaffold.py`](generate_scaffold.py) | Wraps the `honegumi` Python API, declares our `CONFIG`, and writes `tensegrity_bo.py`. |
 | [`tensegrity_bo.py`](tensegrity_bo.py) | **Generated** Ax/BoTorch BO loop. Has a Branin-style placeholder objective that must be replaced with the experimental energy-absorption measurement (see *Customization* below). |
-| [`tensegrity_campaign.py`](tensegrity_campaign.py) | **Hand-customized** companion to `tensegrity_bo.py`: real design variables (strut diameter / length, TPU skin thickness / width, struts per cell, connectivity topology, tiling) and real objectives (`F_peak`, `SEA`, `eta`) drawn from `proposal.tex`, `idetc-abstract.tex`, `nasa-space-grant/proposal.tex`, and PR #24. Ships an analytical dummy specimen evaluator so it runs end-to-end without experimental data. Flat top-to-bottom script — tune `N_ITERATIONS` / `BATCH_SIZE` / `SEED` in-place. |
+| [`tensegrity_campaign.py`](tensegrity_campaign.py) | **Hand-customized** companion to `tensegrity_bo.py`: real design variables (PETG strut diameter / length, TPU cable diameter, twist, prestress, struts per cell, topology, tiling, TPU shore, PETG infill % + pattern, interface wrap thickness, build orientation) and real objectives (`F_peak`, `SEA`, `eta`) drawn from `proposal.tex`, `idetc-abstract.tex`, `nasa-space-grant/proposal.tex`, and PR #24. Ships an analytical dummy specimen evaluator so it runs end-to-end without experimental data. Flat top-to-bottom script — tune `N_ITERATIONS` / `BATCH_SIZE` / `SEED` in-place. |
 | [`requirements.txt`](requirements.txt) | Pinned dependency set verified to render and run the scaffold without errors. |
 | [`tests/test_generate_scaffold.py`](tests/test_generate_scaffold.py) | Smoke test that re-renders the script via honegumi and checks for the key sections. |
 
@@ -57,14 +57,19 @@ artifacts:
   * `F_peak_N` — peak transmitted force during impact (minimize).
   * `SEA_J_per_g` — specific energy absorption per unit mass (maximize).
   * `eta` — compaction efficiency, ∈ [0, 1] (maximize).
-* **Continuous design variables** (PLA struts + TPU tension skins):
-  strut diameter (1.5–6.0 mm), strut length (15–50 mm), TPU skin thickness
-  (0.4–2.0 mm), TPU skin width (1.0–6.0 mm).
+* **Continuous design variables** (PETG struts + TPU tendons, bounds from
+  PR #24's Edison literature table `5ae24eaf-…` for the TPU+PETG H2D scope):
+  PETG strut diameter (1.5–5.0 mm), strut length (15–50 mm), TPU cable
+  diameter (1.0–3.0 mm), twist angle (10–45°), tendon prestrain (0–5 %),
+  PETG infill % (40–100 %), and PETG–TPU interface wrap thickness
+  (0.4–2.0 mm).
 * **Integer design variable** (encoded as an ordered choice):
   struts per unit cell ∈ {3, 4, 6, 8, 12}.
-* **Categorical design variables**:
-  connectivity topology ∈ {3-bar prism, 4-bar prism, octahedron, icosahedron}
-  and unit-cell tiling ∈ {1×1×1, 2×2×1, 2×2×2}.
+* **Categorical design variables** (also from PR #24):
+  connectivity topology ∈ {truncated octahedron, 4-strut simplex, T3 prism,
+  stacked prism}, unit-cell tiling ∈ {1×1×1, 1×1×2, 2×2×1, 2×2×2, 3×3×2},
+  TPU shore hardness ∈ {85A, 95A}, PETG infill pattern ∈ {rectilinear, grid,
+  gyroid}, and build orientation ∈ {vertical, horizontal, 45°}.
 * **Initialization**: Ax's default ``GenerationStrategy`` handles the
   exploration phase via Sobol quasi-random sampling — no hand-curated pilot
   designs are baked into the script, so the search space is covered cleanly
