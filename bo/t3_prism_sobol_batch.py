@@ -126,27 +126,34 @@ PARAMETERS: list[dict] = [
 
 
 def specimen_footprint(r_mm: float, strut_d_mm: float, joint_d_mm: float = JOINT_D_BASE) -> float:
-    """Conservative bounding box edge length (mm) for one specimen.
+    """Bounding box edge length (mm) for one specimen.
 
-    A T3-prism's triangular caps inscribe in a circle of radius R; the worst-
-    case footprint of the assembly is the diameter (2R) plus the joint sphere
-    radius (so the corner nodes are wholly inside) plus a thin strut-shaft
-    margin so adjacent specimens cannot graze each other.
+    A T3-prism's triangular caps inscribe in a circle of radius R; the
+    outermost geometry is the joint sphere at each corner, so the bounding
+    diameter is ``2R + joint_d``. Strut/cable cylinders fall *inside* this
+    circle (they connect corners) so they do not extend the footprint.
     """
-    return 2.0 * r_mm + joint_d_mm + strut_d_mm
+    del strut_d_mm  # kept for backwards-compatible signature
+    return 2.0 * r_mm + joint_d_mm
 
 
 def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float]:
     """Choose a rows x cols grid that fits on the plate.
 
     Returns (n_rows, n_cols, cell_x, cell_y). Cell dimensions are sized to
-    the worst-case specimen footprint plus a 5 mm air gap, then padded to
-    the plate margins.
+    the worst-case specimen footprint plus a small air gap; specimens that
+    are smaller than the worst case still benefit from the tight pack since
+    we keep the grid square.
     """
     # Square-ish grid.
     cols = math.ceil(math.sqrt(n))
     rows = math.ceil(n / cols)
-    air_gap = 5.0
+    # 2 mm air gap is enough — the slicer's MM flush tower is placed at the
+    # plate edge, not between specimens, and the bounding-circle footprint
+    # already overestimates the corner-to-corner clearance. Tightens the
+    # 3x3 grid by ~30 mm in each direction vs. the original 5 mm + strut_d
+    # padding (PR #35 comment 4503427854).
+    air_gap = 2.0
     cell = max(footprints) + air_gap
     return rows, cols, cell, cell
 

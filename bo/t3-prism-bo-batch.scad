@@ -4,7 +4,7 @@
 // (load axis = z). Supports will be manually painted in Bambu
 // Studio per @achris0520's tip in PR #35 comment 4502140147.
 // Plate: 350 x 320 mm (Bambu Lab H2D).
-// Grid : 3 x 3 (cell 97.0 x 97.0 mm).
+// Grid : 3 x 3 (cell 86.9 x 86.9 mm).
 //
 // `part` selects which half of each specimen to emit, mirroring
 // `cad/t3-prism/t3-prism.scad`:
@@ -53,7 +53,7 @@ module specimen_00() {
     else if (part == "cables") specimen_00_cables();
     else union() { specimen_00_struts(); specimen_00_cables(); }
 }
-translate([77.993, 62.993, 3.500]) specimen_00();
+translate([88.067, 73.067, 3.500]) specimen_00();
 // specimen 01  R=33.78 H=80.08 twist=77.41 strut_d=10.87 cable_d=3.00
 module specimen_01_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
@@ -93,7 +93,7 @@ module specimen_01() {
     else if (part == "cables") specimen_01_cables();
     else union() { specimen_01_struts(); specimen_01_cables(); }
 }
-translate([175.000, 62.993, 3.500]) specimen_01();
+translate([175.000, 73.067, 3.500]) specimen_01();
 // specimen 02  R=38.97 H=99.99 twist=47.69 strut_d=7.07 cable_d=3.92
 module specimen_02_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
@@ -133,7 +133,7 @@ module specimen_02() {
     else if (part == "cables") specimen_02_cables();
     else union() { specimen_02_struts(); specimen_02_cables(); }
 }
-translate([272.007, 62.993, 3.500]) specimen_02();
+translate([261.933, 73.067, 3.500]) specimen_02();
 // specimen 03  R=25.12 H=72.06 twist=65.12 strut_d=10.18 cable_d=4.66
 module specimen_03_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
@@ -173,7 +173,7 @@ module specimen_03() {
     else if (part == "cables") specimen_03_cables();
     else union() { specimen_03_struts(); specimen_03_cables(); }
 }
-translate([77.993, 160.000, 3.500]) specimen_03();
+translate([88.067, 160.000, 3.500]) specimen_03();
 // specimen 04  R=27.61 H=104.13 twist=70.44 strut_d=9.28 cable_d=4.49
 module specimen_04_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
@@ -253,7 +253,7 @@ module specimen_05() {
     else if (part == "cables") specimen_05_cables();
     else union() { specimen_05_struts(); specimen_05_cables(); }
 }
-translate([272.007, 160.000, 3.500]) specimen_05();
+translate([261.933, 160.000, 3.500]) specimen_05();
 // specimen 06  R=35.98 H=96.45 twist=62.11 strut_d=11.66 cable_d=3.49
 module specimen_06_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
@@ -293,7 +293,7 @@ module specimen_06() {
     else if (part == "cables") specimen_06_cables();
     else union() { specimen_06_struts(); specimen_06_cables(); }
 }
-translate([77.993, 257.007, 3.500]) specimen_06();
+translate([88.067, 246.933, 3.500]) specimen_06();
 // specimen 07  R=30.11 H=74.82 twist=44.46 strut_d=8.58 cable_d=4.94
 module specimen_07_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
@@ -333,7 +333,7 @@ module specimen_07() {
     else if (part == "cables") specimen_07_cables();
     else union() { specimen_07_struts(); specimen_07_cables(); }
 }
-translate([175.000, 257.007, 3.500]) specimen_07();
+translate([175.000, 246.933, 3.500]) specimen_07();
 // specimen 08  R=29.02 H=100.87 twist=63.76 strut_d=6.20 cable_d=3.20
 module specimen_08_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
@@ -373,4 +373,4 @@ module specimen_08() {
     else if (part == "cables") specimen_08_cables();
     else union() { specimen_08_struts(); specimen_08_cables(); }
 }
-translate([272.007, 257.007, 3.500]) specimen_08();
+translate([261.933, 246.933, 3.500]) specimen_08();
