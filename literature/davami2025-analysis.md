@@ -36,7 +36,7 @@ The headline contribution is **demonstrating bistable snap-through in a
 3D-printed tensegrity-like cell across five orders of magnitude in strain rate
 (10⁻³ → 10² s⁻¹)** using SHPB-class instrumentation — extending earlier
 small-scale, quasi-static tensegrity-inspired lattice work (Pajunen 2019,
-Beauer 2022, Fraternali 2015) into a regime relevant to impact/ballistic
+Beauer 2022 [*sic*; cited as such in Davami et al., but the canonical reference is Bauer et al. 2021, *Adv. Mater.* 33:2005647 — see §5.1 Rank 5], Fraternali 2015) into a regime relevant to impact/ballistic
 applications.
 
 ## 2. Why this is a high-relevance article for our MRG / IDETC project
