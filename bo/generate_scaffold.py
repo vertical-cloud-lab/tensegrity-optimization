@@ -121,14 +121,16 @@ def render_script(
     engine = build_engine()
     options = engine.OptionsModel(**(config or CONFIG))
     if not smoke_test:
-        return _patch_existing_data_trial_index(engine.generate(options))
+        script = engine.generate(options)
+    else:
+        # Honegumi's public ``generate`` always forces dummy=False on rendered
+        # scripts (it only honours SMOKE_TEST for its own test suite). To
+        # produce a short script we re-run the same pipeline and override the
+        # dummy key.
+        selections = engine.process_selections(options)
+        selections[core_cst.DUMMY_KEY] = True
+        script = engine.template.render(selections)
 
-    # Honegumi's public ``generate`` always forces dummy=False on rendered
-    # scripts (it only honours SMOKE_TEST for its own test suite). To produce a
-    # short script we re-run the same pipeline and override the dummy key.
-    selections = engine.process_selections(options)
-    selections[core_cst.DUMMY_KEY] = True
-    script = engine.template.render(selections)
     formatted = format_file_contents(script, fast=False, mode=FileMode())
     return _patch_existing_data_trial_index(formatted)
 
