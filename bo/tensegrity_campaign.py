@@ -31,13 +31,11 @@ experimental data layer (or an FE surrogate) without touching the BO loop.
 Run it with::
 
     pip install -r bo/requirements.txt
-    MPLBACKEND=Agg python bo/tensegrity_campaign.py            # quick run
-    MPLBACKEND=Agg python bo/tensegrity_campaign.py --full     # 21-iter run
+    MPLBACKEND=Agg python bo/tensegrity_campaign.py
 """
 
 from __future__ import annotations
 
-import argparse
 import logging
 import math
 from dataclasses import dataclass
@@ -49,6 +47,12 @@ import pandas as pd
 from ax.service.ax_client import AxClient, ObjectiveProperties
 
 logging.getLogger("ax").setLevel(logging.WARNING)
+
+# Campaign-loop knobs. Tweak in-place; this script is intentionally a flat,
+# top-to-bottom recipe rather than a CLI.
+N_ITERATIONS = 5  # bump to ~21 once the dummy evaluator is replaced
+BATCH_SIZE = 2  # parallel trials per BO step (matches IDETC abstract)
+SEED = 0
 
 # ----------------------------------------------------------------------------
 # Objective and parameter specification
@@ -192,8 +196,8 @@ def simulate_specimen(
     This is the **placeholder** evaluation function. Replace it with either a
     call into the experimental data layer (looking up a fabricated specimen's
     drop-weight test results) or a calibrated FE surrogate. The signature is
-    intentionally minimal so the BO loop in :func:`main` does not need
-    to change when the real evaluator lands.
+    intentionally minimal so the closed-loop BO at the bottom of this script
+    does not need to change when the real evaluator lands.
 
     The model is hand-tuned to give the BO loop a non-trivial Pareto front:
 
@@ -270,63 +274,6 @@ def simulate_specimen(
 
 
 # ----------------------------------------------------------------------------
-# Pilot ("existing data") seed
-# ----------------------------------------------------------------------------
-
-#: A handful of plausible pilot designs that span the search space. These
-#: stand in for the geometric-fidelity baselines mentioned in
-#: ``nasa-space-grant/proposal.tex`` ("verified geometric fidelity ... on at
-#: least 5 baseline geometries").
-PILOT_DESIGNS: list[dict] = [
-    {
-        "strut_diameter_mm": 2.0,
-        "strut_length_mm": 25.0,
-        "tpu_skin_thickness_mm": 0.6,
-        "tpu_skin_width_mm": 2.0,
-        "struts_per_cell": 3,
-        "topology": "3_bar_prism",
-        "tiling": "1x1x1",
-    },
-    {
-        "strut_diameter_mm": 3.0,
-        "strut_length_mm": 30.0,
-        "tpu_skin_thickness_mm": 1.0,
-        "tpu_skin_width_mm": 3.0,
-        "struts_per_cell": 4,
-        "topology": "4_bar_prism",
-        "tiling": "2x2x1",
-    },
-    {
-        "strut_diameter_mm": 4.0,
-        "strut_length_mm": 35.0,
-        "tpu_skin_thickness_mm": 1.4,
-        "tpu_skin_width_mm": 4.0,
-        "struts_per_cell": 6,
-        "topology": "octahedron",
-        "tiling": "2x2x1",
-    },
-    {
-        "strut_diameter_mm": 5.0,
-        "strut_length_mm": 40.0,
-        "tpu_skin_thickness_mm": 1.8,
-        "tpu_skin_width_mm": 5.0,
-        "struts_per_cell": 8,
-        "topology": "icosahedron",
-        "tiling": "2x2x2",
-    },
-    {
-        "strut_diameter_mm": 2.5,
-        "strut_length_mm": 45.0,
-        "tpu_skin_thickness_mm": 0.8,
-        "tpu_skin_width_mm": 2.5,
-        "struts_per_cell": 4,
-        "topology": "octahedron",
-        "tiling": "1x1x1",
-    },
-]
-
-
-# ----------------------------------------------------------------------------
 # Plotting
 # ----------------------------------------------------------------------------
 
@@ -374,83 +321,40 @@ def plot_pareto(ax_client: AxClient, output: Path | None = None) -> Path | None:
 
 
 # ----------------------------------------------------------------------------
-# CLI
+# Closed-loop BO campaign
 # ----------------------------------------------------------------------------
 
+rng = np.random.default_rng(SEED)
 
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument(
-        "--full",
-        action="store_true",
-        help="Run the full 21-iteration campaign (default: 5 iterations for a smoke run).",
-    )
-    parser.add_argument(
-        "--batch-size",
-        type=int,
-        default=2,
-        help="Number of parallel trials per BO step (default: 2, matching the IDETC abstract's batch evaluation).",
-    )
-    parser.add_argument(
-        "--seed", type=int, default=0, help="Random seed for the BO and dummy evaluator."
-    )
-    parser.add_argument(
-        "--no-plot",
-        action="store_true",
-        help="Skip writing the Pareto-front PNG (useful in CI).",
-    )
-    args = parser.parse_args(argv)
+# AxClient is itself the high-level wrapper around the BO loop. Its default
+# GenerationStrategy starts with a Sobol quasi-random init phase (covering
+# the search space without pilot data) and then switches automatically to
+# the model-based MOO acquisition once enough observations exist.
+ax_client = AxClient(random_seed=SEED)
+ax_client.create_experiment(
+    name="tensegrity_energy_absorber",
+    parameters=PARAMETERS,
+    objectives=OBJECTIVES,
+    overwrite_existing_experiment=True,
+)
 
-    n_iterations = 21 if args.full else 5
-    rng = np.random.default_rng(args.seed)
-
-    # AxClient is itself the high-level wrapper around the BO loop, so the
-    # campaign is written inline rather than behind further helpers.
-    ax_client = AxClient(random_seed=args.seed)
-    ax_client.create_experiment(
-        name="tensegrity_energy_absorber",
-        parameters=PARAMETERS,
-        objectives=OBJECTIVES,
-        overwrite_existing_experiment=True,
-    )
-
-    # Seed the surrogate with the pilot specimens (NASA grant's "≥ 5 baseline
-    # geometries"), evaluated through the dummy specimen response.
-    for parameterization in PILOT_DESIGNS:
-        _, trial_index = ax_client.attach_trial(parameterization)
+for _ in range(N_ITERATIONS):
+    parameterizations, _complete = ax_client.get_next_trials(BATCH_SIZE)
+    for trial_index, parameterization in parameterizations.items():
         response = simulate_specimen(parameterization, rng=rng)
         ax_client.complete_trial(
             trial_index=trial_index, raw_data=response.as_raw_data()
         )
 
-    # Closed-loop BO: ask the surrogate for the next batch, evaluate, repeat.
-    for _ in range(n_iterations):
-        parameterizations, _complete = ax_client.get_next_trials(args.batch_size)
-        for trial_index, parameterization in parameterizations.items():
-            response = simulate_specimen(parameterization, rng=rng)
-            ax_client.complete_trial(
-                trial_index=trial_index, raw_data=response.as_raw_data()
-            )
+pareto = ax_client.get_pareto_optimal_parameters(use_model_predictions=False)
+df = ax_client.get_trials_data_frame()
+print(f"Completed {len(df)} trials ({N_ITERATIONS * BATCH_SIZE} BO-selected).")
+print(f"Pareto-optimal designs: {len(pareto)}")
+print("Best per-objective values observed:")
+print(f"  min {F_PEAK} = {df[F_PEAK].min():.1f} N")
+print(f"  max {SEA}    = {df[SEA].max():.3f} J/g")
+print(f"  max {ETA}    = {df[ETA].max():.3f}")
 
-    pareto = ax_client.get_pareto_optimal_parameters(use_model_predictions=False)
-    df = ax_client.get_trials_data_frame()
-    print(
-        f"Completed {len(df)} trials ({len(PILOT_DESIGNS)} pilot + "
-        f"{n_iterations * args.batch_size} BO-selected)."
-    )
-    print(f"Pareto-optimal designs: {len(pareto)}")
-    print("Best per-objective values observed:")
-    print(f"  min {F_PEAK} = {df[F_PEAK].min():.1f} N")
-    print(f"  max {SEA}    = {df[SEA].max():.3f} J/g")
-    print(f"  max {ETA}    = {df[ETA].max():.3f}")
-
-    if not args.no_plot:
-        path = plot_pareto(ax_client)
-        if path is not None:
-            print(f"Wrote Pareto plot to {path}")
-
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+path = plot_pareto(ax_client)
+if path is not None:
+    print(f"Wrote Pareto plot to {path}")
