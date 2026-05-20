@@ -50,17 +50,25 @@ supports failing mid-print.
 
 Output files (next to this script):
 
-* ``t3-prism-bo-batch.csv``               -- one row per specimen + frozen vars
-* ``t3-prism-bo-batch.json``              -- same data + Ax client snapshot
-* ``t3-prism-bo-batch.scad``              -- generated OpenSCAD wrapper
-* ``t3-prism-bo-batch.stl``               -- packed-on-plate combined STL
-* ``t3-prism-bo-batch-plate.png``         -- top-down build-plate preview PNG
-* ``t3-prism-bo-batch-iso.png``           -- iso preview PNG
+* ``t3-prism-bo-batch.csv``                                       -- one row per specimen + frozen vars
+* ``t3-prism-bo-batch.json``                                      -- same data + Ax client snapshot
+* ``t3-prism-bo-batch.scad``                                      -- generated OpenSCAD wrapper
+* ``t3-prism-bo-batch.stl``                                       -- packed-on-plate combined STL (all parts fused)
+* ``t3-prism-bo-batch-struts.stl``                                -- struts + joint spheres only (extruder 1 / PLA)
+* ``t3-prism-bo-batch-cables.stl``                                -- cables only (extruder 2 / TPU)
+* ``t3-prism-bo-batch-plate.png``                                 -- top-down build-plate preview PNG
+* ``t3-prism-bo-batch-iso.png``                                   -- iso preview PNG
+* ``slices/t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.3mf``     -- Bambu H2D MM project (struts/PLA + cables/TPU,
+                                                                     re-importable into Bambu Studio with
+                                                                     per-part extruder assignment; *no* supports —
+                                                                     paint them on manually per @achris0520's tip
+                                                                     in PR #35 comment 4502140147)
 
 Run::
 
     pip install ax-platform numpy
-    sudo apt-get install -y openscad xvfb
+    sudo apt-get install -y openscad admesh xvfb \\
+        gstreamer1.0-plugins-base libsoup-3.0-0 libwebkit2gtk-4.1-0
     python3 bo/t3_prism_sobol_batch.py
 """
 
@@ -145,29 +153,43 @@ def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float
 
 SPECIMEN_TEMPLATE = """\
 // specimen {idx:02d}  R={R:.2f} H={H:.2f} twist={tw:.2f} strut_d={sd:.2f} cable_d={cd:.2f}
-module specimen_{idx:02d}() {{
-    R={R:.4f}; H={H:.4f}; twist_={tw:.4f};
-    strut_d={sd:.4f}; cable_d={cd:.4f}; joint_d={jd:.4f};
-    module member_(p1,p2,d) {{
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {{
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }}
+module specimen_{idx:02d}_member(p1, p2, d) {{
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {{
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }}
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}}
+function specimen_{idx:02d}_bp(i) = [{R:.4f}*cos(90+120*i), {R:.4f}*sin(90+120*i), 0];
+function specimen_{idx:02d}_tp(i) = [{R:.4f}*cos(90+120*i+{tw:.4f}),
+                                     {R:.4f}*sin(90+120*i+{tw:.4f}), {H:.4f}];
+module specimen_{idx:02d}_struts() {{
     union() {{
         for (i=[0:2]) {{
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_{idx:02d}_bp(i)) sphere(d={jd:.4f});
+            translate(specimen_{idx:02d}_tp(i)) sphere(d={jd:.4f});
+            specimen_{idx:02d}_member(specimen_{idx:02d}_bp(i),
+                                     specimen_{idx:02d}_tp(i), {sd:.4f});
         }}
     }}
+}}
+module specimen_{idx:02d}_cables() {{
+    union() {{
+        for (i=[0:2]) {{
+            specimen_{idx:02d}_member(specimen_{idx:02d}_bp(i),
+                                     specimen_{idx:02d}_bp((i+1)%3), {cd:.4f});
+            specimen_{idx:02d}_member(specimen_{idx:02d}_tp(i),
+                                     specimen_{idx:02d}_tp((i+1)%3), {cd:.4f});
+            specimen_{idx:02d}_member(specimen_{idx:02d}_bp((i+1)%3),
+                                     specimen_{idx:02d}_tp(i),       {cd:.4f});
+        }}
+    }}
+}}
+module specimen_{idx:02d}() {{
+    if      (part == "struts") specimen_{idx:02d}_struts();
+    else if (part == "cables") specimen_{idx:02d}_cables();
+    else union() {{ specimen_{idx:02d}_struts(); specimen_{idx:02d}_cables(); }}
 }}
 translate([{cx:.3f}, {cy:.3f}, {cz:.3f}]) specimen_{idx:02d}();
 """
@@ -207,6 +229,14 @@ def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
         "// Studio per @achris0520's tip in PR #35 comment 4502140147.\n"
         f"// Plate: {PLATE_X:.0f} x {PLATE_Y:.0f} mm (Bambu Lab H2D).\n"
         f"// Grid : {rows} x {cols} (cell {cell_x:.1f} x {cell_y:.1f} mm).\n"
+        "//\n"
+        "// `part` selects which half of each specimen to emit, mirroring\n"
+        "// `cad/t3-prism/t3-prism.scad`:\n"
+        "//   \"all\"    -> struts + cables fused (preview / single-material)\n"
+        "//   \"struts\" -> rigid skeleton + joint spheres (PLA / extruder 1)\n"
+        "//   \"cables\" -> tension members only (TPU / extruder 2)\n"
+        "// Override at the CLI with `-D 'part=\"struts\"'`.\n"
+        "part = \"all\";  // \"all\" | \"struts\" | \"cables\"\n"
         "\n"
     )
     for idx, params in enumerate(specimens):
@@ -219,7 +249,7 @@ def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
 
 
 def run_openscad(scad: Path, out: Path, *, camera: str | None = None,
-                 image_size: str | None = None) -> None:
+                 image_size: str | None = None, defines: dict | None = None) -> None:
     """Invoke OpenSCAD headlessly via xvfb-run, writing STL or PNG."""
     cmd = ["xvfb-run", "-a", "openscad", "-o", str(out)]
     if out.suffix == ".stl":
@@ -228,8 +258,116 @@ def run_openscad(scad: Path, out: Path, *, camera: str | None = None,
         cmd += [f"--camera={camera}"]
     if image_size:
         cmd += [f"--imgsize={image_size}"]
+    for k, v in (defines or {}).items():
+        if isinstance(v, str):
+            cmd += ["-D", f'{k}="{v}"']
+        else:
+            cmd += ["-D", f"{k}={v}"]
     cmd += [str(scad)]
     subprocess.run(cmd, check=True)
+
+
+# ---- Bambu H2D multi-material 3mf assembly ---------------------------------
+# Reuses the BambuStudio AppImage cache + flatten/patch helpers from
+# `cad/t3-prism/render_print.sh`. Per PR #35 comment 4503267471 the BO batch
+# project file must open in Bambu Studio with two parts that can be assigned
+# different filaments (struts -> PLA / extruder 1, cables -> TPU / extruder 2)
+# — the single combined STL we used previously imported as a single fused
+# object so Bambu Studio could not split-to-parts.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+T3_PRISM_DIR = REPO_ROOT / "cad" / "t3-prism"
+BAMBU_VERSION = "v02.06.00.51"
+BAMBU_URL = (
+    "https://github.com/bambulab/BambuStudio/releases/download/"
+    f"{BAMBU_VERSION}/BambuStudio_ubuntu-24.04-{BAMBU_VERSION}"
+    "-20260417160415.AppImage"
+)
+SCRATCH = Path("/tmp/t3-prism")
+BAMBU_APPIMAGE = SCRATCH / "bambu.AppImage"
+BBL_ROOT = SCRATCH / "squashfs-root" / "resources" / "profiles" / "BBL"
+
+
+def _ensure_bambu() -> None:
+    """Download the BambuStudio AppImage and extract the bundled BBL profiles."""
+    SCRATCH.mkdir(parents=True, exist_ok=True)
+    if not BAMBU_APPIMAGE.exists():
+        print(f"==> Fetching BambuStudio {BAMBU_VERSION} AppImage")
+        subprocess.run(["curl", "-sLo", str(BAMBU_APPIMAGE), BAMBU_URL], check=True)
+        BAMBU_APPIMAGE.chmod(0o755)
+    if not BBL_ROOT.exists():
+        print("==> Extracting bundled BBL profiles from AppImage")
+        subprocess.run(
+            [str(BAMBU_APPIMAGE), "--appimage-extract", "resources/profiles/BBL"],
+            cwd=SCRATCH, check=True, stdout=subprocess.DEVNULL,
+        )
+
+
+def _flatten(kind: str, leaf: str, out: Path) -> None:
+    subprocess.run(
+        ["python3", str(T3_PRISM_DIR / "flatten_bambu_profile.py"),
+         kind, leaf, str(BBL_ROOT), str(out)],
+        check=True,
+    )
+
+
+def _patch_bed(profile: Path) -> None:
+    d = json.loads(profile.read_text())
+    d["curr_bed_type"] = "Textured PEI Plate"
+    d["default_bed_type"] = "Textured PEI Plate"
+    profile.write_text(json.dumps(d, indent=2))
+
+
+def build_mm_3mf(struts_stl: Path, cables_stl: Path, out_3mf: Path) -> None:
+    """Assemble struts + cables STLs into a Bambu H2D MM project ``.3mf``.
+
+    Mirrors ``slice_bambu_mm`` from ``cad/t3-prism/render_print.sh`` but
+    without ``enable_supports`` (the BO batch leaves supports off; @achris0520
+    paints them on per PR #35 comment 4502140147). Filament slot 1 = PLA
+    (struts/extruder 1), slot 2 = TPU 85A (cables/extruder 2).
+    """
+    _ensure_bambu()
+    tag = "H2D-MM-PLAstruts-TPUcables"
+    work = SCRATCH / f"bo_{tag}"
+    work.mkdir(parents=True, exist_ok=True)
+    m = work / "machine_flat.json"
+    p = work / "process_flat.json"
+    f1 = work / "filament1_flat.json"
+    f2 = work / "filament2_flat.json"
+    _flatten("machine",  "Bambu Lab H2D 0.4 nozzle",              m)
+    _flatten("process",  "0.20mm Standard @BBL H2D",              p)
+    _flatten("filament", "Bambu PLA Basic @BBL H2D",              f1)
+    _flatten("filament", "Bambu TPU 85A @BBL H2D 0.4 nozzle",     f2)
+    _patch_bed(m)
+
+    proj_3mf = out_3mf.name
+    proj_outdir = work / "proj"
+    if proj_outdir.exists():
+        shutil.rmtree(proj_outdir)
+    proj_outdir.mkdir(parents=True)
+
+    print(f"==> BambuStudio CLI --assemble -> {proj_3mf} (struts + cables as two parts)")
+    env = {**__import__("os").environ,
+           "LIBGL_ALWAYS_SOFTWARE": "1", "GALLIUM_DRIVER": "llvmpipe"}
+    subprocess.run(
+        ["xvfb-run", "-a", "-s", "-screen 0 1280x1024x24", str(BAMBU_APPIMAGE),
+         "--assemble",
+         "--load-settings",  f"{m};{p}",
+         "--load-filaments", f"{f1};{f2}",
+         "--export-3mf",     proj_3mf,
+         "--outputdir",      str(proj_outdir),
+         str(struts_stl), str(cables_stl)],
+        check=True, env=env,
+    )
+
+    print(f"==> Patch model_settings.config: {cables_stl.name} -> extruder 2 (TPU)")
+    subprocess.run(
+        ["python3", str(T3_PRISM_DIR / "patch_mm_extruder.py"),
+         str(proj_outdir / proj_3mf),
+         f"{cables_stl.name}=2", f"{struts_stl.name}=1"],
+        check=True,
+    )
+    out_3mf.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(proj_outdir / proj_3mf, out_3mf)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -240,6 +378,8 @@ def main(argv: list[str] | None = None) -> int:
                         help=f"Sobol seed (default {SEED})")
     parser.add_argument("--skip-render", action="store_true",
                         help="emit SCAD + CSV/JSON but skip OpenSCAD STL/PNG renders")
+    parser.add_argument("--skip-mm-3mf", action="store_true",
+                        help="skip the BambuStudio CLI MM project .3mf assembly step")
     args = parser.parse_args(argv)
 
     out_dir = Path(__file__).resolve().parent
@@ -247,8 +387,12 @@ def main(argv: list[str] | None = None) -> int:
     json_path = out_dir / "t3-prism-bo-batch.json"
     scad_path = out_dir / "t3-prism-bo-batch.scad"
     stl_path = out_dir / "t3-prism-bo-batch.stl"
+    stl_struts_path = out_dir / "t3-prism-bo-batch-struts.stl"
+    stl_cables_path = out_dir / "t3-prism-bo-batch-cables.stl"
     plate_png = out_dir / "t3-prism-bo-batch-plate.png"
     iso_png = out_dir / "t3-prism-bo-batch-iso.png"
+    slices_dir = out_dir / "slices"
+    mm_3mf_path = slices_dir / "t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.3mf"
 
     # ---- Sobol-only Ax client (no model / no eval) -------------------------
     # Ax's default GenerationStrategy starts with a Sobol init step, so a
@@ -328,6 +472,10 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"==> OpenSCAD render -> {stl_path.name} (n={args.n} specimens on plate)")
     run_openscad(scad_path, stl_path)
+    print(f"==> OpenSCAD render -> {stl_struts_path.name} (struts + joints only, extruder 1 / PLA)")
+    run_openscad(scad_path, stl_struts_path, defines={"part": "struts"})
+    print(f"==> OpenSCAD render -> {stl_cables_path.name} (cables only, extruder 2 / TPU)")
+    run_openscad(scad_path, stl_cables_path, defines={"part": "cables"})
     # Top-down build-plate camera: distance, fov, then translate above plate centre.
     cam_top = f"{PLATE_X/2:.1f},{PLATE_Y/2:.1f},0,0,0,0,{max(PLATE_X, PLATE_Y) * 1.4:.1f}"
     cam_iso = f"{PLATE_X/2:.1f},{PLATE_Y/2:.1f},0,55,0,25,{max(PLATE_X, PLATE_Y) * 1.6:.1f}"
@@ -335,12 +483,20 @@ def main(argv: list[str] | None = None) -> int:
     run_openscad(scad_path, plate_png, camera=cam_top, image_size="1200,1100")
     print(f"==> OpenSCAD render -> {iso_png.name} (iso preview)")
     run_openscad(scad_path, iso_png, camera=cam_iso, image_size="1200,900")
+
+    if not args.skip_mm_3mf:
+        build_mm_3mf(stl_struts_path, stl_cables_path, mm_3mf_path)
+
     print("Done.")
     print(f"  Design table : {csv_path}")
     print(f"  JSON         : {json_path}")
     print(f"  Combined STL : {stl_path}")
+    print(f"  Struts STL   : {stl_struts_path}")
+    print(f"  Cables STL   : {stl_cables_path}")
     print(f"  Plate PNG    : {plate_png}")
     print(f"  Iso PNG      : {iso_png}")
+    if not args.skip_mm_3mf:
+        print(f"  MM project   : {mm_3mf_path}")
     return 0
 
 

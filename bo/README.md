@@ -54,7 +54,8 @@ painted-supports approach in PR #35 comments `4502140147` /
 
 ```bash
 pip install ax-platform numpy
-sudo apt-get install -y openscad xvfb
+sudo apt-get install -y openscad admesh xvfb \
+    gstreamer1.0-plugins-base libsoup-3.0-0 libwebkit2gtk-4.1-0
 python3 bo/t3_prism_sobol_batch.py        # default n=9, seed=0
 ```
 
@@ -64,17 +65,28 @@ Knobs:
   350×320 mm H2D plate)
 * `--seed S` — Sobol seed (default `0`; bump to regenerate)
 * `--skip-render` — skip the OpenSCAD STL/PNG passes (CI smoke test)
+* `--skip-mm-3mf` — skip the BambuStudio CLI multi-material project assembly
 
 ## Outputs (next to this script)
 
 * `t3-prism-bo-batch.csv`        — design table (one row per specimen)
 * `t3-prism-bo-batch.json`       — same data plus plate-layout metadata
-* `t3-prism-bo-batch.scad`       — generated OpenSCAD wrapper that unions
-  all specimens onto a centred grid on the H2D plate
-* `t3-prism-bo-batch.stl`        — packed STL (drag into Bambu Studio,
-  paint supports, slice plate, send to printer)
+* `t3-prism-bo-batch.scad`       — generated OpenSCAD wrapper with a
+  `part = "all"|"struts"|"cables"` switch (mirrors `cad/t3-prism/t3-prism.scad`)
+* `t3-prism-bo-batch.stl`        — packed STL, struts + cables fused
+  (preview / single-material use only — Bambu Studio cannot split this
+  into PLA and TPU after import)
+* `t3-prism-bo-batch-struts.stl` — struts + joint spheres only (extruder 1 / PLA)
+* `t3-prism-bo-batch-cables.stl` — cables only (extruder 2 / TPU)
 * `t3-prism-bo-batch-plate.png`  — top-down build-plate preview
 * `t3-prism-bo-batch-iso.png`    — iso preview
+* `slices/t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.3mf` — **production-target
+  Bambu H2D multi-material project file.** Re-importable into Bambu Studio
+  with each specimen exposing two parts (struts/PLA on extruder 1, cables/TPU
+  on extruder 2) so the team can split-to-parts and assign filaments per
+  PR #35 comment [`4503267471`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4503267471).
+  Supports are intentionally OFF; @achris0520 paints them on per
+  comment [`4502140147`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4502140147).
 
 ## Reporting outcomes back
 

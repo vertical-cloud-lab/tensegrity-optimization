@@ -5,238 +5,372 @@
 // Studio per @achris0520's tip in PR #35 comment 4502140147.
 // Plate: 350 x 320 mm (Bambu Lab H2D).
 // Grid : 3 x 3 (cell 97.0 x 97.0 mm).
+//
+// `part` selects which half of each specimen to emit, mirroring
+// `cad/t3-prism/t3-prism.scad`:
+//   "all"    -> struts + cables fused (preview / single-material)
+//   "struts" -> rigid skeleton + joint spheres (PLA / extruder 1)
+//   "cables" -> tension members only (TPU / extruder 2)
+// Override at the CLI with `-D 'part="struts"'`.
+part = "all";  // "all" | "struts" | "cables"
 
 // specimen 00  R=32.13 H=89.63 twist=59.78 strut_d=7.88 cable_d=5.39
-module specimen_00() {
-    R=32.1266; H=89.6262; twist_=59.7792;
-    strut_d=7.8831; cable_d=5.3902; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_00_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_00_bp(i) = [32.1266*cos(90+120*i), 32.1266*sin(90+120*i), 0];
+function specimen_00_tp(i) = [32.1266*cos(90+120*i+59.7792),
+                                     32.1266*sin(90+120*i+59.7792), 89.6262];
+module specimen_00_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_00_bp(i)) sphere(d=7.0000);
+            translate(specimen_00_tp(i)) sphere(d=7.0000);
+            specimen_00_member(specimen_00_bp(i),
+                                     specimen_00_tp(i), 7.8831);
         }
     }
+}
+module specimen_00_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_00_member(specimen_00_bp(i),
+                                     specimen_00_bp((i+1)%3), 5.3902);
+            specimen_00_member(specimen_00_tp(i),
+                                     specimen_00_tp((i+1)%3), 5.3902);
+            specimen_00_member(specimen_00_bp((i+1)%3),
+                                     specimen_00_tp(i),       5.3902);
+        }
+    }
+}
+module specimen_00() {
+    if      (part == "struts") specimen_00_struts();
+    else if (part == "cables") specimen_00_cables();
+    else union() { specimen_00_struts(); specimen_00_cables(); }
 }
 translate([77.993, 62.993, 3.500]) specimen_00();
 // specimen 01  R=33.78 H=80.08 twist=77.41 strut_d=10.87 cable_d=3.00
-module specimen_01() {
-    R=33.7842; H=80.0836; twist_=77.4080;
-    strut_d=10.8717; cable_d=3.0003; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_01_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_01_bp(i) = [33.7842*cos(90+120*i), 33.7842*sin(90+120*i), 0];
+function specimen_01_tp(i) = [33.7842*cos(90+120*i+77.4080),
+                                     33.7842*sin(90+120*i+77.4080), 80.0836];
+module specimen_01_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_01_bp(i)) sphere(d=7.0000);
+            translate(specimen_01_tp(i)) sphere(d=7.0000);
+            specimen_01_member(specimen_01_bp(i),
+                                     specimen_01_tp(i), 10.8717);
         }
     }
+}
+module specimen_01_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_01_member(specimen_01_bp(i),
+                                     specimen_01_bp((i+1)%3), 3.0003);
+            specimen_01_member(specimen_01_tp(i),
+                                     specimen_01_tp((i+1)%3), 3.0003);
+            specimen_01_member(specimen_01_bp((i+1)%3),
+                                     specimen_01_tp(i),       3.0003);
+        }
+    }
+}
+module specimen_01() {
+    if      (part == "struts") specimen_01_struts();
+    else if (part == "cables") specimen_01_cables();
+    else union() { specimen_01_struts(); specimen_01_cables(); }
 }
 translate([175.000, 62.993, 3.500]) specimen_01();
 // specimen 02  R=38.97 H=99.99 twist=47.69 strut_d=7.07 cable_d=3.92
-module specimen_02() {
-    R=38.9665; H=99.9950; twist_=47.6915;
-    strut_d=7.0737; cable_d=3.9241; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_02_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_02_bp(i) = [38.9665*cos(90+120*i), 38.9665*sin(90+120*i), 0];
+function specimen_02_tp(i) = [38.9665*cos(90+120*i+47.6915),
+                                     38.9665*sin(90+120*i+47.6915), 99.9950];
+module specimen_02_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_02_bp(i)) sphere(d=7.0000);
+            translate(specimen_02_tp(i)) sphere(d=7.0000);
+            specimen_02_member(specimen_02_bp(i),
+                                     specimen_02_tp(i), 7.0737);
         }
     }
+}
+module specimen_02_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_02_member(specimen_02_bp(i),
+                                     specimen_02_bp((i+1)%3), 3.9241);
+            specimen_02_member(specimen_02_tp(i),
+                                     specimen_02_tp((i+1)%3), 3.9241);
+            specimen_02_member(specimen_02_bp((i+1)%3),
+                                     specimen_02_tp(i),       3.9241);
+        }
+    }
+}
+module specimen_02() {
+    if      (part == "struts") specimen_02_struts();
+    else if (part == "cables") specimen_02_cables();
+    else union() { specimen_02_struts(); specimen_02_cables(); }
 }
 translate([272.007, 62.993, 3.500]) specimen_02();
 // specimen 03  R=25.12 H=72.06 twist=65.12 strut_d=10.18 cable_d=4.66
-module specimen_03() {
-    R=25.1224; H=72.0587; twist_=65.1213;
-    strut_d=10.1789; cable_d=4.6640; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_03_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_03_bp(i) = [25.1224*cos(90+120*i), 25.1224*sin(90+120*i), 0];
+function specimen_03_tp(i) = [25.1224*cos(90+120*i+65.1213),
+                                     25.1224*sin(90+120*i+65.1213), 72.0587];
+module specimen_03_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_03_bp(i)) sphere(d=7.0000);
+            translate(specimen_03_tp(i)) sphere(d=7.0000);
+            specimen_03_member(specimen_03_bp(i),
+                                     specimen_03_tp(i), 10.1789);
         }
     }
+}
+module specimen_03_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_03_member(specimen_03_bp(i),
+                                     specimen_03_bp((i+1)%3), 4.6640);
+            specimen_03_member(specimen_03_tp(i),
+                                     specimen_03_tp((i+1)%3), 4.6640);
+            specimen_03_member(specimen_03_bp((i+1)%3),
+                                     specimen_03_tp(i),       4.6640);
+        }
+    }
+}
+module specimen_03() {
+    if      (part == "struts") specimen_03_struts();
+    else if (part == "cables") specimen_03_cables();
+    else union() { specimen_03_struts(); specimen_03_cables(); }
 }
 translate([77.993, 160.000, 3.500]) specimen_03();
 // specimen 04  R=27.61 H=104.13 twist=70.44 strut_d=9.28 cable_d=4.49
-module specimen_04() {
-    R=27.6114; H=104.1304; twist_=70.4432;
-    strut_d=9.2816; cable_d=4.4922; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_04_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_04_bp(i) = [27.6114*cos(90+120*i), 27.6114*sin(90+120*i), 0];
+function specimen_04_tp(i) = [27.6114*cos(90+120*i+70.4432),
+                                     27.6114*sin(90+120*i+70.4432), 104.1304];
+module specimen_04_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_04_bp(i)) sphere(d=7.0000);
+            translate(specimen_04_tp(i)) sphere(d=7.0000);
+            specimen_04_member(specimen_04_bp(i),
+                                     specimen_04_tp(i), 9.2816);
         }
     }
+}
+module specimen_04_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_04_member(specimen_04_bp(i),
+                                     specimen_04_bp((i+1)%3), 4.4922);
+            specimen_04_member(specimen_04_tp(i),
+                                     specimen_04_tp((i+1)%3), 4.4922);
+            specimen_04_member(specimen_04_bp((i+1)%3),
+                                     specimen_04_tp(i),       4.4922);
+        }
+    }
+}
+module specimen_04() {
+    if      (part == "struts") specimen_04_struts();
+    else if (part == "cables") specimen_04_cables();
+    else union() { specimen_04_struts(); specimen_04_cables(); }
 }
 translate([175.000, 160.000, 3.500]) specimen_04();
 // specimen 05  R=36.30 H=63.23 twist=52.99 strut_d=6.46 cable_d=4.06
-module specimen_05() {
-    R=36.3001; H=63.2297; twist_=52.9940;
-    strut_d=6.4571; cable_d=4.0550; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_05_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_05_bp(i) = [36.3001*cos(90+120*i), 36.3001*sin(90+120*i), 0];
+function specimen_05_tp(i) = [36.3001*cos(90+120*i+52.9940),
+                                     36.3001*sin(90+120*i+52.9940), 63.2297];
+module specimen_05_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_05_bp(i)) sphere(d=7.0000);
+            translate(specimen_05_tp(i)) sphere(d=7.0000);
+            specimen_05_member(specimen_05_bp(i),
+                                     specimen_05_tp(i), 6.4571);
         }
     }
+}
+module specimen_05_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_05_member(specimen_05_bp(i),
+                                     specimen_05_bp((i+1)%3), 4.0550);
+            specimen_05_member(specimen_05_tp(i),
+                                     specimen_05_tp((i+1)%3), 4.0550);
+            specimen_05_member(specimen_05_bp((i+1)%3),
+                                     specimen_05_tp(i),       4.0550);
+        }
+    }
+}
+module specimen_05() {
+    if      (part == "struts") specimen_05_struts();
+    else if (part == "cables") specimen_05_cables();
+    else union() { specimen_05_struts(); specimen_05_cables(); }
 }
 translate([272.007, 160.000, 3.500]) specimen_05();
 // specimen 06  R=35.98 H=96.45 twist=62.11 strut_d=11.66 cable_d=3.49
-module specimen_06() {
-    R=35.9821; H=96.4464; twist_=62.1055;
-    strut_d=11.6620; cable_d=3.4949; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_06_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_06_bp(i) = [35.9821*cos(90+120*i), 35.9821*sin(90+120*i), 0];
+function specimen_06_tp(i) = [35.9821*cos(90+120*i+62.1055),
+                                     35.9821*sin(90+120*i+62.1055), 96.4464];
+module specimen_06_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_06_bp(i)) sphere(d=7.0000);
+            translate(specimen_06_tp(i)) sphere(d=7.0000);
+            specimen_06_member(specimen_06_bp(i),
+                                     specimen_06_tp(i), 11.6620);
         }
     }
+}
+module specimen_06_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_06_member(specimen_06_bp(i),
+                                     specimen_06_bp((i+1)%3), 3.4949);
+            specimen_06_member(specimen_06_tp(i),
+                                     specimen_06_tp((i+1)%3), 3.4949);
+            specimen_06_member(specimen_06_bp((i+1)%3),
+                                     specimen_06_tp(i),       3.4949);
+        }
+    }
+}
+module specimen_06() {
+    if      (part == "struts") specimen_06_struts();
+    else if (part == "cables") specimen_06_cables();
+    else union() { specimen_06_struts(); specimen_06_cables(); }
 }
 translate([77.993, 257.007, 3.500]) specimen_06();
 // specimen 07  R=30.11 H=74.82 twist=44.46 strut_d=8.58 cable_d=4.94
-module specimen_07() {
-    R=30.1066; H=74.8199; twist_=44.4573;
-    strut_d=8.5803; cable_d=4.9377; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
+module specimen_07_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+}
+function specimen_07_bp(i) = [30.1066*cos(90+120*i), 30.1066*sin(90+120*i), 0];
+function specimen_07_tp(i) = [30.1066*cos(90+120*i+44.4573),
+                                     30.1066*sin(90+120*i+44.4573), 74.8199];
+module specimen_07_struts() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            translate(specimen_07_bp(i)) sphere(d=7.0000);
+            translate(specimen_07_tp(i)) sphere(d=7.0000);
+            specimen_07_member(specimen_07_bp(i),
+                                     specimen_07_tp(i), 8.5803);
         }
     }
 }
-translate([175.000, 257.007, 3.500]) specimen_07();
-// specimen 08  R=29.02 H=100.87 twist=63.76 strut_d=6.20 cable_d=3.20
-module specimen_08() {
-    R=29.0207; H=100.8663; twist_=63.7624;
-    strut_d=6.1990; cable_d=3.1969; joint_d=7.0000;
-    module member_(p1,p2,d) {
-        v=p2-p1; L=norm(v);
-        yaw=atan2(v[1],v[0]);
-        pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-        translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
-            cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
-        }
-    }
-    function bp(i)=[R*cos(90+120*i), R*sin(90+120*i), 0];
-    function tp(i)=[R*cos(90+120*i+twist_), R*sin(90+120*i+twist_), H];
+module specimen_07_cables() {
     union() {
         for (i=[0:2]) {
-            translate(bp(i)) sphere(d=joint_d);
-            translate(tp(i)) sphere(d=joint_d);
-            member_(bp(i), tp(i), strut_d);
-            member_(bp(i), bp((i+1)%3), cable_d);
-            member_(tp(i), tp((i+1)%3), cable_d);
-            member_(bp((i+1)%3), tp(i), cable_d);
+            specimen_07_member(specimen_07_bp(i),
+                                     specimen_07_bp((i+1)%3), 4.9377);
+            specimen_07_member(specimen_07_tp(i),
+                                     specimen_07_tp((i+1)%3), 4.9377);
+            specimen_07_member(specimen_07_bp((i+1)%3),
+                                     specimen_07_tp(i),       4.9377);
         }
     }
+}
+module specimen_07() {
+    if      (part == "struts") specimen_07_struts();
+    else if (part == "cables") specimen_07_cables();
+    else union() { specimen_07_struts(); specimen_07_cables(); }
+}
+translate([175.000, 257.007, 3.500]) specimen_07();
+// specimen 08  R=29.02 H=100.87 twist=63.76 strut_d=6.20 cable_d=3.20
+module specimen_08_member(p1, p2, d) {
+    v=p2-p1; L=norm(v);
+    yaw=atan2(v[1],v[0]);
+    pitch=atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+    translate(p1) rotate([0,0,yaw]) rotate([0,pitch,0]) {
+        cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
+    }
+}
+function specimen_08_bp(i) = [29.0207*cos(90+120*i), 29.0207*sin(90+120*i), 0];
+function specimen_08_tp(i) = [29.0207*cos(90+120*i+63.7624),
+                                     29.0207*sin(90+120*i+63.7624), 100.8663];
+module specimen_08_struts() {
+    union() {
+        for (i=[0:2]) {
+            translate(specimen_08_bp(i)) sphere(d=7.0000);
+            translate(specimen_08_tp(i)) sphere(d=7.0000);
+            specimen_08_member(specimen_08_bp(i),
+                                     specimen_08_tp(i), 6.1990);
+        }
+    }
+}
+module specimen_08_cables() {
+    union() {
+        for (i=[0:2]) {
+            specimen_08_member(specimen_08_bp(i),
+                                     specimen_08_bp((i+1)%3), 3.1969);
+            specimen_08_member(specimen_08_tp(i),
+                                     specimen_08_tp((i+1)%3), 3.1969);
+            specimen_08_member(specimen_08_bp((i+1)%3),
+                                     specimen_08_tp(i),       3.1969);
+        }
+    }
+}
+module specimen_08() {
+    if      (part == "struts") specimen_08_struts();
+    else if (part == "cables") specimen_08_cables();
+    else union() { specimen_08_struts(); specimen_08_cables(); }
 }
 translate([272.007, 257.007, 3.500]) specimen_08();
