@@ -221,7 +221,9 @@ def main() -> None:
     last_status = None
     while time.time() < deadline:
         try:
-            status_resp = client.get_task_status(trajectory_id=trajectory_id)
+            # edison-client uses get_task(task_id=..., lite=True) for status polls;
+            # there is no separate get_task_status method.
+            status_resp = client.get_task(task_id=trajectory_id, lite=True)
         except Exception as exc:  # noqa: BLE001
             print(f"  status poll failed: {exc!r}")
             time.sleep(poll_every)
@@ -235,14 +237,27 @@ def main() -> None:
         time.sleep(poll_every)
 
     try:
-        result = client.get_task(trajectory_id=trajectory_id, verbose=True)
+        result = client.get_task(task_id=trajectory_id, verbose=True)
     except Exception as exc:  # noqa: BLE001
         print(f"  fetch failed: {exc!r}")
         return
 
     md_path = OUT_DIR / f"modeling-feedback-contacts-{trajectory_id}.md"
     json_path = OUT_DIR / f"modeling-feedback-contacts-{trajectory_id}.json"
+    # edison-client's TaskResponseVerbose buries the answer in
+    # environment_frame.state.state.response.answer.formatted_answer; the
+    # top-level .formatted_answer attribute is empty for paperqa3 jobs.
     formatted = getattr(result, "formatted_answer", None) or ""
+    try:
+        ef = result.environment_frame
+        if hasattr(ef, "model_dump"):
+            ef_d = ef.model_dump()
+        else:
+            ef_d = ef
+        answer = ef_d["state"]["state"]["response"]["answer"]
+        formatted = answer.get("formatted_answer") or formatted
+    except Exception:  # noqa: BLE001
+        pass
     md_path.write_text(
         f"# Edison literature brief: named contacts for feedback on the "
         f"multi-fidelity tensegrity drop-modelling approach\n\n"
