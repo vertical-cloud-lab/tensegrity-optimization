@@ -11,3 +11,6 @@ matplotlib
 # honegumi-rendered script. Pinned to a version compatible with the rest of
 # the toolchain (any modern black accepts the rendered Ax script).
 black>=24.0
+# Include pytest so a fresh environment created from this file can run the
+# scaffold's pytest-based smoke tests (for example, `pytest bo/tests`).
+pytest>=8.0
