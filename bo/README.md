@@ -42,13 +42,39 @@ by Edison ANALYSIS `25c1c897`).
 | `strut_material`     | `PLA` (extruder 1)| Production target on this branch |
 | `cable_material`     | `TPU` (extruder 2)| Production target on this branch |
 | `supports`           | `manual_painted`  | Per comment: "@achris0520 will manually paint on supports" |
-| `joint_d_mm`         | `7.0`             | t3-prism.scad default; held constant so vertex topology is comparable across specimens |
+| `joint_d_mm`         | `7.0`             | minimum vertex shell diameter; captive-core upsizes to ≥ `cable_d + 5.4 mm` when needed (see [Captive TPU core](#captive-tpu-core-inside-pla-outer-shell-joints) below) |
+| `use_captive_core`   | `true`            | every joint is a captive TPU core sphere inside a hollow PLA outer shell with a teardrop-blended strut and three cable-exit bores (PR #35 comment [`4511036510`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510)); identical geometry to `cad/t3-prism/t3-prism.scad` |
 
 The slicer-side modeled-in PLA scaffold pillars from PR #35 commit
 `5437366` are **not** emitted here — they were a workaround for the
 slicer's auto-support gap on near-vertical TPU cables, and Audrey's
 painted-supports approach in PR #35 comments `4502140147` /
 `4502171087` supersedes them.
+
+## Captive TPU core inside PLA outer shell joints
+
+Every vertex of every specimen is a captive-core joint (mirrors
+[`cad/t3-prism/t3-prism.scad`](../cad/t3-prism/t3-prism.scad) — see
+"Captive TPU core inside PLA outer shell" there for the geometry
+rationale and bond-mechanics motivation, PR #35 comment
+[`4511036510`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510)).
+Per specimen, the SCAD template computes:
+
+```
+bore_d   = cable_d + 2 * 0.4                          # mm, single-side clearance 0.4
+core_od  = max(bore_d + 2 * 1.5, joint_d)             # ≥ bore + 3 mm trap
+shell_id = core_od + 2 * 0.5                          # 0.5 mm radial print-in-place clearance
+shell_od = max(shell_id + 2 * 1.6, joint_d)           # 1.6 mm PLA wall
+```
+
+For the BO sweep's `cable_d ∈ [3.0, 5.5] mm`, shell_od therefore varies
+from **10.0 mm** (small-cable specimens, clamped to `joint_d=7` → bore
+3.8 → core 6.8 → still smaller than joint_d so shell_od defaults to
+`bore + 5.4` = 9.2 mm; with the second `max(., joint_d)` clamp, shell_id
+collapses to ≥7 mm and final shell_od to `max(8 + 3.2, 7)` = 11.2 mm)
+to **13.2 mm** (`cable_d=5.5` specimens). The plate-grid cell size
+(`specimen_footprint`) is sized off the worst-case `2R + shell_od` so
+every specimen still fits inside its own cell.
 
 ## How to run
 
@@ -76,8 +102,8 @@ Knobs:
 * `t3-prism-bo-batch.stl`        — packed STL, struts + cables fused
   (preview / single-material use only — Bambu Studio cannot split this
   into PLA and TPU after import)
-* `t3-prism-bo-batch-struts.stl` — struts + joint spheres only (extruder 1 / PLA)
-* `t3-prism-bo-batch-cables.stl` — cables only (extruder 2 / TPU)
+* `t3-prism-bo-batch-struts.stl` — struts + captive-core PLA shells + teardrop blends + per-cable bores (extruder 1 / PLA)
+* `t3-prism-bo-batch-cables.stl` — cables + captive TPU core spheres at every vertex + a zero-width z-anchor that pins the cables-STL bounding box to the struts-STL bounding box (extruder 2 / TPU). The z-anchor fixes the "horizontal cables too low at top and bottom" misalignment reported above PR #35 comment [`4511036510`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510) — Bambu Studio's per-part auto-bed-placement was lifting cables and struts by different amounts because their world-Z extents were different.
 * `t3-prism-bo-batch-plate.png`  — top-down build-plate preview
 * `t3-prism-bo-batch-iso.png`    — iso preview
 * `slices/t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.3mf` — **production-target

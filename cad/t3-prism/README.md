@@ -39,13 +39,79 @@ All linear dimensions are `*_base * scale_factor`:
 | `twist`        | 60°    | 60°         | top-triangle rotation (not scaled) |
 | `strut_d_base` | 6 mm   | **9.0 mm**  | compression member diameter |
 | `cable_d_base` | 3.0 mm | **4.5 mm**  | tension member diameter (see [Print failure mode](#print-failure-mode-top-cable-bridge-and-how-to-avoid-it) and [Scale-up](#scale-up-to-15-cable_d-30--45-mm) below) |
-| `joint_d_base` | 7 mm   | **10.5 mm** | sphere at each vertex for clean joints |
+| `joint_d_base` | 7 mm   | **10.5 mm** | minimum vertex sphere/shell diameter (captive-core shell is upsized as needed; see [Captive TPU core](#captive-tpu-core-inside-pla-outer-shell) below) |
 | `scale_factor` | —      | **1.5**     | uniform scale on every linear dim |
+| `use_captive_core` | `true` | `true`  | captive TPU core inside PLA outer shell at every vertex (PR #35 comment 4511036510); set `false` for legacy solid-joint mode |
+| `captive_bore_clear` | 0.4 mm | 0.4 mm | single-sided clearance around the TPU cable through the shell bore |
+| `captive_bore_trap`  | 1.5 mm | 1.5 mm | min `(core_od - bore_d) / 2`; how much wider the core is than the bore so it can't back out |
+| `captive_core_clear` | 0.5 mm | 0.5 mm | radial print-in-place gap (shell-ID − core-OD) / 2 |
+| `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
 
 Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
 solid material. Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
 — and 4 copies fit in a 2 × 2 grid for batch printing
 ([Batch printing](#batch-printing-for-the-optimization-campaign) below).
+
+## Captive TPU core inside PLA outer shell
+
+Per [PR #35 comment 4511036510](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510)
+and the joint-design recommendation in
+[PR #39 comment 4461700096](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/39#issuecomment-4461700096),
+every joint vertex is now a **captive TPU core sphere trapped inside a
+hollow PLA outer shell** — not a solid joint sphere with a half-buried
+TPU cable end. @ctrhjk's PETG+TPU photo in
+[PR #35](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35)
+showed the previous design failing in exactly the predicted way: the
+cable was "encased within the PLA support, making it difficult to remove
+… [and] inserts into kinda half of the joint ball, [giving] unstable
+fixation". The captive-core design fixes both problems mechanically
+(no chemistry assumption needed — PLA↔TPU butt-bond is only ~6.5 MPa in
+shear; see `edison-trajectories/strut-material-selection-5bb5e5d3*`).
+
+Geometry per joint (computed in `t3-prism.scad` `joint_shell()` +
+`joint_core()`):
+
+| Feature  | Value (scale 1.5×, `cable_d`=4.5) | Role |
+| -------- | ---------------------------------: | --- |
+| Bore Ø   | 5.3 mm = `cable_d` + 0.8 mm        | cable exit through the shell wall, with print clearance |
+| Core OD  | 10.5 mm (clamped ≥ `joint_d`)      | TPU captive mass; >> bore Ø so it can't back out |
+| Shell ID | 11.5 mm = core OD + 1.0 mm         | hollow cavity with print-in-place radial gap |
+| Shell OD | 16.3 mm = shell ID + 4.8 mm wall   | PLA outer wall |
+
+The strut-half of each joint is unioned with a teardrop `hull()` blend
+along the strut axis (`captive_teardrop_z`/`captive_teardrop_d`), so the
+shell-to-strut transition is filleted and not a sharp re-entrant corner.
+Three cylindrical bores are differenced through the shell wall — one per
+outgoing TPU cable — along the directions returned by
+`vertex_cable_dirs_b(i)` / `vertex_cable_dirs_t(i)`.
+
+In the multi-material slice, the PLA shell + struts go to extruder 1
+and the TPU captive core + cables go to extruder 2. Because the core is
+geometrically larger than any single bore (`captive_bore_trap ≥ 1.5 mm`
+guarantees core_OD ≥ bore_d + 3 mm), the TPU mass at every vertex stays
+trapped under cable tension regardless of inter-material adhesion. Set
+`use_captive_core=false` on the OpenSCAD CLI to fall back to the legacy
+solid-joint geometry for comparison prints.
+
+## TPU z-alignment (`cables_z_anchor()`)
+
+When the cables half is emitted as its own STL (`t3-prism-cables.stl`)
+and imported into Bambu Studio alongside the struts STL, the slicer's
+per-part "place on bed" routine lifts each STL independently so its own
+lowest world-Z point sits at z=0. With the legacy solid-joint design,
+the struts STL's lowest point was the joint sphere underside while the
+cables STL's lowest point was the bottom-cable cylinder underside — the
+two parts were offset by `(joint_d - cable_d)/2 ≈ 3 mm` in z and the
+TPU cables visibly dropped relative to the joint spheres (reported above
+[PR #35 comment 4511036510](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510)
+as "horizontal cables too low at top and bottom"). The captive-core
+design naturally closes most of this gap (the TPU core spheres extend
+the cables STL bbox to ±`core_od/2`), and `cables_z_anchor()` adds a
+5 µm × 5 µm axial spike at the assembly centroid spanning the exact
+`[-shell_od/2, H+shell_od/2]` range of the struts STL so the two parts'
+world-Z bounding boxes are byte-for-byte identical. Bambu Studio then
+applies the same offset to both halves and the cables stay aligned with
+the joints.
 
 ## Single-piece, pure-PETG
 
