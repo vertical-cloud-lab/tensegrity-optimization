@@ -38,3 +38,4 @@ Thumbs.db
 
 # CAD scratch/scratch slicer outputs (committed slices live under cad/*/slices/)
 /tmp/t3-prism/
+__pycache__/
