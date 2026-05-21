@@ -125,16 +125,29 @@ PARAMETERS: list[dict] = [
 ]
 
 
-def specimen_footprint(r_mm: float, strut_d_mm: float, joint_d_mm: float = JOINT_D_BASE) -> float:
+def specimen_footprint(r_mm: float, strut_d_mm: float, joint_d_mm: float = JOINT_D_BASE,
+                       cable_d_mm: float = 0.0) -> float:
     """Bounding box edge length (mm) for one specimen.
 
     A T3-prism's triangular caps inscribe in a circle of radius R; the
-    outermost geometry is the joint sphere at each corner, so the bounding
-    diameter is ``2R + joint_d``. Strut/cable cylinders fall *inside* this
-    circle (they connect corners) so they do not extend the footprint.
+    outermost geometry is the captive-core joint shell at each corner, so
+    the bounding diameter is ``2R + shell_od`` (with ``shell_od`` derived
+    the same way the SCAD template does it — see ``SPECIMEN_TEMPLATE``).
+    Strut/cable cylinders fall *inside* this circle (they connect corners)
+    so they do not extend the footprint.
     """
     del strut_d_mm  # kept for backwards-compatible signature
-    return 2.0 * r_mm + joint_d_mm
+    if cable_d_mm > 0:
+        # Mirror the captive-core SCAD: bore = cable_d + 0.8, core_od =
+        # max(bore+3, joint_d), shell_id = core_od+1, shell_od = max(
+        # shell_id+3.2, joint_d).
+        bore_d = cable_d_mm + 2 * 0.4
+        core_od = max(bore_d + 2 * 1.5, joint_d_mm)
+        shell_id = core_od + 2 * 0.5
+        shell_od = max(shell_id + 2 * 1.6, joint_d_mm)
+    else:
+        shell_od = joint_d_mm
+    return 2.0 * r_mm + shell_od
 
 
 def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float]:
@@ -160,6 +173,17 @@ def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float
 
 SPECIMEN_TEMPLATE = """\
 // specimen {idx:02d}  R={R:.2f} H={H:.2f} twist={tw:.2f} strut_d={sd:.2f} cable_d={cd:.2f}
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S{idx:02d}_BORE_D    = {cd:.4f} + 2*0.4;
+S{idx:02d}_CORE_OD   = max(S{idx:02d}_BORE_D + 2*1.5, {jd:.4f});
+S{idx:02d}_SHELL_ID  = S{idx:02d}_CORE_OD + 2*0.5;
+S{idx:02d}_SHELL_OD  = max(S{idx:02d}_SHELL_ID + 2*1.6, {jd:.4f});
+S{idx:02d}_TEARDROP  = {sd:.4f} * 1.10;
 module specimen_{idx:02d}_member(p1, p2, d) {{
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -168,14 +192,51 @@ module specimen_{idx:02d}_member(p1, p2, d) {{
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }}
 }}
+module specimen_{idx:02d}_bore(dir, d, len) {{
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}}
 function specimen_{idx:02d}_bp(i) = [{R:.4f}*cos(90+120*i), {R:.4f}*sin(90+120*i), 0];
 function specimen_{idx:02d}_tp(i) = [{R:.4f}*cos(90+120*i+{tw:.4f}),
                                      {R:.4f}*sin(90+120*i+{tw:.4f}), {H:.4f}];
+function specimen_{idx:02d}_unit(v) = v / norm(v);
+function specimen_{idx:02d}_sdir_b(i) =
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_tp(i) - specimen_{idx:02d}_bp(i));
+function specimen_{idx:02d}_sdir_t(i) =
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_bp(i) - specimen_{idx:02d}_tp(i));
+function specimen_{idx:02d}_cdirs_b(i) = [
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_bp((i+1)%3) - specimen_{idx:02d}_bp(i)),
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_bp((i+2)%3) - specimen_{idx:02d}_bp(i)),
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_tp((i+2)%3) - specimen_{idx:02d}_bp(i)),
+];
+function specimen_{idx:02d}_cdirs_t(i) = [
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_tp((i+1)%3) - specimen_{idx:02d}_tp(i)),
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_tp((i+2)%3) - specimen_{idx:02d}_tp(i)),
+    specimen_{idx:02d}_unit(specimen_{idx:02d}_bp((i+1)%3) - specimen_{idx:02d}_tp(i)),
+];
+module specimen_{idx:02d}_shell(V, sdir, cdirs) {{
+    translate(V) difference() {{
+        hull() {{
+            sphere(d=S{idx:02d}_SHELL_OD);
+            translate(sdir * (S{idx:02d}_SHELL_OD/2 + 1.5))
+                sphere(d=S{idx:02d}_TEARDROP);
+        }}
+        sphere(d=S{idx:02d}_SHELL_ID);
+        for (cd = cdirs)
+            specimen_{idx:02d}_bore(cd, S{idx:02d}_BORE_D, S{idx:02d}_SHELL_OD*2);
+    }}
+}}
 module specimen_{idx:02d}_struts() {{
     union() {{
         for (i=[0:2]) {{
-            translate(specimen_{idx:02d}_bp(i)) sphere(d={jd:.4f});
-            translate(specimen_{idx:02d}_tp(i)) sphere(d={jd:.4f});
+            specimen_{idx:02d}_shell(specimen_{idx:02d}_bp(i),
+                                     specimen_{idx:02d}_sdir_b(i),
+                                     specimen_{idx:02d}_cdirs_b(i));
+            specimen_{idx:02d}_shell(specimen_{idx:02d}_tp(i),
+                                     specimen_{idx:02d}_sdir_t(i),
+                                     specimen_{idx:02d}_cdirs_t(i));
             specimen_{idx:02d}_member(specimen_{idx:02d}_bp(i),
                                      specimen_{idx:02d}_tp(i), {sd:.4f});
         }}
@@ -190,7 +251,15 @@ module specimen_{idx:02d}_cables() {{
                                      specimen_{idx:02d}_tp((i+1)%3), {cd:.4f});
             specimen_{idx:02d}_member(specimen_{idx:02d}_bp((i+1)%3),
                                      specimen_{idx:02d}_tp(i),       {cd:.4f});
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_{idx:02d}_bp(i)) sphere(d=S{idx:02d}_CORE_OD);
+            translate(specimen_{idx:02d}_tp(i)) sphere(d=S{idx:02d}_CORE_OD);
         }}
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S{idx:02d}_SHELL_OD/2])
+            cube([0.005, 0.005, {H:.4f} + S{idx:02d}_SHELL_OD], center=false);
     }}
 }}
 module specimen_{idx:02d}() {{
@@ -224,9 +293,15 @@ def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
     grid_h = rows * cell_y
     x0 = (PLATE_X - grid_w) / 2.0 + cell_x / 2.0
     y0 = (PLATE_Y - grid_h) / 2.0 + cell_y / 2.0
-    # Lift each specimen so the bottom-triangle joint sphere underside sits
-    # on the plate (matches the Bambu Studio auto-bed-placement behaviour).
-    z_lift = JOINT_D_BASE / 2.0
+    # Lift each specimen so the bottom of every captive-core PLA shell sits
+    # at the build plate (matches Bambu's auto-bed-placement). The captive
+    # shell OD is the larger of (cable_d + 5.4 mm) and JOINT_D_BASE, so the
+    # bottom-vertex shell underside is at SCAD z = -shell_od/2 ≤ -joint_d/2.
+    # Use the worst-case (largest shell_od across the batch) so EVERY
+    # specimen's shell underside lands on or below the bed.
+    max_cable_d = max(s["cable_d_mm"] for s in specimens)
+    max_shell_od = max(max_cable_d + 2*0.4 + 2*1.5 + 2*0.5 + 2*1.6, JOINT_D_BASE)
+    z_lift = max_shell_od / 2.0
     parts: list[str] = []
     parts.append(
         "// AUTO-GENERATED by bo/t3_prism_sobol_batch.py — do not hand-edit.\n"
@@ -421,7 +496,9 @@ def main(argv: list[str] | None = None) -> int:
         ax_client.abandon_trial(idx, reason="human-in-the-loop single-batch")
 
     # ---- Pack onto the H2D build plate -------------------------------------
-    footprints = [specimen_footprint(s["R_mm"], s["strut_d_mm"]) for s in specimens]
+    footprints = [specimen_footprint(s["R_mm"], s["strut_d_mm"],
+                                     cable_d_mm=s["cable_d_mm"])
+                  for s in specimens]
     rows, cols, cell_x, cell_y = grid_layout(args.n, footprints)
     grid_w = cols * cell_x
     grid_h = rows * cell_y

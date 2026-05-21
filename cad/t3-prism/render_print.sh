@@ -67,13 +67,26 @@ BAMBU_URL="${BAMBU_URL:-https://github.com/bambulab/BambuStudio/releases/downloa
 echo "==> OpenSCAD render -> ${STL##*/} (single-material, both materials fused)"
 xvfb-run -a openscad -o "${STL}" --export-format=binstl "${SCAD}"
 
+# `offset_z` lifts the geometry so its lowest point sits at the build-plate
+# z=0. With the captive-core joints (default since PR #35 comment 4511036510)
+# the lowest feature is the bottom-vertex PLA shell underside at SCAD
+# z=-captive_shell_od/2 ≈ -8.15 mm (was -joint_d/2 = -5.25 mm with the
+# legacy solid-joint mode); we lift by +8.15 mm so the shell underside lands
+# on the bed. The cables STL inherits the SAME world-Z bounding box via the
+# `cables_z_anchor()` spike inside `t3_prism_cables()`, so Bambu Studio's
+# per-part auto-bed-placement applies the same z offset to both halves and
+# the TPU cables stay aligned with the joints (fixes the "horizontal cables
+# too low at top and bottom" misalignment reported above PR #35 comment
+# 4511036510). If `use_captive_core=false` is set on the OpenSCAD CLI, drop
+# this back to 3.5.
+OFFSET_Z="${OFFSET_Z:-8.15}"
 echo "==> OpenSCAD render -> ${STL_STRUTS##*/} (multi-material: rigid half / PLA, bed-centered)"
 xvfb-run -a openscad -o "${STL_STRUTS}" --export-format=binstl \
-    -D 'part="struts"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
+    -D 'part="struts"' -D 'offset_x=175' -D 'offset_y=160' -D "offset_z=${OFFSET_Z}" "${SCAD}"
 
 echo "==> OpenSCAD render -> ${STL_CABLES##*/} (multi-material: tension half / PETG, bed-centered)"
 xvfb-run -a openscad -o "${STL_CABLES}" --export-format=binstl \
-    -D 'part="cables"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
+    -D 'part="cables"' -D 'offset_x=175' -D 'offset_y=160' -D "offset_z=${OFFSET_Z}" "${SCAD}"
 
 # Production MM variant (PLA struts + TPU cables) needs PLA scaffold pillars
 # *modeled* into the strut/PLA half so the slicer can't omit them. Bambu's
@@ -85,7 +98,7 @@ xvfb-run -a openscad -o "${STL_CABLES}" --export-format=binstl \
 # already on the build plate). Per PR #35 comment 4464251671.
 echo "==> OpenSCAD render -> ${STL_STRUTS_SCAFFOLD##*/} (struts + 7-point PLA scaffold under TPU cables)"
 xvfb-run -a openscad -o "${STL_STRUTS_SCAFFOLD}" --export-format=binstl \
-    -D 'part="struts_scaffold"' -D 'offset_x=175' -D 'offset_y=160' -D 'offset_z=3.5' "${SCAD}"
+    -D 'part="struts_scaffold"' -D 'offset_x=175' -D 'offset_y=160' -D "offset_z=${OFFSET_Z}" "${SCAD}"
 
 echo "==> admesh manifold check"
 admesh -fundecvb "${SCRATCH}/t3-prism-clean.stl" "${STL}" \

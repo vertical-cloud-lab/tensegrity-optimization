@@ -125,6 +125,56 @@ scaffold_d_top = scaffold_d_top_base * scale_factor;
 scaffold_d_bot = scaffold_d_bot_base * scale_factor;
 scaffold_min_h = scaffold_min_h_base * scale_factor;
 
+// ---- Captive TPU core inside a PLA outer shell (Design F) -----------------
+// Per PR #35 comment 4511036510 / PR #39 comment 4461700096
+// (https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/39#issuecomment-4461700096):
+// instead of half-burying the TPU cable end in a solid PLA joint sphere
+// (the previous design — @ctrhjk's photos in PR #35 showed the cable
+// inserts into only kinda half of the joint ball, giving unstable
+// fixation and a fully encased TPU that was nearly impossible to remove),
+// put a captive TPU "knot" entirely INSIDE a hollow PLA outer shell at
+// every joint vertex. The cable still emerges from the shell along its
+// outward direction, but it does so through a small PLA bore that is
+// strictly narrower than the captive core; the TPU mass therefore cannot
+// back out under tension regardless of PLA-TPU bond chemistry. PLA-TPU
+// butt-bond is only ~6.5 MPa in shear (Lopes 2018; see
+// edison-trajectories/strut-material-selection-5bb5e5d3*), so the shell
+// and core stay mechanically separate even in their print-in-place state.
+//
+// Geometry (each joint vertex carries one strut + three cables; both
+// bottom-B_i and top-T_i vertices share the same fan-of-three cable
+// pattern, just routed to different remote vertices — see
+// `vertex_cable_dirs()` below):
+//   * `captive_bore_d`  : per-cable exit-bore diameter through the shell
+//                         wall (= cable_d + bore_clear). Cable passes
+//                         through with print clearance.
+//   * `captive_core_od` : TPU captive-core sphere diameter; chosen so
+//                         core_od > bore_d by at least `bore_trap` mm
+//                         (the "trap" — the core cannot fit back out
+//                         any single bore).
+//   * `captive_shell_id`: shell inner-cavity diameter (= core_od +
+//                         2*core_clear; gives a print-in-place radial
+//                         gap so the core remains free to wiggle).
+//   * `captive_shell_od`: outer PLA shell diameter (= shell_id + 2*wall).
+//   * `captive_teardrop`: hull-blend offset that smoothly fillets the
+//                         shell sphere into the strut cylinder, removing
+//                         the sharp re-entrant corner at the shell/strut
+//                         intersection (avoids the stress-concentration
+//                         and over-extrusion artefact reported in
+//                         @ctrhjk's first PETG+TPU print).
+use_captive_core   = true;            // set false to revert to solid joint spheres
+captive_bore_clear = 0.4;             // mm, single-sided clearance around the cable
+captive_bore_trap  = 1.5;             // mm, MIN (core_od - bore_d) / 2 so the core can't escape
+captive_core_clear = 0.5;             // mm, radial print-in-place gap shell-ID -> core-OD
+captive_wall_base  = 1.6;             // mm, PLA shell wall thickness (un-scaled)
+captive_teardrop_z = 1.5;             // mm, axial offset of the teardrop reference sphere
+captive_wall       = captive_wall_base * scale_factor;
+captive_bore_d     = cable_d + 2 * captive_bore_clear;
+captive_core_od    = max(captive_bore_d + 2 * captive_bore_trap, joint_d);
+captive_shell_id   = captive_core_od + 2 * captive_core_clear;
+captive_shell_od   = max(captive_shell_id + 2 * captive_wall, joint_d);
+captive_teardrop_d = strut_d * 1.10;  // seed sphere for the teardrop blend
+
 // Optional rigid translation applied AFTER part selection. Used by
 // render_print.sh for the multi-material variant: both the struts STL
 // and the cables STL are pre-translated to the H2D bed centre and lifted
@@ -139,6 +189,30 @@ offset_z   = 0;
 // ---- Vertex positions ------------------------------------------------------
 function bottom_pt(i) = [R*cos(90 + 120*i),         R*sin(90 + 120*i),         0];
 function top_pt(i)    = [R*cos(90 + 120*i + twist), R*sin(90 + 120*i + twist), H];
+
+// At each bottom vertex B_i, three TPU cables radiate out (the two bottom-
+// triangle cables and the saddle to T_{i-1}). At each top vertex T_i, three
+// TPU cables radiate out (the two top-triangle cables and the saddle from
+// B_{i+1}). The strut runs along the strut axis from B_i to T_i (or T_i to
+// B_i). These helper functions return the unit-direction-from-vertex of
+// each connected member, which the captive-core joint uses to (a) hull-
+// blend the shell into the strut (`vertex_strut_dir`) and (b) cut a cable
+// exit bore through the shell wall along each cable axis
+// (`vertex_cable_dirs`). All three "from-vertex" cable directions point
+// outward (away from V) so the bore cylinders never accidentally collapse.
+function _unit(v) = v / norm(v);
+function vertex_strut_dir_b(i) = _unit(top_pt(i)    - bottom_pt(i));
+function vertex_strut_dir_t(i) = _unit(bottom_pt(i) - top_pt(i));
+function vertex_cable_dirs_b(i) = [
+    _unit(bottom_pt((i+1)%3)   - bottom_pt(i)),      // bottom cable B_i -> B_{i+1}
+    _unit(bottom_pt((i+2)%3)   - bottom_pt(i)),      // bottom cable B_i <- B_{i-1}
+    _unit(top_pt((i+2)%3)      - bottom_pt(i)),      // saddle B_i -> T_{i-1}
+];
+function vertex_cable_dirs_t(i) = [
+    _unit(top_pt((i+1)%3)      - top_pt(i)),         // top cable T_i -> T_{i+1}
+    _unit(top_pt((i+2)%3)      - top_pt(i)),         // top cable T_i <- T_{i-1}
+    _unit(bottom_pt((i+1)%3)   - top_pt(i)),         // saddle T_i <- B_{i+1}
+];
 
 // ---- A capsule (cylinder + hemispherical end-caps) between two points -----
 module member(p1, p2, d) {
@@ -156,13 +230,106 @@ module member(p1, p2, d) {
             }
 }
 
+// Cylindrical bore along an arbitrary direction `dir` (does NOT need to be
+// unit-length). The bore is centred on the origin, of overall length `len`,
+// and is used inside `joint_shell()` to cut a cable exit through the PLA
+// shell wall (caller wraps with translate(V) before differencing).
+module bore_along(dir, d, len) {
+    yaw   = atan2(dir[1], dir[0]);
+    pitch = atan2(sqrt(dir[0]*dir[0] + dir[1]*dir[1]), dir[2]);
+    rotate([0, 0, yaw])
+        rotate([0, pitch, 0])
+            translate([0, 0, -len/2])
+                cylinder(h=len, d=d);
+}
+
+// ---- Captive-core joint: PLA outer shell at vertex V ----------------------
+// Hollow PLA sphere with a teardrop-blend toward the strut axis, hollowed
+// by the inner cavity (where the TPU captive core lives), and pierced by
+// one cylindrical exit bore per outgoing cable. The strut itself is unioned
+// in by the caller (the strut cylinder departs V along `strut_dir`).
+module joint_shell(V, strut_dir, cable_dirs) {
+    translate(V) {
+        difference() {
+            // Outer shell + teardrop blend along the strut axis.
+            hull() {
+                sphere(d=captive_shell_od);
+                translate(strut_dir * (captive_shell_od/2 + captive_teardrop_z))
+                    sphere(d=captive_teardrop_d);
+            }
+            // Inner cavity (the captive TPU core sits inside this).
+            sphere(d=captive_shell_id);
+            // One outward exit bore per cable. Bores are centred at V and
+            // 2x the shell OD long; the inner half opens into the cavity
+            // (which is already hollow) and the outer half cuts the wall.
+            for (d = cable_dirs)
+                bore_along(d, captive_bore_d, captive_shell_od * 2);
+        }
+    }
+}
+
+// ---- Captive-core joint: TPU core at vertex V -----------------------------
+// Solid TPU sphere of diameter `captive_core_od`. Lives inside the cavity
+// of the PLA shell, with a `captive_core_clear` print-in-place radial gap;
+// merges seamlessly with the cable end-cap spheres so cables emerge through
+// the shell bores as a continuous TPU thread. Because core_od > bore_d by
+// at least 2*captive_bore_trap, the core cannot back out any single bore.
+module joint_core(V) {
+    translate(V) sphere(d=captive_core_od);
+}
+
+// ---- TPU z-anchor (cable-STL bounding-box parity) -------------------------
+// When the cables STL is rendered separately from the struts STL and both
+// are imported into Bambu Studio, the slicer's "place on bed" routine
+// lifts each part individually so its own lowest world-Z point sits on
+// the bed. Because the strut STL's lowest point is the bottom-vertex
+// shell underside at z=-captive_shell_od/2 while the cables STL's lowest
+// point is the bottom-cable cylinder underside at z=-cable_d/2, the two
+// parts ended up shifted by (shell_od - cable_d)/2 mm in z and the
+// cables visually dropped relative to the joints — exactly the
+// "horizontal cables too low at top and bottom" issue reported in PR #35
+// (immediately above PR #35 comment 4511036510). The fix is to give the
+// cables STL the same world-Z extents as the struts STL by emitting a
+// pair of zero-XY-area axial spikes at the geometric centre that span
+// the strut STL's z-range. The spikes add a negligible amount of TPU
+// (< 0.01 mm^2 cross-section * span) but pin the cables STL's bounding
+// box so Bambu's auto-bed-placement applies the SAME world-Z offset to
+// both parts, keeping cables and joint shells aligned to their original
+// SCAD coordinates.
+module cables_z_anchor() {
+    // The extreme bottom point of the strut STL is the bottom-vertex
+    // joint shell's underside at z = -captive_shell_od/2; the extreme
+    // top point is the top-vertex shell at z = H + captive_shell_od/2.
+    z_lo = -captive_shell_od / 2;
+    z_hi = H + captive_shell_od / 2;
+    eps  = 0.005;  // 5 micron, well below FDM extrusion width
+    // Use the prism's centroid in XY so the anchor is geometry-only and
+    // never collides with cables or scaffold pillars.
+    translate([0, 0, z_lo])
+        cube([eps, eps, z_hi - z_lo], center=false);
+}
+
 // ---- T3-prism assembly -----------------------------------------------------
 module t3_prism_struts() {
     union() {
-        // Joint nodes (bottom + top) — bonded into the rigid strut body.
+        // Joint nodes (bottom + top). With `use_captive_core` (default),
+        // each node is a hollow PLA shell with a teardrop blend toward the
+        // strut and one cylindrical exit bore per outgoing TPU cable; the
+        // captive TPU mass that holds the cables in place lives inside the
+        // shell cavity and is emitted by `t3_prism_cables()`. Otherwise we
+        // fall back to a solid joint sphere (legacy behaviour).
         for (i = [0:2]) {
-            translate(bottom_pt(i)) sphere(d=joint_d);
-            translate(top_pt(i))    sphere(d=joint_d);
+            if (use_captive_core) {
+                joint_shell(bottom_pt(i),
+                            vertex_strut_dir_b(i),
+                            vertex_cable_dirs_b(i));
+                joint_shell(top_pt(i),
+                            vertex_strut_dir_t(i),
+                            vertex_cable_dirs_t(i));
+            } else {
+                translate(bottom_pt(i)) sphere(d=joint_d);
+                translate(top_pt(i))    sphere(d=joint_d);
+            }
         }
         // Struts: B_i -> T_i  (compression members)
         for (i = [0:2]) member(bottom_pt(i),   top_pt(i),         strut_d);
@@ -178,6 +345,19 @@ module t3_prism_cables() {
         // Saddle/vertical cables: B_{i+1} -> T_i  (so cable i and strut i
         // meet at T_i but emerge from different bottom vertices)
         for (i = [0:2]) member(bottom_pt((i+1)%3), top_pt(i),      cable_d);
+        // Captive TPU cores inside each PLA shell cavity — these are what
+        // mechanically anchor the cables (the cores are too large to back
+        // out any single shell bore). Omitted in legacy solid-joint mode.
+        if (use_captive_core) {
+            for (i = [0:2]) {
+                joint_core(bottom_pt(i));
+                joint_core(top_pt(i));
+            }
+            // Bounding-box anchor so the cables STL inherits the same
+            // world-Z extents as the struts STL (keeps Bambu Studio's
+            // per-part auto-bed-placement from de-aligning the parts).
+            cables_z_anchor();
+        }
     }
 }
 
@@ -201,7 +381,13 @@ module t3_prism() {
 // undersides, every pillar reaches the bed instead of floating ~joint_d/2 mm
 // above it (PR #35 comment 4464399849).
 module pillar_to(target) {
-    z_base = -joint_d / 2;
+    // Root the pillars at the bottom of the bed-lowest part of the model.
+    // In captive-core mode the joint shells are the lowest feature; in
+    // legacy solid-joint mode the joint spheres are. Either way the pillar
+    // base must sit at the same z as the lowest model point so that when
+    // Bambu Studio lifts the assembly to put its lowest point on the bed,
+    // every pillar base touches the build plate (PR #35 comment 4464399849).
+    z_base = use_captive_core ? -captive_shell_od / 2 : -joint_d / 2;
     z_top  = target[2] - scaffold_d_top * 0.4;  // sink the cone tip slightly into the cable
     h      = z_top - z_base;
     if (h >= scaffold_min_h) {

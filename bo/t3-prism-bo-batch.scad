@@ -4,7 +4,7 @@
 // (load axis = z). Supports will be manually painted in Bambu
 // Studio per @achris0520's tip in PR #35 comment 4502140147.
 // Plate: 350 x 320 mm (Bambu Lab H2D).
-// Grid : 3 x 3 (cell 86.9 x 86.9 mm).
+// Grid : 3 x 3 (cell 91.9 x 91.9 mm).
 //
 // `part` selects which half of each specimen to emit, mirroring
 // `cad/t3-prism/t3-prism.scad`:
@@ -15,6 +15,17 @@
 part = "all";  // "all" | "struts" | "cables"
 
 // specimen 00  R=32.13 H=89.63 twist=59.78 strut_d=7.88 cable_d=5.39
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S00_BORE_D    = 5.3902 + 2*0.4;
+S00_CORE_OD   = max(S00_BORE_D + 2*1.5, 7.0000);
+S00_SHELL_ID  = S00_CORE_OD + 2*0.5;
+S00_SHELL_OD  = max(S00_SHELL_ID + 2*1.6, 7.0000);
+S00_TEARDROP  = 7.8831 * 1.10;
 module specimen_00_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -23,14 +34,51 @@ module specimen_00_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_00_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_00_bp(i) = [32.1266*cos(90+120*i), 32.1266*sin(90+120*i), 0];
 function specimen_00_tp(i) = [32.1266*cos(90+120*i+59.7792),
                                      32.1266*sin(90+120*i+59.7792), 89.6262];
+function specimen_00_unit(v) = v / norm(v);
+function specimen_00_sdir_b(i) =
+    specimen_00_unit(specimen_00_tp(i) - specimen_00_bp(i));
+function specimen_00_sdir_t(i) =
+    specimen_00_unit(specimen_00_bp(i) - specimen_00_tp(i));
+function specimen_00_cdirs_b(i) = [
+    specimen_00_unit(specimen_00_bp((i+1)%3) - specimen_00_bp(i)),
+    specimen_00_unit(specimen_00_bp((i+2)%3) - specimen_00_bp(i)),
+    specimen_00_unit(specimen_00_tp((i+2)%3) - specimen_00_bp(i)),
+];
+function specimen_00_cdirs_t(i) = [
+    specimen_00_unit(specimen_00_tp((i+1)%3) - specimen_00_tp(i)),
+    specimen_00_unit(specimen_00_tp((i+2)%3) - specimen_00_tp(i)),
+    specimen_00_unit(specimen_00_bp((i+1)%3) - specimen_00_tp(i)),
+];
+module specimen_00_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S00_SHELL_OD);
+            translate(sdir * (S00_SHELL_OD/2 + 1.5))
+                sphere(d=S00_TEARDROP);
+        }
+        sphere(d=S00_SHELL_ID);
+        for (cd = cdirs)
+            specimen_00_bore(cd, S00_BORE_D, S00_SHELL_OD*2);
+    }
+}
 module specimen_00_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_00_bp(i)) sphere(d=7.0000);
-            translate(specimen_00_tp(i)) sphere(d=7.0000);
+            specimen_00_shell(specimen_00_bp(i),
+                                     specimen_00_sdir_b(i),
+                                     specimen_00_cdirs_b(i));
+            specimen_00_shell(specimen_00_tp(i),
+                                     specimen_00_sdir_t(i),
+                                     specimen_00_cdirs_t(i));
             specimen_00_member(specimen_00_bp(i),
                                      specimen_00_tp(i), 7.8831);
         }
@@ -45,7 +93,15 @@ module specimen_00_cables() {
                                      specimen_00_tp((i+1)%3), 5.3902);
             specimen_00_member(specimen_00_bp((i+1)%3),
                                      specimen_00_tp(i),       5.3902);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_00_bp(i)) sphere(d=S00_CORE_OD);
+            translate(specimen_00_tp(i)) sphere(d=S00_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S00_SHELL_OD/2])
+            cube([0.005, 0.005, 89.6262 + S00_SHELL_OD], center=false);
     }
 }
 module specimen_00() {
@@ -53,8 +109,19 @@ module specimen_00() {
     else if (part == "cables") specimen_00_cables();
     else union() { specimen_00_struts(); specimen_00_cables(); }
 }
-translate([88.067, 73.067, 3.500]) specimen_00();
+translate([83.143, 68.143, 6.695]) specimen_00();
 // specimen 01  R=33.78 H=80.08 twist=77.41 strut_d=10.87 cable_d=3.00
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S01_BORE_D    = 3.0003 + 2*0.4;
+S01_CORE_OD   = max(S01_BORE_D + 2*1.5, 7.0000);
+S01_SHELL_ID  = S01_CORE_OD + 2*0.5;
+S01_SHELL_OD  = max(S01_SHELL_ID + 2*1.6, 7.0000);
+S01_TEARDROP  = 10.8717 * 1.10;
 module specimen_01_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -63,14 +130,51 @@ module specimen_01_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_01_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_01_bp(i) = [33.7842*cos(90+120*i), 33.7842*sin(90+120*i), 0];
 function specimen_01_tp(i) = [33.7842*cos(90+120*i+77.4080),
                                      33.7842*sin(90+120*i+77.4080), 80.0836];
+function specimen_01_unit(v) = v / norm(v);
+function specimen_01_sdir_b(i) =
+    specimen_01_unit(specimen_01_tp(i) - specimen_01_bp(i));
+function specimen_01_sdir_t(i) =
+    specimen_01_unit(specimen_01_bp(i) - specimen_01_tp(i));
+function specimen_01_cdirs_b(i) = [
+    specimen_01_unit(specimen_01_bp((i+1)%3) - specimen_01_bp(i)),
+    specimen_01_unit(specimen_01_bp((i+2)%3) - specimen_01_bp(i)),
+    specimen_01_unit(specimen_01_tp((i+2)%3) - specimen_01_bp(i)),
+];
+function specimen_01_cdirs_t(i) = [
+    specimen_01_unit(specimen_01_tp((i+1)%3) - specimen_01_tp(i)),
+    specimen_01_unit(specimen_01_tp((i+2)%3) - specimen_01_tp(i)),
+    specimen_01_unit(specimen_01_bp((i+1)%3) - specimen_01_tp(i)),
+];
+module specimen_01_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S01_SHELL_OD);
+            translate(sdir * (S01_SHELL_OD/2 + 1.5))
+                sphere(d=S01_TEARDROP);
+        }
+        sphere(d=S01_SHELL_ID);
+        for (cd = cdirs)
+            specimen_01_bore(cd, S01_BORE_D, S01_SHELL_OD*2);
+    }
+}
 module specimen_01_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_01_bp(i)) sphere(d=7.0000);
-            translate(specimen_01_tp(i)) sphere(d=7.0000);
+            specimen_01_shell(specimen_01_bp(i),
+                                     specimen_01_sdir_b(i),
+                                     specimen_01_cdirs_b(i));
+            specimen_01_shell(specimen_01_tp(i),
+                                     specimen_01_sdir_t(i),
+                                     specimen_01_cdirs_t(i));
             specimen_01_member(specimen_01_bp(i),
                                      specimen_01_tp(i), 10.8717);
         }
@@ -85,7 +189,15 @@ module specimen_01_cables() {
                                      specimen_01_tp((i+1)%3), 3.0003);
             specimen_01_member(specimen_01_bp((i+1)%3),
                                      specimen_01_tp(i),       3.0003);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_01_bp(i)) sphere(d=S01_CORE_OD);
+            translate(specimen_01_tp(i)) sphere(d=S01_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S01_SHELL_OD/2])
+            cube([0.005, 0.005, 80.0836 + S01_SHELL_OD], center=false);
     }
 }
 module specimen_01() {
@@ -93,8 +205,19 @@ module specimen_01() {
     else if (part == "cables") specimen_01_cables();
     else union() { specimen_01_struts(); specimen_01_cables(); }
 }
-translate([175.000, 73.067, 3.500]) specimen_01();
+translate([175.000, 68.143, 6.695]) specimen_01();
 // specimen 02  R=38.97 H=99.99 twist=47.69 strut_d=7.07 cable_d=3.92
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S02_BORE_D    = 3.9241 + 2*0.4;
+S02_CORE_OD   = max(S02_BORE_D + 2*1.5, 7.0000);
+S02_SHELL_ID  = S02_CORE_OD + 2*0.5;
+S02_SHELL_OD  = max(S02_SHELL_ID + 2*1.6, 7.0000);
+S02_TEARDROP  = 7.0737 * 1.10;
 module specimen_02_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -103,14 +226,51 @@ module specimen_02_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_02_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_02_bp(i) = [38.9665*cos(90+120*i), 38.9665*sin(90+120*i), 0];
 function specimen_02_tp(i) = [38.9665*cos(90+120*i+47.6915),
                                      38.9665*sin(90+120*i+47.6915), 99.9950];
+function specimen_02_unit(v) = v / norm(v);
+function specimen_02_sdir_b(i) =
+    specimen_02_unit(specimen_02_tp(i) - specimen_02_bp(i));
+function specimen_02_sdir_t(i) =
+    specimen_02_unit(specimen_02_bp(i) - specimen_02_tp(i));
+function specimen_02_cdirs_b(i) = [
+    specimen_02_unit(specimen_02_bp((i+1)%3) - specimen_02_bp(i)),
+    specimen_02_unit(specimen_02_bp((i+2)%3) - specimen_02_bp(i)),
+    specimen_02_unit(specimen_02_tp((i+2)%3) - specimen_02_bp(i)),
+];
+function specimen_02_cdirs_t(i) = [
+    specimen_02_unit(specimen_02_tp((i+1)%3) - specimen_02_tp(i)),
+    specimen_02_unit(specimen_02_tp((i+2)%3) - specimen_02_tp(i)),
+    specimen_02_unit(specimen_02_bp((i+1)%3) - specimen_02_tp(i)),
+];
+module specimen_02_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S02_SHELL_OD);
+            translate(sdir * (S02_SHELL_OD/2 + 1.5))
+                sphere(d=S02_TEARDROP);
+        }
+        sphere(d=S02_SHELL_ID);
+        for (cd = cdirs)
+            specimen_02_bore(cd, S02_BORE_D, S02_SHELL_OD*2);
+    }
+}
 module specimen_02_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_02_bp(i)) sphere(d=7.0000);
-            translate(specimen_02_tp(i)) sphere(d=7.0000);
+            specimen_02_shell(specimen_02_bp(i),
+                                     specimen_02_sdir_b(i),
+                                     specimen_02_cdirs_b(i));
+            specimen_02_shell(specimen_02_tp(i),
+                                     specimen_02_sdir_t(i),
+                                     specimen_02_cdirs_t(i));
             specimen_02_member(specimen_02_bp(i),
                                      specimen_02_tp(i), 7.0737);
         }
@@ -125,7 +285,15 @@ module specimen_02_cables() {
                                      specimen_02_tp((i+1)%3), 3.9241);
             specimen_02_member(specimen_02_bp((i+1)%3),
                                      specimen_02_tp(i),       3.9241);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_02_bp(i)) sphere(d=S02_CORE_OD);
+            translate(specimen_02_tp(i)) sphere(d=S02_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S02_SHELL_OD/2])
+            cube([0.005, 0.005, 99.9950 + S02_SHELL_OD], center=false);
     }
 }
 module specimen_02() {
@@ -133,8 +301,19 @@ module specimen_02() {
     else if (part == "cables") specimen_02_cables();
     else union() { specimen_02_struts(); specimen_02_cables(); }
 }
-translate([261.933, 73.067, 3.500]) specimen_02();
+translate([266.857, 68.143, 6.695]) specimen_02();
 // specimen 03  R=25.12 H=72.06 twist=65.12 strut_d=10.18 cable_d=4.66
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S03_BORE_D    = 4.6640 + 2*0.4;
+S03_CORE_OD   = max(S03_BORE_D + 2*1.5, 7.0000);
+S03_SHELL_ID  = S03_CORE_OD + 2*0.5;
+S03_SHELL_OD  = max(S03_SHELL_ID + 2*1.6, 7.0000);
+S03_TEARDROP  = 10.1789 * 1.10;
 module specimen_03_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -143,14 +322,51 @@ module specimen_03_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_03_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_03_bp(i) = [25.1224*cos(90+120*i), 25.1224*sin(90+120*i), 0];
 function specimen_03_tp(i) = [25.1224*cos(90+120*i+65.1213),
                                      25.1224*sin(90+120*i+65.1213), 72.0587];
+function specimen_03_unit(v) = v / norm(v);
+function specimen_03_sdir_b(i) =
+    specimen_03_unit(specimen_03_tp(i) - specimen_03_bp(i));
+function specimen_03_sdir_t(i) =
+    specimen_03_unit(specimen_03_bp(i) - specimen_03_tp(i));
+function specimen_03_cdirs_b(i) = [
+    specimen_03_unit(specimen_03_bp((i+1)%3) - specimen_03_bp(i)),
+    specimen_03_unit(specimen_03_bp((i+2)%3) - specimen_03_bp(i)),
+    specimen_03_unit(specimen_03_tp((i+2)%3) - specimen_03_bp(i)),
+];
+function specimen_03_cdirs_t(i) = [
+    specimen_03_unit(specimen_03_tp((i+1)%3) - specimen_03_tp(i)),
+    specimen_03_unit(specimen_03_tp((i+2)%3) - specimen_03_tp(i)),
+    specimen_03_unit(specimen_03_bp((i+1)%3) - specimen_03_tp(i)),
+];
+module specimen_03_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S03_SHELL_OD);
+            translate(sdir * (S03_SHELL_OD/2 + 1.5))
+                sphere(d=S03_TEARDROP);
+        }
+        sphere(d=S03_SHELL_ID);
+        for (cd = cdirs)
+            specimen_03_bore(cd, S03_BORE_D, S03_SHELL_OD*2);
+    }
+}
 module specimen_03_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_03_bp(i)) sphere(d=7.0000);
-            translate(specimen_03_tp(i)) sphere(d=7.0000);
+            specimen_03_shell(specimen_03_bp(i),
+                                     specimen_03_sdir_b(i),
+                                     specimen_03_cdirs_b(i));
+            specimen_03_shell(specimen_03_tp(i),
+                                     specimen_03_sdir_t(i),
+                                     specimen_03_cdirs_t(i));
             specimen_03_member(specimen_03_bp(i),
                                      specimen_03_tp(i), 10.1789);
         }
@@ -165,7 +381,15 @@ module specimen_03_cables() {
                                      specimen_03_tp((i+1)%3), 4.6640);
             specimen_03_member(specimen_03_bp((i+1)%3),
                                      specimen_03_tp(i),       4.6640);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_03_bp(i)) sphere(d=S03_CORE_OD);
+            translate(specimen_03_tp(i)) sphere(d=S03_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S03_SHELL_OD/2])
+            cube([0.005, 0.005, 72.0587 + S03_SHELL_OD], center=false);
     }
 }
 module specimen_03() {
@@ -173,8 +397,19 @@ module specimen_03() {
     else if (part == "cables") specimen_03_cables();
     else union() { specimen_03_struts(); specimen_03_cables(); }
 }
-translate([88.067, 160.000, 3.500]) specimen_03();
+translate([83.143, 160.000, 6.695]) specimen_03();
 // specimen 04  R=27.61 H=104.13 twist=70.44 strut_d=9.28 cable_d=4.49
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S04_BORE_D    = 4.4922 + 2*0.4;
+S04_CORE_OD   = max(S04_BORE_D + 2*1.5, 7.0000);
+S04_SHELL_ID  = S04_CORE_OD + 2*0.5;
+S04_SHELL_OD  = max(S04_SHELL_ID + 2*1.6, 7.0000);
+S04_TEARDROP  = 9.2816 * 1.10;
 module specimen_04_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -183,14 +418,51 @@ module specimen_04_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_04_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_04_bp(i) = [27.6114*cos(90+120*i), 27.6114*sin(90+120*i), 0];
 function specimen_04_tp(i) = [27.6114*cos(90+120*i+70.4432),
                                      27.6114*sin(90+120*i+70.4432), 104.1304];
+function specimen_04_unit(v) = v / norm(v);
+function specimen_04_sdir_b(i) =
+    specimen_04_unit(specimen_04_tp(i) - specimen_04_bp(i));
+function specimen_04_sdir_t(i) =
+    specimen_04_unit(specimen_04_bp(i) - specimen_04_tp(i));
+function specimen_04_cdirs_b(i) = [
+    specimen_04_unit(specimen_04_bp((i+1)%3) - specimen_04_bp(i)),
+    specimen_04_unit(specimen_04_bp((i+2)%3) - specimen_04_bp(i)),
+    specimen_04_unit(specimen_04_tp((i+2)%3) - specimen_04_bp(i)),
+];
+function specimen_04_cdirs_t(i) = [
+    specimen_04_unit(specimen_04_tp((i+1)%3) - specimen_04_tp(i)),
+    specimen_04_unit(specimen_04_tp((i+2)%3) - specimen_04_tp(i)),
+    specimen_04_unit(specimen_04_bp((i+1)%3) - specimen_04_tp(i)),
+];
+module specimen_04_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S04_SHELL_OD);
+            translate(sdir * (S04_SHELL_OD/2 + 1.5))
+                sphere(d=S04_TEARDROP);
+        }
+        sphere(d=S04_SHELL_ID);
+        for (cd = cdirs)
+            specimen_04_bore(cd, S04_BORE_D, S04_SHELL_OD*2);
+    }
+}
 module specimen_04_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_04_bp(i)) sphere(d=7.0000);
-            translate(specimen_04_tp(i)) sphere(d=7.0000);
+            specimen_04_shell(specimen_04_bp(i),
+                                     specimen_04_sdir_b(i),
+                                     specimen_04_cdirs_b(i));
+            specimen_04_shell(specimen_04_tp(i),
+                                     specimen_04_sdir_t(i),
+                                     specimen_04_cdirs_t(i));
             specimen_04_member(specimen_04_bp(i),
                                      specimen_04_tp(i), 9.2816);
         }
@@ -205,7 +477,15 @@ module specimen_04_cables() {
                                      specimen_04_tp((i+1)%3), 4.4922);
             specimen_04_member(specimen_04_bp((i+1)%3),
                                      specimen_04_tp(i),       4.4922);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_04_bp(i)) sphere(d=S04_CORE_OD);
+            translate(specimen_04_tp(i)) sphere(d=S04_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S04_SHELL_OD/2])
+            cube([0.005, 0.005, 104.1304 + S04_SHELL_OD], center=false);
     }
 }
 module specimen_04() {
@@ -213,8 +493,19 @@ module specimen_04() {
     else if (part == "cables") specimen_04_cables();
     else union() { specimen_04_struts(); specimen_04_cables(); }
 }
-translate([175.000, 160.000, 3.500]) specimen_04();
+translate([175.000, 160.000, 6.695]) specimen_04();
 // specimen 05  R=36.30 H=63.23 twist=52.99 strut_d=6.46 cable_d=4.06
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S05_BORE_D    = 4.0550 + 2*0.4;
+S05_CORE_OD   = max(S05_BORE_D + 2*1.5, 7.0000);
+S05_SHELL_ID  = S05_CORE_OD + 2*0.5;
+S05_SHELL_OD  = max(S05_SHELL_ID + 2*1.6, 7.0000);
+S05_TEARDROP  = 6.4571 * 1.10;
 module specimen_05_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -223,14 +514,51 @@ module specimen_05_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_05_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_05_bp(i) = [36.3001*cos(90+120*i), 36.3001*sin(90+120*i), 0];
 function specimen_05_tp(i) = [36.3001*cos(90+120*i+52.9940),
                                      36.3001*sin(90+120*i+52.9940), 63.2297];
+function specimen_05_unit(v) = v / norm(v);
+function specimen_05_sdir_b(i) =
+    specimen_05_unit(specimen_05_tp(i) - specimen_05_bp(i));
+function specimen_05_sdir_t(i) =
+    specimen_05_unit(specimen_05_bp(i) - specimen_05_tp(i));
+function specimen_05_cdirs_b(i) = [
+    specimen_05_unit(specimen_05_bp((i+1)%3) - specimen_05_bp(i)),
+    specimen_05_unit(specimen_05_bp((i+2)%3) - specimen_05_bp(i)),
+    specimen_05_unit(specimen_05_tp((i+2)%3) - specimen_05_bp(i)),
+];
+function specimen_05_cdirs_t(i) = [
+    specimen_05_unit(specimen_05_tp((i+1)%3) - specimen_05_tp(i)),
+    specimen_05_unit(specimen_05_tp((i+2)%3) - specimen_05_tp(i)),
+    specimen_05_unit(specimen_05_bp((i+1)%3) - specimen_05_tp(i)),
+];
+module specimen_05_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S05_SHELL_OD);
+            translate(sdir * (S05_SHELL_OD/2 + 1.5))
+                sphere(d=S05_TEARDROP);
+        }
+        sphere(d=S05_SHELL_ID);
+        for (cd = cdirs)
+            specimen_05_bore(cd, S05_BORE_D, S05_SHELL_OD*2);
+    }
+}
 module specimen_05_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_05_bp(i)) sphere(d=7.0000);
-            translate(specimen_05_tp(i)) sphere(d=7.0000);
+            specimen_05_shell(specimen_05_bp(i),
+                                     specimen_05_sdir_b(i),
+                                     specimen_05_cdirs_b(i));
+            specimen_05_shell(specimen_05_tp(i),
+                                     specimen_05_sdir_t(i),
+                                     specimen_05_cdirs_t(i));
             specimen_05_member(specimen_05_bp(i),
                                      specimen_05_tp(i), 6.4571);
         }
@@ -245,7 +573,15 @@ module specimen_05_cables() {
                                      specimen_05_tp((i+1)%3), 4.0550);
             specimen_05_member(specimen_05_bp((i+1)%3),
                                      specimen_05_tp(i),       4.0550);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_05_bp(i)) sphere(d=S05_CORE_OD);
+            translate(specimen_05_tp(i)) sphere(d=S05_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S05_SHELL_OD/2])
+            cube([0.005, 0.005, 63.2297 + S05_SHELL_OD], center=false);
     }
 }
 module specimen_05() {
@@ -253,8 +589,19 @@ module specimen_05() {
     else if (part == "cables") specimen_05_cables();
     else union() { specimen_05_struts(); specimen_05_cables(); }
 }
-translate([261.933, 160.000, 3.500]) specimen_05();
+translate([266.857, 160.000, 6.695]) specimen_05();
 // specimen 06  R=35.98 H=96.45 twist=62.11 strut_d=11.66 cable_d=3.49
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S06_BORE_D    = 3.4949 + 2*0.4;
+S06_CORE_OD   = max(S06_BORE_D + 2*1.5, 7.0000);
+S06_SHELL_ID  = S06_CORE_OD + 2*0.5;
+S06_SHELL_OD  = max(S06_SHELL_ID + 2*1.6, 7.0000);
+S06_TEARDROP  = 11.6620 * 1.10;
 module specimen_06_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -263,14 +610,51 @@ module specimen_06_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_06_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_06_bp(i) = [35.9821*cos(90+120*i), 35.9821*sin(90+120*i), 0];
 function specimen_06_tp(i) = [35.9821*cos(90+120*i+62.1055),
                                      35.9821*sin(90+120*i+62.1055), 96.4464];
+function specimen_06_unit(v) = v / norm(v);
+function specimen_06_sdir_b(i) =
+    specimen_06_unit(specimen_06_tp(i) - specimen_06_bp(i));
+function specimen_06_sdir_t(i) =
+    specimen_06_unit(specimen_06_bp(i) - specimen_06_tp(i));
+function specimen_06_cdirs_b(i) = [
+    specimen_06_unit(specimen_06_bp((i+1)%3) - specimen_06_bp(i)),
+    specimen_06_unit(specimen_06_bp((i+2)%3) - specimen_06_bp(i)),
+    specimen_06_unit(specimen_06_tp((i+2)%3) - specimen_06_bp(i)),
+];
+function specimen_06_cdirs_t(i) = [
+    specimen_06_unit(specimen_06_tp((i+1)%3) - specimen_06_tp(i)),
+    specimen_06_unit(specimen_06_tp((i+2)%3) - specimen_06_tp(i)),
+    specimen_06_unit(specimen_06_bp((i+1)%3) - specimen_06_tp(i)),
+];
+module specimen_06_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S06_SHELL_OD);
+            translate(sdir * (S06_SHELL_OD/2 + 1.5))
+                sphere(d=S06_TEARDROP);
+        }
+        sphere(d=S06_SHELL_ID);
+        for (cd = cdirs)
+            specimen_06_bore(cd, S06_BORE_D, S06_SHELL_OD*2);
+    }
+}
 module specimen_06_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_06_bp(i)) sphere(d=7.0000);
-            translate(specimen_06_tp(i)) sphere(d=7.0000);
+            specimen_06_shell(specimen_06_bp(i),
+                                     specimen_06_sdir_b(i),
+                                     specimen_06_cdirs_b(i));
+            specimen_06_shell(specimen_06_tp(i),
+                                     specimen_06_sdir_t(i),
+                                     specimen_06_cdirs_t(i));
             specimen_06_member(specimen_06_bp(i),
                                      specimen_06_tp(i), 11.6620);
         }
@@ -285,7 +669,15 @@ module specimen_06_cables() {
                                      specimen_06_tp((i+1)%3), 3.4949);
             specimen_06_member(specimen_06_bp((i+1)%3),
                                      specimen_06_tp(i),       3.4949);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_06_bp(i)) sphere(d=S06_CORE_OD);
+            translate(specimen_06_tp(i)) sphere(d=S06_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S06_SHELL_OD/2])
+            cube([0.005, 0.005, 96.4464 + S06_SHELL_OD], center=false);
     }
 }
 module specimen_06() {
@@ -293,8 +685,19 @@ module specimen_06() {
     else if (part == "cables") specimen_06_cables();
     else union() { specimen_06_struts(); specimen_06_cables(); }
 }
-translate([88.067, 246.933, 3.500]) specimen_06();
+translate([83.143, 251.857, 6.695]) specimen_06();
 // specimen 07  R=30.11 H=74.82 twist=44.46 strut_d=8.58 cable_d=4.94
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S07_BORE_D    = 4.9377 + 2*0.4;
+S07_CORE_OD   = max(S07_BORE_D + 2*1.5, 7.0000);
+S07_SHELL_ID  = S07_CORE_OD + 2*0.5;
+S07_SHELL_OD  = max(S07_SHELL_ID + 2*1.6, 7.0000);
+S07_TEARDROP  = 8.5803 * 1.10;
 module specimen_07_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -303,14 +706,51 @@ module specimen_07_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_07_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_07_bp(i) = [30.1066*cos(90+120*i), 30.1066*sin(90+120*i), 0];
 function specimen_07_tp(i) = [30.1066*cos(90+120*i+44.4573),
                                      30.1066*sin(90+120*i+44.4573), 74.8199];
+function specimen_07_unit(v) = v / norm(v);
+function specimen_07_sdir_b(i) =
+    specimen_07_unit(specimen_07_tp(i) - specimen_07_bp(i));
+function specimen_07_sdir_t(i) =
+    specimen_07_unit(specimen_07_bp(i) - specimen_07_tp(i));
+function specimen_07_cdirs_b(i) = [
+    specimen_07_unit(specimen_07_bp((i+1)%3) - specimen_07_bp(i)),
+    specimen_07_unit(specimen_07_bp((i+2)%3) - specimen_07_bp(i)),
+    specimen_07_unit(specimen_07_tp((i+2)%3) - specimen_07_bp(i)),
+];
+function specimen_07_cdirs_t(i) = [
+    specimen_07_unit(specimen_07_tp((i+1)%3) - specimen_07_tp(i)),
+    specimen_07_unit(specimen_07_tp((i+2)%3) - specimen_07_tp(i)),
+    specimen_07_unit(specimen_07_bp((i+1)%3) - specimen_07_tp(i)),
+];
+module specimen_07_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S07_SHELL_OD);
+            translate(sdir * (S07_SHELL_OD/2 + 1.5))
+                sphere(d=S07_TEARDROP);
+        }
+        sphere(d=S07_SHELL_ID);
+        for (cd = cdirs)
+            specimen_07_bore(cd, S07_BORE_D, S07_SHELL_OD*2);
+    }
+}
 module specimen_07_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_07_bp(i)) sphere(d=7.0000);
-            translate(specimen_07_tp(i)) sphere(d=7.0000);
+            specimen_07_shell(specimen_07_bp(i),
+                                     specimen_07_sdir_b(i),
+                                     specimen_07_cdirs_b(i));
+            specimen_07_shell(specimen_07_tp(i),
+                                     specimen_07_sdir_t(i),
+                                     specimen_07_cdirs_t(i));
             specimen_07_member(specimen_07_bp(i),
                                      specimen_07_tp(i), 8.5803);
         }
@@ -325,7 +765,15 @@ module specimen_07_cables() {
                                      specimen_07_tp((i+1)%3), 4.9377);
             specimen_07_member(specimen_07_bp((i+1)%3),
                                      specimen_07_tp(i),       4.9377);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_07_bp(i)) sphere(d=S07_CORE_OD);
+            translate(specimen_07_tp(i)) sphere(d=S07_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S07_SHELL_OD/2])
+            cube([0.005, 0.005, 74.8199 + S07_SHELL_OD], center=false);
     }
 }
 module specimen_07() {
@@ -333,8 +781,19 @@ module specimen_07() {
     else if (part == "cables") specimen_07_cables();
     else union() { specimen_07_struts(); specimen_07_cables(); }
 }
-translate([175.000, 246.933, 3.500]) specimen_07();
+translate([175.000, 251.857, 6.695]) specimen_07();
 // specimen 08  R=29.02 H=100.87 twist=63.76 strut_d=6.20 cable_d=3.20
+// Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
+// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
+// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
+// never smaller than the legacy design).
+S08_BORE_D    = 3.1969 + 2*0.4;
+S08_CORE_OD   = max(S08_BORE_D + 2*1.5, 7.0000);
+S08_SHELL_ID  = S08_CORE_OD + 2*0.5;
+S08_SHELL_OD  = max(S08_SHELL_ID + 2*1.6, 7.0000);
+S08_TEARDROP  = 6.1990 * 1.10;
 module specimen_08_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -343,14 +802,51 @@ module specimen_08_member(p1, p2, d) {
         cylinder(h=L,d=d); sphere(d=d); translate([0,0,L]) sphere(d=d);
     }
 }
+module specimen_08_bore(dir, d, len) {
+    yaw=atan2(dir[1],dir[0]);
+    pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
+        cylinder(h=len, d=d);
+}
 function specimen_08_bp(i) = [29.0207*cos(90+120*i), 29.0207*sin(90+120*i), 0];
 function specimen_08_tp(i) = [29.0207*cos(90+120*i+63.7624),
                                      29.0207*sin(90+120*i+63.7624), 100.8663];
+function specimen_08_unit(v) = v / norm(v);
+function specimen_08_sdir_b(i) =
+    specimen_08_unit(specimen_08_tp(i) - specimen_08_bp(i));
+function specimen_08_sdir_t(i) =
+    specimen_08_unit(specimen_08_bp(i) - specimen_08_tp(i));
+function specimen_08_cdirs_b(i) = [
+    specimen_08_unit(specimen_08_bp((i+1)%3) - specimen_08_bp(i)),
+    specimen_08_unit(specimen_08_bp((i+2)%3) - specimen_08_bp(i)),
+    specimen_08_unit(specimen_08_tp((i+2)%3) - specimen_08_bp(i)),
+];
+function specimen_08_cdirs_t(i) = [
+    specimen_08_unit(specimen_08_tp((i+1)%3) - specimen_08_tp(i)),
+    specimen_08_unit(specimen_08_tp((i+2)%3) - specimen_08_tp(i)),
+    specimen_08_unit(specimen_08_bp((i+1)%3) - specimen_08_tp(i)),
+];
+module specimen_08_shell(V, sdir, cdirs) {
+    translate(V) difference() {
+        hull() {
+            sphere(d=S08_SHELL_OD);
+            translate(sdir * (S08_SHELL_OD/2 + 1.5))
+                sphere(d=S08_TEARDROP);
+        }
+        sphere(d=S08_SHELL_ID);
+        for (cd = cdirs)
+            specimen_08_bore(cd, S08_BORE_D, S08_SHELL_OD*2);
+    }
+}
 module specimen_08_struts() {
     union() {
         for (i=[0:2]) {
-            translate(specimen_08_bp(i)) sphere(d=7.0000);
-            translate(specimen_08_tp(i)) sphere(d=7.0000);
+            specimen_08_shell(specimen_08_bp(i),
+                                     specimen_08_sdir_b(i),
+                                     specimen_08_cdirs_b(i));
+            specimen_08_shell(specimen_08_tp(i),
+                                     specimen_08_sdir_t(i),
+                                     specimen_08_cdirs_t(i));
             specimen_08_member(specimen_08_bp(i),
                                      specimen_08_tp(i), 6.1990);
         }
@@ -365,7 +861,15 @@ module specimen_08_cables() {
                                      specimen_08_tp((i+1)%3), 3.1969);
             specimen_08_member(specimen_08_bp((i+1)%3),
                                      specimen_08_tp(i),       3.1969);
+            // Captive TPU cores inside each PLA shell cavity.
+            translate(specimen_08_bp(i)) sphere(d=S08_CORE_OD);
+            translate(specimen_08_tp(i)) sphere(d=S08_CORE_OD);
         }
+        // Bounding-box z-anchor so cables.stl inherits the struts.stl
+        // world-Z extents (fixes the "cables too low" misalignment;
+        // see cad/t3-prism/t3-prism.scad cables_z_anchor()).
+        translate([0, 0, -S08_SHELL_OD/2])
+            cube([0.005, 0.005, 100.8663 + S08_SHELL_OD], center=false);
     }
 }
 module specimen_08() {
@@ -373,4 +877,4 @@ module specimen_08() {
     else if (part == "cables") specimen_08_cables();
     else union() { specimen_08_struts(); specimen_08_cables(); }
 }
-translate([261.933, 246.933, 3.500]) specimen_08();
+translate([266.857, 251.857, 6.695]) specimen_08();
