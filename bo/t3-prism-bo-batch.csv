@@ -5,3 +5,6 @@ specimen,R_mm,H_mm,twist_deg,strut_d_mm,cable_d_mm,build_orientation,cable_mater
 3,25.1224,72.0587,65.1213,10.1789,4.6640,vertical,TPU,7.0,PLA,3,manual_painted,1x1x1,t3_prism,85A
 4,27.6114,104.1304,70.4432,9.2816,4.4922,vertical,TPU,7.0,PLA,3,manual_painted,1x1x1,t3_prism,85A
 5,36.3001,63.2297,52.9940,6.4571,4.0550,vertical,TPU,7.0,PLA,3,manual_painted,1x1x1,t3_prism,85A
+6,35.9821,96.4464,62.1055,11.6620,3.4949,vertical,TPU,7.0,PLA,3,manual_painted,1x1x1,t3_prism,85A
+7,30.1066,74.8199,44.4573,8.5803,4.9377,vertical,TPU,7.0,PLA,3,manual_painted,1x1x1,t3_prism,85A
+8,29.0207,100.8663,63.7624,6.1990,3.1969,vertical,TPU,7.0,PLA,3,manual_painted,1x1x1,t3_prism,85A

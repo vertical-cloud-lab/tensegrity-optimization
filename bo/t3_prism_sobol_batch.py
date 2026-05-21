@@ -105,18 +105,20 @@ PLATE_Y = 320.0  # mm
 PLATE_MARGIN = 5.0  # keep specimens off the edge
 # Reserve a strip on the +X side of the plate for the IDEX prime / flush
 # tower that the slicer drops in for PLA<->TPU material changes.
-# Bambu Studio defaults a ~50 mm square tower; 70 mm gives breathing room
-# so the tower never collides with a specimen corner (PR #35 comment
-# 4513164299).
-PRIME_TOWER_RESERVE_X = 70.0
+# Bambu Studio's default prime tower is ~50 mm square; reserving a 50 mm
+# wide × full-Y strip on +X gives the slicer ample room to drop the tower
+# without colliding with any specimen corner (PR #35 comment 4513445377).
+PRIME_TOWER_RESERVE_X = 50.0
 
 # ---- Sobol batch knobs -----------------------------------------------------
-# 6 specimens (3 rows x 2 cols) fits comfortably on the H2D plate even with
-# the 70 mm +X prime-tower reserve and a 12 mm inter-cell air gap. Dropped
-# from 9 -> 6 in PR #35 comment 4513164299 so that adjacent specimens have
-# real breathing room for manual support painting AND the slicer can drop
-# a wipe/prime tower without colliding with a specimen corner.
-N_SPECIMENS = 6      # 3 rows x 2 cols
+# 9 specimens packed 3x3 on the H2D plate. PR #35 comment 4513164299
+# briefly dropped this to 6 (3x2) to make room for an extra-fat 70 mm
+# prime-tower reserve, but PR #35 comment 4513445377 reverted to 3x3 with
+# a smaller 50 mm tower reserve and a 6 mm inter-cell air gap (up from
+# the original 2 mm that was "too tight last time" per comment
+# 4513164299, but tighter than the temporary 12 mm used at n=6 so 3x3
+# still fits inside the prime-tower-reduced 290x310 mm usable area).
+N_SPECIMENS = 9      # 3 rows x 3 cols
 SEED = 0
 
 # ---- Search space (T3-prism-specific geometric variables only) -------------
@@ -172,14 +174,12 @@ def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float
     Honours ``PRIME_TOWER_RESERVE_X`` — the +X strip is unavailable, so we
     prefer layouts that are taller than they are wide.
     """
-    # 12 mm air gap leaves breathing room between specimen bounding
-    # circles AND ensures the slicer has a couple of clear travel lanes
-    # between adjacent parts. The previous 2 mm gap (PR #35 comment
-    # 4503427854) was too tight in practice — adjacent supports/brims
-    # touched at slice time. PR #35 comment 4513164299 bumped this back
-    # up. The +X prime-tower reservation is handled separately in the
-    # caller via ``PRIME_TOWER_RESERVE_X``.
-    air_gap = 12.0
+    # 6 mm air gap restores breathing room between specimen bounding
+    # circles (the previous 2 mm gap from PR #35 comment 4503427854 was
+    # "too tight last time" per PR #35 comment 4513164299) while still
+    # allowing 3x3 packing to fit inside the prime-tower-reduced usable
+    # area (PR #35 comment 4513445377).
+    air_gap = 6.0
     cell = max(footprints) + air_gap
     usable_x = PLATE_X - 2 * PLATE_MARGIN - PRIME_TOWER_RESERVE_X
     usable_y = PLATE_Y - 2 * PLATE_MARGIN
