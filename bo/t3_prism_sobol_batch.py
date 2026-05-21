@@ -103,9 +103,20 @@ JOINT_D_BASE = 7.0         # mm, kept fixed (t3-prism.scad default)
 PLATE_X = 350.0  # mm
 PLATE_Y = 320.0  # mm
 PLATE_MARGIN = 5.0  # keep specimens off the edge
+# Reserve a strip on the +X side of the plate for the IDEX prime / flush
+# tower that the slicer drops in for PLA<->TPU material changes.
+# Bambu Studio defaults a ~50 mm square tower; 70 mm gives breathing room
+# so the tower never collides with a specimen corner (PR #35 comment
+# 4513164299).
+PRIME_TOWER_RESERVE_X = 70.0
 
 # ---- Sobol batch knobs -----------------------------------------------------
-N_SPECIMENS = 9      # 3x3 grid; manageable for the first human-in-the-loop pass
+# 6 specimens (3 rows x 2 cols) fits comfortably on the H2D plate even with
+# the 70 mm +X prime-tower reserve and a 12 mm inter-cell air gap. Dropped
+# from 9 -> 6 in PR #35 comment 4513164299 so that adjacent specimens have
+# real breathing room for manual support painting AND the slicer can drop
+# a wipe/prime tower without colliding with a specimen corner.
+N_SPECIMENS = 6      # 3 rows x 2 cols
 SEED = 0
 
 # ---- Search space (T3-prism-specific geometric variables only) -------------
@@ -157,17 +168,40 @@ def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float
     the worst-case specimen footprint plus a small air gap; specimens that
     are smaller than the worst case still benefit from the tight pack since
     we keep the grid square.
+
+    Honours ``PRIME_TOWER_RESERVE_X`` — the +X strip is unavailable, so we
+    prefer layouts that are taller than they are wide.
     """
-    # Square-ish grid.
-    cols = math.ceil(math.sqrt(n))
-    rows = math.ceil(n / cols)
-    # 2 mm air gap is enough — the slicer's MM flush tower is placed at the
-    # plate edge, not between specimens, and the bounding-circle footprint
-    # already overestimates the corner-to-corner clearance. Tightens the
-    # 3x3 grid by ~30 mm in each direction vs. the original 5 mm + strut_d
-    # padding (PR #35 comment 4503427854).
-    air_gap = 2.0
+    # 12 mm air gap leaves breathing room between specimen bounding
+    # circles AND ensures the slicer has a couple of clear travel lanes
+    # between adjacent parts. The previous 2 mm gap (PR #35 comment
+    # 4503427854) was too tight in practice — adjacent supports/brims
+    # touched at slice time. PR #35 comment 4513164299 bumped this back
+    # up. The +X prime-tower reservation is handled separately in the
+    # caller via ``PRIME_TOWER_RESERVE_X``.
+    air_gap = 12.0
     cell = max(footprints) + air_gap
+    usable_x = PLATE_X - 2 * PLATE_MARGIN - PRIME_TOWER_RESERVE_X
+    usable_y = PLATE_Y - 2 * PLATE_MARGIN
+    # Prefer the most square-ish layout that *fits*. Sweep candidate column
+    # counts from 1..n; for each, derive rows = ceil(n/cols), check both
+    # dimensions, score by "squareness" (smaller |rows-cols|).
+    best: tuple[int, int] | None = None
+    best_score = math.inf
+    for cols in range(1, n + 1):
+        rows = math.ceil(n / cols)
+        if cols * cell > usable_x or rows * cell > usable_y:
+            continue
+        score = abs(rows - cols) + 0.01 * (rows * cols - n)  # tie-break: fewer empty cells
+        if score < best_score:
+            best_score = score
+            best = (rows, cols)
+    if best is None:
+        # Fall back to original square-ish grid; caller will print a warning.
+        cols = math.ceil(math.sqrt(n))
+        rows = math.ceil(n / cols)
+        best = (rows, cols)
+    rows, cols = best
     return rows, cols, cell, cell
 
 
@@ -288,10 +322,13 @@ def emit_specimen_scad(idx: int, params: dict, cx: float, cy: float, cz: float) 
 def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
                      cell_x: float, cell_y: float) -> None:
     """Write the OpenSCAD wrapper that unions all specimens onto one plate."""
-    # Centre the grid on the plate.
+    # Centre the grid on the *usable* portion of the plate (i.e. the plate
+    # minus the +X strip reserved for the IDEX prime/flush tower, per
+    # PR #35 comment 4513164299).
     grid_w = cols * cell_x
     grid_h = rows * cell_y
-    x0 = (PLATE_X - grid_w) / 2.0 + cell_x / 2.0
+    usable_x = PLATE_X - PRIME_TOWER_RESERVE_X
+    x0 = (usable_x - grid_w) / 2.0 + cell_x / 2.0
     y0 = (PLATE_Y - grid_h) / 2.0 + cell_y / 2.0
     # Lift each specimen so the bottom of every captive-core PLA shell sits
     # at the build plate (matches Bambu's auto-bed-placement). The captive
@@ -327,6 +364,22 @@ def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
         cx = x0 + col * cell_x
         cy = y0 + row * cell_y
         parts.append(emit_specimen_scad(idx, params, cx, cy, z_lift))
+    # Render a thin visual marker for the reserved prime/flush-tower zone
+    # (rendered only when ``part == "all"`` so it never leaks into the
+    # struts/cables STLs the slicer assembles into the H2D MM .3mf).
+    pt_x = PRIME_TOWER_RESERVE_X - 2 * PLATE_MARGIN
+    parts.append(
+        f"\n// Visual marker for the IDEX prime/flush-tower reserve zone.\n"
+        f"// {PRIME_TOWER_RESERVE_X:.0f} mm wide strip on the +X side of the\n"
+        f"// plate is held back from the specimen grid so the slicer can\n"
+        f"// drop a wipe tower there without colliding (PR #35 comment\n"
+        f"// 4513164299).\n"
+        f"if (part == \"all\") {{\n"
+        f"  translate([{PLATE_X - PRIME_TOWER_RESERVE_X + PLATE_MARGIN:.2f}, "
+        f"{PLATE_MARGIN:.2f}, 0])\n"
+        f"    cube([{pt_x:.2f}, {PLATE_Y - 2 * PLATE_MARGIN:.2f}, 0.2]);\n"
+        f"}}\n"
+    )
     path.write_text("".join(parts))
 
 
@@ -502,10 +555,11 @@ def main(argv: list[str] | None = None) -> int:
     rows, cols, cell_x, cell_y = grid_layout(args.n, footprints)
     grid_w = cols * cell_x
     grid_h = rows * cell_y
-    if grid_w > PLATE_X - 2 * PLATE_MARGIN or grid_h > PLATE_Y - 2 * PLATE_MARGIN:
+    if grid_w > PLATE_X - 2 * PLATE_MARGIN - PRIME_TOWER_RESERVE_X or grid_h > PLATE_Y - 2 * PLATE_MARGIN:
         print(
-            f"WARNING: grid {grid_w:.1f}x{grid_h:.1f} mm exceeds plate "
-            f"{PLATE_X - 2 * PLATE_MARGIN:.1f}x{PLATE_Y - 2 * PLATE_MARGIN:.1f} mm",
+            f"WARNING: grid {grid_w:.1f}x{grid_h:.1f} mm exceeds usable plate "
+            f"{PLATE_X - 2 * PLATE_MARGIN - PRIME_TOWER_RESERVE_X:.1f}x{PLATE_Y - 2 * PLATE_MARGIN:.1f} mm "
+            f"(plate {PLATE_X:.0f}x{PLATE_Y:.0f} - prime-tower reserve {PRIME_TOWER_RESERVE_X:.0f} mm in +X)",
             file=sys.stderr,
         )
 
@@ -536,7 +590,8 @@ def main(argv: list[str] | None = None) -> int:
             "seed": args.seed,
             "n": args.n,
             "grid": {"rows": rows, "cols": cols, "cell_x": cell_x, "cell_y": cell_y},
-            "plate": {"x_mm": PLATE_X, "y_mm": PLATE_Y, "margin_mm": PLATE_MARGIN},
+            "plate": {"x_mm": PLATE_X, "y_mm": PLATE_Y, "margin_mm": PLATE_MARGIN,
+                       "prime_tower_reserve_x_mm": PRIME_TOWER_RESERVE_X},
             "parameters": PARAMETERS,
             "frozen": frozen,
             "specimens": [{"idx": i, **s} for i, s in enumerate(specimens)],

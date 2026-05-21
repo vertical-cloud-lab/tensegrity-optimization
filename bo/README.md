@@ -82,13 +82,16 @@ every specimen still fits inside its own cell.
 pip install ax-platform numpy
 sudo apt-get install -y openscad admesh xvfb \
     gstreamer1.0-plugins-base libsoup-3.0-0 libwebkit2gtk-4.1-0
-python3 bo/t3_prism_sobol_batch.py        # default n=9, seed=0
+python3 bo/t3_prism_sobol_batch.py        # default n=6, seed=0
 ```
 
 Knobs:
 
-* `--n N` — number of specimens (default `9`, packed `3×3` on the
-  350×320 mm H2D plate)
+* `--n N` — number of specimens (default `6`, packed `3 rows × 2 cols` on
+  the 350×320 mm H2D plate with a 70 mm +X strip held back for the IDEX
+  prime/flush tower; PR #35 comment 4513164299 bumped this from `n=9`
+  packed `3×3` after the previous batch packed too tight and left no
+  room for a wipe tower)
 * `--seed S` — Sobol seed (default `0`; bump to regenerate)
 * `--skip-render` — skip the OpenSCAD STL/PNG passes (CI smoke test)
 * `--skip-mm-3mf` — skip the BambuStudio CLI multi-material project assembly
