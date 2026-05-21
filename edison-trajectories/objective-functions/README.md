@@ -19,6 +19,7 @@ metric / objective / constraint shape:
 | 3 | Electrodynamic shaker + base/top accelerometers (transmissibility, modal) | [`31126ee7-…`](./03-shaker-transfer-function-31126ee7-9f3b-4af4-adbe-855c14513487.md) | [md](./03-shaker-transfer-function-31126ee7-9f3b-4af4-adbe-855c14513487.md) · [json](./03-shaker-transfer-function-31126ee7-9f3b-4af4-adbe-855c14513487.json) |
 | 4 | Pneumatic slug-firing / gas gun (longer impulse, tiled-cell + plate) | [`9d74ab2e-…`](./04-slug-firing-gas-gun-9d74ab2e-669f-48bd-938b-7e380e188492.md) | [md](./04-slug-firing-gas-gun-9d74ab2e-669f-48bd-938b-7e380e188492.md) · [json](./04-slug-firing-gas-gun-9d74ab2e-669f-48bd-938b-7e380e188492.json) |
 | 5 | Polytec VibroFlex QTec single-point LDV (non-contact velocity) | [`f40e41a7-…`](./05-polytec-qtec-ldv-f40e41a7-b41d-4158-a89f-f18a5ae81e5c.md) | [md](./05-polytec-qtec-ldv-f40e41a7-b41d-4158-a89f-f18a5ae81e5c.md) · [json](./05-polytec-qtec-ldv-f40e41a7-b41d-4158-a89f-f18a5ae81e5c.json) |
+| ⊕ | **ANALYSIS synthesis** — cross-modality objective/constraint matrix + Ax `Metric` recipe + multifidelity slotting + **normalization (mass / V_bb / ρ_rel / Pajunen `W_min` / cushion-curve) under the PR #35 design space** + sanity-check equalities + open gaps. All 5 briefs above uploaded as `data_entry:…` so the agent has them in scope. | `789de8ab-9c68-4782-a70c-0a5a4e10e268` ([PR #60 cmt 4511245383](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/60#issuecomment-4511245383)) | [submitted placeholder](./synthesis-SUBMITTED.json) — fetch next session |
 
 Every `.md` file contains the verbatim Edison `formatted_answer` with a YAML-
 style header listing `task_id`, `slug`, `job`, `status`, and `fetched_at`.
@@ -106,8 +107,15 @@ answer's `(b)` and `(e)` sections for the exact wording):
 ```bash
 pip install -q edison-client
 export EDISON_API_KEY=...   # script auto-mirrors to EDISON_PLATFORM_API_KEY
-python scripts/edison/submit_objective_functions.py
+python scripts/edison/submit_objective_functions.py            # per-modality briefs
+python scripts/edison/submit_objective_functions_synthesis.py  # cross-modality ANALYSIS
 ```
+
+The synthesis driver uploads each per-modality `.md` / `.json` artifact via
+`client.upload_file()` → `data_entry:uuid` and attaches them to a single
+`JobNames.ANALYSIS` task so the agent can cross-cut without re-reading the
+prompt context. It also writes a `synthesis-SUBMITTED.json` placeholder for
+the same idempotent resume pattern used by the per-modality driver.
 
 The script is idempotent: existing `<slug>-SUBMITTED.json` placeholders are
 reused as the task ID, so partial fetches across multiple sessions converge
