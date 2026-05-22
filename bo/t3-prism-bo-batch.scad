@@ -4,7 +4,7 @@
 // (load axis = z). Supports will be manually painted in Bambu
 // Studio per @achris0520's tip in PR #35 comment 4502140147.
 // Plate: 350 x 320 mm (Bambu Lab H2D).
-// Grid : 3 x 3 (cell 95.9 x 95.9 mm).
+// Grid : 3 x 3 (cell 94.1 x 94.1 mm).
 //
 // `part` selects which half of each specimen to emit, mirroring
 // `cad/t3-prism/t3-prism.scad`:
@@ -13,19 +13,26 @@
 //   "cables" -> tension members only (TPU / extruder 2)
 // Override at the CLI with `-D 'part="struts"'`.
 part = "all";  // "all" | "struts" | "cables"
+// `spec` filters which specimen to emit; -1 (default) emits all
+// of them on the plate. Per-specimen STLs are rendered by the
+// driver with `-D spec=N` (PR #35 comment 4513722886): the
+// resulting per-specimen pair of struts/cables STLs is what
+// lets BambuStudio --assemble produce one composite object per
+// specimen instead of one giant fused object.
+spec = -1;
 
 // specimen 00  R=32.13 H=89.63 twist=59.78 strut_d=7.88 cable_d=5.39
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S00_BORE_D    = 5.3902 + 2*0.4;
+S00_BORE_D    = 5.3902;
 S00_CORE_OD   = max(S00_BORE_D + 2*1.5, 7.0000);
-S00_SHELL_ID  = S00_CORE_OD + 2*0.5;
+S00_SHELL_ID  = S00_CORE_OD;
 S00_SHELL_OD  = max(S00_SHELL_ID + 2*1.6, 7.0000);
-S00_TEARDROP  = 7.8831 * 1.10;
 module specimen_00_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -60,11 +67,7 @@ function specimen_00_cdirs_t(i) = [
 ];
 module specimen_00_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S00_SHELL_OD);
-            translate(sdir * (S00_SHELL_OD/2 + 1.5))
-                sphere(d=S00_TEARDROP);
-        }
+        sphere(d=S00_SHELL_OD);
         sphere(d=S00_SHELL_ID);
         for (cd = cdirs)
             specimen_00_bore(cd, S00_BORE_D, S00_SHELL_OD*2);
@@ -109,19 +112,20 @@ module specimen_00() {
     else if (part == "cables") specimen_00_cables();
     else union() { specimen_00_struts(); specimen_00_cables(); }
 }
-translate([54.143, 64.143, 6.695]) specimen_00();
+if (spec == -1 || spec == 0)
+    translate([55.867, 65.867, 5.795]) specimen_00();
 // specimen 01  R=33.78 H=80.08 twist=77.41 strut_d=10.87 cable_d=3.00
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S01_BORE_D    = 3.0003 + 2*0.4;
+S01_BORE_D    = 3.0003;
 S01_CORE_OD   = max(S01_BORE_D + 2*1.5, 7.0000);
-S01_SHELL_ID  = S01_CORE_OD + 2*0.5;
+S01_SHELL_ID  = S01_CORE_OD;
 S01_SHELL_OD  = max(S01_SHELL_ID + 2*1.6, 7.0000);
-S01_TEARDROP  = 10.8717 * 1.10;
 module specimen_01_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -156,11 +160,7 @@ function specimen_01_cdirs_t(i) = [
 ];
 module specimen_01_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S01_SHELL_OD);
-            translate(sdir * (S01_SHELL_OD/2 + 1.5))
-                sphere(d=S01_TEARDROP);
-        }
+        sphere(d=S01_SHELL_OD);
         sphere(d=S01_SHELL_ID);
         for (cd = cdirs)
             specimen_01_bore(cd, S01_BORE_D, S01_SHELL_OD*2);
@@ -205,19 +205,20 @@ module specimen_01() {
     else if (part == "cables") specimen_01_cables();
     else union() { specimen_01_struts(); specimen_01_cables(); }
 }
-translate([150.000, 64.143, 6.695]) specimen_01();
+if (spec == -1 || spec == 1)
+    translate([150.000, 65.867, 5.795]) specimen_01();
 // specimen 02  R=38.97 H=99.99 twist=47.69 strut_d=7.07 cable_d=3.92
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S02_BORE_D    = 3.9241 + 2*0.4;
+S02_BORE_D    = 3.9241;
 S02_CORE_OD   = max(S02_BORE_D + 2*1.5, 7.0000);
-S02_SHELL_ID  = S02_CORE_OD + 2*0.5;
+S02_SHELL_ID  = S02_CORE_OD;
 S02_SHELL_OD  = max(S02_SHELL_ID + 2*1.6, 7.0000);
-S02_TEARDROP  = 7.0737 * 1.10;
 module specimen_02_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -252,11 +253,7 @@ function specimen_02_cdirs_t(i) = [
 ];
 module specimen_02_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S02_SHELL_OD);
-            translate(sdir * (S02_SHELL_OD/2 + 1.5))
-                sphere(d=S02_TEARDROP);
-        }
+        sphere(d=S02_SHELL_OD);
         sphere(d=S02_SHELL_ID);
         for (cd = cdirs)
             specimen_02_bore(cd, S02_BORE_D, S02_SHELL_OD*2);
@@ -301,19 +298,20 @@ module specimen_02() {
     else if (part == "cables") specimen_02_cables();
     else union() { specimen_02_struts(); specimen_02_cables(); }
 }
-translate([245.857, 64.143, 6.695]) specimen_02();
+if (spec == -1 || spec == 2)
+    translate([244.133, 65.867, 5.795]) specimen_02();
 // specimen 03  R=25.12 H=72.06 twist=65.12 strut_d=10.18 cable_d=4.66
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S03_BORE_D    = 4.6640 + 2*0.4;
+S03_BORE_D    = 4.6640;
 S03_CORE_OD   = max(S03_BORE_D + 2*1.5, 7.0000);
-S03_SHELL_ID  = S03_CORE_OD + 2*0.5;
+S03_SHELL_ID  = S03_CORE_OD;
 S03_SHELL_OD  = max(S03_SHELL_ID + 2*1.6, 7.0000);
-S03_TEARDROP  = 10.1789 * 1.10;
 module specimen_03_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -348,11 +346,7 @@ function specimen_03_cdirs_t(i) = [
 ];
 module specimen_03_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S03_SHELL_OD);
-            translate(sdir * (S03_SHELL_OD/2 + 1.5))
-                sphere(d=S03_TEARDROP);
-        }
+        sphere(d=S03_SHELL_OD);
         sphere(d=S03_SHELL_ID);
         for (cd = cdirs)
             specimen_03_bore(cd, S03_BORE_D, S03_SHELL_OD*2);
@@ -397,19 +391,20 @@ module specimen_03() {
     else if (part == "cables") specimen_03_cables();
     else union() { specimen_03_struts(); specimen_03_cables(); }
 }
-translate([54.143, 160.000, 6.695]) specimen_03();
+if (spec == -1 || spec == 3)
+    translate([55.867, 160.000, 5.795]) specimen_03();
 // specimen 04  R=27.61 H=104.13 twist=70.44 strut_d=9.28 cable_d=4.49
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S04_BORE_D    = 4.4922 + 2*0.4;
+S04_BORE_D    = 4.4922;
 S04_CORE_OD   = max(S04_BORE_D + 2*1.5, 7.0000);
-S04_SHELL_ID  = S04_CORE_OD + 2*0.5;
+S04_SHELL_ID  = S04_CORE_OD;
 S04_SHELL_OD  = max(S04_SHELL_ID + 2*1.6, 7.0000);
-S04_TEARDROP  = 9.2816 * 1.10;
 module specimen_04_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -444,11 +439,7 @@ function specimen_04_cdirs_t(i) = [
 ];
 module specimen_04_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S04_SHELL_OD);
-            translate(sdir * (S04_SHELL_OD/2 + 1.5))
-                sphere(d=S04_TEARDROP);
-        }
+        sphere(d=S04_SHELL_OD);
         sphere(d=S04_SHELL_ID);
         for (cd = cdirs)
             specimen_04_bore(cd, S04_BORE_D, S04_SHELL_OD*2);
@@ -493,19 +484,20 @@ module specimen_04() {
     else if (part == "cables") specimen_04_cables();
     else union() { specimen_04_struts(); specimen_04_cables(); }
 }
-translate([150.000, 160.000, 6.695]) specimen_04();
+if (spec == -1 || spec == 4)
+    translate([150.000, 160.000, 5.795]) specimen_04();
 // specimen 05  R=36.30 H=63.23 twist=52.99 strut_d=6.46 cable_d=4.06
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S05_BORE_D    = 4.0550 + 2*0.4;
+S05_BORE_D    = 4.0550;
 S05_CORE_OD   = max(S05_BORE_D + 2*1.5, 7.0000);
-S05_SHELL_ID  = S05_CORE_OD + 2*0.5;
+S05_SHELL_ID  = S05_CORE_OD;
 S05_SHELL_OD  = max(S05_SHELL_ID + 2*1.6, 7.0000);
-S05_TEARDROP  = 6.4571 * 1.10;
 module specimen_05_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -540,11 +532,7 @@ function specimen_05_cdirs_t(i) = [
 ];
 module specimen_05_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S05_SHELL_OD);
-            translate(sdir * (S05_SHELL_OD/2 + 1.5))
-                sphere(d=S05_TEARDROP);
-        }
+        sphere(d=S05_SHELL_OD);
         sphere(d=S05_SHELL_ID);
         for (cd = cdirs)
             specimen_05_bore(cd, S05_BORE_D, S05_SHELL_OD*2);
@@ -589,19 +577,20 @@ module specimen_05() {
     else if (part == "cables") specimen_05_cables();
     else union() { specimen_05_struts(); specimen_05_cables(); }
 }
-translate([245.857, 160.000, 6.695]) specimen_05();
+if (spec == -1 || spec == 5)
+    translate([244.133, 160.000, 5.795]) specimen_05();
 // specimen 06  R=35.98 H=96.45 twist=62.11 strut_d=11.66 cable_d=3.49
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S06_BORE_D    = 3.4949 + 2*0.4;
+S06_BORE_D    = 3.4949;
 S06_CORE_OD   = max(S06_BORE_D + 2*1.5, 7.0000);
-S06_SHELL_ID  = S06_CORE_OD + 2*0.5;
+S06_SHELL_ID  = S06_CORE_OD;
 S06_SHELL_OD  = max(S06_SHELL_ID + 2*1.6, 7.0000);
-S06_TEARDROP  = 11.6620 * 1.10;
 module specimen_06_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -636,11 +625,7 @@ function specimen_06_cdirs_t(i) = [
 ];
 module specimen_06_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S06_SHELL_OD);
-            translate(sdir * (S06_SHELL_OD/2 + 1.5))
-                sphere(d=S06_TEARDROP);
-        }
+        sphere(d=S06_SHELL_OD);
         sphere(d=S06_SHELL_ID);
         for (cd = cdirs)
             specimen_06_bore(cd, S06_BORE_D, S06_SHELL_OD*2);
@@ -685,19 +670,20 @@ module specimen_06() {
     else if (part == "cables") specimen_06_cables();
     else union() { specimen_06_struts(); specimen_06_cables(); }
 }
-translate([54.143, 255.857, 6.695]) specimen_06();
+if (spec == -1 || spec == 6)
+    translate([55.867, 254.133, 5.795]) specimen_06();
 // specimen 07  R=30.11 H=74.82 twist=44.46 strut_d=8.58 cable_d=4.94
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S07_BORE_D    = 4.9377 + 2*0.4;
+S07_BORE_D    = 4.9377;
 S07_CORE_OD   = max(S07_BORE_D + 2*1.5, 7.0000);
-S07_SHELL_ID  = S07_CORE_OD + 2*0.5;
+S07_SHELL_ID  = S07_CORE_OD;
 S07_SHELL_OD  = max(S07_SHELL_ID + 2*1.6, 7.0000);
-S07_TEARDROP  = 8.5803 * 1.10;
 module specimen_07_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -732,11 +718,7 @@ function specimen_07_cdirs_t(i) = [
 ];
 module specimen_07_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S07_SHELL_OD);
-            translate(sdir * (S07_SHELL_OD/2 + 1.5))
-                sphere(d=S07_TEARDROP);
-        }
+        sphere(d=S07_SHELL_OD);
         sphere(d=S07_SHELL_ID);
         for (cd = cdirs)
             specimen_07_bore(cd, S07_BORE_D, S07_SHELL_OD*2);
@@ -781,19 +763,20 @@ module specimen_07() {
     else if (part == "cables") specimen_07_cables();
     else union() { specimen_07_struts(); specimen_07_cables(); }
 }
-translate([150.000, 255.857, 6.695]) specimen_07();
+if (spec == -1 || spec == 7)
+    translate([150.000, 254.133, 5.795]) specimen_07();
 // specimen 08  R=29.02 H=100.87 twist=63.76 strut_d=6.20 cable_d=3.20
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S08_BORE_D    = 3.1969 + 2*0.4;
+S08_BORE_D    = 3.1969;
 S08_CORE_OD   = max(S08_BORE_D + 2*1.5, 7.0000);
-S08_SHELL_ID  = S08_CORE_OD + 2*0.5;
+S08_SHELL_ID  = S08_CORE_OD;
 S08_SHELL_OD  = max(S08_SHELL_ID + 2*1.6, 7.0000);
-S08_TEARDROP  = 6.1990 * 1.10;
 module specimen_08_member(p1, p2, d) {
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -828,11 +811,7 @@ function specimen_08_cdirs_t(i) = [
 ];
 module specimen_08_shell(V, sdir, cdirs) {
     translate(V) difference() {
-        hull() {
-            sphere(d=S08_SHELL_OD);
-            translate(sdir * (S08_SHELL_OD/2 + 1.5))
-                sphere(d=S08_TEARDROP);
-        }
+        sphere(d=S08_SHELL_OD);
         sphere(d=S08_SHELL_ID);
         for (cd = cdirs)
             specimen_08_bore(cd, S08_BORE_D, S08_SHELL_OD*2);
@@ -877,14 +856,15 @@ module specimen_08() {
     else if (part == "cables") specimen_08_cables();
     else union() { specimen_08_struts(); specimen_08_cables(); }
 }
-translate([245.857, 255.857, 6.695]) specimen_08();
+if (spec == -1 || spec == 8)
+    translate([244.133, 254.133, 5.795]) specimen_08();
 
 // Visual marker for the IDEX prime/flush-tower reserve zone.
 // 50 mm wide strip on the +X side of the
 // plate is held back from the specimen grid so the slicer can
 // drop a wipe tower there without colliding (PR #35 comment
 // 4513164299).
-if (part == "all") {
+if (spec == -1 && part == "all") {
   translate([305.00, 5.00, 0])
     cube([40.00, 310.00, 0.2]);
 }

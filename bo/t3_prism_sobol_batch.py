@@ -151,12 +151,13 @@ def specimen_footprint(r_mm: float, strut_d_mm: float, joint_d_mm: float = JOINT
     """
     del strut_d_mm  # kept for backwards-compatible signature
     if cable_d_mm > 0:
-        # Mirror the captive-core SCAD: bore = cable_d + 0.8, core_od =
-        # max(bore+3, joint_d), shell_id = core_od+1, shell_od = max(
-        # shell_id+3.2, joint_d).
-        bore_d = cable_d_mm + 2 * 0.4
+        # Mirror the captive-core SCAD: bore = cable_d (zero clearance —
+        # TPU fills bore exactly, bonded), core_od = max(bore+3, joint_d),
+        # shell_id = core_od (TPU core touches PLA — bonded), shell_od =
+        # max(shell_id+3.2, joint_d). PR #35 comment 4513722886.
+        bore_d = cable_d_mm
         core_od = max(bore_d + 2 * 1.5, joint_d_mm)
-        shell_id = core_od + 2 * 0.5
+        shell_id = core_od
         shell_od = max(shell_id + 2 * 1.6, joint_d_mm)
     else:
         shell_od = joint_d_mm
@@ -208,16 +209,16 @@ def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float
 SPECIMEN_TEMPLATE = """\
 // specimen {idx:02d}  R={R:.2f} H={H:.2f} twist={tw:.2f} strut_d={sd:.2f} cable_d={cd:.2f}
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4511036510): bore = cable_d + 2*0.4 mm; core_od >= bore +
-// 2*1.5 mm so the captive TPU mass cannot back out the bore; shell_id =
-// core_od + 2*0.5 mm radial print-in-place clearance; shell_od =
+// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
+// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// mm so the captive TPU mass cannot back out the bore; shell_id =
+// core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
 // never smaller than the legacy design).
-S{idx:02d}_BORE_D    = {cd:.4f} + 2*0.4;
+S{idx:02d}_BORE_D    = {cd:.4f};
 S{idx:02d}_CORE_OD   = max(S{idx:02d}_BORE_D + 2*1.5, {jd:.4f});
-S{idx:02d}_SHELL_ID  = S{idx:02d}_CORE_OD + 2*0.5;
+S{idx:02d}_SHELL_ID  = S{idx:02d}_CORE_OD;
 S{idx:02d}_SHELL_OD  = max(S{idx:02d}_SHELL_ID + 2*1.6, {jd:.4f});
-S{idx:02d}_TEARDROP  = {sd:.4f} * 1.10;
 module specimen_{idx:02d}_member(p1, p2, d) {{
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -252,11 +253,7 @@ function specimen_{idx:02d}_cdirs_t(i) = [
 ];
 module specimen_{idx:02d}_shell(V, sdir, cdirs) {{
     translate(V) difference() {{
-        hull() {{
-            sphere(d=S{idx:02d}_SHELL_OD);
-            translate(sdir * (S{idx:02d}_SHELL_OD/2 + 1.5))
-                sphere(d=S{idx:02d}_TEARDROP);
-        }}
+        sphere(d=S{idx:02d}_SHELL_OD);
         sphere(d=S{idx:02d}_SHELL_ID);
         for (cd = cdirs)
             specimen_{idx:02d}_bore(cd, S{idx:02d}_BORE_D, S{idx:02d}_SHELL_OD*2);
@@ -301,7 +298,8 @@ module specimen_{idx:02d}() {{
     else if (part == "cables") specimen_{idx:02d}_cables();
     else union() {{ specimen_{idx:02d}_struts(); specimen_{idx:02d}_cables(); }}
 }}
-translate([{cx:.3f}, {cy:.3f}, {cz:.3f}]) specimen_{idx:02d}();
+if (spec == -1 || spec == {idx})
+    translate([{cx:.3f}, {cy:.3f}, {cz:.3f}]) specimen_{idx:02d}();
 """
 
 
@@ -337,7 +335,7 @@ def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
     # Use the worst-case (largest shell_od across the batch) so EVERY
     # specimen's shell underside lands on or below the bed.
     max_cable_d = max(s["cable_d_mm"] for s in specimens)
-    max_shell_od = max(max_cable_d + 2*0.4 + 2*1.5 + 2*0.5 + 2*1.6, JOINT_D_BASE)
+    max_shell_od = max(max_cable_d + 2*1.5 + 2*1.6, JOINT_D_BASE)
     z_lift = max_shell_od / 2.0
     parts: list[str] = []
     parts.append(
@@ -356,6 +354,13 @@ def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
         "//   \"cables\" -> tension members only (TPU / extruder 2)\n"
         "// Override at the CLI with `-D 'part=\"struts\"'`.\n"
         "part = \"all\";  // \"all\" | \"struts\" | \"cables\"\n"
+        "// `spec` filters which specimen to emit; -1 (default) emits all\n"
+        "// of them on the plate. Per-specimen STLs are rendered by the\n"
+        "// driver with `-D spec=N` (PR #35 comment 4513722886): the\n"
+        "// resulting per-specimen pair of struts/cables STLs is what\n"
+        "// lets BambuStudio --assemble produce one composite object per\n"
+        "// specimen instead of one giant fused object.\n"
+        "spec = -1;\n"
         "\n"
     )
     for idx, params in enumerate(specimens):
@@ -374,7 +379,7 @@ def write_batch_scad(path: Path, specimens: list[dict], rows: int, cols: int,
         f"// plate is held back from the specimen grid so the slicer can\n"
         f"// drop a wipe tower there without colliding (PR #35 comment\n"
         f"// 4513164299).\n"
-        f"if (part == \"all\") {{\n"
+        f"if (spec == -1 && part == \"all\") {{\n"
         f"  translate([{PLATE_X - PRIME_TOWER_RESERVE_X + PLATE_MARGIN:.2f}, "
         f"{PLATE_MARGIN:.2f}, 0])\n"
         f"    cube([{pt_x:.2f}, {PLATE_Y - 2 * PLATE_MARGIN:.2f}, 0.2]);\n"
@@ -452,13 +457,264 @@ def _patch_bed(profile: Path) -> None:
     profile.write_text(json.dumps(d, indent=2))
 
 
-def build_mm_3mf(struts_stl: Path, cables_stl: Path, out_3mf: Path) -> None:
-    """Assemble struts + cables STLs into a Bambu H2D MM project ``.3mf``.
+def _split_assembled_into_objects(
+    proj_3mf: Path, pairs: list[tuple[str, str]]
+) -> None:
+    """Split the single composite object emitted by ``--assemble`` into one
+    composite object per (struts_stl, cables_stl) pair.
+
+    Per PR #35 comment 4513722886 (@sgbaird), each tensegrity iteration on
+    the plate must be its own Bambu Studio object made up of two part
+    groups (PLA struts + TPU cables) so it can be moved as a unit. The
+    BambuStudio CLI's ``--assemble`` flag instead merges *all* passed STLs
+    into a single composite object, so the team can't move one specimen
+    independently of the others without lassoing both of its parts.
+
+    Fix: after ``--assemble``, edit ``3D/3dmodel.model`` and
+    ``Metadata/model_settings.config`` in-place to split the single
+    composite object into ``len(pairs)`` composite objects, each
+    referencing two of the per-specimen STL meshes (struts → extruder 1,
+    cables → extruder 2). The underlying ``3D/Objects/object_1.model``
+    mesh data is untouched; only the grouping changes.
+    """
+    import re
+    import uuid
+    import zipfile
+
+    MODEL_PATH = "3D/3dmodel.model"
+    CFG_PATH = "Metadata/model_settings.config"
+
+    # Mapping from STL filename -> (specimen_index, extruder_id). Struts
+    # always go to extruder 1, cables to extruder 2.
+    name_to_spec: dict[str, tuple[int, int]] = {}
+    for spec_idx, (struts_name, cables_name) in enumerate(pairs):
+        name_to_spec[struts_name] = (spec_idx, 1)
+        name_to_spec[cables_name] = (spec_idx, 2)
+
+    with zipfile.ZipFile(proj_3mf, "r") as zin:
+        infos = zin.infolist()
+        contents = {info.filename: zin.read(info.filename) for info in infos}
+
+    if MODEL_PATH not in contents:
+        raise RuntimeError(f"{proj_3mf}: missing {MODEL_PATH}")
+    if CFG_PATH not in contents:
+        raise RuntimeError(f"{proj_3mf}: missing {CFG_PATH}")
+
+    # ---- Patch model_settings.config first (we need part-name -> id mapping). ----
+    cfg = contents[CFG_PATH].decode()
+    cfg_part_re = re.compile(
+        r'<part id="(\d+)"[^>]*>(.*?)</part>', re.DOTALL
+    )
+    cfg_name_re = re.compile(r'<metadata key="name" value="([^"]+)"\s*/>')
+    cfg_object_re = re.compile(
+        r'(<object id="(\d+)"[^>]*>)(.*?)(</object>)', re.DOTALL
+    )
+    cfg_plate_re = re.compile(
+        r'(<plate>)(.*?)(</plate>)', re.DOTALL
+    )
+
+    # The CLI emits exactly one <object> in the assembled file; find it and
+    # capture its part blocks.
+    obj_match = cfg_object_re.search(cfg)
+    if obj_match is None:
+        raise RuntimeError(f"{proj_3mf}: no <object> in {CFG_PATH}")
+    obj_open, obj_id_str, obj_body, obj_close = obj_match.groups()
+    composite_obj_id = int(obj_id_str)
+
+    # Parse parts: each part has an id and a name; the name is the STL filename.
+    parts: list[tuple[int, str, str]] = []  # (part_id, name, full_part_xml)
+    for m in cfg_part_re.finditer(obj_body):
+        part_id = int(m.group(1))
+        part_xml = m.group(0)
+        name_match = cfg_name_re.search(m.group(2))
+        if name_match is None:
+            raise RuntimeError(f"{proj_3mf}: <part id={part_id}> missing name")
+        name = name_match.group(1)
+        parts.append((part_id, name, part_xml))
+
+    # Group parts by specimen index. Order within each specimen: struts first
+    # (extruder 1), cables second (extruder 2).
+    spec_to_parts: dict[int, dict[int, tuple[int, str, str]]] = {}
+    for part_id, name, part_xml in parts:
+        if name not in name_to_spec:
+            raise RuntimeError(
+                f"{proj_3mf}: <part name={name!r}> not in pairs mapping"
+            )
+        spec_idx, ext_id = name_to_spec[name]
+        spec_to_parts.setdefault(spec_idx, {})[ext_id] = (part_id, name, part_xml)
+
+    # Build the new <object> entries (one per specimen). Composite object IDs
+    # start one past the original (to avoid collision with the part IDs which
+    # are 1..len(parts)).
+    new_composite_ids: list[int] = []
+    cfg_new_objects: list[str] = []
+    extruder_re = re.compile(r'(<metadata key="extruder" value=")\d+(")')
+    for spec_idx in sorted(spec_to_parts):
+        new_obj_id = composite_obj_id + spec_idx
+        new_composite_ids.append(new_obj_id)
+        chunks = [f'  <object id="{new_obj_id}">\n']
+        chunks.append(f'    <metadata key="name" value="Specimen {spec_idx:02d}"/>\n')
+        for ext_id in sorted(spec_to_parts[spec_idx]):
+            _, _, part_xml = spec_to_parts[spec_idx][ext_id]
+            # Force the correct extruder per part.
+            if extruder_re.search(part_xml):
+                part_xml = extruder_re.sub(rf"\g<1>{ext_id}\g<2>", part_xml)
+            else:
+                part_xml = part_xml.replace(
+                    "</part>",
+                    f'      <metadata key="extruder" value="{ext_id}"/>\n    </part>',
+                )
+            chunks.append("    " + part_xml + "\n")
+        chunks.append("  </object>")
+        cfg_new_objects.append("".join(chunks))
+
+    cfg_new_object_block = "\n".join(cfg_new_objects)
+
+    # Replace the single <object>...</object> block with the new ones.
+    new_cfg = cfg[:obj_match.start()] + cfg_new_object_block + cfg[obj_match.end():]
+
+    # Patch <plate>: one <model_instance> per new composite.
+    plate_match = cfg_plate_re.search(new_cfg)
+    if plate_match is None:
+        raise RuntimeError(f"{proj_3mf}: no <plate> in {CFG_PATH}")
+    plate_open, plate_body, plate_close = plate_match.groups()
+    plate_header_match = re.search(
+        r'^(.*?)(<model_instance>.*?</model_instance>\s*)', plate_body, re.DOTALL
+    )
+    if plate_header_match is None:
+        # No existing model_instance — just inject after a trailing <gcode_file>.
+        plate_header = plate_body.rstrip() + "\n"
+    else:
+        plate_header = plate_header_match.group(1)
+    new_instances: list[str] = []
+    for i, new_obj_id in enumerate(new_composite_ids):
+        new_instances.append(
+            f'    <model_instance>\n'
+            f'      <metadata key="object_id" value="{new_obj_id}"/>\n'
+            f'      <metadata key="instance_id" value="0"/>\n'
+            f'      <metadata key="identify_id" value="{100 + i}"/>\n'
+            f'    </model_instance>\n'
+        )
+    new_plate = plate_open + plate_header + "".join(new_instances) + "  " + plate_close
+    new_cfg = new_cfg[:plate_match.start()] + new_plate + new_cfg[plate_match.end():]
+    contents[CFG_PATH] = new_cfg.encode()
+
+    # ---- Patch 3D/3dmodel.model next. -----------------------------------------
+    model_xml = contents[MODEL_PATH].decode()
+    model_obj_re = re.compile(
+        r'(<object id="(\d+)"[^>]*type="model"[^>]*>)(.*?)(</object>)',
+        re.DOTALL,
+    )
+    model_component_re = re.compile(
+        r'<component[^/]*objectid="(\d+)"[^/]*/>'
+    )
+    model_build_re = re.compile(
+        r'(<build[^>]*>)(.*?)(</build>)', re.DOTALL
+    )
+    model_item_re = re.compile(
+        r'<item[^>]*objectid="\d+"[^/]*/>'
+    )
+
+    obj_match2 = model_obj_re.search(model_xml)
+    if obj_match2 is None:
+        raise RuntimeError(f"{proj_3mf}: no <object type=model> in {MODEL_PATH}")
+    obj_open2, _obj_id2, obj_body2, obj_close2 = obj_match2.groups()
+    components = model_component_re.findall(obj_body2)
+    # Capture the *full* component tags too (we want to preserve transforms).
+    component_tags = re.findall(r'<component\b[^/]*/>', obj_body2)
+    if len(component_tags) != len(parts):
+        raise RuntimeError(
+            f"{proj_3mf}: {MODEL_PATH} has {len(component_tags)} components "
+            f"but {CFG_PATH} has {len(parts)} parts"
+        )
+    # Build a mapping component objectid -> tag.
+    obj_id_to_tag: dict[str, str] = {}
+    for tag in component_tags:
+        m = re.search(r'objectid="(\d+)"', tag)
+        if m:
+            obj_id_to_tag[m.group(1)] = tag
+
+    # Build new <object> entries. Each one wraps the two component tags for
+    # that specimen (struts first, cables second, matching the order they
+    # were passed to --assemble).
+    new_model_objects: list[str] = []
+    # Determine the (composite_id, [part_id, part_id]) layout to know
+    # which underlying mesh objects belong to which specimen.
+    for spec_idx in sorted(spec_to_parts):
+        new_obj_id = composite_obj_id + spec_idx
+        comp_tags: list[str] = []
+        for ext_id in sorted(spec_to_parts[spec_idx]):
+            part_id, _, _ = spec_to_parts[spec_idx][ext_id]
+            tag = obj_id_to_tag.get(str(part_id))
+            if tag is None:
+                raise RuntimeError(
+                    f"{proj_3mf}: no <component objectid={part_id}> in {MODEL_PATH}"
+                )
+            comp_tags.append("    " + tag)
+        new_model_objects.append(
+            f'  <object id="{new_obj_id}" p:UUID="{uuid.uuid4()}" type="model">\n'
+            f'   <components>\n'
+            + "\n".join(comp_tags) + "\n"
+            f'   </components>\n'
+            f'  </object>'
+        )
+    new_model_object_block = "\n".join(new_model_objects)
+    new_model_xml = (
+        model_xml[: obj_match2.start()]
+        + new_model_object_block
+        + model_xml[obj_match2.end() :]
+    )
+
+    # Replace the single <item> in <build> with one <item> per new composite.
+    build_match = model_build_re.search(new_model_xml)
+    if build_match is None:
+        raise RuntimeError(f"{proj_3mf}: no <build> in {MODEL_PATH}")
+    build_open, build_body, build_close = build_match.groups()
+    existing_item_match = model_item_re.search(build_body)
+    if existing_item_match is None:
+        raise RuntimeError(f"{proj_3mf}: no <item> in <build>")
+    # Reuse the existing transform attribute so the plate placement stays.
+    existing_item = existing_item_match.group(0)
+    transform_match = re.search(r'transform="([^"]*)"', existing_item)
+    printable_match = re.search(r'printable="([^"]*)"', existing_item)
+    transform_attr = (
+        f' transform="{transform_match.group(1)}"' if transform_match else ""
+    )
+    printable_attr = (
+        f' printable="{printable_match.group(1)}"' if printable_match else ' printable="1"'
+    )
+    new_items: list[str] = []
+    for new_obj_id in new_composite_ids:
+        new_items.append(
+            f'  <item objectid="{new_obj_id}" p:UUID="{uuid.uuid4()}"'
+            f"{transform_attr}{printable_attr}/>"
+        )
+    new_build = build_open + "\n" + "\n".join(new_items) + "\n " + build_close
+    new_model_xml = (
+        new_model_xml[: build_match.start()] + new_build + new_model_xml[build_match.end() :]
+    )
+    contents[MODEL_PATH] = new_model_xml.encode()
+
+    # ---- Rewrite the archive ---------------------------------------------------
+    with zipfile.ZipFile(proj_3mf, "w", zipfile.ZIP_DEFLATED) as zout:
+        for info in infos:
+            zout.writestr(info, contents[info.filename])
+
+
+def build_mm_3mf(
+    pairs: list[tuple[Path, Path]], out_3mf: Path
+) -> None:
+    """Assemble per-specimen (struts, cables) STL pairs into a Bambu H2D MM ``.3mf``.
+
+    Each pair becomes its own composite object on the build plate with two
+    parts (struts → extruder 1 / PLA, cables → extruder 2 / TPU), so each
+    specimen can be moved as a unit in Bambu Studio while keeping the PLA
+    and TPU members locked together (PR #35 comment 4513722886).
 
     Mirrors ``slice_bambu_mm`` from ``cad/t3-prism/render_print.sh`` but
-    without ``enable_supports`` (the BO batch leaves supports off; @achris0520
-    paints them on per PR #35 comment 4502140147). Filament slot 1 = PLA
-    (struts/extruder 1), slot 2 = TPU 85A (cables/extruder 2).
+    without ``enable_supports`` (the BO batch leaves supports off;
+    @achris0520 paints them on per PR #35 comment 4502140147). Filament
+    slot 1 = PLA, slot 2 = TPU 85A.
     """
     _ensure_bambu()
     tag = "H2D-MM-PLAstruts-TPUcables"
@@ -480,7 +736,22 @@ def build_mm_3mf(struts_stl: Path, cables_stl: Path, out_3mf: Path) -> None:
         shutil.rmtree(proj_outdir)
     proj_outdir.mkdir(parents=True)
 
-    print(f"==> BambuStudio CLI --assemble -> {proj_3mf} (struts + cables as two parts)")
+    # Flatten the pairs into a single interleaved STL list (struts0, cables0,
+    # struts1, cables1, ...) — the order is what the post-processor relies on
+    # to re-group parts back into per-specimen composites.
+    stl_args: list[str] = []
+    pairs_names: list[tuple[str, str]] = []
+    name_to_ext: dict[str, str] = {}
+    for struts_stl, cables_stl in pairs:
+        stl_args.extend([str(struts_stl), str(cables_stl)])
+        pairs_names.append((struts_stl.name, cables_stl.name))
+        name_to_ext[struts_stl.name] = "1"
+        name_to_ext[cables_stl.name] = "2"
+
+    print(
+        f"==> BambuStudio CLI --assemble -> {proj_3mf} "
+        f"({len(pairs)} specimens x 2 parts each)"
+    )
     env = {**__import__("os").environ,
            "LIBGL_ALWAYS_SOFTWARE": "1", "GALLIUM_DRIVER": "llvmpipe"}
     subprocess.run(
@@ -490,17 +761,32 @@ def build_mm_3mf(struts_stl: Path, cables_stl: Path, out_3mf: Path) -> None:
          "--load-filaments", f"{f1};{f2}",
          "--export-3mf",     proj_3mf,
          "--outputdir",      str(proj_outdir),
-         str(struts_stl), str(cables_stl)],
+         *stl_args],
         check=True, env=env,
     )
 
-    print(f"==> Patch model_settings.config: {cables_stl.name} -> extruder 2 (TPU)")
+    # patch_mm_extruder.py: (a) pad filament_colour / filament_map to length 2
+    # and set filament_map_mode=Manual, (b) per-part extruder routing.
+    print(
+        f"==> Patch model_settings.config: struts -> extruder 1 (PLA), "
+        f"cables -> extruder 2 (TPU)"
+    )
+    pair_args = [f"{name}={ext}" for name, ext in name_to_ext.items()]
     subprocess.run(
         ["python3", str(T3_PRISM_DIR / "patch_mm_extruder.py"),
-         str(proj_outdir / proj_3mf),
-         f"{cables_stl.name}=2", f"{struts_stl.name}=1"],
+         str(proj_outdir / proj_3mf), *pair_args],
         check=True,
     )
+
+    # Split the single composite object emitted by --assemble into one
+    # composite per specimen so each iteration on the plate is its own
+    # movable Bambu Studio object with two part groups.
+    print(
+        f"==> Split assembled composite -> {len(pairs)} per-specimen objects "
+        f"(PLA struts + TPU cables grouped per object)"
+    )
+    _split_assembled_into_objects(proj_outdir / proj_3mf, pairs_names)
+
     out_3mf.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(proj_outdir / proj_3mf, out_3mf)
 
@@ -615,6 +901,23 @@ def main(argv: list[str] | None = None) -> int:
     run_openscad(scad_path, stl_struts_path, defines={"part": "struts"})
     print(f"==> OpenSCAD render -> {stl_cables_path.name} (cables only, extruder 2 / TPU)")
     run_openscad(scad_path, stl_cables_path, defines={"part": "cables"})
+
+    # Per-specimen STLs (one struts + one cables STL per specimen) — the
+    # BambuStudio --assemble step uses these to build one composite object
+    # per specimen with two parts each (PR #35 comment 4513722886).
+    per_spec_dir = out_dir / "per-specimen-stls"
+    per_spec_dir.mkdir(exist_ok=True)
+    pairs: list[tuple[Path, Path]] = []
+    for spec_idx in range(args.n):
+        spec_struts = per_spec_dir / f"t3-prism-bo-spec{spec_idx:02d}-struts.stl"
+        spec_cables = per_spec_dir / f"t3-prism-bo-spec{spec_idx:02d}-cables.stl"
+        print(f"==> OpenSCAD render -> {spec_struts.relative_to(out_dir)}")
+        run_openscad(scad_path, spec_struts,
+                     defines={"part": "struts", "spec": spec_idx})
+        print(f"==> OpenSCAD render -> {spec_cables.relative_to(out_dir)}")
+        run_openscad(scad_path, spec_cables,
+                     defines={"part": "cables", "spec": spec_idx})
+        pairs.append((spec_struts, spec_cables))
     # Top-down build-plate camera: distance, fov, then translate above plate centre.
     cam_top = f"{PLATE_X/2:.1f},{PLATE_Y/2:.1f},0,0,0,0,{max(PLATE_X, PLATE_Y) * 1.4:.1f}"
     cam_iso = f"{PLATE_X/2:.1f},{PLATE_Y/2:.1f},0,55,0,25,{max(PLATE_X, PLATE_Y) * 1.6:.1f}"
@@ -624,7 +927,7 @@ def main(argv: list[str] | None = None) -> int:
     run_openscad(scad_path, iso_png, camera=cam_iso, image_size="1200,900")
 
     if not args.skip_mm_3mf:
-        build_mm_3mf(stl_struts_path, stl_cables_path, mm_3mf_path)
+        build_mm_3mf(pairs, mm_3mf_path)
 
     print("Done.")
     print(f"  Design table : {csv_path}")

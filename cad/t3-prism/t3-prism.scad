@@ -162,18 +162,26 @@ scaffold_min_h = scaffold_min_h_base * scale_factor;
 //                         intersection (avoids the stress-concentration
 //                         and over-extrusion artefact reported in
 //                         @ctrhjk's first PETG+TPU print).
+// PR #35 comment 4513722886 (@sgbaird): "make sure each TPU vertex has a
+// full spherical PLA shell around it (no gaps except to allow TPU to pass
+// through) and is in contact with the internal TPU vertex so the two
+// material types bond together." Per-print-in-place clearances were
+// therefore dropped to zero (bonded PLA-TPU joint instead of the earlier
+// captive ball joint), and the teardrop hull blend toward the strut was
+// removed so every vertex is a uniform sphere regardless of which strut/
+// cables emerge from it. The shell is still pierced by one cylindrical
+// bore per outgoing cable (the only "gap" in the shell, sized so the TPU
+// cable fills it exactly).
 use_captive_core   = true;            // set false to revert to solid joint spheres
-captive_bore_clear = 0.4;             // mm, single-sided clearance around the cable
+captive_bore_clear = 0.0;             // mm, single-sided clearance around the cable (bonded)
 captive_bore_trap  = 1.5;             // mm, MIN (core_od - bore_d) / 2 so the core can't escape
-captive_core_clear = 0.5;             // mm, radial print-in-place gap shell-ID -> core-OD
+captive_core_clear = 0.0;             // mm, radial gap shell-ID -> core-OD (0 = bonded)
 captive_wall_base  = 1.6;             // mm, PLA shell wall thickness (un-scaled)
-captive_teardrop_z = 1.5;             // mm, axial offset of the teardrop reference sphere
 captive_wall       = captive_wall_base * scale_factor;
 captive_bore_d     = cable_d + 2 * captive_bore_clear;
 captive_core_od    = max(captive_bore_d + 2 * captive_bore_trap, joint_d);
 captive_shell_id   = captive_core_od + 2 * captive_core_clear;
 captive_shell_od   = max(captive_shell_id + 2 * captive_wall, joint_d);
-captive_teardrop_d = strut_d * 1.10;  // seed sphere for the teardrop blend
 
 // Optional rigid translation applied AFTER part selection. Used by
 // render_print.sh for the multi-material variant: both the struts STL
@@ -244,24 +252,32 @@ module bore_along(dir, d, len) {
 }
 
 // ---- Captive-core joint: PLA outer shell at vertex V ----------------------
-// Hollow PLA sphere with a teardrop-blend toward the strut axis, hollowed
-// by the inner cavity (where the TPU captive core lives), and pierced by
-// one cylindrical exit bore per outgoing cable. The strut itself is unioned
-// in by the caller (the strut cylinder departs V along `strut_dir`).
+// Full spherical PLA shell at the vertex, hollowed by the inner cavity
+// (where the TPU captive core lives), and pierced by one cylindrical exit
+// bore per outgoing cable. The strut itself is unioned in by the caller
+// (the strut cylinder departs V along `strut_dir`, passes through the
+// shell wall, and merges with the captive-core-side strut sphere in
+// the cables STL via the cable end-cap unions).
+//
+// Per PR #35 comment 4513722886 the shell is now a *plain* sphere — the
+// previous teardrop hull blend toward the strut axis is gone. This makes
+// every vertex shell visually identical regardless of which strut /
+// cable directions emerge from it. The cable bores are the *only* gaps
+// in the shell, and they are sized exactly to ``cable_d`` so the TPU
+// cable fills them with no air ring.
 module joint_shell(V, strut_dir, cable_dirs) {
     translate(V) {
         difference() {
-            // Outer shell + teardrop blend along the strut axis.
-            hull() {
-                sphere(d=captive_shell_od);
-                translate(strut_dir * (captive_shell_od/2 + captive_teardrop_z))
-                    sphere(d=captive_teardrop_d);
-            }
-            // Inner cavity (the captive TPU core sits inside this).
+            sphere(d=captive_shell_od);
+            // Inner cavity (the captive TPU core sits inside this and
+            // touches the inner shell wall — see joint_core()).
             sphere(d=captive_shell_id);
-            // One outward exit bore per cable. Bores are centred at V and
-            // 2x the shell OD long; the inner half opens into the cavity
-            // (which is already hollow) and the outer half cuts the wall.
+            // One outward exit bore per cable. Bores are centred at V
+            // and 2x the shell OD long; the inner half opens into the
+            // cavity and the outer half cuts the wall. With
+            // ``captive_bore_clear=0`` the bore is exactly cable_d so
+            // the TPU passes through the shell with no visible ring
+            // gap (PR #35 comment 4513722886).
             for (d = cable_dirs)
                 bore_along(d, captive_bore_d, captive_shell_od * 2);
         }
