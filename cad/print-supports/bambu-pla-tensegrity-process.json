@@ -1,5 +1,5 @@
 {
-  "_comment": "Bambu Studio process override snippet — single-material PLA tensegrity supports. See README.md §B for full derivation. Drop into Process → Add → Import process.",
+  "_comment": "Bambu Studio process override snippet — single-material PLA tensegrity supports. See cad/print-supports/README.md §B for full derivation. Drop into Process → Add → Import process.",
   "name": "PLA Tensegrity Supports (general)",
   "from": "system",
   "inherits": "0.20mm Standard @BBL X1C",
