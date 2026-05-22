@@ -209,16 +209,21 @@ def grid_layout(n: int, footprints: list[float]) -> tuple[int, int, float, float
 SPECIMEN_TEMPLATE = """\
 // specimen {idx:02d}  R={R:.2f} H={H:.2f} twist={tw:.2f} strut_d={sd:.2f} cable_d={cd:.2f}
 // Captive-core joint params (mirror cad/t3-prism/t3-prism.scad,
-// PR #35 comment 4513722886 supersedes 4511036510): bore = cable_d
-// (zero clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
+// PR #35 comment 4513722886 + 4514072758): bore = cable_d (zero
+// clearance — TPU fills the bore exactly); core_od >= bore + 2*1.5
 // mm so the captive TPU mass cannot back out the bore; shell_id =
 // core_od (TPU core touches PLA inner wall — bonded joint); shell_od =
 // shell_id + 2*1.6 mm PLA wall (lifted to >= joint_d so the joint is
-// never smaller than the legacy design).
+// never smaller than the legacy design). The shell uses a teardrop
+// hull blend toward the strut axis (PR #35 comment 4514072758 — "the
+// teardrop shape was fine"), and cable bores are OUTWARD-ONLY so they
+// don't punch holes through the opposite side of the shell.
 S{idx:02d}_BORE_D    = {cd:.4f};
 S{idx:02d}_CORE_OD   = max(S{idx:02d}_BORE_D + 2*1.5, {jd:.4f});
 S{idx:02d}_SHELL_ID  = S{idx:02d}_CORE_OD;
 S{idx:02d}_SHELL_OD  = max(S{idx:02d}_SHELL_ID + 2*1.6, {jd:.4f});
+S{idx:02d}_TEARDROP_Z = 1.5;
+S{idx:02d}_TEARDROP_D = {sd:.4f} * 1.10;
 module specimen_{idx:02d}_member(p1, p2, d) {{
     v=p2-p1; L=norm(v);
     yaw=atan2(v[1],v[0]);
@@ -228,10 +233,13 @@ module specimen_{idx:02d}_member(p1, p2, d) {{
     }}
 }}
 module specimen_{idx:02d}_bore(dir, d, len) {{
+    // Outward-only bore (see cad/t3-prism/t3-prism.scad bore_along() —
+    // the previous centred bore punched holes through both sides of
+    // the shell, PR #35 comment 4514072758).
     yaw=atan2(dir[1],dir[0]);
     pitch=atan2(sqrt(dir[0]*dir[0]+dir[1]*dir[1]),dir[2]);
-    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-len/2])
-        cylinder(h=len, d=d);
+    rotate([0,0,yaw]) rotate([0,pitch,0]) translate([0,0,-0.5])
+        cylinder(h=len + 0.5, d=d);
 }}
 function specimen_{idx:02d}_bp(i) = [{R:.4f}*cos(90+120*i), {R:.4f}*sin(90+120*i), 0];
 function specimen_{idx:02d}_tp(i) = [{R:.4f}*cos(90+120*i+{tw:.4f}),
@@ -253,10 +261,17 @@ function specimen_{idx:02d}_cdirs_t(i) = [
 ];
 module specimen_{idx:02d}_shell(V, sdir, cdirs) {{
     translate(V) difference() {{
-        sphere(d=S{idx:02d}_SHELL_OD);
+        // Teardrop hull blend toward the strut axis (PR #35 comment
+        // 4514072758 — "the teardrop shape was fine"). The strut
+        // emerges from the bump, not through a punched hole.
+        hull() {{
+            sphere(d=S{idx:02d}_SHELL_OD);
+            translate(sdir * (S{idx:02d}_SHELL_OD/2 + S{idx:02d}_TEARDROP_Z))
+                sphere(d=S{idx:02d}_TEARDROP_D);
+        }}
         sphere(d=S{idx:02d}_SHELL_ID);
         for (cd = cdirs)
-            specimen_{idx:02d}_bore(cd, S{idx:02d}_BORE_D, S{idx:02d}_SHELL_OD*2);
+            specimen_{idx:02d}_bore(cd, S{idx:02d}_BORE_D, S{idx:02d}_SHELL_OD);
     }}
 }}
 module specimen_{idx:02d}_struts() {{
