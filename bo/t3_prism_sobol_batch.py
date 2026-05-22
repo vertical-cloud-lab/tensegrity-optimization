@@ -606,13 +606,13 @@ def _split_assembled_into_objects(
         re.DOTALL,
     )
     model_component_re = re.compile(
-        r'<component[^/]*objectid="(\d+)"[^/]*/>'
+        r'<component\b[^>]*?objectid="(\d+)"[^>]*?/>'
     )
     model_build_re = re.compile(
         r'(<build[^>]*>)(.*?)(</build>)', re.DOTALL
     )
     model_item_re = re.compile(
-        r'<item[^>]*objectid="\d+"[^/]*/>'
+        r'<item\b[^>]*?objectid="\d+"[^>]*?/>'
     )
 
     obj_match2 = model_obj_re.search(model_xml)
@@ -621,7 +621,7 @@ def _split_assembled_into_objects(
     obj_open2, _obj_id2, obj_body2, obj_close2 = obj_match2.groups()
     components = model_component_re.findall(obj_body2)
     # Capture the *full* component tags too (we want to preserve transforms).
-    component_tags = re.findall(r'<component\b[^/]*/>', obj_body2)
+    component_tags = re.findall(r'<component\b[^>]*?/>', obj_body2)
     if len(component_tags) != len(parts):
         raise RuntimeError(
             f"{proj_3mf}: {MODEL_PATH} has {len(component_tags)} components "

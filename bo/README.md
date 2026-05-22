@@ -43,7 +43,7 @@ by Edison ANALYSIS `25c1c897`).
 | `cable_material`     | `TPU` (extruder 2)| Production target on this branch |
 | `supports`           | `manual_painted`  | Per comment: "@achris0520 will manually paint on supports" |
 | `joint_d_mm`         | `7.0`             | minimum vertex shell diameter; captive-core upsizes to ≥ `cable_d + 5.4 mm` when needed (see [Captive TPU core](#captive-tpu-core-inside-pla-outer-shell-joints) below) |
-| `use_captive_core`   | `true`            | every joint is a captive TPU core sphere inside a hollow PLA outer shell with a teardrop-blended strut and three cable-exit bores (PR #35 comment [`4511036510`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510)); identical geometry to `cad/t3-prism/t3-prism.scad` |
+| `use_captive_core`   | `true`            | every joint is a captive TPU core sphere inside a hollow PLA outer shell with a uniform spherical PLA wall and three cable-exit bores (PR #35 comment [`4511036510`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510), bonded per [`4513722886`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4513722886)); identical geometry to `cad/t3-prism/t3-prism.scad` |
 
 The slicer-side modeled-in PLA scaffold pillars from PR #35 commit
 `5437366` are **not** emitted here — they were a workaround for the
@@ -61,9 +61,9 @@ rationale and bond-mechanics motivation, PR #35 comment
 Per specimen, the SCAD template computes:
 
 ```
-bore_d   = cable_d + 2 * 0.4                          # mm, single-side clearance 0.4
+bore_d   = cable_d                                    # bonded — TPU fills bore (PR #35 comment 4513722886)
 core_od  = max(bore_d + 2 * 1.5, joint_d)             # ≥ bore + 3 mm trap
-shell_id = core_od + 2 * 0.5                          # 0.5 mm radial print-in-place clearance
+shell_id = core_od                                    # bonded — TPU core touches PLA inner wall
 shell_od = max(shell_id + 2 * 1.6, joint_d)           # 1.6 mm PLA wall
 ```
 
@@ -106,8 +106,9 @@ Knobs:
 * `t3-prism-bo-batch.stl`        — packed STL, struts + cables fused
   (preview / single-material use only — Bambu Studio cannot split this
   into PLA and TPU after import)
-* `t3-prism-bo-batch-struts.stl` — struts + captive-core PLA shells + teardrop blends + per-cable bores (extruder 1 / PLA)
-* `t3-prism-bo-batch-cables.stl` — cables + captive TPU core spheres at every vertex + a zero-width z-anchor that pins the cables-STL bounding box to the struts-STL bounding box (extruder 2 / TPU). The z-anchor fixes the "horizontal cables too low at top and bottom" misalignment reported above PR #35 comment [`4511036510`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510) — Bambu Studio's per-part auto-bed-placement was lifting cables and struts by different amounts because their world-Z extents were different.
+* `t3-prism-bo-batch-struts.stl` — struts + captive-core PLA shells (uniform spherical wall) + per-cable bores at exactly `cable_d` so the TPU cable fills them without an air ring (extruder 1 / PLA, PR #35 comment [`4513722886`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4513722886))
+* `t3-prism-bo-batch-cables.stl` — cables + captive TPU core spheres at every vertex (sized to contact the PLA inner wall so the two materials bond at the vertex) + a zero-width z-anchor that pins the cables-STL bounding box to the struts-STL bounding box (extruder 2 / TPU). The z-anchor fixes the "horizontal cables too low at top and bottom" misalignment reported above PR #35 comment [`4511036510`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4511036510).
+* `per-specimen-stls/t3-prism-bo-specNN-{struts,cables}.stl` — one struts STL + one cables STL **per specimen**, used by the `--assemble` step so the final `.3mf` exposes one composite object per specimen with two part groups (PLA + TPU) rather than one giant composite with `2N` ungrouped parts (PR #35 comment [`4513722886`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4513722886))
 * `t3-prism-bo-batch-plate.png`  — top-down build-plate preview
 * `t3-prism-bo-batch-iso.png`    — iso preview
 * `slices/t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.3mf` — **production-target

@@ -41,10 +41,10 @@ All linear dimensions are `*_base * scale_factor`:
 | `cable_d_base` | 3.0 mm | **4.5 mm**  | tension member diameter (see [Print failure mode](#print-failure-mode-top-cable-bridge-and-how-to-avoid-it) and [Scale-up](#scale-up-to-15-cable_d-30--45-mm) below) |
 | `joint_d_base` | 7 mm   | **10.5 mm** | minimum vertex sphere/shell diameter (captive-core shell is upsized as needed; see [Captive TPU core](#captive-tpu-core-inside-pla-outer-shell) below) |
 | `scale_factor` | —      | **1.5**     | uniform scale on every linear dim |
-| `use_captive_core` | `true` | `true`  | captive TPU core inside PLA outer shell at every vertex (PR #35 comment 4511036510); set `false` for legacy solid-joint mode |
-| `captive_bore_clear` | 0.4 mm | 0.4 mm | single-sided clearance around the TPU cable through the shell bore |
+| `use_captive_core` | `true` | `true`  | captive TPU core inside PLA outer shell at every vertex (PR #35 comment 4511036510, bonded per comment 4513722886); set `false` for legacy solid-joint mode |
+| `captive_bore_clear` | 0.4 mm | **0 mm** | single-sided clearance around the TPU cable through the shell bore; **0** = bonded (TPU fills the bore exactly) per PR #35 comment 4513722886 |
 | `captive_bore_trap`  | 1.5 mm | 1.5 mm | min `(core_od - bore_d) / 2`; how much wider the core is than the bore so it can't back out |
-| `captive_core_clear` | 0.5 mm | 0.5 mm | radial print-in-place gap (shell-ID − core-OD) / 2 |
+| `captive_core_clear` | 0.5 mm | **0 mm** | radial gap (shell-ID − core-OD) / 2; **0** = bonded (TPU core touches the PLA inner wall) per PR #35 comment 4513722886 |
 | `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
 
 Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
@@ -73,17 +73,20 @@ Geometry per joint (computed in `t3-prism.scad` `joint_shell()` +
 
 | Feature  | Value (scale 1.5×, `cable_d`=4.5) | Role |
 | -------- | ---------------------------------: | --- |
-| Bore Ø   | 5.3 mm = `cable_d` + 0.8 mm        | cable exit through the shell wall, with print clearance |
+| Bore Ø   | 4.5 mm = `cable_d` (bonded)        | cable exit through the shell wall; TPU fills the bore exactly with no air ring (PR #35 comment 4513722886) |
 | Core OD  | 10.5 mm (clamped ≥ `joint_d`)      | TPU captive mass; >> bore Ø so it can't back out |
-| Shell ID | 11.5 mm = core OD + 1.0 mm         | hollow cavity with print-in-place radial gap |
-| Shell OD | 16.3 mm = shell ID + 4.8 mm wall   | PLA outer wall |
+| Shell ID | 10.5 mm = core OD (bonded)         | hollow cavity; TPU core touches the PLA inner wall so the two materials bond at every vertex (PR #35 comment 4513722886) |
+| Shell OD | 13.7 mm = shell ID + 3.2 mm wall   | PLA outer wall |
 
-The strut-half of each joint is unioned with a teardrop `hull()` blend
-along the strut axis (`captive_teardrop_z`/`captive_teardrop_d`), so the
-shell-to-strut transition is filleted and not a sharp re-entrant corner.
-Three cylindrical bores are differenced through the shell wall — one per
-outgoing TPU cable — along the directions returned by
-`vertex_cable_dirs_b(i)` / `vertex_cable_dirs_t(i)`.
+Every vertex is a plain hollow PLA sphere — no teardrop hull blend toward
+the strut axis. Three cylindrical bores are differenced through the shell
+wall — one per outgoing TPU cable — along the directions returned by
+`vertex_cable_dirs_b(i)` / `vertex_cable_dirs_t(i)`. Those bores are the
+*only* gaps in the spherical shell, and (per PR #35 comment 4513722886)
+they are exactly `cable_d` wide so the TPU cable fills them without an
+annular air gap, and the TPU core inside the shell is sized to touch the
+PLA inner wall so the two materials bond at the vertex rather than
+relying on print-in-place clearance.
 
 In the multi-material slice, the PLA shell + struts go to extruder 1
 and the TPU captive core + cables go to extruder 2. Because the core is
