@@ -86,6 +86,18 @@ def patch_project_filaments(proj_json: bytes) -> bytes:
     while len(fmap) < n:
         fmap.append(str(len(fmap) + 1))
     d["filament_map"] = fmap[:n]
+    # `filament_nozzle_map` tells Bambu Studio which *physical nozzle* each
+    # filament is loaded into (1-based). BambuStudio CLI leaves this at the
+    # single-entry default ``['1']`` after ``--load-filaments a;b``, which
+    # causes the headless slice path to fail with "could not found
+    # extruder_type Direct Drive, nozzle_volume_type Standard, filament_index
+    # 2, extruder index 2" because filament 2 has no nozzle assignment.
+    # Mirror ``filament_map`` (1, 2, 3, ...) so each filament is pinned to
+    # the IDEX nozzle that the H2D loads it into.
+    nmap = list(d.get("filament_nozzle_map", []))
+    while len(nmap) < n:
+        nmap.append(str(len(nmap) + 1))
+    d["filament_nozzle_map"] = nmap[:n]
     # Switch from "Auto For Flush" to "Manual" so Bambu Studio honours the
     # explicit per-extruder map instead of trying to re-pack onto one nozzle
     # — IDEX H2D prints with one extruder per material, no flush tower needed.
