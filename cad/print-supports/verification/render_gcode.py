@@ -1,0 +1,155 @@
+#!/usr/bin/env python3
+"""Render a sliced gcode file into a multi-panel PNG that visualises where
+supports were placed by the PLA-tensegrity recipe.
+
+Panels:
+  1. Bottom view (looking up the +Z axis) of all support extrusions only -
+     this is the analogue of Audrey's manual paint pattern.
+  2. Iso view of the object (grey) + supports (orange) so reviewers can
+     verify branches root at the plate, never on a member.
+  3. First-layer view (z=0.2 mm) of brim, object, supports.
+"""
+import re, sys, math
+from pathlib import Path
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+
+GC = Path(sys.argv[1])
+OUT = Path(sys.argv[2])
+
+TYPE_COLOR = {
+    "Skirt/Brim":               "#7e57c2",
+    "External perimeter":       "#37474f",
+    "Perimeter":                "#546e7a",
+    "Internal infill":          "#90a4ae",
+    "Solid infill":             "#78909c",
+    "Top solid infill":         "#607d8b",
+    "Bridge infill":            "#5d4037",
+    "Support material":         "#ff9800",
+    "Support material interface": "#fb8c00",
+}
+OBJECT_TYPES   = {"External perimeter", "Perimeter",
+                  "Internal infill", "Solid infill",
+                  "Top solid infill", "Bridge infill"}
+SUPPORT_TYPES  = {"Support material", "Support material interface"}
+
+# ---- parse gcode -----------------------------------------------------------
+re_g  = re.compile(r"^G[01]\b")
+re_xy = re.compile(r"\b([XYZEF])(-?\d+\.?\d*)")
+re_ty = re.compile(r"^;TYPE:(.*)$")
+
+x = y = z = 0.0
+e_prev = 0.0
+current_type = "Custom"
+# segments: list of (x0,y0,z0, x1,y1,z1, type)
+segs = []
+with GC.open() as f:
+    for line in f:
+        m = re_ty.match(line)
+        if m:
+            current_type = m.group(1).strip()
+            continue
+        if not re_g.match(line):
+            continue
+        kv = dict(re_xy.findall(line))
+        nx = float(kv.get("X", x))
+        ny = float(kv.get("Y", y))
+        nz = float(kv.get("Z", z))
+        e  = float(kv.get("E", e_prev))
+        # extruding move?
+        if "E" in kv and e > e_prev and (nx != x or ny != y):
+            segs.append((x, y, z, nx, ny, nz, current_type))
+        x, y, z = nx, ny, nz
+        e_prev = e if "E" in kv else e_prev
+
+print(f"parsed {len(segs)} extrusion segments from {GC}", file=sys.stderr)
+
+arr = np.array([[s[0], s[1], s[2], s[3], s[4], s[5]] for s in segs])
+types = np.array([s[6] for s in segs])
+support_mask = np.isin(types, list(SUPPORT_TYPES))
+object_mask  = np.isin(types, list(OBJECT_TYPES))
+brim_mask    = types == "Skirt/Brim"
+print(f"  supports : {support_mask.sum():>6}", file=sys.stderr)
+print(f"  object   : {object_mask.sum():>6}", file=sys.stderr)
+print(f"  brim     : {brim_mask.sum():>6}", file=sys.stderr)
+
+# ---- render ----------------------------------------------------------------
+fig = plt.figure(figsize=(16, 6.5))
+
+# Panel 1: bottom view (xy) of supports only
+ax1 = fig.add_subplot(1, 3, 1)
+ax1.set_aspect("equal")
+ax1.set_title("Bottom view — support extrusions only\n"
+              "(this is the slicer's automatic equivalent of Audrey's paint)",
+              fontsize=10)
+sup = arr[support_mask]
+for x0, y0, _z0, x1, y1, _z1 in sup:
+    ax1.plot([x0, x1], [y0, y1], color=TYPE_COLOR["Support material"],
+             lw=0.4, alpha=0.7)
+# faint outline of the object footprint to anchor the eye
+obj_first = arr[object_mask & (arr[:, 2] < 1.0)]
+for x0, y0, _z0, x1, y1, _z1 in obj_first:
+    ax1.plot([x0, x1], [y0, y1], color="#cfd8dc", lw=0.3, alpha=0.6)
+ax1.set_xlabel("X (mm)")
+ax1.set_ylabel("Y (mm)")
+ax1.grid(True, alpha=0.3)
+
+# Panel 2: iso view of object + supports
+ax2 = fig.add_subplot(1, 3, 2, projection="3d")
+ax2.set_title("Iso — object (grey) + tree supports (orange)\n"
+              "all tree roots land on the plate (z≈0); none on a member",
+              fontsize=10)
+# subsample so it renders in reasonable time
+def subsample(mask, max_n=8000):
+    idx = np.where(mask)[0]
+    if len(idx) > max_n:
+        idx = idx[np.linspace(0, len(idx) - 1, max_n).astype(int)]
+    return idx
+
+for idx, color, lw, alpha in [
+    (subsample(object_mask, 6000),  "#90a4ae", 0.3, 0.5),
+    (subsample(support_mask, 6000), "#ff9800", 0.5, 0.85),
+]:
+    for i in idx:
+        x0, y0, z0, x1, y1, z1 = arr[i]
+        ax2.plot([x0, x1], [y0, y1], [z0, z1], color=color, lw=lw, alpha=alpha)
+ax2.set_xlabel("X (mm)")
+ax2.set_ylabel("Y (mm)")
+ax2.set_zlabel("Z (mm)")
+ax2.view_init(elev=18, azim=-60)
+
+# Panel 3: first-layer (z<0.25) — shows brim + first layer of object + first
+# touch-points of supports, i.e. exactly what's drawn on the bed.
+ax3 = fig.add_subplot(1, 3, 3)
+ax3.set_aspect("equal")
+ax3.set_title("First layer (z ≤ 0.25 mm)\n"
+              "purple = brim, grey = object first layer, orange = support roots",
+              fontsize=10)
+first = arr[:, 2] <= 0.25
+for mask_name, mask, color, lw in [
+    ("brim",    brim_mask    & first, "#7e57c2", 0.6),
+    ("object",  object_mask  & first, "#455a64", 0.5),
+    ("support", support_mask & first, "#ff9800", 0.6),
+]:
+    seg = arr[mask]
+    for x0, y0, _z0, x1, y1, _z1 in seg:
+        ax3.plot([x0, x1], [y0, y1], color=color, lw=lw, alpha=0.8)
+ax3.set_xlabel("X (mm)")
+ax3.set_ylabel("Y (mm)")
+ax3.grid(True, alpha=0.3)
+
+# summary footer
+zmax = float(arr[:, [2, 5]].max())
+n_layers = int(round(zmax / 0.2)) + 1
+fig.suptitle(
+    f"T3-prism (PR #35 cad/t3-prism/t3-prism.stl) sliced via "
+    f"cad/print-supports/bambu-pla-tensegrity-process.json (PrusaSlicer-translated)\n"
+    f"{len(segs):,} extrusion segments • {n_layers} layers • support fraction = "
+    f"{support_mask.sum() / max(1, len(segs)):.0%}",
+    fontsize=11, y=1.02)
+fig.tight_layout()
+fig.savefig(OUT, dpi=160, bbox_inches="tight")
+print(f"wrote {OUT}", file=sys.stderr)
