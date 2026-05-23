@@ -168,6 +168,42 @@ slicer:
 version is ~2.4× larger because the enforcer columns force continuous
 coverage along the full bottom of every member.)
 
+## Previewing supports **and the part together** — `merge_stls.py`
+
+The supports-only STLs above are the closest-up view of what gets
+printed *as support*, but they don't tell you which surface of the
+object each branch is holding up. To see both in the same frame, run
+[`merge_stls.py`](merge_stls.py) — it concatenates two or more binary
+STLs into one, with an optional per-input translation, and a
+`--align-first-to-second` flag that translates the first input so its
+XY bbox-center matches the second's and its lowest Z sits at z = 0
+(this brings a source mesh out of "centered at origin" into the
+print-coordinate frame the gcode-derived support STL lives in):
+
+```bash
+# Combine source mesh + path-(a) supports into one inspectable STL.
+python3 cad/print-supports/verification/merge_stls.py \
+    /tmp/t3-prism-th10-object-and-supports.stl \
+    /tmp/t3-prism.stl \
+    cad/print-supports/verification/t3-prism-pr35-th10-supports.stl \
+    --align-first-to-second
+```
+
+Two pre-generated combined STLs are committed alongside the
+supports-only ones — open them in any STL viewer to see the part (in
+its own object group) and the supports (in a second group, colorable
+separately) sharing the same coordinate frame:
+
+| STL                                                          | Source slice               | Triangles | Bytes  |
+| ------------------------------------------------------------ | -------------------------- | --------: | -----: |
+| `t3-prism-pr35-th10-object-and-supports.stl`                 | path (a), θ = 10°          |   136,838 |  6.8 MB |
+| `t3-prism-pr35-tpu-enforced-object-and-supports.stl`         | path (c), enforcer + θ=10° |   291,734 | 14.6 MB |
+
+Matplotlib render of the two combined STLs side-by-side (object in
+grey, supports in orange; iso + bottom view):
+
+![object + supports preview](t3-prism-pr35-object-and-supports-preview.png)
+
 ## Why θ = 10°? — TPU-safe strut-bottom coverage (partial fix)
 
 The first draft of the recipe used `support_threshold_angle = 40` (~40°
