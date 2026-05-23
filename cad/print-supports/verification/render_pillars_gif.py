@@ -47,8 +47,8 @@ def main() -> None:
                     default=HERE / "t3-prism-pr35-pillars.stl")
     ap.add_argument("--out", type=Path,
                     default=HERE / "t3-prism-pr35-pillars-rotating.gif")
-    ap.add_argument("--frames", type=int, default=36)
-    ap.add_argument("--duration_ms", type=int, default=80)
+    ap.add_argument("--frames", type=int, default=72)
+    ap.add_argument("--duration_ms", type=int, default=150)
     ap.add_argument("--elev", type=float, default=18.0)
     ap.add_argument("--stride", type=int, default=2,
                     help="downsample triangles by this stride for render speed")
