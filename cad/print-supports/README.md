@@ -51,7 +51,7 @@ Audrey's `tree(manual)` slice).
 | `enable_support`                 | `1`             | turn on supports |
 | `support_type`                   | `tree(hybrid)`  | tree branches under overhangs *and* a thin grid under flat overhangs; equivalent to Audrey's `tree(manual)` once `on_build_plate_only` is set, but driven by the slicer's overhang analysis instead of paint flags |
 | `support_on_build_plate_only`    | `1`             | branches drop to the plate, never onto a member — matches the painted-from-the-bottom-view rule |
-| `support_threshold_angle`        | `40`            | high enough that the three plate-contact vertices and the (near-)vertical strut sections don't get supported (Audrey's "do not paint at the vertex overlaps"), low enough that every horizontal cable does |
+| `support_threshold_angle`        | `10`            | low enough that the entire down-facing side of every tilted strut is flagged as overhang and gets supported all the way to the plate — same recipe must survive TPU (which can't self-support shallow overhangs the way PLA can). At θ=10° only truly vertical surfaces (< 10° from vertical) are skipped, so the joint-sphere overlaps at each vertex are still ignored while the near-vertical strut sections gain full bottom-stripe coverage. |
 | `support_object_xy_distance`     | `0.35`          | leaves a clean gap around each cable so supports peel cleanly |
 | `support_top_z_distance`         | `0.2`           | one layer gap; peels with no scarring on PLA |
 | `support_interface_top_layers`   | `2`             | enough for stable touch-points, still snaps off |
@@ -80,9 +80,14 @@ combination above gives an automated equivalent:
 - `support_on_build_plate_only = 1` forces every tree branch to root at the
   plate, so supports never touch a member from the side or top (Audrey's
   bottom-view-only constraint).
-- `support_threshold_angle = 40` means the slicer doesn't try to support
-  the near-vertical strut sections or the joint-sphere overlaps (Audrey's
-  "do not paint at vertex overlaps" rule).
+- `support_threshold_angle = 10` means the slicer flags the entire
+  down-facing side of every tilted member (struts included) as an
+  overhang, so trees climb from the plate all the way along each strut's
+  bottom. The original draft used θ=40° which left near-vertical struts
+  unsupported — fine for PLA but unsafe for TPU (which sags on any shallow
+  overhang). At θ=10° only true vertical surfaces (joint-sphere overlaps
+  at each vertex, true bed-contact cones) are still skipped, preserving
+  Audrey's "do not paint at vertex overlaps" rule there.
 - `tree_support_tip_diameter = 0.8` combined with
   `tree_support_branch_distance = 2.5` reproduces the ~1/3-of-member-width
   centerline stripe coverage.

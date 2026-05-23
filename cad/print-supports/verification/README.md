@@ -56,15 +56,64 @@ commit `65d0d3f` (`copilot/get-bambu-sliced-print-t3-prism`).
 | ----------------------- | ------------------------------------ |
 | Layers                  | 601                                  |
 | Layer height            | 0.20 mm                              |
-| Extrusion segments      | 425,230 total (96,176 support / 327,553 object / 1,198 brim) |
-| Filament used           | 38.39 cm³ (PLA)                      |
-| Estimated print time    | 6 h 52 m 30 s (normal mode)          |
+| Extrusion segments      | 438,955 total (104,354 support / 333,092 object / 1,207 brim) |
+| Filament used           | 38.93 cm³ (PLA)                      |
+| Estimated print time    | 6 h 54 m 58 s (normal mode)          |
 | Support style           | organic tree (= Bambu `tree(hybrid)`)|
 | Supports on plate only? | yes (`support_material_buildplate_only = 1`) |
+| Overhang threshold      | **10°** (TPU-safe — see below)       |
 | Brim                    | 5 mm outer-only                      |
 | Bridges supported?      | no (`dont_support_bridges = 1`)      |
 
 The support-only bottom view reproduces Audrey's centerline-stripe pattern
-without any manual painting — supports live only under the 9 non-bed-contact
-members, the three bottom-triangle cables bridge unsupported between the
-bed-contact vertices, and tree branches all root on the plate.
+without any manual painting, and after dropping `support_threshold_angle`
+from 40° to 10° (commit responding to PR comment 4523611769) the entire
+down-facing side of every near-vertical strut also gets supported all the
+way to the plate, so the same recipe survives a TPU print of the same
+mesh (TPU sags on any shallow overhang PLA would self-support).
+
+## Why θ=10°? — TPU-safe strut-bottom coverage
+
+The first draft of the recipe used `support_threshold_angle = 40` (~40°
+from vertical). For PLA on the T3-prism that was fine, but it left the
+shallow-overhang under-side of every near-vertical strut completely
+unsupported because tilts of ~25–35° from vertical sit below the
+threshold. TPU 85A (NinjaFlex-class, E ≈ 12 MPa) can't self-support those
+overhangs and would sag.
+
+Dropping the threshold to **10°** flags the entire down-facing surface of
+every tilted member as an overhang, so the tree generator builds branches
+from the plate all the way along each strut's bottom. The added coverage
+shows up clearly in `t3-prism-pr35-threshold-comparison.png`:
+
+| Metric                       | θ = 40° (old) | θ = 10° (new) | Δ        |
+| ---------------------------- | ------------: | ------------: | -------: |
+| Support extrusion segments   | 96,176        | 104,354       | +8.5 %   |
+| Filament                     | 38.39 cm³     | 38.93 cm³     | +1.4 %   |
+| Print time                   | 6 h 52 m 30 s | 6 h 54 m 58 s | +0.6 %   |
+
+Only truly vertical surfaces (< 10° from vertical: the joint-sphere
+overlaps at each vertex and the three bed-contact cones) are still
+skipped, preserving the "do not paint at vertex overlaps" rule there.
+
+To regenerate the comparison panel:
+
+```bash
+# slice once with the (old) θ=40 setting:
+sed 's/^support_material_threshold = 10/support_material_threshold = 40/' \
+    cad/print-supports/verification/prusaslicer-pla-tensegrity.ini \
+    > /tmp/old.ini
+prusa-slicer --slice --load /tmp/old.ini --center 128,128 \
+    --output /tmp/t3-prism-old.gcode /tmp/t3-prism.stl
+
+# slice again with the (new) θ=10 setting:
+prusa-slicer --slice \
+    --load cad/print-supports/verification/prusaslicer-pla-tensegrity.ini \
+    --center 128,128 \
+    --output /tmp/t3-prism.gcode /tmp/t3-prism.stl
+
+# render the side-by-side diff:
+python3 cad/print-supports/verification/diff_supports.py \
+    /tmp/t3-prism-old.gcode /tmp/t3-prism.gcode \
+    cad/print-supports/verification/t3-prism-pr35-threshold-comparison.png
+```
