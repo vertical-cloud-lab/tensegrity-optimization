@@ -175,8 +175,9 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("orca", type=Path,
                     help="Path to OrcaSlicer's AppRun (e.g. extracted "
-                         "AppImage's ./AppRun) — see the README for how to "
-                         "obtain the Ubuntu 24.04 nightly build.")
+                         "AppImage's ./AppRun) — see "
+                         "verification/README.md for how to obtain the "
+                         "Ubuntu 24.04 nightly build.")
     ap.add_argument("input", type=Path,
                     help="Input STL (or 3MF) to slice.")
     ap.add_argument("out", type=Path,
