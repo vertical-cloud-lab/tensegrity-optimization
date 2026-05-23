@@ -282,6 +282,13 @@ correctly skipped):
 
 ![pillars preview](t3-prism-pr35-pillars-preview.png)
 
+Rotating preview (360° azimuth sweep, same scene; lets you verify every
+pillar tip actually lands on the part underside from every angle without
+opening the STL in a 3-D viewer). Regenerate with
+[`render_pillars_gif.py`](render_pillars_gif.py):
+
+![pillars rotating](t3-prism-pr35-pillars-rotating.gif)
+
 Why these defaults? `--base_d 5.0` is wide enough that a single pillar
 sticks to the plate on its own (no brim needed under it) and lifts
 fewer than ~10 mm vertically without buckling on PLA. `--tip_d 0.6` is
