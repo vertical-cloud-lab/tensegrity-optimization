@@ -215,13 +215,24 @@ e.g. the bottom-triangle cables of a T3 prism) are skipped by default;
 pass ``--include_bed_contact`` to override.
 
 ```bash
-# 1. built-in topology preset
+# 1. **recommended** — ray-cast the actual printable STL from the
+#    build plate's-eye view, place a pillar at every grid cell whose
+#    nearest hit is above --min_clearance mm. Requires `trimesh`.
+python3 cad/print-supports/generate_support_pillars.py \
+    --stl my_part.stl --spacing 4.0 --min_clearance 1.5 \
+    --out pillars.stl --out_part my_part_lifted.stl
+
+# 2. built-in topology preset (no STL required, no trimesh dependency —
+#    samples along each member's parametric centerline; only correct if
+#    your printable mesh matches that centerline cleanly, no joint
+#    spheres / bonded cores bulging below it)
 python3 cad/print-supports/generate_support_pillars.py \
     --topology t3_prism --R 37.5 --H 105 --twist 60 \
     --strut_d 9 --cable_d 4.5 \
     --out pillars.stl
 
-# 2. arbitrary structure
+# 3. arbitrary structure described by a JSON member graph (also
+#    centerline-sampled, same caveat as #2)
 python3 cad/print-supports/generate_support_pillars.py \
     --members my_members.json --out pillars.stl
 ```

@@ -221,39 +221,64 @@ fuses into the member's underside). The slicer prints them as part of
 the part, with `enable_support = 0`, and the operator snaps each pillar
 off at its narrow tip after printing.
 
-```bash
-# 1. Generate one tapered cone every --spacing mm under each
-#    non-bed-contact member's centerline. Same --topology / --members
-#    interface as generate_support_enforcers.py.
-python3 cad/print-supports/generate_support_pillars.py \
-    --topology t3_prism --R 37.5 --H 105 --twist 60 \
-    --strut_d 9 --cable_d 4.5 \
-    --out cad/print-supports/verification/t3-prism-pr35-pillars.stl
+The recommended way to place the pillars is to **ray-cast the actual
+printable mesh from the build plate's point of view**: rasterise XY at
+``--spacing`` mm, send a +Z ray from below the part at each grid cell,
+and drop a pillar at every cell whose nearest hit is above
+``--min_clearance`` mm. That hit z is, by construction, the lowest
+visible point of the mesh above (x, y) — i.e. the underside surface a
+support pillar needs to fuse to. Implemented in
+[`generate_support_pillars.py`](../generate_support_pillars.py) via the
+``--stl`` flag (uses `trimesh.ray`; install with `pip install trimesh
+rtree`). This replaces the earlier parametric-centerline pillar pass,
+which sampled along each declared member's ideal centerline and so
+missed joint spheres, end caps, and any bulges below the nominal
+centerline — the visible gaps the PR reviewer flagged on the first
+pillar render.
 
-# 2. Merge the pillars into the printable mesh.
+```bash
+# 1. Ray-cast the printable mesh from the build plate's-eye view and
+#    emit one tapered cone at every XY grid cell that sees mesh above
+#    --min_clearance mm. Also writes a copy of the part lifted so
+#    min(z) sits at z=0 — that lifted copy and the pillar STL share a
+#    coordinate frame, so the next step is a plain merge.
 git show 21ca244~1:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl
+python3 cad/print-supports/generate_support_pillars.py \
+    --stl /tmp/t3-prism.stl \
+    --spacing 4.0 --min_clearance 1.5 \
+    --base_d 5.0 --tip_d 0.6 --tip_overshoot 0.3 --facets 12 \
+    --out cad/print-supports/verification/t3-prism-pr35-pillars.stl \
+    --out_part /tmp/t3-prism-lifted.stl
+
+# 2. Plain merge — both inputs already share a frame after step 1.
 python3 cad/print-supports/verification/merge_stls.py \
     cad/print-supports/verification/t3-prism-pr35-with-pillars.stl \
-    /tmp/t3-prism.stl \
-    cad/print-supports/verification/t3-prism-pr35-pillars.stl \
-    --align-first-to-second
+    /tmp/t3-prism-lifted.stl \
+    cad/print-supports/verification/t3-prism-pr35-pillars.stl
 
 # 3. Slice the combined STL in Bambu Studio with enable_support = 0.
 #    The §B process JSON minus the `enable_support`/tree-support keys is
 #    a sensible starting point.
 ```
 
+`generate_support_pillars.py` still supports the parametric
+``--topology`` / ``--members`` modes as well (no `trimesh` dependency),
+but those should only be used for hand-authored geometries where the
+member graph is the ground truth and there is no STL to ray-cast.
+
 Pre-generated artefacts (PR #35 T3-prism, R=37.5 / H=105 / twist=60 /
-strut_d=9 / cable_d=4.5, default pillar tuning):
+strut_d=9 / cable_d=4.5, default pillar tuning, ``--stl`` ray-cast
+mode):
 
 | File                                            | Triangles | Bytes  | Pillars |
 | ----------------------------------------------- | --------: | -----: | ------: |
-| `t3-prism-pr35-pillars.stl` (pillars only)      |     4,608 | 0.2 MB |      96 |
-| `t3-prism-pr35-with-pillars.stl` (part + pillars merged) |  29,474 | 1.5 MB |      96 |
+| `t3-prism-pr35-pillars.stl` (pillars only)      |     8,784 | 0.4 MB |     183 |
+| `t3-prism-pr35-with-pillars.stl` (part + pillars merged) |  33,650 | 1.6 MB |     183 |
 
 Preview (object grey, narrowing pillars orange; iso + bottom view —
-every non-bed-contact member is supported, the 3 bottom-triangle cables
-between bed-contact vertices are correctly skipped):
+every spot on the underside that the build plate can see from below
+gets a pillar; spots already within `--min_clearance` of the plate are
+correctly skipped):
 
 ![pillars preview](t3-prism-pr35-pillars-preview.png)
 
@@ -264,8 +289,12 @@ fewer than ~10 mm vertically without buckling on PLA. `--tip_d 0.6` is
 snaps off cleanly under thumb pressure at the fused junction, wide
 enough that the slicer still emits an extrusion there (an 0.4 mm tip
 would slice as a single-line bead and disappear under tolerance).
-`--spacing 8.0` mm gives ~3 pillars per non-trivial member without
-adding noticeable print time. Override any of these on the CLI if your
+`--spacing 4.0` mm gives roughly one pillar per nozzle-width across
+the projected footprint of each member without adding noticeable print
+time. `--min_clearance 1.5` mm filters out the three bottom-triangle
+cables that already sit on the plate (so we don't drop a pillar of
+near-zero height under them) while still covering everything that's
+genuinely overhanging. Override any of these on the CLI if your
 geometry needs different breakaway behaviour:
 `generate_support_pillars.py --help`.
 

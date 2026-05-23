@@ -40,6 +40,14 @@
 #   python3 generate_support_pillars.py --members my_members.json \
 #       --out pillars.stl
 #
+#   # **recommended for arbitrary STL meshes** — ray-cast the actual
+#   # underside of the part from the build-plate's point of view and
+#   # drop a pillar wherever the projected XY grid sees mesh above
+#   # ``--min_clearance`` mm. Requires ``trimesh`` (and optionally
+#   # ``rtree`` for the spatial index).
+#   python3 generate_support_pillars.py --stl part.stl \
+#       --out pillars.stl --out_part part_lifted.stl
+#
 # where ``my_members.json`` is, e.g.::
 #
 #   [
@@ -267,7 +275,116 @@ def member_pillars(p1: np.ndarray, p2: np.ndarray, d: float,
     return tris
 
 
-# ---- Binary STL writer ----------------------------------------------------
+# ---- STL ray-cast mode ----------------------------------------------------
+# When the caller has an actual printable STL mesh (rather than a
+# parametric topology preset or a hand-authored members.json), the most
+# reliable way to figure out where pillars should land is to do exactly
+# what the build plate "sees" looking up: cast a vertical ray from below
+# the part at each (x, y) sample point, and record the height of the
+# **first** triangle the ray hits. That hit point is, by construction,
+# the lowest visible point of the mesh directly above (x, y) — i.e. the
+# underside surface of whatever member is overhanging that spot.
+#
+# This is the geometric operation the previous parametric-only pillar
+# pass was missing: it sampled along the *centerline* of each declared
+# member, which (a) doesn't see joint spheres / end caps / bonded-core
+# inserts that bulge below the nominal centerline, and (b) places the
+# pillar tip at ``c.z - d/2`` (member underside, idealised as a perfect
+# cylinder) even though the actual STL surface at that XY may be at a
+# noticeably different z. The result was the visible gaps the PR
+# reviewer flagged.
+def raycast_underside(stl_path: Path, *, spacing: float,
+                      min_clearance: float, base_z: float = 0.0
+                      ) -> tuple[list[tuple[float, float, float]],
+                                 "object"]:
+    """Rasterise the mesh's bottom-view XY footprint at ``spacing`` mm,
+    cast a +Z ray from below the part at each grid point, and return
+    the list of ``(x, y, hit_z)`` tuples whose nearest hit lies above
+    ``base_z + min_clearance``.
+
+    The mesh is also translated in-place so its lowest point sits at
+    ``base_z`` (this matches what the slicer does when it lays the
+    object on the plate). The translated :class:`trimesh.Trimesh` is
+    returned alongside the hit list so the caller can write a lifted
+    copy of the part to merge with the pillar STL — that way the part
+    and the pillars share a coordinate frame.
+
+    Importing :mod:`trimesh` lazily keeps the topology-preset path
+    (which only needs numpy) from carrying a hard dependency.
+    """
+    try:
+        import trimesh
+    except ImportError as e:  # pragma: no cover - install hint
+        raise SystemExit(
+            "--stl mode requires the `trimesh` package "
+            "(pip install trimesh). " + str(e))
+    mesh = trimesh.load(stl_path, force="mesh")
+    if not hasattr(mesh, "ray"):
+        raise SystemExit(
+            f"{stl_path}: trimesh loaded a non-mesh object "
+            f"(type={type(mesh).__name__}); expected a single Trimesh.")
+    # Lay the part flat on the (virtual) plate so the pillar Z values we
+    # emit match the slicer's print-coordinate frame.
+    mesh.apply_translation([0.0, 0.0, base_z - float(mesh.bounds[0, 2])])
+    lo_x, lo_y, _ = mesh.bounds[0]
+    hi_x, hi_y, _ = mesh.bounds[1]
+    xs = np.arange(lo_x, hi_x + spacing * 0.5, spacing)
+    ys = np.arange(lo_y, hi_y + spacing * 0.5, spacing)
+    XX, YY = np.meshgrid(xs, ys)
+    n = XX.size
+    # Start each ray a hair below the plate so a face that sits exactly
+    # on z=base_z (a bed-contact triangle) still registers a hit and is
+    # then filtered out by ``min_clearance``.
+    origins = np.column_stack([
+        XX.ravel(), YY.ravel(),
+        np.full(n, base_z - 1.0),
+    ])
+    dirs = np.tile(np.array([0.0, 0.0, 1.0]), (n, 1))
+    # ``multiple_hits=False`` returns the nearest hit per ray — exactly
+    # the build-plate's-eye view of the underside.
+    locs, idx_ray, _ = mesh.ray.intersects_location(
+        origins, dirs, multiple_hits=False)
+    hits: list[tuple[float, float, float]] = []
+    z_min = base_z + float(min_clearance)
+    for loc, ir in zip(locs, idx_ray):
+        z = float(loc[2])
+        if z <= z_min:
+            continue
+        ox = float(origins[ir, 0])
+        oy = float(origins[ir, 1])
+        hits.append((ox, oy, z))
+    return hits, mesh
+
+
+def write_trimesh_binary_stl(mesh: "object", out_path: Path) -> None:
+    """Export a trimesh.Trimesh to a binary STL via the same writer the
+    pillar generator uses (no additional dependencies required)."""
+    tris = [(mesh.vertices[a], mesh.vertices[b], mesh.vertices[c])
+            for a, b, c in mesh.faces]
+    write_binary_stl(tris, out_path)
+
+
+def pillars_from_hits(hits: list[tuple[float, float, float]], *,
+                      base_d: float, tip_d: float, base_z: float,
+                      tip_overshoot: float, facets: int
+                      ) -> list[tuple[np.ndarray, ...]]:
+    """Build a faceted cone for each ``(x, y, hit_z)`` hit, taking the
+    pillar tip ``tip_overshoot`` mm above the hit surface so the union
+    with the part mesh is watertight after slicing."""
+    triangles: list[tuple[np.ndarray, ...]] = []
+    base_r = base_d / 2.0
+    tip_r = tip_d / 2.0
+    for x, y, hit_z in hits:
+        top_z = hit_z + tip_overshoot
+        if top_z <= base_z + 1e-6:
+            continue
+        xy = np.array([x, y])
+        triangles.extend(_faceted_cone(xy, base_r, xy, tip_r,
+                                       base_z, top_z, facets))
+    return triangles
+
+
+
 def write_binary_stl(triangles: Iterable[tuple[np.ndarray, ...]],
                      out_path: Path) -> int:
     triangles = list(triangles)
@@ -336,8 +453,24 @@ def _parse_args() -> argparse.Namespace:
                      help="Built-in topology preset: " +
                           "; ".join(f"{k}: {v[0]}"
                                     for k, v in TOPOLOGIES.items()))
+    src.add_argument("--stl", type=Path,
+                     help="Ray-cast mode: load an STL mesh, project it "
+                          "onto XY, cast +Z rays from below, and place a "
+                          "pillar at every grid cell whose nearest hit is "
+                          "above --min_clearance. Requires `trimesh`.")
     ap.add_argument("--out", type=Path, required=True,
                     help="Output STL path (binary STL).")
+    ap.add_argument("--out_part", type=Path, default=None,
+                    help="[--stl only] Also write the input mesh, lifted "
+                         "so min(z) sits at --base_z, to this path. Use "
+                         "it as the merge partner for --out so the part "
+                         "and the pillars share a coordinate frame.")
+    ap.add_argument("--min_clearance", type=float, default=1.5,
+                    help="[--stl only] Skip pillars where the nearest "
+                         "underside hit is within this many mm of the "
+                         "build plate (default 1.5 mm; filters out the "
+                         "bed-contact triangle so we don't drop a pillar "
+                         "under something that's already on the plate).")
     # Pillar-shape knobs
     ap.add_argument("--spacing", type=float, default=8.0,
                     help="Spacing (mm) between adjacent pillars along a "
@@ -386,6 +519,26 @@ def _parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = _parse_args()
+    if args.stl is not None:
+        hits, lifted_mesh = raycast_underside(
+            args.stl, spacing=args.spacing,
+            min_clearance=args.min_clearance, base_z=args.base_z,
+        )
+        triangles = pillars_from_hits(
+            hits, base_d=args.base_d, tip_d=args.tip_d,
+            base_z=args.base_z, tip_overshoot=args.tip_overshoot,
+            facets=args.facets,
+        )
+        n_tris = write_binary_stl(triangles, args.out)
+        print(f"Wrote {args.out}", file=sys.stderr)
+        print(f"  triangles         : {n_tris:,}", file=sys.stderr)
+        print(f"  pillars emitted   : {len(hits)}", file=sys.stderr)
+        print(f"  spacing (mm)      : {args.spacing}", file=sys.stderr)
+        print(f"  min_clearance (mm): {args.min_clearance}", file=sys.stderr)
+        if args.out_part is not None:
+            write_trimesh_binary_stl(lifted_mesh, args.out_part)
+            print(f"  lifted part STL   : {args.out_part}", file=sys.stderr)
+        return
     if args.members is not None:
         members = load_members_json(args.members)
     else:
