@@ -31,6 +31,7 @@ args = ap.parse_args()
 GC, OUT = args.gcode, args.out
 
 TYPE_COLOR = {
+    # PrusaSlicer feature names
     "Skirt/Brim":               "#7e57c2",
     "External perimeter":       "#37474f",
     "Perimeter":                "#546e7a",
@@ -40,16 +41,41 @@ TYPE_COLOR = {
     "Bridge infill":            "#5d4037",
     "Support material":         "#ff9800",
     "Support material interface": "#fb8c00",
+    # OrcaSlicer / Bambu Studio feature names (same colours)
+    "Brim":                     "#7e57c2",
+    "Outer wall":               "#37474f",
+    "Inner wall":               "#546e7a",
+    "Sparse infill":            "#90a4ae",
+    "Internal solid infill":    "#78909c",
+    "Top surface":              "#607d8b",
+    "Bridge":                   "#5d4037",
+    "Internal Bridge":          "#5d4037",
+    "Overhang wall":            "#37474f",
+    "Gap infill":               "#90a4ae",
+    "Support":                  "#ff9800",
+    "Support interface":        "#fb8c00",
 }
 OBJECT_TYPES   = {"External perimeter", "Perimeter",
                   "Internal infill", "Solid infill",
-                  "Top solid infill", "Bridge infill"}
-SUPPORT_TYPES  = {"Support material", "Support material interface"}
+                  "Top solid infill", "Bridge infill",
+                  # OrcaSlicer / Bambu Studio:
+                  "Outer wall", "Inner wall", "Overhang wall",
+                  "Sparse infill", "Internal solid infill",
+                  "Top surface", "Bridge", "Internal Bridge",
+                  "Gap infill"}
+SUPPORT_TYPES  = {"Support material", "Support material interface",
+                  # OrcaSlicer / Bambu Studio:
+                  "Support", "Support interface"}
+BRIM_TYPES     = {"Skirt/Brim", "Brim"}
 
 # ---- parse gcode -----------------------------------------------------------
 re_g  = re.compile(r"^G[01]\b")
-re_xy = re.compile(r"\b([XYZEF])(-?\d+\.?\d*)")
-re_ty = re.compile(r"^;TYPE:(.*)$")
+# Match X/Y/Z/E/F with either `-?\d+\.?\d*` (e.g. `1.234`, `12`) or the
+# OrcaSlicer-style leading-dot form `-?\.\d+` (e.g. `.1519`).
+re_xy = re.compile(r"\b([XYZEF])(-?(?:\d+\.?\d*|\.\d+))")
+# PrusaSlicer:  `;TYPE:Support material`
+# Orca/Bambu:   `; FEATURE: Support`
+re_ty = re.compile(r"^;\s*(?:TYPE|FEATURE)\s*:\s*(.*)$")
 re_lh = re.compile(r"^;\s*layer_height\s*=\s*([\d.]+)")
 
 x = y = z = 0.0
@@ -87,7 +113,7 @@ arr = np.array([[s[0], s[1], s[2], s[3], s[4], s[5]] for s in segs])
 types = np.array([s[6] for s in segs])
 support_mask = np.isin(types, list(SUPPORT_TYPES))
 object_mask  = np.isin(types, list(OBJECT_TYPES))
-brim_mask    = types == "Skirt/Brim"
+brim_mask    = np.isin(types, list(BRIM_TYPES))
 print(f"  supports : {support_mask.sum():>6}", file=sys.stderr)
 print(f"  object   : {object_mask.sum():>6}", file=sys.stderr)
 print(f"  brim     : {brim_mask.sum():>6}", file=sys.stderr)

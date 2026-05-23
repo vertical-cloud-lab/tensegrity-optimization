@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-# Build a PrusaSlicer-compatible 3MF that bundles a printable model and a
-# Support Enforcer modifier mesh inside one object. PrusaSlicer's
-# `--merge` CLI flag only ever produces ModelPart volumes; to get an
-# enforcer we have to write the volume_type ourselves.
+# Build a 3MF that bundles a printable model and a Support Enforcer
+# modifier mesh inside one object. The output is the Slic3r/PrusaSlicer
+# 3MF flavour, which OrcaSlicer (and therefore Bambu Studio, which
+# OrcaSlicer is a fork of) also loads — verified end-to-end with the
+# OrcaSlicer 2.4.0-dev nightly CLI and a Bambu Lab H2D 0.4 nozzle system
+# profile (see verification/README.md). Neither OrcaSlicer's nor
+# PrusaSlicer's `--merge` CLI flag produces an enforcer volume on its
+# own (both emit ModelPart), so this small helper writes the
+# `volume_type=SupportEnforcer` metadata ourselves.
 import struct
 import sys
 import zipfile

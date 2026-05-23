@@ -24,11 +24,20 @@ ap.add_argument("--title", default=None,
                 help="Figure suptitle (default: generic mesh comparison).")
 args = ap.parse_args()
 OLD, NEW, OUT = args.old, args.new, args.out
-SUPPORT_TYPES = {"Support material", "Support material interface"}
+# Support-extrusion feature names emitted by both PrusaSlicer
+# (`;TYPE:Support material[...]`) and OrcaSlicer / Bambu Studio
+# (`; FEATURE: Support[ interface]`). Listed together so the diff works
+# on .gcode produced by either toolchain.
+SUPPORT_TYPES = {"Support material", "Support material interface",
+                 "Support", "Support interface"}
 
 re_g  = re.compile(r"^G[01]\b")
-re_xy = re.compile(r"\b([XYZEF])(-?\d+\.?\d*)")
-re_ty = re.compile(r"^;TYPE:(.*)$")
+# Match X/Y/Z/E/F values, accepting both `-?\d+\.?\d*` (e.g. `1.234`, `12`)
+# and the OrcaSlicer-style leading-dot form `-?\.\d+` (e.g. `.1519`).
+re_xy = re.compile(r"\b([XYZEF])(-?(?:\d+\.?\d*|\.\d+))")
+# PrusaSlicer:  `;TYPE:Support material`
+# Orca/Bambu:   `; FEATURE: Support`
+re_ty = re.compile(r"^;\s*(?:TYPE|FEATURE)\s*:\s*(.*)$")
 
 def parse_supports(path):
     """Return Nx6 array of support-extrusion segments (x0,y0,z0,x1,y1,z1)."""

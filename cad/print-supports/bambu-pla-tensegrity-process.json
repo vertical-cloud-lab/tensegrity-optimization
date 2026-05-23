@@ -4,7 +4,7 @@
   "from": "system",
   "inherits": "0.20mm Standard @BBL X1C",
   "enable_support": "1",
-  "support_type": "tree(hybrid)",
+  "support_type": "tree(auto)",
   "support_on_build_plate_only": "1",
   "support_threshold_angle": "10",
   "support_object_xy_distance": "0.35",

@@ -12,7 +12,7 @@ pentagonal ring, stacked-T3 column, Geiger dome, biotensegrity spine, …)
 without per-geometry tweaking.
 
 > **TL;DR — no painting required.** Print on the build plate with the
-> overhang triangle vertex *down*, set `support_type = tree(hybrid)` with
+> overhang triangle vertex *down*, set `support_type = tree(auto)` with
 > `support_on_build_plate_only = 1`, a 5 mm brim, and Bambu Studio's tree
 > generator will autonomously place exactly the centerline stripes Audrey
 > would have painted by hand. The settings below were chosen so the same
@@ -49,7 +49,7 @@ Audrey's `tree(manual)` slice).
 | Key                              | Value           | Why |
 | -------------------------------- | --------------- | --- |
 | `enable_support`                 | `1`             | turn on supports |
-| `support_type`                   | `tree(hybrid)`  | tree branches under overhangs *and* a thin grid under flat overhangs; equivalent to Audrey's `tree(manual)` once `on_build_plate_only` is set, but driven by the slicer's overhang analysis instead of paint flags |
+| `support_type`                   | `tree(auto)`    | Bambu Studio's organic tree generator: branches under overhangs roll up into shared trunks rather than scaffolding under every overhang triangle independently; equivalent to Audrey's `tree(manual)` once `on_build_plate_only` is set, but driven by the slicer's overhang analysis instead of paint flags |
 | `support_on_build_plate_only`    | `1`             | branches drop to the plate, never onto a member — matches the painted-from-the-bottom-view rule |
 | `support_threshold_angle`        | `10`            | low enough that the entire down-facing side of every tilted strut is flagged as overhang and gets supported all the way to the plate — same recipe must survive TPU (which can't self-support shallow overhangs the way PLA can). At θ=10° only truly vertical surfaces (< 10° from vertical) are skipped, so the joint-sphere overlaps at each vertex are still ignored while the near-vertical strut sections gain full bottom-stripe coverage. |
 | `support_object_xy_distance`     | `0.35`          | leaves a clean gap around each cable so supports peel cleanly |
@@ -57,7 +57,7 @@ Audrey's `tree(manual)` slice).
 | `support_interface_top_layers`   | `2`             | enough for stable touch-points, still snaps off |
 | `support_interface_bottom_layers`| `0`             | not needed when `on_build_plate_only = 1` |
 | `support_interface_pattern`      | `rectilinear`   | breaks cleanly off PLA |
-| `support_base_pattern`           | `default`       | tree(hybrid) ignores this; left at default |
+| `support_base_pattern`           | `default`       | tree(auto) ignores this; left at default |
 | `tree_support_branch_distance`   | `2.5`           | dense enough that ~Ø3 mm cables get touch-points along their full length, matching Audrey's "stripe" coverage |
 | `tree_support_tip_diameter`      | `0.8`           | minimum tip width — keeps the contact print to ~1/3 of the cable's projected width, the same fraction Audrey paints |
 | `tree_support_branch_diameter`   | `2.0`           | sturdy enough to bridge from plate up to a 70 mm-tall T3 prism without toppling |
@@ -68,14 +68,14 @@ Audrey's `tree(manual)` slice).
 | `brim_type`                      | `outer_only`    | tensegrity nodes have tiny plate-contact footprints; brim is the cheapest insurance against tip-over mid-print |
 | `brim_width`                     | `5`             | 5 mm is enough for a Ø7 mm joint sphere; raise to 8 mm for taller stacks |
 
-### Why `tree(hybrid)` instead of `tree(manual)` or paint?
+### Why `tree(auto)` instead of `tree(manual)` or paint?
 
 Audrey's original `tree(manual)` slice puts the slicer in a mode where it
 *only* respects painted seed-triangles. That works for one part but is
 laborious and gets wiped whenever the source mesh is regenerated. The
 combination above gives an automated equivalent:
 
-- `tree(hybrid)` uses the slicer's overhang analysis, so the seed pattern
+- `tree(auto)` uses the slicer's overhang analysis, so the seed pattern
   is recomputed every time you re-slice — no painting state to lose.
 - `support_on_build_plate_only = 1` forces every tree branch to root at the
   plate, so supports never touch a member from the side or top (Audrey's
@@ -101,9 +101,6 @@ A ready-to-load `process.json` snippet (drop into Bambu Studio →
 ## C. TPU-safe / multi-material: §B settings **+ Support Enforcer STL**
 
 Path §B alone is sufficient when the part is single-material PLA, because
-the slicer's overhang analysis can detect the down-facing surfaces of
-every tilted strut. **It is not sufficient when any member is printed in
-TPU** (or when a member is vertical). The reason is fundamental, not a
 the slicer's overhang analysis can detect the down-facing surfaces of
 every tilted strut. **It is not sufficient when any member is printed in
 TPU** (or when a member is vertical). The reason is fundamental, not a
@@ -143,9 +140,13 @@ enforcer region, so branches still root at the plate, never on a
 member. The enforcer geometry simply tells the slicer *which XY columns
 must be supported regardless of overhang shape*.
 
-A full PrusaSlicer-CLI end-to-end verification on the PR #35 T3-prism
-(every member gets continuous bottom coverage, including any that the
-auto-tree analysis missed) is in
+A full headless end-to-end verification on the PR #35 T3-prism, sliced
+for the lab's Bambu Lab H2D using **OrcaSlicer** (the Bambu Studio
+community fork — see [`verification/README.md`](verification/README.md)
+for why OrcaSlicer rather than the Bambu Studio AppImage was used for
+the headless verification, and how the same Bambu H2D system profile
+that drives the GUI is loaded) — every member gets continuous bottom
+coverage, including any that the auto-tree analysis missed — is in
 [`verification/`](verification/) — see
 `t3-prism-pr35-tpu-enforced-preview.png` and the `build_enforcer_3mf.py`
 helper used to bundle the printable + enforcer meshes into one 3MF.
