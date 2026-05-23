@@ -98,7 +98,7 @@ A ready-to-load `process.json` snippet (drop into Bambu Studio →
 `Process → Add → Import process`) is included as
 [`bambu-pla-tensegrity-process.json`](bambu-pla-tensegrity-process.json).
 
-## C. TPU-safe / multi-material: §B settings **+ Support Enforcer STL**
+## C. TPU-safe / any structure with vertical members: bake **narrowing pillars** into the printable mesh
 
 Path §B alone is sufficient when the part is single-material PLA, because
 the slicer's overhang analysis can detect the down-facing surfaces of
@@ -115,10 +115,52 @@ threshold-tuning problem:
 > TPU 85A — molten, soft, ~2× softer than TPU 95A — sags
 > layer-to-layer and the cable goes out of shape.
 
-The fix is to bypass overhang analysis for those members entirely by
-loading an **explicit Support Enforcer modifier mesh** alongside the
-printable part. The slicer then forces supports in the enforcer volume
-regardless of orientation:
+We tried two slicer-side workarounds before settling on §C: dropping
+`support_threshold_angle` to 10° (helps tilted struts a little, vertical
+cables not at all), and loading explicit Support Enforcer volumes (the
+slicer's `tree(auto)` generator still rejects branches that exceed its
+internal branch-stretch budget, which on a 100 mm-tall T3 prism leaves
+the upper third of every vertical cable uncovered). The recommended
+recipe is now to skip slicer-side supports entirely and **bake the
+supports directly into the printable mesh** as a set of narrowing
+pillars sized to be snapped off after printing:
+
+```bash
+# 1. Generate the narrowing-pillar mesh for your topology:
+python3 cad/print-supports/generate_support_pillars.py \
+    --topology t3_prism --R 37.5 --H 105 --twist 60 \
+    --strut_d 9 --cable_d 4.5 \
+    --out pillars.stl
+
+# 2. Merge the pillars into one combined printable STL with the part:
+python3 cad/print-supports/verification/merge_stls.py \
+    combined.stl my_part.stl pillars.stl --align-first-to-second
+
+# 3. In Bambu Studio: open combined.stl, slice with
+#    `enable_support = 0` (everything below the underside of each member
+#    is now part of the part). After printing, snap each pillar off at
+#    its narrow tip.
+```
+
+Each pillar is a tapered cone (wide breakaway base on the build plate
+narrowing to a ~Ø 0.6 mm tip that fuses into the member's underside),
+placed at evenly-spaced sample points along every non-bed-contact
+member's centerline. Because the pillars are real geometry — not a paint
+flag and not a slicer hint — the slicer always honours them, including
+on vertical members and including in TPU. The narrow tip is the
+designed breakaway notch; the wide base survives bed adhesion. Default
+tuning (Ø 5 mm base → Ø 0.6 mm tip, 8 mm spacing) was chosen for the
+PR #35 T3-prism but every knob is exposed on the CLI — see §D for the
+full list.
+
+### When you also want slicer-managed supports: §B + Support Enforcer STL (fallback)
+
+A separate path that keeps support generation on the slicer side is
+available — load an **explicit Support Enforcer modifier mesh** alongside
+the printable part. The slicer then forces supports in the enforcer
+volume regardless of orientation. Use this only when modifying the
+printable mesh (the §C path above) is not an option, since the slicer
+still has the branch-stretch limitation noted above:
 
 ```bash
 # 1. Generate a per-member enforcer STL (geometry-agnostic — see §D):
@@ -155,11 +197,44 @@ combined) so the resulting toolpaths can be inspected closely in any STL
 viewer; a pre-generated `t3-prism-pr35-tpu-enforced-supports.stl` is
 checked in alongside the previews.
 
-## D. Geometry-agnostic enforcer generator
+## D. Geometry-agnostic generators
 
-[`generate_support_enforcers.py`](generate_support_enforcers.py) takes
-an arbitrary member graph and emits one vertical rectangular prism per
-member:
+Both the **narrowing-pillar** generator (§C, primary) and the legacy
+**Support Enforcer STL** generator (§C fallback) accept the same
+``--members my_members.json`` schema or the same built-in ``--topology``
+presets, so you can drive either from the same structure description.
+
+### `generate_support_pillars.py` (recommended)
+
+Emits one tapered-cone pillar every ``--spacing`` mm along each
+non-bed-contact member's 3D centerline, from the build plate
+(``--base_d`` mm wide) up to the member's underside (``--tip_d`` mm wide,
+buried ``--tip_overshoot`` mm inside the member so the boolean union is
+watertight after slicing). Bed-contact members (``trim_ends=False``,
+e.g. the bottom-triangle cables of a T3 prism) are skipped by default;
+pass ``--include_bed_contact`` to override.
+
+```bash
+# 1. built-in topology preset
+python3 cad/print-supports/generate_support_pillars.py \
+    --topology t3_prism --R 37.5 --H 105 --twist 60 \
+    --strut_d 9 --cable_d 4.5 \
+    --out pillars.stl
+
+# 2. arbitrary structure
+python3 cad/print-supports/generate_support_pillars.py \
+    --members my_members.json --out pillars.stl
+```
+
+Then merge the pillar STL with your printable part STL (e.g. via
+[`verification/merge_stls.py`](verification/merge_stls.py)) and slice
+the combined STL **with supports turned off**.
+
+### `generate_support_enforcers.py` (legacy fallback)
+
+Emits one vertical rectangular prism per member as a Support Enforcer
+volume, intended to be loaded as a modifier mesh alongside the
+printable part:
 
 ```bash
 # 1. describe your structure (or use one of the bundled topology presets)

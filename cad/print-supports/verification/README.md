@@ -204,6 +204,71 @@ grey, supports in orange; iso + bottom view):
 
 ![object + supports preview](t3-prism-pr35-object-and-supports-preview.png)
 
+## Path (d) — manual narrowing pillars baked into the printable mesh
+
+The two paths above (and the §C enforcer fallback in
+[`../README.md`](../README.md)) all live on the slicer side: the slicer
+chooses whether and how to obey the overhang / enforcer hints. On a
+~100 mm-tall T3 prism the slicer's `tree(auto)` generator hits its
+internal branch-stretch budget partway up the vertical TPU cables, so
+even with explicit enforcer volumes the upper third of every vertical
+cable stays uncovered.
+
+The reliable fix is to take the slicer out of the loop and bake the
+supports directly into the printable mesh as a set of **narrowing
+pillars** (wide breakaway base on the bed → small ~Ø 0.6 mm tip that
+fuses into the member's underside). The slicer prints them as part of
+the part, with `enable_support = 0`, and the operator snaps each pillar
+off at its narrow tip after printing.
+
+```bash
+# 1. Generate one tapered cone every --spacing mm under each
+#    non-bed-contact member's centerline. Same --topology / --members
+#    interface as generate_support_enforcers.py.
+python3 cad/print-supports/generate_support_pillars.py \
+    --topology t3_prism --R 37.5 --H 105 --twist 60 \
+    --strut_d 9 --cable_d 4.5 \
+    --out cad/print-supports/verification/t3-prism-pr35-pillars.stl
+
+# 2. Merge the pillars into the printable mesh.
+git show 21ca244~1:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl
+python3 cad/print-supports/verification/merge_stls.py \
+    cad/print-supports/verification/t3-prism-pr35-with-pillars.stl \
+    /tmp/t3-prism.stl \
+    cad/print-supports/verification/t3-prism-pr35-pillars.stl \
+    --align-first-to-second
+
+# 3. Slice the combined STL in Bambu Studio with enable_support = 0.
+#    The §B process JSON minus the `enable_support`/tree-support keys is
+#    a sensible starting point.
+```
+
+Pre-generated artefacts (PR #35 T3-prism, R=37.5 / H=105 / twist=60 /
+strut_d=9 / cable_d=4.5, default pillar tuning):
+
+| File                                            | Triangles | Bytes  | Pillars |
+| ----------------------------------------------- | --------: | -----: | ------: |
+| `t3-prism-pr35-pillars.stl` (pillars only)      |     4,608 | 0.2 MB |      96 |
+| `t3-prism-pr35-with-pillars.stl` (part + pillars merged) |  29,474 | 1.5 MB |      96 |
+
+Preview (object grey, narrowing pillars orange; iso + bottom view —
+every non-bed-contact member is supported, the 3 bottom-triangle cables
+between bed-contact vertices are correctly skipped):
+
+![pillars preview](t3-prism-pr35-pillars-preview.png)
+
+Why these defaults? `--base_d 5.0` is wide enough that a single pillar
+sticks to the plate on its own (no brim needed under it) and lifts
+fewer than ~10 mm vertically without buckling on PLA. `--tip_d 0.6` is
+1.5 × the H2D's 0.4 mm nozzle width — narrow enough that the pillar
+snaps off cleanly under thumb pressure at the fused junction, wide
+enough that the slicer still emits an extrusion there (an 0.4 mm tip
+would slice as a single-line bead and disappear under tolerance).
+`--spacing 8.0` mm gives ~3 pillars per non-trivial member without
+adding noticeable print time. Override any of these on the CLI if your
+geometry needs different breakaway behaviour:
+`generate_support_pillars.py --help`.
+
 ## Why θ = 10°? — TPU-safe strut-bottom coverage (partial fix)
 
 The first draft of the recipe used `support_threshold_angle = 40` (~40°
