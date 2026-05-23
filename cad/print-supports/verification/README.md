@@ -2,59 +2,66 @@
 
 This folder is a one-shot end-to-end check that the §B PLA support recipe
 in [`../README.md`](../README.md) actually places supports correctly on a
-real tensegrity STL, with no per-geometry painting.
+real tensegrity STL, with no per-geometry painting, and a way to inspect
+the resulting toolpaths closely in any STL viewer.
 
-## Why OrcaSlicer (the Bambu Studio fork) and not "plain" Bambu Studio?
+## Slicer: the official Bambu Studio CLI
 
-The lab's production printer is a **Bambu Lab H2D** (0.4 mm nozzle, single-
-material PLA mode for the path-(a) recipe; PLA + TPU 85A for path-(c)). The
-slicing toolchain used here is **OrcaSlicer**, which is
+The lab's production printer is a **Bambu Lab H2D** (0.4 mm nozzle,
+single-material PLA mode for the path-(a) recipe; PLA + TPU 85A for
+path-(c)). The slicing toolchain is the official **`bambu-studio` CLI**
+shipped inside the BambuStudio AppImage
+([wiki](https://github.com/bambulab/BambuStudio/wiki/Command-Line-Usage)),
+which is
 
-* a direct community fork of Bambu Studio, which is itself a fork of
-  PrusaSlicer / Slic3r, so all three share the same slicing engine, the
-  same overhang / tree-support algorithms, and the same Bambu G-code
-  dialect;
-* shipped with the same `resources/profiles/BBL/` system-profile bundle as
-  Bambu Studio (machine: `Bambu Lab H2D 0.4 nozzle`; process: `0.20mm
-  Standard @BBL H2D`; filament: `Bambu PLA Basic @BBL H2D`), imported
-  verbatim, so an H2D recipe transfers 1:1 between OrcaSlicer and Bambu
-  Studio (whichever the operator prefers in the GUI);
-* the only Linux-headless Bambu-flavoured slicer that runs reliably under
-  `xvfb` on Ubuntu 24.04 — the official Bambu Studio AppImage links
-  `libsoup-2.4` and `WebKit2GTK-4.0`, both of which are deprecated and
-  unavailable on current Ubuntu, so it cannot be driven from CI / a
-  sandboxed VM. OrcaSlicer's nightly AppImage works out of the box.
+- the same binary that drives the Bambu Studio GUI on Linux — same
+  slicing engine, same `resources/profiles/BBL/` system-profile bundle
+  (machine: `Bambu Lab H2D 0.4 nozzle`; process: `0.20mm Standard @BBL
+  H2D`; filament: `Bambu PLA Basic @BBL H2D`), same Bambu G-code dialect
+  the printer consumes natively;
+- usable headlessly under `xvfb` on Ubuntu 24.04 — the 24.04 AppImage
+  build links `libsoup-3.0` / `WebKit2GTK-4.1` (both available on
+  current Ubuntu) so it runs on a sandboxed CI runner with no desktop
+  session. (An earlier revision of this PR used OrcaSlicer as a
+  workaround for a `libsoup-2.4` / `WebKit2GTK-4.0` dependency in an
+  older Bambu Studio build; that workaround is no longer needed.)
 
-So: the previews below were produced by OrcaSlicer's headless CLI against
-the **same Bambu H2D system profile** that Bambu Studio would use in its
-GUI. The keys in [`../bambu-pla-tensegrity-process.json`](../bambu-pla-tensegrity-process.json)
+The keys in [`../bambu-pla-tensegrity-process.json`](../bambu-pla-tensegrity-process.json)
 are Bambu Studio key names and can be `Process → Add → Import process`'d
-straight into Bambu Studio.
+straight into the Bambu Studio GUI as well.
+
+> Note: the PyPI package `bambu-cli` is **unrelated** — it's a printer
+> control client (MQTT/HTTPS/FTPS for uploading already-sliced files,
+> starting jobs, monitoring status). Bambu Lab does not publish a Python
+> slicing API; the supported automation path is the AppImage CLI used
+> here.
 
 ## Inputs
 
 - **Mesh** — `cad/t3-prism/t3-prism.stl` from PR #35 head
-  `copilot/get-bambu-sliced-print-t3-prism` (the combined PLA + TPU mesh of
-  the bonded-captive-core T3-prism at scale 1.5×, R = 37.5, H = 105, twist =
-  60, strut_d = 9, cable_d = 4.5, joint_d = 7).
+  `copilot/get-bambu-sliced-print-t3-prism` (the combined PLA + TPU mesh
+  of the bonded-captive-core T3-prism at scale 1.5×, R = 37.5, H = 105,
+  twist = 60, strut_d = 9, cable_d = 4.5, joint_d = 7).
 - **Machine / process / filament profiles** — pulled straight from the
-  OrcaSlicer AppImage's bundled `resources/profiles/BBL/` directory by
-  [`slice_h2d.py`](slice_h2d.py); the same files that ship inside Bambu
-  Studio.
+  BambuStudio AppImage's bundled `resources/profiles/BBL/` directory by
+  [`slice_bambu_h2d.py`](slice_bambu_h2d.py); the wiki notes that the
+  CLI requires a *flat* config rather than the inherits-chain one used
+  by the GUI, so the script walks the inheritance chain itself before
+  invoking the slicer.
 - **Tensegrity overrides** — [`../bambu-pla-tensegrity-process.json`](../bambu-pla-tensegrity-process.json),
   applied on top of the `0.20mm Standard @BBL H2D` process profile.
 
 ## How to reproduce
 
 ```bash
-# 0. Once: grab the OrcaSlicer (Bambu fork) Ubuntu 24.04 AppImage and
-#    extract it so we have a directly-executable AppRun + the BBL system
-#    profiles on disk.
-curl -L -o /tmp/orca.AppImage \
-    https://github.com/OrcaSlicer/OrcaSlicer/releases/download/nightly-builds/OrcaSlicer_Linux_AppImage_Ubuntu2404_nightly.AppImage
-chmod +x /tmp/orca.AppImage
-( cd /tmp && mkdir -p orca && cd orca && ../orca.AppImage --appimage-extract >/dev/null )
-ORCA=/tmp/orca/squashfs-root/AppRun
+# 0. Once: grab the Bambu Studio Ubuntu 24.04 AppImage. The script can
+#    either drive the AppImage directly (it will run --appimage-extract
+#    on first invocation and cache the result) or use an
+#    already-extracted squashfs-root directory.
+curl -L -o /tmp/BambuStudio.AppImage \
+    https://github.com/bambulab/BambuStudio/releases/download/v02.06.00.51/BambuStudio_ubuntu-24.04-v02.06.00.51-20260417160415.AppImage
+chmod +x /tmp/BambuStudio.AppImage
+BAMBU=/tmp/BambuStudio.AppImage
 
 # 1. Extract the T3-prism mesh from PR #35 (or, after it merges, from
 #    main at the same path):
@@ -63,19 +70,25 @@ git show origin/copilot/get-bambu-sliced-print-t3-prism:cad/t3-prism/t3-prism.st
 # (post-merge equivalent: `git show main:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl`)
 
 # 2. Slice with the Bambu Lab H2D recipe (path (a) — PLA, no enforcer):
-python3 cad/print-supports/verification/slice_h2d.py \
-    $ORCA /tmp/t3-prism.stl /tmp/t3-prism.gcode
+python3 cad/print-supports/verification/slice_bambu_h2d.py \
+    $BAMBU /tmp/t3-prism.stl /tmp/t3-prism.gcode
 
 # 3. Render the toolpath PNG (numpy + matplotlib):
 python3 cad/print-supports/verification/render_gcode.py \
     /tmp/t3-prism.gcode \
     cad/print-supports/verification/t3-prism-pr35-gcode-preview.png
+
+# 4. (Optional but recommended for close visual inspection) convert
+#    the sliced gcode back into a per-feature STL — see "Previewing
+#    supports as an STL" below.
+python3 cad/print-supports/verification/gcode_to_stl.py \
+    /tmp/t3-prism.gcode /tmp/t3-prism-supports.stl --support-only
 ```
 
 For reference, the snapshot committed here was generated from PR #35 head
 commit `65d0d3f` (`copilot/get-bambu-sliced-print-t3-prism`) using
-OrcaSlicer 2.4.0-dev (nightly AppImage; commit logged in the gcode header
-under `; generated by OrcaSlicer`).
+BambuStudio 02.06.00.51 (Ubuntu 24.04 AppImage; build string visible in
+the gcode header under `; BambuStudio 02.06.00.51`).
 
 ## Result (path a — PLA, no enforcer, single-material H2D extruder)
 
@@ -92,13 +105,13 @@ under `; generated by OrcaSlicer`).
 
 | Metric                  | Value                                              |
 | ----------------------- | -------------------------------------------------- |
-| Slicer                  | OrcaSlicer 2.4.0-dev (Bambu fork, BBL profiles)    |
+| Slicer                  | BambuStudio 02.06.00.51 (official CLI)             |
 | Printer profile         | Bambu Lab H2D 0.4 nozzle                           |
 | Filament profile        | Bambu PLA Basic @BBL H2D                           |
 | Layers                  | 601                                                |
 | Layer height            | 0.20 mm                                            |
-| Filament used           | 26.99 cm³ (34.00 g, PLA)                           |
-| Estimated print time    | 2 h 13 m 26 s                                      |
+| Filament used           | 26.6 cm³ (33.5 g, PLA)                             |
+| Estimated print time    | 1 h 41 m 40 s                                      |
 | Support style           | `tree(auto)` (Bambu organic tree, single material) |
 | Supports on plate only? | yes (`support_on_build_plate_only = 1`)            |
 | Overhang threshold      | **10°** (TPU-safe; see below)                      |
@@ -111,6 +124,49 @@ from 40° to 10° the entire down-facing side of every near-vertical strut
 also gets supported all the way to the plate, so the same recipe survives
 a TPU print of the same mesh (TPU sags on any shallow overhang PLA would
 self-support).
+
+## Previewing supports as an STL — `gcode_to_stl.py`
+
+The 3-panel PNGs are useful for a quick at-a-glance check but they
+flatten everything into 2D and you can't rotate / fly through the
+geometry. [`gcode_to_stl.py`](gcode_to_stl.py) closes that gap: it
+parses every `G1 E…` extrusion move out of the sliced gcode, reifies
+each one as a small rectangular prism (layer-height tall, extrusion-line
+wide, centered on the toolpath), and writes the result as a binary STL
+that loads into any STL viewer (Bambu Studio, Meshlab, FreeCAD, blender,
+3D-printable-thing-viewer, etc.).
+
+Filter by slicer "feature" name (PrusaSlicer `;TYPE:` or Bambu/Orca
+`;FEATURE:`), or use the shorthand flags:
+
+```bash
+# Just the support material (this is what you want for close-up
+# inspection of "which surfaces are being held up and how densely"):
+python3 cad/print-supports/verification/gcode_to_stl.py \
+    /tmp/t3-prism.gcode /tmp/supports.stl --support-only
+
+# Just the object (no supports, no brim):
+python3 cad/print-supports/verification/gcode_to_stl.py \
+    /tmp/t3-prism.gcode /tmp/object.stl --object-only
+
+# Everything at once, one STL per kind:
+python3 cad/print-supports/verification/gcode_to_stl.py \
+    /tmp/t3-prism.gcode /tmp/parts --split
+# → /tmp/parts-object.stl, /tmp/parts-support.stl, …
+```
+
+Two pre-generated support-only STLs are committed here so reviewers can
+download and drop them straight into a viewer without re-running the
+slicer:
+
+| STL                                              | Source slice               | Triangles | Bytes  |
+| ------------------------------------------------ | -------------------------- | --------: | -----: |
+| `t3-prism-pr35-th10-supports.stl`                | path (a), θ = 10°          |   111,972 |  5.4 MB |
+| `t3-prism-pr35-tpu-enforced-supports.stl`        | path (c), enforcer + θ=10° |   266,868 | 13.3 MB |
+
+(Triangle count is ≈ 12 × number of extrusion segments. The enforcer
+version is ~2.4× larger because the enforcer columns force continuous
+coverage along the full bottom of every member.)
 
 ## Why θ = 10°? — TPU-safe strut-bottom coverage (partial fix)
 
@@ -125,19 +181,18 @@ Dropping the threshold to **10°** flags the entire down-facing surface of
 every tilted member as an overhang, so the tree generator builds branches
 from the plate all the way along each strut's bottom. The H2D tree-
 support generator's response to the threshold change is visible in
-`t3-prism-pr35-threshold-comparison.png` and in the numbers below — note
-that on OrcaSlicer's `tree(auto)` the slope of "more supports = more
-material" is the opposite of PrusaSlicer's `tree(organic)`: at θ = 10°
-the slicer is able to merge nearby overhangs into shared trunks, so it
-extrudes *less* total support material than it does at θ = 40° while
-still covering more of each strut's underside.
+`t3-prism-pr35-threshold-comparison.png` and in the numbers below — on
+Bambu's `tree(auto)` the slope of "more flagged area = more material" is
+not monotonic: at θ = 10° the slicer can merge nearby overhangs into
+shared trunks, so it sometimes extrudes *less* support material than at
+θ = 40° while still covering more of each strut's underside. On this
+mesh, θ = 10° extrudes a touch less than θ = 40°:
 
-| Metric                       | θ = 40° (old) | θ = 10° (new) | Δ        |
+| Metric                       | θ = 40° (old) | θ = 10° (new) |        Δ |
 | ---------------------------- | ------------: | ------------: | -------: |
-| `Support` feature blocks     | 635           | 549           | −13.5 %  |
-| `Support interface` blocks   | 83            | 8             | −90 %    |
-| Filament                     | 29.90 cm³     | 26.99 cm³     | −9.7 %   |
-| Print time                   | 2 h 32 m 58 s | 2 h 13 m 26 s | −12.7 %  |
+| `Support` feature blocks     |           764 |           622 |  −18.6 % |
+| `Support interface` blocks   |           214 |            75 |  −65.0 % |
+| Print time                   | 1 h 45 m 42 s | 1 h 41 m 21 s |   −4.1 % |
 
 This handles **tilted** struts but is fundamentally **insufficient** for
 truly vertical or near-vertical members — see the next section.
@@ -146,13 +201,13 @@ To regenerate the comparison panel:
 
 ```bash
 # slice once at θ = 40° (the old default):
-python3 cad/print-supports/verification/slice_h2d.py \
-    $ORCA /tmp/t3-prism.stl /tmp/t3-prism-th40.gcode \
+python3 cad/print-supports/verification/slice_bambu_h2d.py \
+    $BAMBU /tmp/t3-prism.stl /tmp/t3-prism-th40.gcode \
     --override support_threshold_angle=40
 
 # slice again at θ = 10° (the current recipe):
-python3 cad/print-supports/verification/slice_h2d.py \
-    $ORCA /tmp/t3-prism.stl /tmp/t3-prism-th10.gcode
+python3 cad/print-supports/verification/slice_bambu_h2d.py \
+    $BAMBU /tmp/t3-prism.stl /tmp/t3-prism-th10.gcode
 
 # render the side-by-side diff:
 python3 cad/print-supports/verification/diff_supports.py \
@@ -196,15 +251,21 @@ way down to the build plate.
   `--vertical_pad` path, default = `member_d + 0.5 mm`).
 - `build_enforcer_3mf.py` — bundles a printable STL and an enforcer STL
   into a single 3MF, marking the second mesh as a `SupportEnforcer`
-  volume in `Metadata/Slic3r_PE_model.config`. OrcaSlicer / Bambu Studio
-  inherit the PrusaSlicer-style 3MF reader, so the same enforcer 3MF
-  loads cleanly into all three slicers (verified end-to-end below with
-  OrcaSlicer + H2D).
+  volume in `Metadata/Slic3r_PE_model.config`. Bambu Studio inherits
+  the PrusaSlicer-style 3MF reader, so the same enforcer 3MF loads
+  cleanly into the GUI as well as the CLI.
 - `t3-prism-pr35-tpu-enforced-preview.png` — the resulting 3-panel
   gcode preview from the H2D slice. The bottom-view panel now has a
   continuous orange stripe along the full XY projection of every
   member, not just the tilted ones, and the iso panel shows tree
   branches climbing the full length of each strut's underside.
+- `t3-prism-pr35-tpu-enforced-supports.stl` — the support-only STL
+  produced by `gcode_to_stl.py --support-only` from the enforced
+  slice. **This is the artifact to load if you want to inspect
+  exactly which surfaces are being held up under the TPU-safe
+  recipe.** 266,868 triangles, 13.3 MB binary STL, opens in any
+  viewer (verified in Bambu Studio's own "Add Part → Load" dialog
+  and in MeshLab).
 
 ### How to reproduce the TPU-safe slice
 
@@ -219,47 +280,53 @@ python3 cad/print-supports/generate_support_enforcers.py \
 # (For arbitrary topologies: --members my_members.json.)
 
 # 3. Bundle the printable mesh and the enforcer STL into one 3MF, with
-#    the enforcer marked SupportEnforcer (orca-slicer's CLI does not
-#    have a "merge with subtype" flag; the helper does):
+#    the enforcer marked SupportEnforcer (Bambu Studio's CLI has no
+#    "merge with subtype" flag; the helper does the wiring):
 python3 cad/print-supports/verification/build_enforcer_3mf.py \
     /tmp/t3-prism.stl /tmp/t3_enforcers.stl /tmp/t3-with-enforcers.3mf
 
 # 4. Slice with the Bambu H2D recipe applied to the enforcer 3MF (the
 #    enforcer adds coverage on top of the auto-tree — `enable_support = 1`
 #    is already on in the recipe):
-python3 cad/print-supports/verification/slice_h2d.py \
-    $ORCA /tmp/t3-with-enforcers.3mf /tmp/out.gcode
+python3 cad/print-supports/verification/slice_bambu_h2d.py \
+    $BAMBU /tmp/t3-with-enforcers.3mf /tmp/out.gcode
 
-# 5. Render:
+# 5. Render the 3-panel preview:
 python3 cad/print-supports/verification/render_gcode.py \
     /tmp/out.gcode \
     cad/print-supports/verification/t3-prism-pr35-tpu-enforced-preview.png \
     --title "T3-prism + enforcer-STL — full bottom coverage on every member (TPU-safe, Bambu H2D)"
+
+# 6. Extract the supports-only mesh for close visual inspection:
+python3 cad/print-supports/verification/gcode_to_stl.py \
+    /tmp/out.gcode \
+    cad/print-supports/verification/t3-prism-pr35-tpu-enforced-supports.stl \
+    --support-only
 ```
 
-### TPU-safe slice metrics (Bambu H2D, OrcaSlicer)
+### TPU-safe slice metrics (Bambu H2D, BambuStudio CLI)
 
 | Metric                  | Value                                              |
 | ----------------------- | -------------------------------------------------- |
-| Slicer                  | OrcaSlicer 2.4.0-dev (Bambu fork, BBL profiles)    |
+| Slicer                  | BambuStudio 02.06.00.51 (official CLI)             |
 | Printer profile         | Bambu Lab H2D 0.4 nozzle                           |
 | Filament profile        | Bambu PLA Basic @BBL H2D                           |
-| Layers                  | 579                                                |
+| Layers                  | 580                                                |
 | Layer height            | 0.20 mm                                            |
-| Filament used           | 97.32 cm³ (122.62 g, PLA equivalent)               |
-| Estimated print time    | 5 h 33 m 55 s                                      |
+| Estimated print time    | 3 h 36 m 22 s                                      |
 | Support style           | `tree(auto)` + enforcer-restricted                 |
 | Supports on plate only? | yes (`support_on_build_plate_only = 1`)            |
 | Auto supports?          | yes — additive to enforcer (`enable_support = 1`)  |
 | Enforcer volumes        | 12 prisms (one per non-bed-contact member)         |
+| `Support` feature blocks    | 695                                            |
+| `Support interface` blocks  | 174                                            |
 | Brim                    | 5 mm outer-only                                    |
 | Bridges supported?      | no (`bridge_no_support = 1`)                       |
 
-The jump from 27 cm³ → 97 cm³ filament (and 2 h 13 m → 5 h 34 m print
-time) is the cost of forcing continuous bottom coverage along every
-member's full length — the per-member enforcer columns are short and
-dense rather than tall and sparse, but they multiply across all 12
-non-bed-contact members.
+The print-time jump from 1 h 41 m → 3 h 36 m is the cost of forcing
+continuous bottom coverage along every member's full length — the
+per-member enforcer columns are short and dense rather than tall and
+sparse, but they multiply across all 12 non-bed-contact members.
 
 ### For Bambu Studio GUI users
 

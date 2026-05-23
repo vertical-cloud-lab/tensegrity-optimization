@@ -141,15 +141,19 @@ member. The enforcer geometry simply tells the slicer *which XY columns
 must be supported regardless of overhang shape*.
 
 A full headless end-to-end verification on the PR #35 T3-prism, sliced
-for the lab's Bambu Lab H2D using **OrcaSlicer** (the Bambu Studio
-community fork — see [`verification/README.md`](verification/README.md)
-for why OrcaSlicer rather than the Bambu Studio AppImage was used for
-the headless verification, and how the same Bambu H2D system profile
-that drives the GUI is loaded) — every member gets continuous bottom
-coverage, including any that the auto-tree analysis missed — is in
+for the lab's Bambu Lab H2D using the official **Bambu Studio CLI**
+(`bambu-studio --slice 0 …` from the BambuStudio AppImage — see
+[`verification/README.md`](verification/README.md) for the AppImage URL
+and how the H2D system profile is loaded) — every member gets continuous
+bottom coverage, including any that the auto-tree analysis missed — is in
 [`verification/`](verification/) — see
 `t3-prism-pr35-tpu-enforced-preview.png` and the `build_enforcer_3mf.py`
 helper used to bundle the printable + enforcer meshes into one 3MF.
+A separate `gcode_to_stl.py` script in the same folder converts any
+sliced gcode back into an STL (object-only, supports-only, brim-only, or
+combined) so the resulting toolpaths can be inspected closely in any STL
+viewer; a pre-generated `t3-prism-pr35-tpu-enforced-supports.stl` is
+checked in alongside the previews.
 
 ## D. Geometry-agnostic enforcer generator
 

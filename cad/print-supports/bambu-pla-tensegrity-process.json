@@ -1,8 +1,8 @@
 {
-  "_comment": "Bambu Studio process override snippet — single-material PLA tensegrity supports. See cad/print-supports/README.md §B for full derivation. Drop into Process → Add → Import process.",
+  "_comment": "Bambu Studio process override snippet — single-material PLA tensegrity supports. See cad/print-supports/README.md §B for full derivation. Drop into Process → Add → Import process. The 'inherits' field points at the H2D base profile (the printer this lab uses); for X1C/P1S/A1 etc., re-set 'inherits' to the matching '0.20mm Standard @BBL <printer>' entry in your Bambu Studio installation.",
   "name": "PLA Tensegrity Supports (general)",
   "from": "system",
-  "inherits": "0.20mm Standard @BBL X1C",
+  "inherits": "0.20mm Standard @BBL H2D",
   "enable_support": "1",
   "support_type": "tree(auto)",
   "support_on_build_plate_only": "1",

@@ -1,44 +1,49 @@
 #!/usr/bin/env python3
-"""Headless OrcaSlicer (Bambu Studio fork) slice for the Bambu Lab H2D.
+"""Headless Bambu Studio CLI slice for the Bambu Lab H2D.
 
 This is the verification driver behind the path-(a) and path-(c) previews in
 this directory. It targets the actual production printer for this lab — a
 Bambu Lab H2D with a 0.4 mm nozzle in single-material PLA mode — by pulling
-OrcaSlicer's bundled `Bambu Lab H2D 0.4 nozzle` system machine profile, the
+the bundled `Bambu Lab H2D 0.4 nozzle` system machine profile, the
 `0.20mm Standard @BBL H2D` process profile, and the `Bambu PLA Basic @BBL
-H2D` filament profile, then overlaying the tensegrity tweaks listed in
-``cad/print-supports/bambu-pla-tensegrity-process.json``.
+H2D` filament profile straight out of the Bambu Studio AppImage's
+``resources/profiles/BBL/`` directory, then overlaying the tensegrity
+tweaks listed in ``cad/print-supports/bambu-pla-tensegrity-process.json``.
 
-We use OrcaSlicer rather than the official Bambu Studio AppImage because
+This is the **official** ``bambu-studio`` CLI shipped inside the Bambu
+Studio AppImage (see https://github.com/bambulab/BambuStudio/wiki/Command-Line-Usage),
+not a fork. The Ubuntu 24.04 build of the AppImage links
+``libsoup-3.0`` / ``WebKit2GTK-4.1`` and runs cleanly under ``xvfb`` on
+this lab's CI runner, so we can drive the genuine slicer headlessly.
 
-* OrcaSlicer is a direct community fork of Bambu Studio (which is itself a
-  fork of PrusaSlicer / Slic3r), sharing the same slicing engine, the same
-  Bambu profile catalogue, and the same Bambu G-code dialect.
-* OrcaSlicer ships a Linux AppImage that runs headlessly under xvfb without
-  needing a desktop session, whereas the Bambu Studio Linux AppImage links
-  libsoup-2.4 / WebKit2GTK-4.0 (deprecated on Ubuntu 24.04) and exits at
-  startup. The OrcaSlicer profile catalogue ``resources/profiles/BBL/`` is
-  imported verbatim from Bambu Studio so the H2D recipe transfers 1:1.
+(Note: the PyPI package ``bambu-cli`` is unrelated — it controls printers
+over MQTT/HTTPS/FTPS using already-sliced files; it does not perform
+slicing. Bambu Lab does not publish a Python slicing API; the supported
+automation path is the AppImage CLI invoked as below.)
 
 The script:
 
-  1. Resolves the H2D profile inheritance chain by hand (OrcaSlicer's CLI
-     does not walk ``inherits`` when a profile is loaded via
-     ``--load-settings`` outside its system datadir) and writes the
-     flattened machine / process / filament JSON to ``--workdir``.
+  1. Resolves the H2D profile inheritance chain by hand (the Bambu Studio
+     CLI requires "a full config instead of the one used in
+     resources/profiles/BBL/…", per the wiki) and writes the flattened
+     machine / process / filament JSON to ``--workdir``.
   2. Applies the overrides from ``bambu-pla-tensegrity-process.json``
      (plus any extra ``--override KEY=VALUE`` flags) on top of the
      flattened process profile.
   3. Translates the input STL so its lowest vertex sits on z=0 (the slicer
      refuses parts whose bounding box dips below the bed).
-  4. Invokes ``orca-slicer --arrange 1 --slice 0 --export-3mf …`` and
-     extracts ``Metadata/plate_1.gcode`` from the sliced project.
+  4. Invokes ``bambu-studio --arrange 1 --slice 0 --export-3mf …`` and
+     copies the resulting ``plate_1.gcode`` out of the work directory.
 
 Usage:
 
-    slice_h2d.py path/to/orca-slicer-AppRun input.stl out.gcode \\
+    slice_bambu_h2d.py path/to/BambuStudio.AppImage input.stl out.gcode \\
         [--override support_threshold_angle=40] \\
         [--workdir /tmp/h2d_workdir]
+
+The ``BambuStudio.AppImage`` argument can be either the AppImage file
+itself or an already-extracted ``squashfs-root`` directory (we look for
+``bin/bambu-studio`` and ``resources/profiles/BBL/`` underneath it).
 """
 from __future__ import annotations
 
@@ -115,12 +120,12 @@ def lift_stl_to_bed(in_path: Path, out_path: Path) -> tuple[float, float, float]
     return (0.0, 0.0, shift_z)
 
 
-def write_flat_profiles(orca_root: Path, workdir: Path,
+def write_flat_profiles(bambu_root: Path, workdir: Path,
                         overrides: dict[str, str]) -> tuple[Path, Path, Path]:
     """Flatten the Bambu H2D 0.4 nozzle profile chain into ``workdir`` and
     apply the tensegrity overrides on top of the process profile. Returns
     (process_path, machine_path, filament_path)."""
-    bbl = orca_root / "resources" / "profiles" / "BBL"
+    bbl = bambu_root / "resources" / "profiles" / "BBL"
     machine = flatten(bbl / "machine" / "Bambu Lab H2D 0.4 nozzle.json",
                       bbl / "machine")
     machine["type"] = "machine"
@@ -158,8 +163,15 @@ def write_flat_profiles(orca_root: Path, workdir: Path,
     return p_path, m_path, f_path
 
 
-def extract_gcode(project_3mf: Path, out_gcode: Path) -> None:
-    """Pull ``Metadata/plate_1.gcode`` out of an OrcaSlicer-sliced 3MF."""
+def extract_gcode(workdir: Path, project_3mf: Path, out_gcode: Path) -> None:
+    """Locate the sliced plate gcode. Bambu Studio's CLI writes
+    ``plate_1.gcode`` directly into ``--outputdir`` AND also embeds it
+    inside the project 3MF at ``Metadata/plate_1.gcode``. Prefer the
+    on-disk copy (saves a zip extract); fall back to the 3MF."""
+    direct = workdir / "plate_1.gcode"
+    if direct.is_file() and direct.stat().st_size > 0:
+        shutil.copyfile(direct, out_gcode)
+        return
     with zipfile.ZipFile(project_3mf) as z:
         gcode_names = [n for n in z.namelist()
                        if n.endswith(".gcode") and "/Metadata/" in "/" + n]
@@ -169,15 +181,51 @@ def extract_gcode(project_3mf: Path, out_gcode: Path) -> None:
             shutil.copyfileobj(src, dst)
 
 
+def resolve_bambu_studio(arg: Path, workdir: Path) -> tuple[list[str], Path]:
+    """Resolve --bambu-studio into (argv-prefix, resource-root).
+
+    * If ``arg`` points at a directory containing ``bin/bambu-studio`` and
+      ``resources/profiles/BBL/`` (an already-extracted ``squashfs-root``),
+      use it directly.
+    * Otherwise treat ``arg`` as the AppImage file itself and run it with
+      ``--appimage-extract-and-run`` (the AppImage launcher handles the
+      extraction once and caches it).
+
+    Returns a tuple ``([prog, *flags], resource_root)`` ready to be
+    prepended to the bambu-studio CLI arguments.
+    """
+    p = arg.resolve()
+    if p.is_dir():
+        bin_path = p / "bin" / "bambu-studio"
+        if not bin_path.exists():
+            sys.exit(f"{bin_path} not found — expected an extracted "
+                     f"Bambu Studio squashfs-root directory")
+        if not (p / "resources" / "profiles" / "BBL").is_dir():
+            sys.exit(f"{p}/resources/profiles/BBL not found")
+        return [str(bin_path)], p
+    # AppImage file: extract once into workdir for the BBL profiles, and
+    # invoke via the AppImage launcher.
+    extract_dir = workdir / "bambu-studio-extracted"
+    if not (extract_dir / "squashfs-root" / "resources" / "profiles"
+            / "BBL").is_dir():
+        extract_dir.mkdir(parents=True, exist_ok=True)
+        subprocess.run([str(p), "--appimage-extract"],
+                       check=True, cwd=extract_dir,
+                       stdout=subprocess.DEVNULL)
+    return [str(p), "--appimage-extract-and-run"], \
+        extract_dir / "squashfs-root"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("orca", type=Path,
-                    help="Path to OrcaSlicer's AppRun (e.g. extracted "
-                         "AppImage's ./AppRun) — see "
-                         "verification/README.md for how to obtain the "
-                         "Ubuntu 24.04 nightly build.")
+    ap.add_argument("bambu_studio", type=Path,
+                    help="Path to the BambuStudio AppImage (e.g. "
+                         "BambuStudio_ubuntu-24.04-*.AppImage) OR a "
+                         "directory with an already-extracted "
+                         "squashfs-root (contains bin/bambu-studio and "
+                         "resources/profiles/BBL/).")
     ap.add_argument("input", type=Path,
                     help="Input STL (or 3MF) to slice.")
     ap.add_argument("out", type=Path,
@@ -193,12 +241,10 @@ def main() -> None:
                          "process profile (no tensegrity tweaks).")
     args = ap.parse_args()
 
-    orca_root = args.orca.resolve().parent
-    if not (orca_root / "resources" / "profiles" / "BBL").is_dir():
-        sys.exit(f"could not find OrcaSlicer BBL profiles under {orca_root}")
-
     workdir = args.workdir or args.out.with_suffix(".workdir")
     workdir.mkdir(parents=True, exist_ok=True)
+
+    bs_prefix, bambu_root = resolve_bambu_studio(args.bambu_studio, workdir)
 
     if args.no_repo_overrides:
         overrides: dict[str, str] = {}
@@ -212,7 +258,8 @@ def main() -> None:
         k, v = kv.split("=", 1)
         overrides[k] = v
 
-    proc_p, mach_p, fila_p = write_flat_profiles(orca_root, workdir, overrides)
+    proc_p, mach_p, fila_p = write_flat_profiles(bambu_root, workdir,
+                                                  overrides)
 
     onbed = args.input
     if args.input.suffix.lower() == ".stl":
@@ -225,29 +272,41 @@ def main() -> None:
     project_3mf = workdir / "sliced.3mf"
     if project_3mf.exists():
         project_3mf.unlink()
+    # Bambu Studio CLI also drops ``plate_1.gcode`` directly into outputdir
+    # alongside the 3MF; clear any stale copy.
+    plate_gcode = workdir / "plate_1.gcode"
+    if plate_gcode.exists():
+        plate_gcode.unlink()
 
     cmd = [
-        "xvfb-run", "-a", str(args.orca),
-        "--datadir", str(workdir / "orca-data"),
-        "--load-settings", f"{proc_p};{mach_p}",
+        "xvfb-run", "-a", *bs_prefix,
+        # Tensegrity enforcer meshes are very thin (sub-nozzle-width in
+        # places, by design); Bambu Studio's empty-layer check aborts on
+        # them unless we explicitly allow it through.
+        "--no-check=1",
+        "--load-settings", f"{mach_p};{proc_p}",
         "--load-filaments", str(fila_p),
         "--arrange", "1",
-        "--no-check",
         "--slice", "0",
+        "--debug", "2",
         "--export-3mf", project_3mf.name,
         "--outputdir", str(workdir),
         str(onbed),
     ]
     print("running:", " ".join(cmd), file=sys.stderr)
-    # Some OrcaSlicer subcommands resolve --export-3mf relative to cwd, so
-    # run from the workdir.
+    # Some Bambu Studio CLI subcommands resolve --export-3mf relative to
+    # cwd, so run from the workdir.
     res = subprocess.run(cmd, cwd=workdir, capture_output=True, text=True)
-    if res.returncode != 0 or not project_3mf.exists():
+    # Bambu Studio sometimes returns non-zero (e.g. from a post-slice
+    # thumbnail step that tries to open Wayland) even when the gcode was
+    # produced; trust the existence of plate_1.gcode/3MF as success.
+    have_gcode = (workdir / "plate_1.gcode").exists() or project_3mf.exists()
+    if not have_gcode:
         sys.stderr.write(res.stdout[-4000:])
         sys.stderr.write(res.stderr[-4000:])
-        sys.exit(f"orca-slicer failed with code {res.returncode}")
+        sys.exit(f"bambu-studio failed with code {res.returncode}")
 
-    extract_gcode(project_3mf, args.out)
+    extract_gcode(workdir, project_3mf, args.out)
     print(f"wrote {args.out} ({args.out.stat().st_size} bytes)",
           file=sys.stderr)
 
