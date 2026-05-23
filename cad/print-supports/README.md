@@ -98,15 +98,60 @@ A ready-to-load `process.json` snippet (drop into Bambu Studio →
 `Process → Add → Import process`) is included as
 [`bambu-pla-tensegrity-process.json`](bambu-pla-tensegrity-process.json).
 
-## C. Fallback: explicit Support Enforcer STL
+## C. TPU-safe / multi-material: §B settings **+ Support Enforcer STL**
 
-If the `tree(hybrid) + on_build_plate_only` recipe in §B fails on an
-exotic topology (e.g. a structure with overhangs Bambu's analyzer doesn't
-flag, or with vertices that are bed-contact-but-not-coplanar), use the
-geometry-agnostic enforcer generator
-[`generate_support_enforcers.py`](generate_support_enforcers.py) to emit
-explicit Support Enforcer volumes from a JSON description of the member
-graph:
+Path B alone is sufficient when the part is single-material PLA, because
+the slicer's overhang analysis can detect the down-facing surfaces of
+every tilted strut. **It is not sufficient when any member is printed in
+TPU** (or when a member is vertical). The reason is fundamental, not a
+threshold-tuning problem:
+
+> The slicer's overhang analysis only ever flags surfaces that **face
+> downward**. A vertical (or near-vertical) cable cylinder has **no
+> down-facing surface at all** — its sides face sideways — so **no
+> value of `support_threshold_angle`, not even 0°, will ever cause the
+> slicer to place supports under it.** PLA self-supports a vertical
+> cylinder fine (each layer is a disc resting on the disc below), but
+> TPU 85A — molten, soft, ~2× softer than TPU 95A — sags
+> layer-to-layer and the cable goes out of shape.
+
+The fix is to bypass overhang analysis for those members entirely by
+loading an **explicit Support Enforcer modifier mesh** alongside the
+printable part. The slicer then forces supports in the enforcer volume
+regardless of orientation:
+
+```bash
+# 1. Generate a per-member enforcer STL (geometry-agnostic — see §D):
+python3 cad/print-supports/generate_support_enforcers.py \
+    --topology t3_prism --R 37.5 --H 105 --twist 60 \
+    --strut_d 9 --cable_d 4.5 \
+    --out enforcers.stl
+
+# 2. In Bambu Studio (single-material PLA *or* multi-material PLA+TPU):
+#    a. Open the printable part normally.
+#    b. Right-click the assembly → Add Part → Load… → pick `enforcers.stl`.
+#    c. Right-click the new sub-part → Change Type → Support Enforcer.
+#    d. Apply the §B process settings and slice.
+```
+
+The same `bambu-pla-tensegrity-process.json` settings from §B work
+unchanged — `support_on_build_plate_only = 1` still applies inside the
+enforcer region, so branches still root at the plate, never on a
+member. The enforcer geometry simply tells the slicer *which XY columns
+must be supported regardless of overhang shape*.
+
+A full PrusaSlicer-CLI end-to-end verification on the PR #35 T3-prism
+(every member gets continuous bottom coverage, including any that the
+auto-tree analysis missed) is in
+[`verification/`](verification/) — see
+`t3-prism-pr35-tpu-enforced-preview.png` and the `build_enforcer_3mf.py`
+helper used to bundle the printable + enforcer meshes into one 3MF.
+
+## D. Geometry-agnostic enforcer generator
+
+[`generate_support_enforcers.py`](generate_support_enforcers.py) takes
+an arbitrary member graph and emits one vertical rectangular prism per
+member:
 
 ```bash
 # 1. describe your structure (or use one of the bundled topology presets)
@@ -125,8 +170,16 @@ python3 cad/print-supports/generate_support_enforcers.py \
 
 Then in Bambu Studio: right-click the assembly → **Add Part → Load…** →
 pick `enforcers.stl` → right-click the new sub-part → **Change Type →
-Support Enforcer**. Use the same process settings from §B and the slicer
-will restrict support generation to the enforcer volumes.
+Support Enforcer**. Use the same process settings from §B.
+
+**Vertical / near-vertical members are handled automatically.** Any
+member whose XY projection is shorter than its enforcer stripe width
+(i.e. a literally vertical cable, or one whose endpoints have nearly
+identical X/Y) is emitted as a small square footprint column under the
+member's lower endpoint instead of being silently skipped — this is the
+case the slicer's overhang analysis cannot ever cover. Override the
+default footprint size with `--vertical_pad <mm>` if you need a tighter
+or wider column.
 
 Built-in `--topology` presets cover the catalogue in PR #22 — see
 `generate_support_enforcers.py --help` for the current list.

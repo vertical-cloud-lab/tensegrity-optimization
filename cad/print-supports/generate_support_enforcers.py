@@ -151,15 +151,43 @@ def load_members_json(path: Path) -> list[Member]:
 
 # ---- Painted-stripe -> rectangular prism geometry -------------------------
 def stripe_prism(p1: np.ndarray, p2: np.ndarray, width: float,
-                 trim: float, z_headroom: float) -> np.ndarray | None:
+                 trim: float, z_headroom: float,
+                 vertical_pad: float | None = None) -> np.ndarray | None:
     """Project a member onto the XY plane, shrink each end by `trim`, sweep
     into a rectangle of `width` (centred on the projected axis), then
     extrude from z = 0 to max(p1.z, p2.z) + z_headroom. Returns 8 vertices
-    [bottom_quad CCW, top_quad CCW] or None if the projected segment is
-    shorter than 2*trim (i.e. trimmed away)."""
+    [bottom_quad CCW, top_quad CCW].
+
+    Vertical members (whose XY projection is shorter than `width`) cannot
+    cast a useful XY stripe — they have no down-facing surface for the
+    slicer's overhang analysis to detect, which is the exact failure mode
+    on near-vertical TPU cables. For those we emit a `vertical_pad`-sized
+    square enforcer column centred on the lower endpoint's XY position,
+    extruded from z = 0 up to the member's highest point. Trimming is
+    ignored in that case so the column still reaches the bed. Set
+    `vertical_pad=None` to fall back to the legacy "skip vertical members"
+    behaviour and return None instead.
+    """
     a2, b2 = p1[:2].copy(), p2[:2].copy()
     axis = b2 - a2
     L = float(np.linalg.norm(axis))
+    z1 = float(max(p1[2], p2[2])) + z_headroom
+    # Degenerate / near-vertical: XY projection shorter than the stripe
+    # width — a tilted thin stripe here is geometrically pointless and the
+    # slicer's overhang analyzer cannot see vertical cylinder sides as
+    # overhangs regardless of `support_threshold_angle`. Emit a square
+    # footprint instead so explicit-enforcer mode still covers the member.
+    if vertical_pad is not None and L < max(width, 1e-9):
+        # Pin the column under the *lower* endpoint (whichever has smaller z)
+        # so the support tower reaches it cleanly from the plate.
+        lower = p1 if p1[2] <= p2[2] else p2
+        cx, cy = float(lower[0]), float(lower[1])
+        hp = vertical_pad / 2.0
+        return np.array(
+            [[cx - hp, cy - hp, 0.0], [cx + hp, cy - hp, 0.0],
+             [cx + hp, cy + hp, 0.0], [cx - hp, cy + hp, 0.0],
+             [cx - hp, cy - hp, z1],  [cx + hp, cy - hp, z1],
+             [cx + hp, cy + hp, z1],  [cx - hp, cy + hp, z1]])
     if L < 1e-9 or L <= 2 * trim:
         return None
     u = axis / L
@@ -171,7 +199,6 @@ def stripe_prism(p1: np.ndarray, p2: np.ndarray, width: float,
     c2 = b2t + n * hw
     c3 = a2t + n * hw
     z0 = 0.0
-    z1 = float(max(p1[2], p2[2])) + z_headroom
     return np.array(
         [[c0[0], c0[1], z0], [c1[0], c1[1], z0],
          [c2[0], c2[1], z0], [c3[0], c3[1], z0],
@@ -217,21 +244,35 @@ def write_binary_stl(triangles: Iterable[tuple[np.ndarray, ...]],
 
 # ---- Top-level driver -----------------------------------------------------
 def generate(members: list[Member], out_stl: Path,
-             stripe_frac: float, trim: float, z_headroom: float) -> dict:
+             stripe_frac: float, trim: float, z_headroom: float,
+             vertical_pad: float | None = None) -> dict:
     triangles: list[tuple[np.ndarray, ...]] = []
-    emitted = skipped = 0
+    emitted = skipped = vertical = 0
     for p1, p2, d, trim_ends in members:
         width = d * stripe_frac
         t = trim if trim_ends else 0.0
-        prism = stripe_prism(p1, p2, width, t, z_headroom)
+        # For vertical members the slicer's overhang analyser can never
+        # see a cylinder's side as an overhang, so we emit a square
+        # footprint sized to the member's diameter (a hair bigger than
+        # the cylinder, so the enforcer envelope cleanly contains the
+        # cable's first layer at z=0+).
+        pad = (d + 0.5) if vertical_pad is None else vertical_pad
+        prism = stripe_prism(p1, p2, width, t, z_headroom,
+                             vertical_pad=pad)
         if prism is None:
             skipped += 1
             continue
+        # Detect whether this was emitted as a vertical-column fallback
+        # (axis XY length < width) for the report.
+        xy_len = float(np.linalg.norm(p2[:2] - p1[:2]))
+        if xy_len < max(width, 1e-9):
+            vertical += 1
         triangles.extend(box_triangles(prism))
         emitted += 1
     n_tris = write_binary_stl(triangles, out_stl)
     return dict(out_stl=str(out_stl), triangles=n_tris,
-                stripes_emitted=emitted, stripes_skipped=skipped)
+                stripes_emitted=emitted, stripes_skipped=skipped,
+                vertical_columns=vertical)
 
 
 def _parse_args() -> argparse.Namespace:
@@ -259,6 +300,14 @@ def _parse_args() -> argparse.Namespace:
     ap.add_argument("--z_headroom", type=float, default=2.0,
                     help="Extra height (mm) above the member's max z "
                          "(default 2.0).")
+    ap.add_argument("--vertical_pad", type=float, default=None,
+                    help="For members whose XY projection is shorter than "
+                         "their stripe width (i.e. vertical or near-"
+                         "vertical members — TPU cables that the slicer's "
+                         "overhang analysis cannot detect regardless of "
+                         "`support_threshold_angle`), emit a square "
+                         "footprint of this size (mm) centred on the lower "
+                         "endpoint. Default = member diameter + 0.5 mm.")
     # Topology-preset knobs (only used when --topology is set)
     ap.add_argument("--R", type=float, default=37.5,
                     help="[prism] circumradius of end polygon (mm).")
@@ -283,11 +332,13 @@ def main() -> None:
         members = build_topology(args.topology, args)
     info = generate(members, args.out,
                     stripe_frac=args.stripe_frac, trim=args.trim,
-                    z_headroom=args.z_headroom)
+                    z_headroom=args.z_headroom,
+                    vertical_pad=args.vertical_pad)
     print(f"Wrote {info['out_stl']}", file=sys.stderr)
-    print(f"  triangles       : {info['triangles']}", file=sys.stderr)
-    print(f"  stripes emitted : {info['stripes_emitted']}", file=sys.stderr)
-    print(f"  stripes skipped : {info['stripes_skipped']}", file=sys.stderr)
+    print(f"  triangles        : {info['triangles']}", file=sys.stderr)
+    print(f"  stripes emitted  : {info['stripes_emitted']}", file=sys.stderr)
+    print(f"  vertical columns : {info['vertical_columns']}", file=sys.stderr)
+    print(f"  stripes skipped  : {info['stripes_skipped']}", file=sys.stderr)
 
 
 if __name__ == "__main__":
