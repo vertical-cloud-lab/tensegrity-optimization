@@ -67,10 +67,10 @@ commit `65d0d3f` (`copilot/get-bambu-sliced-print-t3-prism`).
 
 The support-only bottom view reproduces Audrey's centerline-stripe pattern
 without any manual painting, and after dropping `support_threshold_angle`
-from 40° to 10° (commit responding to PR comment 4523611769) the entire
-down-facing side of every near-vertical strut also gets supported all the
-way to the plate, so the same recipe survives a TPU print of the same
-mesh (TPU sags on any shallow overhang PLA would self-support).
+from 40° to 10° the entire down-facing side of every near-vertical strut
+also gets supported all the way to the plate, so the same recipe survives
+a TPU print of the same mesh (TPU sags on any shallow overhang PLA would
+self-support).
 
 ## Why θ=10°? — TPU-safe strut-bottom coverage
 

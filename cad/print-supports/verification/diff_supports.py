@@ -1,18 +1,29 @@
 #!/usr/bin/env python3
-"""Side-by-side comparison of two sliced .gcode files (old θ=40 vs new θ=10).
+"""Side-by-side comparison of two sliced .gcode files (old vs new).
 
 Shows where the lower threshold added supports along the bottom of every
 near-vertical strut. Two panels (bottom-view, supports-only) and a
 difference panel highlighting the *added* support touch-points only.
+
+Usage:
+    diff_supports.py <old.gcode> <new.gcode> <out.png> [--title "..."]
 """
-import re, sys
+import argparse, re, sys
 from pathlib import Path
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-OLD, NEW, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
+ap = argparse.ArgumentParser(description=__doc__,
+                             formatter_class=argparse.RawDescriptionHelpFormatter)
+ap.add_argument("old", type=Path)
+ap.add_argument("new", type=Path)
+ap.add_argument("out", type=Path)
+ap.add_argument("--title", default=None,
+                help="Figure suptitle (default: generic mesh comparison).")
+args = ap.parse_args()
+OLD, NEW, OUT = args.old, args.new, args.out
 SUPPORT_TYPES = {"Support material", "Support material interface"}
 
 re_g  = re.compile(r"^G[01]\b")
@@ -98,9 +109,10 @@ axes[2].set_xlabel("X (mm)")
 axes[2].set_ylabel("Y (mm)")
 axes[2].grid(True, alpha=0.3)
 
-fig.suptitle("PR #35 T3-prism — effect of support_threshold_angle 40° → 10°\n"
-             "on the §B PLA recipe (same mesh, same recipe, only θ changed)",
-             fontsize=11, y=1.02)
+fig.suptitle(args.title or (
+    f"{NEW.name} — effect of support_threshold_angle 40° → 10°\n"
+    f"on the §B PLA recipe (same mesh, same recipe, only θ changed)"),
+    fontsize=11, y=1.02)
 fig.tight_layout()
 fig.savefig(OUT, dpi=160, bbox_inches="tight")
 print(f"wrote {OUT}", file=sys.stderr)
