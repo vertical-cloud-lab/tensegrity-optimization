@@ -100,7 +100,10 @@ A ready-to-load `process.json` snippet (drop into Bambu Studio →
 
 ## C. TPU-safe / multi-material: §B settings **+ Support Enforcer STL**
 
-Path B alone is sufficient when the part is single-material PLA, because
+Path §B alone is sufficient when the part is single-material PLA, because
+the slicer's overhang analysis can detect the down-facing surfaces of
+every tilted strut. **It is not sufficient when any member is printed in
+TPU** (or when a member is vertical). The reason is fundamental, not a
 the slicer's overhang analysis can detect the down-facing surfaces of
 every tilted strut. **It is not sufficient when any member is printed in
 TPU** (or when a member is vertical). The reason is fundamental, not a
