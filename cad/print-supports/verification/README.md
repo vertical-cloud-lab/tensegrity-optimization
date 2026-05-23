@@ -18,9 +18,11 @@ real tensegrity STL, with no per-geometry painting.
 ## How to reproduce
 
 ```bash
-# 1. Extract the T3-prism mesh from PR #35:
+# 1. Extract the T3-prism mesh from PR #35 (or, after it merges, from
+#    main at the same path):
 git show origin/copilot/get-bambu-sliced-print-t3-prism:cad/t3-prism/t3-prism.stl \
     > /tmp/t3-prism.stl
+# (post-merge equivalent: `git show main:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl`)
 
 # 2. Slice with the recipe:
 prusa-slicer --slice \
@@ -33,6 +35,9 @@ python3 cad/print-supports/verification/render_gcode.py \
     /tmp/t3-prism.gcode \
     cad/print-supports/verification/t3-prism-pr35-gcode-preview.png
 ```
+
+For reference, the snapshot committed here was generated from PR #35 head
+commit `65d0d3f` (`copilot/get-bambu-sliced-print-t3-prism`).
 
 ## Result
 

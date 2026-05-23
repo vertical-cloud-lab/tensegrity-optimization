@@ -2,14 +2,17 @@
 """Render a sliced gcode file into a multi-panel PNG that visualises where
 supports were placed by the PLA-tensegrity recipe.
 
+Usage:
+    render_gcode.py <input.gcode> <output.png> [--title "..."]
+
 Panels:
   1. Bottom view (looking up the +Z axis) of all support extrusions only -
      this is the analogue of Audrey's manual paint pattern.
   2. Iso view of the object (grey) + supports (orange) so reviewers can
      verify branches root at the plate, never on a member.
-  3. First-layer view (z=0.2 mm) of brim, object, supports.
+  3. First-layer view of brim, object, supports.
 """
-import re, sys, math
+import argparse, re, sys
 from pathlib import Path
 import numpy as np
 import matplotlib
@@ -17,8 +20,15 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
-GC = Path(sys.argv[1])
-OUT = Path(sys.argv[2])
+ap = argparse.ArgumentParser(description=__doc__,
+                             formatter_class=argparse.RawDescriptionHelpFormatter)
+ap.add_argument("gcode", type=Path)
+ap.add_argument("out",   type=Path)
+ap.add_argument("--title", default=None,
+                help="Override the figure suptitle (default: derive from "
+                     "input filename and the slicer header).")
+args = ap.parse_args()
+GC, OUT = args.gcode, args.out
 
 TYPE_COLOR = {
     "Skirt/Brim":               "#7e57c2",
@@ -40,10 +50,12 @@ SUPPORT_TYPES  = {"Support material", "Support material interface"}
 re_g  = re.compile(r"^G[01]\b")
 re_xy = re.compile(r"\b([XYZEF])(-?\d+\.?\d*)")
 re_ty = re.compile(r"^;TYPE:(.*)$")
+re_lh = re.compile(r"^;\s*layer_height\s*=\s*([\d.]+)")
 
 x = y = z = 0.0
 e_prev = 0.0
 current_type = "Custom"
+layer_height = None  # derived from the gcode header (`; layer_height = ...`)
 # segments: list of (x0,y0,z0, x1,y1,z1, type)
 segs = []
 with GC.open() as f:
@@ -51,6 +63,10 @@ with GC.open() as f:
         m = re_ty.match(line)
         if m:
             current_type = m.group(1).strip()
+            continue
+        m = re_lh.match(line)
+        if m and layer_height is None:
+            layer_height = float(m.group(1))
             continue
         if not re_g.match(line):
             continue
@@ -124,11 +140,16 @@ ax2.view_init(elev=18, azim=-60)
 # Panel 3: first-layer (z<0.25) — shows brim + first layer of object + first
 # touch-points of supports, i.e. exactly what's drawn on the bed.
 ax3 = fig.add_subplot(1, 3, 3)
+# Panel 3: first-layer (z<= first_layer_threshold) — shows brim + first
+# layer of object + first touch-points of supports, i.e. exactly what's
+# drawn on the bed. Threshold is 1.25x the discovered layer height so we
+# capture the very first layer regardless of slicer profile.
+first_layer_threshold = 0.25 if layer_height is None else 1.25 * layer_height
 ax3.set_aspect("equal")
-ax3.set_title("First layer (z ≤ 0.25 mm)\n"
+ax3.set_title(f"First layer (z ≤ {first_layer_threshold:.2f} mm)\n"
               "purple = brim, grey = object first layer, orange = support roots",
               fontsize=10)
-first = arr[:, 2] <= 0.25
+first = arr[:, 2] <= first_layer_threshold
 for mask_name, mask, color, lw in [
     ("brim",    brim_mask    & first, "#7e57c2", 0.6),
     ("object",  object_mask  & first, "#455a64", 0.5),
@@ -143,13 +164,14 @@ ax3.grid(True, alpha=0.3)
 
 # summary footer
 zmax = float(arr[:, [2, 5]].max())
-n_layers = int(round(zmax / 0.2)) + 1
-fig.suptitle(
-    f"T3-prism (PR #35 cad/t3-prism/t3-prism.stl) sliced via "
-    f"cad/print-supports/bambu-pla-tensegrity-process.json (PrusaSlicer-translated)\n"
-    f"{len(segs):,} extrusion segments • {n_layers} layers • support fraction = "
-    f"{support_mask.sum() / max(1, len(segs)):.0%}",
-    fontsize=11, y=1.02)
+lh = layer_height if layer_height else 0.2
+n_layers = int(round(zmax / lh)) + 1
+title = args.title or (
+    f"{GC.name} sliced via cad/print-supports/bambu-pla-tensegrity-process.json "
+    f"(PrusaSlicer-translated)\n"
+    f"{len(segs):,} extrusion segments • {n_layers} layers @ {lh:.2f} mm • "
+    f"support fraction = {support_mask.sum() / max(1, len(segs)):.0%}")
+fig.suptitle(title, fontsize=11, y=1.02)
 fig.tight_layout()
 fig.savefig(OUT, dpi=160, bbox_inches="tight")
 print(f"wrote {OUT}", file=sys.stderr)
