@@ -473,3 +473,120 @@ right-click the assembly → **Add Part → Load…** → pick the enforcer STL
 `bambu-pla-tensegrity-process.json` and the slice is equivalent to step
 4 above. No 3MF assembly needed (Bambu Studio's GUI does the part-with-
 two-volumes wiring).
+
+## True multi-material PLA + TPU slice via the patched BambuStudio CLI
+
+Everything above is single-material (PLA struts and PLA "TPU stand-ins"
+on extruder 1). The H2D is, however, a 2-extruder printer, and the
+correct way to slice a T3-prism for it is **PLA on extruder 1
+(struts + manually-baked pillars) + TPU on extruder 2 (cables)**. The
+stock `bambu-studio` CLI hard-crashes with an out-of-bounds read on
+filament-map indexing as soon as it sees a 2-filament 3MF on a
+single-extruder system profile;
+[`vertical-cloud-lab/BambuStudio` PR #2](https://github.com/vertical-cloud-lab/BambuStudio/pull/2)
+ships a fixed binary plus a `slice-inputs` bundle (the flattened H2D
+0.4-nozzle machine + 0.20 mm process + Bambu PLA Basic + Bambu TPU 85A
+profile JSONs and a 2-part PLA-struts + TPU-cables template 3MF) that we
+drive directly from this directory.
+
+The narrowing-pillar path (§"Path (d)" above) carries straight over:
+the pillars are PLA, so they print on extruder 1 alongside the struts,
+and they snap off after printing exactly as in the single-material case.
+
+- [`build_mm_pillars_3mf.py`](build_mm_pillars_3mf.py) — appends the
+  `generate_support_pillars.py --stl` output to the slice-inputs
+  template 3MF as a third PLA-assigned part, and patches two H2D-Pro
+  authoring quirks of the upstream template that the patched CLI still
+  rejects on a stock H2D 0.4-nozzle machine profile (forces
+  `nozzle_volume_type = ["Standard", "Hybrid"]` so the TPU filament
+  resolves on extruder 2 — `"Hybrid"` is the BambuStudio internal enum
+  name for the user-facing GUI label "Direct Drive TPU High Flow" —
+  and resizes `flush_volumes_matrix` / `flush_volumes_vector` from the
+  4-filament default down to the 2-filament case the slicer validator
+  now strictly checks).
+- [`slice_bambu_h2d_mm.py`](slice_bambu_h2d_mm.py) — driver wrapper
+  around the patched CLI. Mirrors [`slice_bambu_h2d.py`](slice_bambu_h2d.py)
+  but takes the pre-flattened slice-inputs bundle instead of an
+  AppImage (the patched CLI's `--load-settings` + `--load-filaments`
+  flags consume already-flattened profiles).
+- [`render_mm_gcode.py`](render_mm_gcode.py) — extruder-aware gcode
+  renderer. Parses BambuStudio's `M1020 S{0,1}` toolchange markers and
+  colours extruder-0 extrusions PLA green and extruder-1 extrusions
+  TPU light blue, with prime-tower / wipe-tower extrusions filtered out
+  of the iso view so they don't obscure the actual part.
+
+### How to reproduce the PLA + TPU slice
+
+```bash
+# 1. Download the three artefacts published by the latest workflow run
+#    on the cli-pkg branch of vertical-cloud-lab/BambuStudio (PR #2):
+#      - bambustudio-cli-linux-x86_64      (the patched bambu-studio binary)
+#      - bambustudio-cli-linux-x86_64-deps (its bundled runtime libs)
+#      - slice-inputs                      (flattened H2D profiles + template 3MF)
+gh -R vertical-cloud-lab/BambuStudio run download <RUN_ID> -D /tmp/bambu/extracted
+
+# 2. System libs the patched binary needs at runtime (Ubuntu 24.04):
+sudo apt-get install -y xvfb libsoup-3.0-0 libwebkit2gtk-4.1-0 \
+    libgstreamer1.0-0 libgstreamer-plugins-base1.0-0
+
+# 3. Generate the narrowing pillars from the actual printable mesh
+#    (same step as in §"Path (d)" above — the pillars are PLA either way):
+python3 cad/print-supports/generate_support_pillars.py \
+    --stl /tmp/t3-prism.stl \
+    --spacing 4.0 --min_clearance 1.5 \
+    --base_d 5.0 --tip_d 0.6 --tip_overshoot 0.3 --facets 12 \
+    --out cad/print-supports/verification/t3-prism-pr35-pillars.stl
+
+# 4. Slice. The driver builds the 3-part 3MF, invokes the patched CLI
+#    under xvfb, and copies plate_1.gcode out:
+python3 cad/print-supports/verification/slice_bambu_h2d_mm.py \
+    --bambu-bin   /tmp/bambu/extracted/BambuStudio/bin/bambu-studio \
+    --ld-library  /tmp/bambu/extracted/destdir/usr/local/lib \
+    --slice-inputs /tmp/bambu/extracted/slice-inputs \
+    --pillars-stl cad/print-supports/verification/t3-prism-pr35-pillars.stl \
+    --keep-3mf    /tmp/t3-prism-mm-with-pillars.3mf \
+    --out         /tmp/t3-prism-mm.gcode
+
+# 5. Render the extruder-coloured preview:
+python3 cad/print-supports/verification/render_mm_gcode.py \
+    /tmp/t3-prism-mm.gcode \
+    cad/print-supports/verification/t3-prism-pr35-mm-pillars-preview.png
+```
+
+Expected CLI noise: the patched CLI emits many
+`get_extruder_variant_string, unsupported NozzleVolumeType=2` lines
+during slicing and exits with status 154 ("gcode unprintable
+error_code=1") from a downstream print-validation step, but
+`plate_1.gcode` is written first and is a complete, valid MM gcode
+(header reports `; filament: 1,2` with both lengths > 0). The driver
+treats a present, non-empty `plate_1.gcode` as success regardless of
+the CLI's exit code; `--no-check` silences the validator on the next
+run.
+
+### PLA + TPU slice preview
+
+![multi-material PLA+TPU slice with pillars](t3-prism-pr35-mm-pillars-preview.png)
+
+Green = PLA on extruder 1 (struts + the manually-baked narrowing
+pillars); light blue = TPU on extruder 2 (the three bottom cables, the
+three vertical cables, and the three saddle cables). The first-layer
+panel makes the pillar bases easy to count — each green island is one
+pillar starting from the bed and tapering up to its tip on the part
+underside. The pillar coverage is identical to the single-material §(d)
+slice; the only difference is which extruder picks up each member.
+
+### PLA + TPU slice metrics (Bambu H2D, patched BambuStudio CLI)
+
+| Metric                  | Value                                              |
+| ----------------------- | -------------------------------------------------- |
+| Slicer                  | BambuStudio 02.07.00.55 (patched, vertical-cloud-lab/BambuStudio PR #2) |
+| Printer profile         | Bambu Lab H2D 0.4 nozzle (stock)                   |
+| Filament profile (T0)   | Bambu PLA Basic @BBL H2D                           |
+| Filament profile (T1)   | Bambu TPU 85A @BBL H2D 0.4 nozzle                  |
+| Filament lengths        | PLA 41,083 mm + TPU 24,447 mm                      |
+| Layers                  | 605                                                |
+| Layer height            | 0.20 mm                                            |
+| Toolchanges             | 578                                                |
+| Estimated print time    | ~21 h 21 m (TPU + prime-tower dominated)           |
+| Pillar count            | 183 (PLA on T0, snap-off tips on each member)      |
+| Slicer-side supports    | disabled (`enable_support = 0`); pillars are part of the printable mesh |
