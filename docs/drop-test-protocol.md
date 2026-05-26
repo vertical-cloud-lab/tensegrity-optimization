@@ -15,7 +15,7 @@ The training walkthrough is captured on video:
 
 | Item | Notes |
 |---|---|
-| Drop tower (Jeff Hill's setup) | Hoist with electromagnetic release; rigid base plate; vertical column. |
+| Drop tower (Jeff Hill's setup) | **Bungee-assisted** drop tower with rigid base plate and vertical column; the base accelerates downward faster than 1 g (see §3, failure mode 1, and [@Jeffrayhill1 in issue #36](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/36#issuecomment-4546364370)). Electromagnetic release on the hoist. |
 | Accelerometer #1 (PCB / similar) | Mounted on the **drop-tower base plate** to capture the input shock. |
 | Accelerometer #2 | Mounted on a **top plate** that sits on the specimen, to capture transmitted shock. |
 | DAQ + laptop | Captures both channels; user/quick-start guides referenced above. Lab computer credentials are shared via Slack DM (not committed here). |
@@ -45,9 +45,20 @@ drop tower contributes the following observables to the BO objective stack:
 Observed in the first instrumented drops (see the video clip linked in the
 issue at <https://github.com/user-attachments/assets/878f940a-0778-4de7-a0bf-0d070e62d0bb>):
 
-1. **Specimen / base-plate separation before impact.** The tensegrity
-   structure lifts off the lower acrylic plate during descent, so the
-   specimen is no longer aligned under the top plate at impact.
+1. **Specimen / base-plate separation before impact — driven by the
+   bungee-assisted base acceleration.** Per
+   [@Jeffrayhill1](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/36#issuecomment-4546364370):
+   _"The drop tower is bungee assisted, meaning the base will drop faster
+   than the tensegrity structure. We probably do need to somehow constrain
+   the structure to the base. For now, I think if we just constrain the
+   top to not be able to slide up very much, that might solve it."_
+   Because the base accelerates downward faster than 1 g, the unconstrained
+   tensegrity specimen (which only sees gravity) cannot keep up and the
+   base falls out from under it — so the specimen lifts off the lower plate
+   during descent and is no longer aligned under the top plate at impact.
+   This is intrinsic to the rig physics, not a setup artifact, and any
+   fix has to either tie the specimen to the base or cap how far the top
+   of the specimen can rise relative to the base.
 2. **Cage tilt.** The clearance between the acrylic-plate guide holes and
    the threaded rods is loose enough to allow ~25° tilt of the top plate,
    which biases the transmitted-acceleration measurement and risks
@@ -62,8 +73,10 @@ capturing slow-motion video for each. Frame the camera so the **specimen and
 the hoist release point are both in view at t = 0**.
 
 1. **Bare specimen.** No accelerometer, no acrylic plates — just the
-   tensegrity structure on the base. Establishes baseline rebound/tip-over
-   behavior.
+   tensegrity structure on the base. Establishes baseline rebound /
+   tip-over behavior and, given the bungee-assisted base acceleration
+   (§3.1), directly visualizes how much the specimen separates from the
+   base during descent.
 2. **Plate-on-specimen, no instrumentation.** No accelerometer; the upper
    acrylic plate is balanced on top of the specimen with no rod constraint.
    The plate is expected to bounce off; document the trajectory.
@@ -76,6 +89,21 @@ not only the initial shock window.
 
 ## 5. Mitigations under consideration
 
+- **Cap the upward travel of the specimen's top relative to the base
+  (Jeff's first-pass fix).** Because the base is bungee-accelerated
+  past 1 g, the simplest intervention is to add light tethers, clips,
+  or a rigid stop above the top of the specimen so it cannot rise more
+  than a small fraction of its uncompressed height as the base falls
+  away. This keeps the specimen seated on the base during descent
+  without adding meaningful pre-load. Track this constraint length in
+  the test log so it can be compared across runs.
+- **Tie the specimen to the base.** Longer-term option, also flagged by
+  @Jeffrayhill1 — bond / pin / clamp the bottom of the tensegrity
+  structure to the lower plate (double-sided transfer tape, register
+  pins through bottom nodes, a thin V-block cradle) so the specimen
+  travels with the base rather than lagging behind it. Any solution
+  must avoid changing the specimen's compliance in the loading
+  direction.
 - **Tighter rod/plate tolerance.** Re-drill the acrylic plates (or move to
   thin metal plates) to reduce the rod clearance and the 25° tilt; consider
   linear bushings if the budget allows.
