@@ -141,7 +141,8 @@ def patch_project_settings(path: Path, n_filaments: int) -> None:
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__)
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--template", required=True, type=Path,
                     help="PLA-struts + TPU-cables template 3MF (e.g. the slice-inputs bundle from vertical-cloud-lab/BambuStudio PR #2).")
     ap.add_argument("--pillars-stl", required=True, type=Path)
