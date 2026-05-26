@@ -141,6 +141,15 @@ results once the experimental campaign is complete.}
 \section{Introduction}
 \label{sec:introduction}
 
+\todo[inline,color=blue!20]{\textbf{Manuscript status.} At time of
+writing the project is at the \emph{planned-methods} phase: the
+parameterized unit cell, multi-material print recipe, joint geometry,
+quasi-static and drop-impact protocols, and Bayesian-optimization loop
+described in Section~\ref{sec:methods} have been scaffolded and
+prototype hardware has been printed, but the closed-loop experimental
+campaign has not yet produced reportable results. Sections~\ref{sec:results}
+and~\ref{sec:discussion} therefore remain placeholders.}
+
 Tensegrity structures are assemblies of rigid compression members
 suspended within a continuous network of tension members; their defining
 property---no two rigid bars touch---yields lightweight assemblies with
@@ -250,6 +259,14 @@ jackson2014honeycomb}. Pajunen et~al.~\cite{pajunen2019design} demonstrated that
 truncated-tetrahedral tensegrity-inspired unit cells can be directly
 3D-printed and exhibit load-limiting plateaus, motivating the present
 focus on additively manufactured TPU/PLA composites.
+More recent work by Davami et~al.\ on dynamically loaded AM tensegrity
+unit cells, with Intrigila et~al.\ as the closest published analog
+(SLA Tough~2000, double-T3 quasi-static), confirms that the same
+architecture class also responds favorably under drop-impact loading,
+although neither study employed multi-material FFF or closed-loop
+design optimization.\todo{Cite Davami 2025 (\emph{Addit.\ Manuf.}) and
+Intrigila 2022 (\emph{Addit.\ Manuf.}\ 57:102946) once entries are
+added to \texttt{references.bib} from PR~\#58 analysis.}
 
 \subsection{Multi-Material 3D Printing of PLA/TPU Composites}
 
@@ -338,6 +355,20 @@ groups of design variables:
 constraints, and the categorical-encoding scheme used by the BO loop.
 Pull from the Edison TPU/PETG search-space synthesis once available.}
 
+\paragraph{Working prototype.} The first instance of this family used
+to validate the fabrication and test pipeline is a three-strut
+($T_3$) tensegrity prism scaled to a $\sim$50\,mm bounding box, with
+$d_s = $ \todo{strut diameter} and a cable diameter $d_t$ swept over
+the FFF-resolvable set $\{1.2, 1.8, 2.4, 3.0, 4.5\}$\,\si{mm}. Under
+the prism's $D_3$ symmetry the twelve member-diameter axes collapse
+to four orbit axes (one strut orbit and three cable orbits: saddle,
+top, bottom), which keeps the initial design vector low-dimensional
+while leaving room to relax to per-member diameters once the
+saddle/top/bottom orbits have been individually
+characterized.\todo{Cite the heterogeneous-parameters Edison
+LITERATURE\_HIGH brief (\texttt{5191cf4d}) on D3-symmetric vs.\
+fully-per-member parameterization.}
+
 \tabplaceholder{design-vars}{Design variables, units, lower/upper bounds,
   manufacturing feasibility constraints, and categorical encoding.}
 
@@ -354,6 +385,31 @@ delamination during cyclic loading. \todo{Document slicer profile
 settings) and validation prints used to characterize PLA--TPU interface
 strength.}
 
+\paragraph{Print platform and joint geometry.} The working platform is
+a Bambu Lab~H2D IDEX printer, which permits a single rigid--soft build
+without filament swaps. Strut endpoints are tied to cables through
+parametric joint geometries developed and ranked through a five-design
+OpenSCAD study (anchor-bulb, dovetail, TPU-sleeve overmold,
+eyelet-loop, and TPU-rebar variants); the working prototype uses a
+dovetail joint (Design~B) with an anchor-bulb backup (Design~A) for
+sensitivity studies, with a captive TPU core routed inside the PLA
+shell to keep the soft tendon protected from layer-line failure at
+the strut-to-cable transition.\todo{Cite the joint-design Phase-3 CAD
+review (Edison ANALYSIS \texttt{19e0c868}) and the Phase-4 vision
+review (\texttt{e9a1f4cc}) once both are integrated into the
+references.}
+
+\paragraph{Supports for soft members.} Because near-vertical TPU
+tendons are otherwise unsupported during printing, the slicer profile
+combines a tensegrity-specific Bambu Studio recipe (support threshold
+angle dropped from~40\textdegree{} to~10\textdegree, support material
+matched to the rigid extruder) with manually generated narrowing
+pillars that ray-cast against the printable mesh underside, producing
+TPU-safe coverage of vertical members without slicer-side painting.
+\todo{Reference the manual-supports workflow (PR~\#66) and the H2D
+multi-part assignment fix (PR~\#64) when those branches land in
+\texttt{main}.}
+
 \figplaceholder{fab-workflow}{Fabrication workflow: parameter $\to$ CAD
   $\to$ slicer $\to$ multi-material print $\to$ post-process and
   inspect.}
@@ -364,8 +420,15 @@ strength.}
 Each printed specimen is subjected to two physical tests:
 
 \paragraph{Quasi-static compression.} A uniaxial load--displacement
-curve is recorded on a benchtop electromechanical load frame at a
-controlled crosshead rate. Reported metrics are
+curve is recorded on a benchtop electromechanical load frame
+(BYU CB~123 Instron) following best-practice combinations of
+ASTM~D638, ASTM~D412, ASTM~E111, ASTM~F2971, and
+ISO/ASTM~52900/52921 adapted to architected polymer cells. Because
+expected cell stiffnesses fall in the $\sim$5--30\,g force range, the
+default 5\,kN load cell is over-ranged and is being replaced by a
+100--500\,N cell for the first campaign.\todo{Cite the Instron-stiffness
+Edison LITERATURE\_HIGH brief (\texttt{9f68e71e}) once the entry is
+added to \texttt{references.bib}.} Reported metrics are
 \begin{equation}
   \mathrm{SEA} \;=\; \frac{1}{m}\!\int_{0}^{\delta_d}\! F(\delta)\,
   \mathrm{d}\delta,
@@ -380,11 +443,36 @@ the compaction efficiency.
 et~al.~\cite{pajunen2019design},
 specimens are subjected to drop-weight impact tests with instrumented
 load cells; we report the peak transmitted force and the energy-absorption
-plateau characteristics. Slip resistance and traction at the
-specimen--floor interface—governed by the tip geometry rather than the
-internal lattice—follow the test methodology of ISO
+plateau characteristics. The primary fixture is a bungee-assisted
+laboratory drop tower in which the base accelerates downward faster
+than~$1g$; because unconstrained specimens lift off the base during
+descent by design of the rig, the protocol constrains the specimen
+top through light tethers (capping upward travel) and registers the
+base via transfer tape or V-block features so that loading-direction
+compliance is not altered.\todo{Cite the drop-test protocol document
+(PR~\#67) and the drop-test Edison LITERATURE\_HIGH brief
+(\texttt{653d7d39}) once integrated.} A higher-fidelity replicate
+campaign on a Lansmont~M23 drop tower with synchronized Polytec~QTec
+laser vibrometry is planned for selected Pareto-optimal designs.\todo{%
+Cite the M23~+~QTec equipment brief (Edison LITERATURE\_HIGH
+\texttt{1a0f4a70}) once integrated.} Slip resistance and traction at
+the specimen--floor interface---governed by the tip geometry rather
+than the internal lattice---follow the test methodology of ISO
 11334-4~\citep{iso11334-4} for walking-aid tips and are out of scope
 for the present axial-impact study.
+
+\paragraph{Per-modality objectives.} Five complementary data streams
+(triaxial accelerometer, high-speed video, shaker transfer function,
+slug-firing gas gun, and Polytec~QTec laser-Doppler vibrometer) each
+contribute a distinct raw observable; the mapping from each stream to
+BO-ready scalar objectives (SEA, VEA, $F_{\max}$, cushion-curve
+intercept, Gibson--Ashby relative density) is defined in five
+companion briefs and consolidated in a cross-modality synthesis.\todo{%
+Cite the per-modality objective-function briefs (Edison
+LITERATURE\_HIGH \texttt{cfd30f3e}, \texttt{7d6b43bf},
+\texttt{31126ee7}, \texttt{9d74ab2e}, \texttt{f40e41a7}) and the
+ANALYSIS synthesis (\texttt{789de8ab}) once \texttt{references.bib}
+entries are added from PR~\#60.}
 
 \todo{Specify the exact test fixtures, load-cell ranges, sampling rate,
 DAQ, drop heights, and the protocol for averaging replicate prints.}
@@ -417,6 +505,21 @@ comparison.
 \todo{Add: kernel choice (e.g.\ Mat\'ern-5/2), input warping, normalization,
 batch size $q$, total budget $T$, initialization strategy (LHS or
 Sobol), and seed protocol.}
+
+\paragraph{Implementation status.} The campaign harness is built on
+Ax's \texttt{HierarchicalSearchSpace} so that printer-feasibility
+constraints (e.g.\ the cable-diameter categorical depending on the
+chosen connectivity topology) can be encoded directly in the search
+space rather than enforced post hoc. The first physical batch consists
+of $n = 9$ specimens generated by a Sobol sequence over the four
+$D_3$-orbit axes of the working $T_3$ prism and printed in a single
+$3 \times 3$ plate layout. For the present ${\le}25$-dimensional
+parameterization the default acquisition pairing is SAASBO with
+qNEHVI; escalation to TuRBO is planned only if larger
+per-member-diameter tilings push the design space well beyond this
+regime.\todo{Cite the BO scaffolding (PR~\#30), the T3-prism Sobol
+batch (PR~\#35), and the heterogeneous-parameter Edison brief
+(\texttt{5191cf4d}) once those branches land in \texttt{main}.}
 
 \figplaceholder{bo-loop}{Closed-loop BO schematic: design proposal
   $\to$ multi-material print $\to$ compression and drop-weight tests
