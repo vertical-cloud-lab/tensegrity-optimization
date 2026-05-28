@@ -11,6 +11,10 @@ Materials lab. It supplements (and does not replace) the OEM documentation:
 The training walkthrough is captured on video:
 <https://youtu.be/RNjpAmWWmkQ>.
 
+**Recorded data + analysis of the first runs:**
+[`docs/drop-test-analysis.md`](drop-test-analysis.md)
+(raw files in [`data/drop-tests/raw/`](../data/drop-tests/)).
+
 ## 1. Equipment
 
 | Item | Notes |
