@@ -156,3 +156,31 @@ where `/tmp/edison_all` holds every `edison-trajectories/**/*.json` blob and
 branches. See the module docstring in `scripts/edison/build_master_bib.py` for
 the collection commands and for re-fetching `*-SUBMITTED` placeholder tasks via
 the Edison API.
+
+#### DOI verification / abstract enrichment
+
+After generation, every DOI is checked **one-by-one against its authoritative
+registered metadata** (CSL JSON from `https://doi.org/<doi>` content
+negotiation) by `scripts/edison/verify_bib_dois.py`. For each entry it:
+
+* confirms the stored title matches the title the DOI actually resolves to,
+  flagging DOIs that point at an unrelated paper (e.g. `fraternali2015tensegrity`,
+  `wang2022bayesian`, `witze2023osirisrex`) or that 404;
+* adds the **registered abstract** (taken from that exact DOI's Crossref record,
+  JATS/HTML stripped, `&` escaped) to matching entries that lacked one;
+* applies a small table of hand-verified corrections -- a wrong DOI fixed
+  (`zhang2015tensegrity` &rarr; `10.1063/1.5040850`, the real APL 2018 article)
+  and twelve DOIs found via Crossref for entries that previously had none
+  (author + title confirmed); and
+* writes `edison-trajectories/bib-doi-verification/needs-list.md`: the entries
+  whose DOI is wrong/unresolved or that still have no DOI, which is sent to
+  Edison (`scripts/edison/submit_bib_doi_verification.py`) for the references
+  the public DOI APIs could not settle.
+
+```bash
+python scripts/edison/verify_bib_dois.py \
+    --bib manuscript/references-full.bib --apply
+```
+
+Network results are cached under `--cache-dir` (default `/tmp/verify`) so
+re-runs are cheap and offline.

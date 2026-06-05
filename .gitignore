@@ -38,3 +38,7 @@ Thumbs.db
 *.code-workspace
 manuscript/manuscript.tdo
 manuscript/manuscript-todos.tdo
+
+# Python bytecode
+__pycache__/
+*.pyc
