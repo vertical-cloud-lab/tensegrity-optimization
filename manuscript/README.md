@@ -122,7 +122,37 @@ manuscript/
 ├── manuscript-todos.tex  # Wrapper -- todonotes enabled (review build)
 ├── manuscript.pdf        # Built output, todos hidden
 ├── manuscript-todos.pdf  # Built output, todos visible
-├── references.bib        # BibTeX database (consolidated from
-│                         #   proposal + Edison literature PRs)
+├── references.bib        # Curated BibTeX database used by the asmejour
+│                         #   build (proposal + Edison literature PRs)
+├── references-full.bib   # MASTER synthesized library (every Edison query +
+│                         #   committed .bib across all branches; see below)
 └── README.md             # This file -- venue notes and author guidelines
 ```
+
+### `references-full.bib` -- master synthesized library
+
+`references-full.bib` is an auto-generated superset library aggregating **every**
+reference Edison surfaced across the whole project: every `LITERATURE_HIGH`
+(PaperQA) and `ANALYSIS` trajectory plus every committed project `.bib`, from
+**all** branches. It currently holds **813 unique entries** (deduplicated by
+citation key then DOI), each tagged with a leading `% source:` comment recording
+the Edison task id(s) or committed file it came from, and carrying an `abstract`
+field wherever the trajectory data provided one.
+
+It is **not** wired into the `pdflatex` build -- the manuscript cites from the
+curated `references.bib` to keep the bibliography focused. `references-full.bib`
+is the working pool to draw additional citations from as the manuscript grows.
+
+Regenerate it with:
+
+```bash
+python scripts/edison/build_master_bib.py \
+    --json-dir /tmp/edison_all --bib-dir /tmp/bibsrc \
+    --out manuscript/references-full.bib
+```
+
+where `/tmp/edison_all` holds every `edison-trajectories/**/*.json` blob and
+`/tmp/bibsrc` every committed `.bib`, gathered (content-deduplicated) from all
+branches. See the module docstring in `scripts/edison/build_master_bib.py` for
+the collection commands and for re-fetching `*-SUBMITTED` placeholder tasks via
+the Edison API.
