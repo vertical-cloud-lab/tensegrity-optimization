@@ -1,0 +1,13 @@
+{
+  "job_name": "job-futurehouse-data-analysis-crow-high",
+  "task_id": "015f36e1-0a1c-4aed-a9a3-1d1924983c4a",
+  "data_entry_uri": "data_entry:de73d080-496a-4ff4-81cb-aaadfe58f024",
+  "data_storage_id": "de73d080-496a-4ff4-81cb-aaadfe58f024",
+  "bundle_paths": [
+    "data/drop-tests/accelerometer-tuning",
+    "scripts/analysis/accelerometer_tuning_analysis.py",
+    "docs/accelerometer-tuning-analysis.md",
+    "docs/figures/accelerometer-tuning"
+  ],
+  "status": "submitted"
+}
