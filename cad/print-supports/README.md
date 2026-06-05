@@ -1,5 +1,11 @@
 # Single-material PLA tensegrity supports in Bambu Studio
 
+> **Printing it by hand in the Bambu Studio GUI?** Start with the
+> step-by-step operator guide in [`HOW-TO-PRINT.md`](HOW-TO-PRINT.md)
+> (single-material PLA test, then the real PLA-struts + TPU-cables print,
+> including how to load and combine the multiple STLs). The sections below
+> are the reference for *why* the recipe is built the way it is.
+
 This directory documents a **general-purpose** support recipe for FDM-printing
 any tensegrity structure as a single-material PLA part in Bambu Studio
 (Bambu Lab printers; Orca/PrusaSlicer use the same option names). It is the
