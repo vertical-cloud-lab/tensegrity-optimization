@@ -63,10 +63,9 @@ and extend):
 2. Raw peaks are mount-resonance ringing (PSD energy past 20 kHz); SAE J211 CFC
    filtering is required before any comparison.
 3. CH4 carries a fixed ~4.2 ms trigger/magnet-release artifact, not impact.
-4. Sensors were swapped between positions and per-event labels were not posted,
-   so only events 1 & 4 have both reading a comparable impact (single-axis is
-   ~1.5x the tri-axis impact axis on CFC-180); this dataset cannot
-   cross-calibrate the two sensors.
+4. so only events 1 & 4 have both reading a comparable impact (single-axis is
+   ~1.5x the tri-axis sensor's impact-axis reading on CFC-180); this dataset
+   cannot cross-calibrate the two sensors.
 
 Please provide feedback as an independent reviewer/analyst:
 (a) Verify the saturation/clipping claim (level, which events, evidence) directly
@@ -133,7 +132,9 @@ def main() -> None:
 
     task = TaskRequest(name=JobNames.ANALYSIS, query=QUERY)
     submitted = client.create_task(task, files=[data_entry_uri])
-    task_id = str(submitted) if not hasattr(submitted, "task_id") else submitted.task_id
+    # create_task returns the task/trajectory id as a plain string; guard in case
+    # a future client version returns a response object exposing ``task_id``.
+    task_id = submitted.task_id if hasattr(submitted, "task_id") else str(submitted)
     print("Submitted ANALYSIS task:", task_id)
 
     SUBMITTED_JSON.write_text(
