@@ -35,6 +35,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import time
 import unicodedata
@@ -44,7 +45,9 @@ import urllib.request
 from difflib import SequenceMatcher
 from pathlib import Path
 
-MAILTO = "sgbaird@example.com"  # Crossref polite-pool contact
+# Crossref polite-pool contact. Set CROSSREF_MAILTO to a real, monitored
+# address so Crossref can reach you about API usage; falls back to a placeholder.
+MAILTO = os.environ.get("CROSSREF_MAILTO", "noreply@example.com")
 UA = f"tensegrity-bib-verify/1.0 (mailto:{MAILTO})"
 MIN_ABSTRACT_LEN = 60
 
@@ -197,6 +200,7 @@ def clean_abstract(raw: str) -> str:
     s = re.sub(r"<[^>]+>", " ", s)
     s = s.replace("\\", " ")
     s = re.sub(r"\s+", " ", s).strip()
+    # Escape bare ampersands for LaTeX without double-escaping HTML "&amp;".
     s = re.sub(r"&(?!amp;)", r"\\&", s)
     if s.count("{") != s.count("}"):
         s = s.replace("{", "(").replace("}", ")")
