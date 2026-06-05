@@ -155,7 +155,8 @@ ABSTRACT_RE = re.compile(
 def extract_from_json(path: Path):
     """Return list of (etype, key, fields) extracted from one trajectory JSON."""
     try:
-        data = json.load(open(path))
+        with open(path) as fh:
+            data = json.load(fh)
     except Exception:
         return []
     task_id = data.get("task_id") or data.get("id") or path.stem
@@ -200,10 +201,19 @@ def extract_from_json(path: Path):
     return results
 
 
+# PaperQA numbered-reference lines look like:
+#   "12. (smith2020titlewords pages 3-5): Authors. Title. Venue, ... doi:... ."
+# Group 1 captures the citation key (before " pages"); group 2 the citation body
+# up to the next numbered entry or end of text.
 NUMREF_RE = re.compile(
     r"^\s*\d+\.\s*\(([^)]+?)\s+pages[^)]*\):\s*(.*?)(?=\n\s*\d+\.\s*\(|\Z)",
     re.S | re.M,
 )
+
+# Citation keys begin with <surname><year><titlewords>; matching this many of the
+# title-word characters against the body is enough to locate the title start
+# without over-matching on short or generic stubs.
+TITLE_STUB_MATCH_LEN = 24
 
 
 def parse_numbered_refs(text: str, task_id: str):
@@ -242,7 +252,7 @@ def parse_numbered_refs(text: str, task_id: str):
                 if ch.isalnum():
                     norm_chars.append((ch.lower(), i))
             norm = "".join(c for c, _ in norm_chars)
-            pos = norm.find(stub[: min(len(stub), 24)])
+            pos = norm.find(stub[: min(len(stub), TITLE_STUB_MATCH_LEN)])
             if pos != -1:
                 title_start = norm_chars[pos][1]
         if title_start is not None:
