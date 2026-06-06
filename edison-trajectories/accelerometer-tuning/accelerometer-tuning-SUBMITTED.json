@@ -9,5 +9,13 @@
     "docs/accelerometer-tuning-analysis.md",
     "docs/figures/accelerometer-tuning"
   ],
-  "status": "submitted"
+  "status": "fetched",
+  "result_status": "success",
+  "artifacts": [
+    "accelerometer-tuning-015f36e1-0a1c-4aed-a9a3-1d1924983c4a.md",
+    "accelerometer-tuning-015f36e1-0a1c-4aed-a9a3-1d1924983c4a.json",
+    "accelerometer-tuning-015f36e1-0a1c-4aed-a9a3-1d1924983c4a.ipynb",
+    "reviewer-artifacts/peak_summary_impact_window.csv",
+    "reviewer-artifacts/reviewer_ch1_ch4_alignment.png"
+  ]
 }
