@@ -43,38 +43,60 @@ peak G is not a physically meaningful number. The script applies the
 
 The same filter is applied identically to every channel so they can be compared.
 
+**Peak search is restricted to the impact.** Following the Edison review
+([`edison-trajectories/accelerometer-tuning/`](../edison-trajectories/accelerometer-tuning/accelerometer-tuning-015f36e1-0a1c-4aed-a9a3-1d1924983c4a.md)),
+each channel's filtered peak is taken inside a **±1 ms window around the CH4
+impact** (the tri-axis impact axis, located in the first ~10 ms), *not* over the
+whole 0.2 s record. This matters because CH1 carries a large low-frequency
+post-impact oscillation (~16 ms) whose CFC-180 amplitude exceeds the impact pulse;
+a global maximum compares that ringing against CH4's impact (see finding 4).
+
+> **Independent review.** This analysis was sent to Edison Scientific (data-analysis
+> agent) for an independent check; its feedback corrected the peak-search window
+> and the CH4 artifact interpretation below. The full review, notebook, and the
+> reviewer's corrected peak table/figure are in
+> [`edison-trajectories/accelerometer-tuning/`](../edison-trajectories/accelerometer-tuning/).
+
 ## Key findings
 
 ### 1. The single-axis channel (CH1) is **saturating** (clipping) on hard hits
 
 In events **2, 3 and 5** CH1 rails at an essentially identical ceiling
-(**8803 / 8806 / 8806 G**) and sits on a flat plateau for ~0.2 ms — the textbook
-signature of a sensor/DAQ that has hit full scale. The recorded "peak" is a clip
-level, not the true acceleration (the real peak is higher and unknown).
+(**8803 / 8806 / 8806 G**) and sits on a compressed top for ~0.18 ms — the
+signature of a sensor/conditioner that has hit full scale. The rising slew rate
+decays smoothly toward the ceiling and the falling edge resumes a steep slew, so
+this is **analog full-scale saturation** (smooth compression), not a hard digital
+ADC clip (a flat line at one code). Either way the recorded "peak" is a ceiling,
+not the true acceleration (the real peak is higher and unknown).
 
 ![CH1 saturation](figures/accelerometer-tuning/ch1_saturation.png)
 
 **This alone makes the two sensors impossible to match in those events**: you are
-comparing a clipped channel against an unclipped one. Any sensitivity adjustment
-that pushes CH1 higher just clips harder.
+comparing a saturated channel against an unsaturated one. Any sensitivity
+adjustment that pushes CH1 higher just saturates harder — the fix is a sensor with
+a higher full scale (see recommendations).
 
 ### 2. Raw peaks are ringing-dominated — compare filtered values, not raw
 
 Across all impact events the raw traces carry large broadband ringing (PSD energy
 out past 20 kHz, with mount-resonance peaks around ~18–20 kHz on CH1), riding on a
 much smaller rigid-body pulse below ~2 kHz. Filtering changes the peaks
-dramatically (e.g. event 1 CH1: 2576 G raw → 483 G CFC-180; CH4: 1280 G raw → 312 G).
+dramatically (e.g. event 1 CH1 at impact: 2576 G raw → 333 G CFC-180; CH4: 1280 G
+raw → 312 G).
 
 ![PSD of impact events](figures/accelerometer-tuning/psd_impact_events.png)
 
-### 3. CH4 carries a fixed ~4.2 ms artifact (trigger / magnet-release)
+### 3. CH4's ~4.2 ms peak is the **real impact**, not a trigger artifact
 
-CH4 peaks at **~4.0–4.4 ms in nearly every event** (1, 3, 4, 5, 9, 13), independent
-of the actual impact. This matches the fixed trigger/magnet-release transient seen
-in the earlier campaign (issue #36) and is **not** an impact measurement. In events
-11–12 *all four* channels peak at exactly 3.90 ms, i.e. a common synchronized
-transient rather than a mechanical impact. Analysis windows should be gated to the
-real impact and this trigger artifact fixed at the source.
+An earlier draft (and the earlier issue-#36 campaign) read CH4's recurring ~4.2 ms
+peak as a fixed trigger/magnet-release artifact. **For this series that is wrong.**
+In the quiet / aborted drops (events **6, 7, 8**) the CH4 level around 3–5 ms is
+**< 0.5 G** — if it were a fixed electrical artifact tied to the trigger it would
+appear regardless of the drop. The pulse also has a ~280 µs full-width-half-max,
+a mechanical impact duration, not a one-sample electrical spike. It simply recurs
+near ~4.2 ms because the bungee-assisted carriage's release-to-impact time is
+repeatable. **Do not gate this out** — it is the impact. (Window the analysis to
+it, which is what the corrected peak search does.)
 
 ### 4. The sensors were in **different positions** per test, so this data cannot
 cross-calibrate them
@@ -91,36 +113,59 @@ while the other sees almost nothing — they were not experiencing the same inpu
 | CH1 ~0, tri-axis sees the hit (~34–44 G)  | 11, 12        |
 | No / aborted drop (noise only)            | 6, 7, 8       |
 
-Only **events 1 and 4** have both sensors reading a comparable large impact. There
-the single-axis (CH1) reads about **1.5×** the tri-axis impact axis (CH4) on the
-CFC-180 pulse (483/312 and 473/316). That is a useful number but it is *not* a
-clean co-located calibration — even events 1/4 may be different mounting locations.
+Only **events 1 and 4** have both sensors reading a comparable large impact.
+**Measured in the ±1 ms impact window** (the corrected method), the single-axis
+(CH1) reads only about **1.05–1.1×** the tri-axis impact axis (CH4) on the CFC-180
+pulse (333/312 = 1.07 and 336/316 = 1.06) and ~1.1× the tri-axis resultant — i.e.
+**the two sensors agree to within ~5–10 %** on the rigid-body pulse.
 
-Per-event CFC-1000 peaks, CH1 vs CH4:
+This corrects the earlier draft, which reported ~**1.5×**. That figure came from
+taking each channel's **global** CFC-180 maximum over the full 0.2 s: CH1's global
+max is a low-frequency post-impact mount/structural oscillation at **~15.8 ms**
+(483 G), not the impact (~333 G at ~4.2 ms), so it was being compared against
+CH4's impact peak. The figure below shows the misalignment — note CH1 and CH4 sit
+almost on top of each other inside the impact window, while CH1's late hump is the
+spurious global peak:
+
+![Impact-windowed CH1 vs CH4](figures/accelerometer-tuning/ch1_ch4_alignment.png)
+
+Even so this is *not* a clean co-located calibration: CH1's impact peak lags CH4
+by ~250 µs and CH1 carries that large late oscillation that CH4 never sees, so the
+two sensors are at **different mechanical locations** (different local shock
+environment), not merely mis-scaled. Per-event CFC-1000 impact-window peaks,
+CH1 vs CH4:
 
 ![Peak comparison](figures/accelerometer-tuning/peak_comparison_ch1_ch4.png)
 
 ## Recommendations ("tuning" the sensors)
 
-1. **Stop the clipping first.** The single-axis channel is railing at ~8.8 kG.
-   Either lower its gain / increase its range, or use a sensor whose full scale
-   comfortably exceeds the expected peak. Confirm the **sensitivity (mV/G) entered
-   in TP4 matches each sensor's calibration sheet** — a wrong sensitivity value is
-   the most common cause of two sensors disagreeing by a fixed factor.
+1. **Stop the saturation first.** The single-axis channel rails at ~8.8 kG, so its
+   true peak is unknown on hard hits. Step up to a sensor whose full scale
+   comfortably exceeds the expected peak (e.g. a **20,000 G** range if the present
+   part is a 10,000 G sensor — 8.8 kG is dangerously close to its limit) rather
+   than just lowering gain. Confirm the **sensitivity (mV/G) entered in TP4 matches
+   each sensor's calibration sheet** — a wrong sensitivity is a common cause of two
+   sensors disagreeing by a fixed factor.
 2. **Do a real co-location cross-calibration.** Mount both sensors **rigidly,
-   back-to-back on the same plate**, with their sensitive axes aligned to the drop
-   direction, and run several **repeatable, sub-saturation** drops. Apply the same
-   CFC filter to both and regress CH1 against CH4 — a single slope is the scale
-   factor to reconcile them. Do this before trusting any swapped-position numbers.
-3. **Always compare filtered peaks, not raw.** Use CFC 1000 for `g_max` and
-   CFC 180 for Δv / structural response, applied identically to both channels.
-   Raw peaks are ringing/artifact dominated and will never agree.
-4. **Fix the mounting resonance.** The broadband ringing out to ~20 kHz points to a
-   compliant mount/adapter. Use a stud or thin stiff-adhesive mount, minimize
-   adapter mass between sensor and plate, and strain-relieve the cables.
-5. **Separate the trigger/magnet artifact.** CH4's fixed ~4.2 ms spike is the
-   magnet-release transient, not impact — gate the analysis window to the real
-   impact and address the trigger coupling at the source.
+   back-to-back on the same stiff block**, sensitive axes aligned to the drop
+   direction, and run several **repeatable, sub-saturation** drops (e.g. ~500 /
+   1000 / 2000 G). Apply the same CFC filter to both, gate to the ±1–2 ms impact
+   window, and regress CH1 against CH4 with the intercept forced to 0 — the slope
+   is the scale factor; report its standard error. Do this before trusting any
+   swapped-position numbers.
+3. **Always compare filtered, impact-windowed peaks, not raw global peaks.** Use
+   CFC 1000 for `g_max` and CFC 180 for Δv / structural response, applied
+   identically to both channels, and search the peak **only in the impact window**.
+   Raw peaks are ringing-dominated and a global search latches onto post-impact
+   oscillations (the source of the earlier 1.5× error).
+4. **Fix the mounting resonance.** The broadband ringing out to ~20 kHz (and CH1's
+   large ~16 ms post-impact oscillation) points to a compliant mount/adapter or a
+   rebounding carriage. Use a stud or thin stiff-adhesive mount, minimize adapter
+   mass between sensor and plate, and strain-relieve the cables.
+5. **Window to the impact; the ~4.2 ms CH4 peak is the impact, not an artifact.**
+   Gate analysis to the impact transient (done by the corrected peak search). The
+   recurring ~4.2 ms timing is just the repeatable carriage free-fall time, not a
+   trigger/magnet artifact, so it should be kept, not filtered out.
 6. **Label every run.** Record which sensor, which position, and which orientation
    for each event so swapped-position tests can be interpreted.
 7. Sample rate (125 kHz) is adequate; keep both channels on the same rate and

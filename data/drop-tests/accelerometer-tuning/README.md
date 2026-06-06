@@ -9,8 +9,11 @@ and tri-axis accelerometers, plus derived products.
   per-channel peak `Accel` (G), pulse `Duration` (ms) and `Delta V` (in/sec).
 - `raw/06.02.2026_SignalN.csv` — TP4 **time-domain** export for event `N`
   (N = 1..13): 4 channels (CH1–CH4) sampled at 125 kHz for 0.2 s (25 000 samples), in G.
-- `peak_summary.csv` — derived per-event raw and SAE J211 CFC-180 / CFC-1000 peaks,
-  tri-axis resultant, CH1/CH4 ratio, and a CH1 saturation flag.
+- `peak_summary.csv` — derived per-event raw and SAE J211 CFC-180 / CFC-1000
+  peaks (global and **impact-windowed**), the impact time, the tri-axis
+  resultant, the impact-window CH1/CH4 ratio, and a CH1 saturation flag.
+  Peaks are searched inside a ±1 ms window around the CH4 impact (see the
+  reviewer correction in the analysis doc), not over the whole 0.2 s record.
 
 ## Channel mapping (inferred — confirm)
 

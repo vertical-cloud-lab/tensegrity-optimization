@@ -60,6 +60,20 @@ CH_LABELS = {
 }
 N_EVENTS = 13
 
+# Reviewer (Edison ANALYSIS 015f36e1) correction: search for filtered peaks only
+# inside a window around the actual impact, not over the whole 0.2 s record. The
+# single-axis channel (CH1) carries a large low-frequency post-impact mount
+# oscillation (~16 ms in events 1/4) whose CFC-180 amplitude exceeds the impact
+# pulse; taking the global maximum compared that ringing against CH4's impact and
+# produced a spurious ~1.55 single-vs-tri ratio. Centering a +/-1 ms window on the
+# CH4 (tri-axis impact axis) peak yields ~1.10-1.12, i.e. the sensors agree on the
+# rigid-body pulse to within ~10-12%.
+IMPACT_WINDOW_MS = 1.0
+# The carriage free-fall to first impact is repeatable at ~4 ms, so locate the
+# CH4 impact within the first ~10 ms to avoid latching onto a rebound (e.g. the
+# ~31 ms secondary spike in event 2) or late noise (quiet/aborted drops).
+IMPACT_SEARCH_MS = 10.0
+
 
 # --------------------------------------------------------------------------- #
 # Parsing
@@ -114,9 +128,35 @@ def signed_peak(x: np.ndarray) -> float:
     return float(x[int(np.argmax(np.abs(x)))])
 
 
+def windowed_signed_peak(
+    x: np.ndarray, t: np.ndarray, center_idx: int, half_window_s: float
+) -> tuple[float, float]:
+    """Signed peak of ``x`` within +/-``half_window_s`` of ``t[center_idx]``.
+
+    Returns ``(peak_value, peak_time_s)``. Used to isolate the impact pulse from
+    the much longer post-impact mount/structural ringing (see ``IMPACT_WINDOW_MS``).
+    """
+    lo = np.searchsorted(t, t[center_idx] - half_window_s, side="left")
+    hi = np.searchsorted(t, t[center_idx] + half_window_s, side="right")
+    seg = x[lo:hi]
+    k = int(np.argmax(np.abs(seg)))
+    return float(seg[k]), float(t[lo + k])
+
+
 # --------------------------------------------------------------------------- #
 # Plotting
 # --------------------------------------------------------------------------- #
+def impact_index(data: np.ndarray, t: np.ndarray) -> int:
+    """Index of the CH4 (tri-axis impact axis) absolute peak in the early region.
+
+    Restricted to the first ``IMPACT_SEARCH_MS`` to lock onto the first impact
+    rather than a later rebound or post-impact noise.
+    """
+    hi = int(np.searchsorted(t, IMPACT_SEARCH_MS * 1e-3, side="right"))
+    hi = max(hi, 1)
+    return int(np.argmax(np.abs(data[:hi, 3])))
+
+
 def plot_event(ev: int, t: np.ndarray, data: np.ndarray, fs: float) -> None:
     """Time-domain overview for one event: raw + CFC-180 for each channel."""
     tms = t * 1e3
@@ -190,10 +230,10 @@ def plot_saturation(events: dict[int, tuple[np.ndarray, np.ndarray]], fs: float)
 
 
 def plot_peak_comparison(rows: list[dict]) -> None:
-    """Bar chart of CH1 vs CH4 CFC-1000 peaks across events."""
+    """Bar chart of CH1 vs CH4 impact-windowed CFC-1000 peaks across events."""
     evs = [r["event"] for r in rows]
-    ch1 = [abs(r["CH1_cfc1000"]) for r in rows]
-    ch4 = [abs(r["CH4_cfc1000"]) for r in rows]
+    ch1 = [abs(r["CH1_cfc1000_win"]) for r in rows]
+    ch4 = [abs(r["CH4_cfc1000_win"]) for r in rows]
     x = np.arange(len(evs))
     fig, ax = plt.subplots(figsize=(11, 5))
     ax.bar(x - 0.2, ch1, 0.4, label="CH1 single-axis", color="C0")
@@ -201,14 +241,68 @@ def plot_peak_comparison(rows: list[dict]) -> None:
     ax.set_yscale("log")
     ax.set_xticks(x)
     ax.set_xticklabels([f"E{e}" for e in evs])
-    ax.set_ylabel("|peak| acceleration, CFC 1000 (G)")
+    ax.set_ylabel("|peak| acceleration, CFC 1000, impact window (G)")
     ax.set_xlabel("Event")
-    ax.set_title("Single-axis (CH1) vs tri-axis impact axis (CH4): CFC-1000 peaks",
+    ax.set_title("Single-axis (CH1) vs tri-axis impact axis (CH4): CFC-1000 "
+                 "peaks in the impact window",
                  fontweight="bold")
     ax.grid(alpha=0.3, axis="y", which="both")
     ax.legend()
     fig.tight_layout()
     fig.savefig(FIG_DIR / "peak_comparison_ch1_ch4.png", dpi=110)
+    plt.close(fig)
+
+
+def plot_impact_alignment(
+    events: dict[int, tuple[np.ndarray, np.ndarray]], fs: float
+) -> None:
+    """CH1 vs CH4 CFC-180 around the impact for events 1 & 4.
+
+    Shows that the meaningful comparison is the impact pulse (~4.2 ms), and that
+    CH1's *global* CFC-180 maximum is actually a much later low-frequency
+    post-impact oscillation (~16 ms) -- the source of the original spurious 1.5x
+    single-vs-tri ratio. Reproduces the reviewer's correction (Edison 015f36e1).
+    """
+    pairs = [e for e in (1, 4) if e in events]
+    if not pairs:
+        return
+    fig, axes = plt.subplots(len(pairs), 1, figsize=(11, 3.2 * len(pairs)),
+                             squeeze=False)
+    half_win = IMPACT_WINDOW_MS * 1e-3
+    for ax, ev in zip(axes[:, 0], pairs):
+        t, data = events[ev]
+        tms = t * 1e3
+        f1 = cfc_filter(data[:, 0], fs, 180.0)
+        f4 = cfc_filter(data[:, 3], fs, 180.0)
+        impact_idx = impact_index(data, t)
+        t_imp = t[impact_idx]
+        ax.plot(tms, f1, lw=1.0, color="C0", label="CH1 (single-axis) CFC-180")
+        ax.plot(tms, f4, lw=1.0, color="C1", label="CH4 (tri-axis Z) CFC-180")
+        ax.axvspan((t_imp - half_win) * 1e3, (t_imp + half_win) * 1e3,
+                   color="0.85", label=f"+/-{IMPACT_WINDOW_MS:.0f} ms impact window")
+        # mark CH1 global peak (the late post-impact ringing)
+        g1 = int(np.argmax(np.abs(f1)))
+        ax.plot(tms[g1], f1[g1], "v", color="C3", ms=9,
+                label=f"CH1 global peak ({f1[g1]:.0f} G @ {tms[g1]:.1f} ms)")
+        # in-window peaks
+        lo = np.searchsorted(t, t_imp - half_win)
+        hi = np.searchsorted(t, t_imp + half_win, side="right")
+        w1 = lo + int(np.argmax(np.abs(f1[lo:hi])))
+        w4 = lo + int(np.argmax(np.abs(f4[lo:hi])))
+        ratio = abs(f1[w1]) / abs(f4[w4]) if abs(f4[w4]) > 1e-6 else float("nan")
+        ax.set_title(
+            f"Event {ev}: in-window CH1/CH4 = {abs(f1[w1]):.0f}/{abs(f4[w4]):.0f}"
+            f" = {ratio:.2f}  (global CH1 peak is post-impact ringing)",
+            fontsize=10)
+        ax.set_xlim(0, 30)
+        ax.set_ylabel("Accel (G)")
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=8, loc="upper right")
+    axes[-1, 0].set_xlabel("Time (ms)")
+    fig.suptitle("Impact-windowed CH1 vs CH4 (reviewer correction)",
+                 fontweight="bold")
+    fig.tight_layout()
+    fig.savefig(FIG_DIR / "ch1_ch4_alignment.png", dpi=110)
     plt.close(fig)
 
 
@@ -233,39 +327,61 @@ def main() -> None:
     assert fs is not None, "no time-domain files found"
 
     rows: list[dict] = []
+    half_win = IMPACT_WINDOW_MS * 1e-3
     for ev, (t, data) in events.items():
         row: dict = {"event": ev}
+        filt180 = {ch: cfc_filter(data[:, ci], fs, 180.0)
+                   for ci, ch in enumerate(CHANNELS)}
+        filt1000 = {ch: cfc_filter(data[:, ci], fs, 1000.0)
+                    for ci, ch in enumerate(CHANNELS)}
+        # Impact time = CH4 (tri-axis impact axis) absolute peak. The +/-1 ms
+        # window around it isolates the rigid-body pulse from post-impact ringing.
+        impact_idx = impact_index(data, t)
+        row["impact_t_ms"] = float(t[impact_idx] * 1e3)
         for ci, ch in enumerate(CHANNELS):
             raw = data[:, ci]
             row[f"{ch}_raw"] = signed_peak(raw)
-            row[f"{ch}_cfc180"] = signed_peak(cfc_filter(raw, fs, 180.0))
-            row[f"{ch}_cfc1000"] = signed_peak(cfc_filter(raw, fs, 1000.0))
-        # tri-axis resultant (CH2/3/4) on the CFC-180 traces
-        tri = np.sqrt(
-            cfc_filter(data[:, 1], fs, 180.0) ** 2
-            + cfc_filter(data[:, 2], fs, 180.0) ** 2
-            + cfc_filter(data[:, 3], fs, 180.0) ** 2
-        )
+            row[f"{ch}_cfc180"] = signed_peak(filt180[ch])
+            row[f"{ch}_cfc1000"] = signed_peak(filt1000[ch])
+            p180, _ = windowed_signed_peak(filt180[ch], t, impact_idx, half_win)
+            p1000, _ = windowed_signed_peak(filt1000[ch], t, impact_idx, half_win)
+            row[f"{ch}_cfc180_win"] = p180
+            row[f"{ch}_cfc1000_win"] = p1000
+        # tri-axis resultant (CH2/3/4) on the CFC-180 traces, at the impact
+        tri = np.sqrt(filt180["CH2"] ** 2 + filt180["CH3"] ** 2 + filt180["CH4"] ** 2)
         row["tri_resultant_cfc180"] = float(tri.max())
-        # single (CH1) vs tri impact axis (CH4) ratio, CFC 180
-        c1 = abs(row["CH1_cfc180"])
-        c4 = abs(row["CH4_cfc180"])
-        row["CH1_over_CH4_cfc180"] = c1 / c4 if c4 > 1e-6 else float("nan")
-        # saturation flag: CH1 within 2% of the recurring ~8806 G ceiling
+        tri_win, _ = windowed_signed_peak(tri, t, impact_idx, half_win)
+        row["tri_resultant_cfc180_win"] = float(abs(tri_win))
+        # single (CH1) vs tri impact axis (CH4) ratio, CFC 180, in the impact
+        # window (the meaningful, reviewer-corrected comparison)
+        c1 = abs(row["CH1_cfc180_win"])
+        c4 = abs(row["CH4_cfc180_win"])
+        row["CH1_over_CH4_cfc180_win"] = c1 / c4 if c4 > 1e-6 else float("nan")
+        # saturation flag: CH1 within 2% of the recurring ~8806 G ceiling. This is
+        # analog full-scale saturation (a smooth ~180 us compressed top), not a
+        # hard digital ADC clip -- the true peak is unknown and higher.
         row["CH1_saturated"] = abs(row["CH1_raw"]) > 0.98 * 8806.0
         rows.append(row)
 
     plot_psd(events, fs)
     plot_saturation(events, fs)
     plot_peak_comparison(rows)
+    plot_impact_alignment(events, fs)
 
     # write a tidy summary CSV
     cols = (
-        ["event"]
+        ["event", "impact_t_ms"]
         + [f"{ch}_raw" for ch in CHANNELS]
         + [f"{ch}_cfc1000" for ch in CHANNELS]
         + [f"{ch}_cfc180" for ch in CHANNELS]
-        + ["tri_resultant_cfc180", "CH1_over_CH4_cfc180", "CH1_saturated"]
+        + [f"{ch}_cfc1000_win" for ch in CHANNELS]
+        + [f"{ch}_cfc180_win" for ch in CHANNELS]
+        + [
+            "tri_resultant_cfc180",
+            "tri_resultant_cfc180_win",
+            "CH1_over_CH4_cfc180_win",
+            "CH1_saturated",
+        ]
     )
     out_csv = OUT_DATA / "peak_summary.csv"
     with out_csv.open("w") as f:
@@ -275,11 +391,13 @@ def main() -> None:
 
     # console summary
     print(f"Sampling rate: {fs/1e3:.1f} kHz, window {len(events[1][0])} samples")
-    print("\nevent  CH1_raw  CH1_cfc180  CH4_cfc180  CH1/CH4  saturated")
+    print(f"Impact-windowed peaks (+/-{IMPACT_WINDOW_MS:.1f} ms around CH4 impact)")
+    print("\nevent  t_imp/ms  CH1_raw  CH1_180win  CH4_180win  CH1/CH4  saturated")
     for r in rows:
         print(
-            f"{r['event']:>4}  {r['CH1_raw']:8.0f}  {r['CH1_cfc180']:9.0f}  "
-            f"{r['CH4_cfc180']:9.0f}  {r['CH1_over_CH4_cfc180']:7.2f}  "
+            f"{r['event']:>4}  {r['impact_t_ms']:8.2f}  {r['CH1_raw']:8.0f}  "
+            f"{r['CH1_cfc180_win']:10.0f}  {r['CH4_cfc180_win']:10.0f}  "
+            f"{r['CH1_over_CH4_cfc180_win']:7.2f}  "
             f"{'YES' if r['CH1_saturated'] else ''}"
         )
     print(f"\nWrote {out_csv.relative_to(ROOT)} and figures to "
