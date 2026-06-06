@@ -153,7 +153,7 @@ def impact_index(data: np.ndarray, t: np.ndarray) -> int:
     rather than a later rebound or post-impact noise.
     """
     hi = int(np.searchsorted(t, IMPACT_SEARCH_MS * 1e-3, side="right"))
-    hi = max(hi, 1)
+    hi = max(hi, 1)  # ensure at least one sample in the search window
     return int(np.argmax(np.abs(data[:hi, 3])))
 
 
