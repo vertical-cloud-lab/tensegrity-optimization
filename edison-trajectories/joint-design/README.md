@@ -159,9 +159,43 @@ Key geometry (full table + rationale at [`cad/joint-design/F_captive_core.md`](.
 
 Reproduce with `bash cad/joint-design/render_F.sh`. SCAD sources at [`cad/joint-design/F_captive_core.scad`](../../cad/joint-design/F_captive_core.scad) + `_section_{X,Y,Z}.scad`.
 
-- [ ] Fetch ANALYSIS follow-up `ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa` (re-run with all 5 Phase-1 outputs attached) and commit `.md` + `.json`
-- [ ] Update [`cad/t3-prism/t3-prism.scad`](../../cad/t3-prism/t3-prism.scad) with primary (E, barbed rebar) and backup (A, anchor-bulb) joint geometry parameters once issue [#37](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/37) (H2D PETG+TPU IDEX setup) lands a working multi-material print
+- [x] Fetch ANALYSIS follow-up `ce84ddf8-5930-4c61-a6ce-65cf9ee3a6fa` — **done** (inverted recommendation to B primary)
+- [ ] Update [`cad/t3-prism/t3-prism.scad`](../../cad/t3-prism/t3-prism.scad) with primary (B, dovetail) and backup (A, anchor-bulb) joint geometry parameters once issue [#37](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/37) lands a working multi-material print
 - [ ] Add explicit lumped joint-compliance elements to `simulations/regimes.py` per the per-design corrections table above so the rigid-strut sims can express the SEA effect of joint choice
+
+## Phase 5 — TPU-inside vs TPU-outside topology comparison (`28d942ea`)
+
+**Context:** The manuscript draft (lines 378–382) stated "Following Ye et al., the design uses a core-wrapping strategy in which each PLA strut is encapsulated by continuous TPU skin." @sgbaird confirmed this is **incorrect** — the project actually does the *opposite*: soft TPU core inside rigid PLA shell (our Design F). @me-madsen described it as "cables going to one end of a strut all connect to each other inside of that strut, then extend out from the strut, the strut acting as a kind of cage to the multiple outlets of cables."
+
+Edison ANALYSIS `28d942ea-bc9e-4e7a-b32d-b7dd967ddda6` was submitted with 10 context files (BO script, manuscript draft, PR #38 context summary, Design F SCAD + rationale + 4 renders, joint-design README). Task completed in ~13 min. Full result: [`TPU-topology-comparison-28d942ea.md`](TPU-topology-comparison-28d942ea.md) / [`.json`](TPU-topology-comparison-28d942ea.json).
+
+### Key findings
+
+| Question | Answer |
+| --- | --- |
+| **Better topology for lander/egg-drop (omnidirectional, n≥20 reuse)?** | **Strategy B (captive-core, TPU inside PLA)** — retention is geometric (2.5× pull-out ratio), not adhesive; PLA–TPU bond is too weak/variable to trust under repeated peel-heavy off-axis impact |
+| **Better topology for uni-axial crutch-tip?** | Still captive-core between the two, but the dovetail (Design B) remains the right choice for this load case; captive-core logic applies where bond-independence is needed |
+| **PLA–TPU adhesion in FDM?** | 0.37–0.39 MPa (weak, process-sensitive) — Brancewicz-Steinmetz & Sawicki 2021, DOI [10.3390/ma14216464](https://doi.org/10.3390/ma14216464); Bisicchia et al. 2025, DOI [10.1007/s00170-025-17099-x](https://doi.org/10.1007/s00170-025-17099-x) |
+| **Print-in-place gap (0.5 mm) for TPU 85A on H2D?** | Plausible but barely sufficient; treat as minimum, validate with a tolerance coupon before full specimens |
+| **TPU-outside print-in-place strategy (Strategy A)?** | TPU sag/bridging on outer layers is the main risk; H2D tool-change ooze also exposes outer-surface quality |
+| **Hybrid approach possible?** | Yes: captive inner core (structural retention) + thin outer TPU skin (abrasion damping); keep outer skin non-structural to avoid reintroducing adhesion dependency |
+| **Ye et al. DOI in manuscript (`10.1016/j.jmps.2023.105392`)?** | **Wrong DOI** — resolves to Filla et al. fibrin-fibre paper, not a tensegrity paper; see Edison note |
+
+### Manuscript correction (lines 378–395)
+
+Edison recommended replacing the incorrect Ye et al. core-wrapping claim with:
+
+> "Specimens are fabricated on a multi-material FDM printer using PLA for the rigid struts and TPU 85A for the soft tension elements. Unlike outer-overmolded rigid–soft architectures that rely on interfacial bonding between deposited polymers, the present design uses a **captive-core joint** in which a soft TPU anchor is fully enclosed within a rigid PLA shell. In the implemented geometry (Design F), a 7.0 mm TPU core is printed in place inside an 8.0 mm cavity within a 12.0 mm outer shell, with the tendon exiting through a 2.8 mm bore. Retention is therefore geometric rather than adhesive: the TPU anchor cannot pass back through the bore, giving a core-to-bore diameter ratio of 2.5. To further suppress axial slip without relying on PLA–TPU chemical adhesion, the shell and core incorporate staggered rings of radial interlock teeth. This approach was chosen because published FDM studies report relatively weak and process-sensitive PLA–TPU adhesion, with mean interfacial strengths on the order of 0.37–0.39 MPa depending on print order and surface pattern [Brancewicz-Steinmetz & Sawicki 2021, DOI:10.3390/ma14216464], whereas geometry-based interlocks are a standard route for strengthening dissimilar-material interfaces [Alsheghri et al. 2018, DOI:10.1016/j.actbio.2018.09.029]. For impact-dominated use cases such as the reusable egg-drop lander, placing the TPU anchor inside the PLA shell protects the compliant tendon from external abrasion and moves the critical failure mode away from interface peel and toward shell or interlock failure, which is more directly tunable through geometry."
+
+### New citations surfaced
+
+| Reference | DOI | Relevance |
+| --- | --- | --- |
+| Brancewicz-Steinmetz & Sawicki 2021 | [10.3390/ma14216464](https://doi.org/10.3390/ma14216464) | PLA–TPU FDM adhesion: 0.37–0.39 MPa, strong print-order dependence |
+| Bisicchia et al. 2025 (IJAMT) | [10.1007/s00170-025-17099-x](https://doi.org/10.1007/s00170-025-17099-x) | PLA–TPU interlaminar bonding; 150–350 N peak lap-shear under varied settings |
+| Harris et al. 2019 (Front. Mech. Eng.) | [10.3389/fmech.2019.00037](https://doi.org/10.3389/fmech.2019.00037) | TPU adhesion in multi-material flexible joints |
+| Alsheghri et al. 2018 (Acta Biomater.) | [10.1016/j.actbio.2018.09.029](https://doi.org/10.1016/j.actbio.2018.09.029) | Bio-inspired interlock features outperform adhesion for dissimilar materials |
+| Ye et al. 2023 (Polym. Compos.) | [10.1002/pc.27770](https://doi.org/10.1002/pc.27770) | Closest verifiable Ye PLA/TPU paper (bamboo-inspired composites, not tensegrity) |
 
 ## Appendix — context files attached to the queries
 

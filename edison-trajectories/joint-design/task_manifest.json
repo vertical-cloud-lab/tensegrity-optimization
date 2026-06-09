@@ -109,5 +109,28 @@
       "next_session_action": "Fetch task e9a1f4cc and write md+json to edison-trajectories/joint-design/PHASE4-vision-e9a1f4cc-*.{md,json}.",
       "trigger": "PR comment 4427608763 (@sgbaird-yolo): 'Send an additional edison analysis with individual panels and cross-sections of A-E (don't send the full mosaic, send individual tiles so that vision model can read it better).'"
     }
+  },
+  "phase5": {
+    "tpu_topology_comparison": {
+      "task_id": "28d942ea-bc9e-4e7a-b32d-b7dd967ddda6",
+      "job_name": "job-futurehouse-data-analysis-crow-high",
+      "query_summary": "TPU-inside (our captive-core Design F) vs TPU-outside (Ye et al. core-wrapping) \u2014 which topology is better for lander/egg-drop and crutch-tip?",
+      "status": "success",
+      "files": [
+        "data_entry:654eb927-c1ad-4667-b7ee-93e74db53681 (bo/t3_prism_sobol_batch.py)",
+        "data_entry:79eb2079-4ed2-4b98-96fc-3a9c7eecb565 (manuscript/manuscript-body.tex)",
+        "data_entry:2e29eb62-cdc2-401f-92b1-8188d703c9e4 (pr38_conversation_context.md)",
+        "data_entry:f1556f29-621b-4cec-b5c5-b2ea948da34e (F_captive_core.scad)",
+        "data_entry:fa8be8c5-951c-4a35-86c4-1eccab69a209 (F_captive_core.md)",
+        "data_entry:6c76f332-5442-44d1-b833-cebad7bdddea (F_captive_core_iso.png)",
+        "data_entry:bc701f24-ca56-4080-b2a5-59aa480cddaa (F_captive_core_section_X_iso.png)",
+        "data_entry:5aac11f6-6304-4c36-9306-81be96fd5fcd (F_captive_core_section_Y_iso.png)",
+        "data_entry:643bf7f0-56cd-4a6f-aab7-d26e1b6da1dd (F_captive_core_section_Z_iso.png)",
+        "data_entry:0a386120-cce9-4a20-a87e-45e18f65c07b (joint-design/README.md)"
+      ],
+      "result": "edison-trajectories/joint-design/TPU-topology-comparison-28d942ea.{md,json}",
+      "key_finding": "captive-core (TPU inside PLA) preferred over core-wrapping (TPU outside PLA) for both use cases; PLA-TPU adhesion 0.37-0.39 MPa is too variable to trust",
+      "manuscript_note": "The manuscript's Ye et al. core-wrapping claim (lines 378-382) is incorrect \u2014 we use the opposite topology. Edison provided corrected text."
+    }
   }
 }
