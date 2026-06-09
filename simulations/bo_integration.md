@@ -224,3 +224,17 @@ These are the questions to take to the contacts in
    axis, or keep one campaign per regime?  *(Frazier, multifidelity
    trade-off; ties back into payload-vs-no-payload Edison brief
    37ae0665.)*
+
+## Edison ANALYSIS query (PR comment 4663414812)
+
+In response to PR comment 4663414812, an Edison `ANALYSIS`
+(`data-analysis-crow-high`) task was submitted asking how these
+multi-fidelity simulations should feed (a) the PR #35 T3-prism BO
+campaign and (b) the high-fidelity manual validation (drop-tower /
+Instron), and what information the sims surface that the printer/bench
+cannot cheaply provide. The query bundled four files as ground truth:
+the PR #35 BO script (`bo/t3_prism_sobol_batch.py`), this bridge
+(`bo_evaluator.py`), the tier-C simulator (`run_regimes.py`), and the
+manuscript draft. The submit script is
+`scripts/edison/submit_simulation_bo_value.py`; the trajectory artifacts
+land in `edison-trajectories/simulation-bo-value/`.
