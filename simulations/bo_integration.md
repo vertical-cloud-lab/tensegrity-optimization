@@ -102,8 +102,11 @@ exactly what lets them combine in a multi-fidelity campaign:
   shows the F_peak ↔ SEA ↔ eta trade-off is regime-dependent: at the
   production R/H, the lander regime drives `F_peak` to ~5 kN with `eta`
   ~0.70, while the crutch regime sits near the soft-cushion limit (`eta`
-  ~0.96). The BO should therefore either run one campaign per regime or carry
-  the regime as a context, not average the two.
+  ~0.96). Rather than averaging the two (which destroys the regime signal) or
+  running two fully independent campaigns (which throws away the shared
+  structure), the preferred treatment is a **multi-task GP** that carries the
+  regime as a task and lets the campaigns share information as soon as it is
+  observed — see [Multi-task treatment of the regimes](#multi-task-treatment-of-the-regimes-crutch-and-lander) below.
 - **Feasibility for free.** `PrintableDesign.check()` rejects class-2 strut
   overlap, unprintable cable diameters, and prestrain past TPU break before
   any sim runs, so the BO learns the printable-feasible boundary at zero
@@ -116,6 +119,67 @@ hyperelastic hysteresis, or strut–strut contact — those are precisely the
 tier-B/A and physical-drop jobs. Tier-C is a *ranking* tool for the bulk of
 the search, not a quantitative predictor of the absolute `g` a given printed
 T3-prism will survive.
+
+## Multi-task treatment of the regimes (crutch and lander)
+
+In response to PR comment 4664686033, the recommended way to handle the two
+impact regimes is **not** one isolated campaign per regime (the
+one-campaign-per-regime suggestion from Edison sim-survey 782657e0), but a
+single **multi-task Bayesian optimization (MTBO)** campaign in which the
+regime is a *task* dimension and the two campaigns share information as soon
+as it is available (per @sgbaird and the Honegumi multitask docs:
+[concept](https://honegumi.readthedocs.io/en/latest/curriculum/concepts/multitask/multitask.html),
+[tutorial](https://honegumi.readthedocs.io/en/latest/curriculum/tutorials/multitask/multitask.html)).
+
+**Why MTBO fits here.** The crutch and lander regimes share the *same*
+design space — identical PR #35 T3-prism axes (`R_mm`, `H_mm`, `twist_deg`,
+`strut_d_mm`, `cable_d_mm`); they differ only in the load case
+(`Regime` drop height / payload, `regimes.py`). The objectives are
+*correlated but offset* (a softer cell helps both `eta` curves; only the
+absolute level and the `F_peak` scale differ between regimes). That is
+exactly the regime where a multi-task kernel
+`K((x,t),(x',t')) = K_t(t,t') ∘ K_x(x,x')` shines: an evaluation in the
+crutch task immediately informs the lander model and vice-versa, which is far
+more sample-efficient than two independent GPs — and tier-C is cheap enough
+(~0.1–0.2 s/design) to populate both tasks densely.
+
+**Wiring.** Ax supports this through a `Task` parameter plus the
+`ST_MTGP` transform / `Models.BOTORCH_MODULAR` generation strategy used in
+the Honegumi tutorial. Concretely, the regime becomes a task choice and
+`bo_evaluator.evaluate_design` is already regime-parameterized, so the
+evaluator side needs no change — only the AxClient setup does:
+
+```python
+from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
+from ax.modelbridge.registry import Models, Specified_Task_ST_MTGP_trans
+from simulations.bo_evaluator import evaluate_design
+from simulations.regimes import CRUTCH, NASA_LANDER
+
+REGIME_TASKS = {"crutch": CRUTCH, "nasa_lander": NASA_LANDER}
+
+gs = GenerationStrategy(steps=[
+    GenerationStep(Models.SOBOL, num_trials=8,
+                   model_kwargs={"transforms": Specified_Task_ST_MTGP_trans}),
+    GenerationStep(Models.BOTORCH_MODULAR, num_trials=-1,
+                   model_kwargs={"transforms": Specified_Task_ST_MTGP_trans}),
+])
+# ... AxClient(generation_strategy=gs); add a "regime" Task parameter
+# (values "crutch", "nasa_lander") alongside the PR #35 design axes, then:
+resp = evaluate_design(params, regime=REGIME_TASKS[params["regime"]], fidelity="C")
+```
+
+**One caveat to watch (Honegumi "where multitask models go wrong").** The
+Ax multitask kernel is purely multiplicative, so under extrapolation the
+task models collapse toward a *common* mean. Because the crutch `eta` (~0.96)
+and lander `eta` (~0.70) means genuinely differ, the two tasks should be kept
+well-observed (don't let one task starve), and per-outcome standardization /
+an intercept-aware kernel should be used so the mean offset is not washed
+out. With both tasks fed by cheap tier-C evaluations this is easy to satisfy.
+
+This MTBO framing also generalizes cleanly to the multi-fidelity ladder:
+fidelity (C/B/A) is naturally a *second* task axis, so the same machinery
+that shares information across regimes can share it across simulator tiers
+and, eventually, the physical drop tower.
 
 
 
@@ -224,12 +288,15 @@ These are the questions to take to the contacts in
    enough to use tier-C as the bulk evaluator?  *(Schneider, Rimoli, Du,
    Frazier)*
 2. Are `F_peak_N`, `SEA_J_per_g`, `eta` the right three outcomes for the
-   crutch *and* lander regimes, or should each regime run its own
-   campaign?  *(Skelton, Davami, Agogino)*
-3. Should we expose the BO loop to the regime as a fourth categorical
-   axis, or keep one campaign per regime?  *(Frazier, multifidelity
-   trade-off; ties back into payload-vs-no-payload Edison brief
-   37ae0665.)*
+   crutch *and* lander regimes?  *(Skelton, Davami, Agogino)*
+3. For handling both regimes, the current plan is a **multi-task GP** (regime
+   as a task, information shared across campaigns — see
+   [Multi-task treatment of the regimes](#multi-task-treatment-of-the-regimes-crutch-and-lander)),
+   in preference to either averaging or fully independent per-regime
+   campaigns. Open question: is the multiplicative multitask kernel's
+   mean-collapse behavior acceptable given the crutch/lander `eta` offset, or
+   do we need an intercept-aware kernel?  *(Frazier, multifidelity
+   trade-off; ties back into payload-vs-no-payload Edison brief 37ae0665.)*
 
 ## Edison ANALYSIS query (PR comment 4663414812)
 
