@@ -29,14 +29,15 @@ Measured with `simulations/benchmark_costs.py` on an **AMD EPYC 7763**
 
 | Tier | Engine | One objective eval (1 design × 1 regime) | Hardware | Status |
 |---|---|---|---|---|
-| C | MuJoCo rigid-body + tendon springs | **~75–120 ms** (crutch 118 ms, lander 73 ms) | any modern x86 core, no GPU | wired (`bo_evaluator.evaluate_design`) |
+| C | MuJoCo rigid-body + tendon springs | **~75–120 ms raw**, **~190 ms with SAE J211 CFC-180 filtering** (crutch 118 ms, lander 73 ms, +~75 ms filter) | any modern x86 core, no GPU | wired (`bo_evaluator.evaluate_design`) |
 | B | Newton / Warp XPBD | ~10–30 s | CUDA GPU strongly preferred | script exists (`newton_drop.py`), not yet a per-design entry point |
 | A | PolyFEM + IPC (welded volumetric T-prism) | ~50–60 s/run **after** a ~25 min one-time source build | multi-core CPU, ~10 GB build dir | run end-to-end once (124bba2), not yet parametric |
 
-So the **tier-C objective the BO actually calls costs ≈0.1 CPU-second per
-design.** A full PR #35 9-specimen Sobol batch is ~1 s single-threaded
-(<0.3 s across the 4 logical cores), and even a 1,000-design tier-C sweep
-is ~2 CPU-minutes — i.e. tier-C is effectively free relative to a single
+So the **tier-C objective the BO actually calls costs ≈0.1–0.2 CPU-second
+per design** (~0.1 s raw, ~0.2 s with the CFC-180 filter on). A full
+PR #35 9-specimen Sobol batch is ~1–2 s single-threaded, and even a
+1,000-design tier-C sweep is a few CPU-minutes — i.e. tier-C is
+effectively free relative to a single
 physical print+drop, which is the entire point of using it as the bulk
 evaluator and reserving tier-B/A (and the real drop tower) for the
 high-reward Pareto front. These numbers are what a cost-aware /
@@ -89,9 +90,14 @@ exactly what lets them combine in a multi-fidelity campaign:
   so the BO can rank-order the batch *before* committing ~hours of print +
   drop time. The objectives align with what the drop tower measures after
   SAE J211 CFC-180 filtering (PR #74): `peak_g` ↔ filtered peak `g`,
-  `sea_Jpkg` ↔ measured SEA. So a simulated row and a measured row are
-  directly comparable and can be attached to the *same* AxClient as
-  different-fidelity observations.
+  `sea_Jpkg` ↔ measured SEA. To make that alignment exact, `bo_evaluator`
+  applies the **same SAE J211 CFC-180 filter** (`_cfc_filter`, pure-NumPy
+  4-pole-phaseless Butterworth, J211-1 appendix C) to the simulated axial
+  acceleration before reading `F_peak`/`eta` — so a simulated row and a
+  measured row are processed identically and can be attached to the *same*
+  AxClient as different-fidelity observations (toggle with `cfc180=False`
+  or `--raw-peak`). This was the top recommendation of Edison ANALYSIS
+  task `4e74f66c` (see `edison-trajectories/simulation-bo-value/`).
 - **Trade-off geometry.** The crutch-vs-lander split (PR comment / `regimes.py`)
   shows the F_peak ↔ SEA ↔ eta trade-off is regime-dependent: at the
   production R/H, the lander regime drives `F_peak` to ~5 kN with `eta`

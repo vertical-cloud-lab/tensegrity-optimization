@@ -202,11 +202,60 @@ def _t3_seed_designs() -> list[dict]:
     ]
 
 
+def _cfc_filter(signal: np.ndarray, fs_hz: float, cfc: float = 180.0) -> np.ndarray:
+    """SAE J211 CFC digital filter (phaseless, forward + backward pass).
+
+    Implements the 4-pole-phaseless Butterworth specified in SAE J211-1
+    appendix C — the same channel-frequency-class (CFC) filter the
+    drop-tower accelerometer pipeline applies (PR #74).  Filtering the
+    simulated acceleration before extracting peak force puts the cheap
+    tier-C objective in the *same* processed space as the bench
+    measurement, which is what lets simulated and measured rows share one
+    GP/Ax model (Edison ANALYSIS task 4e74f66c, rec #1).
+
+    Pure NumPy so the bridge keeps no SciPy dependency.
+
+    Parameters
+    ----------
+    signal : 1-D acceleration time-history (any consistent unit).
+    fs_hz  : sampling rate of ``signal`` in Hz.
+    cfc    : channel frequency class (180 for CFC-180).
+    """
+    x = np.asarray(signal, dtype=float)
+    if x.size < 7 or not np.isfinite(fs_hz) or fs_hz <= 0:
+        return x
+    T = 1.0 / fs_hz
+    wd = 2.0 * math.pi * cfc * 2.0775
+    wa = math.tan(wd * T / 2.0)
+    denom = 1.0 + math.sqrt(2.0) * wa + wa * wa
+    b0 = wa * wa / denom
+    b1 = 2.0 * b0
+    b2 = b0
+    a1 = -2.0 * (wa * wa - 1.0) / denom
+    a2 = (-1.0 + math.sqrt(2.0) * wa - wa * wa) / denom
+
+    def _pass(seq: np.ndarray) -> np.ndarray:
+        y = np.empty_like(seq)
+        for i in range(seq.size):
+            xi = seq[i]
+            xi1 = seq[i - 1] if i >= 1 else seq[0]
+            xi2 = seq[i - 2] if i >= 2 else seq[0]
+            yi1 = y[i - 1] if i >= 1 else seq[0]
+            yi2 = y[i - 2] if i >= 2 else seq[0]
+            y[i] = b0 * xi + b1 * xi1 + b2 * xi2 + a1 * yi1 + a2 * yi2
+        return y
+
+    forward = _pass(x)
+    backward = _pass(forward[::-1])[::-1]
+    return backward
+
+
 def evaluate_design(
     parameterization: Mapping,
     *,
     regime: Regime = CRUTCH,
     fidelity: Literal["C", "B", "A"] = "C",
+    cfc180: bool = True,
 ) -> dict[str, float]:
     """Run one simulation and return PR #30's three BO objectives.
 
@@ -222,6 +271,12 @@ def evaluate_design(
         "C" = MuJoCo (current default — cheap, ~1 s),
         "B" = Newton/Warp XPBD (planned, ~30 s),
         "A" = PolyFEM+IPC (planned, ~5 min).  Only "C" is implemented.
+    cfc180
+        When True (default), the simulated axial acceleration is passed
+        through an SAE J211 CFC-180 filter before peak force / eta are
+        extracted, matching the drop-tower accelerometer pipeline (PR #74)
+        so simulated and measured objectives live in the same processed
+        space.  Set False to read raw (unfiltered) peaks.
 
     Returns
     -------
@@ -270,7 +325,17 @@ def evaluate_design(
     )
     res = simulate(overridden)
 
-    peak_g = res["peak_g"]
+    # SAE J211 CFC-180 filter the acceleration to match the drop-tower
+    # accelerometer pipeline (PR #74); peak and eta are then read off the
+    # same processed signal the bench reports.
+    az_signed = np.asarray(res["az_g"], dtype=float)
+    if cfc180 and az_signed.size:
+        fs_hz = 1.0 / float(regime.sim_dt_s)
+        az_signed = _cfc_filter(az_signed, fs_hz, cfc=180.0)
+        peak_g = float(np.max(np.abs(az_signed))) if az_signed.size else float("nan")
+    else:
+        peak_g = res["peak_g"]
+
     if not np.isfinite(peak_g):
         return {
             "F_peak_N": _INFEASIBLE_F_PEAK_N,
@@ -293,8 +358,9 @@ def evaluate_design(
                                                                    1e-6)
 
     # Compaction efficiency: mean |a| over the half-peak pulse window
-    # divided by the peak (1.0 = perfect rectangular plateau).
-    az_g = np.abs(np.asarray(res["az_g"]))
+    # divided by the peak (1.0 = perfect rectangular plateau).  Uses the
+    # same (filtered) signal the peak was read from.
+    az_g = np.abs(az_signed)
     if az_g.size and peak_g > 0:
         above = az_g >= 0.5 * peak_g
         eta = float(az_g[above].mean() / peak_g) if above.any() else 0.0
@@ -313,6 +379,7 @@ def evaluate_batch_csv(
     *,
     regime: Regime = CRUTCH,
     fidelity: Literal["C", "B", "A"] = "C",
+    cfc180: bool = True,
 ) -> list[dict]:
     """Evaluate every row of a PR #35 ``t3-prism-bo-batch.csv`` design batch.
 
@@ -338,7 +405,8 @@ def evaluate_batch_csv(
                         params[key] = float(params[key])
                     except (TypeError, ValueError):
                         pass
-            obj = evaluate_design(params, regime=regime, fidelity=fidelity)
+            obj = evaluate_design(params, regime=regime, fidelity=fidelity,
+                                  cfc180=cfc180)
             rows.append({**raw, **obj})
     return rows
 
@@ -355,12 +423,17 @@ if __name__ == "__main__":
     parser.add_argument(
         "--regime", choices=["crutch_tip", "nasa_lander"],
         default="crutch_tip", help="Fixed loading scenario.")
+    parser.add_argument(
+        "--raw-peak", action="store_true",
+        help="Read raw (unfiltered) peak instead of SAE J211 CFC-180.")
     args = parser.parse_args()
 
     _regime = NASA_LANDER if args.regime == "nasa_lander" else CRUTCH
+    _cfc180 = not args.raw_peak
 
     if args.batch_csv:
-        results = evaluate_batch_csv(args.batch_csv, regime=_regime)
+        results = evaluate_batch_csv(args.batch_csv, regime=_regime,
+                                     cfc180=_cfc180)
         for i, r in enumerate(results):
             print(f"row #{i}  F_peak={float(r['F_peak_N']):9.1f} N  "
                   f"SEA={float(r['SEA_J_per_g']):8.4f} J/g  "
@@ -369,7 +442,8 @@ if __name__ == "__main__":
         # Smoke-test against the three PR #35 T3 seed designs.
         for i, p in enumerate(_t3_seed_designs()):
             try:
-                r = evaluate_design(p, regime=_regime, fidelity="C")
+                r = evaluate_design(p, regime=_regime, fidelity="C",
+                                    cfc180=_cfc180)
                 print(f"seed #{i}  F_peak={r['F_peak_N']:9.1f} N  "
                       f"SEA={r['SEA_J_per_g']:8.4f} J/g  eta={r['eta']:.3f}")
             except Exception as e:        # pragma: no cover - smoke test

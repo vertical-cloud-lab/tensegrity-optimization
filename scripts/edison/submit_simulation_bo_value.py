@@ -217,8 +217,14 @@ def main() -> None:
     try:
         ef = result.environment_frame
         ef_d = ef.model_dump() if hasattr(ef, "model_dump") else ef
-        answer = ef_d["state"]["state"]["response"]["answer"]
-        formatted = answer.get("formatted_answer") or formatted
+        state = ef_d["state"]["state"]
+        # ANALYSIS (crow) jobs put the answer at state.state.answer;
+        # paperqa jobs nest it under state.state.response.answer.formatted_answer.
+        if isinstance(state.get("answer"), str) and state["answer"].strip():
+            formatted = state["answer"]
+        else:
+            answer = state["response"]["answer"]
+            formatted = answer.get("formatted_answer") or formatted
     except Exception:  # noqa: BLE001
         pass
     md_path.write_text(
