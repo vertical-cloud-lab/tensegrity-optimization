@@ -86,14 +86,36 @@
 % Author block(s) -- one \SetAuthorBlock per author (or per shared affiliation)
 % Mark corresponding author(s) with \CorrespondingAuthor (no space before).
 % =============================================================================
-\SetAuthorBlock{Jeffrey R. Hill\CorrespondingAuthor}{%
+% Author order per @me-madsen review (PR #20): equal-contribution and
+% corresponding-author scheme is \textsuperscript{*} = equal contribution,
+% \textsuperscript{\dag} = also equal contribution, \textsuperscript{\ddag} =
+% corresponding author (see legend \todo after \maketitle).
+\SetAuthorBlock{Marcus E. Madsen\textsuperscript{*}}{%
+  Department of Mechanical Engineering,\\
+  Brigham Young University,\\
+  Provo, UT 84602, USA
+}
+
+\SetAuthorBlock{Audrey K. Christiansen\textsuperscript{*}}{%
+  Department of Mechanical Engineering,\\
+  Brigham Young University,\\
+  Provo, UT 84602, USA
+}
+
+\SetAuthorBlock{Jinkwan Han\textsuperscript{*}}{%
+  Department of Mechanical Engineering,\\
+  Brigham Young University,\\
+  Provo, UT 84602, USA
+}
+
+\SetAuthorBlock{Jeffrey R. Hill\textsuperscript{\dag\ddag}\CorrespondingAuthor}{%
   Department of Mechanical Engineering,\\
   Brigham Young University,\\
   Provo, UT 84602, USA\\
   email: jeff.hill@byu.edu
 }
 
-\SetAuthorBlock{Sterling G. Baird}{%
+\SetAuthorBlock{Sterling G. Baird\textsuperscript{\dag\ddag}\CorrespondingAuthor}{%
   Department of Mechanical Engineering,\\
   Brigham Young University,\\
   Provo, UT 84602, USA\\
@@ -135,6 +157,15 @@ results once the experimental campaign is complete.}
 
 \maketitle
 
+\todo[inline]{\textbf{Author order / contributions (per @me-madsen).} Planned
+  order: Marcus E. Madsen\textsuperscript{*}, Audrey K.
+  Christiansen\textsuperscript{*}, Jinkwan Han\textsuperscript{*}, Jeffrey R.
+  Hill\textsuperscript{\dag\ddag}, Sterling G. Baird\textsuperscript{\dag\ddag},
+  where \textsuperscript{*}~=~equal contribution, \textsuperscript{\dag}~=~also
+  equal contribution, and \textsuperscript{\ddag}~=~corresponding author.
+  Confirm affiliations and add emails for M.~Madsen, A.~Christiansen, and
+  J.~Han, and typeset the equal-contribution footnote per ASME JMD style.}
+
 % =============================================================================
 % Body -- IMRaD structure per JMD submission instructions
 % =============================================================================
@@ -163,7 +194,13 @@ caluwaerts2014superball, sabelhaus2015system, vespignani2018design,
 deitrich2022titan}. Recent work has shown that \emph{tensegrity-inspired}
 unit cells can be directly 3D-printed and exhibit load-limiting plateaus
 under drop-weight impact~\citep{pajunen2019design}, opening a path
-toward additively manufactured architected absorbers.
+toward additively manufactured architected absorbers. Throughout, we use
+\emph{tensegrity-inspired} to denote printable unit cells that adopt the
+characteristic tensegrity motif---rigid compression members carried by a
+network of pretensioned soft tension elements---while relaxing the strict
+classical requirement that no two compression members touch and that the
+tension members behave as ideal inextensible cables; here the tension elements
+are extruded TPU and the struts may share printed junctions.
 
 Multi-material fused-deposition modeling (FDM) using polylactic acid
 (PLA) for rigid struts and thermoplastic polyurethane (TPU) for flexible
@@ -201,26 +238,38 @@ no closed-loop optimization) and Mo et~al.~\cite{mo2023accelerated}
     cables meeting at a given end join before exiting through discrete
     outlets---to ensure cyclic interface durability.
   \item An experiment-driven BO loop, built on
-    BoTorch/Ax~\citep{balandat2020botorch}, that operates directly on
+    BoTorch/Ax~\citep{balandat2020botorch, pmlr-v293-olson25a}, that
+    operates directly on
     physical quasi-static compression and drop-weight impact
-    measurements, recommending the next designs to fabricate without
-    requiring an accurate forward simulator.
-  \item A two-fidelity escalation path that pairs the
-    direct-experimental loop above with a planned higher-fidelity rung
-    based on \emph{pretensioned} tensegrity assemblies (true cables and
-    measured pretension) for selected Pareto-optimal designs; the
-    specific surrogate / fusion strategy is left
-    open.\todo{Decide between (a) co-Kriging or nonlinear
-    information-fusion priors~\citep{perdikaris2017nonlinear} once
-    pretensioned-assembly data are available, or (b) keep this work
-    single-fidelity and report the pretensioned campaign separately.}
+    measurements, recommending the next designs to
+    fabricate.\todo[inline]{We need to decide whether or not to
+    mention/include the physics-based simulations from PR~\#33, which seem
+    quite reasonable at this point. If the goal is to get the best of the
+    best, then we would want to include those simulations. In that case we
+    would likely want to treat this as a multi-task problem, but we could run
+    into issues with scaling. If we treat it as a featurization task, then we
+    would likely need to move to a predefined search space or a genetic
+    algorithm.}
+  \item High-fidelity validation experiments using
+    \emph{pretensioned} tensegrity assemblies (true cables and
+    measured pretension) for the Pareto-optimal designs identified by the
+    single-stage loop above, reported separately rather than fused into the
+    optimization.
 \end{enumerate}
 
-\figplaceholder{overview}{Closed-loop, experiment-driven design framework:
-  parameterized PLA/TPU tensegrity-inspired unit cells are printed,
-  tested under quasi-static compression and drop-weight impact, and the
-  resulting performance data drive a Gaussian-process surrogate that
-  recommends the next batch of designs.}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.85\linewidth]{../figures/overview-updated.png}
+  \caption{Closed-loop, experiment-driven design framework. Parameterized
+    PLA/TPU tensegrity-inspired unit cells are printed, tested under
+    quasi-static compression and drop-weight impact, and the resulting
+    performance data drive a Gaussian-process surrogate that recommends the
+    next batch of designs to fabricate.}
+  \label{fig:overview}
+\end{figure}%
+\todo{Eventually switch this overview figure to a vertical orientation; it is
+  currently reproduced from the MRG proposal
+  (\texttt{figures/overview-updated.png}).}
 
 The remainder of the paper is organized as follows.
 Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
@@ -260,29 +309,31 @@ jackson2014honeycomb}. Pajunen et~al.~\cite{pajunen2019design} demonstrated that
 truncated-tetrahedral tensegrity-inspired unit cells can be directly
 3D-printed and exhibit load-limiting plateaus, motivating the present
 focus on additively manufactured TPU/PLA composites.
-More recent work by Davami et~al.\ on dynamically loaded AM tensegrity
-unit cells, with Intrigila et~al.\ as the closest published analog
-(SLA Tough~2000, double-T3 quasi-static), confirms that the same
-architecture class also responds favorably under drop-impact loading,
-although neither study employed multi-material FFF or closed-loop
-design optimization.\todo{Cite Davami 2025 (\emph{Addit.\ Manuf.}) and
-Intrigila 2022 (\emph{Addit.\ Manuf.}\ 57:102946) once entries are
-added to \texttt{references.bib} from PR~\#58 analysis.}
+More recent work on dynamically loaded additively-manufactured
+energy-absorbing lattices~\cite{davami2019dynamicenergyabsorption}, together
+with Intrigila et~al.'s bistable tensegrity-like unit cell for lattice
+metamaterials~\cite{intrigila2022fabricationandexperimental} as the closest
+published analog, confirms that this architecture class also responds favorably
+under impact and quasi-static loading, although neither study employed
+multi-material FFF or closed-loop design optimization.\todo{Consider a figure
+that places our approach against this prior work (e.g., a 2-D map of
+fabrication route vs.\ optimization strategy, or representative prior-art unit
+cells) to sharpen the differentiation, per review.}
 
 \subsection{Multi-Material 3D Printing of PLA/TPU Composites}
 
 Multi-material rigid--soft FDM~\citep{ye2023multimaterial,
 khatri2024energy} enables PLA--TPU combinations on a single platform
-with tunable energy absorption. Crucially, Ye
+with tunable energy absorption. Ye
 et~al.~\cite{ye2023multimaterial}
 introduced a \emph{wrapping-based} strategy in which rigid cores are
 encapsulated by continuous soft skins, preventing interface delamination
-and enabling cyclic durability---a critical enabler for our fabrication
-approach. Recent multi-material PLA/TPU sandwich and layered
+and enabling cyclic durability, something we take inspiration from in our
+designs. Recent multi-material PLA/TPU sandwich and layered
 composites~\citep{arifvianto2022mechanicalpropertiesof,
 ruwais2025mechanicalperformanceof} report quantitative bounds on
 stiffness, strength, and energy absorption for the same PLA--TPU pair
-used here, while FFF-PLA fatigue
+used here, while fused filament fabrication (FFF) PLA fatigue
 data~\citep{ezeh2018onthefatigue, vanaei2021multiscaledamageanalysis}
 inform conservative design bounds for the rigid struts.
 Architected multi-material lattices with co-printed compliant skins
@@ -303,7 +354,8 @@ synthesis is integrated.}
 Bayesian optimization is a sequential, model-based strategy for
 optimizing expensive black-box functions using a Gaussian-process
 surrogate~\citep{shahriari2016taking, frazier2018tutorial}. Modern
-implementations such as BoTorch~\citep{balandat2020botorch} support
+implementations such as BoTorch~\citep{balandat2020botorch} and the Ax
+platform built atop it~\citep{pmlr-v293-olson25a} support
 parallel batched evaluations and a wide variety of acquisition
 functions; recent algorithmic advances include log-EI for numerical
 robustness~\citep{ament2023logei}, noisy expected hypervolume
@@ -356,7 +408,7 @@ groups of design variables:
 constraints, and the categorical-encoding scheme used by the BO loop.
 Pull from the Edison TPU/PETG search-space synthesis once available.}
 
-\paragraph{Working prototype.} The first instance of this family used
+\paragraph{Working prototype} The first instance of this family used
 to validate the fabrication and test pipeline is a three-strut
 ($T_3$) tensegrity prism scaled to a $\sim$50\,mm bounding box, with
 $d_s = $ \todo{strut diameter} and a cable diameter $d_t$ swept over
@@ -370,8 +422,39 @@ characterized.\todo{Cite the heterogeneous-parameters Edison
 LITERATURE\_HIGH brief (\texttt{5191cf4d}) on D3-symmetric vs.\
 fully-per-member parameterization.}
 
-\tabplaceholder{design-vars}{Design variables, units, lower/upper bounds,
-  manufacturing feasibility constraints, and categorical encoding.}
+\begin{table}[ht]
+  \centering
+  \caption{Design variables for the $T_3$-prism Sobol initialization batch, as
+    implemented in the BO harness (single-iteration $n=9$ Sobol set). The
+    joint diameter is held fixed at the \texttt{t3-prism.scad} default; all
+    specimens are printed in the vertical orientation and packed
+    $3\times3$ on a single Bambu Lab~H2D plate.}
+  \label{tab:design-vars}
+  \begin{tabular}{@{}llcc@{}}
+    \toprule
+    Design variable & Symbol & Units & Range \\
+    \midrule
+    Base radius            & $R$       & mm  & 25--40 \\
+    Cell height            & $H$       & mm  & 60--110 \\
+    Twist angle            & $\theta$  & deg & 40--80 \\
+    Strut (PLA) diameter   & $d_s$     & mm  & 6.0--12.0 \\
+    Cable (TPU) diameter   & $d_t$     & mm  & 3.0--5.5 \\
+    Joint diameter (fixed) & $d_j$     & mm  & 7.0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}%
+\todo{The cable-diameter lower bound (3.0\,mm) is set by the Bambu
+  auto-support detection floor; reconcile this continuous range with the
+  FFF-resolvable categorical set $\{1.2,1.8,2.4,3.0,4.5\}$\,mm stated above
+  for the working prototype, and add manufacturing-feasibility constraints and
+  the categorical-encoding scheme for the connectivity-topology variable.}
+
+\figplaceholder{printed-prototypes}{Two printed $T_3$-prism prototypes with
+  callouts labeling the design variables of Table~\ref{tab:design-vars}
+  (strut diameter $d_s$, cable diameter $d_t$, base radius $R$, height $H$,
+  and twist angle $\theta$); pairs with the design-variable table.
+  \emph{Use actual printed-specimen photographs from the PR~\#35 print
+  history.}}
 
 \subsection{Multi-Material Fabrication}
 \label{sec:methods:fabrication}
@@ -384,12 +467,13 @@ cables converging at a given strut end are joined within the strut,
 which acts as a rigid cage housing the junction, and the individual
 tendons then exit through discrete outlets. This keeps the soft--rigid
 interface in internal, compression-dominated pockets rather than at an
-exposed overmolded surface. \todo{Confirm whether this
-internal-anchoring junction is related to or validated by the
-core-wrapping or core-encapsulation strategy of
-Ye et~al.~\cite{ye2023multimaterial} (cf.\ PR~\#39, PR~\#35), or whether
-a different prior-art reference is the correct analog; do not assert the
-Ye et~al.\ analogy until verified.} \todo{Document slicer profile
+exposed overmolded surface. This construction effectively inverts the
+material roles of Ye et~al.'s soft-skin-over-rigid-core
+wrapping~\cite{ye2023multimaterial}: here a soft TPU core is captured within
+a rigid PLA shell, so we cite that work only as a multi-material co-printing
+precedent rather than as validation of the present junction. \todo{Quantitatively
+verify the internal-anchoring junction strength against the PR~\#39 / PR~\#35
+joint pull-out studies before making any cyclic-durability claim.} \todo{Document slicer profile
 (layer height, infill, print speed, nozzle temperatures, retraction
 settings) and validation prints used to characterize PLA--TPU interface
 strength.}
@@ -403,9 +487,10 @@ eyelet-loop, and TPU-rebar variants); the working prototype uses a
 dovetail joint (Design~B) with an anchor-bulb backup (Design~A) for
 sensitivity studies, with a captive TPU core routed inside the PLA
 shell to keep the soft tendon protected from layer-line failure at
-the strut-to-cable transition.\todo{Cite the joint-design Phase-3 CAD
-review (Edison ANALYSIS \texttt{19e0c868}) and the Phase-4 vision
-review (\texttt{e9a1f4cc}) once both are integrated into the
+the strut-to-cable transition. The full five-design comparison and the
+selected junction are detailed in the Supplementary Information.\todo{Cite the
+joint-design Phase-3 CAD review (Edison ANALYSIS \texttt{19e0c868}) and the
+Phase-4 vision review (\texttt{e9a1f4cc}) once both are integrated into the
 references.}
 
 \paragraph{Supports for soft members.} Because near-vertical TPU
@@ -415,9 +500,33 @@ angle dropped from~40\textdegree{} to~10\textdegree, support material
 matched to the rigid extruder) with manually generated narrowing
 pillars that ray-cast against the printable mesh underside, producing
 TPU-safe coverage of vertical members without slicer-side painting.
-\todo{Reference the manual-supports workflow (PR~\#66) and the H2D
-multi-part assignment fix (PR~\#64) when those branches land in
-\texttt{main}.}
+Full workflow details are provided in the Supplementary Information.
+
+\begin{table}[ht]
+  \centering
+  \caption{Multi-material print parameters on the Bambu Lab~H2D. Cells marked
+    \emph{TBD} are pending confirmation; the reporting structure follows the
+    methods section of Ye et~al.~\cite{ye2023multimaterial}.}
+  \label{tab:print-params}
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    Parameter & PLA (rigid struts) & TPU (soft tendons) \\
+    \midrule
+    Nozzle temperature (\textdegree C) & \emph{TBD} & \emph{TBD} \\
+    Bed temperature (\textdegree C)    & \multicolumn{2}{c}{\emph{TBD}} \\
+    Layer height (mm)                  & \multicolumn{2}{c}{\emph{TBD}} \\
+    Print speed (mm/min)               & \emph{TBD} & \emph{TBD} \\
+    Infill (\%)                        & \emph{TBD} & \emph{TBD} \\
+    Build-plate type                   & \multicolumn{2}{c}{Textured PEI} \\
+    Build orientation                  & \multicolumn{2}{c}{Vertical} \\
+    Supports                           & \multicolumn{2}{c}{Off in slicer; manual narrowing pillars} \\
+    \bottomrule
+  \end{tabular}
+\end{table}%
+\todo{@achris0520 to confirm the exact PLA and TPU print parameters (nozzle and
+  bed temperatures, layer height, print speeds, infill) used on the Bambu
+  Lab~H2D; only the build-plate type, vertical orientation, and support
+  strategy are currently established.}
 
 \figplaceholder{fab-workflow}{Fabrication workflow: parameter $\to$ CAD
   $\to$ slicer $\to$ multi-material print $\to$ post-process and
@@ -531,9 +640,16 @@ regime.\todo{Cite the BO scaffolding (PR~\#30), the T3-prism Sobol
 batch (PR~\#35), and the heterogeneous-parameter Edison brief
 (\texttt{5191cf4d}) once those branches land in \texttt{main}.}
 
-\figplaceholder{bo-loop}{Closed-loop BO schematic: design proposal
-  $\to$ multi-material print $\to$ compression and drop-weight tests
-  $\to$ GP update and acquisition maximization $\to$ next proposal.}
+\todo[inline]{The previous BO-loop schematic here was redundant with the
+  overview figure (Fig.~\ref{fig:overview}); per review it is replaced with
+  surrogate-diagnostic figures (leave-one-out cross-validation and parameter
+  sensitivity), to be populated once the BO campaign produces model data.}
+\figplaceholder{loocv}{Leave-one-out cross-validation of the Gaussian-process
+  surrogate (predicted vs.\ measured SEA and peak transmitted force), once
+  campaign data are available.}
+\figplaceholder{sensitivity}{Parameter-sensitivity ranking (e.g., SAASBO
+  inverse length-scales or Sobol indices) of the design variables in
+  Table~\ref{tab:design-vars}.}
 
 % =============================================================================
 \section{Results}

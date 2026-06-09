@@ -1,0 +1,107 @@
+% =============================================================================
+% supplementary.tex -- Supplementary Information (SI) for the JMD manuscript.
+%
+% Detailed development records that do not belong in the main manuscript are
+% collected here per the PR #20 review (@sgbaird): the main text stays
+% high-level and free of GitHub/PR-specific references, while the SI may cite
+% specific pull requests and link to them directly.
+%
+% Build:  cd manuscript && pdflatex supplementary  (twice)
+%         or  make manuscript-si
+% =============================================================================
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black]{hyperref}
+
+% Number SI floats/sections with an "S" prefix.
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+
+\newcommand{\repo}{https://github.com/vertical-cloud-lab/tensegrity-optimization}
+
+\title{Supplementary Information:\\
+  Bayesian Optimization of Multi-Material 3D-Printed\\
+  Tensegrity-Inspired Structures for Energy Absorption}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+This Supplementary Information collects the detailed design-, fabrication-, and
+test-development records supporting the main manuscript. Unlike the main text,
+the SI references the project's development history directly, including specific
+pull requests (PRs) in the project repository
+(\href{\repo}{\repo}).
+
+% -----------------------------------------------------------------------------
+\section{Joint-Design Study}
+\label{si:joints}
+% -----------------------------------------------------------------------------
+The strut-to-cable junction was developed and ranked through a five-design
+OpenSCAD study (anchor-bulb, dovetail, TPU-sleeve overmold, eyelet-loop, and
+TPU-rebar variants). The working prototype uses a dovetail joint (Design~B)
+with an anchor-bulb backup (Design~A) for sensitivity studies; a captive TPU
+core is routed inside the PLA shell so that the soft tendon is protected from
+layer-line failure at the transition.
+
+Full results, renders, and the Phase-3/Phase-4 design reviews are documented in
+\href{\repo/pull/39}{PR~\#39} (joint design) and
+\href{\repo/pull/35}{PR~\#35} (CAD parameterization and print history).
+
+\begin{figure}[ht]
+  \centering
+  \fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering\itshape
+    Placeholder: joint-design variants and the selected dovetail/anchor-bulb
+    junction (import figures from PR~\#39 / PR~\#35).}}
+  \caption{Five candidate strut-to-cable joint geometries and the
+    captive-TPU-core dovetail junction selected for the working prototype.}
+  \label{fig:si-joints}
+\end{figure}
+
+% -----------------------------------------------------------------------------
+\section{Support-Generation Workflow for Soft Members}
+\label{si:supports}
+% -----------------------------------------------------------------------------
+Near-vertical TPU tendons are otherwise unsupported during printing. The slicer
+profile combines a tensegrity-specific Bambu Studio recipe (support threshold
+angle lowered from \SI{40}{\degree} to \SI{10}{\degree}, support material
+matched to the rigid extruder) with manually generated narrowing pillars that
+ray-cast against the printable mesh underside, producing TPU-safe coverage of
+vertical members without slicer-side painting.
+
+The manual narrowing-pillar workflow and the threshold-angle recipe are
+documented in \href{\repo/pull/66}{PR~\#66}; the H2D multi-part material
+assignment fix is in \href{\repo/pull/64}{PR~\#64}; the single-batch Sobol
+plate-layout generator is in \href{\repo/pull/65}{PR~\#65}.
+
+\begin{figure}[ht]
+  \centering
+  \fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering\itshape
+    Placeholder: manual narrowing-pillar supports vs.\ default slicer supports
+    for a vertical TPU tendon (import figures from PR~\#65 / PR~\#66).}}
+  \caption{Manual narrowing-pillar support generation for near-vertical TPU
+    tendons.}
+  \label{fig:si-supports}
+\end{figure}
+
+% -----------------------------------------------------------------------------
+\section{Drop-Tower Characterization Notes}
+\label{si:drop}
+% -----------------------------------------------------------------------------
+The primary drop fixture is a bungee-assisted laboratory drop tower whose base
+accelerates downward faster than \(1g\); unconstrained specimens lift off the
+base during descent by design of the rig, so the protocol constrains the
+specimen top through light tethers and registers the base. Protocol details,
+the accelerometer-tuning campaign, and the impact-window analysis are recorded
+in \href{\repo/pull/67}{PR~\#67},
+\href{\repo/issues/71}{issue~\#71}, and
+\href{\repo/pull/74}{PR~\#74}.
+
+\end{document}

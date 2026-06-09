@@ -9,7 +9,7 @@ SECTIONS = sections/coverpage.tex sections/budget.tex sections/biosketch.tex
 # Journal manuscript (ASME JMD scaffold) lives in manuscript/
 MANU_DIR = manuscript
 
-.PHONY: all clean distclean manuscript manuscript-todos manuscript-all clean-manuscript distclean-manuscript
+.PHONY: all clean distclean manuscript manuscript-todos manuscript-all manuscript-si clean-manuscript distclean-manuscript
 
 all: $(MAIN).pdf
 
@@ -28,7 +28,12 @@ MANU_BODY = $(MANU_DIR)/manuscript-body.tex $(MANU_DIR)/references.bib
 
 manuscript:        $(MANU_DIR)/manuscript.pdf
 manuscript-todos:  $(MANU_DIR)/manuscript-todos.pdf
-manuscript-all:    manuscript manuscript-todos
+manuscript-si:     $(MANU_DIR)/supplementary.pdf
+manuscript-all:    manuscript manuscript-todos manuscript-si
+
+$(MANU_DIR)/supplementary.pdf: $(MANU_DIR)/supplementary.tex
+	cd $(MANU_DIR) && $(TEX) supplementary
+	cd $(MANU_DIR) && $(TEX) supplementary
 
 $(MANU_DIR)/manuscript.pdf: $(MANU_DIR)/manuscript.tex $(MANU_BODY)
 	cd $(MANU_DIR) && $(TEX) manuscript

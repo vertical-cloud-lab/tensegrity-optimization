@@ -28,6 +28,8 @@
 # Diff originals
 proposal-orig.tex
 manuscript-orig.tex
+manuscript/manuscript-body-orig.tex
+manuscript/manuscript-body-diff.tex
 
 # OS files
 .DS_Store
