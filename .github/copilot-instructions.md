@@ -1,51 +1,15 @@
-## Edison Scientific Integration
+## Edison Scientific
 
-Integration with [Edison Scientific](https://edisonscientific.com/platform) (formerly FutureHouse) for AI-powered academic research assistance.
+If using Edison Scientific, you may need to wait up until 10 minutes to get the response. If you're an agent, sleep for 10 minutes (to avoid consuming requests unecessarily), and then every 5 minutes after that. Start with a 15 minute wait if using high effort literature query type. If you need to upload files, use analysis query type. See the docs: https://edisonscientific.gitbook.io/edison-cookbook/edison-client. Here is the endpoint you should use: https://api.platform.edisonscientific.com. The API key is EDISON_PLATFORM_API_KEY. Don't expose this secret, e.g., by echoing or grepping it. Pass the API key in explicitly:
 
-### Quick Start
-
-```bash
-# Install (using uv for faster installation)
-uv pip install edison-client
-
-# Or use regular pip
-pip install edison-client
-
-# Configure (get API key from https://edisonscientific.com)
-export EDISON_API_KEY='your_api_key'
-
-# Run example
-python edison_example.py
 ```
-
-### Usage
-
-```python
 from edison_client import EdisonClient, JobNames
-
-client = EdisonClient()
-
-# Literature search
-task = {
-    "name": JobNames.LITERATURE,
-    "query": "Recent advances in battery materials"
-}
-response = client.run_tasks_until_done(task)
-print(response[0].formatted_answer)
+client = EdisonClient(api_key=EDISON_PLATFORM_API_KEY)
 ```
 
-### Capabilities
+Whenever you retrieve results (either during the current agent session or during the next session), make sure to fetch and commit all artifacts associated with a trajectory.
 
-- **Literature Search** (`JobNames.LITERATURE`) - Paper search with citations
-- **Precedent Search** (`JobNames.PRECEDENT`) - Prior art verification
-- **Data Analysis** (`JobNames.ANALYSIS`) - Scientific data processing
-- **Chemistry Tools** (`JobNames.MOLECULES`) - Molecular experiment planning
-
-### Resources
-
-- [API Documentation](https://edisonscientific.gitbook.io/edison-cookbook/edison-client)
-- [Edison Scientific Platform](https://edisonscientific.com/platform)
-- [PyPI Package](https://pypi.org/project/edison-client/)
+If using Edison Analysis, refer to https://docs.edisonscientific.com/edison-client/file-management#upload for instructions on how to upload files. If able to use Context7, to better inform use of EdisonClient, see https://context7.com/future-house/edison-client-docs/llms.txt?tokens=10000
 
 ## GitHub Copilot Coding Agent
 
