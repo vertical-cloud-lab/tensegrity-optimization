@@ -9,7 +9,8 @@ features being exercised, so the reader can connect the measured signal to the
 
 IMPORTANT: the curves here are SYNTHETIC. They are generated from the documented
 qualitative behaviour of the real drop-test campaign (issue #36 analysis: 125 kHz
-TP4 capture, SAE J211 CFC-180 filtering, impact at t ~ 4.2 ms, control CFC-180
+TP4 capture (the lab's PicoScope-class digital scope export; 4 channels, 0.2 s
+window), SAE J211 CFC-180 filtering, impact at t ~ 4.2 ms, control CFC-180
 peak ~1792 G, 'audrey' tensegrity CFC-180 peak ~370-463 G => ~74-79 % reduction)
 purely to illustrate layout and annotation. No experimental file is read or
 implied; replace the `synthetic_*` calls with the real processed channels before
