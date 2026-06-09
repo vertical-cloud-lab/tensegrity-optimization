@@ -10,6 +10,7 @@ fetch the results and commit the verbatim trajectories
 |------|---------------|---------|
 | `t4-citation-classification` | Are `ye2023multimaterial` / `khatri2024energy` actually "tensegrity-inspired" or just related? (manuscript-body.tex ~L171) | `4ba95a0f-2263-40a5-8c8c-b5da2c550dcb` |
 | `t26-sea-impact-math` | Double-check the SEA / compaction-efficiency equations and drop-impact peak-force methodology vs. PR #67, issue #71, PR #74 | `e4e5fb15-445b-4851-a16e-a3c366eba8f2` |
+| `t24-fabfig-feedback` (ANALYSIS) | Feedback on the node-only fabrication-workflow figure (`figures/fab-workflow.pdf`) before populating nodes with photos | `5ba82b0c-1fc3-49f7-a1c7-4cfd395e263c` |
 
 Fetch with:
 

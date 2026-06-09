@@ -24,7 +24,7 @@
 %   * nocopyright  -- suppress ASME copyright footer until acceptance
 %   * upint, varvw -- typographic preferences carried over from the template
 %   * hyphenate    -- allow hyphenation in typewriter font
-\documentclass[lineno,singlecolumn,nocopyright,upint,varvw,hyphenate]{asmejour}
+\documentclass[lineno,nocopyright,upint,varvw,hyphenate]{asmejour}
 
 \allowdisplaybreaks % from amsmath; multiline equations may break across pages
 
@@ -257,16 +257,16 @@ no closed-loop optimization) and Mo et~al.~\cite{mo2023accelerated}
     optimization.
 \end{enumerate}
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=0.85\linewidth]{../figures/overview-updated.png}
+  \includegraphics[width=0.7\textwidth]{../figures/overview-updated.png}
   \caption{Closed-loop, experiment-driven design framework. Parameterized
     PLA/TPU tensegrity-inspired unit cells are printed, tested under
     quasi-static compression and drop-weight impact, and the resulting
     performance data drive a Gaussian-process surrogate that recommends the
     next batch of designs to fabricate.}
   \label{fig:overview}
-\end{figure}%
+\end{figure*}%
 \todo{Eventually switch this overview figure to a vertical orientation; it is
   currently reproduced from the MRG proposal
   (\texttt{figures/overview-updated.png}).}
@@ -528,16 +528,16 @@ Full workflow details are provided in the Supplementary Information.
   Lab~H2D; only the build-plate type, vertical orientation, and support
   strategy are currently established.}
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\linewidth]{../figures/fab-workflow.pdf}
+  \includegraphics[width=\textwidth]{../figures/fab-workflow.pdf}
   \caption{Fabrication and characterization workflow for the multi-material
     tensegrity-inspired unit cells: design parameters drive parametric CAD,
     slicing with manually generated TPU supports, a single multi-material
     print on the Bambu Lab~H2D, post-processing and inspection, and
     mechanical testing.}
   \label{fig:fab-workflow}
-\end{figure}%
+\end{figure*}%
 \todo{Populate each node of this workflow diagram with a representative
   cropped photograph (CAD render, sliced preview, printed specimen, test
   fixture) and send to Edison ANALYSIS for feedback, per review.}
