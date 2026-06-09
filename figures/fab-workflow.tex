@@ -1,0 +1,40 @@
+\documentclass[tikz,border=4pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.misc}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\sffamily\small,
+  node distance=8mm,
+  stage/.style={
+    rounded rectangle,
+    draw=#1!75!black,
+    fill=#1!18,
+    very thick,
+    minimum height=22mm,
+    text width=32mm,
+    align=center,
+    inner sep=5pt
+  },
+  arrow/.style={-{Latex[length=2.8mm]}, very thick, draw=gray!75}
+]
+  \node[stage=blue] (params) {\textbf{Design parameters}\\[2pt]
+    $R$, $H$, twist, $d_s$, $d_t$};
+  \node[stage=teal, right=of params] (cad) {\textbf{Parametric CAD}\\[2pt]
+    OpenSCAD T3-prism};
+  \node[stage=orange, right=of cad] (slicing) {\textbf{Slicing}\\[2pt]
+    Bambu Studio; manual TPU supports};
+  \node[stage=purple, right=of slicing] (print) {\textbf{Multi-material print}\\[2pt]
+    Bambu Lab H2D; PLA + TPU};
+  \node[stage=green, right=of print] (inspect) {\textbf{Post-process \& inspect}\\[2pt]
+    Remove supports; verify geometry};
+  \node[stage=red, right=of inspect] (testing) {\textbf{Mechanical testing}\\[2pt]
+    Quasi-static compression + drop-weight impact};
+
+  \draw[arrow] (params) -- (cad);
+  \draw[arrow] (cad) -- (slicing);
+  \draw[arrow] (slicing) -- (print);
+  \draw[arrow] (print) -- (inspect);
+  \draw[arrow] (inspect) -- (testing);
+\end{tikzpicture}
+\end{document}

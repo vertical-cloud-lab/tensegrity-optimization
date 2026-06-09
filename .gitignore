@@ -45,3 +45,4 @@ manuscript/manuscript-todos.tdo
 __pycache__/
 *.pyc
 .env
+manuscript/manuscript-body.pdf
