@@ -202,11 +202,17 @@ classical requirement that no two compression members touch and that the
 tension members behave as ideal inextensible cables; here the tension elements
 are extruded TPU and the struts may share printed junctions.
 
-Multi-material fused-deposition modeling (FDM) using polylactic acid
-(PLA) for rigid struts and thermoplastic polyurethane (TPU) for flexible
-tension elements enables rapid fabrication of diverse tensegrity-inspired
-geometries on a single platform~\citep{ye2023multimaterial,
-khatri2024energy}. Although extruded TPU does not behave as an idealized
+Multi-material fused-deposition modeling (FDM) that pairs a rigid polymer
+such as polylactic acid (PLA) with a soft, rate-dependent elastomer such as
+thermoplastic polyurethane (TPU) has been used to fabricate rigid--soft
+architected energy absorbers on a single platform---for example, thick-panel
+origami metamaterials with PLA panels and TPU hinges~\citep{ye2023multimaterial}
+and ABS/TPU honeycombs with tunable stiff/flexible
+proportions~\citep{khatri2024energy}. The same rigid--soft co-printing
+capability makes it possible to rapidly fabricate diverse tensegrity-inspired
+geometries, which adopt a discrete-compression/continuous-tension topology
+rather than an origami or honeycomb one. Although extruded TPU does not behave
+as an idealized
 inextensible cable, its rate-dependent damping is a desirable property
 for impact-absorption applications and complements the elastic stiffness
 of the PLA compression members rather than competing with it.
@@ -322,14 +328,24 @@ cells) to sharpen the differentiation, per review.}
 
 \subsection{Multi-Material 3D Printing of PLA/TPU Composites}
 
-Multi-material rigid--soft FDM~\citep{ye2023multimaterial,
-khatri2024energy} enables PLA--TPU combinations on a single platform
-with tunable energy absorption. Ye
+Multi-material rigid--soft FDM enables stiff/compliant combinations on a
+single platform with tunable energy absorption, demonstrated for thick-panel
+origami with PLA (or ABS/CFRP) panels and TPU hinges~\cite{ye2023multimaterial}
+and for ABS--TPU honeycombs~\cite{khatri2024energy}. Neither study is itself a
+tensegrity, but both establish the rigid--soft co-printing route we adopt. Ye
 et~al.~\cite{ye2023multimaterial}
 introduced a \emph{wrapping-based} strategy in which rigid cores are
 encapsulated by continuous soft skins, preventing interface delamination
 and enabling cyclic durability, something we take inspiration from in our
-designs. Recent multi-material PLA/TPU sandwich and layered
+designs.\todo{Consider adding genuinely tensegrity-inspired 3D-printed
+references to strengthen this background (Edison T4): Bauer et~al.\ 2021
+(\emph{Adv.\ Mater.}, doi:10.1002/adma.202005647); Pajunen et~al.\ 2021
+(\emph{Extreme Mech.\ Lett.}, doi:10.1016/j.eml.2021.101236); Santos 2023
+(\emph{Adv.\ Mater.}, doi:10.1002/adma.202300639); Sabouni-Zawadzka et~al.\ 2024
+(doi:10.24425/ace.2024.150987); and verify-then-cite Almeida et~al.\ 2025
+(doi:10.1016/j.ijsolstr.2025.113590), Davami et~al.\ 2025
+(doi:10.1016/j.ijimpeng.2024.105208), and Wang et~al.\ 2026
+(doi:10.1016/j.addma.2026.105107).} Recent multi-material PLA/TPU sandwich and layered
 composites~\citep{arifvianto2022mechanicalpropertiesof,
 ruwais2025mechanicalperformanceof} report quantitative bounds on
 stiffness, strength, and energy absorption for the same PLA--TPU pair
@@ -565,7 +581,15 @@ added to \texttt{references.bib}.} Reported metrics are
 \end{equation}
 where $m$ is the specimen mass, $\delta_d$ is the densification
 displacement, $F_{\max}$ is the peak transmitted force, and $\eta_c$ is
-the compaction efficiency.
+the compaction efficiency. To keep these metrics objective and
+reproducible, the densification displacement $\delta_d$ is taken as the
+displacement at which the energy-absorption efficiency--displacement curve
+reaches its maximum ($\mathrm{d}\eta/\mathrm{d}\delta = 0$), and $F_{\max}$
+is the maximum force recorded \emph{within} the integration window
+$[0,\delta_d]$ rather than a global or post-densification peak.\todo{Cite the
+canonical cellular-absorber references for these definitions once added to the
+bib (Edison T26): Gibson \& Ashby; Avalle, Belingardi \& Montanini 2001; Tan
+et~al.\ 2005; Michailidis et~al.\ 2011.}
 
 \paragraph{Drop-weight impact.} Following Pajunen
 et~al.~\cite{pajunen2019design},
@@ -580,7 +604,8 @@ base via transfer tape or V-block features so that loading-direction
 compliance is not altered.\todo{Cite the drop-test protocol document
 (PR~\#67) and the drop-test Edison LITERATURE\_HIGH brief
 (\texttt{653d7d39}) once integrated.} A higher-fidelity replicate
-campaign on a Lansmont~M23 drop tower with synchronized Polytec~QTec
+campaign on a Lansmont~M23 shock/cushion tester (per ASTM~D1596) with
+synchronized Polytec~QTec
 laser vibrometry is planned for selected Pareto-optimal designs.\todo{%
 Cite the M23~+~QTec equipment brief (Edison LITERATURE\_HIGH
 \texttt{1a0f4a70}) once integrated.} Slip resistance and traction at

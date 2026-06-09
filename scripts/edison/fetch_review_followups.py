@@ -52,6 +52,18 @@ def _answer(task) -> str:
         val = getattr(task, attr, None)
         if val:
             return str(val)
+    # ANALYSIS (Finch) tasks keep the answer deeper in the environment frame.
+    try:
+        d = json.loads(task.model_dump_json())
+    except Exception:  # noqa: BLE001
+        return ""
+    ef = (d.get("environment_frame") or {}).get("state") or {}
+    for path in (("state", "answer"), ("info", "answer")):
+        node = ef
+        for key in path:
+            node = (node or {}).get(key) if isinstance(node, dict) else None
+        if node:
+            return str(node)
     return ""
 
 
@@ -65,11 +77,14 @@ def main() -> None:
         d = json.loads(sub.read_text())
         jobs.append((d["slug"], d["task_id"]))
 
-    # LITERATURE_HIGH: start with a 15 min wait, then poll every 5 min.
+    # Poll immediately first (tasks may already be complete); only sleep
+    # between cycles for still-pending tasks. LITERATURE_HIGH typically needs
+    # ~15 min, ANALYSIS similar.
     pending = {slug: tid for slug, tid in jobs}
     first = True
     while pending:
-        time.sleep(900 if first else 300)
+        if not first:
+            time.sleep(300)
         first = False
         for slug, tid in list(pending.items()):
             try:
@@ -80,11 +95,14 @@ def main() -> None:
             st = _status(task)
             print(f"{slug} ({tid}): status={st}")
             if st in TERMINAL:
-                (TRAJ / f"{slug}-{tid}.json").write_text(task.model_dump_json(indent=2))
+                (TRAJ / f"{slug}-{tid}.json").write_text(
+                    task.model_dump_json(indent=2), encoding="utf-8"
+                )
                 ans = _answer(task)
                 (TRAJ / f"{slug}-{tid}.md").write_text(
-                    f"# Edison LITERATURE_HIGH -- {slug}\n\n"
-                    f"Task ID: `{tid}`  \nStatus: {st}\n\n---\n\n{ans}\n"
+                    f"# Edison trajectory -- {slug}\n\n"
+                    f"Task ID: `{tid}`  \nStatus: {st}\n\n---\n\n{ans}\n",
+                    encoding="utf-8",
                 )
                 print(f"{slug}: wrote trajectory ({len(ans)} chars)")
                 pending.pop(slug)
