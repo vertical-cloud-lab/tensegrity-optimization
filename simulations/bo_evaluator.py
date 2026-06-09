@@ -203,12 +203,15 @@ def _t3_seed_designs() -> list[dict]:
 
 
 def _cfc_filter(signal: np.ndarray, fs_hz: float, cfc: float = 180.0) -> np.ndarray:
-    """SAE J211 CFC digital filter (phaseless, forward + backward pass).
+    """SAE J211 CFC digital filter (zero-phase, forward + backward pass).
 
-    Implements the 4-pole-phaseless Butterworth specified in SAE J211-1
-    appendix C — the same channel-frequency-class (CFC) filter the
-    drop-tower accelerometer pipeline applies (PR #74).  Filtering the
-    simulated acceleration before extracting peak force puts the cheap
+    Implements the Butterworth filter specified in SAE J211-1 appendix C —
+    the same channel-frequency-class (CFC) filter the drop-tower
+    accelerometer pipeline applies (PR #74).  A single 2nd-order section
+    (biquad) is run forward and then backward, which both cancels phase
+    distortion and yields an effective 4th-order zero-phase response
+    (i.e. the "4-pole phaseless" filter the standard calls for).  Filtering
+    the simulated acceleration before extracting peak force puts the cheap
     tier-C objective in the *same* processed space as the bench
     measurement, which is what lets simulated and measured rows share one
     GP/Ax model (Edison ANALYSIS task 4e74f66c, rec #1).
@@ -222,9 +225,13 @@ def _cfc_filter(signal: np.ndarray, fs_hz: float, cfc: float = 180.0) -> np.ndar
     cfc    : channel frequency class (180 for CFC-180).
     """
     x = np.asarray(signal, dtype=float)
+    # Need a few samples for the biquad warm-up / two-pass edge handling.
     if x.size < 7 or not np.isfinite(fs_hz) or fs_hz <= 0:
         return x
     T = 1.0 / fs_hz
+    # 2.0775 = empirical SAE J211-1 appendix C constant converting the CFC
+    # value (Hz) to the filter's -3 dB design frequency for the 4-pole
+    # phaseless Butterworth.
     wd = 2.0 * math.pi * cfc * 2.0775
     wa = math.tan(wd * T / 2.0)
     denom = 1.0 + math.sqrt(2.0) * wa + wa * wa
@@ -332,7 +339,7 @@ def evaluate_design(
     if cfc180 and az_signed.size:
         fs_hz = 1.0 / float(regime.sim_dt_s)
         az_signed = _cfc_filter(az_signed, fs_hz, cfc=180.0)
-        peak_g = float(np.max(np.abs(az_signed))) if az_signed.size else float("nan")
+        peak_g = float(np.max(np.abs(az_signed)))
     else:
         peak_g = res["peak_g"]
 
