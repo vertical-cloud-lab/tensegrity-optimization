@@ -150,8 +150,9 @@ the Honegumi tutorial. Concretely, the regime becomes a task choice and
 evaluator side needs no change — only the AxClient setup does:
 
 ```python
+from ax.modelbridge.factory import Models
 from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
-from ax.modelbridge.registry import Models, Specified_Task_ST_MTGP_trans
+from ax.modelbridge.registry import Specified_Task_ST_MTGP_trans
 from simulations.bo_evaluator import evaluate_design
 from simulations.regimes import CRUTCH, NASA_LANDER
 
