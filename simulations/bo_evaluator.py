@@ -33,6 +33,12 @@ called out in PR comment 4500844340: "we'll probably run simulations for
 each of samples from #30 beginning with a set of T3 structures (#35) that
 we've already been able to print."
 
+Both BO parameter schemas are accepted: the PR #30 scaffold
+(``strut_diameter_mm``/``strut_length_mm``/``cable_diameter_mm``/
+``twist_angle_deg``/``prestress_pct``) and the PR #35 T3-prism batch
+(``R_mm``/``H_mm``/``twist_deg``/``strut_d_mm``/``cable_d_mm`` from
+``bo/t3_prism_sobol_batch.py``).  See :func:`normalize_parameterization`.
+
 Multi-fidelity (Newton tier-B, PolyFEM tier-A) is stubbed by ``fidelity``
 keyword — future work, but the function signature is forward-compatible
 with Ax's ``MultiFidelityAcquisition`` (Frazier 2018).
@@ -94,14 +100,59 @@ def _topology_warning(topology: str) -> None:
         )
 
 
+# PR #35 (``bo/t3_prism_sobol_batch.py``) uses real-mm, post-scale T3-prism
+# parameter names that differ from the PR #30 scaffold.  Map them onto the
+# canonical PR #30 names so a single evaluator serves both campaigns.
+_PR35_TO_PR30: Mapping[str, str] = {
+    "R_mm": "cell_radius_mm",
+    "H_mm": "strut_length_mm",
+    "twist_deg": "twist_angle_deg",
+    "strut_d_mm": "strut_diameter_mm",
+    "cable_d_mm": "cable_diameter_mm",
+}
+
+
+def normalize_parameterization(params: Mapping) -> dict:
+    """Return a copy of ``params`` keyed by the canonical PR #30 names.
+
+    Accepts either the PR #30 ``bo/tensegrity_campaign.py`` schema
+    (``strut_diameter_mm``/``strut_length_mm``/``cable_diameter_mm``/
+    ``twist_angle_deg``) *or* the PR #35 ``bo/t3_prism_sobol_batch.py``
+    schema (``R_mm``/``H_mm``/``twist_deg``/``strut_d_mm``/``cable_d_mm``).
+    PR #35 names take precedence when both are present.  For the PR #35
+    schema ``H_mm`` is the full cell height and ``R_mm`` the circumscribing
+    radius, so we map them straight onto the PrintableDesign geometry rather
+    than the radius≈L/2 heuristic the PR #30 path falls back to.
+
+    Twist convention: the CAD/PR #35 strut connectivity is ``B_i → T_i`` with
+    an equilibrium twist of 60° (``cad/t3-prism/t3-prism.scad``), whereas the
+    simulator's :func:`tprism_geometry.tprism_nodes` uses ``B_i → T_{i+1}``
+    with an equilibrium twist of 150°.  The two describe the *same* prism when
+    ``sim_twist = scad_twist + 120°`` (the +120° accounts for the
+    next-vertex strut connectivity), so a PR #35 ``twist_deg`` is offset by
+    +120° as it is mapped onto the simulator's ``twist_angle_deg``.  Without
+    this offset every printed T3-prism (PR #35 twist ∈ [40°, 80°]) would be
+    mis-flagged class-2 because the struts appear to cross the central axis.
+    """
+    out = dict(params)
+    for pr35, pr30 in _PR35_TO_PR30.items():
+        if pr35 in params:
+            value = float(params[pr35])
+            if pr35 == "twist_deg":
+                value += 120.0  # CAD (B_i→T_i) → sim (B_i→T_{i+1}) convention
+            out[pr30] = value
+    return out
+
+
 def parameterization_to_design(params: Mapping) -> PrintableDesign:
     """Map an Ax ``parameterization`` dict → :class:`PrintableDesign`.
 
     Only the geometric / printable axes from ``bo/tensegrity_campaign.py``
-    PARAMETERS are consumed here; the rest (tiling, infill pattern, build
-    orientation) are honoured by the surrounding evaluator wrapper, not by
-    the printable-design model.
+    (PR #30) or ``bo/t3_prism_sobol_batch.py`` (PR #35) are consumed here;
+    the rest (tiling, infill pattern, build orientation) are honoured by the
+    surrounding evaluator wrapper, not by the printable-design model.
     """
+    params = normalize_parameterization(params)
     twist_rad = math.radians(float(params.get("twist_angle_deg",
                                               math.degrees(EQUILIBRIUM_TWIST))))
     height_m = float(params.get("strut_length_mm", 25.0)) * 1e-3
@@ -127,32 +178,27 @@ def _t3_seed_designs() -> list[dict]:
 
     These are the parameterizations the lab can drop in as ``existing_data``
     when the BO campaign turns on, so Ax has real observations from the
-    designs we already have hardware for.
+    designs we already have hardware for.  Expressed in the PR #35
+    ``bo/t3_prism_sobol_batch.py`` schema (real mm, post-scale) so the cell
+    geometry matches the printed parts exactly.
     """
     base = {
         "topology": "t3_prism",
         "tiling": "1x1x1",
         "tpu_shore": "85A",
-        "petg_infill_pattern": "gyroid",
         "build_orientation": "vertical",
         "struts_per_cell": 3,
     }
     return [
-        # PR #35 default (scale 1.5×, cable_d 4.5 mm) — Bambu H2D print
-        {**base, "strut_diameter_mm": 3.0, "strut_length_mm": 37.5,
-         "cable_diameter_mm": 4.5, "twist_angle_deg": 30.0,
-         "prestress_pct": 0.0, "petg_infill_pct": 100.0,
-         "interface_wrap_thickness_mm": 0.8},
-        # PR #35 baseline (scale 1.0×) for comparison
-        {**base, "strut_diameter_mm": 3.0, "strut_length_mm": 25.0,
-         "cable_diameter_mm": 3.0, "twist_angle_deg": 30.0,
-         "prestress_pct": 0.0, "petg_infill_pct": 100.0,
-         "interface_wrap_thickness_mm": 0.8},
-        # Soft-tendon variant
-        {**base, "strut_diameter_mm": 3.0, "strut_length_mm": 37.5,
-         "cable_diameter_mm": 1.5, "twist_angle_deg": 30.0,
-         "prestress_pct": 2.0, "petg_infill_pct": 100.0,
-         "interface_wrap_thickness_mm": 0.8},
+        # PR #35 production target (scale 1.5×): R=37.5, H=105, cable_d 4.5 mm
+        {**base, "R_mm": 37.5, "H_mm": 105.0, "twist_deg": 60.0,
+         "strut_d_mm": 9.0, "cable_d_mm": 4.5, "prestress_pct": 0.0},
+        # PR #35 baseline (scale 1.0×): R=25, H=70, cable_d 3.0 mm
+        {**base, "R_mm": 25.0, "H_mm": 70.0, "twist_deg": 60.0,
+         "strut_d_mm": 6.0, "cable_d_mm": 3.0, "prestress_pct": 0.0},
+        # High-twist / fat-cable corner of the PR #35 Sobol box
+        {**base, "R_mm": 40.0, "H_mm": 110.0, "twist_deg": 80.0,
+         "strut_d_mm": 12.0, "cable_d_mm": 5.5, "prestress_pct": 2.0},
     ]
 
 
@@ -196,7 +242,8 @@ def evaluate_design(
 
     _topology_warning(parameterization.get("topology"))
 
-    design = parameterization_to_design(parameterization)
+    params = normalize_parameterization(parameterization)
+    design = parameterization_to_design(params)
     issues = design.check()
     if issues:
         warnings.warn(
@@ -261,12 +308,69 @@ def evaluate_design(
     }
 
 
+def evaluate_batch_csv(
+    csv_path,
+    *,
+    regime: Regime = CRUTCH,
+    fidelity: Literal["C", "B", "A"] = "C",
+) -> list[dict]:
+    """Evaluate every row of a PR #35 ``t3-prism-bo-batch.csv`` design batch.
+
+    The batch generator in ``bo/t3_prism_sobol_batch.py`` emits the Sobol
+    design set but reports *no* objectives back to Ax.  This reads that CSV,
+    runs the Tier-C sim for each specimen, and returns the design row merged
+    with its ``{F_peak_N, SEA_J_per_g, eta}`` so the values can be attached to
+    the AxClient (``attach_trial`` + ``complete_trial``) as a cheap simulated
+    prior before the physical drops are run.
+    """
+    import csv as _csv
+
+    rows: list[dict] = []
+    with open(csv_path, newline="") as fh:
+        for raw in _csv.DictReader(fh):
+            params = {k: v for k, v in raw.items() if v not in (None, "")}
+            # Coerce the numeric design columns; leave categoricals as str.
+            for key in ("R_mm", "H_mm", "twist_deg", "strut_d_mm",
+                        "cable_d_mm", "strut_diameter_mm", "strut_length_mm",
+                        "cable_diameter_mm", "twist_angle_deg", "prestress_pct"):
+                if key in params:
+                    try:
+                        params[key] = float(params[key])
+                    except (TypeError, ValueError):
+                        pass
+            obj = evaluate_design(params, regime=regime, fidelity=fidelity)
+            rows.append({**raw, **obj})
+    return rows
+
+
 if __name__ == "__main__":
-    # Smoke-test against the three PR #35 T3 seed designs.
-    for i, p in enumerate(_t3_seed_designs()):
-        try:
-            r = evaluate_design(p, regime=CRUTCH, fidelity="C")
-            print(f"seed #{i}  F_peak={r['F_peak_N']:9.1f} N  "
-                  f"SEA={r['SEA_J_per_g']:8.4f} J/g  eta={r['eta']:.3f}")
-        except Exception as e:           # pragma: no cover - smoke test
-            print(f"seed #{i}  FAILED: {e!r}")
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Tier-C MuJoCo evaluator for the tensegrity BO campaign "
+                    "(PR #30 / PR #35 schemas).")
+    parser.add_argument(
+        "--batch-csv", default=None,
+        help="Path to a PR #35 t3-prism-bo-batch.csv; evaluate every row.")
+    parser.add_argument(
+        "--regime", choices=["crutch_tip", "nasa_lander"],
+        default="crutch_tip", help="Fixed loading scenario.")
+    args = parser.parse_args()
+
+    _regime = NASA_LANDER if args.regime == "nasa_lander" else CRUTCH
+
+    if args.batch_csv:
+        results = evaluate_batch_csv(args.batch_csv, regime=_regime)
+        for i, r in enumerate(results):
+            print(f"row #{i}  F_peak={float(r['F_peak_N']):9.1f} N  "
+                  f"SEA={float(r['SEA_J_per_g']):8.4f} J/g  "
+                  f"eta={float(r['eta']):.3f}")
+    else:
+        # Smoke-test against the three PR #35 T3 seed designs.
+        for i, p in enumerate(_t3_seed_designs()):
+            try:
+                r = evaluate_design(p, regime=_regime, fidelity="C")
+                print(f"seed #{i}  F_peak={r['F_peak_N']:9.1f} N  "
+                      f"SEA={r['SEA_J_per_g']:8.4f} J/g  eta={r['eta']:.3f}")
+            except Exception as e:        # pragma: no cover - smoke test
+                print(f"seed #{i}  FAILED: {e!r}")

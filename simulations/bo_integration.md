@@ -22,7 +22,96 @@ a T3-prism (#35) initial batch per @sgbaird PR comment 4500844340.
    minimum three Instron + drop-tower tests *before* the BO loop turns on
    in service of real fabrication budget.
 
-## Mapping PR #30 BO parameters → simulation inputs
+## Simulation cost (PR comment 4663414812)
+
+Measured with `simulations/benchmark_costs.py` on an **AMD EPYC 7763**
+(2 cores / 4 logical threads allotted to the runner), MuJoCo 3.9, NumPy:
+
+| Tier | Engine | One objective eval (1 design × 1 regime) | Hardware | Status |
+|---|---|---|---|---|
+| C | MuJoCo rigid-body + tendon springs | **~75–120 ms** (crutch 118 ms, lander 73 ms) | any modern x86 core, no GPU | wired (`bo_evaluator.evaluate_design`) |
+| B | Newton / Warp XPBD | ~10–30 s | CUDA GPU strongly preferred | script exists (`newton_drop.py`), not yet a per-design entry point |
+| A | PolyFEM + IPC (welded volumetric T-prism) | ~50–60 s/run **after** a ~25 min one-time source build | multi-core CPU, ~10 GB build dir | run end-to-end once (124bba2), not yet parametric |
+
+So the **tier-C objective the BO actually calls costs ≈0.1 CPU-second per
+design.** A full PR #35 9-specimen Sobol batch is ~1 s single-threaded
+(<0.3 s across the 4 logical cores), and even a 1,000-design tier-C sweep
+is ~2 CPU-minutes — i.e. tier-C is effectively free relative to a single
+physical print+drop, which is the entire point of using it as the bulk
+evaluator and reserving tier-B/A (and the real drop tower) for the
+high-reward Pareto front. These numbers are what a cost-aware /
+multi-fidelity acquisition function (Frazier 2018 `MultiFidelityAcquisition`)
+should be fed as the per-tier evaluation cost.
+
+## Wiring into the PR #35 T3-prism batch (`bo/t3_prism_sobol_batch.py`)
+
+PR #35's `bo/t3_prism_sobol_batch.py` emits a Sobol design set but reports
+**no objectives back** (its `objectives={"placeholder": ...}` is a stub).
+`bo_evaluator` now accepts the PR #35 schema directly so those specimens can
+be scored without re-printing:
+
+```python
+from simulations.bo_evaluator import evaluate_batch_csv
+# Score every specimen the batch generator wrote:
+rows = evaluate_batch_csv("bo/t3-prism-bo-batch.csv", regime=CRUTCH)
+# each row = the design columns + {F_peak_N, SEA_J_per_g, eta}
+```
+
+or from the CLI: `python simulations/bo_evaluator.py --batch-csv bo/t3-prism-bo-batch.csv`.
+
+The PR #35 axes map straight onto the simulator:
+
+| PR #35 axis (real mm, post-scale) | Range | Sim consumer |
+|---|---|---|
+| `R_mm` (circumscribing radius) | [25, 40] | `PrintableDesign.radius_m` → `Regime.radius_m` |
+| `H_mm` (cell height) | [60, 110] | `PrintableDesign.height_m` → `Regime.height_m` |
+| `twist_deg` (top vs bottom) | [40, 80] | `PrintableDesign.twist_rad` **+120° convention offset** (see below) |
+| `strut_d_mm` (PLA strut Ø) | [6, 12] | `Regime.strut_radius_m` (×0.5) |
+| `cable_d_mm` (TPU cable Ø) | [3.0, 5.5] | `tpu_cable_stiffness_Npm` → `Regime.cable_stiffness_Npm` |
+
+**Twist convention.** The CAD/PR #35 strut connectivity is `B_i → T_i`
+(equilibrium twist 60°, `cad/t3-prism/t3-prism.scad`), while the simulator's
+`tprism_geometry.tprism_nodes` uses `B_i → T_{i+1}` (equilibrium 150°). They
+describe the same prism when `sim_twist = scad_twist + 120°`;
+`normalize_parameterization` applies that offset. Without it, every printed
+T3-prism (twist ∈ [40°, 80°]) is mis-flagged class-2 because the struts
+appear to cross the central axis. Verified: the full PR #35 twist range now
+clears class-1 (strut gap 48–61 mm at the production R/H).
+
+## What the simulations give the BO that the printer/drop-tower cannot (cheaply)
+
+The simulations and the manual high-fidelity drop tests (`docs/drop-test-protocol.md`,
+PR #67 / #74) share **one objective space**: peak transmitted force/`g`,
+specific energy absorption, and compaction efficiency. That shared space is
+exactly what lets them combine in a multi-fidelity campaign:
+
+- **Pre-screening / GP seeding.** Tier-C scores all 9 Sobol specimens in ~1 s,
+  so the BO can rank-order the batch *before* committing ~hours of print +
+  drop time. The objectives align with what the drop tower measures after
+  SAE J211 CFC-180 filtering (PR #74): `peak_g` ↔ filtered peak `g`,
+  `sea_Jpkg` ↔ measured SEA. So a simulated row and a measured row are
+  directly comparable and can be attached to the *same* AxClient as
+  different-fidelity observations.
+- **Trade-off geometry.** The crutch-vs-lander split (PR comment / `regimes.py`)
+  shows the F_peak ↔ SEA ↔ eta trade-off is regime-dependent: at the
+  production R/H, the lander regime drives `F_peak` to ~5 kN with `eta`
+  ~0.70, while the crutch regime sits near the soft-cushion limit (`eta`
+  ~0.96). The BO should therefore either run one campaign per regime or carry
+  the regime as a context, not average the two.
+- **Feasibility for free.** `PrintableDesign.check()` rejects class-2 strut
+  overlap, unprintable cable diameters, and prestrain past TPU break before
+  any sim runs, so the BO learns the printable-feasible boundary at zero
+  fabrication cost.
+
+The honest limits (all flagged to the reviewers in
+`edison-trajectories/modeling-feedback-contacts/`): tier-C is rigid struts +
+scalar tendon springs, so it does **not** capture PLA strut buckling, TPU
+hyperelastic hysteresis, or strut–strut contact — those are precisely the
+tier-B/A and physical-drop jobs. Tier-C is a *ranking* tool for the bulk of
+the search, not a quantitative predictor of the absolute `g` a given printed
+T3-prism will survive.
+
+
 
 | BO axis (PR #30) | Sim consumer | Notes |
 |---|---|---|
