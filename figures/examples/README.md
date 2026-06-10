@@ -9,26 +9,35 @@ A worked example (PR review comment 4664748222) of the kind of *mechanism-orient
 data figure the manuscript currently lacks: processed drop-test deceleration curves
 annotated with callouts that link the measured signal to the specific structural
 features being exercised. Intended as a template/discussion piece, not a result.
+Revised per Edison ANALYSIS feedback (task `e0c4e062-15c7-4a62-b931-1746211fe8b1`,
+folded back via PR comment 4664958219).
 
-What such a figure would contain:
+What this figure contains:
 
 - **(a) Processed response** — rigid control vs. tensegrity, SAE J211 **CFC-180**
   filtered, with the raw 125 kHz tensegrity trace shown faintly to motivate filtering;
-  a peak-reduction callout; and shaded **mechanistic phases** A (contact / cable
-  pre-tension), B (strut+cable load redistribution — the energy plateau), C (rebound).
-- **(b) Specimen callout** — T3 prism schematic, red PLA struts (compression) and blue
-  TPU cables (tension), with the detailed strut end circled.
-- **(c) Joint callout** — the cables anchoring *inside* the strut end (the strut acting
+  a peak-reduction callout; **event-based phase** shading (i first contact, ii strut
+  rotation + cable redistribution, iii peak compression plateau, iv rebound/unloading,
+  keyed via an off-curve legend); ±1 s.d. replicate bands; and three numbered markers
+  (1 contact, 2 plateau, 3 rebound) that key the frames at right.
+- **(a2) Cumulative-impulse subpanel** — sharing panel (a)'s x-axis, showing that the
+  control and tensegrity traces transfer the **same mass-normalized Δv** (impulse
+  consistency), so the lower tensegrity peak comes from spreading the same impulse over
+  time rather than from inconsistent loading.
+- **(b)–(d) Synchronized frames** — T3 prism schematics at the three marker times (with
+  timestamps), red PLA struts (compression) and blue TPU cables (tension). In the real
+  article these are replaced by high-speed-camera / DIC stills registered to the curve.
+- **(e) Joint callout** — the cables anchoring *inside* the strut end (the strut acting
   as a rigid cage with discrete cable outlets), i.e. the load path responsible for
   flattening the peak.
-- **(d) Deformation snapshot** — specimen at the phase-B plateau.
 
-In the real article each schematic callout would be replaced by a high-speed-camera
-frame or specimen photograph registered to the corresponding point on the curve.
-
-The curves are **synthetic**, generated from the documented qualitative behaviour of
-the real campaign (issue #36: impact at ~4.2 ms, control CFC-180 peak ~1792 G,
-tensegrity ~370–463 G ⇒ ~74–79 % reduction). A visible watermark marks the mock-up.
+The curves are **synthetic**: the control is anchored to the documented control
+CFC-180 peak (~1792 G, impact ~4.2 ms) and the tensegrity shoulder is then scaled to
+the *same impulse*, so its peak (~403 G ⇒ ~78 % reduction, within the documented
+~370–463 G / 74–79 % range) and the matched Δv are *outputs* of the conservation
+constraint, not arbitrary inputs. The filtering, alignment, and replicate basis live
+in the figure caption; a visible watermark marks the mock-up. Optionally uses SciPy
+for cumulative integration (falls back to a NumPy trapezoid if SciPy is absent).
 
 Regenerate:
 
