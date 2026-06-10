@@ -86,7 +86,7 @@ The fastest way to sanity-check orientation and bed adhesion. A ready-made
    a member. Send to the H2D.
 7. **Post-process.** After printing, **snap each branch off at its narrow
    contact tip** (the tip is the designed breakaway notch). Because the
-   branches are thin and only touch the part with a ~0.6 mm tip, they peel
+   branches are thin and only touch the part with a ~0.4 mm tip, they peel
    away in one piece without tearing the member. Trim any nub flush.
 
 ---
@@ -174,10 +174,12 @@ Same as Path 1:
   harmless by @sgbaird.)
 - **Supports too solid / hard to remove (broke the part last time)** → the
   supports are now generated with `--tree`, so the branches are thin (slice
-  to walls only, near-hollow) and contact the part with a tiny ~0.6 mm tip
+  to walls only, near-hollow) and contact the part with a tiny ~0.4 mm tip
+  (one nozzle width — finer than Bambu Studio's 0.8 mm tree-support default)
   that snaps off without tearing the member. If you still find them too
   tenacious, lower `--tip_d` (smaller contact) or `--branch_d` (thinner
-  branch) when regenerating.
+  branch) when regenerating; raise `--tip_contact_h` to keep the contact
+  neck thin for longer.
 - **Too much buildup on the build plate** → tree mode merges the branches
   onto just a few feet (7 for the PR #35 T3-prism). Raise `--merge_radius`
   for even fewer feet, or `--min_clearance` to skip near-plate overhangs.

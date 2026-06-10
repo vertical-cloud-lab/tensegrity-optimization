@@ -17,7 +17,7 @@
 #     to the underside of each non-bed-contact member at evenly-spaced
 #     sample points.
 #   * The pillar is a tapered cone: a wide breakaway base on the plate
-#     (default Ø 5 mm) narrowing to a small tip (default Ø 0.6 mm) that
+#     (default Ø 5 mm) narrowing to a small tip (default Ø 0.4 mm) that
 #     fuses into the member's underside.
 #   * The slicer then prints the pillars as part of the object (no
 #     `enable_support` flag needed) and the operator snaps them off after
@@ -732,11 +732,14 @@ def _parse_args() -> argparse.Namespace:
     ap.add_argument("--base_d", type=float, default=5.0,
                     help="Pillar base diameter on the build plate (mm). "
                          "Wider = sticks to the plate better. Default 5.")
-    ap.add_argument("--tip_d", type=float, default=0.6,
+    ap.add_argument("--tip_d", type=float, default=0.4,
                     help="Pillar tip diameter where it fuses to the "
                          "member's underside (mm). Smaller = easier to "
-                         "snap off, but ~2x nozzle width or it will not "
-                         "print. Default 0.6 (1.5x a 0.4 mm nozzle).")
+                         "snap off and a smaller surface scar. The tip is "
+                         "buried --tip_overshoot mm into the member so it "
+                         "prints reliably even at one nozzle width. Default "
+                         "0.4 (1x a 0.4 mm nozzle; matches Bambu Studio's "
+                         "guidance for fine/delicate contact points).")
     ap.add_argument("--base_z", type=float, default=0.0,
                     help="Z height of the build plate (mm). Default 0.0.")
     ap.add_argument("--tip_overshoot", type=float, default=0.3,
@@ -762,11 +765,14 @@ def _parse_args() -> argparse.Namespace:
                     help="[--tree] Maximum trunk diameter near the plate "
                          "(mm); branches thicken by area as they merge, "
                          "capped here. Default 5.0.")
-    ap.add_argument("--tip_contact_h", type=float, default=1.5,
+    ap.add_argument("--tip_contact_h", type=float, default=2.5,
                     help="[--tree] Height (mm) of the slim breakaway "
                          "contact cone between the part underside (Ø "
                          "--tip_d) and the branch network (Ø --branch_d). "
-                         "Default 1.5.")
+                         "A taller cone keeps the neck thin for longer so "
+                         "the visible connection point stays narrow (like a "
+                         "Bambu tree-support tip) and breaks away cleanly. "
+                         "Default 2.5.")
     ap.add_argument("--max_branch_angle", type=float, default=40.0,
                     help="[--tree] Maximum branch deviation from vertical "
                          "(deg) so branches print without their own "

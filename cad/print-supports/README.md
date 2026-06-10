@@ -150,14 +150,15 @@ python3 cad/print-supports/verification/merge_stls.py \
 ```
 
 With `--tree` (recommended), slim breakaway tips touch the underside
-with a tiny ~Ø 0.6 mm contact patch, merge pairwise into thin Ø ~1.8 mm
+with a tiny ~Ø 0.4 mm contact patch (one nozzle width, finer than
+Bambu Studio's 0.8 mm tree-support tip default), merge pairwise into thin Ø ~1.8 mm
 branches (which slice walls-only / near-hollow), and converge onto just
 a few circular feet on the plate — Bambu "tree support" style, with
 little build-plate buildup and a contact small enough to snap off
 without tearing the part. Branches stay within `--max_branch_angle`
 (default 40°) of vertical so they print self-supported. Drop `--tree`
 for the original one-cone-per-sample-point pillars (a tapered cone with
-its own wide breakaway base on the plate, narrowing to a ~Ø 0.6 mm tip).
+its own wide breakaway base on the plate, narrowing to a ~Ø 0.4 mm tip).
 Because the supports are real geometry — not a paint flag and not a
 slicer hint — the slicer always honours them, including on vertical
 members and including in TPU. Default tree tuning was chosen for the
@@ -218,11 +219,15 @@ presets, so you can drive either from the same structure description.
 ### `generate_support_pillars.py` (recommended)
 
 With ``--tree`` (recommended) it grows Bambu-style tree supports: slim
-breakaway tips touch the underside (``--tip_d`` mm contact), merge into
-thin branches (``--branch_d`` mm) that stay within ``--max_branch_angle``
-of vertical, and converge onto a few feet (capped at ``--trunk_d`` mm)
-on the plate. ``--merge_radius`` controls how aggressively nearby tips
-merge (larger = fewer feet). Without ``--tree`` it falls back to one
+breakaway tips touch the underside (``--tip_d`` mm contact, default
+0.4 mm — a single nozzle width, finer than Bambu Studio's own 0.8 mm
+tree-support tip default and matching its 0.3–0.4 mm guidance for
+delicate features), held narrow for ``--tip_contact_h`` mm before they
+merge into thin branches (``--branch_d`` mm) that stay within
+``--max_branch_angle`` of vertical, and converge onto a few feet
+(capped at ``--trunk_d`` mm) on the plate. ``--merge_radius`` controls
+how aggressively nearby tips merge (larger = fewer feet). Without
+``--tree`` it falls back to one
 tapered-cone pillar every ``--spacing`` mm, each from the build plate
 (``--base_d`` mm wide) up to the member's underside (``--tip_d`` mm
 wide), buried ``--tip_overshoot`` mm inside the member so the boolean

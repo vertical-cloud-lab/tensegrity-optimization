@@ -222,7 +222,7 @@ build-plate buildup, and the columns tore the part when peeled off), the
 supports are now generated in the style of **Bambu Studio tree
 supports** via the ``--tree`` flag:
 
-- many **slim breakaway tips** touch the underside with a tiny ~Ø 0.6 mm
+- many **slim breakaway tips** touch the underside with a tiny ~Ø 0.4 mm
   contact patch (snaps off without tearing the part);
 - those tips merge pairwise into **thin Ø ~1.8 mm branches** that the
   slicer prints walls-only (near-hollow, very little material);
@@ -260,7 +260,7 @@ git show 21ca244~1:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl
 python3 cad/print-supports/generate_support_pillars.py \
     --stl /tmp/t3-prism.stl --tree \
     --spacing 4.0 --min_clearance 7.0 --merge_radius 22 \
-    --tip_d 0.6 --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
+    --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
     --out cad/print-supports/verification/t3-prism-pr35-pillars.stl \
     --out_part /tmp/t3-prism-lifted.stl
 
@@ -305,11 +305,19 @@ opening the STL in a 3-D viewer). Regenerate with
 
 ![pillars rotating](t3-prism-pr35-pillars-rotating.gif)
 
-Why these defaults? `--tip_d 0.6` is 1.5 × the H2D's 0.4 mm nozzle
-width — narrow enough that the contact snaps off cleanly under thumb
-pressure, wide enough that the slicer still emits an extrusion there (an
-0.4 mm tip would slice as a single-line bead and disappear under
-tolerance). `--branch_d 1.8` keeps the branches thin enough that the
+Why these defaults? `--tip_d 0.4` is exactly the H2D's 0.4 mm nozzle
+width — the finest contact that still resolves to a single printed bead.
+The tip is buried `--tip_overshoot 0.3` mm into the member, so it fuses
+into the part's own solid (it never has to print as a free-standing
+single line) yet leaves only a ~0.4 mm scar that snaps off cleanly under
+thumb pressure. This is finer than Bambu Studio's own tree-support
+default (`tree_support_tip_diameter = 0.8` mm) and matches Bambu's
+guidance to shrink the tip toward 0.3–0.4 mm for delicate features —
+appropriate for the thin TPU cables here. `--tip_contact_h 2.5` keeps
+that slim neck thin for ~2.5 mm before it flares out to the branch, so
+the visible connection point stays narrow (like a Bambu tree-support
+tip) instead of fattening to branch width right at the part. `--branch_d
+1.8` keeps the branches thin enough that the
 slicer prints them as walls only (no dense infill, so they break away
 in one piece and waste little filament). `--trunk_d 5.0` caps how wide
 a foot grows as branches merge — wide enough to stick to the plate
@@ -553,7 +561,7 @@ sudo apt-get install -y xvfb libsoup-3.0-0 libwebkit2gtk-4.1-0 \
 python3 cad/print-supports/generate_support_pillars.py \
     --stl /tmp/t3-prism.stl --tree \
     --spacing 4.0 --min_clearance 7.0 --merge_radius 22 \
-    --tip_d 0.6 --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
+    --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
     --out cad/print-supports/verification/t3-prism-pr35-pillars.stl
 
 # 4. Slice. The driver builds the 3-part 3MF, invokes the patched CLI
