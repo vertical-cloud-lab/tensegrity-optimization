@@ -157,7 +157,7 @@ def _cumtrapz_fallback(accel_g: np.ndarray, t_ms: np.ndarray) -> np.ndarray:
 def cumulative_impulse(accel_g: np.ndarray, t_ms: np.ndarray) -> np.ndarray:
     try:
         return cumulative_dv(accel_g, t_ms)
-    except Exception:
+    except ImportError:
         return _cumtrapz_fallback(accel_g, t_ms)
 
 
@@ -384,8 +384,8 @@ def main():
         "Synthetic illustration. In a real figure: transmitted base deceleration "
         "of a rigid control vs. T3-prism tensegrity, both SAE J211 CFC-180 filtered "
         "(125 kHz raw shown faint), zero-phase (filtfilt), time-aligned on the "
-        "CH4 first-contact index. Curves are the mean of n=" f"{N_REPLICATES}"
-        " replicates; bands are \u00b11 s.d. Frames 1-3 are high-speed/DIC stills at "
+        f"CH4 first-contact index. Curves are the mean of n={N_REPLICATES} "
+        "replicates; bands are \u00b11 s.d. Frames 1-3 are high-speed/DIC stills at "
         "markers 1-3; (e) shows the internal cable-anchor joint that spreads the impulse."
     )
     fig.text(0.5, 0.012, caption, ha="center", va="bottom", fontsize=7.3,
