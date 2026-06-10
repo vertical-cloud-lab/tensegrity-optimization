@@ -128,34 +128,39 @@ slicer's `tree(auto)` generator still rejects branches that exceed its
 internal branch-stretch budget, which on a 100 mm-tall T3 prism leaves
 the upper third of every vertical cable uncovered). The recommended
 recipe is now to skip slicer-side supports entirely and **bake the
-supports directly into the printable mesh** as a set of narrowing
-pillars sized to be snapped off after printing:
+supports directly into the printable mesh** as **tree-style breakaway
+supports** sized to be snapped off after printing:
 
 ```bash
-# 1. Generate the narrowing-pillar mesh for your topology:
+# 1. Generate the tree-style support mesh for your topology (or, better,
+#    ray-cast an actual STL with `--stl part.stl` as in §D):
 python3 cad/print-supports/generate_support_pillars.py \
     --topology t3_prism --R 37.5 --H 105 --twist 60 \
-    --strut_d 9 --cable_d 4.5 \
+    --strut_d 9 --cable_d 4.5 --tree \
     --out pillars.stl
 
-# 2. Merge the pillars into one combined printable STL with the part:
+# 2. Merge the supports into one combined printable STL with the part:
 python3 cad/print-supports/verification/merge_stls.py \
     combined.stl my_part.stl pillars.stl --align-first-to-second
 
 # 3. In Bambu Studio: open combined.stl, slice with
 #    `enable_support = 0` (everything below the underside of each member
-#    is now part of the part). After printing, snap each pillar off at
+#    is now part of the part). After printing, snap each branch off at
 #    its narrow tip.
 ```
 
-Each pillar is a tapered cone (wide breakaway base on the build plate
-narrowing to a ~Ø 0.6 mm tip that fuses into the member's underside),
-placed at evenly-spaced sample points along every non-bed-contact
-member's centerline. Because the pillars are real geometry — not a paint
-flag and not a slicer hint — the slicer always honours them, including
-on vertical members and including in TPU. The narrow tip is the
-designed breakaway notch; the wide base survives bed adhesion. Default
-tuning (Ø 5 mm base → Ø 0.6 mm tip, 8 mm spacing) was chosen for the
+With `--tree` (recommended), slim breakaway tips touch the underside
+with a tiny ~Ø 0.6 mm contact patch, merge pairwise into thin Ø ~1.8 mm
+branches (which slice walls-only / near-hollow), and converge onto just
+a few circular feet on the plate — Bambu "tree support" style, with
+little build-plate buildup and a contact small enough to snap off
+without tearing the part. Branches stay within `--max_branch_angle`
+(default 40°) of vertical so they print self-supported. Drop `--tree`
+for the original one-cone-per-sample-point pillars (a tapered cone with
+its own wide breakaway base on the plate, narrowing to a ~Ø 0.6 mm tip).
+Because the supports are real geometry — not a paint flag and not a
+slicer hint — the slicer always honours them, including on vertical
+members and including in TPU. Default tree tuning was chosen for the
 PR #35 T3-prism but every knob is exposed on the CLI — see §D for the
 full list.
 
@@ -212,21 +217,26 @@ presets, so you can drive either from the same structure description.
 
 ### `generate_support_pillars.py` (recommended)
 
-Emits one tapered-cone pillar every ``--spacing`` mm along each
-non-bed-contact member's 3D centerline, from the build plate
-(``--base_d`` mm wide) up to the member's underside (``--tip_d`` mm wide,
-buried ``--tip_overshoot`` mm inside the member so the boolean union is
-watertight after slicing). Bed-contact members (``trim_ends=False``,
-e.g. the bottom-triangle cables of a T3 prism) are skipped by default;
-pass ``--include_bed_contact`` to override.
+With ``--tree`` (recommended) it grows Bambu-style tree supports: slim
+breakaway tips touch the underside (``--tip_d`` mm contact), merge into
+thin branches (``--branch_d`` mm) that stay within ``--max_branch_angle``
+of vertical, and converge onto a few feet (capped at ``--trunk_d`` mm)
+on the plate. ``--merge_radius`` controls how aggressively nearby tips
+merge (larger = fewer feet). Without ``--tree`` it falls back to one
+tapered-cone pillar every ``--spacing`` mm, each from the build plate
+(``--base_d`` mm wide) up to the member's underside (``--tip_d`` mm
+wide), buried ``--tip_overshoot`` mm inside the member so the boolean
+union is watertight after slicing. Bed-contact members
+(``trim_ends=False``, e.g. the bottom-triangle cables of a T3 prism)
+are skipped by default; pass ``--include_bed_contact`` to override.
 
 ```bash
 # 1. **recommended** — ray-cast the actual printable STL from the
-#    build plate's-eye view, place a pillar at every grid cell whose
-#    nearest hit is above --min_clearance mm. Requires `trimesh`.
+#    build plate's-eye view and grow a tree of slim branches up to
+#    every underside hit above --min_clearance mm. Requires `trimesh`.
 python3 cad/print-supports/generate_support_pillars.py \
-    --stl my_part.stl --spacing 4.0 --min_clearance 1.5 \
-    --out pillars.stl --out_part my_part_lifted.stl
+    --stl my_part.stl --tree --spacing 4.0 --min_clearance 7.0 \
+    --merge_radius 22 --out pillars.stl --out_part my_part_lifted.stl
 
 # 2. built-in topology preset (no STL required, no trimesh dependency —
 #    samples along each member's parametric centerline; only correct if
@@ -234,13 +244,13 @@ python3 cad/print-supports/generate_support_pillars.py \
 #    spheres / bonded cores bulging below it)
 python3 cad/print-supports/generate_support_pillars.py \
     --topology t3_prism --R 37.5 --H 105 --twist 60 \
-    --strut_d 9 --cable_d 4.5 \
+    --strut_d 9 --cable_d 4.5 --tree \
     --out pillars.stl
 
 # 3. arbitrary structure described by a JSON member graph (also
 #    centerline-sampled, same caveat as #2)
 python3 cad/print-supports/generate_support_pillars.py \
-    --members my_members.json --out pillars.stl
+    --members my_members.json --tree --out pillars.stl
 ```
 
 Then merge the pillar STL with your printable part STL (e.g. via

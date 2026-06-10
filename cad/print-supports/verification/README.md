@@ -215,19 +215,32 @@ even with explicit enforcer volumes the upper third of every vertical
 cable stays uncovered.
 
 The reliable fix is to take the slicer out of the loop and bake the
-supports directly into the printable mesh as a set of **narrowing
-pillars** (wide breakaway base on the bed → small ~Ø 0.6 mm tip that
-fuses into the member's underside). The slicer prints them as part of
-the part, with `enable_support = 0`, and the operator snaps each pillar
-off at its narrow tip after printing.
+supports directly into the printable mesh. Following @achris0520's print
+feedback (the earlier one-pillar-per-grid-cell layout printed as solid,
+fully-fused columns with a wide base under every tip — too much
+build-plate buildup, and the columns tore the part when peeled off), the
+supports are now generated in the style of **Bambu Studio tree
+supports** via the ``--tree`` flag:
 
-The recommended way to place the pillars is to **ray-cast the actual
-printable mesh from the build plate's point of view**: rasterise XY at
+- many **slim breakaway tips** touch the underside with a tiny ~Ø 0.6 mm
+  contact patch (snaps off without tearing the part);
+- those tips merge pairwise into **thin Ø ~1.8 mm branches** that the
+  slicer prints walls-only (near-hollow, very little material);
+- the branches converge onto just **a few circular trunk feet** on the
+  plate (7 feet for the PR #35 T3-prism, versus 183 separate bases
+  before), so there is far less build-plate contact.
+
+Branches are kept within ``--max_branch_angle`` (default 40°) of
+vertical so they print self-supported, and all geometry is clamped to
+the build plate so nothing prints below z = 0.
+
+The tip locations are still found by **ray-casting the actual printable
+mesh from the build plate's point of view**: rasterise XY at
 ``--spacing`` mm, send a +Z ray from below the part at each grid cell,
-and drop a pillar at every cell whose nearest hit is above
+and place a tip at every cell whose nearest hit is above
 ``--min_clearance`` mm. That hit z is, by construction, the lowest
 visible point of the mesh above (x, y) — i.e. the underside surface a
-support pillar needs to fuse to. Implemented in
+support needs to fuse to. Implemented in
 [`generate_support_pillars.py`](../generate_support_pillars.py) via the
 ``--stl`` flag (uses `trimesh.ray`; install with `pip install trimesh
 rtree`). This replaces the earlier parametric-centerline pillar pass,
@@ -238,15 +251,16 @@ pillar render.
 
 ```bash
 # 1. Ray-cast the printable mesh from the build plate's-eye view and
-#    emit one tapered cone at every XY grid cell that sees mesh above
-#    --min_clearance mm. Also writes a copy of the part lifted so
-#    min(z) sits at z=0 — that lifted copy and the pillar STL share a
-#    coordinate frame, so the next step is a plain merge.
+#    grow a tree of slim branches up to every underside hit above
+#    --min_clearance mm, converging onto a few feet on the plate. Also
+#    writes a copy of the part lifted so min(z) sits at z=0 — that
+#    lifted copy and the support STL share a coordinate frame, so the
+#    next step is a plain merge.
 git show 21ca244~1:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl
 python3 cad/print-supports/generate_support_pillars.py \
-    --stl /tmp/t3-prism.stl \
-    --spacing 4.0 --min_clearance 1.5 \
-    --base_d 5.0 --tip_d 0.6 --tip_overshoot 0.3 --facets 12 \
+    --stl /tmp/t3-prism.stl --tree \
+    --spacing 4.0 --min_clearance 7.0 --merge_radius 22 \
+    --tip_d 0.6 --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
     --out cad/print-supports/verification/t3-prism-pr35-pillars.stl \
     --out_part /tmp/t3-prism-lifted.stl
 
@@ -261,49 +275,54 @@ python3 cad/print-supports/verification/merge_stls.py \
 #    a sensible starting point.
 ```
 
-`generate_support_pillars.py` still supports the parametric
-``--topology`` / ``--members`` modes as well (no `trimesh` dependency),
-but those should only be used for hand-authored geometries where the
-member graph is the ground truth and there is no STL to ray-cast.
+Drop the ``--tree`` flag to fall back to the original one-cone-per-cell
+pillars (each with its own wide ``--base_d`` foot on the plate);
+``generate_support_pillars.py`` still supports the parametric
+``--topology`` / ``--members`` modes as well (no `trimesh` dependency,
+and they accept ``--tree`` too), but those should only be used for
+hand-authored geometries where the member graph is the ground truth and
+there is no STL to ray-cast.
 
 Pre-generated artefacts (PR #35 T3-prism, R=37.5 / H=105 / twist=60 /
-strut_d=9 / cable_d=4.5, default pillar tuning, ``--stl`` ray-cast
+strut_d=9 / cable_d=4.5, default tree tuning, ``--stl --tree`` ray-cast
 mode):
 
-| File                                            | Triangles | Bytes  | Pillars |
-| ----------------------------------------------- | --------: | -----: | ------: |
-| `t3-prism-pr35-pillars.stl` (pillars only)      |     8,784 | 0.4 MB |     183 |
-| `t3-prism-pr35-with-pillars.stl` (part + pillars merged) |  33,650 | 1.6 MB |     183 |
+| File                                            | Triangles | Bytes  | Tips | Feet |
+| ----------------------------------------------- | --------: | -----: | ---: | ---: |
+| `t3-prism-pr35-pillars.stl` (supports only)     |    16,896 | 0.8 MB |  121 |    7 |
+| `t3-prism-pr35-with-pillars.stl` (part + supports merged) | 41,762 | 2.1 MB | 121 | 7 |
 
-Preview (object grey, narrowing pillars orange; iso + bottom view —
-every spot on the underside that the build plate can see from below
-gets a pillar; spots already within `--min_clearance` of the plate are
-correctly skipped):
+Preview (object grey, tree supports orange; iso + bottom view — slim
+branches converge into a handful of trunk feet, so the build plate stays
+mostly clear):
 
 ![pillars preview](t3-prism-pr35-pillars-preview.png)
 
 Rotating preview (360° azimuth sweep, same scene; lets you verify every
-pillar tip actually lands on the part underside from every angle without
+branch tip actually lands on the part underside from every angle without
 opening the STL in a 3-D viewer). Regenerate with
 [`render_pillars_gif.py`](render_pillars_gif.py):
 
 ![pillars rotating](t3-prism-pr35-pillars-rotating.gif)
 
-Why these defaults? `--base_d 5.0` is wide enough that a single pillar
-sticks to the plate on its own (no brim needed under it) and lifts
-fewer than ~10 mm vertically without buckling on PLA. `--tip_d 0.6` is
-1.5 × the H2D's 0.4 mm nozzle width — narrow enough that the pillar
-snaps off cleanly under thumb pressure at the fused junction, wide
-enough that the slicer still emits an extrusion there (an 0.4 mm tip
-would slice as a single-line bead and disappear under tolerance).
-`--spacing 4.0` mm gives roughly one pillar per nozzle-width across
-the projected footprint of each member without adding noticeable print
-time. `--min_clearance 1.5` mm filters out the three bottom-triangle
-cables that already sit on the plate (so we don't drop a pillar of
-near-zero height under them) while still covering everything that's
-genuinely overhanging. Override any of these on the CLI if your
-geometry needs different breakaway behaviour:
-`generate_support_pillars.py --help`.
+Why these defaults? `--tip_d 0.6` is 1.5 × the H2D's 0.4 mm nozzle
+width — narrow enough that the contact snaps off cleanly under thumb
+pressure, wide enough that the slicer still emits an extrusion there (an
+0.4 mm tip would slice as a single-line bead and disappear under
+tolerance). `--branch_d 1.8` keeps the branches thin enough that the
+slicer prints them as walls only (no dense infill, so they break away
+in one piece and waste little filament). `--trunk_d 5.0` caps how wide
+a foot grows as branches merge — wide enough to stick to the plate
+without a brim, narrow enough to peel. `--merge_radius 22` controls how
+aggressively nearby tips merge: larger = fewer feet but longer (more
+horizontal) branches; smaller = more feet, shorter branches.
+`--spacing 4.0` mm gives roughly one tip per nozzle-width across the
+projected footprint of each member. `--min_clearance 7.0` mm skips
+anything within 7 mm of the plate — both the three bottom-triangle
+cables that already sit on the bed and the short bottom-vertex stubs the
+reviewer found annoying, while still covering everything that genuinely
+overhangs. Override any of these on the CLI if your geometry needs
+different breakaway behaviour: `generate_support_pillars.py --help`.
 
 ## Why θ = 10°? — TPU-safe strut-bottom coverage (partial fix)
 
@@ -529,12 +548,12 @@ gh -R vertical-cloud-lab/BambuStudio run download <RUN_ID> -D /tmp/bambu/extract
 sudo apt-get install -y xvfb libsoup-3.0-0 libwebkit2gtk-4.1-0 \
     libgstreamer1.0-0 libgstreamer-plugins-base1.0-0
 
-# 3. Generate the narrowing pillars from the actual printable mesh
-#    (same step as in §"Path (d)" above — the pillars are PLA either way):
+# 3. Generate the tree-style supports from the actual printable mesh
+#    (same step as in §"Path (d)" above — the supports are PLA either way):
 python3 cad/print-supports/generate_support_pillars.py \
-    --stl /tmp/t3-prism.stl \
-    --spacing 4.0 --min_clearance 1.5 \
-    --base_d 5.0 --tip_d 0.6 --tip_overshoot 0.3 --facets 12 \
+    --stl /tmp/t3-prism.stl --tree \
+    --spacing 4.0 --min_clearance 7.0 --merge_radius 22 \
+    --tip_d 0.6 --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
     --out cad/print-supports/verification/t3-prism-pr35-pillars.stl
 
 # 4. Slice. The driver builds the 3-part 3MF, invokes the patched CLI
