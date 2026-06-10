@@ -518,9 +518,13 @@ def build_support_tree(tips: list[tuple[float, float, float]], *,
         a, b = active[i], active[j]
         pxy = 0.5 * (a.xy + b.xy)
         # parent low enough that each branch stays within the angle budget
-        za = a.z - float(np.linalg.norm(a.xy - pxy)) / tan_a if tan_a > 0 else base_z
-        zb = b.z - float(np.linalg.norm(b.xy - pxy)) / tan_a if tan_a > 0 else base_z
-        pz = min(za, zb, a.z, b.z) - 1e-6
+
+        def join_z(node: _TreeNode) -> float:
+            if tan_a <= 0:
+                return base_z
+            return node.z - float(np.linalg.norm(node.xy - pxy)) / tan_a
+
+        pz = min(join_z(a), join_z(b), a.z, b.z) - 1e-6
         grounded = False
         if pz <= base_z:
             pz = base_z
@@ -594,8 +598,11 @@ def tree_from_tips(tips: list[tuple[float, float, float]], *,
     # every vertex to ``base_z`` so no support geometry prints below the
     # build plate (the resulting flat-on-plate foot is exactly what we
     # want anyway).
-    clamped = [tuple(np.array([v[0], v[1], max(float(v[2]), base_z)])
-                     for v in tri) for tri in tris]
+    def clamp_tri(tri: tuple[np.ndarray, ...]) -> tuple[np.ndarray, ...]:
+        return tuple(np.array([v[0], v[1], max(float(v[2]), base_z)])
+                     for v in tri)
+
+    clamped = [clamp_tri(tri) for tri in tris]
     return clamped, len(tips), feet
 
 
