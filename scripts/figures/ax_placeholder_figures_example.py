@@ -135,11 +135,21 @@ def _watermark(ax):
             fontweight="bold")
 
 
+def _adapter(client):
+    """Fitted BoTorch model from the campaign.
+
+    NOTE: ``Client._generation_strategy`` is a private accessor; the new Ax API
+    does not yet expose a public one for the underlying adapter. Centralized here
+    so the internal-API dependency lives in a single place.
+    """
+    return client._generation_strategy.adapter
+
+
 # ---------------------------------------------------------------------------
 # (1) Leave-one-out cross-validation of the GP surrogate.
 # ---------------------------------------------------------------------------
 def fig_loocv(client) -> str:
-    adapter = client._generation_strategy.adapter  # fitted BoTorch model
+    adapter = _adapter(client)  # fitted BoTorch model
     cv = CV.cross_validate(adapter)
     metrics = [("SEA", "SEA  [J g$^{-1}$]"), ("peak_force", "peak force  [N]")]
 
@@ -180,7 +190,7 @@ def fig_loocv(client) -> str:
 # (2) Parameter-sensitivity ranking (model length-scale based importances).
 # ---------------------------------------------------------------------------
 def fig_sensitivity(client) -> str:
-    adapter = client._generation_strategy.adapter
+    adapter = _adapter(client)
     metrics = ["SEA", "peak_force"]
     params = list(PARAM_LABELS.keys())
     imp = {m: adapter.feature_importances(m) for m in metrics}
