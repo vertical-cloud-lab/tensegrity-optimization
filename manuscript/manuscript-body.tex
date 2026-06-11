@@ -32,6 +32,10 @@
 % asmejour already loads: graphicx, hyperref, natbib, amsmath, amssymb,
 % xcolor, booktabs, subcaption, caption, lineno, etc. Avoid re-loading those.
 \usepackage{siunitx}
+% tikz for measurement callouts overlaid on the printed-prototype photograph
+% (Fig.~\ref{fig:printed-prototypes}); asmejour already loads graphicx/xcolor.
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 % todonotes for in-margin TODO/figure-placeholder markers; toggled by the
 % wrapper file (\TODOOPTS = "disable" hides everything; "" shows all).
 \usepackage[\TODOOPTS,colorinlistoftodos,textsize=footnotesize]{todonotes}
@@ -436,7 +440,9 @@ while leaving room to relax to per-member diameters once the
 saddle/top/bottom orbits have been individually
 characterized.\todo{Cite the heterogeneous-parameters Edison
 LITERATURE\_HIGH brief (\texttt{5191cf4d}) on D3-symmetric vs.\
-fully-per-member parameterization.}
+fully-per-member parameterization.} Figure~\ref{fig:printed-prototypes}
+shows the parametric CAD model alongside an as-printed prototype of this
+working $T_3$ prism.
 
 \begin{table}[ht]
   \centering
@@ -465,18 +471,55 @@ fully-per-member parameterization.}
   for the working prototype, and add manufacturing-feasibility constraints and
   the categorical-encoding scheme for the connectivity-topology variable.}
 
-\figplaceholder{printed-prototypes}{Two printed $T_3$-prism prototypes with
-  callouts labeling the design variables of Table~\ref{tab:design-vars}
-  (strut diameter $d_s$, cable diameter $d_t$, base radius $R$, height $H$,
-  and twist angle $\theta$); pairs with the design-variable table.
-  \emph{Use actual printed-specimen photographs from the PR~\#35 print
-  history.}}
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[b]{0.42\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{../figures/photos/cad-render.png}
+    \label{fig:proto-cad}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.54\linewidth}
+    \centering
+    \begin{tikzpicture}
+      \node[anchor=south west,inner sep=0] (ph)
+        {\includegraphics[width=\linewidth]{../figures/photos/printed-specimen.jpg}};
+      \begin{scope}[x={(ph.south east)},y={(ph.north west)},
+                    font=\sffamily\scriptsize]
+        \tikzset{callout/.style={-{Latex[length=1.5mm]},line width=0.5pt,
+                                 draw=red!75!black}}
+        \tikzset{lab/.style={fill=white,fill opacity=0.85,text opacity=1,
+                             inner sep=1pt,rounded corners=1pt}}
+        \draw[callout] (0.74,0.95) node[lab,anchor=south]{$d_s$}
+          -- (0.63,0.52);
+        \draw[callout] (0.22,0.96) node[lab,anchor=south]{$d_t$}
+          -- (0.34,0.70);
+        \draw[{Latex[length=1.5mm]}-{Latex[length=1.5mm]},line width=0.5pt]
+          (0.05,0.23) -- (0.05,0.85) node[lab,midway]{$H$};
+      \end{scope}
+    \end{tikzpicture}
+    \label{fig:proto-print}
+  \end{subfigure}
+  \caption{Working $T_3$-prism prototype. \emph{(a)} Parametric OpenSCAD model
+    whose base radius $R$, cell height $H$, twist angle $\theta$, strut diameter
+    $d_s$, and cable diameter $d_t$ are the design variables of
+    Table~\ref{tab:design-vars}. \emph{(b)} A representative dual-material print
+    from the PR~\#35 print history (rigid PLA struts, here in white; tendon
+    members in orange), with callouts marking the strut diameter $d_s$, a tendon
+    (cable) diameter $d_t$, and the cell height $H$; the inter-plate twist
+    $\theta$ is the relative rotation of the top and bottom node triangles, and
+    the base radius $R$ sets their circumradius.}
+  \label{fig:printed-prototypes}
+\end{figure}
 
 \subsection{Multi-Material Fabrication}
 \label{sec:methods:fabrication}
 
 Specimens are fabricated on a multi-material FDM printer using PLA for
-the rigid struts and TPU for the soft tension elements. Rather than
+the rigid struts and TPU for the soft tension elements.
+Figure~\ref{fig:fab-workflow} summarizes the end-to-end fabrication and
+characterization workflow, from parametric CAD through multi-material
+slicing, dual-extrusion printing, post-processing, and mechanical
+testing. Rather than
 wrapping the struts in a continuous TPU skin, the current design anchors
 the TPU tension elements \emph{inside} the ends of each PLA strut: the
 cables converging at a given strut end are joined within the strut,
@@ -551,12 +594,14 @@ Full workflow details are provided in the Supplementary Information.
     tensegrity-inspired unit cells: design parameters drive parametric CAD,
     slicing with manually generated TPU supports, a single multi-material
     print on the Bambu Lab~H2D, post-processing and inspection, and
-    mechanical testing.}
+    mechanical testing. Node photographs are representative artifacts drawn
+    from the project's build history: the OpenSCAD $T_3$-prism render
+    (CAD), the dual-nozzle Bambu Studio slice with PLA on the left extruder
+    and TPU on the right (slicing), an in-progress H2D print of the prism
+    batch (FFF), an as-printed specimen (post-processing), and the
+    bungee-assisted drop-tower base plate with accelerometer (testing).}
   \label{fig:fab-workflow}
 \end{figure*}%
-\todo{Populate each node of this workflow diagram with a representative
-  cropped photograph (CAD render, sliced preview, printed specimen, test
-  fixture) and send to Edison ANALYSIS for feedback, per review.}
 
 \subsection{Experimental Characterization}
 \label{sec:methods:testing}
@@ -595,7 +640,10 @@ et~al.\ 2005; Michailidis et~al.\ 2011.}
 et~al.~\cite{pajunen2019design},
 specimens are subjected to drop-weight impact tests with instrumented
 load cells; we report the peak transmitted force and the energy-absorption
-plateau characteristics. The primary fixture is a bungee-assisted
+plateau characteristics. Figure~\ref{fig:dropcurve} illustrates the
+mechanism-oriented presentation we adopt for these processed deceleration
+traces, linking features of the measured signal to the structural events that
+produce them. The primary fixture is a bungee-assisted
 laboratory drop tower in which the base accelerates downward faster
 than~$1g$; because unconstrained specimens lift off the base during
 descent by design of the rig, the protocol constrains the specimen
@@ -613,6 +661,24 @@ the specimen--floor interface---governed by the tip geometry rather
 than the internal lattice---follow the test methodology of ISO
 11334-4~\citep{iso11334-4} for walking-aid tips and are out of scope
 for the present axial-impact study.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{../figures/examples/mechanistic-data-figure-example.pdf}
+  \caption{\emph{Illustrative example (synthetic data).} Template for the
+    mechanism-oriented drop-test figures planned for the Results: (a) processed
+    deceleration response of a rigid control vs.\ a tensegrity specimen
+    (SAE~J211 CFC-180 filtered), with event-based phase shading and numbered
+    markers keyed to the schematic frames (b)--(d); (a2) cumulative-impulse
+    subpanel showing the two traces transfer the same mass-normalized $\Delta v$,
+    so the lower tensegrity peak reflects temporal redistribution rather than
+    inconsistent loading; (e) the internal-anchor joint load path. Curves are
+    synthetic and impulse-consistent (control anchored to the documented
+    $\sim$1792\,G CFC-180 peak; tensegrity shoulder scaled to the same impulse),
+    pending real high-rate channels and camera frames. Generated by
+    \texttt{scripts/figures/mechanistic\_data\_figure\_example.py}.}
+  \label{fig:dropcurve}
+\end{figure*}
 
 \paragraph{Per-modality objectives.} Five complementary data streams
 (triaxial accelerometer, high-speed video, shaker transfer function,
@@ -675,16 +741,38 @@ regime.\todo{Cite the BO scaffolding (PR~\#30), the T3-prism Sobol
 batch (PR~\#35), and the heterogeneous-parameter Edison brief
 (\texttt{5191cf4d}) once those branches land in \texttt{main}.}
 
+Once the campaign produces model data, the fitted surrogate is audited
+with the leave-one-out cross-validation and parameter-sensitivity
+diagnostics of Figs.~\ref{fig:loocv} and~\ref{fig:sensitivity}.
 \todo[inline]{The previous BO-loop schematic here was redundant with the
   overview figure (Fig.~\ref{fig:overview}); per review it is replaced with
-  surrogate-diagnostic figures (leave-one-out cross-validation and parameter
-  sensitivity), to be populated once the BO campaign produces model data.}
-\figplaceholder{loocv}{Leave-one-out cross-validation of the Gaussian-process
-  surrogate (predicted vs.\ measured SEA and peak transmitted force), once
-  campaign data are available.}
-\figplaceholder{sensitivity}{Parameter-sensitivity ranking (e.g., SAASBO
-  inverse length-scales or Sobol indices) of the design variables in
-  Table~\ref{tab:design-vars}.}
+  surrogate-diagnostic figures. Figs.~\ref{fig:loocv}--\ref{fig:pareto} are
+  currently \emph{illustrative examples} produced by a real Ax/BoTorch loop on
+  synthetic objective values
+  (\texttt{scripts/figures/ax\_placeholder\_figures\_example.py}); replace the
+  synthetic \texttt{evaluate()} with measured outcomes once the campaign runs.}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-loocv-example.pdf}
+  \caption{\emph{Illustrative example (synthetic data).} Leave-one-out
+    cross-validation of the Gaussian-process surrogate---predicted vs.\ observed
+    specific energy absorption (SEA) and peak transmitted force, with model
+    error bars and $R^2_{\mathrm{LOO}}$---obtained from a real Ax/BoTorch run on
+    synthetic objective values. To be regenerated from campaign data.}
+  \label{fig:loocv}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-sensitivity-example.pdf}
+  \caption{\emph{Illustrative example (synthetic data).} Parameter-sensitivity
+    ranking (model length-scale--based importances per objective; cf.\ SAASBO
+    inverse length-scales or Sobol indices) of the design variables in
+    Table~\ref{tab:design-vars}, from the same Ax/BoTorch run as
+    Fig.~\ref{fig:loocv}.}
+  \label{fig:sensitivity}
+\end{figure}
 
 % =============================================================================
 \section{Results}
@@ -698,15 +786,33 @@ experimental campaign produces data. Suggested subsections follow.}
 \todo{Plot best-so-far performance vs.\ number of physical experiments
 for each acquisition function, with confidence intervals over random
 seeds.}
-\figplaceholder{convergence}{Best-so-far SEA (and Pareto hypervolume
-  for the multi-objective runs) vs.\ number of physical experiments,
-  averaged over random seeds; baselines: LHS and random search.}
+Figure~\ref{fig:convergence} illustrates the intended convergence
+comparison.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-convergence-example.pdf}
+  \caption{\emph{Illustrative example (synthetic data).} Best-so-far SEA vs.\
+    number of physical experiments for the Ax/BoTorch loop against an
+    independent random-search baseline; the shaded region is the $n=9$ Sobol
+    initialization. Generated on synthetic objective values; to be replaced with
+    campaign results (with confidence intervals over random seeds, and Pareto
+    hypervolume for the multi-objective runs).}
+  \label{fig:convergence}
+\end{figure}
 
 \subsection{Pareto-Optimal Designs}
 \todo{Show 3--5 representative geometries from along the Pareto front
 trading SEA against peak transmitted force.}
-\figplaceholder{pareto}{Pareto front in (peak transmitted force, SEA)
-  space; representative geometries annotated.}
+Figure~\ref{fig:pareto} shows the form the Pareto-front presentation will take.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-pareto-example.pdf}
+  \caption{\emph{Illustrative example (synthetic data).} Pareto front in
+    (peak transmitted force, SEA) space with all evaluated designs, from the
+    Ax/BoTorch loop on synthetic objective values; representative geometries to
+    be annotated once campaign data are available.}
+  \label{fig:pareto}
+\end{figure}
 
 \subsection{Reproducibility Across Print Replicates}
 \todo{Report between-print variability (CV) for top-ranked designs;

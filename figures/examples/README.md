@@ -1,14 +1,28 @@
-# Example figures (mock-ups, not manuscript content)
+# Example figures (illustrative mock-ups)
 
-Standalone illustrative figures explored as side-tasks. They are **not** wired into
-the manuscript build and use **synthetic** data unless stated otherwise.
+Standalone illustrative figures explored as side-tasks. They use **synthetic**
+data unless stated otherwise. They are now **wired into the manuscript** as
+clearly-watermarked illustrative placeholders for the figure slots that have no
+experimental data yet (see the mapping below); each is captioned in the
+manuscript as an "Illustrative example (synthetic data)" so the placeholder
+status is unambiguous. Replace the synthetic generators with real processed
+data before any of these is presented as a result.
+
+| manuscript figure / slot       | example file                       |
+|---------------------------------|------------------------------------|
+| `fig:dropcurve` (§3.3)          | `mechanistic-data-figure-example`  |
+| `fig:loocv`                     | `ax-loocv-example`                 |
+| `fig:sensitivity`               | `ax-sensitivity-example`           |
+| `fig:convergence`               | `ax-convergence-example`           |
+| `fig:pareto`                    | `ax-pareto-example`                |
 
 ## `mechanistic-data-figure-example.{png,pdf}`
 
-A worked example (PR review comment 4664748222) of the kind of *mechanism-oriented*
-data figure the manuscript currently lacks: processed drop-test deceleration curves
-annotated with callouts that link the measured signal to the specific structural
-features being exercised. Intended as a template/discussion piece, not a result.
+A worked example (PR review comment 4664748222) of a *mechanism-oriented*
+data figure that links the measured drop-test signal to the specific structural
+features being exercised: processed drop-test deceleration curves
+annotated with callouts that tie the measured signal to those features.
+Intended as a template/discussion piece, not a result.
 Revised per Edison ANALYSIS feedback (task `e0c4e062-15c7-4a62-b931-1746211fe8b1`,
 folded back via PR comment 4664958219).
 
@@ -47,9 +61,10 @@ python scripts/figures/mechanistic_data_figure_example.py
 
 ## `ax-{loocv,sensitivity,convergence,pareto}-example.{png,pdf}`
 
-Drop-in example fills (PR review comment 4673509625) for the four **empty**
-data-figure slots in `manuscript/manuscript-body.tex` that are currently rendered
-as blank boxes via `\figplaceholder`:
+Drop-in example fills (PR review comment 4673509625) for the four
+data-figure slots in `manuscript/manuscript-body.tex` that have no experimental
+data yet (formerly blank `\figplaceholder` boxes, now wired in as illustrative
+examples):
 
 | slot (`\label`)     | example file                  | shows |
 |---------------------|-------------------------------|-------|

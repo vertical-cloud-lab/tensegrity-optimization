@@ -1,36 +1,54 @@
 \documentclass[tikz,border=4pt]{standalone}
 \usepackage{tikz}
+\usepackage{graphicx}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+
+% Helper: a cropped representative photograph sized to sit at the top of a
+% workflow node. Photographs are extracted from the project's GitHub issue /
+% PR comment history (see photos/README.md for provenance).
+\newcommand{\nodephoto}[1]{%
+  \includegraphics[width=40mm,height=20mm,keepaspectratio]{photos/#1}}
 
 \begin{document}
 \begin{tikzpicture}[
   font=\sffamily\small,
-  node distance=14mm and 10mm,
+  node distance=12mm and 9mm,
   stage/.style={
     rectangle,
     rounded corners=3pt,
     draw=#1!75!black,
     fill=#1!18,
     line width=0.8pt,
-    minimum height=24mm,
+    minimum height=34mm,
     text width=43mm,
     align=center,
-    inner sep=5pt
+    inner sep=4pt
   },
   arrow/.style={-{Latex[length=2.8mm]}, line width=1.0pt, draw=gray!80},
   looparrow/.style={-{Latex[length=2.6mm]}, dashed, line width=0.8pt, draw=gray!70}
 ]
   \node[stage=blue] (params) {\textbf{Parametric Design}\\[2pt]
-    {\footnotesize $R$, $H$, twist, $d_s$, $d_t$}};
-  \node[stage=teal, right=of params] (cad) {\textbf{CAD Generation}\\[2pt]
+    {\footnotesize $R$, $H$, twist, $d_s$, $d_t$}\\[2pt]
+    {\footnotesize chosen by the BO loop}};
+  \node[stage=teal, right=of params] (cad) {%
+    \nodephoto{cad-render.png}\\[2pt]
+    \textbf{CAD Generation}\\[1pt]
     {\footnotesize OpenSCAD T3-prism geometry}};
-  \node[stage=orange, right=of cad] (slicing) {\textbf{Multi-Material Slicing}\\[2pt]
+  \node[stage=orange, right=of cad] (slicing) {%
+    \nodephoto{multimaterial-slice.png}\\[2pt]
+    \textbf{Multi-Material Slicing}\\[1pt]
     {\footnotesize PLA + TPU, support generation}};
-  \node[stage=purple, below=of params] (print) {\textbf{Dual-Extrusion FFF}\\[2pt]
+  \node[stage=purple, below=of params] (print) {%
+    \nodephoto{printing-in-progress.jpg}\\[2pt]
+    \textbf{Dual-Extrusion FFF}\\[1pt]
     {\footnotesize Bambu Lab H2D; TPU drying}};
-  \node[stage=green, right=of print] (post) {\textbf{Post-Processing \& Pretensioning}\\[2pt]
+  \node[stage=green, right=of print] (post) {%
+    \nodephoto{printed-specimen.jpg}\\[2pt]
+    \textbf{Post-Processing \& Pretensioning}\\[1pt]
     {\footnotesize support removal, tension tuning}};
-  \node[stage=red, right=of post] (testing) {\textbf{Dynamic \& Static Testing}\\[2pt]
+  \node[stage=red, right=of post] (testing) {%
+    \nodephoto{drop-tower.jpg}\\[2pt]
+    \textbf{Dynamic \& Static Testing}\\[1pt]
     {\footnotesize quasi-static compression; Lansmont M23 shock/cushion impact}};
 
   \draw[arrow] (params) -- (cad);
