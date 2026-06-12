@@ -70,6 +70,95 @@ def _world_anchor(body_id: int, local_offset: np.ndarray) -> np.ndarray:
     return np.asarray(pos) + R @ local_offset
 
 
+def run_param(radius: float = 0.10, height: float = 0.20,
+              strut_radius: float = 0.006, cable_k: float = 8.0e3,
+              cable_c: float = 5.0, density: float = 1240.0,
+              drop_height: float = 0.05, duration: float = 0.20,
+              dt: float = 5.0e-4) -> dict:
+    """Parameterized bare-prism drop returning summary stats (no files).
+
+    Used by :mod:`sobol_t3_campaign` to run PR #35 T3-prism geometry
+    variations through PyBullet as a second rigid-strut (Tier-C) engine,
+    independent of the MuJoCo implementation.  Geometry (cell radius/height,
+    strut Ø) and tendon stiffness (``cable_k = E·A/L`` from the cable Ø) are
+    passed through; the bare cell is dropped ``drop_height`` onto the plane.
+
+    Returns ``{"settled_com_z", "peak_ke_J", "peak_g", "total_mass_kg"}``.
+    Peak g is the peak |vertical COM acceleration| / 9.81 over the run.
+    """
+    p.connect(p.DIRECT)
+    p.setAdditionalSearchPath(pybullet_data.getDataPath())
+    p.setGravity(0, 0, -9.81)
+    p.setTimeStep(dt)
+    p.loadURDF("plane.urdf")
+
+    nodes = tprism_nodes(radius=radius, height=height, z0=drop_height)
+
+    strut_bodies: list[int] = []
+    local_anchors: list[tuple[np.ndarray, np.ndarray]] = []
+    for a, b in STRUTS:
+        bid, _ = _make_strut(nodes[a], nodes[b],
+                             radius=strut_radius, density=density)
+        strut_bodies.append(bid)
+        center = 0.5 * (nodes[a] + nodes[b])
+        _, orn = p.getBasePositionAndOrientation(bid)
+        R = np.array(p.getMatrixFromQuaternion(orn)).reshape(3, 3)
+        loc_a = R.T @ (nodes[a] - center)
+        loc_b = R.T @ (nodes[b] - center)
+        local_anchors.append((loc_a, loc_b))
+
+    node_anchor: dict[int, tuple[int, np.ndarray]] = {}
+    for s_idx, (a, b) in enumerate(STRUTS):
+        node_anchor[a] = (strut_bodies[s_idx], local_anchors[s_idx][0])
+        node_anchor[b] = (strut_bodies[s_idx], local_anchors[s_idx][1])
+
+    cable_rest = [float(np.linalg.norm(nodes[a] - nodes[b])) for a, b in CABLES]
+
+    masses = np.asarray([p.getDynamicsInfo(bid, -1)[0] for bid in strut_bodies])
+    total_mass = float(masses.sum())
+
+    nsteps = int(duration / dt)
+    com_z = np.zeros(nsteps)
+    com_vz = np.zeros(nsteps)
+    ke = np.zeros(nsteps)
+    for k in range(nsteps):
+        for (a, b), L0 in zip(CABLES, cable_rest):
+            ba, oa = node_anchor[a]
+            bb, ob = node_anchor[b]
+            wa = _world_anchor(ba, oa)
+            wb = _world_anchor(bb, ob)
+            d = wb - wa
+            L = float(np.linalg.norm(d))
+            if L < 1e-9:
+                continue
+            n = d / L
+            stretch = max(0.0, L - L0)
+            va = np.asarray(p.getBaseVelocity(ba)[0])
+            vb = np.asarray(p.getBaseVelocity(bb)[0])
+            vrel = float(np.dot(vb - va, n))
+            f_mag = max(0.0, cable_k * stretch + cable_c * vrel)
+            f_vec = f_mag * n
+            p.applyExternalForce(ba, -1, f_vec.tolist(), wa.tolist(), p.WORLD_FRAME)
+            p.applyExternalForce(bb, -1, (-f_vec).tolist(), wb.tolist(), p.WORLD_FRAME)
+        p.stepSimulation()
+        zs = np.array([p.getBasePositionAndOrientation(b)[0][2]
+                       for b in strut_bodies])
+        com_z[k] = float(np.dot(masses, zs) / total_mass)
+        vzs = np.array([p.getBaseVelocity(b)[0][2] for b in strut_bodies])
+        com_vz[k] = float(np.dot(masses, vzs) / total_mass)
+        vels = np.array([p.getBaseVelocity(b)[0] for b in strut_bodies])
+        ke[k] = float(np.sum(0.5 * masses * np.linalg.norm(vels, axis=1) ** 2))
+    p.disconnect()
+
+    com_az = np.concatenate([[0.0], np.diff(com_vz) / dt]) if nsteps > 1 else np.zeros(1)
+    return {
+        "settled_com_z": float(np.mean(com_z[-40:])),
+        "peak_ke_J": float(ke.max()) if nsteps else float("nan"),
+        "peak_g": float(np.max(np.abs(com_az)) / 9.81) if nsteps else float("nan"),
+        "total_mass_kg": total_mass,
+    }
+
+
 def run(duration: float = 1.5, dt: float = 1.0e-3):
     p.connect(p.DIRECT)
     p.setAdditionalSearchPath(pybullet_data.getDataPath())

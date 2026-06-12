@@ -46,7 +46,7 @@ simulations/
 ├── printable_design.py   # PLA strut + TPU 85A tendon material model + class-1 check
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 ├── bo_evaluator.py       # PR #30/#35 parameterization -> Tier-C objective bridge
-├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> Tier-C (MuJoCo) + Tier-B (Newton) + analysis
+├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> C→B→A ladder (MuJoCo/PyBullet/PyChrono + Newton + PolyFEM) + analysis
 ├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
 ├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
 ├── render_regimes.py     # 3D GIF/MP4 of both regime drops (suspended payload)
@@ -81,9 +81,14 @@ python simulations/run_regimes.py     # both application regimes, MuJoCo
 python simulations/printable_sweep.py # PLA/TPU printable-design sweep, MuJoCo
 
 # PR #35 T3-prism Sobol batch through the simulators + analysis
-#   Tier-C (MuJoCo) for all N designs, Tier-B (Newton) for a subset.
-python simulations/sobol_t3_campaign.py --n 512 --n-tierb 32
-# -> outputs/sobol_t3_{tierC,tierB}.csv, sobol_t3_{pareto,sensitivity,tierC_vs_tierB}.png
+#   Full C→B→A ladder on PR #35 T3-prism Sobol variations:
+#   Tier-C MuJoCo (all N) + PyBullet + PyChrono (rigid cross-engines),
+#   Tier-B Newton/Warp XPBD, Tier-A PolyFEM+IPC (welded PLA/TPU prism).
+#   PyChrono needs PYCHRONO_PYTHON; PolyFEM needs POLYFEM_BIN/POLYFEM_DATA_DIR.
+python simulations/sobol_t3_campaign.py --n 512 --n-tierb 24 \
+    --n-tiera 8 --n-pybullet 32 --n-pychrono 16
+# -> outputs/sobol_t3_{tierC,tierB,tierA,pybullet,pychrono}.csv
+# -> outputs/sobol_t3_{pareto,sensitivity,tierC_vs_tierB,engine_ladder,tierA}.png
 # -> sobol_t3_analysis.md  (results & interpretation)
 
 # PyChrono (conda Python; install per table above)

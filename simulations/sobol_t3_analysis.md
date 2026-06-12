@@ -21,9 +21,14 @@ Each design was scored at **Tier-C (MuJoCo rigid-strut + tendon-spring)** via
 objectives `F_peak_N` (peak transmitted force, minimise), `SEA_J_per_g`
 (specific energy absorbed, maximise) and `eta` (compaction efficiency,
 maximise).  Objectives are SAE J211 CFC-180 filtered to match the drop-tower
-accelerometer pipeline (PR #74).  A 32-point subset was additionally run
-at **Tier-B (Newton/Warp XPBD)** with deformable struts and TPU tendons
-explicitly in the load path as a cross-fidelity ranking check.
+accelerometer pipeline (PR #74).  Higher-fidelity subsets were additionally
+run across the full ladder — **Tier-C PyBullet** (32
+designs) and **Tier-C PyChrono** (16 designs) as
+independent rigid-strut engines, **Tier-B Newton/Warp XPBD** (24
+designs) with deformable struts and TPU tendons in the load path, and
+**Tier-A PolyFEM+IPC** (8 designs) as welded hyperelastic
+PLA-strut + TPU-tendon meshes with IPC barrier contact — as cross-fidelity
+ranking checks.
 
 PR #35 generates this Sobol set with Ax's Sobol generator; Ax is not installed
 in the simulation environment, so the design set here is drawn with an
@@ -89,17 +94,63 @@ tendon hysteresis are abstracted away at Tier-C), so the sensitivity ranking
 should be re-checked against the Newton/PolyFEM tiers before it is trusted for
 the final design call.
 
-## Cross-fidelity check (Tier-C vs Tier-B)
+## Cross-fidelity check across the C→B→A ladder
 
-Spearman rank correlation between the Tier-C MuJoCo F_peak and the Tier-B
-Newton raw peak over the 32-design subset is
-**ρ = +0.74** (see
-`outputs/sobol_t3_tierC_vs_tierB.png`).  The two engines disagree on absolute
-magnitude by orders of magnitude (Newton's all-particle XPBD peaks are
-numerically inflated and meant only for *ranking*), but a positive rank
-correlation supports using cheap Tier-C as the bulk BO evaluator and reserving
-Tier-B/A for confirming the top candidates — exactly the multi-fidelity ladder
-described in `simulations/bo_integration.md`.
+Each non-MuJoCo engine's peak response is rank-correlated (Spearman) against
+the Tier-C MuJoCo lander `F_peak` over the specimens it ran — the quantitative
+"do the cheap and expensive engines agree on *ranking*?" check that justifies
+the multi-fidelity ladder (see `outputs/sobol_t3_engine_ladder.png` and
+`outputs/sobol_t3_tierC_vs_tierB.png`):
+
+| engine | n | Spearman ρ vs Tier-C MuJoCo F_peak |
+|---|---|---|
+| PyBullet (Tier-C) | 32 | -0.02 |
+| PyChrono (Tier-C) | 14 | +0.70 |
+| Newton XPBD (Tier-B) | 24 | +0.60 |
+| PolyFEM+IPC (Tier-A) | 8 | +0.43 |
+
+Engines exercised this run (all on PR #35 T3-prism Sobol variations):
+
+- **MuJoCo (Tier-C)** — rigid struts + scalar tendon springs, the bulk
+  evaluator scored on **all 512** designs × both regimes.
+- **PyBullet (Tier-C)** — second, independent rigid-strut engine
+  (capsule struts + unilateral Hookean cables), 32
+  designs, as a within-tier cross-engine agreement check.
+- **PyChrono (Tier-C)** — third rigid-strut engine (`ChLinkTSDA` springs,
+  run from the conda Python), 16 designs.
+- **Newton/Warp XPBD (Tier-B)** — deformable struts + TPU tendons explicitly
+  in the load path, 24 designs.
+- **PolyFEM + IPC (Tier-A)** — full hyperelastic volumetric PLA struts welded
+  to TPU-85A tendons (gmsh OCC fragment mesh) with IPC barrier contact,
+  8 designs (see Tier-A section below).
+
+The rigid bare-prism engines (PyBullet / PyChrono) report a contact-dominated
+peak-g that is largely design-invariant, so their rank agreement with the
+MuJoCo payload-model `F_peak` is mixed (PyChrono tracks it positively while
+PyBullet sits near zero — consistent with the Tier-C finding that bare-cell
+peak force is contact- rather than design-limited). Newton and PolyFEM
+disagree on *absolute* magnitude (XPBD peaks are numerically inflated; the
+PolyFEM welded prism settles gently onto its base below the IPC `dhat`
+envelope so its peak g is small) but are run for the deformation/contact
+physics the rigid tiers cannot represent, not for headline g. The positive
+rank correlations (Newton, PyChrono, PolyFEM) support using cheap Tier-C as
+the bulk BO evaluator and reserving Tier-B/A for confirming the top
+candidates — the multi-fidelity ladder described in
+`simulations/bo_integration.md`.
+
+## Tier-A (PolyFEM + IPC) welded T-prism subset
+
+8 PR #35 designs were meshed as welded PLA-strut +
+TPU-85A-tendon T-prisms (`tprism_mesh.build_tprism_msh` consuming `R_mm`,
+`H_mm`, `strut_d_mm`, `cable_d_mm`; twist held at the equilibrium value as at
+Tier-B) and dropped through PolyFEM's IPC barrier contact (`dhat = 5e-5`,
+ImplicitEuler). Settled COM height ranges
+68.2–112.3 mm
+across the subset (see `outputs/sobol_t3_tierA.png`); the strut Ø and cell
+height move the settled posture and the contact response, which is exactly the
+volumetric strut/contact physics Tier-C abstracts away. Runs are dispatched
+two-at-a-time across processes so several PolyFEM solves overlap.
+
 
 ## What this gives the BO campaign
 
@@ -118,8 +169,13 @@ described in `simulations/bo_integration.md`.
 
 ## Files
 
-- `outputs/sobol_t3_tierC.csv` — all 512 designs × both regimes × 3 objectives
-- `outputs/sobol_t3_tierB.csv` — Newton subset peaks
+- `outputs/sobol_t3_tierC.csv` — all 512 designs × both regimes × 3 objectives (MuJoCo)
+- `outputs/sobol_t3_tierB.csv` — Newton/Warp XPBD subset peaks (Tier-B)
+- `outputs/sobol_t3_tierA.csv` — PolyFEM+IPC welded-T-prism subset (Tier-A)
+- `outputs/sobol_t3_pybullet.csv` — PyBullet rigid-strut subset (Tier-C cross-engine)
+- `outputs/sobol_t3_pychrono.csv` — PyChrono rigid-strut subset (Tier-C cross-engine)
 - `outputs/sobol_t3_pareto.png` — F_peak↔SEA↔eta trade-off, both regimes
 - `outputs/sobol_t3_sensitivity.png` — parameter→objective Spearman heatmap
-- `outputs/sobol_t3_tierC_vs_tierB.png` — cross-fidelity ranking scatter
+- `outputs/sobol_t3_tierC_vs_tierB.png` — Tier-C↔Tier-B ranking scatter
+- `outputs/sobol_t3_engine_ladder.png` — cross-engine ranking agreement (C→B→A)
+- `outputs/sobol_t3_tierA.png` — Tier-A PolyFEM settled height + peak g vs geometry

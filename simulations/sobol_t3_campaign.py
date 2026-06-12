@@ -28,11 +28,22 @@ What it does
    matching the drop-tower pipeline).  Tier-C is sub-second per design, so
    this is where "as many Sobol iterations as possible" actually lives.
 
-3. Scores a small subset at **Tier-B (Newton/Warp XPBD)** — deformable
-   struts + TPU tendons explicitly in the load path — as a cross-fidelity
-   ranking check (each run ~4 s warm, so only a handful fit the window).
-   Newton's prism is built at the fixed equilibrium twist, so twist is held
-   at its mean for the tier-B subset.
+3. Scores subsets at the higher-fidelity engines as cross-fidelity ranking
+   checks, spanning the full C→B→A ladder so the campaign is not limited to
+   two methods:
+
+       * **Tier-C (PyBullet)** — second independent rigid-strut engine.
+       * **Tier-C (PyChrono)** — third rigid-strut engine (``ChLinkTSDA``),
+         run from its conda Python via a subprocess.
+       * **Tier-B (Newton/Warp XPBD)** — deformable struts + TPU tendons
+         explicitly in the load path (~4 s warm/design).
+       * **Tier-A (PolyFEM + IPC)** — full hyperelastic volumetric PLA struts
+         welded to TPU-85A tendons (gmsh OCC fragment mesh) with IPC barrier
+         contact, dispatched across processes so several solves overlap.
+
+   Newton, PyBullet, PyChrono and PolyFEM build the prism at the fixed
+   equilibrium twist, so the twist axis is held for those subsets; the other
+   four PR #35 axes (R, H, strut Ø, cable Ø) are passed through.
 
 4. Writes design+objective CSVs and analysis figures into
    ``simulations/outputs/`` and an interpretation report
@@ -40,7 +51,8 @@ What it does
 
 Usage::
 
-    python simulations/sobol_t3_campaign.py --n 128 --n-tierb 16
+    python simulations/sobol_t3_campaign.py --n 512 --n-tierb 32 \
+        --n-tiera 8 --n-pybullet 24 --n-pychrono 12
 """
 from __future__ import annotations
 
@@ -184,6 +196,177 @@ def run_tier_b(designs: list[dict], regime_name: str = "nasa_lander") -> list[di
 
 
 # --------------------------------------------------------------------------
+# Tier-A (PolyFEM + IPC) subset — welded PLA-strut + TPU-tendon T-prism
+# --------------------------------------------------------------------------
+def _tier_a_one(args: tuple) -> dict:
+    """Mesh + run one PolyFEM welded-T-prism drop.  Top-level for pickling."""
+    import numpy as _np
+
+    idx, d = args
+    import polyfem_drop as pf
+    from tprism_mesh import build_tprism_msh
+
+    # Mesh into a directory *separate* from the PolyFEM run work_dir, because
+    # run_drop() wipes its work_dir on entry (which would delete the mesh).
+    mesh_dir = Path(f"/tmp/polyfem_sobol_{idx}_mesh")
+    mesh_dir.mkdir(parents=True, exist_ok=True)
+    msh = mesh_dir / "tprism.msh"
+    work = Path(f"/tmp/polyfem_sobol_{idx}")
+    # tprism_mesh consumes R / H / strut Ø / tendon(cable) Ø.  Twist is built
+    # at the fixed equilibrium twist (same limitation as Tier-B Newton), so the
+    # twist axis is held; the other four PR #35 axes are passed through.
+    info = build_tprism_msh(
+        msh,
+        radius=d["R_mm"] * 1e-3,
+        height=d["H_mm"] * 1e-3,
+        strut_d=d["strut_d_mm"] * 1e-3,
+        tendon_d=d["cable_d_mm"] * 1e-3,
+        # Scale the target element size with the cross-sections so the tet
+        # count (and per-run cost) stays roughly constant across the box
+        # instead of exploding for the larger / fatter designs.
+        lc_strut=max(d["strut_d_mm"] * 1e-3 * 0.5, 0.0015),
+        lc_tendon=max(d["cable_d_mm"] * 1e-3 * 0.6, 0.001),
+    )
+    series = pf.run_drop(work_dir=work, geometry="tprism", prism_msh=msh)
+    ay = series["com_ay"]
+    peak_g = float(_np.max(_np.abs(ay[_np.isfinite(ay)])) / 9.81) if ay.size else float("nan")
+    settled = float(series["com_y"][-1]) if series["com_y"].size else float("nan")
+    return {
+        "specimen": d.get("specimen", idx),
+        **{k: d[k] for k in PARAM_NAMES},
+        "polyfem_settled_com_y_m": settled,
+        "polyfem_peak_g": peak_g,
+        "tets": int(info.get("tets", 0)),
+    }
+
+
+def run_tier_a(designs: list[dict], max_workers: int = 2) -> list[dict]:
+    """Run the PolyFEM+IPC welded T-prism drop over a design subset.
+
+    Each run meshes the welded PLA-strut + TPU-85A-tendon prism (gmsh OCC
+    fragment) and shells out to ``PolyFEM_bin``.  Runs are dispatched across
+    ``max_workers`` processes so several PolyFEM solves overlap (the runner
+    has 4 cores; 2 concurrent solves keep both the mesher and the solver
+    busy without oversubscribing).
+    """
+    from concurrent.futures import ProcessPoolExecutor
+
+    t0 = time.time()
+    rows: list[dict] = []
+    tasks = [(d.get("specimen", i), d) for i, d in enumerate(designs)]
+    with ProcessPoolExecutor(max_workers=max_workers) as ex:
+        for r in ex.map(_tier_a_one, tasks):
+            rows.append(r)
+            print(f"  tier-A {len(rows)}/{len(tasks)}  spec={r['specimen']} "
+                  f"settled_y={r['polyfem_settled_com_y_m']*1e3:.1f} mm "
+                  f"peak_g={r['polyfem_peak_g']:.2f} ({time.time()-t0:.0f} s)")
+    print(f"  tier-A done: {len(rows)} designs in {time.time()-t0:.1f} s")
+    return rows
+
+
+# --------------------------------------------------------------------------
+# Extra rigid-strut (Tier-C) engines for cross-engine agreement
+# --------------------------------------------------------------------------
+def _design_to_rigid_kwargs(d: dict, regime_name: str = "nasa_lander") -> dict:
+    """Map a PR #35 design dict to the parameterized rigid-engine kwargs.
+
+    The TPU-85A tendon stiffness is ``k = E·A/L`` with E = 12 MPa, the cable
+    cross-section from ``cable_d_mm`` and a representative strut-length load
+    path, so PyBullet / PyChrono see the same cable stiffness the MuJoCo
+    Tier-C evaluator derives.
+    """
+    E_tpu = 12.0e6
+    A = math.pi * (d["cable_d_mm"] * 1e-3 / 2.0) ** 2
+    L = math.hypot(d["R_mm"] * 1e-3, d["H_mm"] * 1e-3)
+    cable_k = E_tpu * A / L
+    return {
+        "radius": d["R_mm"] * 1e-3,
+        "height": d["H_mm"] * 1e-3,
+        "strut_radius": d["strut_d_mm"] * 1e-3 / 2.0,
+        "cable_k": cable_k,
+    }
+
+
+def run_pybullet(designs: list[dict]) -> list[dict]:
+    """Run the parameterized PyBullet bare-prism drop over the subset."""
+    import pybullet_drop as pb
+
+    rows = []
+    t0 = time.time()
+    for i, d in enumerate(designs):
+        kw = _design_to_rigid_kwargs(d)
+        res = pb.run_param(**kw)
+        rows.append({
+            "specimen": d.get("specimen", i),
+            **{k: d[k] for k in PARAM_NAMES},
+            "pybullet_peak_g": res["peak_g"],
+            "pybullet_peak_ke_J": res["peak_ke_J"],
+            "pybullet_settled_com_z_m": res["settled_com_z"],
+        })
+        print(f"  pybullet {i+1}/{len(designs)}  peak_g={res['peak_g']:.0f} "
+              f"({time.time()-t0:.0f} s)")
+    print(f"  pybullet done: {len(designs)} designs in {time.time()-t0:.1f} s")
+    return rows
+
+
+def run_pychrono(designs: list[dict],
+                 conda_python: str | None = None) -> list[dict]:
+    """Run the parameterized PyChrono drop via the conda Python subprocess.
+
+    PyChrono lives in a separate conda environment, so we serialise the design
+    subset to JSON, invoke ``pychrono_drop.py --param-json``, and parse the
+    ``@@RESULTS@@`` line back.  Returns ``[]`` (with a warning) if the conda
+    Python or pychrono is unavailable.
+    """
+    import json
+    import shutil
+    import subprocess
+
+    conda_python = conda_python or os.environ.get(
+        "PYCHRONO_PYTHON", "/usr/share/miniconda/envs/chrono/bin/python")
+    if not (conda_python and Path(conda_python).exists()):
+        cp = shutil.which("python")
+        try:
+            subprocess.run([cp, "-c", "import pychrono"], check=True,
+                           capture_output=True)
+            conda_python = cp
+        except Exception:
+            print("  pychrono skipped (no conda python / pychrono not importable)")
+            return []
+
+    payload = []
+    for i, d in enumerate(designs):
+        kw = _design_to_rigid_kwargs(d)
+        kw["specimen"] = d.get("specimen", i)
+        payload.append(kw)
+    t0 = time.time()
+    proc = subprocess.run(
+        [conda_python, str(_HERE / "pychrono_drop.py"), "--param-json"],
+        input=json.dumps(payload), capture_output=True, text=True, timeout=1800)
+    line = next((ln for ln in proc.stdout.splitlines()
+                 if ln.startswith("@@RESULTS@@")), None)
+    if line is None:
+        print(f"  pychrono skipped (no results; stderr tail: "
+              f"{proc.stderr[-200:]!r})")
+        return []
+    results = json.loads(line[len("@@RESULTS@@"):])
+    by_spec = {r["specimen"]: r for r in results}
+    rows = []
+    for i, d in enumerate(designs):
+        spec = d.get("specimen", i)
+        r = by_spec.get(spec, {})
+        rows.append({
+            "specimen": spec,
+            **{k: d[k] for k in PARAM_NAMES},
+            "pychrono_peak_g": r.get("peak_g", float("nan")),
+            "pychrono_peak_ke_J": r.get("peak_ke_J", float("nan")),
+            "pychrono_settled_com_z_m": r.get("settled_com_z", float("nan")),
+        })
+    print(f"  pychrono done: {len(rows)} designs in {time.time()-t0:.1f} s")
+    return rows
+
+
+# --------------------------------------------------------------------------
 # Persistence + analysis
 # --------------------------------------------------------------------------
 def write_csv(rows: list[dict], path: Path) -> None:
@@ -212,8 +395,14 @@ def _pareto_mask(f_peak: np.ndarray, sea: np.ndarray, eta: np.ndarray) -> np.nda
     return keep
 
 
-def analyse(tier_c: list[dict], tier_b: list[dict]) -> dict:
+def analyse(tier_c: list[dict], tier_b: list[dict],
+            tier_a: list[dict] | None = None,
+            pybullet: list[dict] | None = None,
+            pychrono: list[dict] | None = None) -> dict:
     import numpy as np
+    tier_a = tier_a or []
+    pybullet = pybullet or []
+    pychrono = pychrono or []
 
     feas = np.array([r["feasible"] for r in tier_c], dtype=bool)
     P = {k: np.array([r[k] for r in tier_c], dtype=float) for k in PARAM_NAMES}
@@ -314,12 +503,103 @@ def analyse(tier_c: list[dict], tier_b: list[dict]) -> dict:
         stats["tierC_tierB_spearman"] = rho
         stats["n_tierb"] = int(good.sum())
 
+    # --- Multi-engine cross-fidelity ladder -------------------------------
+    # Rank-correlate each non-MuJoCo engine's peak response against the Tier-C
+    # MuJoCo lander F_peak over the specimens that engine ran.  This is the
+    # quantitative "do the cheap and expensive engines agree on ranking?" plot
+    # that justifies the C->B->A ladder.
+    by_id = {r["specimen"]: r for r in tier_c}
+
+    def _engine_rho(rows, col):
+        ids = [r["specimen"] for r in rows if r["specimen"] in by_id]
+        if not ids:
+            return float("nan"), 0
+        ev = np.array([next(x[col] for x in rows if x["specimen"] == sid)
+                       for sid in ids])
+        mc = np.array([by_id[sid]["lander_F_peak_N"] for sid in ids])
+        g = np.isfinite(ev) & np.isfinite(mc)
+        return (spearman(ev[g], mc[g]) if g.sum() > 2 else float("nan")), int(g.sum())
+
+    ladder = []
+    if pybullet:
+        r, n = _engine_rho(pybullet, "pybullet_peak_g")
+        ladder.append(("PyBullet\n(Tier-C)", r, n))
+    if pychrono:
+        r, n = _engine_rho(pychrono, "pychrono_peak_g")
+        ladder.append(("PyChrono\n(Tier-C)", r, n))
+    if tier_b:
+        r, n = _engine_rho(tier_b, "newton_peak_g")
+        ladder.append(("Newton XPBD\n(Tier-B)", r, n))
+    if tier_a:
+        r, n = _engine_rho(tier_a, "polyfem_peak_g")
+        ladder.append(("PolyFEM+IPC\n(Tier-A)", r, n))
+    if ladder:
+        labels = [x[0] for x in ladder]
+        rhos = [x[1] for x in ladder]
+        ns = [x[2] for x in ladder]
+        fig, ax = plt.subplots(figsize=(7.5, 4.5))
+        colors = ["tab:blue", "tab:green", "tab:purple", "tab:red"][:len(ladder)]
+        bars = ax.bar(labels, rhos, color=colors)
+        for b, rr, nn in zip(bars, rhos, ns):
+            ax.text(b.get_x() + b.get_width() / 2,
+                    (rr + 0.03 if rr >= 0 else rr - 0.08),
+                    f"ρ={rr:+.2f}\n(n={nn})", ha="center", fontsize=8)
+        ax.axhline(0, color="k", lw=0.8)
+        ax.set_ylim(-1.05, 1.15)
+        ax.set_ylabel("Spearman ρ vs Tier-C MuJoCo F_peak (lander)")
+        ax.set_title("Cross-engine ranking agreement across the C→B→A ladder")
+        fig.tight_layout()
+        fig.savefig(OUT_DIR / "sobol_t3_engine_ladder.png", dpi=120)
+        plt.close(fig)
+        print("  wrote outputs/sobol_t3_engine_ladder.png")
+        stats["engine_ladder"] = {x[0].replace("\n", " "): {"rho": x[1], "n": x[2]}
+                                  for x in ladder}
+
+    # --- Tier-A (PolyFEM) observables vs geometry -------------------------
+    if tier_a:
+        sd = np.array([r["strut_d_mm"] for r in tier_a])
+        sy = np.array([r["polyfem_settled_com_y_m"] * 1e3 for r in tier_a])
+        pg = np.array([r["polyfem_peak_g"] for r in tier_a])
+        H = np.array([r["H_mm"] for r in tier_a])
+        fig, axs = plt.subplots(1, 2, figsize=(11, 4.4))
+        s0 = axs[0].scatter(sd, sy, c=H, cmap="plasma", s=55)
+        axs[0].set_xlabel("strut Ø  (mm)")
+        axs[0].set_ylabel("PolyFEM settled COM y  (mm)")
+        axs[0].set_title("Tier-A welded T-prism: settled height")
+        fig.colorbar(s0, ax=axs[0], label="H_mm")
+        s1 = axs[1].scatter(sd, pg, c=H, cmap="plasma", s=55)
+        axs[1].set_xlabel("strut Ø  (mm)")
+        axs[1].set_ylabel("PolyFEM peak |COM accel|  (g)")
+        axs[1].set_title("Tier-A welded T-prism: peak deceleration")
+        fig.colorbar(s1, ax=axs[1], label="H_mm")
+        fig.suptitle(f"PR #35 T3-prism Tier-A PolyFEM+IPC subset (n={len(tier_a)})")
+        fig.tight_layout()
+        fig.savefig(OUT_DIR / "sobol_t3_tierA.png", dpi=120)
+        plt.close(fig)
+        print("  wrote outputs/sobol_t3_tierA.png")
+        stats["n_tiera"] = len(tier_a)
+        stats["tiera_settled_min_mm"] = float(np.nanmin(sy))
+        stats["tiera_settled_max_mm"] = float(np.nanmax(sy))
+
+    stats["n_pybullet"] = len(pybullet)
+    stats["n_pychrono"] = len(pychrono)
     return stats
 
 
 def write_report(stats: dict, tier_c: list[dict], n_tierb: int) -> None:
     s = stats
     sens = s.get("sensitivity", {})
+    ladder = s.get("engine_ladder", {})
+
+    def _ladder_rows():
+        order = ["PyBullet (Tier-C)", "PyChrono (Tier-C)",
+                 "Newton XPBD (Tier-B)", "PolyFEM+IPC (Tier-A)"]
+        lines = []
+        for name in order:
+            if name in ladder:
+                e = ladder[name]
+                lines.append(f"| {name} | {e['n']} | {e['rho']:+.2f} |")
+        return "\n".join(lines)
 
     def top_drivers(col):
         d = sens.get(col, {})
@@ -391,9 +671,14 @@ Each design was scored at **Tier-C (MuJoCo rigid-strut + tendon-spring)** via
 objectives `F_peak_N` (peak transmitted force, minimise), `SEA_J_per_g`
 (specific energy absorbed, maximise) and `eta` (compaction efficiency,
 maximise).  Objectives are SAE J211 CFC-180 filtered to match the drop-tower
-accelerometer pipeline (PR #74).  A {n_tierb}-point subset was additionally run
-at **Tier-B (Newton/Warp XPBD)** with deformable struts and TPU tendons
-explicitly in the load path as a cross-fidelity ranking check.
+accelerometer pipeline (PR #74).  Higher-fidelity subsets were additionally
+run across the full ladder — **Tier-C PyBullet** ({s.get('n_pybullet', 0)}
+designs) and **Tier-C PyChrono** ({s.get('n_pychrono', 0)} designs) as
+independent rigid-strut engines, **Tier-B Newton/Warp XPBD** ({s.get('n_tierb', 0)}
+designs) with deformable struts and TPU tendons in the load path, and
+**Tier-A PolyFEM+IPC** ({s.get('n_tiera', 0)} designs) as welded hyperelastic
+PLA-strut + TPU-tendon meshes with IPC barrier contact — as cross-fidelity
+ranking checks.
 
 PR #35 generates this Sobol set with Ax's Sobol generator; Ax is not installed
 in the simulation environment, so the design set here is drawn with an
@@ -459,17 +744,60 @@ tendon hysteresis are abstracted away at Tier-C), so the sensitivity ranking
 should be re-checked against the Newton/PolyFEM tiers before it is trusted for
 the final design call.
 
-## Cross-fidelity check (Tier-C vs Tier-B)
+## Cross-fidelity check across the C→B→A ladder
 
-Spearman rank correlation between the Tier-C MuJoCo F_peak and the Tier-B
-Newton raw peak over the {s.get('n_tierb', 0)}-design subset is
-**ρ = {s.get('tierC_tierB_spearman', float('nan')):+.2f}** (see
-`outputs/sobol_t3_tierC_vs_tierB.png`).  The two engines disagree on absolute
-magnitude by orders of magnitude (Newton's all-particle XPBD peaks are
-numerically inflated and meant only for *ranking*), but a positive rank
-correlation supports using cheap Tier-C as the bulk BO evaluator and reserving
-Tier-B/A for confirming the top candidates — exactly the multi-fidelity ladder
-described in `simulations/bo_integration.md`.
+Each non-MuJoCo engine's peak response is rank-correlated (Spearman) against
+the Tier-C MuJoCo lander `F_peak` over the specimens it ran — the quantitative
+"do the cheap and expensive engines agree on *ranking*?" check that justifies
+the multi-fidelity ladder (see `outputs/sobol_t3_engine_ladder.png` and
+`outputs/sobol_t3_tierC_vs_tierB.png`):
+
+| engine | n | Spearman ρ vs Tier-C MuJoCo F_peak |
+|---|---|---|
+{_ladder_rows()}
+
+Engines exercised this run (all on PR #35 T3-prism Sobol variations):
+
+- **MuJoCo (Tier-C)** — rigid struts + scalar tendon springs, the bulk
+  evaluator scored on **all {s['n']}** designs × both regimes.
+- **PyBullet (Tier-C)** — second, independent rigid-strut engine
+  (capsule struts + unilateral Hookean cables), {s.get('n_pybullet', 0)}
+  designs, as a within-tier cross-engine agreement check.
+- **PyChrono (Tier-C)** — third rigid-strut engine (`ChLinkTSDA` springs,
+  run from the conda Python), {s.get('n_pychrono', 0)} designs.
+- **Newton/Warp XPBD (Tier-B)** — deformable struts + TPU tendons explicitly
+  in the load path, {s.get('n_tierb', 0)} designs.
+- **PolyFEM + IPC (Tier-A)** — full hyperelastic volumetric PLA struts welded
+  to TPU-85A tendons (gmsh OCC fragment mesh) with IPC barrier contact,
+  {s.get('n_tiera', 0)} designs (see Tier-A section below).
+
+The rigid bare-prism engines (PyBullet / PyChrono) report a contact-dominated
+peak-g that is largely design-invariant, so their rank agreement with the
+MuJoCo payload-model `F_peak` is mixed (PyChrono tracks it positively while
+PyBullet sits near zero — consistent with the Tier-C finding that bare-cell
+peak force is contact- rather than design-limited). Newton and PolyFEM
+disagree on *absolute* magnitude (XPBD peaks are numerically inflated; the
+PolyFEM welded prism settles gently onto its base below the IPC `dhat`
+envelope so its peak g is small) but are run for the deformation/contact
+physics the rigid tiers cannot represent, not for headline g. The positive
+rank correlations (Newton, PyChrono, PolyFEM) support using cheap Tier-C as
+the bulk BO evaluator and reserving Tier-B/A for confirming the top
+candidates — the multi-fidelity ladder described in
+`simulations/bo_integration.md`.
+
+## Tier-A (PolyFEM + IPC) welded T-prism subset
+
+{s.get('n_tiera', 0)} PR #35 designs were meshed as welded PLA-strut +
+TPU-85A-tendon T-prisms (`tprism_mesh.build_tprism_msh` consuming `R_mm`,
+`H_mm`, `strut_d_mm`, `cable_d_mm`; twist held at the equilibrium value as at
+Tier-B) and dropped through PolyFEM's IPC barrier contact (`dhat = 5e-5`,
+ImplicitEuler). Settled COM height ranges
+{s.get('tiera_settled_min_mm', float('nan')):.1f}–{s.get('tiera_settled_max_mm', float('nan')):.1f} mm
+across the subset (see `outputs/sobol_t3_tierA.png`); the strut Ø and cell
+height move the settled posture and the contact response, which is exactly the
+volumetric strut/contact physics Tier-C abstracts away. Runs are dispatched
+two-at-a-time across processes so several PolyFEM solves overlap.
+
 
 ## What this gives the BO campaign
 
@@ -488,14 +816,30 @@ described in `simulations/bo_integration.md`.
 
 ## Files
 
-- `outputs/sobol_t3_tierC.csv` — all {s['n']} designs × both regimes × 3 objectives
-- `outputs/sobol_t3_tierB.csv` — Newton subset peaks
+- `outputs/sobol_t3_tierC.csv` — all {s['n']} designs × both regimes × 3 objectives (MuJoCo)
+- `outputs/sobol_t3_tierB.csv` — Newton/Warp XPBD subset peaks (Tier-B)
+- `outputs/sobol_t3_tierA.csv` — PolyFEM+IPC welded-T-prism subset (Tier-A)
+- `outputs/sobol_t3_pybullet.csv` — PyBullet rigid-strut subset (Tier-C cross-engine)
+- `outputs/sobol_t3_pychrono.csv` — PyChrono rigid-strut subset (Tier-C cross-engine)
 - `outputs/sobol_t3_pareto.png` — F_peak↔SEA↔eta trade-off, both regimes
 - `outputs/sobol_t3_sensitivity.png` — parameter→objective Spearman heatmap
-- `outputs/sobol_t3_tierC_vs_tierB.png` — cross-fidelity ranking scatter
+- `outputs/sobol_t3_tierC_vs_tierB.png` — Tier-C↔Tier-B ranking scatter
+- `outputs/sobol_t3_engine_ladder.png` — cross-engine ranking agreement (C→B→A)
+- `outputs/sobol_t3_tierA.png` — Tier-A PolyFEM settled height + peak g vs geometry
 """
     (_HERE / "sobol_t3_analysis.md").write_text(md)
     print("  wrote simulations/sobol_t3_analysis.md")
+
+
+def _subset(designs: list[dict], n: int) -> list[dict]:
+    """Evenly-spaced specimen subset across the Sobol order."""
+    idx = np.linspace(0, len(designs) - 1, n).astype(int)
+    out = []
+    for k in sorted(set(int(i) for i in idx)):
+        d = dict(designs[k])
+        d["specimen"] = k
+        out.append(d)
+    return out
 
 
 def main(argv=None) -> int:
@@ -504,10 +848,20 @@ def main(argv=None) -> int:
                     help="number of Sobol designs to score at Tier-C")
     ap.add_argument("--n-tierb", type=int, default=16,
                     help="Newton Tier-B subset size (0 to skip)")
+    ap.add_argument("--n-tiera", type=int, default=8,
+                    help="PolyFEM+IPC Tier-A subset size (0 to skip)")
+    ap.add_argument("--n-pybullet", type=int, default=24,
+                    help="PyBullet rigid-strut subset size (0 to skip)")
+    ap.add_argument("--n-pychrono", type=int, default=12,
+                    help="PyChrono rigid-strut subset size (0 to skip)")
+    ap.add_argument("--tiera-workers", type=int, default=2,
+                    help="concurrent PolyFEM processes for Tier-A")
     ap.add_argument("--seed", type=int, default=0, help="Sobol seed")
     args = ap.parse_args(argv)
 
-    print(f"== Sobol T3-prism campaign: n={args.n}, n_tierb={args.n_tierb} ==")
+    print(f"== Sobol T3-prism campaign: n={args.n}, n_tierb={args.n_tierb}, "
+          f"n_tiera={args.n_tiera}, n_pybullet={args.n_pybullet}, "
+          f"n_pychrono={args.n_pychrono} ==")
     designs = sobol_designs(args.n, seed=args.seed)
 
     print("Tier-C (MuJoCo) sweep ...")
@@ -516,13 +870,7 @@ def main(argv=None) -> int:
 
     tier_b: list[dict] = []
     if args.n_tierb > 0:
-        # Evenly-spaced subset across the Sobol order for fidelity coverage.
-        idx = np.linspace(0, len(designs) - 1, args.n_tierb).astype(int)
-        subset = []
-        for k in idx:
-            d = dict(designs[int(k)])
-            d["specimen"] = int(k)
-            subset.append(d)
+        subset = _subset(designs, args.n_tierb)
         print(f"Tier-B (Newton) subset of {len(subset)} ...")
         try:
             tier_b = run_tier_b(subset, regime_name="nasa_lander")
@@ -530,8 +878,41 @@ def main(argv=None) -> int:
         except Exception as e:  # pragma: no cover
             print(f"  tier-B skipped ({e!r})")
 
+    pybullet: list[dict] = []
+    if args.n_pybullet > 0:
+        subset = _subset(designs, args.n_pybullet)
+        print(f"PyBullet (Tier-C cross-engine) subset of {len(subset)} ...")
+        try:
+            pybullet = run_pybullet(subset)
+            write_csv(pybullet, OUT_DIR / "sobol_t3_pybullet.csv")
+        except Exception as e:  # pragma: no cover
+            print(f"  pybullet skipped ({e!r})")
+
+    pychrono: list[dict] = []
+    if args.n_pychrono > 0:
+        subset = _subset(designs, args.n_pychrono)
+        print(f"PyChrono (Tier-C cross-engine) subset of {len(subset)} ...")
+        try:
+            pychrono = run_pychrono(subset)
+            if pychrono:
+                write_csv(pychrono, OUT_DIR / "sobol_t3_pychrono.csv")
+        except Exception as e:  # pragma: no cover
+            print(f"  pychrono skipped ({e!r})")
+
+    tier_a: list[dict] = []
+    if args.n_tiera > 0:
+        subset = _subset(designs, args.n_tiera)
+        print(f"Tier-A (PolyFEM+IPC) subset of {len(subset)} ...")
+        try:
+            tier_a = run_tier_a(subset, max_workers=args.tiera_workers)
+            write_csv(tier_a, OUT_DIR / "sobol_t3_tierA.csv")
+        except Exception as e:  # pragma: no cover
+            print(f"  tier-A skipped ({e!r})")
+
+
     print("Analysis ...")
-    stats = analyse(tier_c, tier_b)
+    stats = analyse(tier_c, tier_b, tier_a=tier_a,
+                    pybullet=pybullet, pychrono=pychrono)
     write_report(stats, tier_c, len(tier_b))
     print("Done.")
     return 0
