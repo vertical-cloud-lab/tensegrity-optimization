@@ -773,9 +773,10 @@ so that per-variable sensitivities can be read directly from the fitted
 length scales. Inputs are normalized to the unit cube and outputs are
 standardized; observation noise is \emph{inferred} by the model (a
 learned homoscedastic noise level) rather than fixed a priori. The
-campaign budget is $T = 10$ sequential batches of $q = 5$ prints each
-(50 specimens total), initialized with the $n = 9$ Sobol batch of
-Table~\ref{tab:design-vars}. Random seeds for the Sobol generator and
+campaign budget is an $n = 9$ Sobol initialization batch
+(Table~\ref{tab:design-vars}) followed by $T = 10$ sequential
+optimization batches of $q = 5$ prints each, i.e.\ $9 + 50 = 59$
+specimens in total. Random seeds for the Sobol generator and
 the acquisition optimizer are recorded per batch so that each
 recommendation is reproducible.\todo{Confirm the final budget
 ($T=10$ batches of $q=5$) against printer throughput once the campaign
