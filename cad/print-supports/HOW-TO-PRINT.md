@@ -50,7 +50,7 @@ just **one** combined file:
 >
 > ```bash
 > python3 cad/print-supports/generate_support_pillars.py \
->     --stl t3-prism.stl --tree --spacing 4.0 --min_clearance 7.0 \
+>     --stl t3-prism.stl --tree --spacing 4.0 --min_clearance 1.5 --min_gap 1.0 \
 >     --merge_radius 22 --out pillars.stl
 > ```
 
@@ -181,15 +181,19 @@ Same as Path 1:
   branch) when regenerating; raise `--tip_contact_h` to keep the contact
   neck thin for longer.
 - **Too much buildup on the build plate** → tree mode merges the branches
-  onto just a few feet (7 for the PR #35 T3-prism). Raise `--merge_radius`
-  for even fewer feet, or `--min_clearance` to skip near-plate overhangs.
+  onto a handful of feet (31 for the PR #35 T3-prism, now that supports
+  reach every member at full height). Raise `--merge_radius` for fewer
+  feet, or `--min_clearance` to skip near-plate overhangs.
 - **A branch looks like it doesn't reach a member** → regenerate the supports
   from the *current* mesh with `generate_support_pillars.py --stl … --tree`
-  (the ray-cast mode lands each tip on the actual underside surface, including
-  joint spheres); see [`README.md` §C/§D](README.md).
+  (the ray-cast mode walks every surface each vertical ray crosses and lands
+  a tip on the underside of every member, including ones stacked above
+  others — e.g. the vertical-cable end-caps — and joint spheres); see
+  [`README.md` §C/§D](README.md).
 - **Supports going to the bottom-triangle vertices** → those vertices already
-  sit on the plate, so a support there is redundant; the default
-  `--min_clearance 7.0` now suppresses them. Lower it if you want them back.
+  sit on the plate, so a support there is redundant; the defaults
+  `--min_clearance 1.5 --min_gap 1.0` suppress overhangs that already rest on
+  the plate. Lower them if you want those stubs back.
 - **TPU cable still sags** → confirm the cable part is on the **TPU High Flow**
   nozzle slot and that **Enable support is OFF** so the pillars (not the
   slicer's tree, which can't see vertical cylinders) are doing the work. The

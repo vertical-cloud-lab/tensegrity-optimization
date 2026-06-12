@@ -226,28 +226,43 @@ supports** via the ``--tree`` flag:
   contact patch (snaps off without tearing the part);
 - those tips merge pairwise into **thin Ø ~1.8 mm branches** that the
   slicer prints walls-only (near-hollow, very little material);
-- the branches converge onto just **a few circular trunk feet** on the
-  plate (7 feet for the PR #35 T3-prism, versus 183 separate bases
-  before), so there is far less build-plate contact.
+- the branches converge onto a handful of circular trunk feet on the
+  plate (31 feet for the PR #35 T3-prism, versus 183 separate bases for
+  the original one-cone-per-cell layout), so there is far less
+  build-plate contact.
 
 Branches are kept within ``--max_branch_angle`` (default 40°) of
 vertical so they print self-supported, and all geometry is clamped to
 the build plate so nothing prints below z = 0.
 
-The tip locations are still found by **ray-casting the actual printable
-mesh from the build plate's point of view**: rasterise XY at
-``--spacing`` mm, send a +Z ray from below the part at each grid cell,
-and place a tip at every cell whose nearest hit is above
-``--min_clearance`` mm. That hit z is, by construction, the lowest
-visible point of the mesh above (x, y) — i.e. the underside surface a
-support needs to fuse to. Implemented in
+The tip locations are found by **ray-casting the actual printable mesh
+from the build plate's point of view**: rasterise XY at ``--spacing``
+mm, send a +Z ray from below the part at each grid cell, and look at
+**every** triangle the ray crosses (not just the first one). A closed
+solid is entered through a *down-facing* face (the underside of a
+member) and exited through an *up-facing* face, so each down-facing
+crossing is an overhang surface that may need a tip. A tip is dropped at
+every down-facing surface that (a) sits above ``--min_clearance`` mm and
+(b) has more than ``--min_gap`` mm of open air directly below it — i.e.
+it is a genuine overhang, not a face already resting on the plate or on
+a lower member. Implemented in
 [`generate_support_pillars.py`](../generate_support_pillars.py) via the
 ``--stl`` flag (uses `trimesh.ray`; install with `pip install trimesh
-rtree`). This replaces the earlier parametric-centerline pillar pass,
-which sampled along each declared member's ideal centerline and so
-missed joint spheres, end caps, and any bulges below the nominal
-centerline — the visible gaps the PR reviewer flagged on the first
-pillar render.
+rtree`).
+
+This **multi-hit** pass replaces an earlier `multiple_hits=False`
+version that only ever recorded the single *lowest* surface above each
+(x, y). That silently dropped every member stacked above another one
+along the same vertical column — most importantly the bottom end-caps of
+the **vertical TPU cables**, which hang above the struts: the ray hit
+the strut first and the cable above never received a tip, so it printed
+unsupported and the print failed (the issue @sgbaird reported). Walking
+all crossings catches the vertical-cable end-caps, members crossing over
+other members, joint spheres, and end caps — giving both full-height
+coverage and many more contact points (181 vs 121 on this mesh). It also
+replaced the original parametric-centerline pillar pass, which sampled
+each declared member's ideal centerline and so missed any bulges below
+the nominal centerline.
 
 ```bash
 # 1. Ray-cast the printable mesh from the build plate's-eye view and
@@ -259,7 +274,7 @@ pillar render.
 git show 21ca244~1:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl
 python3 cad/print-supports/generate_support_pillars.py \
     --stl /tmp/t3-prism.stl --tree \
-    --spacing 4.0 --min_clearance 7.0 --merge_radius 22 \
+    --spacing 4.0 --min_clearance 1.5 --min_gap 1.0 --merge_radius 22 \
     --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
     --out cad/print-supports/verification/t3-prism-pr35-pillars.stl \
     --out_part /tmp/t3-prism-lifted.stl
@@ -289,8 +304,8 @@ mode):
 
 | File                                            | Triangles | Bytes  | Tips | Feet |
 | ----------------------------------------------- | --------: | -----: | ---: | ---: |
-| `t3-prism-pr35-pillars.stl` (supports only)     |    16,896 | 0.8 MB |  121 |    7 |
-| `t3-prism-pr35-with-pillars.stl` (part + supports merged) | 41,762 | 2.1 MB | 121 | 7 |
+| `t3-prism-pr35-pillars.stl` (supports only)     |    22,560 | 1.1 MB |  181 |   31 |
+| `t3-prism-pr35-with-pillars.stl` (part + supports merged) | 47,426 | 2.4 MB | 181 | 31 |
 
 Preview (object grey, tree supports orange; iso + bottom view — slim
 branches converge into a handful of trunk feet, so the build plate stays
@@ -325,11 +340,14 @@ without a brim, narrow enough to peel. `--merge_radius 22` controls how
 aggressively nearby tips merge: larger = fewer feet but longer (more
 horizontal) branches; smaller = more feet, shorter branches.
 `--spacing 4.0` mm gives roughly one tip per nozzle-width across the
-projected footprint of each member. `--min_clearance 7.0` mm skips
-anything within 7 mm of the plate — both the three bottom-triangle
-cables that already sit on the bed and the short bottom-vertex stubs the
-reviewer found annoying, while still covering everything that genuinely
-overhangs. Override any of these on the CLI if your geometry needs
+projected footprint of each member. `--min_clearance 1.5` mm skips
+undersides within 1.5 mm of the plate (members already sitting on the
+bed, e.g. the three bottom-triangle cables) and `--min_gap 1.0` mm only
+treats a down-facing surface as needing support if it has at least 1 mm
+of open air directly below it — together these drop the short
+bottom-vertex stubs the reviewer found annoying while still covering
+everything that genuinely overhangs, including the vertical-cable
+end-caps. Override any of these on the CLI if your geometry needs
 different breakaway behaviour: `generate_support_pillars.py --help`.
 
 ## Why θ = 10°? — TPU-safe strut-bottom coverage (partial fix)
@@ -560,7 +578,7 @@ sudo apt-get install -y xvfb libsoup-3.0-0 libwebkit2gtk-4.1-0 \
 #    (same step as in §"Path (d)" above — the supports are PLA either way):
 python3 cad/print-supports/generate_support_pillars.py \
     --stl /tmp/t3-prism.stl --tree \
-    --spacing 4.0 --min_clearance 7.0 --merge_radius 22 \
+    --spacing 4.0 --min_clearance 1.5 --min_gap 1.0 --merge_radius 22 \
     --branch_d 1.8 --trunk_d 5.0 --tip_overshoot 0.3 \
     --out cad/print-supports/verification/t3-prism-pr35-pillars.stl
 

@@ -238,9 +238,10 @@ are skipped by default; pass ``--include_bed_contact`` to override.
 ```bash
 # 1. **recommended** — ray-cast the actual printable STL from the
 #    build plate's-eye view and grow a tree of slim branches up to
-#    every underside hit above --min_clearance mm. Requires `trimesh`.
+#    every down-facing underside above --min_clearance mm with more
+#    than --min_gap mm of air below it. Requires `trimesh`.
 python3 cad/print-supports/generate_support_pillars.py \
-    --stl my_part.stl --tree --spacing 4.0 --min_clearance 7.0 \
+    --stl my_part.stl --tree --spacing 4.0 --min_clearance 1.5 --min_gap 1.0 \
     --merge_radius 22 --out pillars.stl --out_part my_part_lifted.stl
 
 # 2. built-in topology preset (no STL required, no trimesh dependency —

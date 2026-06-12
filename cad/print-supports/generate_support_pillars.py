@@ -77,6 +77,7 @@ import json
 import math
 import struct
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import Iterable
 
@@ -285,27 +286,48 @@ def member_pillars(p1: np.ndarray, p2: np.ndarray, d: float,
 # parametric topology preset or a hand-authored members.json), the most
 # reliable way to figure out where pillars should land is to do exactly
 # what the build plate "sees" looking up: cast a vertical ray from below
-# the part at each (x, y) sample point, and record the height of the
-# **first** triangle the ray hits. That hit point is, by construction,
-# the lowest visible point of the mesh directly above (x, y) — i.e. the
-# underside surface of whatever member is overhanging that spot.
+# the part at each (x, y) sample point and look at **every** triangle the
+# ray crosses, not just the first one.
 #
-# This is the geometric operation the previous parametric-only pillar
-# pass was missing: it sampled along the *centerline* of each declared
-# member, which (a) doesn't see joint spheres / end caps / bonded-core
-# inserts that bulge below the nominal centerline, and (b) places the
-# pillar tip at ``c.z - d/2`` (member underside, idealised as a perfect
-# cylinder) even though the actual STL surface at that XY may be at a
-# noticeably different z. The result was the visible gaps the PR
-# reviewer flagged.
+# A closed solid is entered and exited in pairs along the ray: the ray
+# crosses a *down-facing* face (triangle normal points down, ``nz < 0``)
+# to enter solid — that face is the underside of a member — and later
+# crosses an *up-facing* face (``nz > 0``) to exit. Every down-facing
+# crossing is therefore an overhang surface that may need a support tip.
+#
+# The previous implementation used ``multiple_hits=False``, i.e. it only
+# ever recorded the single **lowest** surface above each (x, y). That
+# silently dropped every member stacked above another one along the same
+# vertical column — most importantly the bottom end-caps of the vertical
+# TPU cables, which hang in mid-air above the struts: the ray hit the
+# strut first and the cable above it never received a tip, so it printed
+# unsupported and sagged (the print failure the reviewer reported). It
+# also produced far fewer contact points than the part actually needs.
+#
+# This version walks all crossings per ray (sorted bottom-up), keeps a
+# running "floor" at the top of the most recent solid span (or the build
+# plate), and emits a tip at each down-facing underside that (a) sits
+# above ``base_z + min_clearance`` and (b) has at least ``min_gap`` mm of
+# open air below it — i.e. it is a genuine overhang and not a face that is
+# already resting on the plate or on a lower member. This captures joint
+# spheres, end caps, members crossing over other members, and the vertical
+# cable end-caps the centerline / lowest-hit passes all missed.
 def raycast_underside(stl_path: Path, *, spacing: float,
-                      min_clearance: float, base_z: float = 0.0
+                      min_clearance: float, base_z: float = 0.0,
+                      min_gap: float = 1.0, down_normal_max: float = -0.2
                       ) -> tuple[list[tuple[float, float, float]],
                                  "object"]:
     """Rasterise the mesh's bottom-view XY footprint at ``spacing`` mm,
-    cast a +Z ray from below the part at each grid point, and return
-    the list of ``(x, y, hit_z)`` tuples whose nearest hit lies above
-    ``base_z + min_clearance``.
+    cast a +Z ray from below the part at each grid point, and return the
+    list of ``(x, y, hit_z)`` tuples for **every** down-facing underside
+    surface the ray crosses that lies above ``base_z + min_clearance`` and
+    has more than ``min_gap`` mm of open air directly below it.
+
+    ``down_normal_max`` is the maximum (most positive) z-component of a
+    face normal that still counts as "down-facing"; the default ``-0.2``
+    treats anything tilted more than ~11° below horizontal as an
+    overhang and ignores near-vertical side walls (which carry no
+    overhang and self-support as they print).
 
     The mesh is also translated in-place so its lowest point sits at
     ``base_z`` (this matches what the slicer does when it lays the
@@ -338,26 +360,35 @@ def raycast_underside(stl_path: Path, *, spacing: float,
     XX, YY = np.meshgrid(xs, ys)
     n = XX.size
     # Start each ray a hair below the plate so a face that sits exactly
-    # on z=base_z (a bed-contact triangle) still registers a hit and is
-    # then filtered out by ``min_clearance``.
+    # on z=base_z (a bed-contact triangle) still registers a crossing.
     origins = np.column_stack([
         XX.ravel(), YY.ravel(),
         np.full(n, base_z - 1.0),
     ])
     dirs = np.tile(np.array([0.0, 0.0, 1.0]), (n, 1))
-    # ``multiple_hits=False`` returns the nearest hit per ray — exactly
-    # the build-plate's-eye view of the underside.
-    locs, idx_ray, _ = mesh.ray.intersects_location(
-        origins, dirs, multiple_hits=False)
+    # ``multiple_hits=True`` returns *every* triangle each ray crosses, so
+    # we can see the undersides of members stacked above one another.
+    locs, idx_ray, idx_tri = mesh.ray.intersects_location(
+        origins, dirs, multiple_hits=True)
+    face_nz = mesh.face_normals[:, 2]
+    per_ray: dict[int, list[tuple[float, float, np.ndarray]]] = defaultdict(list)
+    for loc, ir, it in zip(locs, idx_ray, idx_tri):
+        per_ray[int(ir)].append((float(loc[2]), float(face_nz[it]), loc))
     hits: list[tuple[float, float, float]] = []
     z_min = base_z + float(min_clearance)
-    for loc, ir in zip(locs, idx_ray):
-        z = float(loc[2])
-        if z <= z_min:
-            continue
-        ox = float(origins[ir, 0])
-        oy = float(origins[ir, 1])
-        hits.append((ox, oy, z))
+    up_normal_min = -float(down_normal_max)
+    for crossings in per_ray.values():
+        crossings.sort(key=lambda t: t[0])
+        # ``floor`` tracks the top of the most-recent solid span (or the
+        # build plate) so we can measure the open gap under each underside.
+        floor = base_z
+        for z, nz, loc in crossings:
+            if nz < down_normal_max:           # down-facing -> an underside
+                if z > z_min and (z - floor) > min_gap:
+                    hits.append((float(loc[0]), float(loc[1]), z))
+            elif nz > up_normal_min:           # up-facing -> top of a span
+                if z > floor:
+                    floor = z
     return hits, mesh
 
 
@@ -705,8 +736,10 @@ def _parse_args() -> argparse.Namespace:
     src.add_argument("--stl", type=Path,
                      help="Ray-cast mode: load an STL mesh, project it "
                           "onto XY, cast +Z rays from below, and place a "
-                          "pillar at every grid cell whose nearest hit is "
-                          "above --min_clearance. Requires `trimesh`.")
+                          "pillar under every down-facing underside the "
+                          "ray crosses that is above --min_clearance and "
+                          "has more than --min_gap mm of air below it. "
+                          "Requires `trimesh`.")
     ap.add_argument("--out", type=Path, required=True,
                     help="Output STL path (binary STL).")
     ap.add_argument("--out_part", type=Path, default=None,
@@ -715,11 +748,22 @@ def _parse_args() -> argparse.Namespace:
                          "it as the merge partner for --out so the part "
                          "and the pillars share a coordinate frame.")
     ap.add_argument("--min_clearance", type=float, default=1.5,
-                    help="[--stl only] Skip pillars where the nearest "
-                         "underside hit is within this many mm of the "
-                         "build plate (default 1.5 mm; filters out the "
-                         "bed-contact triangle so we don't drop a pillar "
-                         "under something that's already on the plate).")
+                    help="[--stl only] Skip underside hits within this "
+                         "many mm of the build plate (default 1.5 mm; "
+                         "filters out members that already sit on the "
+                         "plate, e.g. the bed-contact triangle).")
+    ap.add_argument("--min_gap", type=float, default=1.0,
+                    help="[--stl only] Only treat a down-facing surface as "
+                         "an overhang needing support if it has more than "
+                         "this many mm of open air directly below it "
+                         "(default 1.0 mm). Stops tips being dropped under "
+                         "a member that is already resting on the plate or "
+                         "on a lower member.")
+    ap.add_argument("--down_normal_max", type=float, default=-0.2,
+                    help="[--stl only] Maximum face-normal z-component that "
+                         "still counts as a down-facing underside (default "
+                         "-0.2 ~= surfaces tilted >11 deg below horizontal). "
+                         "Near-vertical side walls are ignored.")
     # Pillar-shape knobs
     ap.add_argument("--spacing", type=float, default=8.0,
                     help="Spacing (mm) between adjacent pillars along a "
@@ -807,6 +851,7 @@ def main() -> None:
         hits, lifted_mesh = raycast_underside(
             args.stl, spacing=args.spacing,
             min_clearance=args.min_clearance, base_z=args.base_z,
+            min_gap=args.min_gap, down_normal_max=args.down_normal_max,
         )
         if args.tree:
             triangles, n_tips, n_feet = tree_from_tips(
