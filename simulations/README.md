@@ -45,6 +45,8 @@ simulations/
 ├── run_regimes.py        # Drives MuJoCo through both regimes; produces 4 figures + 2 CSVs
 ├── printable_design.py   # PLA strut + TPU 85A tendon material model + class-1 check
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
+├── bo_evaluator.py       # PR #30/#35 parameterization -> Tier-C objective bridge
+├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> Tier-C (MuJoCo) + Tier-B (Newton) + analysis
 ├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
 ├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
 ├── render_regimes.py     # 3D GIF/MP4 of both regime drops (suspended payload)
@@ -77,6 +79,12 @@ python simulations/pybullet_drop.py
 python simulations/mujoco_sweep.py
 python simulations/run_regimes.py     # both application regimes, MuJoCo
 python simulations/printable_sweep.py # PLA/TPU printable-design sweep, MuJoCo
+
+# PR #35 T3-prism Sobol batch through the simulators + analysis
+#   Tier-C (MuJoCo) for all N designs, Tier-B (Newton) for a subset.
+python simulations/sobol_t3_campaign.py --n 512 --n-tierb 32
+# -> outputs/sobol_t3_{tierC,tierB}.csv, sobol_t3_{pareto,sensitivity,tierC_vs_tierB}.png
+# -> sobol_t3_analysis.md  (results & interpretation)
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
