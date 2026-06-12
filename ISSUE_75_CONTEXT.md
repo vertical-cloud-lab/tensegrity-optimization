@@ -124,6 +124,26 @@ Comments 4687198740, 4687200856, and 4687203019 all show the same error:
 - The Copilot agent encountered an unexpected error while processing @sgbaird's feedback comment
 - These errors suggest the previous agent may have had difficulty handling the complex feedback
 
+### PR #20 Comment Timeline
+
+**Key comments from @sgbaird:**
+1. **4408551677** (2026-05-08) - Initial directive to begin populating draft with context
+2. **4500807271** (2026-05-20) - Context for upcoming training session
+3. **4633805092** (2026-06-05) - Request to create fully synthesized bibliography
+4. **4634465491** (2026-06-05) - Request to verify DOI titles and abstracts
+5. **4664748222** (2026-06-09) - Note on lack of data figures; need to show processed curves
+6. **4664873230** (2026-06-09) - Request to send mechanistic data figure to Edison analysis
+7. **4673509625** (2026-06-10) - Request to create actual placeholder figures (BO example plots)
+8. **4673512526** (2026-06-10) - Request to implement changes from earlier feedback
+9. **4677526117** (2026-06-11) - Request to wire additional content into manuscript
+10. **4686431615** (2026-06-12 01:07) - Request for second round of Edison mock review feedback
+11. **4687197892** (2026-06-12 03:50) - **CRITICAL: Detailed feedback on 6 major issues** ← Copilot errors started here
+12. **4687505316** (2026-06-12 04:35) - Repeat request to address comment 4687197892
+13. **4687784900** (2026-06-12 05:32) - "try again"
+14. **4687791320** (2026-06-12 05:33) - **Decision: "We might need to create a new issue and pull request"**
+15. **4692879392** (2026-06-12 15:55) - "try again"
+16. **4692936018** (2026-06-12 16:03) - **Final decision: "Carrying on in issue #75 and PR #76"**
+
 ---
 
 ## Status
@@ -132,9 +152,15 @@ Comments 4687198740, 4687200856, and 4687203019 all show the same error:
 1. Create a clean slate for addressing the PR #20 feedback
 2. Consolidate all context from Issue #19 and PR #20
 3. Provide a working document for the next phase of manuscript development
-4. Address the feedback in comment 4687197892 in a fresh session
+4. Address the feedback in comment 4687197892 in a fresh session (per decision in comment 4692936018)
+
+**Key References:**
+- Original PR #20: https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/20
+- Issue #19: https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/19
+- Critical feedback: https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/20#issuecomment-4687197892
 
 **Next Steps** (when ready to proceed):
 - Address the 6 major feedback items from comment 4687197892
 - Update manuscript files accordingly
 - Rebuild PDFs and commit changes
+- Submit to Edison for next round of review if needed
