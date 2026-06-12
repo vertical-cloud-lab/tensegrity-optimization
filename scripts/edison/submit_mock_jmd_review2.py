@@ -195,6 +195,7 @@ def main() -> None:
         "task_id": str(task_id),
         "job": str(JobNames.ANALYSIS),
         "uploaded_collection": uri,
+        "query": QUERY,
         "note": "non-blocking; fetch via scripts/edison/fetch_mock_jmd_review2.py",
     }, indent=2))
     print(f"wrote {SUBMITTED}")
