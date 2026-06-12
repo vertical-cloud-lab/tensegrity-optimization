@@ -1,0 +1,7 @@
+{
+  "slug": "t24-fabfig-feedback",
+  "task_id": "5ba82b0c-1fc3-49f7-a1c7-4cfd395e263c",
+  "job": "job-futurehouse-data-analysis-crow-high",
+  "uploaded_collection": "data_entry:10f8dcbf-ce22-45da-bd80-02fec882ffee",
+  "note": "non-blocking; fetch next session via client.get_task(task_id)"
+}

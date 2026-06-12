@@ -1,0 +1,9 @@
+% =============================================================================
+% manuscript-diff.tex -- latexdiff build (pre-session vs. current body).
+% Renders change markup over a clean (todonotes-disabled) layout.
+% Regenerate the diff body with:
+%   git show HEAD:manuscript/manuscript-body.tex > manuscript-body-orig.tex
+%   latexdiff manuscript-body-orig.tex manuscript-body.tex > manuscript-body-diff.tex
+% =============================================================================
+\def\TODOOPTS{disable}
+\input{manuscript-body-diff}

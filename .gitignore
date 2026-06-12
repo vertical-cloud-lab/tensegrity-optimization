@@ -27,6 +27,9 @@
 
 # Diff originals
 proposal-orig.tex
+manuscript-orig.tex
+manuscript/manuscript-body-orig.tex
+manuscript/manuscript-body-diff.tex
 
 # latexdiff generated source
 idetc-abstract-diff.tex
@@ -38,3 +41,17 @@ Thumbs.db
 # IDE
 .vscode/
 *.code-workspace
+manuscript/manuscript.tdo
+manuscript/manuscript-todos.tdo
+
+# Python bytecode
+__pycache__/
+*.pyc
+.env
+manuscript/manuscript-body.pdf
+edison-trajectories/review-followups/fabfig-bundle/
+edison-trajectories/review-followups/fabfig-bundle.zip
+edison-trajectories/mechfig-feedback/bundle/
+edison-trajectories/mechfig-feedback/mechfig-bundle.zip
+edison-trajectories/mock-jmd-review-2/bundle/
+edison-trajectories/mock-jmd-review-2/mock-jmd-review-2-bundle.zip

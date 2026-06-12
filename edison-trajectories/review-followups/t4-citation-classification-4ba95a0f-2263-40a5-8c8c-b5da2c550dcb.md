@@ -1,0 +1,162 @@
+# Edison trajectory -- t4-citation-classification
+
+Task ID: `4ba95a0f-2263-40a5-8c8c-b5da2c550dcb`  
+Status: success
+
+---
+
+Question: I am writing a mechanical-engineering manuscript on Bayesian-optimization-driven,
+multi-material 3D-printed *tensegrity-inspired* structures (rigid PLA struts +
+soft TPU tension elements) for energy absorption / impact protection.
+
+In my Background I currently group two references under multi-material rigid-soft
+3D printing and imply they are "tensegrity-inspired":
+
+1. Ye et al., "Multimaterial 3D printing of thick-panel origami" (Nature
+   Communications, 2023). This work appears to be about thick-panel ORIGAMI with
+   rigid panels (PLA, and in some demonstrations ABS or CFRP) connected by soft
+   TPU hinges -- not tensegrity. It does not seem to use the word "tensegrity".
+2. Khatri et al. (2024) on energy-absorbing multi-material structures (a Sage /
+   3D Printing and Additive Manufacturing article that appears to use ABS + TPU,
+   no PLA, and again may not be tensegrity).
+
+Questions:
+(a) For EACH of these two papers, is it accurate to call the work
+    "tensegrity-inspired", or are they merely "related" multi-material additive
+    manufacturing / architected-material works? Quote any explicit use (or
+    absence) of "tensegrity" in each paper.
+(b) What materials does each actually use (PLA / ABS / CFRP / TPU / other), and
+    does either give a stated rationale for choosing one rigid material over
+    another?
+(c) Recommend more accurate framing language and, if appropriate, suggest a few
+    genuinely tensegrity (or tensegrity-inspired) 3D-printed multi-material
+    references I should cite instead of or alongside these, with full
+    bibliographic details and DOIs.
+
+Be precise and ground every claim in the actual papers.
+
+
+## Assessment of "Tensegrity-Inspired" Labeling and Material Usage in Ye et al. (2023) and Khatri & Egan (2024), with Recommended Alternatives
+
+### (a) Is it accurate to call either paper "tensegrity-inspired"?
+
+**Ye et al. (2023), "Multimaterial 3D Printed Self-Locking Thick-Panel Origami Metamaterials," *Nature Communications*:**
+This work is not tensegrity-inspired. It is explicitly and consistently framed as a *thick-panel origami* metamaterial study throughout its body text. The structural paradigm involves rigid origami panels connected by compliant hinges via a wrapping-based multi-material FDM strategy, exploiting a self-locking "push-to-pull" (P2P) deformation mode (ye2023multimaterial3dprinted pages 1-2, ye2023multimaterial3dprinted pages 3-5). A comprehensive examination of all pages of the paper reveals that the word "tensegrity" does **not appear in the body text**. It appears only once, in the reference list, where it cites Bauer et al., "Tensegrity metamaterials: toward failure-resistant engineering systems…" as a background reference (ye2023multimaterial3dprinted pages 11-12, ye2023multimaterial3dprinted pages 10-11). The paper's own structural concept—rigid panels wrapped by soft hinges that fold along predetermined crease lines—is a fundamentally different mechanical paradigm from tensegrity (discontinuous compression / continuous tension network). Labeling this work "tensegrity-inspired" would be inaccurate.
+
+**Khatri & Egan (2024), "Energy Absorption of 3D Printed ABS and TPU Multimaterial Honeycomb Structures," *3D Printing and Additive Manufacturing*:**
+This work is also not tensegrity-inspired. It is framed throughout as a study of multi-material *honeycomb cellular structures* (square and hexagonal unit cells) with tunable stiff/flexible material proportions (khatri2024energyabsorptionof pages 1-3, khatri2024energyabsorptionof pages 3-5). An examination of all pages of the paper confirms that the word "tensegrity" **does not appear anywhere**—neither in the body text, nor in the reference list (khatri2024energyabsorptionof pages 3-5, khatri2024energyabsorptionof pages 11-12, khatri2024energyabsorptionof pages 7-10, khatri2024energyabsorptionof pages 10-11). The structural principle is purely cellular/honeycomb-based energy absorption, not tensegrity.
+
+**Verdict:** Neither paper should be called "tensegrity-inspired." They are relevant as multi-material additive manufacturing works for energy-absorbing architected structures, but they employ origami and honeycomb paradigms, respectively.
+
+---
+
+### (b) Materials used and rationale for material choice
+
+**Ye et al. (2023):**
+The primary material combination is **PLA (rigid panels) + TPU (soft wrapping/hinges)**. PLA rigid panels are completely wrapped by a continuous TPU skin (wrapping thickness t_TPU = 0.4 mm), printed on a single FDM multimaterial printer at 210 °C (PLA) and 220 °C (TPU) (ye2023multimaterial3dprinted pages 9-10). The authors additionally demonstrate that the wrapping-based strategy is "not material-dependent" and can couple various rigid materials; they explicitly show thick-panel origami with **ABS** facets and **CFRP** (carbon-fiber-reinforced polymer) facets as alternative rigid materials, all wrapped with TPU, achieving similar hinge behavior (ye2023multimaterial3dprinted pages 2-3). The stated rationale for the wrapping approach (rather than conventional deposition of ABS on TPU) is that conventional multi-material FDM suffers from weak interfacial bonding and delamination at the rigid–soft interface, whereas wrapping provides robust bonding enabling >100 fold cycles and 300% hinge stretch without failure (ye2023multimaterial3dprinted pages 1-2, ye2023multimaterial3dprinted pages 2-3). Notably, the paper does **not** give an explicit stated rationale for preferring PLA over ABS or CFRP as the primary rigid material; PLA, ABS, and CFRP are presented as interchangeable alternatives within the wrapping framework (ye2023multimaterial3dprinted pages 9-10, ye2023multimaterial3dprinted pages 2-3).
+
+**Khatri & Egan (2024):**
+This work uses exclusively **ABS + TPU**, with no PLA or CFRP mentioned anywhere (khatri2024energyabsorptionof pages 1-3, khatri2024energyabsorptionof pages 7-10). Samples were fabricated on an Ultimaker S3 multimaterial FDM system using Ultimaker ABS black and TPU 95A blue. The stated rationale is that ABS provides high stiffness (Young's modulus ~1962 MPa) and high ultimate strength with low elongation (~4.6%), while TPU is hyperelastic and highly extensible (~67 MPa, >560% elongation), enabling tunable energy absorption through varying the proportion and layout of each material (khatri2024energyabsorptionof pages 3-5). The authors note a 20% higher density of TPU compared with ABS (khatri2024energyabsorptionof pages 7-10) and discuss interfacial challenges including delamination at the ABS–TPU boundary (khatri2024energyabsorptionof pages 7-10). The paper does not discuss or compare PLA as an alternative.
+
+The following table summarizes these findings for both papers:
+
+| Paper | Structural Paradigm | Materials Used (rigid) | Materials Used (soft) | Multi-material? | Uses "Tensegrity" in body text? | Energy Absorption Focus? |
+|---|---|---|---|---|---|---|
+| Ye et al., *Multimaterial 3D printed self-locking thick-panel origami metamaterials* (2023) | Thick-panel origami / self-locking origami metamaterial; **not tensegrity-inspired** | Primary rigid panel material: PLA; paper also states the wrapping strategy can couple other rigid materials including ABS and CFRP in demonstrations | TPU soft wrapping / hinges | Yes | **No.** The body text describes origami, rigid panels, and soft hinges; "tensegrity" appears only in the reference list, not as the paper's own structural framing (ye2023multimaterial3dprinted pages 2-3, ye2023multimaterial3dprinted pages 1-2, ye2023multimaterial3dprinted pages 11-12) | **Yes.** Impact energy absorption is a stated application, especially for the multilayer self-locking origami structures (ye2023multimaterial3dprinted pages 9-10, ye2023multimaterial3dprinted pages 10-11) |
+| Khatri & Egan, *Energy Absorption of 3D Printed ABS and TPU Multimaterial Honeycomb Structures* (2024) | Honeycomb cellular structure; **not tensegrity-inspired** | ABS | TPU | Yes | **No.** No occurrence of "tensegrity" was found in the examined paper; the work is framed throughout as multimaterial honeycomb design (khatri2024energyabsorptionof pages 1-3, khatri2024energyabsorptionof pages 3-5, khatri2024energyabsorptionof pages 7-10, khatri2024energyabsorptionof pages 10-11) | **Yes.** Energy absorption is the central focus of the study under out-of-plane and in-plane compression (khatri2024energyabsorptionof pages 1-3, khatri2024energyabsorptionof pages 3-5) |
+
+
+*Table: This table compares the two papers currently cited in terms of structural paradigm, materials, multimaterial status, tensegrity terminology, and energy-absorption focus. It shows that both are relevant multimaterial AM studies, but neither should be labeled tensegrity-inspired.*
+
+---
+
+### (c) Recommended reframing and genuinely tensegrity-inspired references
+
+**Recommended reframing language:**
+Rather than grouping Ye et al. and Khatri & Egan under "tensegrity-inspired," the Background section should present them under a more accurate heading, such as: *"Multi-material FDM-printed architected structures for energy absorption."* A suggested framing might read:
+
+> "Multi-material FDM printing has been exploited to create rigid–soft architected structures for energy absorption, including thick-panel origami metamaterials with PLA panels and TPU hinges [Ye et al., 2023] and ABS–TPU honeycomb structures with tunable stiff-flexible proportions [Khatri & Egan, 2024]. These works demonstrate the broader potential of multi-material AM for combining stiff and compliant phases, a strategy that our tensegrity-inspired designs extend by replacing origami/honeycomb topologies with a tensegrity configuration of discrete compression struts and continuous tension elements."
+
+This language accurately positions the two papers as relevant precedents for multi-material rigid–soft AM without misattributing tensegrity framing to them.
+
+**Genuinely tensegrity or tensegrity-inspired 3D-printed references:**
+
+The following table provides references that are explicitly tensegrity or tensegrity-inspired and involve 3D printing, with full bibliographic details and DOIs. These are better candidates for citation in a tensegrity-focused Background section.
+
+| Authors | Year | Title | Journal | DOI | Key Features |
+|---|---:|---|---|---|---|
+| Pajunen, Johanns, Pal, Rimoli, and Daraio | 2019 | Design and impact response of 3D-printable tensegrity-inspired structures | *Materials & Design* | 10.1016/j.matdes.2019.107966 | Genuinely **tensegrity-inspired**; explicitly 3D-printed; **single-material** polyamide **PA2200**; fabricated primarily by **SLS** (authors also note SLA and 2-photon polymerization demonstrations); designed for **impact response**, strain-energy absorption, and load-limitation relevance (pajunen2019designandimpact pages 2-3, pajunen2019designandimpact pages 3-4, pajunen2019designandimpact pages 1-2, pajunen2019designandimpact pages 8-9) |
+| Bauer, Kraus, Crook, Rimoli, and Valdevit | 2021 | Tensegrity Metamaterials: Toward Failure-Resistant Engineering Systems through Delocalized Deformation | *Advanced Materials* | 10.1002/adma.202005647 | Genuinely **tensegrity metamaterials**; micro-architected 3D-printed lattices; **single-material** **IP-Dip** photoresist; fabricated by **two-photon polymerization direct laser writing (TPP-DLW)**; emphasizes **delocalized deformation**, failure resistance, and dramatically improved **energy absorption** (bauer2021tensegritymetamaterialstoward pages 7-8, bauer2021tensegritymetamaterialstoward pages 8-9, bauer2021tensegritymetamaterialstoward pages 2-3) |
+| Pajunen, Celli, and Daraio | 2021 | Prestrain-induced bandgap tuning in 3D-printed tensegrity-inspired lattice structures | *Extreme Mechanics Letters* | 10.1016/j.eml.2021.101236 | Genuinely **tensegrity-inspired** 3D-printed lattices; **single-material** **PA2200 polyamide**; fabricated by **SLS**; mainly a **wave dynamics / bandgap tuning** paper rather than impact-energy absorption, but useful as core tensegrity-inspired AM background (pajunen2021prestraininducedbandgaptuning pages 1-2) |
+| Santos | 2023 | Toward a Novel Energy-Dissipation Metamaterial with Tensegrity Architecture | *Advanced Materials* | 10.1002/adma.202300639 | Explicitly a **tensegrity-architecture** metamaterial; includes **3D-printed FDM prototype(s)** on a Prusa i3 MK3S; multiple filaments were used across prototypes, but available evidence does **not confirm monolithic multi-material printing**; directly relevant for **energy dissipation** (santos2023towardanovel pages 3-4) |
+| Sabouni-Zawadzka, Gilewski, and Zawadzki | 2024 | Experimental investigations on mechanical properties of 3D-printed tensegrity-inspired metamaterials based on 4-strut simplex module | *Archives of Civil Engineering* | 10.24425/ace.2024.150987 | Explicitly **tensegrity-inspired**; experimentally tested 3D-printed simplex modules; manufacturing routes included **SLA, SLS, and PolyJet**; evidence indicates **single-material** parent-material studies rather than multi-material printing; relevant for **compression mechanics** and material/process sensitivity (sabounizawadzka2024experimentalinvestigationson pages 8-12, sabounizawadzka2024experimentalinvestigationson pages 3-5, sabounizawadzka2024experimentalinvestigationson pages 14-16, sabounizawadzka2024experimentalinvestigationson pages 12-14, sabounizawadzka2024experimentalinvestigationson pages 16-16) |
+| Wang, Zhang, Sun, Wen, and Chu | 2026 | Integrated fabrication and validation of tensegrity-inspired rigid-flexible mechanical metamaterials | *Additive Manufacturing* | 10.1016/j.addma.2026.105107 | **Highly relevant by title** to your manuscript: explicitly **tensegrity-inspired** and **rigid-flexible**, likely the closest match to **multi-material / rigid-soft** AM among the identified papers; however, this paper was **unobtainable in the present search**, so details beyond title/journal/DOI should be verified directly before citing specific materials or methods |
+| Almeida, Gulledge, Park, Momeni, Tajyar, Davami, and Beck | 2025 | High strain rate response of 3D-printable tensegrity-inspired structures | *International Journal of Solids and Structures* | 10.1016/j.ijsolstr.2025.113590 | Explicitly **tensegrity-inspired** and **3D-printable** by title; highly relevant for **impact / high-strain-rate** loading and energy-absorption framing; paper was **unobtainable in the present search**, so material system and whether it is single- or multi-material must be checked in the paper itself |
+| Davami, Rowe, Gulledge, Park, Beheshti, Palazotto, Tavangarian, and Beck | 2025 | Dynamic analysis of additively manufactured tensegrity structures | *International Journal of Impact Engineering* | 10.1016/j.ijimpeng.2024.105208 | Explicitly **tensegrity** and **additively manufactured** by title; highly relevant for **dynamic / impact** background; paper was **unobtainable in the present search**, so exact material system and single- vs multi-material status should be verified directly before making detailed claims |
+
+
+*Table: This table lists genuinely tensegrity or tensegrity-inspired 3D-printed references that are better aligned with a tensegrity-focused background than Ye et al. or Khatri & Egan. It also flags which papers are clearly single-material, which are likely rigid-flexible / multi-material, and which unobtainable recent papers require direct verification before detailed citation.*
+
+**Specific citation recommendations for your manuscript:**
+
+1. For **tensegrity-inspired 3D-printed structures under impact/energy absorption**, cite Pajunen et al. (2019), who presented the first experimental corroboration of theoretical buckling tensegrity studies using SLS-printed PA2200 structures under impact loading (pajunen2019designandimpact pages 2-3, pajunen2019designandimpact pages 1-2, pajunen2019designandimpact pages 8-9), and Bauer et al. (2021), who demonstrated that tensegrity metamaterials achieve unprecedented failure resistance with up to 25-fold enhancement in deformability and orders-of-magnitude increased energy absorption through delocalized deformation (bauer2021tensegritymetamaterialstoward pages 7-8, bauer2021tensegritymetamaterialstoward pages 2-3).
+
+2. For **3D-printed tensegrity with energy dissipation**, cite Santos (2023), who developed a 3D-printed FDM prototype of a tensegrity-architecture energy-dissipation metamaterial (santos2023towardanovel pages 3-4).
+
+3. For the **intersection of tensegrity-inspired design and multi-material rigid–flexible AM**, which is the closest analog to your own PLA-strut + TPU-cable approach, Wang et al. (2026), "Integrated fabrication and validation of tensegrity-inspired rigid-flexible mechanical metamaterials," *Additive Manufacturing*, 118, 105107, DOI: 10.1016/j.addma.2026.105107, appears to be the most directly relevant paper based on its title. However, this paper was not obtainable in the present search, so its materials and methods should be verified before making specific claims.
+
+4. For **dynamic/high-strain-rate behavior of 3D-printed tensegrity structures**, two recent works are relevant: Almeida et al. (2025), *International Journal of Solids and Structures*, DOI: 10.1016/j.ijsolstr.2025.113590; and Davami et al. (2025), *International Journal of Impact Engineering*, DOI: 10.1016/j.ijimpeng.2024.105208. Both explicitly address additively manufactured tensegrity-inspired structures under dynamic loading.
+
+**Important caveat:** The existing literature on 3D-printed tensegrity structures is predominantly single-material (polyamide via SLS, photoresist via TPP-DLW, or single-polymer FDM). Your proposed PLA+TPU multi-material tensegrity structures thus represent a genuine novelty contribution. This should be highlighted explicitly in your manuscript: multi-material rigid–soft tensegrity fabrication via FDM is largely unexplored, and your work sits at the intersection of the multi-material AM strategies demonstrated by Ye et al. and Khatri & Egan and the tensegrity structural concepts demonstrated by Pajunen et al., Bauer et al., and Santos.
+
+References
+
+1. (ye2023multimaterial3dprinted pages 1-2): Haitao Ye, Qingjiang Liu, Jianxiang Cheng, Honggeng Li, Bingcong Jian, Rong Wang, Zechu Sun, Yang Lu, and Qi Ge. Multimaterial 3d printed self-locking thick-panel origami metamaterials. Nature Communications, Mar 2023. URL: https://doi.org/10.1038/s41467-023-37343-w, doi:10.1038/s41467-023-37343-w. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+2. (ye2023multimaterial3dprinted pages 3-5): Haitao Ye, Qingjiang Liu, Jianxiang Cheng, Honggeng Li, Bingcong Jian, Rong Wang, Zechu Sun, Yang Lu, and Qi Ge. Multimaterial 3d printed self-locking thick-panel origami metamaterials. Nature Communications, Mar 2023. URL: https://doi.org/10.1038/s41467-023-37343-w, doi:10.1038/s41467-023-37343-w. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+3. (ye2023multimaterial3dprinted pages 11-12): Haitao Ye, Qingjiang Liu, Jianxiang Cheng, Honggeng Li, Bingcong Jian, Rong Wang, Zechu Sun, Yang Lu, and Qi Ge. Multimaterial 3d printed self-locking thick-panel origami metamaterials. Nature Communications, Mar 2023. URL: https://doi.org/10.1038/s41467-023-37343-w, doi:10.1038/s41467-023-37343-w. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+4. (ye2023multimaterial3dprinted pages 10-11): Haitao Ye, Qingjiang Liu, Jianxiang Cheng, Honggeng Li, Bingcong Jian, Rong Wang, Zechu Sun, Yang Lu, and Qi Ge. Multimaterial 3d printed self-locking thick-panel origami metamaterials. Nature Communications, Mar 2023. URL: https://doi.org/10.1038/s41467-023-37343-w, doi:10.1038/s41467-023-37343-w. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+5. (khatri2024energyabsorptionof pages 1-3): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 30 citations and is from a peer-reviewed journal.
+
+6. (khatri2024energyabsorptionof pages 3-5): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 30 citations and is from a peer-reviewed journal.
+
+7. (khatri2024energyabsorptionof pages 11-12): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 30 citations and is from a peer-reviewed journal.
+
+8. (khatri2024energyabsorptionof pages 7-10): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 30 citations and is from a peer-reviewed journal.
+
+9. (khatri2024energyabsorptionof pages 10-11): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 30 citations and is from a peer-reviewed journal.
+
+10. (ye2023multimaterial3dprinted pages 9-10): Haitao Ye, Qingjiang Liu, Jianxiang Cheng, Honggeng Li, Bingcong Jian, Rong Wang, Zechu Sun, Yang Lu, and Qi Ge. Multimaterial 3d printed self-locking thick-panel origami metamaterials. Nature Communications, Mar 2023. URL: https://doi.org/10.1038/s41467-023-37343-w, doi:10.1038/s41467-023-37343-w. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+11. (ye2023multimaterial3dprinted pages 2-3): Haitao Ye, Qingjiang Liu, Jianxiang Cheng, Honggeng Li, Bingcong Jian, Rong Wang, Zechu Sun, Yang Lu, and Qi Ge. Multimaterial 3d printed self-locking thick-panel origami metamaterials. Nature Communications, Mar 2023. URL: https://doi.org/10.1038/s41467-023-37343-w, doi:10.1038/s41467-023-37343-w. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+12. (pajunen2019designandimpact pages 2-3): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 99 citations and is from a highest quality peer-reviewed journal.
+
+13. (pajunen2019designandimpact pages 3-4): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 99 citations and is from a highest quality peer-reviewed journal.
+
+14. (pajunen2019designandimpact pages 1-2): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 99 citations and is from a highest quality peer-reviewed journal.
+
+15. (pajunen2019designandimpact pages 8-9): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 99 citations and is from a highest quality peer-reviewed journal.
+
+16. (bauer2021tensegritymetamaterialstoward pages 7-8): Jens Bauer, Julie A. Kraus, Cameron Crook, Julian J. Rimoli, and Lorenzo Valdevit. Tensegrity metamaterials: toward failure‐resistant engineering systems through delocalized deformation. Advanced Materials, Feb 2021. URL: https://doi.org/10.1002/adma.202005647, doi:10.1002/adma.202005647. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+17. (bauer2021tensegritymetamaterialstoward pages 8-9): Jens Bauer, Julie A. Kraus, Cameron Crook, Julian J. Rimoli, and Lorenzo Valdevit. Tensegrity metamaterials: toward failure‐resistant engineering systems through delocalized deformation. Advanced Materials, Feb 2021. URL: https://doi.org/10.1002/adma.202005647, doi:10.1002/adma.202005647. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+18. (bauer2021tensegritymetamaterialstoward pages 2-3): Jens Bauer, Julie A. Kraus, Cameron Crook, Julian J. Rimoli, and Lorenzo Valdevit. Tensegrity metamaterials: toward failure‐resistant engineering systems through delocalized deformation. Advanced Materials, Feb 2021. URL: https://doi.org/10.1002/adma.202005647, doi:10.1002/adma.202005647. This article has 208 citations and is from a highest quality peer-reviewed journal.
+
+19. (pajunen2021prestraininducedbandgaptuning pages 1-2): Kirsti Pajunen, Paolo Celli, and Chiara Daraio. Prestrain-induced bandgap tuning in 3d-printed tensegrity-inspired lattice structures. Extreme Mechanics Letters, 44:101236, Apr 2021. URL: https://doi.org/10.1016/j.eml.2021.101236, doi:10.1016/j.eml.2021.101236. This article has 33 citations and is from a peer-reviewed journal.
+
+20. (santos2023towardanovel pages 3-4): Filipe A. Santos. Toward a novel energy‐dissipation metamaterial with tensegrity architecture. Advanced Materials, May 2023. URL: https://doi.org/10.1002/adma.202300639, doi:10.1002/adma.202300639. This article has 29 citations and is from a highest quality peer-reviewed journal.
+
+21. (sabounizawadzka2024experimentalinvestigationson pages 8-12): Anna Al Sabouni-Zawadzka, Wojciech Gilewski, and Adam Zawadzki. Experimental investigations on mechanical propertiesof 3d-printed tensegrity-inspired metamaterialsbased on 4-strut simplex module. Archives of Civil Engineering, pages 343-357, Jun 2024. URL: https://doi.org/10.24425/ace.2024.150987, doi:10.24425/ace.2024.150987. This article has 0 citations.
+
+22. (sabounizawadzka2024experimentalinvestigationson pages 3-5): Anna Al Sabouni-Zawadzka, Wojciech Gilewski, and Adam Zawadzki. Experimental investigations on mechanical propertiesof 3d-printed tensegrity-inspired metamaterialsbased on 4-strut simplex module. Archives of Civil Engineering, pages 343-357, Jun 2024. URL: https://doi.org/10.24425/ace.2024.150987, doi:10.24425/ace.2024.150987. This article has 0 citations.
+
+23. (sabounizawadzka2024experimentalinvestigationson pages 14-16): Anna Al Sabouni-Zawadzka, Wojciech Gilewski, and Adam Zawadzki. Experimental investigations on mechanical propertiesof 3d-printed tensegrity-inspired metamaterialsbased on 4-strut simplex module. Archives of Civil Engineering, pages 343-357, Jun 2024. URL: https://doi.org/10.24425/ace.2024.150987, doi:10.24425/ace.2024.150987. This article has 0 citations.
+
+24. (sabounizawadzka2024experimentalinvestigationson pages 12-14): Anna Al Sabouni-Zawadzka, Wojciech Gilewski, and Adam Zawadzki. Experimental investigations on mechanical propertiesof 3d-printed tensegrity-inspired metamaterialsbased on 4-strut simplex module. Archives of Civil Engineering, pages 343-357, Jun 2024. URL: https://doi.org/10.24425/ace.2024.150987, doi:10.24425/ace.2024.150987. This article has 0 citations.
+
+25. (sabounizawadzka2024experimentalinvestigationson pages 16-16): Anna Al Sabouni-Zawadzka, Wojciech Gilewski, and Adam Zawadzki. Experimental investigations on mechanical propertiesof 3d-printed tensegrity-inspired metamaterialsbased on 4-strut simplex module. Archives of Civil Engineering, pages 343-357, Jun 2024. URL: https://doi.org/10.24425/ace.2024.150987, doi:10.24425/ace.2024.150987. This article has 0 citations.

@@ -1,0 +1,6 @@
+{
+  "slug": "t26-sea-impact-math",
+  "task_id": "e4e5fb15-445b-4851-a16e-a3c366eba8f2",
+  "job": "job-futurehouse-paperqa3-high",
+  "note": "non-blocking; fetch next session via client.get_task(task_id)"
+}

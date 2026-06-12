@@ -1,0 +1,7 @@
+{
+  "slug": "mechfig-feedback",
+  "task_id": "e0c4e062-15c7-4a62-b931-1746211fe8b1",
+  "job": "job-futurehouse-data-analysis-crow-high",
+  "uploaded_collection": "data_entry:78046c06-0f43-4144-8d8a-a2f7c1afd242",
+  "note": "non-blocking; fetch via scripts/edison/fetch_mechfig_feedback.py"
+}
