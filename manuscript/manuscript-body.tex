@@ -246,7 +246,8 @@ no closed-loop optimization) and Mo et~al.~\cite{mo2023accelerated}
     TPU tension elements that are anchored \emph{inside} the ends of
     each PLA strut---the strut acting as a rigid cage in which the
     cables meeting at a given end join before exiting through discrete
-    outlets---to ensure cyclic interface durability.
+    outlets---a joint geometry intended to improve cyclic interface
+    durability, to be verified by pull-out and fatigue testing.
   \item An experiment-driven BO loop, built on
     BoTorch/Ax~\citep{balandat2020botorch, pmlr-v293-olson25a}, that
     operates directly on
@@ -325,10 +326,42 @@ with Intrigila et~al.'s bistable tensegrity-like unit cell for lattice
 metamaterials~\cite{intrigila2022fabricationandexperimental} as the closest
 published analog, confirms that this architecture class also responds favorably
 under impact and quasi-static loading, although neither study employed
-multi-material FFF or closed-loop design optimization.\todo{Consider a figure
-that places our approach against this prior work (e.g., a 2-D map of
-fabrication route vs.\ optimization strategy, or representative prior-art unit
-cells) to sharpen the differentiation, per review.}
+multi-material FDM or closed-loop design optimization.
+Table~\ref{tab:novelty} situates the present work against the three
+most closely related prior efforts, making explicit that the
+combination of a multi-material FDM tensegrity-inspired architecture
+with an \emph{experiment}-driven optimization loop is, to our
+knowledge, not addressed by any single prior study.
+
+\begin{table*}[t]
+  \centering
+  \caption{Positioning of this work against the most closely related
+    prior efforts. The present study is distinguished by combining a
+    multi-material (PLA/TPU) FDM tensegrity-inspired architecture with a
+    closed-loop optimizer trained directly on physical measurements
+    rather than simulations or a single fabrication condition.}
+  \label{tab:novelty}
+  \small
+  \begin{tabular}{@{}lllll@{}}
+    \toprule
+    Study & Architecture & Fabrication & Optimization & Ground truth \\
+    \midrule
+    Pajunen et~al.\ 2019~\cite{pajunen2019design}
+      & Truncated-tetrahedral & Single-material & None & Experiment \\
+      & tensegrity-inspired & 3D print & (single condition) & (drop impact) \\[2pt]
+    Intrigila et~al.\ 2022~\cite{intrigila2022fabricationandexperimental}
+      & Bistable tensegrity-like & Single-material & None & Experiment \\
+      & lattice unit cell & 3D print & & (quasi-static/impact) \\[2pt]
+    Mo et~al.\ 2023~\cite{mo2023accelerated}
+      & Architected lattices & --- (simulation) & Multifidelity BO & Simulation \\
+      & & & & (+ sparse high-fid.) \\[2pt]
+    \textbf{This work}
+      & Tensegrity-inspired & Multi-material & Experiment-driven & Physical \\
+      & $T_3$ prism (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & experiment \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
 
 \subsection{Multi-Material 3D Printing of PLA/TPU Composites}
 
@@ -339,8 +372,8 @@ and for ABS--TPU honeycombs~\cite{khatri2024energy}. Neither study is itself a
 tensegrity, but both establish the rigid--soft co-printing route we adopt. Ye
 et~al.~\cite{ye2023multimaterial}
 introduced a \emph{wrapping-based} strategy in which rigid cores are
-encapsulated by continuous soft skins, preventing interface delamination
-and enabling cyclic durability, something we take inspiration from in our
+encapsulated by continuous soft skins, reported to reduce interface
+delamination under cyclic loading, something we take inspiration from in our
 designs.\todo{Consider adding genuinely tensegrity-inspired 3D-printed
 references to strengthen this background (Edison T4): Bauer et~al.\ 2021
 (\emph{Adv.\ Mater.}, doi:10.1002/adma.202005647); Pajunen et~al.\ 2021
@@ -353,12 +386,12 @@ references to strengthen this background (Edison T4): Bauer et~al.\ 2021
 composites~\citep{arifvianto2022mechanicalpropertiesof,
 ruwais2025mechanicalperformanceof} report quantitative bounds on
 stiffness, strength, and energy absorption for the same PLA--TPU pair
-used here, while fused filament fabrication (FFF) PLA fatigue
+used here, while FDM PLA fatigue
 data~\citep{ezeh2018onthefatigue, vanaei2021multiscaledamageanalysis}
 inform conservative design bounds for the rigid struts.
 Architected multi-material lattices with co-printed compliant skins
 have been explicitly designed for high specific energy
-absorption~\citep{yavas2022designandfabrication}, with FFF-specific
+absorption~\citep{yavas2022designandfabrication}, with FDM-specific
 multimaterial interface adhesion (notably TPU bonded to rigid
 co-printed substrates) characterized
 in~\citep{caminero2019printingparameters}; recent surveys catalogue the
@@ -382,8 +415,9 @@ robustness~\citep{ament2023logei}, noisy expected hypervolume
 improvement for multi-objective settings~\citep{daulton2021nehvi},
 input-noise-robust acquisitions~\citep{daulton2022robust}, and
 evolution-guided constrained multi-objective BO for self-driving
-labs~\citep{low2024evolution}. Mixed/categorical search spaces—needed
-here for the discrete connectivity-topology variable—have dedicated
+labs~\citep{low2024evolution}. Mixed/categorical search spaces---needed
+for the planned connectivity-topology extension rather than the
+continuous $T_3$-prism prototype studied here---have dedicated
 treatments in BOCS~\citep{baptista2018bocs} and the
 one-hot-with-rounded-kernel construction
 of~\citep{garridomerchan2020dealingwithcategorical}. BO has been
@@ -408,38 +442,50 @@ calibrate from first principles.
 \label{sec:methods:parameterization}
 
 We parameterize a family of tensegrity-inspired unit cells via four
-groups of design variables:
+groups of design variables. For the working $T_3$-prism prototype that
+defines the initial BO search space (Section~\ref{sec:methods:bo}),
+only the first two groups are active and all of their variables are
+\emph{continuous}; the connectivity-topology and tiling groups are
+held fixed for this prototype and are listed here as planned
+extensions of the design family:
 \begin{itemize}
   \item \textbf{PLA compression members.} Strut diameter $d_s$ and
     length $\ell_s$, with the slenderness ratio $\ell_s / d_s$ bounded
     away from buckling-dominated regimes.
   \item \textbf{TPU tension elements.} Cross-sectional area $A_t$ (or
     equivalent diameter $d_t$ for circular cross-sections).
-  \item \textbf{Connectivity topology.} Selected from a discrete set of
-    candidate unit cells (e.g., truncated-tetrahedral, prism-based, and
-    octahedral variants); the design vector encodes a categorical
-    choice.
-  \item \textbf{Unit-cell tiling.} Number of cells $N_x \times N_y
-    \times N_z$ and the orientation of each cell relative to the impact
-    direction.
+  \item \textbf{Connectivity topology (future extension).} Selected
+    from a discrete set of candidate unit cells (e.g.,
+    truncated-tetrahedral, prism-based, and octahedral variants); when
+    activated, the design vector would encode this as a categorical
+    choice. It is held fixed at the $T_3$ prism for the present
+    campaign.
+  \item \textbf{Unit-cell tiling (future extension).} Number of cells
+    $N_x \times N_y \times N_z$ and the orientation of each cell
+    relative to the impact direction; held fixed at a single cell here.
 \end{itemize}
-\todo{Specify exact lower/upper bounds, manufacturing-feasibility
-constraints, and the categorical-encoding scheme used by the BO loop.
-Pull from the Edison TPU/PETG search-space synthesis once available.}
+\todo{Specify exact manufacturing-feasibility constraints once
+finalized; the connectivity-topology categorical encoding is deferred
+until that variable is activated beyond the $T_3$ prism.}
 
 \paragraph{Working prototype} The first instance of this family used
 to validate the fabrication and test pipeline is a three-strut
-($T_3$) tensegrity prism scaled to a $\sim$50\,mm bounding box, with
-$d_s = $ \todo{strut diameter} and a cable diameter $d_t$ swept over
-the FFF-resolvable set $\{1.2, 1.8, 2.4, 3.0, 4.5\}$\,\si{mm}. Under
-the prism's $D_3$ symmetry the twelve member-diameter axes collapse
-to four orbit axes (one strut orbit and three cable orbits: saddle,
-top, bottom), which keeps the initial design vector low-dimensional
-while leaving room to relax to per-member diameters once the
-saddle/top/bottom orbits have been individually
-characterized.\todo{Cite the heterogeneous-parameters Edison
-LITERATURE\_HIGH brief (\texttt{5191cf4d}) on D3-symmetric vs.\
-fully-per-member parameterization.} Figure~\ref{fig:printed-prototypes}
+($T_3$) tensegrity prism scaled to a $\sim$50\,mm bounding box. As
+implemented in the BO harness, this working prototype exposes five
+continuous design variables---base radius $R$, cell height $H$, twist
+angle $\theta$, a single strut diameter $d_s$, and a single cable
+(tendon) diameter $d_t$---over the ranges listed in
+Table~\ref{tab:design-vars}; the cable diameter $d_t$ is treated as a
+\emph{continuous} variable on $[3.0, 5.5]$\,\si{mm} rather than a
+discrete set. Under the prism's $D_3$ symmetry all struts share one
+diameter and all cables share one diameter, so the present
+parameterization uses a single strut-diameter axis and a single
+cable-diameter axis (two member-diameter axes), leaving room to relax
+to per-orbit (saddle, top, bottom) or fully per-member diameters once
+the individual orbits have been characterized.\todo{Cite the
+heterogeneous-parameters Edison LITERATURE\_HIGH brief
+(\texttt{5191cf4d}) on $D_3$-symmetric vs.\ fully-per-member
+parameterization.} Figure~\ref{fig:printed-prototypes}
 shows the parametric CAD model alongside an as-printed prototype of this
 working $T_3$ prism.
 
@@ -465,10 +511,8 @@ working $T_3$ prism.
   \end{tabular}
 \end{table}%
 \todo{The cable-diameter lower bound (3.0\,mm) is set by the Bambu
-  auto-support detection floor; reconcile this continuous range with the
-  FFF-resolvable categorical set $\{1.2,1.8,2.4,3.0,4.5\}$\,mm stated above
-  for the working prototype, and add manufacturing-feasibility constraints and
-  the categorical-encoding scheme for the connectivity-topology variable.}
+  auto-support detection floor; add the remaining
+  manufacturing-feasibility constraints once finalized.}
 
 \begin{figure}[t]
   \centering
@@ -597,7 +641,7 @@ Full workflow details are provided in the Supplementary Information.
     from the project's build history: the OpenSCAD $T_3$-prism render
     (CAD), the dual-nozzle Bambu Studio slice with PLA on the left extruder
     and TPU on the right (slicing), an in-progress H2D print of the prism
-    batch (FFF), an as-printed specimen (post-processing), and the
+    batch (FDM), an as-printed specimen (post-processing), and the
     bungee-assisted drop-tower base plate with accelerometer (testing).}
   \label{fig:fab-workflow}
 \end{figure*}%
@@ -714,31 +758,53 @@ input-noise-robust acquisition of Daulton
 et~al.~\cite{daulton2022robust} and
 the evolution-guided constrained variant of Low
 et~al.~\cite{low2024evolution}.
-The discrete connectivity-topology variable is handled with the
-mixed-search-space construction
-of~\citep{garridomerchan2020dealingwithcategorical}; the BOCS
-combinatorial baseline~\citep{baptista2018bocs} is reported for
-comparison.
+The working $T_3$-prism search space is fully continuous (the five
+variables of Table~\ref{tab:design-vars}), so no categorical encoding
+is required for the present campaign; the mixed-search-space
+constructions of~\citep{garridomerchan2020dealingwithcategorical} and
+the BOCS combinatorial baseline~\citep{baptista2018bocs} are noted as
+the route for the future connectivity-topology categorical
+(Section~\ref{sec:methods:parameterization}) rather than as part of
+the current loop.
 
-\todo{Add: kernel choice (e.g.\ Mat\'ern-5/2), input warping, normalization,
-batch size $q$, total budget $T$, initialization strategy (LHS or
-Sobol), and seed protocol.}
+The GP surrogate uses a Mat\'ern-5/2 kernel with automatic relevance
+determination (ARD), i.e.\ a separate length scale per input dimension,
+so that per-variable sensitivities can be read directly from the fitted
+length scales. Inputs are normalized to the unit cube and outputs are
+standardized; observation noise is \emph{inferred} by the model (a
+learned homoscedastic noise level) rather than fixed a priori. The
+campaign budget is $T = 10$ sequential batches of $q = 5$ prints each
+(50 specimens total), initialized with the $n = 9$ Sobol batch of
+Table~\ref{tab:design-vars}. Random seeds for the Sobol generator and
+the acquisition optimizer are recorded per batch so that each
+recommendation is reproducible.\todo{Confirm the final budget
+($T=10$ batches of $q=5$) against printer throughput once the campaign
+is underway.}
 
 \paragraph{Implementation status.} The campaign harness is built on
-Ax's \texttt{HierarchicalSearchSpace} so that printer-feasibility
-constraints (e.g.\ the cable-diameter categorical depending on the
-chosen connectivity topology) can be encoded directly in the search
-space rather than enforced post hoc. The first physical batch consists
-of $n = 9$ specimens generated by a Sobol sequence over the four
-$D_3$-orbit axes of the working $T_3$ prism and printed in a single
-$3 \times 3$ plate layout. For the present ${\le}25$-dimensional
-parameterization the default acquisition pairing is sparse
-axis-aligned subspace BO (SAASBO) with qNEHVI; escalation to trust-region
-BO (TuRBO) is planned only if larger
+the Ax platform~\citep{pmlr-v293-olson25a}. The working $T_3$-prism
+search space is the five-variable continuous box of
+Table~\ref{tab:design-vars}; Ax's \texttt{HierarchicalSearchSpace}
+machinery is reserved for the planned topology/tiling extensions
+(Section~\ref{sec:methods:parameterization}) and is not exercised by
+the current continuous-only prototype. The first physical batch
+consists of $n = 9$ specimens generated by a Sobol sequence over these
+five variables and printed in a single $3 \times 3$ plate layout.
+For this ${\sim}5$--$6$-variable space the default acquisition pairing
+is sparse axis-aligned subspace BO (SAASBO) with qNEHVI. We retain
+SAASBO even though the dimensionality is modest because its strong
+priors on length scales tend to improve uncertainty quantification and
+predictive accuracy at the small sample sizes typical of physical
+campaigns, not only in high-dimensional settings; escalation to
+trust-region BO (TuRBO) is planned only if larger
 per-member-diameter tilings push the design space well beyond this
-regime.\todo{Cite the BO scaffolding (PR~\#30), the T3-prism Sobol
-batch (PR~\#35), and the heterogeneous-parameter Edison brief
-(\texttt{5191cf4d}) once those branches land in \texttt{main}.}
+regime. The campaign code and recommended batches will be archived at
+a Zenodo-minted DOI mirroring the GitHub
+repository.\todo{Insert the Zenodo DOI and release version for the
+campaign code once the repository snapshot is published; cite the BO
+scaffolding (PR~\#30), the $T_3$-prism Sobol batch (PR~\#35), and the
+heterogeneous-parameter Edison brief (\texttt{5191cf4d}) once those
+branches land in \texttt{main}.}
 
 Once the campaign produces model data, the fitted surrogate is audited
 with the leave-one-out cross-validation and parameter-sensitivity
@@ -772,6 +838,66 @@ diagnostics of Figs.~\ref{fig:loocv} and~\ref{fig:sensitivity}.
     Fig.~\ref{fig:loocv}.}
   \label{fig:sensitivity}
 \end{figure}
+
+\subsection{Metal-Analog Validation}
+\label{sec:methods:validation}
+
+To test whether the rankings learned on the printed PLA/TPU specimens
+generalize beyond the as-printed polymer system, a final validation
+campaign reproduces a subset of the $T_3$-prism designs as
+\emph{metal analogs} built from hollow aluminum rods (compression
+members) and stainless-steel threaded cables (tension members), using
+the same $R$, $H$, $\theta$, and member-diameter parameterization.
+Rather than fabricating only the top-ranked geometries, we
+deliberately span the predicted performance range: a few designs the
+surrogate predicts to be \emph{worst}-performing, a few
+\emph{mediocre}, and a few \emph{best}-performing are each built in
+both material systems. Comparing the measured ordering of the
+PLA/TPU specimens against their hollow-aluminum/stainless-steel
+counterparts tests whether both systems preserve the same
+rank ordering of energy-absorption performance, which would indicate
+that the optimization transfers across material systems rather than
+overfitting to the printed polymers.
+Table~\ref{tab:metal-validation} reports the planned rank-ordering
+comparison and Fig.~\ref{fig:metal-validation} shows the assembled
+metal-analog and printed-polymer specimens for each performance tier.
+
+\begin{table}[ht]
+  \centering
+  \caption{\emph{Placeholder (data pending).} Planned rank-ordering
+    validation: representative $T_3$-prism designs predicted to be
+    worst-, mid-, and best-performing, each fabricated as a printed
+    PLA/TPU specimen and as a hollow-aluminum-rod / stainless-steel-cable
+    metal analog. Entries record the measured performance metric (e.g.\
+    SEA or peak transmitted force) and the resulting rank within each
+    material system; agreement of the two rankings indicates the
+    optimization transfers across material systems.}
+  \label{tab:metal-validation}
+  \begin{tabular}{@{}llcc@{}}
+    \toprule
+    Predicted tier & Design ID & PLA/TPU (rank) & Al/SS (rank) \\
+    \midrule
+    Worst    & \textit{D--w1} & \textit{--} & \textit{--} \\
+    Worst    & \textit{D--w2} & \textit{--} & \textit{--} \\
+    Mediocre & \textit{D--m1} & \textit{--} & \textit{--} \\
+    Mediocre & \textit{D--m2} & \textit{--} & \textit{--} \\
+    Best     & \textit{D--b1} & \textit{--} & \textit{--} \\
+    Best     & \textit{D--b2} & \textit{--} & \textit{--} \\
+    \bottomrule
+  \end{tabular}
+\end{table}%
+\todo[inline,color=orange!30]{Populate Table~\ref{tab:metal-validation}
+  with measured metrics and ranks once the metal-analog validation
+  specimens (hollow Al rods + stainless-steel threaded cables) and their
+  PLA/TPU equivalents have been built and tested.}
+
+\figplaceholder{metal-validation}{Assembled validation specimens for
+  each predicted performance tier (worst / mediocre / best), shown as
+  printed PLA/TPU builds alongside their hollow-aluminum-rod and
+  stainless-steel-threaded-cable metal analogs, with callouts marking
+  the aluminum compression members, the threaded steel tension cables,
+  and the strut-end cable anchors. Photographs to be added once the
+  specimens are fabricated.}
 
 % =============================================================================
 \section{Results}
