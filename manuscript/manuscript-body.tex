@@ -268,6 +268,15 @@ no closed-loop optimization) and Mo et~al.~\cite{mo2023accelerated}
     optimization.
 \end{enumerate}
 
+The present study is deliberately scoped to single-cell, fixed-topology
+$T_3$-prism specimens under \emph{axial} quasi-static and drop-weight
+loading. Off-axis and combined loading, multi-hit and cyclic
+durability, and landing-attitude variability are outside the scope of
+this paper and are identified as future work
+(Section~\ref{sec:discussion}); the novelty and generality claims below
+are correspondingly scoped to this restricted prototype design space
+rather than to tensegrity-inspired absorbers in general.
+
 \begin{figure*}[t]
   \centering
   \includegraphics[width=0.7\textwidth]{../figures/overview-updated.png}
@@ -485,7 +494,15 @@ to per-orbit (saddle, top, bottom) or fully per-member diameters once
 the individual orbits have been characterized.\todo{Cite the
 heterogeneous-parameters Edison LITERATURE\_HIGH brief
 (\texttt{5191cf4d}) on $D_3$-symmetric vs.\ fully-per-member
-parameterization.} Figure~\ref{fig:printed-prototypes}
+parameterization.} The joint diameter $d_j$ is held fixed at
+\SI{7.0}{mm} rather than optimized: it sets the printed strut-end cage
+that houses the internal cable anchors
+(Section~\ref{sec:methods:fabrication}), so it is constrained primarily by the
+TPU-tendon outlet count and the dual-nozzle clearance rather than by
+energy-absorption performance, and fixing it keeps the anchor geometry
+constant across specimens so that the five optimized variables are not
+confounded by joint-strength changes; relaxing $d_j$ is deferred to a
+follow-on joint-design study. Figure~\ref{fig:printed-prototypes}
 shows the parametric CAD model alongside an as-printed prototype of this
 working $T_3$ prism.
 
@@ -513,6 +530,22 @@ working $T_3$ prism.
 \todo{The cable-diameter lower bound (3.0\,mm) is set by the Bambu
   auto-support detection floor; add the remaining
   manufacturing-feasibility constraints once finalized.}
+
+\paragraph{As-built resolution of the continuous variables.} Although
+$d_s$ and $d_t$ are treated as continuous, the as-built cross-sections
+are discretized by the nozzle diameter, the slicer line width, and
+support interaction, so the effective search granularity is coarser
+than the nominal continuous box. The realized member diameter therefore
+changes in steps set by the line-width quantization rather than
+continuously, and the smallest CAD change that yields a reliably
+distinguishable as-built member is bounded below by these slicer
+limits; the lower TPU-tendon bound (\SI{3.0}{mm}) is itself a
+workflow-specific limit tied to the Bambu auto-support detection floor
+on this H2D platform rather than a fundamental geometric one. We
+report measured as-built diameters alongside the commanded values so
+that the surrogate is fitted on realized geometry, and we treat the
+print-to-print dimensional spread as part of the inferred observation
+noise (Section~\ref{sec:methods:bo}).
 
 \begin{figure}[t]
   \centering
@@ -674,10 +707,13 @@ reproducible, the densification displacement $\delta_d$ is taken as the
 displacement at which the energy-absorption efficiency--displacement curve
 reaches its maximum ($\mathrm{d}\eta/\mathrm{d}\delta = 0$), and $F_{\max}$
 is the maximum force recorded \emph{within} the integration window
-$[0,\delta_d]$ rather than a global or post-densification peak.\todo{Cite the
-canonical cellular-absorber references for these definitions once added to the
-bib (Edison T26): Gibson \& Ashby; Avalle, Belingardi \& Montanini 2001; Tan
-et~al.\ 2005; Michailidis et~al.\ 2011.}
+$[0,\delta_d]$ rather than a global or post-densification peak. These
+energy-absorption-diagram definitions of densification displacement and
+compaction (energy-absorption) efficiency follow the canonical cellular-solid
+treatments of Gibson and Ashby~\citep{gibson1997cellular}, Avalle
+et~al.~\citep{avalle2001characterization}, Tan
+et~al.~\citep{tan2005dynamic}, and Michailidis
+et~al.~\citep{michailidis2011establishment}.
 
 \paragraph{Drop-weight impact.} Following Pajunen
 et~al.~\cite{pajunen2019design},
@@ -711,7 +747,7 @@ for the present axial-impact study.
   \caption{\emph{Illustrative example (synthetic data).} Template for the
     mechanism-oriented drop-test figures planned for the Results: (a) processed
     deceleration response of a rigid control vs.\ a tensegrity specimen
-    (SAE~J211 CFC-180 filtered), with event-based phase shading and numbered
+    (SAE~J211 CFC-180 filtered~\citep{saej211}), with event-based phase shading and numbered
     markers keyed to the schematic frames (b)--(d); (a2) cumulative-impulse
     subpanel showing the two traces transfer the same mass-normalized $\Delta v$,
     so the lower tensegrity peak reflects temporal redistribution rather than
@@ -728,7 +764,7 @@ for the present axial-impact study.
 slug-firing gas gun, and Polytec~QTec laser-Doppler vibrometer) each
 contribute a distinct raw observable; the mapping from each stream to
 BO-ready scalar objectives (SEA, VEA, $F_{\max}$, cushion-curve
-intercept, Gibson--Ashby relative density) is defined in five
+intercept, Gibson--Ashby relative density~\citep{gibson1997cellular}) is defined in five
 companion briefs and consolidated in a cross-modality synthesis.\todo{%
 Cite the per-modality objective-function briefs (Edison
 LITERATURE\_HIGH \texttt{cfd30f3e}, \texttt{7d6b43bf},
@@ -746,18 +782,28 @@ The optimization loop maintains a Gaussian-process (GP) surrogate over
 the design space defined in
 Section~\ref{sec:methods:parameterization}. After each round of physical
 experiments, the GP is updated and an acquisition function is maximized
-to recommend the next batch of designs to fabricate. Implementation
-uses BoTorch~\citep{balandat2020botorch} with the
-log-Expected-Improvement (LogEI) acquisition~\citep{ament2023logei} for
-the single-objective baseline and noisy Expected Hypervolume Improvement
-(qNEHVI)~\citep{daulton2021nehvi} for the multi-objective case
-(simultaneously maximizing SEA and compaction efficiency while
-constraining peak transmitted force). When experimental noise dominates
-(e.g., between-print variability), we additionally evaluate the
+to recommend the next batch of designs to fabricate. The primary
+reported campaign is posed as a \emph{constrained multi-objective}
+problem: simultaneously maximize specific energy absorption (SEA) and
+compaction efficiency $\eta_c$ subject to an upper bound on peak
+transmitted force $F_{\max} \le F^{\star}$, where $F^{\star}$ is fixed
+from the rigid-control drop response so that admissible designs must
+out-cushion the uncushioned baseline. Implementation
+uses BoTorch~\citep{balandat2020botorch} with noisy Expected
+Hypervolume Improvement
+(qNEHVI)~\citep{daulton2021nehvi} as the acquisition function; the
+hypervolume reference point is anchored at the rigid-control
+$(\mathrm{SEA},\eta_c)$ pair so that improvement is measured against the
+no-absorber baseline. A single-objective
+log-Expected-Improvement (LogEI) run~\citep{ament2023logei} on SEA
+(with the same force constraint) is retained only as a baseline for
+quantifying the benefit of the multi-objective formulation. The
 input-noise-robust acquisition of Daulton
-et~al.~\cite{daulton2022robust} and
-the evolution-guided constrained variant of Low
-et~al.~\cite{low2024evolution}.
+et~al.~\cite{daulton2022robust} and the evolution-guided constrained
+variant of Low et~al.~\cite{low2024evolution} are held in reserve as a
+contingency, to be adopted only if between-print variability is found
+to dominate the objective signal; they are not part of the default
+reported loop.
 The working $T_3$-prism search space is fully continuous (the five
 variables of Table~\ref{tab:design-vars}), so no categorical encoding
 is required for the present campaign; the mixed-search-space
@@ -792,12 +838,17 @@ the current continuous-only prototype. The first physical batch
 consists of $n = 9$ specimens generated by a Sobol sequence over these
 five variables and printed in a single $3 \times 3$ plate layout.
 For this ${\sim}5$--$6$-variable space the default acquisition pairing
-is sparse axis-aligned subspace BO (SAASBO) with qNEHVI. We retain
+is sparse axis-aligned subspace BO (SAASBO)~\citep{eriksson2021saasbo}
+with qNEHVI. We retain
 SAASBO even though the dimensionality is modest because its strong
 priors on length scales tend to improve uncertainty quantification and
 predictive accuracy at the small sample sizes typical of physical
-campaigns, not only in high-dimensional settings; escalation to
-trust-region BO (TuRBO) is planned only if larger
+campaigns, not only in high-dimensional settings; to make this an
+empirical rather than asserted choice, the reported campaign benchmarks
+SAASBO against a standard single-task GP baseline with the same
+Mat\'ern-5/2 ARD kernel (retrospective leave-one-out calibration and
+predictive accuracy on the accumulated data). Escalation to
+trust-region BO (TuRBO)~\citep{eriksson2019turbo} is planned only if larger
 per-member-diameter tilings push the design space well beyond this
 regime. The campaign code and recommended batches will be archived at
 a Zenodo-minted DOI mirroring the GitHub
@@ -858,7 +909,16 @@ PLA/TPU specimens against their hollow-aluminum/stainless-steel
 counterparts tests whether both systems preserve the same
 rank ordering of energy-absorption performance, which would indicate
 that the optimization transfers across material systems rather than
-overfitting to the printed polymers.
+overfitting to the printed polymers. We treat this as a
+\emph{stringent, exploratory} transfer test rather than a presumed
+one-to-one validation: the deformation modes, joint compliance,
+friction, pretension behavior, and strain-rate sensitivity all differ
+between the PLA/TPU and aluminum/steel systems, so agreement is not
+expected a priori. The rank-preservation criterion is fixed in advance
+as the Spearman rank-correlation coefficient $\rho_s$ between the two
+material systems' orderings of the primary metric (SEA), with peak
+transmitted force reported as a secondary ranking; $\rho_s$ near unity
+would support cross-system transfer of the learned design ranking.
 Table~\ref{tab:metal-validation} reports the planned rank-ordering
 comparison and Fig.~\ref{fig:metal-validation} shows the assembled
 metal-analog and printed-polymer specimens for each performance tier.
