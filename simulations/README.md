@@ -47,6 +47,7 @@ simulations/
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 ├── bo_evaluator.py       # PR #30/#35 parameterization -> Tier-C objective bridge
 ├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> C→B→A ladder (MuJoCo/PyBullet/PyChrono + Newton + PolyFEM) + analysis
+├── sobol_t3_violins.py   # Plotly violin plots (jittered raw points) of the Sobol campaign measurements
 ├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
 ├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
 ├── render_regimes.py     # 3D GIF/MP4 of both regime drops (suspended payload)
@@ -90,6 +91,11 @@ python simulations/sobol_t3_campaign.py --n 512 --n-tierb 24 \
 # -> outputs/sobol_t3_{tierC,tierB,tierA,pybullet,pychrono}.csv
 # -> outputs/sobol_t3_{pareto,sensitivity,tierC_vs_tierB,engine_ladder,tierA}.png
 # -> sobol_t3_analysis.md  (results & interpretation)
+
+# Violin plots (jittered raw points) of the campaign measurements:
+#   plotly.express.violin(..., points="all", box=True) with jitter.
+python simulations/sobol_t3_violins.py
+# -> outputs/sobol_t3_violin_{objectives,engines}.{png,html}
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py

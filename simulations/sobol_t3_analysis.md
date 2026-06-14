@@ -179,3 +179,5 @@ two-at-a-time across processes so several PolyFEM solves overlap.
 - `outputs/sobol_t3_tierC_vs_tierB.png` — Tier-C↔Tier-B ranking scatter
 - `outputs/sobol_t3_engine_ladder.png` — cross-engine ranking agreement (C→B→A)
 - `outputs/sobol_t3_tierA.png` — Tier-A PolyFEM settled height + peak g vs geometry
+- `outputs/sobol_t3_violin_objectives.{png,html}` — violin plots (jittered raw points) of the Tier-C objectives per regime (`sobol_t3_violins.py`)
+- `outputs/sobol_t3_violin_engines.{png,html}` — violin plots (jittered raw points) of per-engine peak g across the C→B→A ladder (`sobol_t3_violins.py`)
