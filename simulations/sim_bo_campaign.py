@@ -85,6 +85,11 @@ PARAM_NAMES = [p["name"] for p in PARAMETERS]
 
 OBJECTIVE_NAMES = ["F_peak_N", "SEA_J_per_g", "eta"]
 
+# Designs that fail ``PrintableDesign.check()`` are scored with the penalised
+# ``bo_evaluator._INFEASIBLE_F_PEAK_N`` (5e4 N); anything below this cutoff is
+# a genuine (feasible) evaluation kept on the Pareto front / in the figures.
+F_PEAK_FEASIBLE_MAX_N = 4.0e4
+
 REGIMES: dict[str, Regime] = {"crutch": CRUTCH, "lander": NASA_LANDER}
 
 # qNEHVI reference thresholds (the hypervolume reference point).  These are
@@ -222,7 +227,7 @@ def _pareto_rows(rows: list[dict]) -> list[dict]:
     directions = np.array([-1.0, +1.0, +1.0])  # min F_peak, max SEA, max eta
     objs = np.array([[r[k] for k in OBJECTIVE_NAMES] for r in rows])
     # Drop penalised (infeasible) rows from the front.
-    finite = objs[:, 0] < 4.0e4
+    finite = objs[:, 0] < F_PEAK_FEASIBLE_MAX_N
     mask = np.zeros(len(rows), dtype=bool)
     if finite.any():
         sub_mask = _pareto_mask(objs[finite], directions)
@@ -244,7 +249,7 @@ def make_figures(all_rows: dict[str, list[dict]], outdir: Path) -> None:
         (axes[1], "eta", "eta  [maximize]"),
     ):
         for rk, rows in all_rows.items():
-            feasible = [r for r in rows if r["F_peak_N"] < 4.0e4]
+            feasible = [r for r in rows if r["F_peak_N"] < F_PEAK_FEASIBLE_MAX_N]
             if not feasible:
                 continue
             x = [r["F_peak_N"] for r in feasible]
@@ -276,7 +281,7 @@ def make_figures(all_rows: dict[str, list[dict]], outdir: Path) -> None:
         (axes[2], "eta", "max", "best eta — higher better"),
     ):
         for rk, rows in all_rows.items():
-            feasible = [r for r in rows if r["F_peak_N"] < 4.0e4]
+            feasible = [r for r in rows if r["F_peak_N"] < F_PEAK_FEASIBLE_MAX_N]
             if not feasible:
                 continue
             vals = np.array([r[key] for r in feasible])
