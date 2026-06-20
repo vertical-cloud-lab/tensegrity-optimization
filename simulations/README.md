@@ -46,6 +46,7 @@ simulations/
 ├── printable_design.py   # PLA strut + TPU 85A tendon material model + class-1 check
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 ├── bo_evaluator.py       # PR #30/#35 parameterization -> Tier-C objective bridge
+├── sim_bo_campaign.py    # closed-loop sim-only Ax/qNEHVI BO over the PR #35 T3 box (mirror of #35, sim objectives)
 ├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> C→B→A ladder (MuJoCo/PyBullet/PyChrono + Newton + PolyFEM) + analysis
 ├── sobol_t3_violins.py   # Plotly violin plots (jittered raw points) of the Sobol campaign measurements
 ├── sobol_t3_diagnostics.py # Edison-review ablations: base-reaction force, CFC on/off, constant-mass strut sweep, twist plumbing audit
@@ -104,6 +105,12 @@ python simulations/sobol_t3_violins.py
 python simulations/sobol_t3_diagnostics.py --n 48
 # -> outputs/sobol_t3_diag_{base_reaction,cfc,constmass}.csv
 # -> outputs/sobol_t3_diagnostics.png + sobol_t3_diagnostics.md
+
+# Closed-loop simulation-only Bayesian optimization over the PR #35 T3 box
+#   (Ax/qNEHVI, objectives = Tier-C MuJoCo sim; mirror of #35's hardware loop)
+python simulations/sim_bo_campaign.py --n-iter 40   # both regimes
+# -> outputs/sim_bo_{crutch,lander}.csv + *_pareto.csv
+# -> outputs/sim_bo_{pareto,convergence}.png + sim_bo_campaign.md
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
