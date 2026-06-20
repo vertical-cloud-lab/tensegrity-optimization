@@ -533,8 +533,9 @@ def plot_seed_cv(tier: str, regime_key: str, seed: int, ax_client,
 # --------------------------------------------------------------------------
 def run_tier_regime(tier: str, regime_key: str, *, seeds: list[int],
                     n_iter: int, cfc180: bool, outdir: Path) -> None:
+    n_seed_designs = len(bo._t3_seed_designs())
     print(f"\n=== sim-only BO: {TIER_LABELS[tier]} · {regime_key} "
-          f"({len(seeds)} seeds × ({3}+{n_iter}) evals) ===")
+          f"({len(seeds)} seeds × ({n_seed_designs}+{n_iter}) evals) ===")
     by_seed: dict[int, list[dict]] = {}
     clients: dict[int, object] = {}
     all_rows: list[dict] = []
