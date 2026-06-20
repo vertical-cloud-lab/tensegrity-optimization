@@ -143,27 +143,37 @@ def _eval_tier_c(params: dict, regime: Regime, cfc180: bool) -> tuple[dict, bool
 def _eval_tier_b(params: dict, regime: Regime, _cfc180: bool) -> tuple[dict, bool]:
     """Newton/Warp XPBD drop → minimize peak transmitted force.
 
-    Newton builds the prism at the fixed equilibrium twist (the twist axis is
-    not consumed at Tier-B, same limitation as the Sobol campaign), and only
-    the payload-acceleration trace is available, so this is single-objective.
+    The drop is seeded with the **regime's impact velocity** so crutch and
+    lander loadings are physically distinct (Edison review 491f90ae found the
+    previous fixed-drop-height build was regime-blind: matched crutch/lander
+    ``F_peak`` ratio 0.998).  Newton still builds the prism at the fixed
+    equilibrium twist (the twist axis is not consumed at Tier-B, same
+    limitation as the Sobol campaign), and only the payload-acceleration trace
+    is available, so this is single-objective.
     """
     design = bo.parameterization_to_design(params)
     if design.check():
         return {"F_peak_N": _INFEASIBLE["F_peak_N"]}, False
     import newton_drop as nd
 
+    # Seed the regime-defined impact velocity so the crutch (1.4 m/s) and the
+    # lander (9.8 m/s) hit the floor at genuinely different speeds; without
+    # this the fixed drop height made Tier-B regime-blind (Edison review
+    # 491f90ae: matched crutch/lander F_peak ratio was 0.998).
     builder, _pids, payload_pid = nd.build_model(
         radius_m=design.radius_m,
         height_m=design.height_m,
         strut_dia_m=design.strut_diameter_m,
         tendon_dia_m=design.tendon_diameter_m,
         payload_mass_kg=regime.payload_mass_kg,
-        drop_height_m=0.05,
+        drop_height_m=0.005,
+        impact_velocity_mps=regime.drop_velocity_mps,
     )
     res = nd.simulate(builder, payload_pid, sim_time_s=0.05, dt=2.5e-5)
-    az = np.asarray(res["payload_az"], dtype=float)
-    finite = az[np.isfinite(az)]
-    peak_g = float(np.max(np.abs(finite)) / 9.81) if finite.size else float("nan")
+    # Robust peak: gate the XPBD start-up spike and lightly smooth, so the
+    # peak reflects the real ground-contact deceleration and is velocity-
+    # sensitive (raw single-step peak was a numerical artifact).
+    peak_g = nd.peak_decel_g(res)
     if not np.isfinite(peak_g):
         return {"F_peak_N": _INFEASIBLE["F_peak_N"]}, False
     return {"F_peak_N": peak_g * 9.81 * regime.payload_mass_kg}, True
@@ -295,11 +305,13 @@ def run_campaign(tier: str, regime_key: str, *, seed: int, n_iter: int,
 # --------------------------------------------------------------------------
 # CSV I/O.
 # --------------------------------------------------------------------------
-def _write_csv(path: Path, rows: list[dict]) -> None:
+def _write_csv(path: Path, rows: list[dict],
+               fieldnames: list[str] | None = None) -> None:
     if not rows:
         return
-    fieldnames = ["tier", "regime", "seed", "trial", "stage", "feasible",
-                  *PARAM_NAMES, "F_peak_N", "SEA_J_per_g", "eta"]
+    if fieldnames is None:
+        fieldnames = ["tier", "regime", "seed", "trial", "stage", "feasible",
+                      *PARAM_NAMES, "F_peak_N", "SEA_J_per_g", "eta"]
     with path.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)
         w.writeheader()
@@ -444,31 +456,56 @@ def plot_seed_pareto(tier: str, regime_key: str, seed: int,
     plt.close(fig)
 
 
-def _cv_signal(observed: np.ndarray, predicted: np.ndarray) -> tuple[float, float]:
-    """Return (R², Spearman ρ) of predicted vs observed for a CV fold set."""
+def _cv_signal(observed: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
+    """Range-normalized predictive-signal diagnostics for a CV fold set.
+
+    Returns a dict with:
+      ``r2``        coefficient of determination (predicted vs observed);
+      ``rho``       Spearman rank correlation;
+      ``nrmse``     RMSE normalized by the observed range (max-min) — small
+                    even for near-constant outcomes, so it separates "good
+                    fit" from "nothing to fit";
+      ``null_skill`` 1 - RMSE_GP / RMSE_null, where RMSE_null is the
+                    constant-mean predictor.  > 0 means the GP beats a
+                    mean-only null; ~0 means the outcome carries no learnable
+                    signal at decision scale (Edison review 491f90ae).
+      ``n``         number of finite folds used.
+
+    Reporting NRMSE + null-skill alongside R²/ρ is the diagnostic Edison
+    recommended so a tiny-variance outcome (e.g. Tier-C lander ``eta``) is not
+    mistaken for model failure.
+    """
     from scipy.stats import spearmanr
 
     obs = np.asarray(observed, dtype=float)
     pred = np.asarray(predicted, dtype=float)
     ok = np.isfinite(obs) & np.isfinite(pred)
     obs, pred = obs[ok], pred[ok]
+    nan = {"r2": float("nan"), "rho": float("nan"), "nrmse": float("nan"),
+           "null_skill": float("nan"), "n": int(obs.size)}
     if obs.size < 3 or np.allclose(obs, obs[0]):
-        return float("nan"), float("nan")
+        return nan
     ss_res = float(np.sum((obs - pred) ** 2))
     ss_tot = float(np.sum((obs - obs.mean()) ** 2))
     r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else float("nan")
     rho = float(spearmanr(obs, pred).statistic)
-    return r2, rho
+    rmse_gp = float(np.sqrt(ss_res / obs.size))
+    rmse_null = float(np.sqrt(ss_tot / obs.size))
+    rng = float(obs.max() - obs.min())
+    nrmse = rmse_gp / rng if rng > 0 else float("nan")
+    null_skill = 1.0 - rmse_gp / rmse_null if rmse_null > 0 else float("nan")
+    return {"r2": r2, "rho": rho, "nrmse": nrmse, "null_skill": null_skill,
+            "n": int(obs.size)}
 
 
 def plot_seed_cv(tier: str, regime_key: str, seed: int, ax_client,
-                 outdir: Path) -> dict[str, tuple[float, float]]:
+                 outdir: Path) -> dict[str, dict[str, float]]:
     """LOO-CV observed-vs-predicted per metric for one seed's fitted model.
 
     Uses Ax's built-in :func:`ax.adapter.cross_validation.cross_validate` on a
     BoTorch surrogate refit over the campaign's trial data — the standard way
     to check whether the GP has learned predictive signal for each outcome.
-    Returns ``{metric: (R², Spearman ρ)}``.
+    Returns ``{metric: {r2, rho, nrmse, null_skill, n}}``.
     """
     from ax.adapter.cross_validation import cross_validate
     from ax.adapter.registry import Generators
@@ -498,7 +535,7 @@ def plot_seed_cv(tier: str, regime_key: str, seed: int, ax_client,
                 sem[m].append(float(np.sqrt(max(
                     res.predicted.covariance_matrix[m][m], 0.0))))
 
-    signal: dict[str, tuple[float, float]] = {}
+    signal: dict[str, dict[str, float]] = {}
     fig, axes = plt.subplots(1, len(obj_names), figsize=(4.6 * len(obj_names), 4.4),
                              squeeze=False)
     color = REGIME_COLORS[regime_key]
@@ -506,8 +543,8 @@ def plot_seed_cv(tier: str, regime_key: str, seed: int, ax_client,
         o = np.array(obs[m], dtype=float)
         p = np.array(pred[m], dtype=float)
         e = np.array(sem[m], dtype=float)
-        r2, rho = _cv_signal(o, p)
-        signal[m] = (r2, rho)
+        sig = _cv_signal(o, p)
+        signal[m] = sig
         ax.errorbar(o, p, yerr=e, fmt="o", color=color, ms=4, alpha=0.7,
                     ecolor="0.6", elinewidth=0.8, capsize=2)
         if o.size:
@@ -518,7 +555,9 @@ def plot_seed_cv(tier: str, regime_key: str, seed: int, ax_client,
                     alpha=0.7)
         ax.set_xlabel(f"observed {m}")
         ax.set_ylabel(f"CV-predicted {m}")
-        ax.set_title(f"{m}\nR²={r2:.2f}  ρ={rho:.2f}", fontsize=10)
+        ax.set_title(f"{m}\nR²={sig['r2']:.2f}  ρ={sig['rho']:.2f}\n"
+                     f"NRMSE={sig['nrmse']:.3f}  null-skill={sig['null_skill']:.2f}",
+                     fontsize=9)
         ax.grid(alpha=0.3)
     fig.suptitle(f"{TIER_LABELS[tier]} · {regime_key} · seed {seed} — "
                  f"LOO cross-validation (predictive signal)")
@@ -550,14 +589,25 @@ def run_tier_regime(tier: str, regime_key: str, *, seeds: list[int],
     _write_csv(outdir / f"sim_bo_{tier}_{regime_key}_pareto.csv",
                _pareto_rows(all_rows, tier))
 
+    cv_summary: list[dict] = []
     for seed in seeds:
         plot_seed_convergence(tier, regime_key, seed, by_seed[seed], outdir)
         plot_seed_pareto(tier, regime_key, seed, by_seed[seed], outdir)
         sig = plot_seed_cv(tier, regime_key, seed, clients[seed], outdir)
         if sig:
-            txt = "  ".join(f"{m}:R²={r2:.2f}/ρ={rho:.2f}"
-                            for m, (r2, rho) in sig.items())
+            txt = "  ".join(
+                f"{m}:R²={s['r2']:.2f}/ρ={s['rho']:.2f}/"
+                f"NRMSE={s['nrmse']:.3f}/null-skill={s['null_skill']:.2f}"
+                for m, s in sig.items())
             print(f"  [{tier}/{regime_key}/seed{seed}] LOO-CV  {txt}")
+            for m, s in sig.items():
+                cv_summary.append({"tier": tier, "regime": regime_key,
+                                   "seed": seed, "metric": m, **s})
+    if cv_summary:
+        _write_csv(outdir / f"sim_bo_{tier}_{regime_key}_cv_summary.csv",
+                   cv_summary,
+                   fieldnames=["tier", "regime", "seed", "metric",
+                               "r2", "rho", "nrmse", "null_skill", "n"])
     plot_mean_convergence(tier, regime_key, by_seed, outdir)
     print(f"  -> wrote sim_bo_{tier}_{regime_key}.csv + per-seed/mean/CV figures")
 

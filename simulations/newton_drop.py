@@ -62,8 +62,18 @@ def axial_spring_ke(young_MPa: float, area_m2: float, length_m: float) -> float:
 def build_model(*, radius_m=0.10, height_m=0.20,
                 strut_dia_m=8.0e-3, tendon_dia_m=3.0e-3,
                 payload_mass_kg=1.0, drop_height_m=0.10,
+                impact_velocity_mps=0.0,
                 node_mass_kg=0.005):
-    """Build a Newton model of the prism + payload + ground."""
+    """Build a Newton model of the prism + payload + ground.
+
+    ``impact_velocity_mps`` seeds an initial downward velocity on every
+    particle so the cell already carries the regime-defined impact speed
+    at the start of the (short) free-fall over ``drop_height_m``.  This is
+    what makes the drop *regime-aware*: a crutch (1.4 m/s) and a lander
+    (9.8 m/s) hit the floor at very different speeds even though their
+    geometry and clearance are identical.  The default of ``0.0`` keeps the
+    historical pure-free-fall behaviour.
+    """
     builder = newton.ModelBuilder(up_axis="Z", gravity=-9.81)
 
     nodes = tprism_nodes(radius=radius_m, height=height_m,
@@ -71,18 +81,20 @@ def build_model(*, radius_m=0.10, height_m=0.20,
     # Lift so the lowest node starts at drop_height + small clearance.
     nodes[:, 2] += drop_height_m
 
+    init_vel = (0.0, 0.0, -float(impact_velocity_mps))
+
     # Add particles for the 6 prism nodes.
     pids = []
     for p in nodes:
         pid = builder.add_particle(pos=tuple(map(float, p)),
-                                   vel=(0.0, 0.0, 0.0),
+                                   vel=init_vel,
                                    mass=node_mass_kg)
         pids.append(pid)
 
     # Payload particle at the centroid of the top triangle.
     top_centroid = nodes[3:6].mean(axis=0)
     payload_pid = builder.add_particle(pos=tuple(map(float, top_centroid)),
-                                       vel=(0.0, 0.0, 0.0),
+                                       vel=init_vel,
                                        mass=payload_mass_kg)
 
     A_strut = np.pi * (0.5 * strut_dia_m) ** 2
@@ -157,6 +169,31 @@ def simulate(builder, payload_pid, *, sim_time_s=0.10, dt=2.5e-5):
 
     return dict(t=times, payload_z=pz, payload_vz=pvz,
                 payload_az=paz, dt=dt)
+
+
+def peak_decel_g(res, *, skip_ms: float = 2.0, smooth_ms: float = 0.3) -> float:
+    """Robust peak payload deceleration (in g) during the genuine impact.
+
+    The raw single-step finite-difference acceleration is dominated by a
+    numerical start-up spike at the first XPBD step (the seeded impact
+    velocity produces a huge ``(v[1]-v[0])/dt`` artifact), which is regime-
+    and velocity-*insensitive*.  This helper (a) discards the first
+    ``skip_ms`` of start-up transient and (b) lightly low-pass smooths the
+    acceleration over ``smooth_ms`` before taking the magnitude peak, so the
+    returned value reflects the real ground-contact deceleration and scales
+    with impact velocity (Edison review 491f90ae: the previous raw peak made
+    Tier-B regime-blind).
+    """
+    az = np.asarray(res["payload_az"], dtype=float)
+    dt = float(res["dt"])
+    az = np.nan_to_num(az, nan=0.0, posinf=0.0, neginf=0.0)
+    skip = min(len(az) - 1, max(1, int(skip_ms * 1e-3 / dt)))
+    az = az.copy()
+    az[:skip] = 0.0
+    w = max(1, int(smooth_ms * 1e-3 / dt))
+    if w > 1:
+        az = np.convolve(az, np.ones(w) / w, mode="same")
+    return float(np.max(np.abs(az)) / 9.81) if az.size else float("nan")
 
 
 def main():
