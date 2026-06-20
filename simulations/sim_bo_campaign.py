@@ -3,14 +3,27 @@
 
 This is the simulation-only analogue of PR #35's `bo/t3_prism_sobol_batch.py`.
 Where PR #35 emits a *single* Sobol batch for a human-in-the-loop print +
-bench-test round, this script closes the loop: Ax proposes designs, the
-Tier-C MuJoCo regime simulation (`bo_evaluator.evaluate_design`) scores them,
-and the results are fed straight back to the Ax model so a multi-objective
-qNEHVI surrogate drives the search.  Per @sgbaird (PR comment 4759514616):
+bench-test round, this script closes the loop: Ax proposes designs, a
+simulation scores them, and the results are fed straight back to the Ax model
+so a multi-objective qNEHVI surrogate drives the search.  Per @sgbaird
+(PR comment 4759514616):
 
     "run a Bayesian optimization campaign as you see fit using only
      simulations as the objective functions.  Mirror what's in #35, but
      using these kinds of simulations instead of real experiments."
+
+Follow-up (PR comment 4759900555) — separate the regimes, plot each random
+seed individually, add std-dev bands to the averaged-behaviour plots, repeat
+across the simulation tiers, and add Ax leave-one-out cross-validation (LOO-CV)
+plots per seed and model to check for predictive signal:
+
+    "the plotting of both crutch and lander on the same graphs is confusing
+     because of the scale differences.  Separate these out.  Generate
+     individual plots for each seed.  Also, add stdDev bands where applicable
+     for the average behavior plots.  Repeat this for each of the tier methods
+     ...  Also, create LOO-CV plots for each seed and model.  Ax has a built
+     in method for creating these plots.  I want to see if there is predictive
+     signal it's learning from."
 
 Design box (identical to PR #35 `bo/t3_prism_sobol_batch.PARAMETERS`):
 
@@ -23,37 +36,39 @@ Design box (identical to PR #35 `bo/t3_prism_sobol_batch.PARAMETERS`):
 Frozen (matching PR #35): topology=t3_prism, tiling=1x1x1, tpu_shore=85A,
 build_orientation=vertical, PLA struts / TPU cables.
 
-Objectives (the same three PR #30 / `bo_evaluator` outcomes):
+Simulation tiers (the "tier methods" repeated across):
 
-    F_peak_N      minimize   peak transmitted force (support-load proxy at
-                             Tier-C — see sobol_t3_diagnostics.md)
-    SEA_J_per_g   maximize   specific energy absorbed (elastic-energy proxy
-                             at Tier-C)
-    eta           maximize   compaction efficiency (mean/peak over pulse)
+    C   MuJoCo rigid-tendon regime sim (``bo_evaluator.evaluate_design``):
+        3 objectives — minimize ``F_peak_N``, maximize ``SEA_J_per_g``,
+        maximize ``eta`` — driven by a qNEHVI hyper-volume surrogate.
+    B   Newton/Warp XPBD drop (``newton_drop``): a single objective —
+        minimize ``F_peak_N`` (peak |payload accel| × payload mass).  Newton
+        exposes only the payload-acceleration trace (no tendon strain energy),
+        so the Tier-B campaign is single-objective; this also tells us whether
+        the mid-fidelity engine carries learnable design signal at all.
 
-A separate campaign is run **per loading regime** (crutch, lander), because
-the loading scenario is fixed inside a campaign while the design varies
-(see bo_integration.md "Multi-task treatment of the regimes" for why a
-single multi-task GP would eventually share information across the two;
-here we keep them independent so the per-regime Pareto fronts stay legible).
+A separate campaign is run **per loading regime** (crutch, lander) **per
+random seed**, because (a) the loading scenario is fixed inside a campaign
+while the design varies, and (b) repeating the campaign across seeds is what
+lets us report average optimization behaviour with a spread band.  All plots
+keep the two regimes on **separate figures** (their objective scales differ by
+~6×, which made the previous shared axes unreadable).
 
-The first trials are seeded with the three already-printed PR #35 T3 cells
-(`bo_evaluator._t3_seed_designs()`), exactly the anchor-the-GP-on-hardware
-sequence sketched in bo_integration.md, except the seed objectives are also
-simulated here (this is a sim-only campaign).
+Outputs (under ``simulations/outputs/``), one set per tier × regime:
 
-Outputs (under ``simulations/outputs/``):
-
-    sim_bo_<regime>.csv         full trial table (params + objectives + stage)
-    sim_bo_<regime>_pareto.csv  Pareto-optimal subset
-    sim_bo_pareto.png           F_peak↔SEA↔eta Pareto scatter, both regimes
-    sim_bo_convergence.png      running-best objective vs trial, both regimes
+    sim_bo_<tier>_<regime>.csv                 all trials, all seeds
+    sim_bo_<tier>_<regime>_pareto.csv          feasible Pareto subset (union)
+    sim_bo_<tier>_<regime>_seed<k>_convergence.png   per-seed running-best
+    sim_bo_<tier>_<regime>_convergence.png     mean running-best ± std band
+    sim_bo_<tier>_<regime>_seed<k>_pareto.png  per-seed Pareto (multi-obj tiers)
+    sim_bo_<tier>_<regime>_seed<k>_cv.png      LOO-CV observed-vs-predicted
 
 Run::
 
-    python simulations/sim_bo_campaign.py                 # both regimes, defaults
-    python simulations/sim_bo_campaign.py --n-iter 40     # more BO trials
-    python simulations/sim_bo_campaign.py --regime crutch # one regime only
+    python simulations/sim_bo_campaign.py                  # Tier-C, both regimes, 3 seeds
+    python simulations/sim_bo_campaign.py --tiers C B      # add Tier-B Newton
+    python simulations/sim_bo_campaign.py --seeds 0 1 2 3  # more seeds -> tighter bands
+    python simulations/sim_bo_campaign.py --regime crutch --n-iter 60
 """
 from __future__ import annotations
 
@@ -83,37 +98,99 @@ PARAMETERS = [
 ]
 PARAM_NAMES = [p["name"] for p in PARAMETERS]
 
-OBJECTIVE_NAMES = ["F_peak_N", "SEA_J_per_g", "eta"]
-
-# Designs that fail ``PrintableDesign.check()`` are scored with the penalised
-# ``bo_evaluator._INFEASIBLE_F_PEAK_N`` (5e4 N); anything below this cutoff is
-# a genuine (feasible) evaluation kept on the Pareto front / in the figures.
-F_PEAK_FEASIBLE_MAX_N = 4.0e4
-
 REGIMES: dict[str, Regime] = {"crutch": CRUTCH, "lander": NASA_LANDER}
 
-# qNEHVI reference thresholds (the hypervolume reference point).  These are
-# deliberately *outside* the achievable cloud so every feasible design
-# contributes hypervolume.  F_peak is set above the regime's static payload
-# weight band; SEA / eta floors are below anything a printable cell reaches.
-# (Tier-C F_peak is near the static support load — see sobol_t3_analysis.md —
-# so the threshold tracks payload weight.)
+# Per-tier objective definitions: (metric name, direction) where +1 = maximize,
+# -1 = minimize.  Tier-C is the full 3-objective qNEHVI front; Tier-B (Newton)
+# exposes only the payload-accel trace, so it is a single-objective campaign.
+TIER_OBJECTIVES: dict[str, list[tuple[str, int]]] = {
+    "C": [("F_peak_N", -1), ("SEA_J_per_g", +1), ("eta", +1)],
+    "B": [("F_peak_N", -1)],
+}
+TIER_LABELS = {"C": "Tier-C (MuJoCo)", "B": "Tier-B (Newton/Warp)"}
+
+REGIME_COLORS = {"crutch": "#1f77b4", "lander": "#d62728"}
+
+# Penalty values for infeasible designs (mirrors ``bo_evaluator``); these sit
+# far outside the achievable cloud so the GP can learn the feasibility boundary
+# while they stay off the Pareto front.
+_INFEASIBLE = {"F_peak_N": 5.0e4, "SEA_J_per_g": 1.0e-6, "eta": 1.0e-3}
+
+
+# qNEHVI reference thresholds (the hyper-volume reference point).  Deliberately
+# *outside* the achievable cloud so every feasible design contributes
+# hyper-volume.  Tier-C F_peak sits near the static support load
+# (see sobol_t3_analysis.md), so the threshold tracks payload weight.
 def _thresholds(regime: Regime) -> dict[str, float]:
     static_weight_N = regime.payload_mass_kg * 9.81
     return {
-        "F_peak_N": 1.5 * static_weight_N,   # reference worse than any design
+        "F_peak_N": 1.5 * static_weight_N,
         "SEA_J_per_g": 0.0,
         "eta": 0.0,
     }
 
 
-def _pareto_mask(objs: np.ndarray, directions: np.ndarray) -> np.ndarray:
-    """Return a boolean mask of non-dominated rows.
+# --------------------------------------------------------------------------
+# Per-tier evaluators.  Each returns ``(objectives_dict, feasible_bool)``.
+# --------------------------------------------------------------------------
+def _eval_tier_c(params: dict, regime: Regime, cfc180: bool) -> tuple[dict, bool]:
+    design = bo.parameterization_to_design(params)
+    feasible = not design.check()
+    obj = bo.evaluate_design(params, regime=regime, fidelity="C", cfc180=cfc180)
+    return obj, feasible
 
-    ``objs`` is (n, m); ``directions`` is (m,) with +1 = maximize, -1 =
-    minimize.  Row i is dominated if some row j is >= on every objective
-    and strictly > on at least one (after orienting all to maximization).
+
+def _eval_tier_b(params: dict, regime: Regime, _cfc180: bool) -> tuple[dict, bool]:
+    """Newton/Warp XPBD drop → minimize peak transmitted force.
+
+    Newton builds the prism at the fixed equilibrium twist (the twist axis is
+    not consumed at Tier-B, same limitation as the Sobol campaign), and only
+    the payload-acceleration trace is available, so this is single-objective.
     """
+    design = bo.parameterization_to_design(params)
+    if design.check():
+        return {"F_peak_N": _INFEASIBLE["F_peak_N"]}, False
+    import newton_drop as nd
+
+    builder, _pids, payload_pid = nd.build_model(
+        radius_m=design.radius_m,
+        height_m=design.height_m,
+        strut_dia_m=design.strut_diameter_m,
+        tendon_dia_m=design.tendon_diameter_m,
+        payload_mass_kg=regime.payload_mass_kg,
+        drop_height_m=0.05,
+    )
+    res = nd.simulate(builder, payload_pid, sim_time_s=0.05, dt=2.5e-5)
+    az = np.asarray(res["payload_az"], dtype=float)
+    finite = az[np.isfinite(az)]
+    peak_g = float(np.max(np.abs(finite)) / 9.81) if finite.size else float("nan")
+    if not np.isfinite(peak_g):
+        return {"F_peak_N": _INFEASIBLE["F_peak_N"]}, False
+    return {"F_peak_N": peak_g * 9.81 * regime.payload_mass_kg}, True
+
+
+_EVALUATORS = {"C": _eval_tier_c, "B": _eval_tier_b}
+
+
+def _make_objectives(tier: str, regime: Regime):
+    from ax.service.ax_client import ObjectiveProperties
+
+    if tier == "C":
+        th = _thresholds(regime)
+        return {
+            "F_peak_N":    ObjectiveProperties(minimize=True,  threshold=th["F_peak_N"]),
+            "SEA_J_per_g": ObjectiveProperties(minimize=False, threshold=th["SEA_J_per_g"]),
+            "eta":         ObjectiveProperties(minimize=False, threshold=th["eta"]),
+        }
+    # Tier-B: single objective.
+    return {"F_peak_N": ObjectiveProperties(minimize=True)}
+
+
+# --------------------------------------------------------------------------
+# Pareto helpers (used for the multi-objective Tier-C fronts).
+# --------------------------------------------------------------------------
+def _pareto_mask(objs: np.ndarray, directions: np.ndarray) -> np.ndarray:
+    """Boolean mask of non-dominated rows (directions: +1 max, -1 min)."""
     z = objs * directions  # orient everything to "bigger is better"
     n = z.shape[0]
     keep = np.ones(n, dtype=bool)
@@ -129,12 +206,18 @@ def _pareto_mask(objs: np.ndarray, directions: np.ndarray) -> np.ndarray:
     return keep
 
 
-def _trial_stage(ax_client, idx: int) -> str:
-    """Best-effort label of which generator proposed trial ``idx``.
+def _pareto_rows(rows: list[dict], tier: str) -> list[dict]:
+    obj_names = [m for m, _ in TIER_OBJECTIVES[tier]]
+    directions = np.array([d for _, d in TIER_OBJECTIVES[tier]], dtype=float)
+    feasible = [r for r in rows if r["feasible"]]
+    if not feasible:
+        return []
+    objs = np.array([[r[m] for m in obj_names] for r in feasible])
+    mask = _pareto_mask(objs, directions)
+    return [r for r, m in zip(feasible, mask) if m]
 
-    Seeds are attached manually (``Manual``); Ax's default strategy then
-    runs a Sobol init step before switching to the BoTorch/qNEHVI model.
-    """
+
+def _trial_stage(ax_client, idx: int) -> str:
     try:
         trial = ax_client.experiment.trials[idx]
         key = (trial.generator_runs[0]._model_key or "").lower()
@@ -147,195 +230,369 @@ def _trial_stage(ax_client, idx: int) -> str:
     return "bo"
 
 
-def run_campaign(regime_key: str, *, n_iter: int, seed: int,
-                 cfc180: bool) -> list[dict]:
-    """Run one closed-loop sim-only BO campaign for ``regime_key``.
+# --------------------------------------------------------------------------
+# Single campaign (one tier × one regime × one seed).
+# --------------------------------------------------------------------------
+def run_campaign(tier: str, regime_key: str, *, seed: int, n_iter: int,
+                 cfc180: bool):
+    """Run one closed-loop sim-only BO campaign.
 
-    Returns a list of per-trial dict rows (params, objectives, stage).
+    Returns ``(rows, ax_client)`` — the per-trial dict rows (params,
+    objectives, stage, feasibility, seed) and the fitted AxClient (kept so the
+    LOO-CV plot can refit its surrogate on the trial data).
     """
-    from ax.service.ax_client import AxClient, ObjectiveProperties
+    from ax.service.ax_client import AxClient
 
     regime = REGIMES[regime_key]
-    thresholds = _thresholds(regime)
-    objectives = {
-        "F_peak_N":    ObjectiveProperties(minimize=True,  threshold=thresholds["F_peak_N"]),
-        "SEA_J_per_g": ObjectiveProperties(minimize=False, threshold=thresholds["SEA_J_per_g"]),
-        "eta":         ObjectiveProperties(minimize=False, threshold=thresholds["eta"]),
-    }
+    evaluate = _EVALUATORS[tier]
+    obj_names = [m for m, _ in TIER_OBJECTIVES[tier]]
 
     ax_client = AxClient(random_seed=seed, verbose_logging=False)
     ax_client.create_experiment(
-        name=f"sim_bo_{regime_key}",
+        name=f"sim_bo_{tier}_{regime_key}_seed{seed}",
         parameters=PARAMETERS,
-        objectives=objectives,
+        objectives=_make_objectives(tier, regime),
         overwrite_existing_experiment=True,
     )
 
     rows: list[dict] = []
 
-    def _evaluate(params: dict) -> dict[str, float]:
-        return bo.evaluate_design(params, regime=regime, fidelity="C",
-                                  cfc180=cfc180)
-
-    def _record(idx: int, params: dict, obj: dict, stage: str) -> None:
-        row = {"trial": idx, "regime": regime_key, "stage": stage}
+    def _record(idx: int, params: dict, obj: dict, feasible: bool, stage: str):
+        row = {"tier": tier, "regime": regime_key, "seed": seed,
+               "trial": idx, "stage": stage, "feasible": bool(feasible)}
         row.update({k: float(params[k]) for k in PARAM_NAMES})
-        row.update({k: float(obj[k]) for k in OBJECTIVE_NAMES})
+        # Fill every tier's objective slot (NaN where this tier doesn't score).
+        for m in ("F_peak_N", "SEA_J_per_g", "eta"):
+            row[m] = float(obj[m]) if m in obj else float("nan")
         rows.append(row)
 
+    def _raw_data(obj: dict) -> dict:
+        return {m: obj[m] for m in obj_names}
+
     # ---- 1. Seed with the already-printed PR #35 T3 cells -----------------
-    seeds = bo._t3_seed_designs()
-    for s in seeds:
+    for s in bo._t3_seed_designs():
         params = {k: float(s[k]) for k in PARAM_NAMES}
-        obj = _evaluate(params)
+        obj, feasible = evaluate(params, regime, cfc180)
         idx = ax_client.attach_trial(params)[1]
-        ax_client.complete_trial(idx, raw_data=obj)
-        _record(idx, params, obj, stage="seed")
-        print(f"  [{regime_key}] seed   trial {idx:>3}  "
-              f"F_peak={obj['F_peak_N']:8.1f}  SEA={obj['SEA_J_per_g']:.2e}  "
-              f"eta={obj['eta']:.3f}")
+        ax_client.complete_trial(idx, raw_data=_raw_data(obj))
+        _record(idx, params, obj, feasible, stage="seed")
 
     # ---- 2. Closed-loop: Ax proposes, sim scores, feed back ---------------
     for _ in range(n_iter):
         params, idx = ax_client.get_next_trial()
         params = {k: float(params[k]) for k in PARAM_NAMES}
-        obj = _evaluate(params)
-        ax_client.complete_trial(idx, raw_data=obj)
-        stage = _trial_stage(ax_client, idx)
-        _record(idx, params, obj, stage=stage)
-        print(f"  [{regime_key}] {stage:<6} trial {idx:>3}  "
-              f"F_peak={obj['F_peak_N']:8.1f}  SEA={obj['SEA_J_per_g']:.2e}  "
-              f"eta={obj['eta']:.3f}")
+        obj, feasible = evaluate(params, regime, cfc180)
+        ax_client.complete_trial(idx, raw_data=_raw_data(obj))
+        _record(idx, params, obj, feasible, _trial_stage(ax_client, idx))
 
-    return rows
+    fp = np.array([r["F_peak_N"] for r in rows])
+    print(f"  [{tier}/{regime_key}/seed{seed}] {len(rows)} trials, "
+          f"{sum(r['feasible'] for r in rows)} feasible, "
+          f"F_peak {np.nanmin(fp):.1f}–{np.nanmax(fp):.1f} N")
+    return rows, ax_client
 
 
+# --------------------------------------------------------------------------
+# CSV I/O.
+# --------------------------------------------------------------------------
 def _write_csv(path: Path, rows: list[dict]) -> None:
     if not rows:
         return
-    fieldnames = ["trial", "regime", "stage", *PARAM_NAMES, *OBJECTIVE_NAMES]
+    fieldnames = ["tier", "regime", "seed", "trial", "stage", "feasible",
+                  *PARAM_NAMES, "F_peak_N", "SEA_J_per_g", "eta"]
     with path.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)
         w.writeheader()
         for r in rows:
-            w.writerow(r)
+            w.writerow({k: r.get(k) for k in fieldnames})
 
 
-def _pareto_rows(rows: list[dict]) -> list[dict]:
-    if not rows:
-        return []
-    directions = np.array([-1.0, +1.0, +1.0])  # min F_peak, max SEA, max eta
-    objs = np.array([[r[k] for k in OBJECTIVE_NAMES] for r in rows])
-    # Drop penalised (infeasible) rows from the front.
-    finite = objs[:, 0] < F_PEAK_FEASIBLE_MAX_N
-    mask = np.zeros(len(rows), dtype=bool)
-    if finite.any():
-        sub_mask = _pareto_mask(objs[finite], directions)
-        mask[np.where(finite)[0][sub_mask]] = True
-    return [r for r, m in zip(rows, mask) if m]
+# --------------------------------------------------------------------------
+# Running-best (convergence) helper.
+# --------------------------------------------------------------------------
+def _running_best(values: np.ndarray, feasible: np.ndarray,
+                  direction: int) -> np.ndarray:
+    """Running best objective value at each evaluation (NaN until 1st feasible).
+
+    Infeasible / non-finite evaluations do not update the running best, so the
+    curve reflects only the best *feasible* design seen so far.
+    """
+    out = np.full(len(values), np.nan)
+    best = None
+    for i, (v, f) in enumerate(zip(values, feasible)):
+        if f and np.isfinite(v):
+            best = v if best is None else (min(best, v) if direction < 0
+                                           else max(best, v))
+        out[i] = best if best is not None else np.nan
+    return out
 
 
-def make_figures(all_rows: dict[str, list[dict]], outdir: Path) -> None:
+def _seed_running_best(seed_rows: list[dict], metric: str,
+                       direction: int) -> np.ndarray:
+    ordered = sorted(seed_rows, key=lambda r: r["trial"])
+    vals = np.array([r[metric] for r in ordered], dtype=float)
+    feas = np.array([r["feasible"] for r in ordered], dtype=bool)
+    return _running_best(vals, feas, direction)
+
+
+# --------------------------------------------------------------------------
+# Plotting.  Every figure is for a single (tier, regime) so the two regimes
+# never share an axis (their scales differ by ~6×).
+# --------------------------------------------------------------------------
+def _import_plt():
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    return plt
 
-    colors = {"crutch": "#1f77b4", "lander": "#d62728"}
 
-    # ---- Pareto scatter: F_peak vs SEA, point size ~ eta ------------------
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+def _objective_label(metric: str, direction: int) -> str:
+    arrow = "lower better" if direction < 0 else "higher better"
+    pretty = {"F_peak_N": "F_peak (N)", "SEA_J_per_g": "SEA (J/g)",
+              "eta": "eta"}[metric]
+    return f"best {pretty} — {arrow}"
+
+
+def plot_seed_convergence(tier: str, regime_key: str, seed: int,
+                          seed_rows: list[dict], outdir: Path) -> None:
+    plt = _import_plt()
+    objs = TIER_OBJECTIVES[tier]
+    fig, axes = plt.subplots(1, len(objs), figsize=(4.8 * len(objs), 4.0),
+                             squeeze=False)
+    color = REGIME_COLORS[regime_key]
+    for ax, (metric, direction) in zip(axes[0], objs):
+        rb = _seed_running_best(seed_rows, metric, direction)
+        ax.plot(np.arange(1, len(rb) + 1), rb, "-o", color=color, ms=3, lw=1.6)
+        ax.set_xlabel("evaluation #")
+        ax.set_ylabel(_objective_label(metric, direction))
+        ax.grid(alpha=0.3)
+    fig.suptitle(f"{TIER_LABELS[tier]} · {regime_key} · seed {seed} — "
+                 f"running-best convergence")
+    fig.tight_layout()
+    fig.savefig(outdir / f"sim_bo_{tier}_{regime_key}_seed{seed}_convergence.png",
+                dpi=130)
+    plt.close(fig)
+
+
+def plot_mean_convergence(tier: str, regime_key: str,
+                          by_seed: dict[int, list[dict]], outdir: Path) -> None:
+    """Mean running-best across seeds with a ±1σ std-dev band."""
+    plt = _import_plt()
+    objs = TIER_OBJECTIVES[tier]
+    color = REGIME_COLORS[regime_key]
+    fig, axes = plt.subplots(1, len(objs), figsize=(4.8 * len(objs), 4.0),
+                             squeeze=False)
+    for ax, (metric, direction) in zip(axes[0], objs):
+        curves = [_seed_running_best(rows, metric, direction)
+                  for rows in by_seed.values()]
+        n = min(len(c) for c in curves)
+        stack = np.array([c[:n] for c in curves])  # (seeds, evals)
+        x = np.arange(1, n + 1)
+        mean = np.nanmean(stack, axis=0)
+        std = np.nanstd(stack, axis=0)
+        # Faint individual-seed traces behind the mean.
+        for c in stack:
+            ax.plot(x, c, "-", color=color, lw=0.7, alpha=0.25)
+        ax.plot(x, mean, "-", color=color, lw=2.2, label="mean")
+        ax.fill_between(x, mean - std, mean + std, color=color, alpha=0.20,
+                        label="±1σ across seeds")
+        ax.set_xlabel("evaluation #")
+        ax.set_ylabel(_objective_label(metric, direction))
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=8)
+    fig.suptitle(f"{TIER_LABELS[tier]} · {regime_key} — mean running-best "
+                 f"(± std band, {len(by_seed)} seeds)")
+    fig.tight_layout()
+    fig.savefig(outdir / f"sim_bo_{tier}_{regime_key}_convergence.png", dpi=130)
+    plt.close(fig)
+
+
+def plot_seed_pareto(tier: str, regime_key: str, seed: int,
+                     seed_rows: list[dict], outdir: Path) -> None:
+    """F_peak↔SEA and F_peak↔eta scatter + Pareto front for a single seed."""
+    if len(TIER_OBJECTIVES[tier]) < 2:
+        return  # single-objective tier has no Pareto front
+    plt = _import_plt()
+    color = REGIME_COLORS[regime_key]
+    feasible = [r for r in seed_rows if r["feasible"]]
+    if not feasible:
+        return
+    pareto = _pareto_rows(seed_rows, tier)
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.6))
     for ax, ykey, ylabel in (
         (axes[0], "SEA_J_per_g", "SEA (J/g)  [maximize]"),
         (axes[1], "eta", "eta  [maximize]"),
     ):
-        for rk, rows in all_rows.items():
-            feasible = [r for r in rows if r["F_peak_N"] < F_PEAK_FEASIBLE_MAX_N]
-            if not feasible:
-                continue
-            x = [r["F_peak_N"] for r in feasible]
-            y = [r[ykey] for r in feasible]
-            ax.scatter(x, y, s=18, alpha=0.35, color=colors[rk],
-                       label=f"{rk} (all)")
-            pr = _pareto_rows(rows)
-            if pr:
-                px = [r["F_peak_N"] for r in pr]
-                py = [r[ykey] for r in pr]
-                order = np.argsort(px)
-                ax.plot(np.array(px)[order], np.array(py)[order],
-                        "-o", color=colors[rk], ms=6, lw=1.5,
-                        label=f"{rk} Pareto")
+        x = [r["F_peak_N"] for r in feasible]
+        y = [r[ykey] for r in feasible]
+        ax.scatter(x, y, s=22, alpha=0.4, color=color, label="all feasible")
+        if pareto:
+            px = np.array([r["F_peak_N"] for r in pareto])
+            py = np.array([r[ykey] for r in pareto])
+            order = np.argsort(px)
+            ax.plot(px[order], py[order], "-o", color=color, ms=6, lw=1.5,
+                    label="Pareto")
         ax.set_xlabel("F_peak (N)  [minimize]")
         ax.set_ylabel(ylabel)
         ax.grid(alpha=0.3)
         ax.legend(fontsize=8)
-    fig.suptitle("Sim-only BO (Tier-C MuJoCo): Pareto fronts over the PR #35 T3 box")
+    fig.suptitle(f"{TIER_LABELS[tier]} · {regime_key} · seed {seed} — "
+                 f"Pareto fronts")
     fig.tight_layout()
-    fig.savefig(outdir / "sim_bo_pareto.png", dpi=130)
+    fig.savefig(outdir / f"sim_bo_{tier}_{regime_key}_seed{seed}_pareto.png",
+                dpi=130)
     plt.close(fig)
 
-    # ---- Convergence: running-best per objective vs trial -----------------
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.2))
-    for ax, key, best, label in (
-        (axes[0], "F_peak_N", "min", "best F_peak (N) — lower better"),
-        (axes[1], "SEA_J_per_g", "max", "best SEA (J/g) — higher better"),
-        (axes[2], "eta", "max", "best eta — higher better"),
-    ):
-        for rk, rows in all_rows.items():
-            feasible = [r for r in rows if r["F_peak_N"] < F_PEAK_FEASIBLE_MAX_N]
-            if not feasible:
-                continue
-            vals = np.array([r[key] for r in feasible])
-            running = np.minimum.accumulate(vals) if best == "min" \
-                else np.maximum.accumulate(vals)
-            ax.plot(np.arange(1, len(running) + 1), running,
-                    "-", color=colors[rk], lw=1.8, label=rk)
-        ax.set_xlabel("evaluation #")
-        ax.set_ylabel(label)
+
+def _cv_signal(observed: np.ndarray, predicted: np.ndarray) -> tuple[float, float]:
+    """Return (R², Spearman ρ) of predicted vs observed for a CV fold set."""
+    from scipy.stats import spearmanr
+
+    obs = np.asarray(observed, dtype=float)
+    pred = np.asarray(predicted, dtype=float)
+    ok = np.isfinite(obs) & np.isfinite(pred)
+    obs, pred = obs[ok], pred[ok]
+    if obs.size < 3 or np.allclose(obs, obs[0]):
+        return float("nan"), float("nan")
+    ss_res = float(np.sum((obs - pred) ** 2))
+    ss_tot = float(np.sum((obs - obs.mean()) ** 2))
+    r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else float("nan")
+    rho = float(spearmanr(obs, pred).statistic)
+    return r2, rho
+
+
+def plot_seed_cv(tier: str, regime_key: str, seed: int, ax_client,
+                 outdir: Path) -> dict[str, tuple[float, float]]:
+    """LOO-CV observed-vs-predicted per metric for one seed's fitted model.
+
+    Uses Ax's built-in :func:`ax.adapter.cross_validation.cross_validate` on a
+    BoTorch surrogate refit over the campaign's trial data — the standard way
+    to check whether the GP has learned predictive signal for each outcome.
+    Returns ``{metric: (R², Spearman ρ)}``.
+    """
+    from ax.adapter.cross_validation import cross_validate
+    from ax.adapter.registry import Generators
+
+    plt = _import_plt()
+    obj_names = [m for m, _ in TIER_OBJECTIVES[tier]]
+
+    try:
+        adapter = Generators.BOTORCH_MODULAR(
+            experiment=ax_client.experiment,
+            data=ax_client.experiment.lookup_data(),
+        )
+        cv = cross_validate(adapter)
+    except Exception as exc:  # pragma: no cover - model fit can fail on tiny data
+        warnings.warn(f"cross_validate failed for {tier}/{regime_key}/seed{seed}: "
+                      f"{exc!r}")
+        return {}
+
+    obs = {m: [] for m in obj_names}
+    pred = {m: [] for m in obj_names}
+    sem = {m: [] for m in obj_names}
+    for res in cv:
+        for m in obj_names:
+            if m in res.observed.data.means_dict and m in res.predicted.means_dict:
+                obs[m].append(res.observed.data.means_dict[m])
+                pred[m].append(res.predicted.means_dict[m])
+                sem[m].append(float(np.sqrt(max(
+                    res.predicted.covariance_matrix[m][m], 0.0))))
+
+    signal: dict[str, tuple[float, float]] = {}
+    fig, axes = plt.subplots(1, len(obj_names), figsize=(4.6 * len(obj_names), 4.4),
+                             squeeze=False)
+    color = REGIME_COLORS[regime_key]
+    for ax, m in zip(axes[0], obj_names):
+        o = np.array(obs[m], dtype=float)
+        p = np.array(pred[m], dtype=float)
+        e = np.array(sem[m], dtype=float)
+        r2, rho = _cv_signal(o, p)
+        signal[m] = (r2, rho)
+        ax.errorbar(o, p, yerr=e, fmt="o", color=color, ms=4, alpha=0.7,
+                    ecolor="0.6", elinewidth=0.8, capsize=2)
+        if o.size:
+            lo = float(np.nanmin([o.min(), p.min()]))
+            hi = float(np.nanmax([o.max(), p.max()]))
+            pad = 0.05 * (hi - lo + 1e-12)
+            ax.plot([lo - pad, hi + pad], [lo - pad, hi + pad], "k--", lw=1,
+                    alpha=0.7)
+        ax.set_xlabel(f"observed {m}")
+        ax.set_ylabel(f"CV-predicted {m}")
+        ax.set_title(f"{m}\nR²={r2:.2f}  ρ={rho:.2f}", fontsize=10)
         ax.grid(alpha=0.3)
-        ax.legend(fontsize=8)
-    fig.suptitle("Sim-only BO running-best objective vs evaluation")
+    fig.suptitle(f"{TIER_LABELS[tier]} · {regime_key} · seed {seed} — "
+                 f"LOO cross-validation (predictive signal)")
     fig.tight_layout()
-    fig.savefig(outdir / "sim_bo_convergence.png", dpi=130)
+    fig.savefig(outdir / f"sim_bo_{tier}_{regime_key}_seed{seed}_cv.png", dpi=130)
     plt.close(fig)
+    return signal
+
+
+# --------------------------------------------------------------------------
+# Driver.
+# --------------------------------------------------------------------------
+def run_tier_regime(tier: str, regime_key: str, *, seeds: list[int],
+                    n_iter: int, cfc180: bool, outdir: Path) -> None:
+    print(f"\n=== sim-only BO: {TIER_LABELS[tier]} · {regime_key} "
+          f"({len(seeds)} seeds × ({3}+{n_iter}) evals) ===")
+    by_seed: dict[int, list[dict]] = {}
+    clients: dict[int, object] = {}
+    all_rows: list[dict] = []
+    for seed in seeds:
+        rows, ax_client = run_campaign(tier, regime_key, seed=seed,
+                                       n_iter=n_iter, cfc180=cfc180)
+        by_seed[seed] = rows
+        clients[seed] = ax_client
+        all_rows.extend(rows)
+
+    _write_csv(outdir / f"sim_bo_{tier}_{regime_key}.csv", all_rows)
+    _write_csv(outdir / f"sim_bo_{tier}_{regime_key}_pareto.csv",
+               _pareto_rows(all_rows, tier))
+
+    for seed in seeds:
+        plot_seed_convergence(tier, regime_key, seed, by_seed[seed], outdir)
+        plot_seed_pareto(tier, regime_key, seed, by_seed[seed], outdir)
+        sig = plot_seed_cv(tier, regime_key, seed, clients[seed], outdir)
+        if sig:
+            txt = "  ".join(f"{m}:R²={r2:.2f}/ρ={rho:.2f}"
+                            for m, (r2, rho) in sig.items())
+            print(f"  [{tier}/{regime_key}/seed{seed}] LOO-CV  {txt}")
+    plot_mean_convergence(tier, regime_key, by_seed, outdir)
+    print(f"  -> wrote sim_bo_{tier}_{regime_key}.csv + per-seed/mean/CV figures")
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--tiers", nargs="+", choices=["C", "B"], default=["C"],
+                        help="simulation tier(s) to run the BO loop on "
+                             "(C=MuJoCo 3-obj, B=Newton single-obj)")
     parser.add_argument("--regime", choices=["crutch", "lander", "both"],
                         default="both", help="which loading regime(s) to run")
-    parser.add_argument("--n-iter", type=int, default=40,
-                        help="closed-loop BO trials per regime (after the "
-                             "3 seed + Sobol init) (default 40)")
-    parser.add_argument("--seed", type=int, default=0, help="Ax random seed")
+    parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2],
+                        help="Ax random seeds (one campaign each; >1 enables "
+                             "the std-dev band)")
+    parser.add_argument("--n-iter", type=int, default=30,
+                        help="closed-loop BO trials per campaign (after the 3 "
+                             "seed designs) (default 30)")
     parser.add_argument("--raw-peak", action="store_true",
-                        help="read raw (unfiltered) peak instead of CFC-180")
-    parser.add_argument("--outdir", type=Path,
-                        default=_HERE / "outputs", help="output directory")
+                        help="read raw (unfiltered) peak instead of CFC-180 "
+                             "(Tier-C only)")
+    parser.add_argument("--outdir", type=Path, default=_HERE / "outputs",
+                        help="output directory")
     args = parser.parse_args(argv)
 
-    # Quiet Ax's very chatty INFO logging (keep warnings).
     logging.getLogger("ax").setLevel(logging.WARNING)
     warnings.filterwarnings("ignore", category=UserWarning, module="bo_evaluator")
 
     args.outdir.mkdir(parents=True, exist_ok=True)
     regime_keys = ["crutch", "lander"] if args.regime == "both" else [args.regime]
 
-    all_rows: dict[str, list[dict]] = {}
-    for rk in regime_keys:
-        print(f"\n=== sim-only BO campaign: {rk} "
-              f"(seed designs + {args.n_iter} closed-loop trials) ===")
-        rows = run_campaign(rk, n_iter=args.n_iter, seed=args.seed,
-                            cfc180=not args.raw_peak)
-        all_rows[rk] = rows
-        _write_csv(args.outdir / f"sim_bo_{rk}.csv", rows)
-        pr = _pareto_rows(rows)
-        _write_csv(args.outdir / f"sim_bo_{rk}_pareto.csv", pr)
-        print(f"  -> {len(rows)} trials, {len(pr)} Pareto-optimal "
-              f"(wrote sim_bo_{rk}.csv / sim_bo_{rk}_pareto.csv)")
+    for tier in args.tiers:
+        for rk in regime_keys:
+            run_tier_regime(tier, rk, seeds=args.seeds, n_iter=args.n_iter,
+                            cfc180=not args.raw_peak, outdir=args.outdir)
 
-    make_figures(all_rows, args.outdir)
-    print(f"\nWrote figures: sim_bo_pareto.png, sim_bo_convergence.png "
-          f"-> {args.outdir}")
+    print(f"\nDone. Figures + CSVs under {args.outdir}")
     return 0
 
 

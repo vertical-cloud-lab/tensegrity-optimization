@@ -107,10 +107,15 @@ python simulations/sobol_t3_diagnostics.py --n 48
 # -> outputs/sobol_t3_diagnostics.png + sobol_t3_diagnostics.md
 
 # Closed-loop simulation-only Bayesian optimization over the PR #35 T3 box
-#   (Ax/qNEHVI, objectives = Tier-C MuJoCo sim; mirror of #35's hardware loop)
-python simulations/sim_bo_campaign.py --n-iter 40   # both regimes
-# -> outputs/sim_bo_{crutch,lander}.csv + *_pareto.csv
-# -> outputs/sim_bo_{pareto,convergence}.png + sim_bo_campaign.md
+#   (Ax/qNEHVI, objectives = Tier-C MuJoCo sim; mirror of #35's hardware loop).
+#   Each regime is plotted separately; multiple --seeds give a std-dev band;
+#   --tiers adds the Newton (Tier-B) loop; LOO-CV plots check predictive signal.
+python simulations/sim_bo_campaign.py --tiers C --seeds 0 1 2 --n-iter 30
+python simulations/sim_bo_campaign.py --tiers B --seeds 0 1 --n-iter 15  # Newton
+# -> outputs/sim_bo_<tier>_<regime>.csv + *_pareto.csv
+# -> outputs/sim_bo_<tier>_<regime>_seed<k>_{convergence,pareto,cv}.png
+# -> outputs/sim_bo_<tier>_<regime>_convergence.png (mean ± std band)
+# -> sim_bo_campaign.md
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
