@@ -48,10 +48,14 @@ equivalent scrambled `scipy.stats.qmc.Sobol` sequence over the same box.
   drives the cell harder, so eta is lower and the F_peak↔SEA trade-off is
   sharper).
 - **F_peak is nearly design-invariant at Tier-C** (crutch span ~4 %, lander
-  span ~3 %): in the rigid-strut model peak force is dominated by
-  `payload·ΔV`, so **SEA and eta are the discriminating objectives** at this
-  fidelity.  Resolving real F_peak differences between designs is precisely
-  what the deformable Tier-B/A tiers add.
+  span ~3 %): in the rigid-strut model the **payload-acceleration** peak is
+  dominated by `payload·ΔV` — and, as the diagnostics below show, the crutch
+  value is essentially the *static payload weight* (a support-load proxy, not a
+  resolved impact peak). So **SEA and eta are the discriminating objectives**
+  at this fidelity for the payload-accel observable. Resolving real F_peak
+  differences between designs is precisely what the deformable Tier-B/A tiers —
+  and the **base-reaction-force** observable (see
+  [`sobol_t3_diagnostics.md`](sobol_t3_diagnostics.md)) — add.
 
 ## Best feasible designs (Tier-C)
 
@@ -81,18 +85,23 @@ second; **twist_deg** is the weakest.  In the rigid-strut MuJoCo model the strut
 diameter acts through two channels even though the strut itself does not
 deform — it sets the contact-capsule geometry (hence the effective contact
 stiffness against the floor) and the strut/cell mass, both of which move the
-peak deceleration directly.  Cable diameter sets the tendon axial stiffness
-`k = E·A/L`; cell height `H_mm` is the geometric counter-lever (a longer load
-path lowers stiffness for a fixed cable Ø and lengthens the pulse, which is
-why it correlates negatively with SEA and eta).  **`twist_deg` reads ≈0 across
-every objective because the Tier-C regime override does not consume the twist
-axis** — `run_regimes` builds the prism at the fixed equilibrium twist, so any
-real twist dependence can only surface at Tier-B/A (Newton/PolyFEM build the
-node layout from the actual twist).  More broadly, the strut-mediated effects
-are exactly the ones Tier-B/A refine (strut bending/buckling and hyperelastic
-tendon hysteresis are abstracted away at Tier-C), so the sensitivity ranking
-should be re-checked against the Newton/PolyFEM tiers before it is trusted for
-the final design call.
+peak deceleration directly.  **Caveat (see
+[`sobol_t3_diagnostics.md`](sobol_t3_diagnostics.md)): a constant-mass control
+sweep shows most of the `strut_d_mm` leverage is this rigid-body mass /
+contact-geometry confound** — holding strut mass fixed shrinks the lander
+`strut_d` effect ~17×, so `strut_d_mm` should not be read as "the dominant
+*design* lever for impact attenuation" at this fidelity.  Cable diameter sets
+the tendon axial stiffness `k = E·A/L`; cell height `H_mm` is the geometric
+counter-lever (a longer load path lowers stiffness for a fixed cable Ø and
+lengthens the pulse, which is why it correlates negatively with SEA and eta).
+**`twist_deg` reads ≈0 across every objective because the Tier-C regime override
+does not consume the twist axis** — `run_regimes` builds the prism at the fixed
+equilibrium twist, so any real twist dependence can only surface at Tier-B/A
+(Newton/PolyFEM build the node layout from the actual twist).  More broadly, the
+strut-mediated effects are exactly the ones Tier-B/A refine (strut
+bending/buckling and hyperelastic tendon hysteresis are abstracted away at
+Tier-C), so the sensitivity ranking should be re-checked against the
+Newton/PolyFEM tiers before it is trusted for the final design call.
 
 ## Cross-fidelity check across the C→B→A ladder
 
@@ -152,20 +161,51 @@ volumetric strut/contact physics Tier-C abstracts away. Runs are dispatched
 two-at-a-time across processes so several PolyFEM solves overlap.
 
 
+## Tier-C artifact-vs-physics diagnostics (Edison review follow-up)
+
+Edison's ANALYSIS review of this campaign
+([`edison-trajectories/sobol-t3-results/`](../edison-trajectories/sobol-t3-results/sobol-t3-results-ff8faab3-9ea4-427d-b545-9d0255c38e9d.md),
+task `ff8faab3`) flagged that several of the strongest Tier-C conclusions above
+are likely dominated by simulation *setup* choices, and named the tests that
+would settle it. Those ablations are now implemented in
+[`sobol_t3_diagnostics.py`](sobol_t3_diagnostics.py) and written up in
+[`sobol_t3_diagnostics.md`](sobol_t3_diagnostics.md) (run on 48 feasible
+designs). Key findings:
+
+1. **The payload-acceleration `F_peak` is support load, not impact load.** The
+   crutch value is ~1× the static payload weight; re-measuring the **vertical
+   floor-reaction force** (what a sensorized platen reports) gives a genuine
+   ~104× transient for the lander, while the crutch's large soft cell barely
+   loads the floor in the 25 ms window. The base-reaction force / impulse is the
+   Tier-C observable that matches the bench transmitted-load measurement.
+2. **CFC-180 is not the cause of the flatness**, but for the lander the raw
+   payload-accel span (~10%) is ~3× the filtered span (~3%), so the filter does
+   suppress part of the design transient — another reason to switch the
+   *observable* (to base reaction) rather than just the filter.
+3. **`strut_d_mm`'s leverage is mostly an inertia confound.** A constant-mass
+   strut-diameter sweep (PLA density ∝ 1/d²) shrinks the lander `strut_d` effect
+   ~17×, confirming Edison's `L·d²` smoking gun.
+4. **Twist is un-consumed plumbing at Tier-C**, not physical irrelevance: the
+   geometry responds strongly to twist when supplied (~20 mm node shift across
+   40–80°), but `run_regimes.build_xml` never passes it, so it must be
+   re-tested at Tier-B with a twist-isolation sweep before any physical claim.
+
 ## What this gives the BO campaign
 
 1. **A cheap simulated prior.** All 512 Sobol rows (both regimes) are in
    `outputs/sobol_t3_tierC.csv` and can be `attach_trial`'d to the Ax/BoTorch
-   model before any print or drop, so the first physical batch starts from a
-   warm GP rather than cold Sobol.
+   model before any print or drop — but, per the diagnostics, as a **biased
+   low-fidelity auxiliary** (Kennedy–O'Hagan / co-kriging discrepancy), not as
+   bench-equivalent observations.
 2. **A feasibility map.** 512/512 feasible.
-3. **Sensitivity ⇒ which axes matter.** `strut_d_mm` and `H_mm` dominate the
+3. **Sensitivity ⇒ which axes matter.** `strut_d_mm` and `H_mm` lead the
    Tier-C objectives; the weakest axis is `twist_deg`.  This argues for spending
    early BO budget on the dominant axes and using the multi-task GP (per
    `bo_integration.md`) to share information between the two regimes — but
-   because the strongest Tier-C lever is strut-mediated and the rigid-strut
-   model abstracts strut deformation, the ranking should be confirmed at
-   Tier-B/A before it drives the final design.
+   because the strongest Tier-C lever is strut-mediated (and largely a mass
+   confound, §3 above) and the rigid-strut model abstracts strut deformation,
+   the ranking should be confirmed at Tier-B/A before it drives the final
+   design.
 
 ## Files
 
@@ -181,3 +221,7 @@ two-at-a-time across processes so several PolyFEM solves overlap.
 - `outputs/sobol_t3_tierA.png` — Tier-A PolyFEM settled height + peak g vs geometry
 - `outputs/sobol_t3_violin_objectives.{png,html}` — violin plots (jittered raw points) of the Tier-C objectives per regime (`sobol_t3_violins.py`)
 - `outputs/sobol_t3_violin_engines.{png,html}` — violin plots (jittered raw points) of per-engine peak g across the C→B→A ladder (`sobol_t3_violins.py`)
+- `sobol_t3_diagnostics.md` + `outputs/sobol_t3_diagnostics.png` — Edison-review artifact-vs-physics ablations (`sobol_t3_diagnostics.py`)
+- `outputs/sobol_t3_diag_base_reaction.csv` — payload-accel vs floor-reaction peak + impulse, both regimes
+- `outputs/sobol_t3_diag_cfc.csv` — CFC-180 filtered vs raw `F_peak`
+- `outputs/sobol_t3_diag_constmass.csv` — strut-diameter sweep, free-mass vs constant-mass

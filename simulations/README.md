@@ -48,6 +48,7 @@ simulations/
 ├── bo_evaluator.py       # PR #30/#35 parameterization -> Tier-C objective bridge
 ├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> C→B→A ladder (MuJoCo/PyBullet/PyChrono + Newton + PolyFEM) + analysis
 ├── sobol_t3_violins.py   # Plotly violin plots (jittered raw points) of the Sobol campaign measurements
+├── sobol_t3_diagnostics.py # Edison-review ablations: base-reaction force, CFC on/off, constant-mass strut sweep, twist plumbing audit
 ├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
 ├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
 ├── render_regimes.py     # 3D GIF/MP4 of both regime drops (suspended payload)
@@ -96,6 +97,13 @@ python simulations/sobol_t3_campaign.py --n 512 --n-tierb 24 \
 #   plotly.express.violin(..., points="all", box=True) with jitter.
 python simulations/sobol_t3_violins.py
 # -> outputs/sobol_t3_violin_{objectives,engines}.{png,html}
+
+# Tier-C artifact-vs-physics diagnostics (Edison ff8faab3 follow-up):
+#   base-reaction force vs payload accel, CFC-180 on/off, constant-mass
+#   strut-diameter sweep, and the twist plumbing audit.
+python simulations/sobol_t3_diagnostics.py --n 48
+# -> outputs/sobol_t3_diag_{base_reaction,cfc,constmass}.csv
+# -> outputs/sobol_t3_diagnostics.png + sobol_t3_diagnostics.md
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
