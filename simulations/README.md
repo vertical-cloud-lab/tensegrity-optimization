@@ -50,6 +50,7 @@ simulations/
 ├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> C→B→A ladder (MuJoCo/PyBullet/PyChrono + Newton + PolyFEM) + analysis
 ├── sobol_t3_violins.py   # Plotly violin plots (jittered raw points) of the Sobol campaign measurements
 ├── sobol_t3_diagnostics.py # Edison-review ablations: base-reaction force, CFC on/off, constant-mass strut sweep, twist plumbing audit
+├── pareto_render_campaign.py # dense Tier-C Pareto-front search + 3D renders of best/worst/mediocre designs as Pareto-graph callouts
 ├── render_utils.py       # OSMesa offscreen-render helper (lights, sky, strain colour map)
 ├── render_mujoco_drop.py # 3D GIF/MP4 of the basic 1 m prism drop
 ├── render_regimes.py     # 3D GIF/MP4 of both regime drops (suspended payload)
@@ -119,6 +120,17 @@ python simulations/sim_bo_campaign.py --tiers B --seeds 0 1 --n-iter 15  # Newto
 
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
+
+# Dense Tier-C Pareto-front search + renders of the picks (PR comment 4760877672)
+#   Sobol-maps the true 3-objective Pareto front over the PR #35 box (sims are
+#   cheap, so no cost-aware/multi-fidelity needed) and renders the Pareto-best,
+#   worst, and mediocre cells as 3D stills dropped onto the Pareto graph as
+#   callout thumbnails (+ best/worst drop GIFs).
+MUJOCO_GL=osmesa python simulations/pareto_render_campaign.py --n 2048
+# -> outputs/pareto_<regime>.csv  (every design + objectives + pareto flag)
+# -> outputs/pareto_<regime>_annotated.png  (Pareto scatter w/ render callouts)
+# -> outputs/pareto_<regime>_render_<tag>.png  +  *_{best,worst}_drop.{gif,mp4}
+# -> outputs/pareto_summary.md
 ```
 
 ## Baseline experiment
