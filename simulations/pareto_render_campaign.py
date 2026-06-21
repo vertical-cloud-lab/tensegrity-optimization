@@ -236,9 +236,8 @@ def render_still(params: dict, regime: Regime, out_path: str,
     r = _overridden_regime(params, regime)
     cell_extent = max(r.radius_m, r.height_m)
     drop_height = 0.002
-    viz_mass = min(r.payload_mass_kg, max(0.5, r.payload_mass_kg))
     # Keep the viz payload light enough that the cell stays visibly intact
-    # for the still (mirrors render_regimes' cap).
+    # for the still (mirrors render_regimes' ≤5% cable-stretch cap).
     max_viz = 0.05 * cell_extent * r.cable_stiffness_Npm / 9.81
     viz_mass = min(r.payload_mass_kg, max(0.5, max_viz))
 
