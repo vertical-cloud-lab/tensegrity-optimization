@@ -109,7 +109,7 @@ impact peak once the elastic tendons resolve it.
 `cross_validate` refits a BoTorch surrogate on each campaign's trial data and
 predicts each held-out point.  Per Edison review `491f90ae` (rec. B) the
 per-seed `*_cv_summary.csv` now also reports **range-normalized** diagnostics —
-`nrmse = RMSE / (max−min)` and a constant-mean `null_skill` baseline — so a high
+`nrmse = RMSE / (max-min)` and a constant-mean `null_skill` baseline — so a high
 `R²` on a near-constant outcome is not mistaken for decision-useful signal.
 Mean over seeds (R² / Spearman ρ of CV-predicted vs observed):
 
@@ -171,5 +171,5 @@ as task labels — are tracked in `bo_integration.md`.
 - `outputs/sim_bo_<tier>_<regime>_convergence.png` — mean running-best with ±1σ band across seeds
 - `outputs/sim_bo_<tier>_<regime>_seed<k>_pareto.png` — per-seed Pareto fronts (multi-objective tiers)
 - `outputs/sim_bo_<tier>_<regime>_seed<k>_cv.png` — per-seed LOO-CV observed-vs-predicted (predictive signal)
-- `outputs/sim_bo_<tier>_<regime>_cv_summary.csv` — per-seed CV diagnostics (`r2`, `rho`, range-normalized `nrmse`, constant-mean `null_skill`)
+- `outputs/sim_bo_<tier>_<regime>_cv_summary.csv` — one CV-diagnostics summary per (tier, regime), one row per seed (`r2`, `rho`, range-normalized `nrmse`, constant-mean `null_skill`)
 - `edison-trajectories/sim-bo-review/` — Edison ANALYSIS `491f90ae` mock-reviewer brief that drove the Tier-B regime-plumbing fix and the range-normalized CV diagnostics
