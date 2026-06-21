@@ -133,6 +133,21 @@ MUJOCO_GL=osmesa python simulations/pareto_render_campaign.py --n 2048
 # -> outputs/pareto_summary.md
 ```
 
+## Fair-evaluation analysis (PR comment 4760939061)
+
+[`fair_evaluation_analysis.md`](fair_evaluation_analysis.md) — a thinking
+document on *fairness* of the objective evaluations: across the PR #35 box the
+cell mass varies 6.2×, envelope volume 4.7×, and strut-tip footprint 4.0×, so
+designs are compared at very different sizes. It lays out the real scaled-up
+lander-module constraints (mass budget, stowed volume, footprint/ground
+pressure, stroke) and two routes to fairness — (A) re-parameterise to a
+constant-mass / constant-envelope / scale-free-ratio manifold so the budget is
+met by construction, and (B) keep the box but use intensive objectives
+(`SEA_J_per_g`, `SEA_J_per_cm³`, base-reaction peak g) with mass/volume/footprint
+as outcome constraints in constrained qNEHVI — plus a recommended hybrid. Sent to
+Edison ANALYSIS for mock feedback
+([`edison-trajectories/fair-evaluation/`](../edison-trajectories/fair-evaluation/)).
+
 ## Baseline experiment
 
 3-bar regular T-prism, equilibrium twist 5π/6 (Snelson), `r = 0.10 m`,
