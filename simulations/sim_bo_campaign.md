@@ -81,12 +81,25 @@ spread across the three seeds is small once the model takes over.
 ### Tier-B (Newton/Warp, single objective, 2 seeds × 18 evals/regime)
 
 Newton's XPBD drop puts the TPU tendons in the dynamic load path, and — unlike
-Tier-C — its peak transmitted force is **strongly design-dependent**:
-`F_peak` spans **2.17 – 5.5 MN (a ~2.5× range)** across the box, so the
-single-objective BO shows a genuine descent (running-best `F_peak` falls ~2.5×
-then plateaus) rather than the near-flat Tier-C curve.  This is exactly the
-kind of cross-tier contrast the multi-fidelity ladder is meant to expose: the
-geometry that looks invariant to the cheap rigid-contact sim does move the
+Tier-C — its peak transmitted force is **strongly design-dependent** *and*
+**genuinely regime-distinct**.  Edison review `491f90ae` flagged that the
+earlier fixed-drop-height Tier-B build was *regime-blind* (matched
+crutch/lander `F_peak` ratio 0.998); the fix seeds each drop with the regime's
+own impact velocity (crutch 1.4 m/s, lander 9.8 m/s) and reads a robust,
+start-up-gated peak (`newton_drop.peak_decel_g`).  After the fix the two
+regimes diverge as expected — for the same seed design the crutch loads
+~1463 N while the lander loads ~564 N — and `F_peak` swings over two orders of
+magnitude across the box (tight, stiff geometries spike hardest):
+
+| Regime | BO-stage `F_peak` range | running-best descent |
+|---|---|---|
+| crutch | 1.1 k – 125 kN | 1463 → 1138 N |
+| lander | 0.17 k – 139 kN | 564 → 173 N |
+
+So the single-objective BO shows a genuine descent (running-best `F_peak`
+falls then plateaus) rather than the near-flat Tier-C curve.  This is exactly
+the kind of cross-tier contrast the multi-fidelity ladder is meant to expose:
+the geometry that looks invariant to the cheap rigid-contact sim does move the
 impact peak once the elastic tendons resolve it.
 
 ![Tier-B lander mean convergence](outputs/sim_bo_B_lander_convergence.png)
@@ -94,23 +107,29 @@ impact peak once the elastic tendons resolve it.
 ### LOO cross-validation — is the GP learning predictive signal?
 
 `cross_validate` refits a BoTorch surrogate on each campaign's trial data and
-predicts each held-out point.  Mean over seeds (R² / Spearman ρ of
-CV-predicted vs observed):
+predicts each held-out point.  Per Edison review `491f90ae` (rec. B) the
+per-seed `*_cv_summary.csv` now also reports **range-normalized** diagnostics —
+`nrmse = RMSE / (max−min)` and a constant-mean `null_skill` baseline — so a high
+`R²` on a near-constant outcome is not mistaken for decision-useful signal.
+Mean over seeds (R² / Spearman ρ of CV-predicted vs observed):
 
 | Tier · regime | `F_peak_N` | `SEA_J_per_g` | `eta` |
 |---|---|---|---|
 | C · crutch | 0.89 / 0.79 | **0.97 / 0.96** | 0.69 / 0.87 |
 | C · lander | 0.91 / 0.95 | 0.57 / 0.73 | 0.80 / 0.61 |
-| B · crutch | **0.99 / 0.91** | — | — |
-| B · lander | **0.99 / 0.92** | — | — |
+| B · crutch | 0.40 / 0.72 | — | — |
+| B · lander | 0.51 / 0.66 | — | — |
 
 The GP has **strong, real predictive signal** on the discriminating outcomes
-(Tier-C crutch `SEA` R²≈0.97; Tier-B `F_peak` R²≈0.99) — the optimizer is not
-chasing noise.  Where the signal is weak it is because the *outcome itself* is
-nearly constant across the box (Tier-C `eta` for the lander is pinned at
-0.732–0.734, so its CV ρ is low even though the absolute error is tiny), not
-because the model failed to fit.  Per-seed scatter plots
-(`*_seed<k>_cv.png`) carry the y=x line and ±1σ predictive bars.
+(Tier-C crutch `SEA` R²≈0.97). Where the signal is weak it is either because
+the *outcome itself* is nearly constant across the box (Tier-C `eta` for the
+lander is pinned at 0.732–0.734, so its CV ρ is low even though the absolute
+error is tiny) or, for the regime-aware Tier-B `F_peak`, because the two-orders-
+of-magnitude outlier spread from tight-geometry proposals makes a single global
+GP harder to fit per-seed (`nrmse ≈ 0.2`, still well above the constant-mean
+null) — a signal that the Edison-recommended **multi-fidelity / discrepancy**
+model is the right next step rather than one flat GP per tier. Per-seed scatter
+plots (`*_seed<k>_cv.png`) carry the y=x line and ±1σ predictive bars.
 
 ![Tier-C crutch seed-0 LOO-CV](outputs/sim_bo_C_crutch_seed0_cv.png)
 
@@ -123,8 +142,9 @@ a real optimizer on the cheap simulator does not remove them:
 - **Tier-C `F_peak` is near-invariant** (≈3–4 % across the whole box) and sits
   at the static support load, *not* a resolved impact peak (crutch median
   `F_peak`/(75 kg·g) ≈ 1.0).  Tier-B's Newton drop *does* resolve a
-  design-dependent peak (2.5× span), which is why its single-objective loop
-  actually converges on `F_peak`.
+  design-dependent **and regime-distinct** peak (now seeded with each regime's
+  impact velocity after Edison review `491f90ae`), which is why its
+  single-objective loop actually converges on `F_peak`.
 - **`SEA` is a peak *elastic* strain-energy proxy** (~10³–10⁴× below incoming
   KE), not dissipated work; it is a *relative* design ranking, not an absolute
   energy-absorption number.
@@ -151,3 +171,5 @@ as task labels — are tracked in `bo_integration.md`.
 - `outputs/sim_bo_<tier>_<regime>_convergence.png` — mean running-best with ±1σ band across seeds
 - `outputs/sim_bo_<tier>_<regime>_seed<k>_pareto.png` — per-seed Pareto fronts (multi-objective tiers)
 - `outputs/sim_bo_<tier>_<regime>_seed<k>_cv.png` — per-seed LOO-CV observed-vs-predicted (predictive signal)
+- `outputs/sim_bo_<tier>_<regime>_cv_summary.csv` — per-seed CV diagnostics (`r2`, `rho`, range-normalized `nrmse`, constant-mean `null_skill`)
+- `edison-trajectories/sim-bo-review/` — Edison ANALYSIS `491f90ae` mock-reviewer brief that drove the Tier-B regime-plumbing fix and the range-normalized CV diagnostics
