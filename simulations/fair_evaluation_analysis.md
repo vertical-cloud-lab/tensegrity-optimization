@@ -58,21 +58,33 @@ Look at each objective through that lens:
   KE; see `sobol_t3_diagnostics.md`), so it ranks designs rather than predicting
   absorbed joules.
 * **`F_peak_N` = peak\_g · g · payload\_mass** — the payload mass is held fixed
-  per regime (`bo_evaluator.py:353`), which is correct (we evaluate a design
-  *against a fixed loading scenario*). But peak\_g at Tier-C is a **support-load /
-  contact proxy** (`sobol_t3_diagnostics.md`: it tracks the static support load,
-  crutch ratio ≈ 1.002; lander floor-reaction is the real impact channel). That
-  makes `F_peak` *contact-area- and stiffness-dominated*, so a design that "wins"
-  on `F_peak` may just have a bigger / stiffer footprint, not better mechanics.
+  per regime (`bo_evaluator.py:353`), so the *normalisation* is fine; the problem
+  is the **observable**. At Tier-C the crutch peak\_g is essentially the **static
+  support load** (`sobol_t3_diagnostics.md`: ratio ≈ 1.002; 712–739 N ≈ 75 kg·g =
+  736 N), so for the crutch `F_peak` reads support load, not impact attenuation.
+  The **lander** peak\_g is *not* that degenerate — 4628–4790 N over a 5 kg
+  payload is a real ~94–98 g transient — but the diagnostics show the
+  **base/floor-reaction** channel (≈ 103× static weight) is the physically better
+  transmitted-load observable. So the precise claim is: crutch `F_peak` ≈
+  support-load proxy; lander `F_peak` is a real transient but base reaction is the
+  right bench-matched metric. Either way it is *not* size-normalised, so a "win"
+  can come from a bigger / stiffer footprint rather than better mechanics.
 * **`eta`** (mean/peak over the pulse) is dimensionless and intrinsically
   normalised — the fair one — but at Tier-C the lander `eta` is pinned to
   ~0.733 (it is currently not a discriminating axis).
 
 **Net:** of the three objectives, only `SEA` controls for mass and *none*
-control for volume or footprint. Comparisons across the box are therefore
+control for volume or footprint. To be precise (per the Edison mock review,
+§ "Edison mock-review refinements" below): `SEA_J_per_g` is fair on mass but
+incomplete for the lander (ignores volume / footprint / stroke); `eta` is
+intrinsically normalised but currently non-discriminating; and `F_peak`'s
+*observable* is the main problem. Comparisons across the box are therefore
 confounded by size. The crutch tolerates this (its envelope ceiling is generous
 relative to a 24 mm tip), but **for the lander it breaks the problem**, because
-mass and volume are the binding constraints, not free lunches.
+mass and volume are the binding constraints, not free lunches. (Note: the
+current Tier-C lander front is not *wrong* — it is a valid exploratory study over
+a variable-size family; it just answers "which design wins when size is free?"
+rather than the fair fixed-budget question we want.)
 
 ---
 
@@ -96,9 +108,13 @@ budgets. The relevant ones, and how each maps onto our design axes:
    mass and stowage penalties. This caps (and *floors*) the strut-tip footprint
    and the radius `R`.
 4. **Stroke / standoff.** The crush stroke (≈ `H` minus solid height) must be
-   long enough to keep peak g under the **GEVS ≤ 1500 g** target at 9.8 m/s, but
-   short enough to fit the deployed envelope. This is a coupled
-   stroke↔envelope↔peak-g constraint.
+   long enough to keep peak g under the **GEVS ≤ 1500 g** requirement *proxy* at
+   9.8 m/s, but short enough to fit the deployed envelope. A constant-force ideal
+   absorber needs at least `s ≥ v²/(2·a_max) = 9.8²/(2·1500·9.81) ≈ 3.3 mm`
+   stroke for the 1500 g cap; with `eta ≈ 0.73` and margin the practical floor is
+   ~4.5–6 mm — far below the `H = 60–110 mm` box, so **height is mostly a
+   packaging / shape variable here, not forced by the peak-g cap.** This is a
+   coupled stroke↔envelope↔peak-g constraint.
 5. **Specific energy absorption per unit mass *and* per unit volume.** Heritage
    crush cores are specified by *both* J/g and J/cm³; a fair lander objective
    has to respect the volumetric budget, not just the gravimetric one.
@@ -108,7 +124,16 @@ budgets. The relevant ones, and how each maps onto our design axes:
 
 The crutch tip has an analogous but looser set: a ≤ 24 mm OD envelope
 (`regimes.py`), a per-strike mass that rides in the user's swing inertia (small
-mass penalty), and an ISO-5349 HAVS peak constraint (≤ 8 g) rather than GEVS.
+mass penalty), and an internal **peak-acceleration target (≤ 8 g) chosen to be
+conservative relative to HAVS concerns** (ISO 5349 HAVS is frequency-weighted and
+exposure-duration based, so the 8 g figure is a requirement proxy, not a literal
+ISO scalar) rather than GEVS.
+
+> **GEVS / HAVS wording.** Both the lander 1500 g and crutch 8 g figures are used
+> here as *engineering requirement proxies*, not literal one-number standards:
+> GSFC GEVS is normally expressed through shock response spectra / qualification
+> environments, and ISO 5349 HAVS through frequency-weighted, exposure-based
+> metrics. We optimise against the proxies but cite them as chosen study targets.
 
 ---
 
@@ -215,3 +240,62 @@ than structurally; ad-hoc normalisation constants can be argued with.
 These are deliberately scoped as *follow-on* work; this document + the Edison
 mock review are the deliverable for comment 4760939061 (the ask was to *suggest*
 the approach and get feedback on the thinking).
+
+---
+
+## 5. Edison mock-review refinements (ANALYSIS task `e43abed6`)
+
+We sent this thinking + the supporting artifacts (`regimes.py`, `bo_evaluator.py`,
+`pareto_render_campaign.md`, `sobol_t3_diagnostics.md`) to Edison ANALYSIS for a
+rigorous mock review (`scripts/edison/submit_fair_evaluation.py`; full answer at
+[`edison-trajectories/fair-evaluation/`](../edison-trajectories/fair-evaluation/)).
+The reviewer **endorsed the diagnosis and the recommended hybrid** ("reparameterise
+to fixed absorber mass, optimise in dimensionless shape variables, constrain volume
+and footprint/pressure explicitly, replace payload-accel `F_peak` with base
+reaction, report both `SEA_J_per_g` and `SEA_J_per_cm³`"), and independently
+reproduced the size-confound magnitude (~6.6× mass / 4.69× volume / 4.0× footprint).
+Refinements already folded into the sections above:
+
+* **Don't over-claim `F_peak` for the lander.** The crutch payload-accel `F_peak`
+  is a support-load proxy (ratio ≈ 1.002), but the **lander** `F_peak` is a *real*
+  ~94–98 g transient (4628–4790 N over 5 kg) — base reaction is simply the
+  *better* transmitted-load observable, not a fix for a degenerate one.
+* **Not all three objectives are "unfair":** SEA is fair on mass (incomplete on
+  volume/footprint/stroke); `eta` is normalised but non-discriminating; `F_peak`'s
+  *observable* is the real issue.
+* **GEVS / HAVS are requirement proxies**, not literal one-number standards.
+* **The current Tier-C lander front is not wrong** — it is a valid variable-size
+  exploratory study; it just answers a different question than the fair
+  fixed-budget one.
+
+Reviewer methodology points worth keeping:
+
+* **Reparameterisation > outcome constraints for the mass budget.** A constant-mass
+  manifold is effectively an *equality* constraint; constrained qNEHVI handles
+  *inequalities* (`volume ≤ V*`, `footprint ∈ [A_min,A_max]`, `pressure ≤ p_max`,
+  `peak_g ≤ g_max`) well but is a poor substitute for a thin equality-feasible
+  slice you already know analytically. Solve one geometric variable from
+  `cell_mass = m*` and search the lower-dimensional domain (better sample
+  efficiency, cleaner GP). This is the Buckingham-π / similitude argument; cf.
+  Senadeera et al., *Bayesian Optimisation with Dimensionless Groups* (Applied
+  Sciences, 2025), which reports faster convergence + better interpretability in
+  dimensionless BO space.
+* **Don't impose hard constraints on a biased cheap observable.** Enforce geometry
+  budgets (mass/volume/footprint) at all fidelities (trusted, analytic); use
+  Tier-C base reaction for coarse feasibility screening; reserve final peak-g
+  acceptance for Tier-B/A or the bench. Hard `_INFEASIBLE_*` penalties are fine for
+  geometry/printability filters but distort the surrogate if used for physics
+  constraints — prefer feasibility-weighted (constrained qNEHVI) acquisition.
+* **First-pass lander budget bands** (engineering starting points, *not* audited
+  mission requirements): absorber mass ≈ **2–5 %** of landed mass (single-digit %),
+  i.e. for the 5 kg regime an aggressive **50–100 g** / practical **100–250 g** /
+  exploratory-cap **500 g** module allowance — against which the current cell's
+  9.5–59 g range wanders unaccounted. Report fronts at 2–3 fixed mass (and 2
+  envelope) budgets rather than one smeared unconstrained sweep. Treat
+  ground pressure (= base reaction / footprint), not footprint alone, as the
+  stability/regolith constraint. Energy-absorption FoMs should be reported both
+  gravimetrically (J/g) and volumetrically (J/cm³), per Lu & Yu and Jones.
+* **Caveat from the reviewer:** it would not commit to single literature-grounded
+  numeric targets (mass fraction, regolith pressure, volumetric SEA) without
+  mission-specific systems requirements — the bands above are engineering starting
+  points, and a source-traceable heritage benchmark table is the clean next step.
