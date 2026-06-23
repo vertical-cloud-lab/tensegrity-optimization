@@ -1,0 +1,54 @@
+# Vertex vs. acrylic-plate drop tests (T3 prisms)
+
+Raw TP4 accelerometer exports for the single-drop vertex-mounted vs.
+acrylic-plate comparison on existing T3 prisms, run by @ctrhjk and posted on
+[PR #67](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67#issuecomment-4783408053)
+(tests run 06/22/2026).
+
+## Recording setup
+
+Single drop per configuration (no cyclic testing). Drop height **13 ft**.
+
+- **CH1 removed** — only one single-axis accelerometer is used now (per
+  issues #71 / #74).
+- **CH2–CH4** — three-axis accelerometer.
+- **CH5** — single-axis accelerometer.
+
+| Channel | Sensor | Full scale (G) | Sensitivity (mV/G) | Trigger | Coupling | ICP | Waveform analysis |
+|---|---|--:|--:|---|---|---|---|
+| CH2 | tri-axis | 14492.8 | 0.69  | No | AC | yes | Half Sine |
+| CH3 | tri-axis | 14992.5 | 0.667 | No | AC | yes | Half Sine |
+| CH4 | tri-axis | 13624.0 | 0.734 | **Yes** (1000 G) | AC | yes | Half Sine |
+| CH5 | single-axis | 9442.9 | 1.059 | No | AC | yes | Half Sine |
+
+DAQ: record time 200 ms, 125 kHz (8 µs), 25000 samples, 2 % (4 ms) pre-trigger.
+
+## Files
+
+Each specimen was measured twice — `Signal1` is the **vertex** test (accelerometer
+hot-glued to the rounded vertex), `Signal2` is the **acrylic-plate** test
+(accelerometer above the plate, vertex directly below).
+
+| Specimen ID | Vertex (`Signal1`) | Acrylic (`Signal2`) |
+|---|---|---|
+| `n0jdwk` | `raw/n0jdwk_Signal1.csv` | `raw/n0jdwk_Signal2.csv` |
+| `m6cyoq` | `raw/m6cyoq_Signal1.csv` | `raw/m6cyoq_Signal2.csv` |
+| `T3_0103` | `raw/T3_0103_Signal1.csv` | `raw/T3_0103_Signal2.csv` |
+| `T3_0000` (audrey2) | `raw/T3_0000_Signal1.csv` | `raw/T3_0000_Signal2.csv` ⚠️ failed |
+
+Each CSV is a TP4 Time-Domain export: a short header block, then columns
+`Time (sec), CH2 Acc (G's), CH3 Acc (G's), CH4 Acc (G's), CH5 Acc (G's)`.
+
+## Notes from @ctrhjk
+
+1. **Acrylic test sometimes registered no acceleration above trigger.** Likely
+   the retaining clips were fixed too low, letting the acrylic plate contact and
+   seat against the tensegrity structure so the accelerometer never saw a peak
+   above the 1000 G trigger.
+2. **Hot glue is not a reliable z-axis mount** for the vertex test; a better
+   alignment method is needed.
+3. **Specimen damage after the acrylic test:** `m6cyoq` strut near the vertex
+   cut transversely (across the print direction); `T3_0103` TPU tendon inside the
+   vertex cut.
+4. **`T3_0000` (audrey2) acrylic test (`Signal2`) failed** — the accelerometer
+   was not fully secured and fell off on the drop; that dataset is invalid.
