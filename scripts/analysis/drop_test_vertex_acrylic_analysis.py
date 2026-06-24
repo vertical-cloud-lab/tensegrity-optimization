@@ -63,6 +63,7 @@ IMPACT_SEARCH_S = 0.010  # look for the impact within the first 10 ms
 IMPACT_HALF_WIN_S = 0.0015  # +-1.5 ms window around the impact for peak search
 BASELINE_S = 0.0028  # pre-impact baseline window (impact lands ~3.9 ms)
 NO_IMPACT_CFC180_G = 30.0  # CH5 CFC-180 peak below this => no clean impact
+TP4_HEADER_LINES = 9  # TP4 CSV export: 8 metadata rows + 1 column-name row
 
 # specimen id -> printed label (distinct T3-prism geometries)
 SPECIMENS = ["n0jdwk", "m6cyoq", "T3_0103", "T3_0000"]
@@ -75,7 +76,7 @@ KNOWN_INVALID = {
 
 def load(path: Path) -> tuple[np.ndarray, np.ndarray]:
     """Return (t, channels[N, 4]) = (time, [CH2, CH3, CH4, CH5])."""
-    d = np.genfromtxt(path, skip_header=9, delimiter=",", usecols=(0, 1, 2, 3, 4))
+    d = np.genfromtxt(path, skip_header=TP4_HEADER_LINES, delimiter=",", usecols=(0, 1, 2, 3, 4))
     return d[:, 0], d[:, 1:5]
 
 
