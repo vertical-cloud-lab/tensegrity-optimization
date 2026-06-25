@@ -95,6 +95,31 @@ the script.
    cyclic softening of the structure — worth watching for the planned 20-drop
    cyclic tests, and an argument for a rigid z-aligned mount over hot glue.
 
+## Edison cross-check
+
+An Edison Scientific ANALYSIS run
+([`edison-trajectories/input-output/`](../edison-trajectories/input-output/),
+task `fe044079`) re-derived these metrics from the raw CSVs and **reproduced the
+transmissibility values exactly to two decimals** (practice 1.17, n0jdwk 1.19,
+yqpmx1 0.96, h8Lbev 1.09), with absolute G ~2–3 G below ours from small CFC
+filter-design differences. It made three points worth recording here:
+
+- **Δv window sensitivity.** Integrating CH5 CFC-1000 over the full ±1.5 ms
+  window it gets Δv ≈ 3.4–3.7 m/s; our number (~2.85–2.96 m/s) integrates
+  CFC-180 over the *half-amplitude* crossings only. Both are valid partial-pulse
+  values over different spans — and both exceed the 2.55 m/s free-fall from
+  0.33 m, the excess being rebound (e ≈ 0.4), which needs **no bungee assist**
+  to explain (consistent with the bungees being removed).
+- **The within-run drift is statistically real and mount-driven.** A per-drop
+  OLS regression of T on drop index is positive for all four specimens (pooled
+  demeaned +0.015/drop, p = 0.0001); output rising at constant input fits
+  hot-glue seating/creep better than material softening over only five cycles.
+- **T is a defensible first-pass screening objective**, but it is a peak ratio,
+  not a transfer function; once the simultaneous input+output pair is exploited,
+  an FRF / SRS-band reduction is more physical, and **output peak at fixed
+  input** is the easy-to-interpret near-equivalent for BO. Feed the within-
+  specimen SD as (upper-bound, heteroscedastic) BO noise.
+
 ## Caveats
 
 - **n = 1 specimen per geometry** (five repeat *drops*, not five specimens), so
