@@ -46,6 +46,9 @@ All linear dimensions are `*_base * scale_factor`:
 | `captive_bore_trap`  | 1.5 mm | 1.5 mm | min `(core_od - bore_d) / 2`; how much wider the core is than the bore so it can't back out |
 | `captive_core_clear` | 0.5 mm | **0 mm** | radial gap (shell-ID − core-OD) / 2; **0** = bonded (TPU core touches the PLA inner wall) per PR #35 comment 4513722886 |
 | `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
+| `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each top vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
+| `accel_l` / `accel_w` / `accel_h` | — | 6 / 6 / 5.94 mm | accelerometer pocket size (Dytran 3133A4, **not** scaled) |
+| `accel_clear` | — | 0.4 mm | per-side pocket clearance for the adhesive bead + slide-in fit |
 
 Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
 solid material. Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
@@ -115,6 +118,34 @@ the cables STL bbox to ±`core_od/2`), and `cables_z_anchor()` adds a
 world-Z bounding boxes are byte-for-byte identical. Bambu Studio then
 applies the same offset to both halves and the cables stay aligned with
 the joints.
+
+When the accelerometer mounts are enabled (`add_accel_mount=true`, the
+default — see below) they sit on top of the top-vertex shells and make
+the struts STL taller, so `cables_z_anchor()` extends its top spike by
+`accel_rise()` to keep the two halves' bounding boxes matched.
+
+## Accelerometer mount (`accel_mount()`)
+
+For the drop-test campaign the team secures a **Dytran 3133A4 tri-axis
+accelerometer** (measured **6 × 6 × 5.94 mm**, L × W × H —
+[PR #74 comment 4792400480](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/74#issuecomment-4792400480))
+to a vertex of the structure. Per
+[PR #35 comment 4794790065](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4794790065),
+each of the three **top** vertices now carries a small PLA mount block
+(`accel_mount()` in `t3-prism.scad`) fused onto its joint shell:
+
+* a rectangular pocket sized to the accelerometer plus
+  `accel_clear` = 0.4 mm per side for the adhesive bead and slide-in fit;
+* **three walls + a floor** (back, both sides, bottom) and an **open
+  outward-facing front** so the sensor slides in from the side and its
+  cable feeds out horizontally;
+* a **rounded "igloo" crown** (`accel_dome` = 3 mm) over the pocket so the
+  top contact against the acrylic drop-test plate has less friction.
+
+Because the accelerometer is a physical part, its dimensions are absolute
+millimetres and are **not** multiplied by `scale_factor`. The mounts are
+PLA, so they travel with the struts half of the multi-material variant.
+Set `add_accel_mount=false` on the OpenSCAD CLI to omit them.
 
 ## Single-piece, pure-PETG
 

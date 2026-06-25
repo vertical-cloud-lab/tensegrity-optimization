@@ -189,6 +189,51 @@ captive_shell_id   = captive_core_od + 2 * captive_core_clear;
 captive_shell_od   = max(captive_shell_id + 2 * captive_wall, joint_d);
 captive_teardrop_d = strut_d * 1.10;  // seed sphere for the teardrop blend
 
+// ---- Accelerometer mount (Dytran 3133A4 tri-axis, 6 x 6 x 5.94 mm) --------
+// PR #35 comment 4794790065 (@sgbaird): "extrude some extra material in a
+// block on top of the top vertices and cut out a place to secure the 3-axis
+// accelerometer ... a cable needs to feed out horizontally (hence three
+// 'walls' and one opening) and ... because there will be a bit of adhesive
+// there should be a bit of clearance so it can fit inside. A rounded shape on
+// top should be preserved so that it's a bit like an igloo with the
+// accelerometer sliding in, such that there is less friction between the
+// acrylic plate and the tensegrity structure."
+//
+// We add one rounded ("igloo") mount on top of each of the three top vertices
+// (so the team can secure the accelerometer to whichever vertex is convenient
+// and every top contact point against the acrylic drop-test plate is rounded
+// to reduce friction). Each mount is a small PLA block fused onto the top
+// joint shell, with a rectangular pocket sized to the accelerometer plus an
+// adhesive/fit clearance. The pocket is closed on the back and both sides
+// (three walls) and on the bottom (floor), open on the outward-facing front
+// (so the cable feeds out horizontally and the accelerometer slides in from
+// the side), and capped by a rounded crown (the "igloo" top).
+//
+// The accelerometer is a PHYSICAL part — its dimensions are absolute
+// millimetres (Dytran 3133A4, measured 6 x 6 x 5.94 mm L x W x H, PR #74
+// comment 4792400480) and are NOT multiplied by `scale_factor`.
+add_accel_mount = true;          // set false to omit the accelerometer mounts
+accel_l     = 6.0;               // accelerometer length (X: slide-in / cable-exit axis)
+accel_w     = 6.0;               // accelerometer width  (Y)
+accel_h     = 5.94;              // accelerometer height (Z)
+accel_clear = 0.4;               // per-side clearance for the adhesive bead + slide-in fit
+accel_wall  = 2.0;               // PLA wall thickness around the pocket
+accel_floor = 1.5;               // PLA floor thickness under the accelerometer
+accel_dome  = 3.0;               // rounded PLA crown thickness above the pocket
+accel_sink  = 2.0;               // depth the mount base sinks into the top joint shell
+
+// Pocket inner dimensions (the open +X face is the cable exit / slide-in).
+function accel_pocket_x() = accel_l + 2 * accel_clear;
+function accel_pocket_y() = accel_w + 2 * accel_clear;
+function accel_pocket_z() = accel_h + accel_clear;
+// Outward radius of the joint node the mount fuses onto (captive shell in the
+// default mode, solid joint sphere in legacy mode).
+function joint_outer_r() = use_captive_core ? captive_shell_od / 2 : joint_d / 2;
+// How far the rounded crown rises above the top-joint node equator. Used to
+// keep the cables STL bounding box matched to the (now taller) struts STL —
+// see cables_z_anchor().
+function accel_rise() = accel_floor + accel_pocket_z() + accel_dome - accel_sink;
+
 // Optional rigid translation applied AFTER part selection. Used by
 // render_print.sh for the multi-material variant: both the struts STL
 // and the cables STL are pre-translated to the H2D bed centre and lifted
@@ -304,6 +349,56 @@ module joint_core(V) {
     translate(V) sphere(d=captive_core_od);
 }
 
+// ---- Accelerometer mount: rounded PLA "igloo" with a slide-in pocket -------
+// Built in a local frame where +X is the outward (cable-exit / slide-in)
+// direction, +Z is up (toward the acrylic plate). The pocket floor sits at
+// local z=0; the body wall starts at z=-accel_floor and the rounded crown
+// rises to z = pocket_z + accel_dome. The pocket is open on +X only.
+module accel_mount_local() {
+    px  = accel_pocket_x();
+    py  = accel_pocket_y();
+    pz  = accel_pocket_z();
+    bx0 = -accel_wall;           // back wall outer face
+    bx1 = px;                    // front face (flush with the open pocket mouth)
+    byh = py / 2 + accel_wall;   // body half-width (side walls)
+    bz0 = -accel_floor;          // body underside
+    bz1 = pz;                    // top of the straight walls (crown springs from here)
+    cx  = (bx0 + bx1) / 2;
+    rcrown = min(bx1 - bx0, 2 * byh) / 2;
+    difference() {
+        // Solid igloo: straight walled body + a rounded crown hulled from the
+        // body's top rim up to a crowning sphere (rounded top, less friction).
+        union() {
+            translate([cx, 0, (bz0 + bz1) / 2])
+                cube([bx1 - bx0, 2 * byh, bz1 - bz0], center=true);
+            hull() {
+                translate([cx, 0, bz1 - 0.5])
+                    cube([bx1 - bx0, 2 * byh, 1], center=true);
+                translate([cx, 0, bz1 + accel_dome - rcrown])
+                    sphere(r=rcrown);
+            }
+        }
+        // Pocket, OPEN on +X (cable exit / slide-in). The cut runs past the
+        // front face so the mouth is fully open; the back, both sides, the
+        // floor and the crown stay solid (three walls + floor + rounded top).
+        translate([0, -py / 2, 0])
+            cube([px + byh + 5, py, pz]);
+    }
+}
+
+// Place an accelerometer mount on top of the joint at vertex V, with its open
+// face (and the exiting cable) pointing outward along heading `ang` (degrees,
+// measured in the XY plane). The base sinks `accel_sink` mm into the joint
+// node so the PLA fuses solidly, and the body is centred over the vertex.
+module accel_mount(V, ang) {
+    z0 = V[2] + joint_outer_r() - accel_sink + accel_floor;
+    cx = (-accel_wall + accel_pocket_x()) / 2;
+    translate([V[0], V[1], z0])
+        rotate([0, 0, ang])
+            translate([-cx, 0, 0])
+                accel_mount_local();
+}
+
 // ---- TPU z-anchor (cable-STL bounding-box parity) -------------------------
 // When the cables STL is rendered separately from the struts STL and both
 // are imported into Bambu Studio, the slicer's "place on bed" routine
@@ -325,9 +420,11 @@ module joint_core(V) {
 module cables_z_anchor() {
     // The extreme bottom point of the strut STL is the bottom-vertex
     // joint shell's underside at z = -captive_shell_od/2; the extreme
-    // top point is the top-vertex shell at z = H + captive_shell_od/2.
+    // top point is the top-vertex shell at z = H + captive_shell_od/2,
+    // plus the accelerometer-mount crown (when enabled), which sits on
+    // top of the top-vertex shells and makes the struts STL taller.
     z_lo = -captive_shell_od / 2;
-    z_hi = H + captive_shell_od / 2;
+    z_hi = H + captive_shell_od / 2 + (add_accel_mount ? accel_rise() : 0);
     eps  = 0.005;  // 5 micron, well below FDM extrusion width
     // Use the prism's centroid in XY so the anchor is geometry-only and
     // never collides with cables or scaffold pillars.
@@ -359,6 +456,14 @@ module t3_prism_struts() {
         }
         // Struts: B_i -> T_i  (compression members)
         for (i = [0:2]) member(bottom_pt(i),   top_pt(i),         strut_d);
+        // Accelerometer mounts on top of each top vertex (PLA, so they travel
+        // with the rigid struts half in the multi-material variant). The open
+        // face points radially outward (heading = the top vertex's polar
+        // angle) so the cable feeds away from the structure.
+        if (add_accel_mount) {
+            for (i = [0:2])
+                accel_mount(top_pt(i), 90 + 120*i + twist);
+        }
     }
 }
 
