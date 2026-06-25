@@ -1,0 +1,46 @@
+March 14–18, 2027
+Orlando World Center Marriott
+Orlando, Florida, USA
+JOIN US FOR THE FOLLOWING SYMPOSIUM www.tms.org/TMS2027
+DATA-DRIVEN AND COMPUTATIONAL MATERIALS DESIGN
+AI-Enabled Materials Processing: Integrating Accelerated Experimental Workflows and
+Processing-Aware Machine Learning
+Processing governs microstructure evolution, defect populations, and interfaces across metals, alloys, composites, and functional materials,
+thereby determining reliability, manufacturability, and performance. This symposium centers on the integration of artificial intelligence and
+machine learning directly with experimental materials processing, rather than on general AI-driven materials discovery. While many current AI
+and ML efforts emphasize composition or purely computational modeling, comparatively less attention has been given to treating processing
+history as a primary design variable. Advances in high-throughput manufacturing, accelerated characterization and testing, and real-time
+process monitoring now create opportunities to embed data-driven and physics-informed methods within experimental processing workflows.
+The symposium focuses on process-aware microstructure and property control enabled by AI integrated with thermomechanical processing,
+heat treatment, casting, additive manufacturing, surface modification, and deposition-based routes. Contributions may be experimental,
+computational, or hybrid in nature, but should emphasize coupling AI with processing science to accelerate optimization and scale-up. Particular
+emphasis is placed on generating and structuring high-quality processing-microstructure-property datasets from manufacturing workflows and
+leveraging them to encode processing histories into predictive models of microstructure and properties. Topics include AI-assisted exploration
+of complex parameter spaces for processing; surrogate and reduced-order models for complex processing routes; uncertainty-aware and few-
+shot learning approaches for small or sparse datasets; Bayesian optimization for process tuning; and closed-loop experimental workflows that
+integrate synthesis, processing, characterization, testing, and iterative model-guided refinement.
+The goal of this symposium is to bring together materials processors, metallurgists, manufacturing engineers, and data scientists working
+at the interface of experimental processing and data-driven optimization. By positioning processing as a central axis in AI-enabled materials
+development, this symposium aims to accelerate the translation of laboratory-scale insights into robust, manufacturable, and scalable materials
+systems. Topics of Interest Include, But Are Not Limited To: Integration of AI/ML with experimental processing for microstructure and property
+control, process optimization, and manufacturing scale-up High throughput and data-aware experimental design for systematic exploration
+of processing parameter spaces Processing-structure-property relationships supported by advanced and accelerated characterization, testing,
+and real-time process monitoring Bayesian optimization, adaptive experimentation, and closed-loop control in manufacturing-relevant
+environments Applications in structural alloys, biocompatible materials, additively manufactured components, coatings, batteries, and other
+processing-intensive systems Experimental advances in casting, rolling, extrusion, forging, heat treatment, additive manufacturing, and
+deposition-based processes
+DIVISION SPONSOR(S)
+TMS Materials Processing and Manufacturing Division
+COMMITTEE SPONSOR(S)
+TMS: Additive Manufacturing Committee; TMS: Computational Materials Science and Engineering Committee; TMS: Process Technology and
+Modeling Committee
+ORGANIZING COMMITTEE
+• Sreenivas Raguraman, Johns Hopkins University
+• Maitreyee Sharma Priyadarshini, Virginia Tech
+• Timothy Weihs, Johns Hopkins University
+• Thomas Voisin, Lawrence Livermore National Laboratory
+• Allison Beese, Pennsylvania State University
+• Samantha Webster, Colorado School of Mines
+July 1, 2026: Abstract Submissions Due
+QUESTIONS? Contact programming@tms.org KEY DATES: October 2026: Registration Opens
+January 31, 2027: Discount Registration Deadline
