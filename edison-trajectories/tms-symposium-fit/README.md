@@ -14,3 +14,24 @@ might fit better.
 
 Driver scripts: `scripts/edison/submit_tms_symposium_fit.py` (submit) and
 `scripts/edison/fetch_tms_symposium_fit.py` (poll + fetch).
+
+## Headline finding (task 16895002-4776-4382-8c67-c08f47f42062)
+
+As written, the abstract is a **partial fit (≈4/10)** for the current target
+symposium **#021 "AI-Enabled Materials Processing"**, whose CFA demands
+*processing history as a primary design variable* — but our optimization targets
+geometry/topology, not process parameters.
+
+- **Best home as written: AM-track symposium #003 "Additive Manufacturing
+  Modeling, Simulation, and Artificial Intelligence: Microstructure, Mechanics,
+  and Process"** (≈8.5/10, near-zero edits; just soften "processing-aware").
+- **Keep #021 only by making processing real (≈7/10):** add 2–4 FDM process
+  variables to the BO loop (interface overlap, PLA/TPU nozzle temperature, layer
+  height, print speed) plus a process-sensitive response (interfacial-failure
+  incidence / bond-strength proxy / void fraction / dimensional fidelity).
+- Other backups: #023 "Algorithms Development in MSE" (method-first framing),
+  #005 "Designing Complex Microstructures Through AM". No dedicated
+  architected-materials, polymer-AM, or AM-mechanical-behavior symposium was
+  found in the TMS 2027 flyer set.
+- Abstract is ~141 words (≈9 of slack under the 150-word cap); ready-to-paste
+  114-word Path-A and Path-B rewrites are given in the answer.
