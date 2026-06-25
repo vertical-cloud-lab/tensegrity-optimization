@@ -14,8 +14,11 @@ Closed-Loop Bayesian Optimization of Multi-Material 3D-Printed Tensegrity-Inspir
 
 ## Authors
 
-Jeffrey R. Hill (presenting); Sterling G. Baird — Department of Mechanical
-Engineering, Brigham Young University, Provo, UT, USA
+Marcus Madsen\*; Audrey Christiansen\*; Jinkwan Han\*; Jeffrey R. Hill†
+(presenting); Sterling G. Baird† — Department of Mechanical Engineering,
+Brigham Young University, Provo, UT, USA
+
+\* Equal contribution. † Equal contribution.
 
 ## Abstract
 
