@@ -44,6 +44,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import trimesh
 
 # Re-use the exact placement logic the generator uses so the verification
 # samples the underside the same way the supports were placed.
@@ -52,7 +53,6 @@ from generate_support_pillars import raycast_underside  # noqa: E402
 
 
 def _load_mesh(path: Path):
-    import trimesh
     mesh = trimesh.load(path, force="mesh")
     if not hasattr(mesh, "ray"):
         raise SystemExit(f"{path}: not a single triangle mesh")
