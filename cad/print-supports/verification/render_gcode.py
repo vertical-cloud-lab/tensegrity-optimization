@@ -27,6 +27,14 @@ ap.add_argument("out",   type=Path)
 ap.add_argument("--title", default=None,
                 help="Override the figure suptitle (default: derive from "
                      "input filename and the slicer header).")
+ap.add_argument("--baked-supports", action="store_true",
+                help="The printable mesh already has the tree-support "
+                     "pillars baked in (path (c)), so the slicer sees a "
+                     "single solid object and emits no 'Support' features. "
+                     "Relabel the panels accordingly: the object (member + "
+                     "baked pillars) is coloured by height and the bottom / "
+                     "first-layer panels show the pillar feet + brim that "
+                     "land on the plate.")
 args = ap.parse_args()
 GC, OUT = args.gcode, args.out
 
@@ -124,26 +132,34 @@ fig = plt.figure(figsize=(16, 6.5))
 # Panel 1: bottom view (xy) of supports only
 ax1 = fig.add_subplot(1, 3, 1)
 ax1.set_aspect("equal")
-ax1.set_title("Bottom view — support extrusions only\n"
-              "(this is the slicer's automatic equivalent of Audrey's paint)",
-              fontsize=10)
-sup = arr[support_mask]
-for x0, y0, _z0, x1, y1, _z1 in sup:
-    ax1.plot([x0, x1], [y0, y1], color=TYPE_COLOR["Support material"],
-             lw=0.4, alpha=0.7)
-# faint outline of the object footprint to anchor the eye
-obj_first = arr[object_mask & (arr[:, 2] < 1.0)]
-for x0, y0, _z0, x1, y1, _z1 in obj_first:
-    ax1.plot([x0, x1], [y0, y1], color="#cfd8dc", lw=0.3, alpha=0.6)
+if args.baked_supports:
+    ax1.set_title("Bottom view — first-layer extrusions on the plate\n"
+                  "(baked pillar feet + member bases that contact the bed)",
+                  fontsize=10)
+    # No slicer 'Support' features in a baked mesh; show the lowest object
+    # extrusions instead — i.e. everything the nozzle lays on the plate.
+    obj_first = arr[object_mask & (arr[:, 2] < 1.0)]
+    for x0, y0, _z0, x1, y1, _z1 in obj_first:
+        ax1.plot([x0, x1], [y0, y1], color=TYPE_COLOR["Support material"],
+                 lw=0.4, alpha=0.7)
+else:
+    ax1.set_title("Bottom view — support extrusions only\n"
+                  "(this is the slicer's automatic equivalent of Audrey's paint)",
+                  fontsize=10)
+    sup = arr[support_mask]
+    for x0, y0, _z0, x1, y1, _z1 in sup:
+        ax1.plot([x0, x1], [y0, y1], color=TYPE_COLOR["Support material"],
+                 lw=0.4, alpha=0.7)
+    # faint outline of the object footprint to anchor the eye
+    obj_first = arr[object_mask & (arr[:, 2] < 1.0)]
+    for x0, y0, _z0, x1, y1, _z1 in obj_first:
+        ax1.plot([x0, x1], [y0, y1], color="#cfd8dc", lw=0.3, alpha=0.6)
 ax1.set_xlabel("X (mm)")
 ax1.set_ylabel("Y (mm)")
 ax1.grid(True, alpha=0.3)
 
 # Panel 2: iso view of object + supports
 ax2 = fig.add_subplot(1, 3, 2, projection="3d")
-ax2.set_title("Iso — object (grey) + tree supports (orange)\n"
-              "all tree roots land on the plate (z≈0); none on a member",
-              fontsize=10)
 # subsample so it renders in reasonable time
 def subsample(mask, max_n=8000):
     idx = np.where(mask)[0]
@@ -151,13 +167,30 @@ def subsample(mask, max_n=8000):
         idx = idx[np.linspace(0, len(idx) - 1, max_n).astype(int)]
     return idx
 
-for idx, color, lw, alpha in [
-    (subsample(object_mask, 6000),  "#90a4ae", 0.3, 0.5),
-    (subsample(support_mask, 6000), "#ff9800", 0.5, 0.85),
-]:
-    for i in idx:
-        x0, y0, z0, x1, y1, z1 = arr[i]
-        ax2.plot([x0, x1], [y0, y1], [z0, z1], color=color, lw=lw, alpha=alpha)
+if args.baked_supports:
+    ax2.set_title("Iso — printable mesh (object + baked pillars)\n"
+                  "coloured by layer height; everything roots on the plate",
+                  fontsize=10)
+    obj_idx = subsample(object_mask, 9000)
+    if len(obj_idx):
+        zmid = 0.5 * (arr[obj_idx, 2] + arr[obj_idx, 5])
+        zlo, zhi = float(zmid.min()), float(max(zmid.max(), zmid.min() + 1e-6))
+        cmap = plt.get_cmap("viridis")
+        for i in obj_idx:
+            x0, y0, z0, x1, y1, z1 = arr[i]
+            c = cmap(((0.5 * (z0 + z1)) - zlo) / (zhi - zlo))
+            ax2.plot([x0, x1], [y0, y1], [z0, z1], color=c, lw=0.3, alpha=0.6)
+else:
+    ax2.set_title("Iso — object (grey) + tree supports (orange)\n"
+                  "all tree roots land on the plate (z≈0); none on a member",
+                  fontsize=10)
+    for idx, color, lw, alpha in [
+        (subsample(object_mask, 6000),  "#90a4ae", 0.3, 0.5),
+        (subsample(support_mask, 6000), "#ff9800", 0.5, 0.85),
+    ]:
+        for i in idx:
+            x0, y0, z0, x1, y1, z1 = arr[i]
+            ax2.plot([x0, x1], [y0, y1], [z0, z1], color=color, lw=lw, alpha=alpha)
 ax2.set_xlabel("X (mm)")
 ax2.set_ylabel("Y (mm)")
 ax2.set_zlabel("Z (mm)")
@@ -172,9 +205,14 @@ ax3 = fig.add_subplot(1, 3, 3)
 # capture the very first layer regardless of slicer profile.
 first_layer_threshold = 0.25 if layer_height is None else 1.25 * layer_height
 ax3.set_aspect("equal")
-ax3.set_title(f"First layer (z ≤ {first_layer_threshold:.2f} mm)\n"
-              "purple = brim, grey = object first layer, orange = support roots",
-              fontsize=10)
+if args.baked_supports:
+    ax3.set_title(f"First layer (z ≤ {first_layer_threshold:.2f} mm)\n"
+                  "purple = brim, grey = object + pillar feet on the bed",
+                  fontsize=10)
+else:
+    ax3.set_title(f"First layer (z ≤ {first_layer_threshold:.2f} mm)\n"
+                  "purple = brim, grey = object first layer, orange = support roots",
+                  fontsize=10)
 first = arr[:, 2] <= first_layer_threshold
 for mask_name, mask, color, lw in [
     ("brim",    brim_mask    & first, "#7e57c2", 0.6),
@@ -192,11 +230,17 @@ ax3.grid(True, alpha=0.3)
 zmax = float(arr[:, [2, 5]].max())
 lh = layer_height if layer_height else 0.2
 n_layers = int(round(zmax / lh)) + 1
-title = args.title or (
-    f"{GC.name} sliced via cad/print-supports/bambu-pla-tensegrity-process.json "
-    f"(PrusaSlicer-translated)\n"
-    f"{len(segs):,} extrusion segments • {n_layers} layers @ {lh:.2f} mm • "
-    f"support fraction = {support_mask.sum() / max(1, len(segs)):.0%}")
+if args.baked_supports:
+    title = args.title or (
+        f"{GC.name} sliced via the Bambu Lab H2D PLA profile "
+        f"(baked-in tree-support pillars, no slicer supports)\n"
+        f"{len(segs):,} extrusion segments • {n_layers} layers @ {lh:.2f} mm")
+else:
+    title = args.title or (
+        f"{GC.name} sliced via cad/print-supports/bambu-pla-tensegrity-process.json "
+        f"(PrusaSlicer-translated)\n"
+        f"{len(segs):,} extrusion segments • {n_layers} layers @ {lh:.2f} mm • "
+        f"support fraction = {support_mask.sum() / max(1, len(segs)):.0%}")
 fig.suptitle(title, fontsize=11, y=1.02)
 fig.tight_layout()
 fig.savefig(OUT, dpi=160, bbox_inches="tight")

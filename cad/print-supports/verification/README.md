@@ -421,6 +421,56 @@ Results for the PR #35 supports:
 
 ![FEA stability](t3-prism-pr35-fea-stability.png)
 
+### On-hardware-profile slice — `slice_bambu_h2d.py` (Bambu Studio CLI)
+
+The geometry + FEA checks above answer "do the supports touch?" and "will
+they stand up?". As a final confirmation that the **combined printable mesh
+slices cleanly on the real production profile**, the part-plus-baked-pillars
+STL is run through the genuine `bambu-studio` CLI on the **Bambu Lab H2D 0.4
+nozzle** PLA profile. Because the pillars are baked into the mesh (path (c)),
+slicer-side support generation is turned off — the slicer sees one solid
+object, so it just lays down the members and the breakaway pillars together,
+each rooted on the plate under a 5 mm brim:
+
+```bash
+# combined part + baked tree-support pillars, no slicer supports:
+python3 cad/print-supports/verification/slice_bambu_h2d.py \
+    $BAMBU \
+    cad/print-supports/verification/t3-prism-pr35-with-pillars.stl \
+    /tmp/t3-prism-with-pillars.gcode \
+    --no-repo-overrides \
+    --override enable_support=0 \
+    --override brim_type=outer_only \
+    --override brim_width=5
+
+# honest preview (the mesh already contains the supports, so pass
+# --baked-supports to relabel the panels for a single-object slice):
+python3 cad/print-supports/verification/render_gcode.py \
+    /tmp/t3-prism-with-pillars.gcode \
+    cad/print-supports/verification/t3-prism-pr35-pillars-gcode-preview.png \
+    --baked-supports
+```
+
+The slice succeeds end-to-end on BambuStudio 02.06.00.51:
+
+| Metric           | Value                                          |
+| ---------------- | ---------------------------------------------- |
+| Slicer           | BambuStudio 02.06.00.51 (official CLI)         |
+| Printer profile  | Bambu Lab H2D 0.4 nozzle                       |
+| Filament profile | Bambu PLA Basic @BBL H2D                       |
+| Total layers     | 646                                            |
+| Max Z height     | 129.20 mm                                      |
+| Filament         | 20 094 mm / 60.90 g                            |
+| Estimated time   | ~5 h 36 m                                      |
+
+`t3-prism-pr35-pillars-gcode-preview.png` renders the result: the bottom view
+and first-layer panels show every baked pillar foot (plus the member bases)
+landing on the bed inside the brim, and the height-coloured iso panel confirms
+the toolpath spans the full z ≈ 0–126 mm of the part with everything rooted on
+the plate.
+
+![Baked-pillar slice preview](t3-prism-pr35-pillars-gcode-preview.png)
+
 
 ## Why θ = 10°? — TPU-safe strut-bottom coverage (partial fix)
 
