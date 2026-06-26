@@ -48,7 +48,8 @@ All linear dimensions are `*_base * scale_factor`:
 | `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
 | `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each top vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
 | `accel_l` / `accel_w` / `accel_h` | — | 6 / 6 / 5.94 mm | accelerometer pocket size (Dytran 3133A4, **not** scaled) |
-| `accel_clear` | — | 0.4 mm | per-side pocket clearance for the adhesive bead + slide-in fit |
+| `accel_clear` | — | 0.4 mm | per-side **lateral (XY)** pocket clearance for the slide-in fit |
+| `accel_clear_top` / `accel_clear_bot` | — | 0.2 / 0.2 mm | **Z** clearance above / below the accelerometer in the pocket (PR #35 comment 4805516634) |
 
 Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
 solid material. Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
@@ -134,11 +135,20 @@ to a vertex of the structure. Per
 each of the three **top** vertices now carries a small PLA mount block
 (`accel_mount()` in `t3-prism.scad`) fused onto its joint shell:
 
-* a rectangular pocket sized to the accelerometer plus
-  `accel_clear` = 0.4 mm per side for the adhesive bead and slide-in fit;
+* a rectangular pocket sized to the accelerometer plus `accel_clear` = 0.4 mm
+  per side **laterally** (XY slide-in fit) and `accel_clear_top` /
+  `accel_clear_bot` = 0.2 mm above / below the sensor in **Z**
+  ([PR #35 comment 4805516634](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4805516634));
 * **three walls + a floor** (back, both sides, bottom) and an **open
   outward-facing front** so the sensor slides in from the side and its
   cable feeds out horizontally;
+* a **flat, solid pocket floor** sitting `accel_floor` = 1.5 mm **above** the
+  rounded joint apex (`joint_outer_r()`), so the curved joint underneath can
+  never poke up into the pocket and the accelerometer seats flat — the body
+  walls still sink `accel_sink` = 2 mm past the apex to fuse with the joint.
+  Because the seat height is derived from `joint_outer_r()`, this holds for
+  **every** design/scale by default
+  ([PR #35 comment 4805516634](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4805516634));
 * a **rounded "igloo" crown** (`accel_dome` = 3 mm) over the pocket so the
   top contact against the acrylic drop-test plate has less friction.
 

@@ -216,23 +216,29 @@ add_accel_mount = true;          // set false to omit the accelerometer mounts
 accel_l     = 6.0;               // accelerometer length (X: slide-in / cable-exit axis)
 accel_w     = 6.0;               // accelerometer width  (Y)
 accel_h     = 5.94;              // accelerometer height (Z)
-accel_clear = 0.4;               // per-side clearance for the adhesive bead + slide-in fit
+accel_clear = 0.4;               // per-side LATERAL (XY) clearance for the slide-in fit
+accel_clear_top = 0.2;           // Z clearance above the accelerometer (below the crown)
+accel_clear_bot = 0.2;           // Z clearance below the accelerometer (adhesive-bead recess)
 accel_wall  = 2.0;               // PLA wall thickness around the pocket
-accel_floor = 1.5;               // PLA floor thickness under the accelerometer
+accel_floor = 1.5;               // PLA floor thickness between the joint apex and the pocket floor
 accel_dome  = 3.0;               // rounded PLA crown thickness above the pocket
-accel_sink  = 2.0;               // depth the mount base sinks into the top joint shell
+accel_sink  = 2.0;               // depth the mount walls sink past the joint apex (for bonding)
 
 // Pocket inner dimensions (the open +X face is the cable exit / slide-in).
+// The Z depth carries an independent top + bottom clearance so the
+// accelerometer seats flat on the (solid, flat) pocket floor with a thin
+// adhesive recess below it and a small gap above it (PR #35 comment
+// 4805516634: "change the tolerances to 0.2 mm top and 0.2 mm bottom").
 function accel_pocket_x() = accel_l + 2 * accel_clear;
 function accel_pocket_y() = accel_w + 2 * accel_clear;
-function accel_pocket_z() = accel_h + accel_clear;
+function accel_pocket_z() = accel_h + accel_clear_top + accel_clear_bot;
 // Outward radius of the joint node the mount fuses onto (captive shell in the
 // default mode, solid joint sphere in legacy mode).
 function joint_outer_r() = use_captive_core ? captive_shell_od / 2 : joint_d / 2;
 // How far the rounded crown rises above the top-joint node equator. Used to
 // keep the cables STL bounding box matched to the (now taller) struts STL —
 // see cables_z_anchor().
-function accel_rise() = accel_floor + accel_pocket_z() + accel_dome - accel_sink;
+function accel_rise() = accel_floor + accel_pocket_z() + accel_dome;
 
 // Optional rigid translation applied AFTER part selection. Used by
 // render_print.sh for the multi-material variant: both the struts STL
@@ -352,17 +358,21 @@ module joint_core(V) {
 // ---- Accelerometer mount: rounded PLA "igloo" with a slide-in pocket -------
 // Built in a local frame where +X is the outward (cable-exit / slide-in)
 // direction, +Z is up (toward the acrylic plate). The pocket floor sits at
-// local z=0; the body wall starts at z=-accel_floor and the rounded crown
-// rises to z = pocket_z + accel_dome. The pocket is open on +X only.
+// local z=0; the solid body extends down to z=-(accel_floor+accel_sink) so
+// its walls sink past the joint apex and fuse with the joint node, while the
+// flat pocket floor stays a full accel_floor above the apex (so nothing from
+// the rounded joint underneath pokes up through the floor — PR #35 comment
+// 4805516634). The rounded crown rises to z = pocket_z + accel_dome and the
+// pocket is open on +X only.
 module accel_mount_local() {
     px  = accel_pocket_x();
     py  = accel_pocket_y();
     pz  = accel_pocket_z();
-    bx0 = -accel_wall;           // back wall outer face
-    bx1 = px;                    // front face (flush with the open pocket mouth)
-    byh = py / 2 + accel_wall;   // body half-width (side walls)
-    bz0 = -accel_floor;          // body underside
-    bz1 = pz;                    // top of the straight walls (crown springs from here)
+    bx0 = -accel_wall;                  // back wall outer face
+    bx1 = px;                           // front face (flush with the open pocket mouth)
+    byh = py / 2 + accel_wall;          // body half-width (side walls)
+    bz0 = -(accel_floor + accel_sink);  // body underside (sinks accel_sink past the joint apex)
+    bz1 = pz;                           // top of the straight walls (crown springs from here)
     cx  = (bx0 + bx1) / 2;
     rcrown = min(bx1 - bx0, 2 * byh) / 2;
     difference() {
@@ -381,6 +391,9 @@ module accel_mount_local() {
         // Pocket, OPEN on +X (cable exit / slide-in). The cut runs past the
         // front face so the mouth is fully open; the back, both sides, the
         // floor and the crown stay solid (three walls + floor + rounded top).
+        // The cut bottom is at local z=0, so the floor is a full, flat
+        // accel_floor-thick solid PLA slab regardless of the joint geometry
+        // sunk in below it.
         translate([0, -py / 2, 0])
             cube([px + byh + 5, py, pz]);
     }
@@ -388,10 +401,13 @@ module accel_mount_local() {
 
 // Place an accelerometer mount on top of the joint at vertex V, with its open
 // face (and the exiting cable) pointing outward along heading `ang` (degrees,
-// measured in the XY plane). The base sinks `accel_sink` mm into the joint
-// node so the PLA fuses solidly, and the body is centred over the vertex.
+// measured in the XY plane). The pocket floor sits accel_floor above the
+// joint apex (V[2]+joint_outer_r()) so the rounded joint can never poke up
+// into the pocket, while the body walls still sink accel_sink past the apex
+// so the PLA fuses solidly. Works for any design because the seat height is
+// derived from joint_outer_r() (PR #35 comment 4805516634).
 module accel_mount(V, ang) {
-    z0 = V[2] + joint_outer_r() - accel_sink + accel_floor;
+    z0 = V[2] + joint_outer_r() + accel_floor;
     cx = (-accel_wall + accel_pocket_x()) / 2;
     translate([V[0], V[1], z0])
         rotate([0, 0, ang])
