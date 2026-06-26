@@ -150,7 +150,15 @@ each of the three **top** vertices now carries a small PLA mount block
   **every** design/scale by default
   ([PR #35 comment 4805516634](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4805516634));
 * a **rounded "igloo" crown** (`accel_dome` = 3 mm) over the pocket so the
-  top contact against the acrylic drop-test plate has less friction.
+  top contact against the acrylic drop-test plate has less friction;
+* a **skirt** that convex-hulls the body's underside footprint down onto the
+  rounded joint surface so PLA runs continuously from the joint up to the
+  underside of the igloo. This fills the outer void and removes the thin
+  overhanging lip that the flat-bottomed body would otherwise leave around its
+  rim — an unsupported stress riser that could crack
+  ([PR #35 comment 4813200802](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4813200802)).
+  The skirt re-applies the joint shell's cavity and cable-bore cuts so the
+  captive TPU core and the cable exits stay open.
 
 Because the accelerometer is a physical part, its dimensions are absolute
 millimetres and are **not** multiplied by `scale_factor`. The mounts are

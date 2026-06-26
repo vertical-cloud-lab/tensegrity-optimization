@@ -406,13 +406,49 @@ module accel_mount_local() {
 // into the pocket, while the body walls still sink accel_sink past the apex
 // so the PLA fuses solidly. Works for any design because the seat height is
 // derived from joint_outer_r() (PR #35 comment 4805516634).
-module accel_mount(V, ang) {
-    z0 = V[2] + joint_outer_r() + accel_floor;
-    cx = (-accel_wall + accel_pocket_x()) / 2;
+//
+// A "skirt" hulls the body's underside footprint down onto the rounded joint
+// surface so PLA runs continuously from the joint up to the underside of the
+// igloo, filling the outer void and removing the thin overhanging lip that
+// would otherwise be an unsupported stress riser (PR #35 comment 4813200802).
+// `cable_dirs` are the outgoing cable directions at this vertex; the skirt
+// re-applies the joint shell's cavity and cable-bore subtractions so the
+// captive TPU core and the cable exits stay open.
+module accel_mount(V, ang, cable_dirs) {
+    z0  = V[2] + joint_outer_r() + accel_floor;
+    cx  = (-accel_wall + accel_pocket_x()) / 2;
+    bz0 = -(accel_floor + accel_sink);         // body underside (matches accel_mount_local)
+    blen = accel_pocket_x() + accel_wall;      // body length  (bx1 - bx0)
+    byw  = accel_pocket_y() + 2 * accel_wall;  // body width   (2 * byh)
     translate([V[0], V[1], z0])
         rotate([0, 0, ang])
             translate([-cx, 0, 0])
                 accel_mount_local();
+    // Skirt: convex-hull the body's underside footprint down to the joint
+    // sphere, then re-cut the joint cavity + cable bores so the captive TPU
+    // core and cable exits remain (mirrors joint_shell()).
+    difference() {
+        hull() {
+            translate([V[0], V[1], z0])
+                rotate([0, 0, ang])
+                    translate([-cx, 0, 0])
+                        translate([cx, 0, bz0 + 0.5])
+                            cube([blen, byw, 1], center=true);
+            translate(V) sphere(d = 2 * joint_outer_r());
+        }
+        if (use_captive_core) {
+            translate(V) sphere(d = captive_shell_id);
+            // Re-cut the cable bores. The skirt thickens the shell wall in the
+            // fillet region, so the bore must run further than joint_shell's
+            // (captive_shell_od) to always punch through and keep each cable
+            // exit — and the captive-core cavity — open.
+            translate(V)
+                for (d = cable_dirs)
+                    bore_along(d, captive_bore_d,
+                               captive_shell_od + accel_pocket_x()
+                                   + accel_pocket_y() + 2 * accel_wall);
+        }
+    }
 }
 
 // ---- TPU z-anchor (cable-STL bounding-box parity) -------------------------
@@ -478,7 +514,8 @@ module t3_prism_struts() {
         // angle) so the cable feeds away from the structure.
         if (add_accel_mount) {
             for (i = [0:2])
-                accel_mount(top_pt(i), 90 + 120*i + twist);
+                accel_mount(top_pt(i), 90 + 120*i + twist,
+                            vertex_cable_dirs_t(i));
         }
     }
 }
