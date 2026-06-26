@@ -259,7 +259,7 @@ the strut first and the cable above never received a tip, so it printed
 unsupported and the print failed (the issue @sgbaird reported). Walking
 all crossings catches the vertical-cable end-caps, members crossing over
 other members, joint spheres, and end caps — giving both full-height
-coverage and many more contact points (181 vs 121 on this mesh). It also
+coverage and many more contact points (188 vs 121 on this mesh). It also
 replaced the original parametric-centerline pillar pass, which sampled
 each declared member's ideal centerline and so missed any bulges below
 the nominal centerline.
@@ -304,12 +304,13 @@ mode):
 
 | File                                            | Triangles | Bytes  | Tips | Feet |
 | ----------------------------------------------- | --------: | -----: | ---: | ---: |
-| `t3-prism-pr35-pillars.stl` (supports only)     |    22,560 | 1.1 MB |  181 |   31 |
-| `t3-prism-pr35-with-pillars.stl` (part + supports merged) | 47,426 | 2.4 MB | 181 | 31 |
+| `t3-prism-pr35-pillars.stl` (supports only)     |    23,520 | 1.2 MB |  188 |   31 |
+| `t3-prism-pr35-with-pillars.stl` (part + supports merged) | 50,336 | 2.5 MB | 188 | 31 |
 
 Preview (object grey, tree supports orange; iso + bottom view — slim
 branches converge into a handful of trunk feet, so the build plate stays
-mostly clear):
+mostly clear). Regenerate with
+[`render_pillars_preview.py`](render_pillars_preview.py):
 
 ![pillars preview](t3-prism-pr35-pillars-preview.png)
 
@@ -349,6 +350,77 @@ bottom-vertex stubs the reviewer found annoying while still covering
 everything that genuinely overhangs, including the vertical-cable
 end-caps. Override any of these on the CLI if your geometry needs
 different breakaway behaviour: `generate_support_pillars.py --help`.
+
+## Verifying the supports — geometry + FEA (heavier-duty checks)
+
+The supports are validated two ways before a print, both reproducible and
+CI-gateable. They were added after a print failed because supports under
+the vertical TPU cables were not touching — eyeballing the preview was not
+enough, so these scripts *prove* contact and stability numerically.
+
+### Geometry / coverage — `verify_support_geometry.py`
+
+Uses `trimesh`'s exact ray/proximity engine to check four invariants
+against the actual part mesh, and exits non-zero if any fails (so a stale
+or incomplete support STL cannot slip through):
+
+```bash
+python3 cad/print-supports/verification/verify_support_geometry.py \
+    /tmp/t3-prism.stl \
+    cad/print-supports/verification/t3-prism-pr35-pillars.stl
+```
+
+| Check    | What it proves |
+| -------- | -------------- |
+| CONTACT  | every intended tip lands *on* the part underside (closest-point distance ≈ 0 mm — the supports "go all the way to contact it") |
+| REALISED | every intended tip is actually present in the committed STL (catches a **stale artefact** — this is how the missing top-cap tips were caught) |
+| ON-PLATE | no support geometry prints below the build plate, and trunk feet reach it ("touching the floor") |
+| COVERAGE | re-casts the underside at 2× finer spacing, keeps each crossing's face normal, and confirms every *flat* overhang (nz < −0.7; near-vertical walls self-support) has a support beneath it within one reliable PLA bridge |
+
+For the committed PR #35 artefact this reports: CONTACT max gap **0.0000 mm**,
+REALISED max tip→pillar **0.30 mm** (= the `--tip_overshoot`), ON-PLATE min
+support z **0.0 mm** with **662** foot vertices on the plate, and COVERAGE
+**99.3 %** of flat overhangs within 5 mm of a support, worst case **6.3 mm**
+(within PLA's bridging reach), **0** beyond 8 mm. All four PASS.
+
+### Print-time stability — `fea_support_stability.py` (CalculiX)
+
+Geometry contact is necessary but not sufficient: a tall, thin, near-vertical
+support also has to *stand up while it prints*. This script reconstructs the
+actual emitted branch network, extracts the worst-case column (the longest
+continuous branch run — here a **Ø1.8–3.1 mm, 108.5 mm**, 1.2°-from-vertical
+trunk), and runs **CalculiX** (`ccx`) layer-by-layer as that column grows from
+the plate:
+
+```bash
+sudo apt-get install -y calculix-ccx        # provides `ccx`
+python3 cad/print-supports/verification/fea_support_stability.py \
+    /tmp/t3-prism.stl \
+    --combined cad/print-supports/verification/t3-prism-pr35-with-pillars.stl
+```
+
+Results for the PR #35 supports:
+
+- **Self-weight buckling** (the decisive collapse mode for a vertical
+  support) — minimum safety factor **61×** at full 108 mm height, and
+  thousands-× at the heights where the column is shorter. The column cannot
+  Euler/Greenhill-buckle under its own weight as it prints. PASS.
+- **Tip-over** — the centre of mass of the combined part+supports sits
+  **27.8 mm** inside the convex hull of the **1148** build-plate contact
+  vertices (base span 79 mm), so the object cannot topple on the plate. PASS.
+- **Lateral compliance** — reported as a worst-case bound: a *fully
+  free-standing* 108 mm Ø1.8 mm column is laterally floppy (large tip
+  deflection under even 0.05 N). In practice this is not a print-failure
+  mode: the column never stands fully free because the surrounding struts and
+  the rest of the support tree print in lockstep with it, the in-print lateral
+  forces (fan draught, nozzle pass on the support's own thin perimeter) are a
+  few hundredths of a Newton, and the 5 mm outer brim anchors the feet. It is
+  surfaced so a reviewer can see the trade-off and, if a particular geometry
+  produces an even taller lone column, bump `--trunk_d` (bending stiffness
+  ∝ d⁴) or `--merge_radius` to brace it sooner.
+
+![FEA stability](t3-prism-pr35-fea-stability.png)
+
 
 ## Why θ = 10°? — TPU-safe strut-bottom coverage (partial fix)
 
