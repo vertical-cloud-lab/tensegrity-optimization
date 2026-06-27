@@ -231,23 +231,41 @@ each other because they are different regimes, not because of the hybrid.)
 
 ## 4. Concrete next steps (small, mostly already-instrumented)
 
-1. Add `cell_mass_g`, `envelope_cm3`, `footprint_mm2`, and `SEA_J_per_cm3` to the
-   `bo_evaluator.evaluate_design` return dict (all derivable from
+> **Status (PR comment 4815305004): steps 1-4 are implemented.** The recommended
+> hybrid now runs as a closed-loop campaign in
+> [`sim_bo_hybrid_campaign.py`](sim_bo_hybrid_campaign.py) (writeup:
+> [`sim_bo_hybrid_campaign.md`](sim_bo_hybrid_campaign.md)). The geometry helpers
+> live in `bo_evaluator.py` (`cell_geometry_metrics`, `design_from_shape_ratios`,
+> `design_to_shape_ratios`, `base_reaction_peak_N`, and the extended
+> `evaluate_printable_design` return dict). Step 5 (re-running the dense Pareto
+> render campaign on the manifold) remains follow-on.
+
+1. **[done]** Add `cell_mass_g`, `envelope_cm3`, `footprint_mm2`, and
+   `SEA_J_per_cm3` to the `bo_evaluator` return dict (all derivable from
    `PrintableDesign.nodes`, already computed for SEA) so every campaign can
-   constrain / normalise on them without new physics.
-2. Add a `constant_mass=` (and `constant_envelope=`) option to the design
-   sampler that solves one axis to hit the budget, and a ratio-based box
-   (`H/R`, `H/strut_d`, `cable_d/strut_d`, `twist`, `mass`) for Route A.
-3. Wire the lander budgets (`m*`, `V*`, `[A_min, A_max]`) as Ax outcome
+   constrain / normalise on them without new physics. → `cell_geometry_metrics`
+   + extended `evaluate_printable_design`.
+2. **[done]** Add a `constant_mass=` (and `constant_envelope=`) option to the
+   design sampler that solves one axis to hit the budget, and a ratio-based box
+   (`H/R`, `H/strut_d`, `cable_d/strut_d`, `twist`, `mass`) for Route A. →
+   `design_from_shape_ratios` (closed-form cube-root scale solve at fixed `m*`)
+   + the `RATIO_PARAMETERS` box in `sim_bo_hybrid_campaign.py`.
+3. **[done]** Wire the lander budgets (`m*`, `V*`, `[A_min, A_max]`) as Ax outcome
    constraints and switch the lander loop to **constrained qNEHVI**; set the
    numbers from the real module mass-fraction / fairing allocation (TBD with the
-   systems-engineering side).
-4. Replace the lander `F_peak` objective with the **base-reaction** peak g
-   (`sobol_t3_diagnostics.floor_reaction_history`) so the impact channel — not a
-   support-load/contact proxy — drives the optimisation.
+   systems-engineering side). → `_outcome_constraints` + `_make_objectives`; `m*`
+   is structurally fixed by Route A (so it is *not* a constraint) while `V*` and
+   `[A_min, A_max]` are CLI-set outcome constraints (real budgets still TBD with
+   systems-engineering).
+4. **[done]** Replace the lander `F_peak` objective with the **base-reaction**
+   peak g (`sobol_t3_diagnostics.floor_reaction_history`) so the impact channel —
+   not a support-load/contact proxy — drives the optimisation. →
+   `bo_evaluator.base_reaction_peak_N`; the lander campaign's `impact_F_N`
+   objective is the base floor-reaction peak, the crutch keeps payload-accel
+   `F_peak` (its large soft cell barely loads the floor).
 5. Re-run the Pareto campaign on the constant-mass manifold and compare the new
    front to `pareto_render_campaign.md`; the expectation is the "just get bigger"
-   winners disappear and a genuine shape-trade emerges.
+   winners disappear and a genuine shape-trade emerges. *(Follow-on.)*
 
 These are deliberately scoped as *follow-on* work; this document + the Edison
 mock review are the deliverable for comment 4760939061 (the ask was to *suggest*

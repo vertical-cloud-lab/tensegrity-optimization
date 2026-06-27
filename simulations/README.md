@@ -47,6 +47,7 @@ simulations/
 ├── printable_sweep.py    # 2D sweep over printable vars (tendon Ø × prestrain) for both regimes
 ├── bo_evaluator.py       # PR #30/#35 parameterization -> Tier-C objective bridge
 ├── sim_bo_campaign.py    # closed-loop sim-only Ax/qNEHVI BO over the PR #35 T3 box (mirror of #35, sim objectives)
+├── sim_bo_hybrid_campaign.py # *fair* closed-loop BO: Route A constant-mass shape-ratio manifold + Route B intensive objectives & envelope/footprint outcome constraints (constrained qNEHVI)
 ├── sobol_t3_campaign.py  # PR #35 Sobol T3-prism batch -> C→B→A ladder (MuJoCo/PyBullet/PyChrono + Newton + PolyFEM) + analysis
 ├── sobol_t3_violins.py   # Plotly violin plots (jittered raw points) of the Sobol campaign measurements
 ├── sobol_t3_diagnostics.py # Edison-review ablations: base-reaction force, CFC on/off, constant-mass strut sweep, twist plumbing audit
@@ -118,6 +119,23 @@ python simulations/sim_bo_campaign.py --tiers B --seeds 0 1 --n-iter 15  # Newto
 # -> outputs/sim_bo_<tier>_<regime>_convergence.png (mean ± std band)
 # -> sim_bo_campaign.md
 
+# *Fair* closed-loop BO — the hybrid (Route A + Route B in ONE campaign/regime)
+#   (PR comment 4815305004; the hybrid is defined in fair_evaluation_analysis.md
+#    §3-4).  Route A: search dimensionless shape ratios (H/R, H/strut_d,
+#    cable_d/strut_d, twist) at a FIXED cell mass m* (constant-mass manifold), so
+#    the optimiser can only trade shape, never size.  Route B: score intensive
+#    objectives (impact F — base floor-reaction for the lander —, SEA_J_per_g,
+#    SEA_J_per_cm3, eta) under envelope/footprint Ax outcome constraints
+#    (constrained qNEHVI).  Seeded with the 3 printed PR #35 cells projected onto
+#    the manifold; per-regime, per-seed; LOO-CV checks predictive signal.
+python simulations/sim_bo_hybrid_campaign.py --regime both --seeds 0 1 2 --n-iter 30
+python simulations/sim_bo_hybrid_campaign.py --regime lander --mass-g 25 \
+    --envelope-max-cm3 200 --footprint-min-mm2 110 --footprint-max-mm2 190
+# -> outputs/sim_bo_hybrid_<regime>.csv + *_pareto.csv + *_cv_summary.csv
+# -> outputs/sim_bo_hybrid_<regime>_seed<k>_{convergence,pareto,cv}.png
+# -> outputs/sim_bo_hybrid_<regime>_{convergence,feasibility}.png
+# -> sim_bo_hybrid_campaign.md
+
 # PyChrono (conda Python; install per table above)
 /usr/share/miniconda/bin/python simulations/pychrono_drop.py
 
@@ -147,6 +165,9 @@ met by construction, and (B) keep the box but use intensive objectives
 as outcome constraints in constrained qNEHVI — plus a recommended hybrid. Sent to
 Edison ANALYSIS for mock feedback
 ([`edison-trajectories/fair-evaluation/`](../edison-trajectories/fair-evaluation/)).
+The recommended **hybrid is now implemented** as a runnable closed-loop campaign
+in [`sim_bo_hybrid_campaign.py`](sim_bo_hybrid_campaign.py) — see
+[`sim_bo_hybrid_campaign.md`](sim_bo_hybrid_campaign.md) (PR comment 4815305004).
 
 ## Baseline experiment
 

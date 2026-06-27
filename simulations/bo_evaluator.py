@@ -173,6 +173,155 @@ def parameterization_to_design(params: Mapping) -> PrintableDesign:
     )
 
 
+def cell_geometry_metrics(design: PrintableDesign) -> dict[str, float]:
+    """Mass / envelope / footprint of a printable cell (no simulation).
+
+    These are the size descriptors the fairness analysis
+    (``fair_evaluation_analysis.md``) showed float 4–6× across the PR #35 box,
+    so the hybrid campaign needs them to (a) hold cell mass constant by
+    construction — Route A — and (b) constrain envelope volume / footprint —
+    Route B.  All are derivable from the :class:`PrintableDesign` geometry, so
+    they add no simulation cost.
+
+      ``cell_mass_g``   3 PLA struts + 9 TPU tendons (cell only; payload excluded,
+                        the 9-tendon family approximated at the vertical-cable
+                        length, the longest, matching the SEA denominator).
+      ``envelope_cm3``  circumscribing cylinder ``π R² H``.
+      ``footprint_mm2`` strut-tip ground-contact area ``3 · π (strut_d/2)²``.
+    """
+    L_strut = design.strut_length_m
+    v_strut = 3.0 * math.pi * (design.strut_diameter_m / 2.0) ** 2 * L_strut
+    n = design.nodes
+    L_tendon = float(np.linalg.norm(n[0] - n[3]))     # vertical cable (longest)
+    v_tendon = 9.0 * math.pi * (design.tendon_diameter_m / 2.0) ** 2 * L_tendon
+    cell_mass_g = (v_strut * PLA.density_kgm3
+                   + v_tendon * TPU85A.density_kgm3) * 1000.0
+    envelope_cm3 = math.pi * design.radius_m ** 2 * design.height_m * 1e6
+    footprint_mm2 = 3.0 * math.pi * (design.strut_diameter_m / 2.0) ** 2 * 1e6
+    return {"cell_mass_g": float(cell_mass_g),
+            "envelope_cm3": float(envelope_cm3),
+            "footprint_mm2": float(footprint_mm2)}
+
+
+# Arbitrary anchor radius for the shape-ratio prototype; it cancels in the
+# cube-root scale solve below, so its value does not affect the result.
+_SHAPE_RATIO_ANCHOR_R_M = 0.03
+
+
+def design_from_shape_ratios(
+    *,
+    mass_g: float,
+    h_over_r: float,
+    h_over_strut_d: float,
+    cable_over_strut_d: float,
+    twist_deg: float,
+    prestrain: float = 0.0,
+) -> PrintableDesign:
+    """Route-A constant-mass manifold: a scale-free shape at a fixed cell mass.
+
+    The fairness analysis (``fair_evaluation_analysis.md`` §3, Route A) calls for
+    re-parameterising the search onto dimensionless shape ratios with the binding
+    budget (cell mass) held constant by construction, so the optimiser can only
+    trade *shape*, never *size* — which is what removes the 6.2× size confound.
+
+    Build the prism shape from the dimensionless ratios
+
+        ``h_over_r``           aspect ratio ``H / R``
+        ``h_over_strut_d``     strut slenderness ``H / strut_d``
+        ``cable_over_strut_d`` tendon-to-strut diameter ratio ``cable_d / strut_d``
+        ``twist_deg``          CAD/PR #35 equilibrium twist (offset +120° to the
+                               simulator convention, as in
+                               :func:`normalize_parameterization`)
+
+    then solve the *single* overall scale so the cell mass equals ``mass_g``
+    exactly.  Because every length — node radii/heights *and* the strut/tendon
+    diameters — scales together, the cell mass is homogeneous of degree three in
+    the scale, so the solve is the closed-form cube root
+    ``s = (mass_g / m_proto)**(1/3)``.
+    """
+    twist_rad = math.radians(float(twist_deg) + 120.0)  # CAD→sim convention
+    r0 = _SHAPE_RATIO_ANCHOR_R_M
+    h0 = float(h_over_r) * r0
+    strut_d0 = h0 / float(h_over_strut_d)
+    cable_d0 = float(cable_over_strut_d) * strut_d0
+    proto = PrintableDesign(
+        radius_m=r0, height_m=h0, twist_rad=twist_rad,
+        strut_diameter_m=strut_d0, tendon_diameter_m=cable_d0,
+        prestrain=float(prestrain))
+    m_proto = cell_geometry_metrics(proto)["cell_mass_g"]
+    scale = (float(mass_g) / m_proto) ** (1.0 / 3.0) if m_proto > 0 else 1.0
+    return PrintableDesign(
+        radius_m=r0 * scale, height_m=h0 * scale, twist_rad=twist_rad,
+        strut_diameter_m=strut_d0 * scale, tendon_diameter_m=cable_d0 * scale,
+        prestrain=float(prestrain))
+
+
+def design_to_shape_ratios(design: PrintableDesign) -> dict[str, float]:
+    """Inverse of :func:`design_from_shape_ratios` (mass + the four ratios).
+
+    Used to project the already-printed PR #35 seed cells onto the constant-mass
+    manifold so the hybrid campaign can warm-start from real hardware shapes.
+    ``twist_deg`` is returned in the CAD/PR #35 convention (the +120° simulator
+    offset removed).
+    """
+    metrics = cell_geometry_metrics(design)
+    return {
+        "mass_g": metrics["cell_mass_g"],
+        "h_over_r": design.height_m / design.radius_m,
+        "h_over_strut_d": design.height_m / design.strut_diameter_m,
+        "cable_over_strut_d": design.tendon_diameter_m / design.strut_diameter_m,
+        "twist_deg": math.degrees(design.twist_rad) - 120.0,
+    }
+
+
+def base_reaction_peak_N(regime: Regime, *, cfc180: bool = True) -> float:
+    """Peak vertical floor-reaction force for one Tier-C drop of ``regime``.
+
+    Route B of the fairness fix replaces the payload-acceleration ``F_peak``
+    (a support-load proxy at Tier-C; see ``sobol_t3_diagnostics.md``) with the
+    *transmitted load through the base* — the quantity a sensorized drop-tower
+    platen measures.  We sum the vertical component of every strut↔floor contact
+    force at each step and return the (optionally CFC-180 filtered) peak.
+
+    This mirrors ``sobol_t3_diagnostics.floor_reaction_history`` but is kept here
+    so the evaluator stays self-contained (no matplotlib import).  It runs a
+    second short MuJoCo drop, so it roughly doubles the per-design cost; callers
+    opt in via ``base_reaction=True``.
+    """
+    import mujoco  # noqa: E402  (lazy: evaluator stays importable without GL)
+
+    from run_regimes import build_xml  # noqa: E402
+
+    model = mujoco.MjModel.from_xml_string(build_xml(regime))
+    data = mujoco.MjData(model)
+    floor_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "floor")
+    # Same co-moving initial condition as run_regimes.simulate().
+    for i in range(1, model.nbody):
+        addr = model.body_dofadr[i]
+        data.qvel[addr + 2] = -regime.drop_velocity_mps
+    nsteps = int(regime.sim_duration_s / model.opt.timestep)
+    fz = np.zeros(nsteps)
+    f6 = np.zeros(6)
+    for k in range(nsteps):
+        mujoco.mj_step(model, data)
+        total = 0.0
+        for c in range(data.ncon):
+            con = data.contact[c]
+            if con.geom1 == floor_id or con.geom2 == floor_id:
+                mujoco.mj_contactForce(model, data, c, f6)
+                fworld = con.frame.reshape(3, 3).T @ f6[:3]
+                total += abs(float(fworld[2]))
+        fz[k] = total
+        if not np.isfinite(fz[k]):
+            fz = fz[:k]
+            break
+    if not fz.size:
+        return float("nan")
+    if cfc180:
+        fz = _cfc_filter(fz, 1.0 / float(regime.sim_dt_s), cfc=180.0)
+    return float(np.max(np.abs(fz)))
+
+
 def _t3_seed_designs() -> list[dict]:
     """Pre-printed T3 designs (PR #35) ready as the first BO batch.
 
@@ -263,6 +412,7 @@ def evaluate_design(
     regime: Regime = CRUTCH,
     fidelity: Literal["C", "B", "A"] = "C",
     cfc180: bool = True,
+    base_reaction: bool = False,
 ) -> dict[str, float]:
     """Run one simulation and return PR #30's three BO objectives.
 
@@ -284,14 +434,24 @@ def evaluate_design(
         extracted, matching the drop-tower accelerometer pipeline (PR #74)
         so simulated and measured objectives live in the same processed
         space.  Set False to read raw (unfiltered) peaks.
+    base_reaction
+        When True, also run the floor-reaction drop and add
+        ``"F_base_peak_N"`` (the transmitted-load observable Route B of the
+        fairness fix prefers over the payload-accel ``F_peak``; see
+        ``fair_evaluation_analysis.md`` and ``sobol_t3_diagnostics.md``).
+        Roughly doubles the per-design cost.
 
     Returns
     -------
     dict with keys ``"F_peak_N"``, ``"SEA_J_per_g"``, ``"eta"`` matching
     the ``F_PEAK``/``SEA``/``ETA`` outcome names in
-    ``bo/tensegrity_campaign.py``.  Returns *penalised* values if the
-    design is infeasible (class-2 strut overlap, unprintable tendon,
-    prestrain past TPU yield, etc.).
+    ``bo/tensegrity_campaign.py``, plus the size descriptors
+    ``"cell_mass_g"``, ``"envelope_cm3"``, ``"footprint_mm2"`` and the
+    volumetric SEA ``"SEA_J_per_cm3"`` (used by the hybrid fair campaign for
+    Route-B constraints / intensive objectives), and ``"F_base_peak_N"`` when
+    ``base_reaction=True``.  Returns *penalised* objective values if the design
+    is infeasible (class-2 strut overlap, unprintable tendon, prestrain past
+    TPU yield, etc.); the size descriptors are still reported.
     """
     if fidelity != "C":
         raise NotImplementedError(
@@ -303,20 +463,55 @@ def evaluate_design(
         )
 
     _topology_warning(parameterization.get("topology"))
-
     params = normalize_parameterization(parameterization)
     design = parameterization_to_design(params)
+    return evaluate_printable_design(
+        design, regime=regime, fidelity=fidelity, cfc180=cfc180,
+        base_reaction=base_reaction)
+
+
+def _penalised(design: PrintableDesign, base_reaction: bool) -> dict[str, float]:
+    """Penalised objectives for an infeasible design (size descriptors kept)."""
+    out = {
+        "F_peak_N": _INFEASIBLE_F_PEAK_N,
+        "SEA_J_per_g": _INFEASIBLE_SEA_J_PER_G,
+        "SEA_J_per_cm3": _INFEASIBLE_SEA_J_PER_G,
+        "eta": _INFEASIBLE_ETA,
+    }
+    out.update(cell_geometry_metrics(design))
+    if base_reaction:
+        out["F_base_peak_N"] = _INFEASIBLE_F_PEAK_N
+    return out
+
+
+def evaluate_printable_design(
+    design: PrintableDesign,
+    *,
+    regime: Regime = CRUTCH,
+    fidelity: Literal["C", "B", "A"] = "C",
+    cfc180: bool = True,
+    base_reaction: bool = False,
+) -> dict[str, float]:
+    """Score an explicit :class:`PrintableDesign` (Tier-C MuJoCo).
+
+    This is the core evaluator shared by :func:`evaluate_design` (which builds
+    the design from an Ax box parameterization) and the hybrid constant-mass
+    campaign (which builds the design from shape ratios via
+    :func:`design_from_shape_ratios`).  See :func:`evaluate_design` for the
+    return schema.
+    """
+    if fidelity != "C":
+        raise NotImplementedError("Only Tier-C is implemented (see evaluate_design).")
+
+    metrics = cell_geometry_metrics(design)
+
     issues = design.check()
     if issues:
         warnings.warn(
             "bo_evaluator: infeasible design: " + "; ".join(issues),
             stacklevel=2,
         )
-        return {
-            "F_peak_N": _INFEASIBLE_F_PEAK_N,
-            "SEA_J_per_g": _INFEASIBLE_SEA_J_PER_G,
-            "eta": _INFEASIBLE_ETA,
-        }
+        return _penalised(design, base_reaction)
 
     # Import lazily so this module remains importable even when mujoco is
     # not installed (e.g., for ``edison_client``-only environments).
@@ -344,25 +539,17 @@ def evaluate_design(
         peak_g = res["peak_g"]
 
     if not np.isfinite(peak_g):
-        return {
-            "F_peak_N": _INFEASIBLE_F_PEAK_N,
-            "SEA_J_per_g": _INFEASIBLE_SEA_J_PER_G,
-            "eta": _INFEASIBLE_ETA,
-        }
+        return _penalised(design, base_reaction)
 
     f_peak_N = peak_g * 9.81 * regime.payload_mass_kg
 
-    # Cell mass for SEA: 3 PLA struts + 9 TPU tendons (cell-only; payload
-    # is excluded so SEA reflects design intent).
-    n = design.nodes
-    L_strut = float(np.linalg.norm(n[0] - n[1]))      # any STRUTS[0]
-    v_strut = 3 * math.pi * (design.strut_diameter_m / 2) ** 2 * L_strut
-    L_tendon = float(np.linalg.norm(n[0] - n[3]))     # vertical tendon
-    v_tendon = 9 * math.pi * (design.tendon_diameter_m / 2) ** 2 * L_tendon
-    cell_mass_g = (v_strut * PLA.density_kgm3
-                   + v_tendon * TPU85A.density_kgm3) * 1000.0
-    sea_J_per_g = (res["sea_Jpkg"] * regime.payload_mass_kg) / max(cell_mass_g,
-                                                                   1e-6)
+    # SEA: peak elastic strain energy / cell mass (cell-only; payload excluded
+    # so SEA reflects design intent).  ``SEA_J_per_cm3`` is the same numerator
+    # over the envelope volume — the volumetric budget the lander also has.
+    cell_mass_g = metrics["cell_mass_g"]
+    abs_energy_J = res["sea_Jpkg"] * regime.payload_mass_kg
+    sea_J_per_g = abs_energy_J / max(cell_mass_g, 1e-6)
+    sea_J_per_cm3 = abs_energy_J / max(metrics["envelope_cm3"], 1e-6)
 
     # Compaction efficiency: mean |a| over the half-peak pulse window
     # divided by the peak (1.0 = perfect rectangular plateau).  Uses the
@@ -374,11 +561,16 @@ def evaluate_design(
     else:
         eta = 0.0
 
-    return {
+    out = {
         "F_peak_N": float(f_peak_N),
         "SEA_J_per_g": float(sea_J_per_g),
+        "SEA_J_per_cm3": float(sea_J_per_cm3),
         "eta": float(eta),
+        **metrics,
     }
+    if base_reaction:
+        out["F_base_peak_N"] = base_reaction_peak_N(overridden, cfc180=cfc180)
+    return out
 
 
 def evaluate_batch_csv(
