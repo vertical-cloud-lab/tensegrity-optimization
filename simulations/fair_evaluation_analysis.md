@@ -201,6 +201,18 @@ than structurally; ad-hoc normalisation constants can be argued with.
 
 ### Recommended hybrid
 
+"Hybrid" means **combining Route A and Route B inside a single campaign**, *not*
+running two separate campaigns. Routes A and B are two mechanisms for removing the
+size confound, and one campaign can use both at once: Route A structurally fixes the
+*binding* budget (mass, via the constant-mass manifold / shape-ratio
+re-parameterisation), while Route B handles the *remaining* budgets (envelope,
+footprint) as Ax outcome constraints and swaps in intensive, size-aware objectives.
+So per regime there is still exactly **one** `AxClient` campaign — the same
+one-campaign-per-regime structure we already run (`sim_bo_campaign.py`,
+`pareto_render_campaign.py`); the hybrid only changes *that* campaign's coordinates,
+objectives, and constraints. (The crutch and lander remain separate campaigns from
+each other because they are different regimes, not because of the hybrid.)
+
 * **Lander:** Route A on the binding budget + Route B on the rest. Fix **mass**
   on a constant-mass manifold (the dominant lander constraint), re-express the
   remaining freedom as scale-free shape ratios (`H/R`, `H/strut_d`,
