@@ -4,9 +4,18 @@ Derived from this PR's Edison literature exploration (`edison-trajectories/01`�
 and kept consistent with the author order / plain-text format established for the
 TMS 2027 abstract in #73.
 
-## Submission metadata (adjust per target venue)
+## Submission metadata
 
-- **Format:** plain-text, ≤150 words (matches TMS; trim/expand for others as noted below).
+- **Venue:** TMS 2027 Annual Meeting & Exhibition — Orlando, FL, March 14–18, 2027.
+- **Target symposium:** *Biomedical Materials and Devices: From Laboratory to Market*
+  (best fit for the clinical-motivation + device-demonstrator + FDA Class I / ISO 11334-1
+  + commercialization story). Backups: *Additive Manufacturing and Innovative Feedstock
+  Processing for Multifunctional Materials*, then *3D Printing of Scaffolds and Porous
+  Materials*. Note: the AM/AI-methods symposia (*Additive Manufacturing Modeling,
+  Simulation, and AI…* / *AI-Enabled Materials Processing…*) are the home of the sibling
+  methods abstract in #73 — keep this application abstract in the biomedical track to
+  avoid self-competition.
+- **Format:** plain-text, ≤150 words (TMS limit).
 - **Presentation preference:** oral (poster acceptable).
 - **Materials as converged in-project:** rigid **PETG** + elastomeric **TPU 95A**, multi-material FFF (Bambu H2D).
 
