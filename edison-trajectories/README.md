@@ -21,7 +21,7 @@ For each task we commit two artifacts:
 | 3 | [`03-vibration-economic-burden-slip-resistance.md`](03-vibration-economic-burden-slip-resistance.md) / [`.json`](03-vibration-economic-burden-slip-resistance.json) | `f21cf79c-beb1-4a7b-aafe-67603b272c25` | success | https://platform.edisonscientific.com/tasks/f21cf79c-beb1-4a7b-aafe-67603b272c25 |
 | 4 | [`04-tpu-petg-engineering-and-bayesian-optimization.md`](04-tpu-petg-engineering-and-bayesian-optimization.md) / [`.json`](04-tpu-petg-engineering-and-bayesian-optimization.json) | `7a21d00e-6fe8-409f-b05d-4b581cc4fa15` | success | https://platform.edisonscientific.com/tasks/7a21d00e-6fe8-409f-b05d-4b581cc4fa15 |
 | 5 | [`05-industry-partners-and-commercialization.md`](05-industry-partners-and-commercialization.md) | `c18a2313-1359-4f77-ac82-d8551d1fa8e1` | in progress — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/c18a2313-1359-4f77-ac82-d8551d1fa8e1 |
-| 6 | [`06-abstract-feedback.md`](06-abstract-feedback.md) | _pending submission_ | not yet submitted — query drafted, needs Edison-enabled agent to submit | _pending_ |
+| 6 | [`06-abstract-feedback.md`](06-abstract-feedback.md) / [`.json`](06-abstract-feedback.json) | `74ac013b-8ce9-41ab-89ce-13c3e6f5ad33` | success | https://platform.edisonscientific.com/tasks/74ac013b-8ce9-41ab-89ce-13c3e6f5ad33 |
 
 To re-fetch / refresh any trajectory:
 
