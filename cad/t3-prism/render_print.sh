@@ -65,7 +65,8 @@ BAMBU_URL="${BAMBU_URL:-https://github.com/bambulab/BambuStudio/releases/downloa
 # 1. SCAD -> STL (single-material full body + per-part halves for MM)
 # ----------------------------------------------------------------------------
 echo "==> OpenSCAD render -> ${STL##*/} (single-material, both materials fused)"
-xvfb-run -a openscad -o "${STL}" --export-format=binstl "${SCAD}"
+FIRST_LOG="$(xvfb-run -a openscad -o "${STL}" --export-format=binstl "${SCAD}" 2>&1)"
+echo "${FIRST_LOG}" | tail -3
 
 # `offset_z` lifts the geometry so its lowest point sits at the build-plate
 # z=0. With the captive-core joints (default since PR #35 comment 4511036510)
@@ -82,7 +83,18 @@ xvfb-run -a openscad -o "${STL}" --export-format=binstl "${SCAD}"
 # (fixes the "horizontal cables too low at top and bottom" misalignment
 # reported above PR #35 comment 4511036510). With `add_accel_mount_bottom=false`
 # drop this back to 8.15; with `use_captive_core=false` too, drop to 3.5.
-OFFSET_Z="${OFFSET_Z:-18.29}"
+# Compute the bed-lift from the SCAD's analytic lowest-Z echo so it always
+# matches the active scale / accel-housing config (was hardcoded 18.29, which
+# only held at scale 1.5 + the previous housing). MODEL_Z_LO is negative; we
+# lift every part by exactly -MODEL_Z_LO so the flat bottom key-seats land on
+# the bed (z=0). Falls back to 18.29 if the echo can't be parsed.
+Z_LO="$(echo "${FIRST_LOG}" | grep -oE 'MODEL_Z_LO"?, ?-?[0-9.]+' | grep -oE '\-?[0-9.]+$' | tail -1)"
+if [[ -n "${Z_LO}" ]]; then
+    OFFSET_Z="${OFFSET_Z:-$(python3 -c "print(f'{-float(\"${Z_LO}\"):.4f}')")}"
+else
+    OFFSET_Z="${OFFSET_Z:-18.29}"
+fi
+echo "==> Bed-lift OFFSET_Z=${OFFSET_Z} (from MODEL_Z_LO=${Z_LO:-unparsed})"
 echo "==> OpenSCAD render -> ${STL_STRUTS##*/} (multi-material: rigid half / PLA, bed-centered)"
 xvfb-run -a openscad -o "${STL_STRUTS}" --export-format=binstl \
     -D 'part="struts"' -D 'offset_x=175' -D 'offset_y=160' -D "offset_z=${OFFSET_Z}" "${SCAD}"

@@ -70,7 +70,17 @@ $fn          = 48;
 // can self-bridge the top-triangle spans without needing supports at all.
 // Bounding box at scale 1.5: ~75 × 75 × 115 mm (still fits 4-up on the H2D's
 // 350 × 320 mm plate for batch printing — see PR #35 comment 4461855403).
-scale_factor = 1.5;
+//
+// SIZING "S0" (PR #35 comment from @achris0520, 2026-07-01): drop the overall
+// specimen to 76.92% of the recent 1.5× generations — i.e. scale_factor =
+// 1.5 × 0.7692 ≈ 1.1538. (0.7692 ≈ 1/1.3, so S0 lands just above the scale-1.0
+// baseline and a touch below the empirical auto-support threshold the team hit
+// at scale 1.3.) Bounding box at S0: ~58 mm footprint, ~115 mm tall including
+// the top igloo + bottom flat accelerometer housings. The accelerometer
+// housings are PHYSICAL-part dimensions in absolute mm and do NOT scale with
+// this factor, so shrinking the prism leaves the sensor pockets full-size.
+S0_scale     = 1.5 * 0.7692;  // "S0" specimen sizing = 76.92% of the 1.5× generations
+scale_factor = S0_scale;
 
 R       = R_base       * scale_factor;
 H       = H_base       * scale_factor;
@@ -227,6 +237,19 @@ captive_teardrop_d = strut_d * 1.10;  // seed sphere for the teardrop blend
 // comment 4792400480) and are NOT multiplied by `scale_factor`.
 add_accel_mount = true;          // set false to omit the TOP (igloo) accelerometer mounts
 add_accel_mount_bottom = true;   // set false to omit the BOTTOM (flat) accelerometer key-seats
+// Accelerometer-housing SIZING set (PR #35 comment from @achris0520, 2026-07-01):
+//   "A0" = the original housing dimensions.
+//   "A1" = A0 with +0.3 mm added to the HEIGHT (Z) dimension only — a slightly
+//          deeper pocket so the Dytran 3133A4 seats fully without the sensor
+//          standing proud of the walls (follow-up to the "shorter height of
+//          housing than the accelerometer" reports, PR #67 comment 4839988559).
+// All other housing dimensions (L, W, walls, dome, clearances) are IDENTICAL
+// between A0 and A1. The extra height feeds only the pocket Z depth via
+// accel_h_extra below, so both the pocket and the overall housing grow 0.3 mm
+// taller in A1. The housing is a PHYSICAL-part fixture: its dimensions are
+// absolute mm and are NOT multiplied by scale_factor.
+accel_size  = "A1";              // "A0" (original) | "A1" (= A0 + 0.3 mm pocket height)
+accel_h_extra = (accel_size == "A1") ? 0.3 : 0.0;  // added Z depth for the A1 set
 accel_l     = 6.0;               // accelerometer length (X: slide-in / cable-exit axis)
 accel_w     = 6.0;               // accelerometer width  (Y)
 accel_h     = 5.94;              // accelerometer height (Z)
@@ -259,7 +282,8 @@ accel_sink  = 2.0;               // depth the mount walls sink past the joint ap
 // housing than the accelerometer"). A dab of wax retains it in the recess.
 function accel_pocket_x() = accel_l + 2 * accel_clear;
 function accel_pocket_y() = accel_w + 2 * accel_clear;
-function accel_pocket_z() = accel_h + accel_clear_top + accel_clear_bot;
+// A1 adds accel_h_extra (0.3 mm) to the pocket Z depth; A0 adds 0.
+function accel_pocket_z() = accel_h + accel_clear_top + accel_clear_bot + accel_h_extra;
 // Outward radius of the joint node the mount fuses onto (captive shell in the
 // default mode, solid joint sphere in legacy mode).
 function joint_outer_r() = use_captive_core ? captive_shell_od / 2 : joint_d / 2;
@@ -272,6 +296,16 @@ function accel_rise() = accel_floor + accel_pocket_z() + accel_dome;
 // the cables STL keeps the same world-Z extents as the struts STL, and (b)
 // root the scaffold pillars at the true lowest model point (see pillar_to()).
 function accel_drop() = accel_floor + accel_pocket_z() + accel_flat;
+
+// Lowest world-Z feature of the assembly at the SCAD origin (offset_z = 0):
+// the bottom-vertex joint-shell underside at -captive_shell_od/2, minus the
+// flat bottom key-seat drop (when enabled). render_print.sh echoes this and
+// lifts every part by exactly -model_z_lo() so the assembled MM object sits on
+// the bed (z=0) instead of floating — the value depends on BOTH scale_factor
+// (shell OD scales) and the absolute-mm accel housing (does not), so it must
+// be computed, not hardcoded (previously pinned to 18.29 for scale 1.5).
+function model_z_lo() = -captive_shell_od / 2
+                        - (add_accel_mount_bottom ? accel_drop() : 0);
 
 // Optional rigid translation applied AFTER part selection. Used by
 // render_print.sh for the multi-material variant: both the struts STL
@@ -707,6 +741,10 @@ module t3_prism_scaffold() {
         }
     }
 }
+
+// Emit the analytic lowest-Z so render_print.sh can compute the exact bed-lift
+// (OFFSET_Z = -MODEL_Z_LO) for whatever scale / housing config is active.
+echo("MODEL_Z_LO", model_z_lo());
 
 if      (part == "struts")          translate([offset_x, offset_y, offset_z]) t3_prism_struts();
 else if (part == "cables")          translate([offset_x, offset_y, offset_z]) t3_prism_cables();

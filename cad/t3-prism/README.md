@@ -40,21 +40,24 @@ All linear dimensions are `*_base * scale_factor`:
 | `strut_d_base` | 6 mm   | **9.0 mm**  | compression member diameter |
 | `cable_d_base` | 3.0 mm | **4.5 mm**  | tension member diameter (see [Print failure mode](#print-failure-mode-top-cable-bridge-and-how-to-avoid-it) and [Scale-up](#scale-up-to-15-cable_d-30--45-mm) below) |
 | `joint_d_base` | 7 mm   | **10.5 mm** | minimum vertex sphere/shell diameter (captive-core shell is upsized as needed; see [Captive TPU core](#captive-tpu-core-inside-pla-outer-shell) below) |
-| `scale_factor` | —      | **1.5**     | uniform scale on every linear dim |
+| `scale_factor` | —      | **≈1.154 (S0)** | uniform scale on every linear dim. Sizing **S0** = `1.5 × 0.7692` — 76.92% of the earlier 1.5× generations (@achris0520, 2026-07-01). Set `-D scale_factor=1.5` to recover the old size |
 | `use_captive_core` | `true` | `true`  | captive TPU core inside PLA outer shell at every vertex (PR #35 comment 4511036510, bonded per comment 4513722886); set `false` for legacy solid-joint mode |
 | `captive_bore_clear` | 0.4 mm | **0 mm** | single-sided clearance around the TPU cable through the shell bore; **0** = bonded (TPU fills the bore exactly) per PR #35 comment 4513722886 |
 | `captive_bore_trap`  | 1.5 mm | 1.5 mm | min `(core_od - bore_d) / 2`; how much wider the core is than the bore so it can't back out |
 | `captive_core_clear` | 0.5 mm | **0 mm** | radial gap (shell-ID − core-OD) / 2; **0** = bonded (TPU core touches the PLA inner wall) per PR #35 comment 4513722886 |
 | `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
 | `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each **top** vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
-| `add_accel_mount_bottom` | `true` | `true` | **flat** accelerometer key-seat below each **bottom** vertex for a third sensor (PR #35 / PR #67, @ctrhjk + @sgbaird 2026-07-01); set `false` to omit |
+| `add_accel_mount_bottom` | `true` | `true` | **flat** accelerometer key-seat below each **bottom** vertex for a third sensor (PR #35 / PR #67, @ctrhjk + @sgbaird 2026-07-01); set `false` to omit. With both mounts on there are **6 housing sites** (3 top igloo + 3 bottom flat), matched top+bottom per the placement analysis in [PR #35 comment 4857717314](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4857717314) |
+| `accel_size` | — | **`"A1"`** | housing sizing set: **A0** = original, **A1** = A0 + 0.3 mm pocket height (`accel_h_extra`). Absolute mm — **not** scaled. Set `-D accel_size='"A0"'` for the original |
 | `accel_l` / `accel_w` / `accel_h` | — | 6 / 6 / 5.94 mm | accelerometer pocket size (Dytran 3133A4, **not** scaled) |
 | `accel_clear` | — | 0.4 mm | per-side **lateral (XY)** pocket clearance for the slide-in fit |
 | `accel_clear_top` / `accel_clear_bot` | — | **1.0** / 0.2 mm | **Z** gap above / below the accelerometer. `accel_clear_top` was raised 0.2 → 1.0 so the sensor is recessed ~1.2 mm **below the crown springline** (the igloo dome, not the sensor, touches the acrylic drop plate) — fixes "shorter height of housing than the accelerometer" (PR #67 comment 4839988559) |
 | `accel_dome` / `accel_flat` | — | 3.0 / 2.0 mm | cap thickness over the pocket: rounded **dome** on the top igloo mounts, **flat** slab on the bottom key-seats (the flat outward face is the plate contact) |
 
-Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
-solid material. Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
+Bounding box at sizing **S0** (`scale_factor ≈ 1.154`) ≈ **58 mm footprint ×
+~115 mm tall** (the ~92 mm prism-plus-shells body plus the top igloo and bottom
+flat accelerometer housings, which are absolute-mm and do not shrink with S0).
+Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
 — and 4 copies fit in a 2 × 2 grid for batch printing
 ([Batch printing](#batch-printing-for-the-optimization-campaign) below).
 
@@ -174,6 +177,21 @@ millimetres and are **not** multiplied by `scale_factor`. The mounts are
 PLA, so they travel with the struts half of the multi-material variant.
 Set `add_accel_mount=false` on the OpenSCAD CLI to omit them.
 
+#### Housing sizing set: A0 / A1 (`accel_size`)
+
+The housing dimensions are selected by `accel_size` (absolute mm, **not**
+scaled with the prism):
+
+| Set  | Pocket height (Z) | vs. A0 | Notes |
+| ---- | ----------------: | -----: | --- |
+| `A0` | `accel_h + accel_clear_top + accel_clear_bot` = 7.14 mm | — | original housing |
+| `A1` *(default)* | 7.44 mm | **+0.3 mm** | `accel_h_extra` = 0.3 mm added to the pocket **height only** so the Dytran seats fully without standing proud of the walls (@achris0520, 2026-07-01) |
+
+Every other housing dimension (L, W, walls, dome/flat cap, lateral clearance) is
+identical between the two sets — A1 differs from A0 **only** in the +0.3 mm Z
+depth, which flows through `accel_pocket_z()` to both the pocket and the overall
+housing height. Select the original with `-D accel_size='"A0"'`.
+
 ### Bottom-vertex key-seats (`accel_mount_bottom()`)
 
 To free up a **third** accelerometer position, each of the three **bottom**
@@ -194,6 +212,15 @@ with two differences from the top igloo mount:
   key-seat upper surface to the lower surface of the vertices" (@sgbaird) — no
   overhanging lip. As with the top mount, the skirt re-cuts the joint cavity +
   cable bores so the captive TPU core and the three cable exits stay open.
+
+**Placement.** Per the accelerometer-housing placement analysis in
+[PR #35 comment 4857717314](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4857717314),
+the seats are kept **matched top+bottom** (identical geometry at all 6 vertices)
+so the added fixture mass is symmetric, the specimen can be dropped in either
+orientation reproducibly, and the fixture reads as a constant offset that mostly
+cancels in the relative BO comparison. Each bottom seat sits directly at its
+bottom vertex with the open mouth pointing radially outward (matching the top
+igloo heading), so all three are geometrically identical across specimens.
 
 Because all three bottom vertices are coplanar (z = 0), their three flat caps
 land on the build plate together, giving the print a stable flat 3-point base.
