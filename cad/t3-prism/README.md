@@ -46,11 +46,12 @@ All linear dimensions are `*_base * scale_factor`:
 | `captive_bore_trap`  | 1.5 mm | 1.5 mm | min `(core_od - bore_d) / 2`; how much wider the core is than the bore so it can't back out |
 | `captive_core_clear` | 0.5 mm | **0 mm** | radial gap (shell-ID − core-OD) / 2; **0** = bonded (TPU core touches the PLA inner wall) per PR #35 comment 4513722886 |
 | `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
-| `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each top vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
+| `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each **top** vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
+| `add_accel_mount_bottom` | `true` | `true` | **flat** accelerometer key-seat below each **bottom** vertex for a third sensor (PR #35 / PR #67, @ctrhjk + @sgbaird 2026-07-01); set `false` to omit |
 | `accel_l` / `accel_w` / `accel_h` | — | 6 / 6 / 5.94 mm | accelerometer pocket size (Dytran 3133A4, **not** scaled) |
 | `accel_clear` | — | 0.4 mm | per-side **lateral (XY)** pocket clearance for the slide-in fit |
 | `accel_clear_top` / `accel_clear_bot` | — | **1.0** / 0.2 mm | **Z** gap above / below the accelerometer. `accel_clear_top` was raised 0.2 → 1.0 so the sensor is recessed ~1.2 mm **below the crown springline** (the igloo dome, not the sensor, touches the acrylic drop plate) — fixes "shorter height of housing than the accelerometer" (PR #67 comment 4839988559) |
-| `accel_tweezer_d` | — | 3.0 mm | dia of the two tweezer-access slots cut through the side walls at the open mouth, so a tweezer can grab the sensor and lift it out without pulling the glued-on cable |
+| `accel_dome` / `accel_flat` | — | 3.0 / 2.0 mm | cap thickness over the pocket: rounded **dome** on the top igloo mounts, **flat** slab on the bottom key-seats (the flat outward face is the plate contact) |
 
 Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
 solid material. Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
@@ -121,10 +122,12 @@ world-Z bounding boxes are byte-for-byte identical. Bambu Studio then
 applies the same offset to both halves and the cables stay aligned with
 the joints.
 
-When the accelerometer mounts are enabled (`add_accel_mount=true`, the
-default — see below) they sit on top of the top-vertex shells and make
-the struts STL taller, so `cables_z_anchor()` extends its top spike by
-`accel_rise()` to keep the two halves' bounding boxes matched.
+When the accelerometer mounts are enabled (the defaults — see below) they
+change the struts STL's z-extents: the top igloo mounts (`add_accel_mount`)
+sit on top of the top-vertex shells and the bottom key-seats
+(`add_accel_mount_bottom`) hang below the bottom-vertex shells, so
+`cables_z_anchor()` extends its top spike by `accel_rise()` and its bottom
+spike by `accel_drop()` to keep the two halves' bounding boxes matched.
 
 ## Accelerometer mount (`accel_mount()`)
 
@@ -148,10 +151,6 @@ each of the three **top** vertices now carries a small PLA mount block
 * **three walls + a floor** (back, both sides, bottom) and an **open
   outward-facing front** so the sensor slides in from the side and its
   cable feeds out horizontally;
-* two **tweezer-access slots** (`accel_tweezer_d` = 3 mm) cut clean through the
-  ±Y side walls at the open mouth, so a tweezer can reach the accelerometer's
-  sides and pull it out without tugging the glued-on cable
-  ([PR #67 comment 4839988559](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67#issuecomment-4839988559));
 * a **flat, solid pocket floor** sitting `accel_floor` = 1.5 mm **above** the
   rounded joint apex (`joint_outer_r()`), so the curved joint underneath can
   never poke up into the pocket and the accelerometer seats flat — the body
@@ -174,6 +173,38 @@ Because the accelerometer is a physical part, its dimensions are absolute
 millimetres and are **not** multiplied by `scale_factor`. The mounts are
 PLA, so they travel with the struts half of the multi-material variant.
 Set `add_accel_mount=false` on the OpenSCAD CLI to omit them.
+
+### Bottom-vertex key-seats (`accel_mount_bottom()`)
+
+To free up a **third** accelerometer position, each of the three **bottom**
+vertices carries a matching key-seat below it
+([PR #35](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35) /
+[PR #67](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67),
+@ctrhjk + @sgbaird 2026-07-01). It reuses the same slide-in pocket
+(three walls + floor + one open outward face for the horizontal cable exit),
+with two differences from the top igloo mount:
+
+* it is **flat-capped, not domed** (`accel_flat` = 2 mm) — @sgbaird: "these
+  won't be domed igloos, just flat." The flat outward face is what sits on the
+  build plate (and against the acrylic drop plate), and it recesses the sensor
+  so PLA — not the sensor — makes plate contact;
+* it hangs **below** the bottom vertex (built by mirroring the mount through the
+  vertex's XY plane), and a **skirt** convex-hulls the key-seat's *upper*
+  footprint **up** onto the joint sphere so PLA runs continuously "from the
+  key-seat upper surface to the lower surface of the vertices" (@sgbaird) — no
+  overhanging lip. As with the top mount, the skirt re-cuts the joint cavity +
+  cable bores so the captive TPU core and the three cable exits stay open.
+
+Because all three bottom vertices are coplanar (z = 0), their three flat caps
+land on the build plate together, giving the print a stable flat 3-point base.
+The key-seats extend the model's lowest point down by `accel_drop()` =
+`accel_floor + accel_pocket_z() + accel_flat`; `cables_z_anchor()` extends its
+bottom spike by the same amount so the cables STL keeps world-Z parity with the
+struts STL. Set `add_accel_mount_bottom=false` on the OpenSCAD CLI to omit them.
+
+> **Note (2026-07-01):** the tweezer breakaway slots that briefly lived on the
+> top mounts were **removed** per @sgbaird ("forget about the tweezer part.
+> Remove that").
 
 ## Single-piece, pure-PETG
 

@@ -69,17 +69,20 @@ xvfb-run -a openscad -o "${STL}" --export-format=binstl "${SCAD}"
 
 # `offset_z` lifts the geometry so its lowest point sits at the build-plate
 # z=0. With the captive-core joints (default since PR #35 comment 4511036510)
-# the lowest feature is the bottom-vertex PLA shell underside at SCAD
-# z=-captive_shell_od/2 ≈ -8.15 mm (was -joint_d/2 = -5.25 mm with the
-# legacy solid-joint mode); we lift by +8.15 mm so the shell underside lands
-# on the bed. The cables STL inherits the SAME world-Z bounding box via the
-# `cables_z_anchor()` spike inside `t3_prism_cables()`, so Bambu Studio's
-# per-part auto-bed-placement applies the same z offset to both halves and
-# the TPU cables stay aligned with the joints (fixes the "horizontal cables
-# too low at top and bottom" misalignment reported above PR #35 comment
-# 4511036510). If `use_captive_core=false` is set on the OpenSCAD CLI, drop
-# this back to 3.5.
-OFFSET_Z="${OFFSET_Z:-8.15}"
+# the bottom-vertex PLA shell underside is at SCAD z=-captive_shell_od/2
+# ≈ -8.15 mm, but the flat bottom accelerometer key-seats
+# (`add_accel_mount_bottom`, default since PR #35 / PR #67 2026-07-01) hang a
+# further `accel_drop()` below that, making the true lowest feature the flat
+# key-seat cap at SCAD z ≈ -18.29 mm (scale 1.5). We lift by +18.29 mm so the
+# three coplanar flat caps land on the bed (a stable 3-point flat base). The
+# cables STL inherits the SAME world-Z bounding box via the `cables_z_anchor()`
+# spike inside `t3_prism_cables()` (which now also extends downward by
+# `accel_drop()`), so Bambu Studio's per-part auto-bed-placement applies the
+# same z offset to both halves and the TPU cables stay aligned with the joints
+# (fixes the "horizontal cables too low at top and bottom" misalignment
+# reported above PR #35 comment 4511036510). With `add_accel_mount_bottom=false`
+# drop this back to 8.15; with `use_captive_core=false` too, drop to 3.5.
+OFFSET_Z="${OFFSET_Z:-18.29}"
 echo "==> OpenSCAD render -> ${STL_STRUTS##*/} (multi-material: rigid half / PLA, bed-centered)"
 xvfb-run -a openscad -o "${STL_STRUTS}" --export-format=binstl \
     -D 'part="struts"' -D 'offset_x=175' -D 'offset_y=160' -D "offset_z=${OFFSET_Z}" "${SCAD}"
