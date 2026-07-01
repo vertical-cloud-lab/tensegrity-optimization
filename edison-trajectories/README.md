@@ -25,6 +25,16 @@ For each task we commit two artifacts:
 | 7 | [`07-ferrule-envelope-quantitative-benchmarks-regulatory.md`](07-ferrule-envelope-quantitative-benchmarks-regulatory.md) / [`.json`](07-ferrule-envelope-quantitative-benchmarks-regulatory.json) | `98a30884-4ba4-4b26-b59c-af5779b44479` | success | https://platform.edisonscientific.com/tasks/98a30884-4ba4-4b26-b59c-af5779b44479 |
 | 8 | [`08-interface-fatigue-slip-resistance-vibration.md`](08-interface-fatigue-slip-resistance-vibration.md) / [`.json`](08-interface-fatigue-slip-resistance-vibration.json) | `46e06bf8-385a-4107-81e2-b43a032a2b8f` | success | https://platform.edisonscientific.com/tasks/46e06bf8-385a-4107-81e2-b43a032a2b8f |
 | 9 | [`09-organizer-persona-mock-review.md`](09-organizer-persona-mock-review.md) / [`.json`](09-organizer-persona-mock-review.json) | `6e00f3ca-b077-4ea6-83d4-4a30b63b7af5` | success | https://platform.edisonscientific.com/tasks/6e00f3ca-b077-4ea6-83d4-4a30b63b7af5 |
+| 10 | [`10-mock-review-bandyopadhyay.md`](10-mock-review-bandyopadhyay.md) | `5b6de9f1-f1e6-454b-9196-ffac673c0ffb` | in progress — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/5b6de9f1-f1e6-454b-9196-ffac673c0ffb |
+| 11 | [`11-mock-review-sachdev.md`](11-mock-review-sachdev.md) | `8c0ea7de-507d-49de-bd6c-98c086238d40` | in progress — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/8c0ea7de-507d-49de-bd6c-98c086238d40 |
+| 12 | [`12-mock-review-rodgers.md`](12-mock-review-rodgers.md) | `39a29dbf-160a-4f3d-8105-2e8321be4f86` | in progress — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/39a29dbf-160a-4f3d-8105-2e8321be4f86 |
+| 13 | [`13-mock-review-bose.md`](13-mock-review-bose.md) | `13c4f31b-a063-4351-b103-2787b9d3d896` | in progress — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/13c4f31b-a063-4351-b103-2787b9d3d896 |
+
+**Round 2 mock review (10–13):** submitted as four **low-effort** `LITERATURE` queries
+(one per TMS 2027 organizer persona — Bandyopadhyay, Sachdev, Rodgers, Bose) against the
+current abstract, which now names the benchmark to *exceed* (rubber ferrule transmitting
+>95% of applied load) rather than a bracketed placeholder. Placeholders committed now;
+refresh next session with `formatted_answer` + `model_dump_json()` `.json` once `success`.
 
 To re-fetch / refresh any trajectory:
 

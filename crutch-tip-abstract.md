@@ -40,11 +40,15 @@ TMS 2027 abstract in #73.
   reframed the regulatory line to `an anticipated Class I pathway … and ISO 11334-1
   framework guide verification`; and added a lab-to-market clause (`crutch abandonment
   exceeds 30%, motivating distributed, patient-tunable manufacturing`).
-- **Performance figures are targets, not measured data.** The `targeting a [~30–60%]
-  peak-force reduction versus a rubber-ferrule control` clause is a **design target**, not
-  a result — we do not yet have measured SEA / peak-force-reduction values. The bracketed
-  `[~30–60%]` is the defensible target range from trajectory `07`; replace it with the
-  actual value once quasi-static/drop-weight tests are run.
+- **No measured performance numbers yet — the abstract names the benchmark to *exceed*, not a
+  placeholder.** We do not yet have measured SEA / peak-force-reduction values, and (per the
+  Jul 1 2026 request, with the abstract due that night) we deliberately avoid a bracketed
+  placeholder. Instead the abstract states the control we intend to beat: a solid rubber
+  ferrule that **transmits >95% of applied load** (deforms <1.3 mm under 445 N → essentially
+  no shock absorption; trajectory `07`). The design goal is to exceed that baseline; for
+  context, miniaturized architected TPU / multi-material absorbers report **SEA ≈ 1–8 J/g**
+  (trajectory `07`), which is the performance envelope we are targeting. Replace with our
+  measured value once quasi-static/drop-weight tests are run.
 
 ## Title
 
@@ -60,23 +64,23 @@ Department of Mechanical Engineering, Brigham Young University, Provo, UT
 
 ## Abstract (150 words)
 
-Long-term crutch users load each crutch to roughly 0.5 body weights during
+Long-term crutch users load each crutch to ~0.5 body weights during
 partial-weight-bearing gait and experience substantial upper-extremity overuse
 injury, including crutch palsy, shoulder impingement, and carpal tunnel
 syndrome; commercial crutch tips predominantly use rubber ferrules, while
 existing spring-loaded dampers add bulk without architected tunability. We
 apply closed-loop, multi-objective Bayesian optimization to design a crutch-tip
 insert from multi-material fused-filament-fabrication tensegrity-inspired
-lattices that pair rigid PETG struts with elastomeric TPU tension elements,
-exploiting buckling-induced load-limiting plateaus and TPU viscoelastic
-hysteresis. Within the standard 19–25 mm crutch-shaft interface, we co-optimize
-unit-cell topology, strut diameter, relative density, and prestress to maximize
-specific energy absorption and minimize peak transmitted force across
-quasi-static compression and drop-weight impact, targeting a [~30–60%]
-peak-force reduction versus a rubber-ferrule control. Prior-art review
-identified no tensegrity-based crutch-tip absorber; an anticipated Class I
-pathway (21 CFR 890.3790) and ISO 11334-1 framework guide verification. Crutch
-abandonment exceeds 30%, motivating distributed, patient-tunable manufacturing.
+lattices, pairing rigid PETG struts with elastomeric TPU elements to exploit
+buckling-induced load-limiting plateaus and TPU viscoelastic hysteresis. Within
+the standard 19–25 mm crutch-shaft interface, we co-optimize unit-cell topology,
+strut diameter, relative density, and prestress to maximize specific energy
+absorption and minimize peak transmitted force across quasi-static compression
+and drop-weight impact, aiming to exceed a rubber-ferrule baseline that
+transmits over 95% of applied load. Prior-art review identified no
+tensegrity-based crutch-tip absorber; an anticipated Class I (21 CFR 890.3790),
+ISO 11334-1 pathway guides verification. Crutch abandonment exceeds 30%,
+motivating distributed, patient-tunable manufacturing.
 
 ## Evidence base (for reviewer questions / longer versions)
 
@@ -95,11 +99,13 @@ abandonment exceeds 30%, motivating distributed, patient-tunable manufacturing.
   standard (`06`; Mottaghi 2025). Prior art richer than "rubber-or-springs" — spring,
   bellows, gas-spring, and viscoelastic ferrules exist (US11712394B1, `06`).
 - PETG/TPU FFF engineering data and a starting Bayesian-optimization design space in `04`.
-- **Performance target basis (`07`):** miniaturized architected TPU / multi-material
-  absorbers report SEA ≈ 1–8 J/g, and a solid rubber ferrule deforms <1.3 mm under 445 N
-  (transmits >95% of load), so a ~30–60% peak-force reduction versus that control is a
-  defensible *design target* — hence the bracketed `[~30–60%]` placeholder in the abstract,
-  to be replaced with our measured value once tests are run.
+- **Benchmark-to-exceed basis (`07`):** a solid rubber ferrule deforms <1.3 mm under 445 N and
+  transmits >95% of applied load (essentially no shock absorption) — this is the control the
+  abstract names as the bar to beat. For context, miniaturized architected TPU / multi-material
+  absorbers report SEA ≈ 1–8 J/g, defining the performance envelope we target; a ~30–60%
+  peak-force reduction versus the rubber baseline is the internal design goal, stated in the
+  abstract as "exceed a rubber-ferrule baseline that transmits over 95% of applied load" rather
+  than a specific unmeasured number. Replace with our measured value once tests are run.
 - **Honest gaps to acknowledge in Q&A (`08`):** no high-cycle (10⁵–10⁶) fatigue data exist
   for *any* co-printed rigid/soft polymer interface, and PETG–TPU mode-I toughness is
   un-measured — interfacial delamination is the dominant risk; a bare glassy PETG lattice
