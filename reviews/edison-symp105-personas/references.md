@@ -1,0 +1,69 @@
+1. (shinde2022towardsanideal pages 1-2): Mandar Shinde, Irving E. Ramirez-Chavez, Daniel Anderson, Jason Fait, Mark Jarrett, and Dhruv Bhate. Towards an ideal energy absorber: relating failure mechanisms and energy absorption metrics in additively manufactured alsi10mg cellular structures under quasistatic compression. Journal of Manufacturing and Materials Processing, 6:140, Nov 2022. URL: https://doi.org/10.3390/jmmp6060140, doi:10.3390/jmmp6060140. This article has 39 citations.
+
+2. (pajunen2019designandimpact pages 7-8): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 100 citations and is from a highest quality peer-reviewed journal.
+
+3. (cronau2025energyabsorptionof pages 1-2): J. Cronau and F. Engstler. Energy absorption of 3d printed stochastic lattice structures under impact loading – design parameters, manufacturing, and testing. Progress in Additive Manufacturing, 10:3145-3156, Apr 2025. URL: https://doi.org/10.1007/s40964-025-01094-5, doi:10.1007/s40964-025-01094-5. This article has 19 citations and is from a peer-reviewed journal.
+
+4. (pajunen2019designandimpact pages 4-5): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 100 citations and is from a highest quality peer-reviewed journal.
+
+5. (fasanella2009multiterrainearthlanding pages 3-6): Edwin L. Fasanella. Multiterrain earth landing systems applicable for manned space capsules. Jul 2009. URL: https://doi.org/10.1061/(asce)0893-1321(2009)22:3(201), doi:10.1061/(asce)0893-1321(2009)22:3(201). This article has 21 citations and is from a peer-reviewed journal.
+
+6. (mennu2024analysisofa pages 1-13): Matlock M. Mennu, Jacob B. Putnam, and Justin D. Littell. Analysis of a landing system for planetary payloads utilizing passive energy absorbing composite structure. Earth and Space 2024, pages 483-493, Oct 2024. URL: https://doi.org/10.1061/9780784485736.045, doi:10.1061/9780784485736.045. This article has 0 citations.
+
+7. (fasanella2009multiterrainearthlanding pages 1-3): Edwin L. Fasanella. Multiterrain earth landing systems applicable for manned space capsules. Jul 2009. URL: https://doi.org/10.1061/(asce)0893-1321(2009)22:3(201), doi:10.1061/(asce)0893-1321(2009)22:3(201). This article has 21 citations and is from a peer-reviewed journal.
+
+8. (aliberti2026additivemanufacturingof pages 6-7): Francesca Aliberti, Raffaele Longo, Marialuigia Raimondo, Roberto Pantani, Luigi Vertuccio, and Liberata Guadagno. Additive manufacturing of polymers and composites for applications in aerospace and aeronautics. Materials Horizons, 13:532-588, Jan 2026. URL: https://doi.org/10.1039/d5mh01403d, doi:10.1039/d5mh01403d. This article has 5 citations and is from a domain leading peer-reviewed journal.
+
+9. (shinde2022towardsanideal pages 4-5): Mandar Shinde, Irving E. Ramirez-Chavez, Daniel Anderson, Jason Fait, Mark Jarrett, and Dhruv Bhate. Towards an ideal energy absorber: relating failure mechanisms and energy absorption metrics in additively manufactured alsi10mg cellular structures under quasistatic compression. Journal of Manufacturing and Materials Processing, 6:140, Nov 2022. URL: https://doi.org/10.3390/jmmp6060140, doi:10.3390/jmmp6060140. This article has 39 citations.
+
+10. (shinde2022towardsanideal pages 2-4): Mandar Shinde, Irving E. Ramirez-Chavez, Daniel Anderson, Jason Fait, Mark Jarrett, and Dhruv Bhate. Towards an ideal energy absorber: relating failure mechanisms and energy absorption metrics in additively manufactured alsi10mg cellular structures under quasistatic compression. Journal of Manufacturing and Materials Processing, 6:140, Nov 2022. URL: https://doi.org/10.3390/jmmp6060140, doi:10.3390/jmmp6060140. This article has 39 citations.
+
+11. (zhang2021optimizationforenergy pages 1-2): Jingyao Zhang, Makoto Ohsaki, Julian J. Rimoli, and Kosuke Kogiso. Optimization for energy absorption of 3-dimensional tensegrity lattice with truncated octahedral units. Jul 2021. URL: https://doi.org/10.1016/j.compstruct.2021.113903, doi:10.1016/j.compstruct.2021.113903. This article has 35 citations and is from a domain leading peer-reviewed journal.
+
+12. (mo2023accelerateddesignof pages 1-2): Chengyang Mo, Paris Perdikaris, and Jordan R. Raney. Accelerated design of architected materials with multifidelity bayesian optimization. Journal of Engineering Mechanics, Jun 2023. URL: https://doi.org/10.1061/jenmdt.emeng-7033, doi:10.1061/jenmdt.emeng-7033. This article has 12 citations.
+
+13. (mo2023accelerateddesignof pages 2-4): Chengyang Mo, Paris Perdikaris, and Jordan R. Raney. Accelerated design of architected materials with multifidelity bayesian optimization. Journal of Engineering Mechanics, Jun 2023. URL: https://doi.org/10.1061/jenmdt.emeng-7033, doi:10.1061/jenmdt.emeng-7033. This article has 12 citations.
+
+14. (mo2023accelerateddesignof pages 4-5): Chengyang Mo, Paris Perdikaris, and Jordan R. Raney. Accelerated design of architected materials with multifidelity bayesian optimization. Journal of Engineering Mechanics, Jun 2023. URL: https://doi.org/10.1061/jenmdt.emeng-7033, doi:10.1061/jenmdt.emeng-7033. This article has 12 citations.
+
+15. (garanger2021softtensegritysystems pages 1-4): Kévin Garanger, Isaac del Valle, Miriam Rath, Matthew Krajewski, Utkarsh Raheja, Marco Pavone, and Julian J. Rimoli. Soft tensegrity systems for planetary landing and exploration. Earth and Space 2021, pages 841-854, Apr 2021. URL: https://doi.org/10.1061/9780784483374.078, doi:10.1061/9780784483374.078. This article has 31 citations.
+
+16. (mo2023accelerateddesignof pages 6-7): Chengyang Mo, Paris Perdikaris, and Jordan R. Raney. Accelerated design of architected materials with multifidelity bayesian optimization. Journal of Engineering Mechanics, Jun 2023. URL: https://doi.org/10.1061/jenmdt.emeng-7033, doi:10.1061/jenmdt.emeng-7033. This article has 12 citations.
+
+17. (bustihan2026recentadvancesin pages 2-4): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18(9):1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 2 citations.
+
+18. (bates20163dprintedpolyurethane pages 18-22): Simon R.G. Bates, Ian R. Farrow, and Richard S. Trask. 3d printed polyurethane honeycombs for repeated tailored energy absorption. Materials & Design, 112:172-183, Dec 2016. URL: https://doi.org/10.1016/j.matdes.2016.08.062, doi:10.1016/j.matdes.2016.08.062. This article has 402 citations and is from a highest quality peer-reviewed journal.
+
+19. (tuninetti2025biomimeticlatticestructures pages 12-14): Víctor Tuninetti, Sunny Narayan, Ignacio Ríos, Brahim Menacer, Rodrigo Valle, Moaz Al-lehaibi, Muhammad Usman Kaisan, Joseph Samuel, Angelo Oñate, Gonzalo Pincheira, Anne Mertens, Laurent Duchêne, and César Garrido. Biomimetic lattice structures design and manufacturing for high stress, deformation, and energy absorption performance. Biomimetics, 10:458, Jul 2025. URL: https://doi.org/10.3390/biomimetics10070458, doi:10.3390/biomimetics10070458. This article has 54 citations.
+
+20. (wu2026energyabsorptionand pages 1-2): Yinjin Wu, Lvmanlin Wang, Zijian Yi, Qin Su, Yu-kun Qin, and B. Cui. Energy absorption and rebound behavior of 3d-printed tpu lattice structures. Scientific Reports, Mar 2026. URL: https://doi.org/10.1038/s41598-026-36271-1, doi:10.1038/s41598-026-36271-1. This article has 0 citations and is from a peer-reviewed journal.
+
+21. (vangelatos2021strengththroughdefects pages 3-4): Zacharias Vangelatos, Haris Moazam Sheikh, Philip S. Marcus, Costas P. Grigoropoulos, Victor Z. Lopez, George Flamourakis, and Maria Farsari. Strength through defects: a novel bayesian approach for the optimization of architected materials. Science Advances, Oct 2021. URL: https://doi.org/10.1126/sciadv.abk2218, doi:10.1126/sciadv.abk2218. This article has 126 citations and is from a highest quality peer-reviewed journal.
+
+22. (shinde2022towardsanideal pages 13-18): Mandar Shinde, Irving E. Ramirez-Chavez, Daniel Anderson, Jason Fait, Mark Jarrett, and Dhruv Bhate. Towards an ideal energy absorber: relating failure mechanisms and energy absorption metrics in additively manufactured alsi10mg cellular structures under quasistatic compression. Journal of Manufacturing and Materials Processing, 6:140, Nov 2022. URL: https://doi.org/10.3390/jmmp6060140, doi:10.3390/jmmp6060140. This article has 39 citations.
+
+23. (bates20163dprintedpolyurethane pages 1-4): Simon R.G. Bates, Ian R. Farrow, and Richard S. Trask. 3d printed polyurethane honeycombs for repeated tailored energy absorption. Materials & Design, 112:172-183, Dec 2016. URL: https://doi.org/10.1016/j.matdes.2016.08.062, doi:10.1016/j.matdes.2016.08.062. This article has 402 citations and is from a highest quality peer-reviewed journal.
+
+24. (goyal2019analyticalstudyof pages 1-2): Raman Goyal, Edwin A Peraza Hernandez, and Robert E Skelton. Analytical study of tensegrity lattices for mass-efficient mechanical energy absorption. International Journal of Space Structures, 34:21-3, May 2019. URL: https://doi.org/10.1177/0956059919845330, doi:10.1177/0956059919845330. This article has 61 citations and is from a peer-reviewed journal.
+
+25. (cronau2025energyabsorptionof pages 2-4): J. Cronau and F. Engstler. Energy absorption of 3d printed stochastic lattice structures under impact loading – design parameters, manufacturing, and testing. Progress in Additive Manufacturing, 10:3145-3156, Apr 2025. URL: https://doi.org/10.1007/s40964-025-01094-5, doi:10.1007/s40964-025-01094-5. This article has 19 citations and is from a peer-reviewed journal.
+
+26. (vangelatos2021strengththroughdefects pages 4-5): Zacharias Vangelatos, Haris Moazam Sheikh, Philip S. Marcus, Costas P. Grigoropoulos, Victor Z. Lopez, George Flamourakis, and Maria Farsari. Strength through defects: a novel bayesian approach for the optimization of architected materials. Science Advances, Oct 2021. URL: https://doi.org/10.1126/sciadv.abk2218, doi:10.1126/sciadv.abk2218. This article has 126 citations and is from a highest quality peer-reviewed journal.
+
+27. (bustihan2026recentadvancesin pages 4-6): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18(9):1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 2 citations.
+
+28. (mennu2024analysisofa pages 13-14): Matlock M. Mennu, Jacob B. Putnam, and Justin D. Littell. Analysis of a landing system for planetary payloads utilizing passive energy absorbing composite structure. Earth and Space 2024, pages 483-493, Oct 2024. URL: https://doi.org/10.1061/9780784485736.045, doi:10.1061/9780784485736.045. This article has 0 citations.
+
+29. (bustihan2025reusable3dprintedthermoplastic pages 1-2): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17(22):3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 6 citations.
+
+30. (bustihan2026recentadvancesin pages 13-15): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18(9):1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 2 citations.
+
+31. (bustihan2026recentadvancesin pages 11-13): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18(9):1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 2 citations.
+
+32. (bustihan2026recentadvancesin pages 23-25): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18(9):1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 2 citations.
+
+33. (bustihan2025reusable3dprintedthermoplastic pages 2-4): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17(22):3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 6 citations.
+
+34. (vangelatos2021strengththroughdefects pages 2-3): Zacharias Vangelatos, Haris Moazam Sheikh, Philip S. Marcus, Costas P. Grigoropoulos, Victor Z. Lopez, George Flamourakis, and Maria Farsari. Strength through defects: a novel bayesian approach for the optimization of architected materials. Science Advances, Oct 2021. URL: https://doi.org/10.1126/sciadv.abk2218, doi:10.1126/sciadv.abk2218. This article has 126 citations and is from a highest quality peer-reviewed journal.
+
+35. (mo2023accelerateddesignof pages 1-1): Chengyang Mo, Paris Perdikaris, and Jordan R. Raney. Accelerated design of architected materials with multifidelity bayesian optimization. Journal of Engineering Mechanics, Jun 2023. URL: https://doi.org/10.1061/jenmdt.emeng-7033, doi:10.1061/jenmdt.emeng-7033. This article has 12 citations.
