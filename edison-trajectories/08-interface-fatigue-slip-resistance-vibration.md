@@ -2,22 +2,316 @@
 
 - **Task ID:** `46e06bf8-385a-4107-81e2-b43a032a2b8f`
 - **Job:** `job-futurehouse-paperqa3-high` (`LITERATURE_HIGH`)
-- **Status:** `queued` / `in progress` (at time of commit)
+- **Status:** `success`
 - **Edison platform link:** https://platform.edisonscientific.com/tasks/46e06bf8-385a-4107-81e2-b43a032a2b8f
-- **Motivation:** Follow-up to the Edison abstract peer-review (trajectory `06`, task `74ac013b…`), which ranked **PETG–TPU interface durability** as a top-3 acceptance gap, flagged **slip-resistance/traction** as safety-critical and unaddressed, and concluded the title's **"vibration attenuation"** promise is currently unsupported (no crutch-tip transmissibility data). This query gathers the evidence needed either to add a defensible durability/traction sentence to the abstract or to answer these questions in review Q&A, and to decide whether the vibration framing can ever be justified.
-- **Summary:** Asks Edison to (1) quantify **multi-material interface fatigue** — fatigue life, cyclic delamination, creep, and mode-I interfacial fracture toughness of co-printed PETG–TPU (and PLA–TPU, TPU–ABS, PETG–PC) interfaces under repeated compressive/impact loading toward the ~10⁵–10⁶ gait-cycle service target, with test methods, cycles-to-delamination, and mitigation strategies; (2) establish **slip-resistance/traction** requirements and standards for crutch/cane tips (ASTM F2913, F1677, ISO/EN, DIN 51130), typical rubber-tip dry/wet COF, and whether a printed lattice contact surface needs a co-printed/over-molded rubber or TPU tread; and (3) determine whether any peer-reviewed study **measures vibration/shock transmissibility** through a crutch/cane/pole tip (accelerometer/frequency-domain, HAVS risk, ISO 5349), what test method would substantiate a "vibration attenuation" claim, and whether such a claim should be made at all — closing the loop on the trajectory-06 recommendation to keep the title impact-focused.
 
-> _Placeholder file — task is still `queued`/`in progress` at commit time. Will be refreshed next session with the full `formatted_answer` (Question + cited Answer + numbered References) plus a sibling `*.json` `model_dump_json()` dump, following the same pattern as trajectories 01–04 / 06 in this directory._
+---
 
-To re-fetch:
+Question: For a multi-material 3D-printed crutch-tip energy absorber that pairs rigid PETG struts with elastomeric TPU tension elements and would experience repeated gait loading, provide a rigorous, citation-backed answer on DURABILITY, TRACTION, and VIBRATION so a TMS 2027 conference abstract and its Q&A are defensible:
 
-```python
-import json, os
-from edison_client import EdisonClient
-c = EdisonClient(api_key=os.environ["EDISON_API_KEY"])
-t = c.get_task("46e06bf8-385a-4107-81e2-b43a032a2b8f")
-print(t.status)
-print(t.formatted_answer)
-open("08-interface-fatigue-slip-resistance-vibration.md", "w").write(t.formatted_answer)  # then prepend this header
-open("08-interface-fatigue-slip-resistance-vibration.json", "w").write(t.model_dump_json())
-```
+1. Multi-material interface fatigue: What is known about the fatigue life, cyclic delamination, creep, and interfacial fracture toughness of co-printed PETG-TPU (and PLA-TPU, TPU-ABS, PETG-PC) interfaces under repeated compressive/impact loading? A crutch sees ~10^5-10^6 gait cycles over its service life — quantify interface bond strength, mode-I toughness, and any measured cycles-to-delamination or stiffness/energy-absorption degradation, with test methods and sources. Is interfacial debonding the dominant failure mode, and what design/print strategies mitigate it?
+
+2. Slip resistance / traction: What slip-resistance (coefficient-of-friction) requirements and standards apply to crutch/cane tips (e.g. ASTM F2913, F1677, ISO/EN, DIN 51130), and what dry/wet COF do conventional rubber tips achieve? Would a 3D-printed lattice contact surface meet these, or is a co-printed/over-molded rubber or TPU tread required? Is there any crutch-tip-specific COF data?
+
+3. Vibration / HAVS: Does any peer-reviewed study MEASURE vibration or shock TRANSMISSIBILITY through a crutch, cane, or trekking-pole tip (accelerometer/frequency-domain data), and is there evidence of a hand-arm vibration syndrome (HAVS) risk or a measurable vibration-attenuation BENEFIT from a compliant tip? What test method (transmissibility curve, ISO 5349, gait-simulation rig) would be needed to substantiate a 'vibration attenuation' claim, and given current evidence should such a claim be made at all for a crutch tip?
+
+Provide a numbered reference list grounded in peer-reviewed literature and patents.
+
+# Multi-Material 3D-Printed Crutch-Tip Energy Absorber: Durability, Traction, and Vibration — A Citation-Backed Technical Assessment
+
+---
+
+## 1. Multi-Material Interface Fatigue and Durability
+
+### 1.1 Interfacial Fracture Toughness and Bond Strength
+
+The interface between co-printed rigid and elastomeric polymers is consistently identified as the weakest link in multi-material FFF structures. The most rigorous quantification of mode-I interfacial fracture toughness (G_Ic) in stiff-soft multi-material systems comes from double cantilever beam (DCB) testing of carbon-fiber-reinforced nylon (CFPA) bonded to TPU. Jafor et al. (2024) measured G_Ic ranging from 8.34 ± 4.89 kJ/m² (baseline) to 42.12 ± 6.83 kJ/m² (optimized), with the application of a hot-air gun during printing yielding a statistically significant increase from a mean of 12.3 kJ/m² to 33.4 kJ/m² (jafor2024systematicevaluationof pages 9-11, jafor2024systematicevaluationof pages 1-2). X-ray computed tomography confirmed a 24% reduction in void volume fraction at the interface when both bead ironing and hot air were applied, consistent with polymer healing (reptation) theory (jafor2024systematicevaluationof pages 11-13).
+
+For the PLA/Nylon system (a stiff-stiff pairing relevant as a comparator), Rabbi and Chalivendra (2021) measured mode-I fracture initiation toughness via single-leg bending of 37–133.5 J/m² (note: J/m², not kJ/m²), with maximum values at ±45° raster orientation, thinner layers (0.25 mm yielding 133.5 J/m² versus 52.6 J/m² at 0.45 mm, a 60% drop), and optimized printing temperatures (95% increase by raising nozzle temperature) (rabbi2021interfacialfracturecharacterization pages 7-10, rabbi2021interfacialfracturecharacterization pages 6-7, rabbi2021interfacialfracturecharacterization pages 4-6). Bending rigidity and crystallinity effects at the bed were also quantified.
+
+**No peer-reviewed study was identified that directly measures PETG-TPU interfacial G_Ic by DCB.** However, the CFPA-TPU data (Jafor 2024) and PLA-Nylon data (Rabbi 2021) bracket the expected behavior for PETG-TPU, given that PETG's glass transition (~80 °C) and melt viscosity are intermediate between PLA and PA.
+
+### 1.2 Interface-Controlled Failure: Is Debonding the Dominant Mode?
+
+The answer is unambiguously **yes** for all studied rigid/soft and rigid/rigid pairings under tensile and impact loading:
+
+- **PETG/PC-ABS laminates** (alternating 0.2 mm laminae) showed tensile strengths of 45.6 ± 1.2 MPa versus 59.1 ± 0.4 MPa for monolithic PETG (a 21–23% reduction), with SEM fractography revealing void-assisted crack initiation and interfacial debonding aligned with raster paths (ramasamy2026characterizationofpcabs pages 1-2, ramasamy2026characterizationofpcabs pages 7-10). Charpy impact testing showed delamination initiation along the PETG/PC-ABS interface as the preferential fracture path, governed by local voids, imperfect wetting, and thermal mismatch (PETG T_g ~80 °C vs. PC-ABS T_g ~115 °C) (ramasamy2026characterizationofpcabs pages 10-12).
+
+- **ABS-TPU multimaterial honeycombs** showed that the ABS-to-TPU interface was more prone to delamination than layers between identical materials under compression, attributed to thermal and viscosity differences between the materials (khatri2024energyabsorptionof pages 7-10).
+
+- **PLA-TPU lap shear** specimens exhibited variable failure modes depending on print parameters. Reducing layer height from 0.32 mm to 0.16 mm decreased porosity by 77.7% and substantially improved bond stability (tarres2025ontheinterlaminar pages 7-9, tarres2025ontheinterlaminar pages 11-13). Fracture surface analysis consistently revealed poor interfacial bonding with delamination at the PLA-TPU interface (tarres2025ontheinterlaminar pages 1-2).
+
+- **PLA-PET** multi-material specimens with a simple butt interface retained only ~10% of the homogeneous material's ultimate tensile strength (versus 60% for a mono-material butt joint), confirming that chemical incompatibility drives interface-controlled failure (frascio2024investigatingenhancedinterfacial pages 1-2, frascio2024investigatingenhancedinterfacial pages 4-7).
+
+### 1.3 Cyclic Degradation and Energy-Absorption Retention
+
+Quantified cyclic data for multi-material interfaces at 10⁵–10⁶ cycles (the crutch service-life range) **do not exist in the current literature**. Available data are limited to low-cycle (3-cycle) quasi-static compression of TPU lattices and honeycombs:
+
+- Wu et al. (2026) tested five TPU lattice topologies over three compression cycles. The stiffness degradation ratio (SDR) varied dramatically with architecture: homogeneous small-pore and gradient structures maintained SDR of 97.4% (i.e., <3% stiffness loss), while structures lacking transverse beam supports degraded catastrophically to SDR = 43.2% with energy recovery ratios as low as 47.6% (wu2026energyabsorptionand pages 11-12, wu2026energyabsorptionand pages 4-5).
+
+- Bustihan et al. (2025) found that 3D-printed TPU (95A, 85A, 70A) hexagonal and circular honeycombs maintained energy absorption efficiencies of 36–47% across repeated compressions, with twisted hexagonal configurations exhibiting the best consistency and crushing load efficiencies up to 73.5% (bustihan2025reusable3dprintedthermoplastic pages 12-14, bustihan2025reusable3dprintedthermoplastic pages 9-12).
+
+**Critical gap:** No study has subjected a multi-material PETG-TPU or PLA-TPU interface to high-cycle fatigue (10⁴+ cycles) under compressive/impact loading representative of gait. This is the single largest vulnerability in defending a TMS abstract on crutch-tip durability.
+
+### 1.4 Mitigation Strategies
+
+The following evidence-based strategies are available to improve interface durability:
+
+1. **Thermal management during printing:** Hot-air-assisted printing increased CFPA-TPU G_Ic from 12.3 to 33.4 kJ/m² (jafor2024systematicevaluationof pages 9-11). Temperature gradients at the PLA-TPU interface improved bonding consistency (tarres2025ontheinterlaminar pages 7-9).
+
+2. **Layer height reduction:** Reducing layer height improved PLA-Nylon G_Ic by 60% (rabbi2021interfacialfracturecharacterization pages 6-7) and reduced PLA-TPU porosity by 77.7% (tarres2025ontheinterlaminar pages 11-13).
+
+3. **Mechanical interlocking geometries:** T-shaped interface joints improved multi-material PLA-PET tensile strength by 58% over butt joints (frascio2024investigatingenhancedinterfacial pages 1-2, frascio2024investigatingenhancedinterfacial pages 7-8).
+
+4. **Compatibilizing interlayers:** TPU used as a compatibilizer between ABS and PA increased tensile strain by ~140% and acted as a stress-relief layer via hydrogen bonding between TPU urethane groups and PA amide groups (yilmaz2026investigationofmechanical pages 9-10, yilmaz2026investigationofmechanical pages 12-13).
+
+5. **Material placement strategy:** Placing PLA at outer fibers (for stiffness) and TPU near neutral axes enabled progressive distributed collapse rather than abrupt failure, with SEM revealing effective shear transfer and crack-path deflection at PLA-TPU interfaces in lattice structures (abbas2026multimaterialintegrationfor pages 19-20, abbas2026multimaterialintegrationfor pages 16-17).
+
+The following table summarizes the quantified interface and cyclic-durability data across the relevant polymer pairings:
+
+| Material Pair / Structure | Test Method | Key Metric | Value / Range | Source |
+|---|---|---|---|---|
+| CFPA-TPU | Double cantilever beam (DCB), mode-I interfacial fracture | GIc | 8.34-42.12 kJ/m² across process conditions; mean improved from 12.3 to 33.4 kJ/m² with hot-air assistance | (jafor2024systematicevaluationof pages 9-11, jafor2024systematicevaluationof pages 1-2, jafor2024systematicevaluationof pages 11-13) |
+| PLA-Nylon | Single-leg bending (SLB), three-point bending fracture initiation | Mode-I interfacial fracture toughness | 37-133.5 J/m² depending on layer height, orientation, temperature, and thickness ratio | (rabbi2021interfacialfracturecharacterization pages 7-10, rabbi2021interfacialfracturecharacterization pages 6-7, rabbi2021interfacialfracturecharacterization pages 4-6) |
+| PLA-TPU | Lap shear adhesion test | Interfacial adhesion / porosity sensitivity | Lower layer height and thermal gradient improved bonding consistency; porosity reduced by 77.7%; smaller layer-height specimens reached about 350 N peak load versus about 150 N at larger layer height | (tarres2025ontheinterlaminar pages 7-9, tarres2025ontheinterlaminar pages 11-13, tarres2025ontheinterlaminar pages 9-11) |
+| ABS-TPU | Flexural testing of ATA/TAT laminates | Flexural strength / interface-dominated failure | ATA flexural strength 31.38-46.49 MPa; pure ABS 64.16 MPa; pure TPU 6.8 MPa; TPU increased toughness and elongation but reduced stiffness | (kumar2022onlaminatedobject pages 9-11, kumar2022onlaminatedobject pages 11-14) |
+| ABS-TPU | Compression of multimaterial honeycombs | Delamination tendency | ABS-TPU interface observed as more prone to delamination than same-material layers under compression | (khatri2024energyabsorptionof pages 7-10, khatri2024energyabsorptionof pages 10-11) |
+| PETG/PC-ABS | ISO 527-2 tensile; Charpy impact; SEM fractography | Tensile strength / interface-controlled damage | Composite tensile strength 45.6 ± 1.2 MPa versus PETG 59.1 ± 0.4 MPa, about 21-23% reduction; cracks preferentially followed interface and voids; partial delamination in impact | (ramasamy2026characterizationofpcabs pages 1-2, ramasamy2026characterizationofpcabs pages 10-12, ramasamy2026characterizationofpcabs pages 7-10) |
+| PLA-PET | Tensile tests of butt and interlocking geometries | Residual tensile strength / geometry effect | Heterogeneous butt interface retained only 10% residual strength; T-geometry improved strength by 58%; MM geometry by 7% | (frascio2024investigatingenhancedinterfacial pages 1-2, frascio2024investigatingenhancedinterfacial pages 7-8, frascio2024investigatingenhancedinterfacial pages 4-7) |
+| ABS-PA with TPU interlayer | Tensile and interlaminar shear strength testing in layered FFF laminate | UTS / strain increase / compatibilization effect | UTS 25.9 ± 1.0 MPa; tensile strain increased by about 140%; TPU acted as stress-relief compatibilizer | (yilmaz2026investigationofmechanical pages 9-10, yilmaz2026investigationofmechanical pages 4-5, yilmaz2026investigationofmechanical pages 12-13) |
+| TPU lattice (cyclic compression) | Three-cycle quasi-static compression | Stiffness degradation ratio / cyclic durability | Stiffness degradation ratio ranged from 43.165% for poor topology to 97.41% for best topology; severe versus minimal degradation depending on architecture | (wu2026energyabsorptionand pages 11-12, wu2026energyabsorptionand pages 4-5) |
+| TPU honeycomb (cyclic compression) | Repeated out-of-plane compression | Energy absorption efficiency retention | Most designs maintained about 36-47% energy-absorption efficiency across repeated compressions; hexagonal and twisted forms were most stable | (bustihan2025reusable3dprintedthermoplastic pages 12-14, bustihan2025reusable3dprintedthermoplastic pages 9-12) |
+
+
+*Table: This table compiles the main quantified interface and cyclic-durability results relevant to a multi-material crutch-tip absorber. It compares fracture toughness, bond quality, delamination behavior, and cyclic retention across the polymer pairs and lattice systems discussed in the evidence.*
+
+---
+
+## 2. Slip Resistance / Traction
+
+### 2.1 Applicable Standards
+
+**No crutch-tip-specific coefficient-of-friction (COF) standard exists.** The closest applicable standards are those developed for footwear and walkway surfaces:
+
+- **ASTM F2913** — Standard Test Method for Measuring the Coefficient of Friction for Evaluation of Slip Performance of Footwear and Test Surfaces/Flooring Using a Whole Shoe Tester.
+- **ASTM F1677** — Standard Test Method for Using a Portable Inclinable Articulated Strut Tribometer (PIAST).
+- **DIN 51130** — Determination of the anti-slip property using the ramp test with shoe-wearing persons.
+- **ISO 13287** — Determination of slip resistance of footwear test methods.
+
+These could be adapted for crutch-tip testing by mounting the tip in a fixture analogous to a shoe and applying loads representative of crutch ground reaction forces (typically 25–50% body weight).
+
+### 2.2 COF of Conventional Rubber Tips
+
+The consensus slip-resistance threshold for safe pedestrian walking is a COF ≥ 0.4 (brungraber1976anoverviewof pages 67-71). Rubber heels on walkway surfaces under dry conditions achieve COF of 0.516–0.716 — well above this threshold (brungraber1976anoverviewof pages 46-49). Military specifications for vulcanized rubber (60–80 Shore A durometer) on anti-slip deck coverings require static COF of 0.60 dry and 0.60–0.70 wet (brungraber1976anoverviewof pages 86-91).
+
+However, wet conditions cause dramatic COF reductions. Liu et al. (2010) measured rubber soles on anti-slip ceramic floors at ~1.06 dry but only ~0.31 wet, with flat rubber soles providing better contact and higher friction than treaded soles under water contamination (liu2010frictionmeasurementson pages 3-4, liu2010frictionmeasurementson pages 2-3, liu2010frictionmeasurementson pages 5-6). On polished vinyl tiles, wet rubber COF dropped to 0.09–0.18 (brungraber1976anoverviewof pages 40-44).
+
+### 2.3 Implications for a 3D-Printed Lattice Contact Surface
+
+A rigid PETG lattice ground-contact surface would almost certainly fail to meet the ≥0.4 COF threshold, particularly on wet surfaces, because:
+- PETG and PLA are glassy thermoplastics with low surface energy and high stiffness, offering minimal hysteretic deformation friction.
+- The layer-line topography of FDM printing creates anisotropic contact patterns that would trap water rather than channel it.
+
+A co-printed or over-molded **TPU or rubber tread** is strongly recommended. Patent designs for crutch tips consistently employ elastomeric contact surfaces: Moulton (US20130276845A1) specifies polyurethane blends, natural rubber, silicone, or EPDM with elastic modulus 0.2–0.4 GPa and tread patterns incorporating flexible "toes" that independently engage surfaces and channel liquids (US20130276845A1 pages 1-7, US20130276845A1 pages 8-9, US20130276845A1 pages 7-8). Reitano (US20120260958A1) describes a cane ferrule with a softer inner core that deflects outward under load to increase the ground-contact footprint, with tread lugs and voids designed to extract liquids (US20120260958A1 pages 6-7, US20120260958A1 pages 7-8, US20120260958A1 pages 1-6).
+
+For a defensible abstract, the recommended approach is a co-printed TPU (Shore 85A–95A) ground-contact layer with a molded or printed tread pattern, tested per a modified ASTM F2913 protocol.
+
+| Surface/Material Pair | Condition | COF Value | Standard/Method | Source |
+|---|---|---:|---|---|
+| Rubber heels on walkway surfaces | Dry | 0.516-0.716 | Historical walkway/heel friction measurements summarized in NBS slip-resistance review | Brungraber 1976 (brungraber1976anoverviewof pages 46-49, brungraber1976anoverviewof pages 67-71) |
+| Safe walking threshold (general guideline) | Dry/wet screening criterion | >=0.40 | Slip-resistance classification guideline for acceptable traction | Brungraber 1976 (brungraber1976anoverviewof pages 67-71) |
+| Rubber on anti-slip deck coverings | Dry | 0.60 | MIL-D-18873B / MIL-D-3134F static friction requirement/test summary | Brungraber 1976 (brungraber1976anoverviewof pages 86-91) |
+| Rubber on anti-slip deck coverings | Wet | 0.60-0.70 | MIL-D-18873B / MIL-D-3134F static friction requirement/test summary | Brungraber 1976 (brungraber1976anoverviewof pages 86-91) |
+| Rubber soles on anti-slip floors | Dry | ~1.06 | Inclined drag/friction testing on anti-slip floors under contamination conditions | Liu et al. 2010 (liu2010frictionmeasurementson pages 3-4) |
+| Rubber soles on anti-slip floors | Wet | ~0.31 | Inclined drag/friction testing on anti-slip floors under contamination conditions | Liu et al. 2010 (liu2010frictionmeasurementson pages 3-4) |
+| Flat soles on floors | Dry | 0.33-0.45 | Friction testing across floor/tread/inclination combinations | Liu et al. 2010 (liu2010frictionmeasurementson pages 2-3) |
+| Rubber on polished vinyl tile | Wet | 0.09-0.18 | British Portable Skid Tester-type measurements summarized in NBS review | Brungraber 1976 (brungraber1976anoverviewof pages 40-44) |
+| Rubber soles on anti-slip floors (wet, depending on sole/floor geometry) | Wet | 0.203-0.432 | Regression-estimated horizontal-surface friction from 18 test combinations | Liu et al. 2010 (liu2010frictionmeasurementson pages 4-5) |
+| Crutch/cane tip-specific COF standard | N/A | Not established | No crutch-tip-specific COF standard identified; footwear/walkway methods used by analogy: ASTM F2913 (whole-footwear tribometer), ASTM F1677 (PIAST tribometer), DIN 51130 (inclined ramp classification) | Synthesis from available evidence (brungraber1976anoverviewof pages 67-71, liu2010frictionmeasurementson pages 3-4, liu2010frictionmeasurementson pages 4-5) |
+
+
+*Table: This table compiles coefficient-of-friction values and threshold guidance most relevant to crutch-tip traction claims. It also notes that no crutch-tip-specific COF standard was identified, so footwear and walkway tribology standards are the best analogs.*
+
+---
+
+## 3. Vibration / HAVS
+
+### 3.1 Existing Peer-Reviewed Measurements
+
+An extensive search of the peer-reviewed literature identified **no study that directly measures vibration or shock transmissibility through a crutch, cane, or trekking-pole tip** using accelerometers or frequency-domain analysis. While instrumented crutches exist for measuring ground reaction forces during gait (US20130276845A1 pages 1-7), these focus on load magnitude rather than vibration frequency content or transmissibility.
+
+### 3.2 HAVS Risk Assessment
+
+Hand-arm vibration syndrome (HAVS) is a well-documented occupational hazard for operators of powered handheld tools (chainsaws, grinders, pneumatic hammers) that generate sustained high-frequency vibration in the 8–1000 Hz range evaluated under ISO 5349. HAVS symptoms include vascular disorders ("white finger"), carpal tunnel syndrome, and sensory-motor dysfunction, with the duration of exposure being the primary risk factor (benos2020areviewon pages 12-14, benos2020areviewon pages 3-5).
+
+Crutch gait is fundamentally different from powered tool operation in several respects:
+- **Frequency:** Crutch ground contact produces a low-frequency transient impact at the gait cadence (~1–2 Hz), not sustained high-frequency vibration.
+- **Duration:** Each ground-contact impulse lasts ~100–200 ms, versus continuous vibration exposure for tool operators.
+- **Amplitude:** While crutch impact forces can reach 25–50% body weight, the resulting vibration is a damped impulse rather than a periodic excitation.
+
+ISO 5349-1 frequency weighting emphasizes the 8–16 Hz band and is designed for continuous or regularly repeated vibration from powered sources. Applying it to single-impact gait transients is methodologically inappropriate without demonstrating that the crutch tip generates spectral content in the HAVS-relevant frequency range.
+
+### 3.3 Test Method for a Vibration-Attenuation Claim
+
+To substantiate a "vibration attenuation" claim for a crutch tip at a TMS conference, the following minimum protocol would be required:
+
+1. **Instrumentation:** Triaxial accelerometers mounted (a) on the crutch shaft just above the tip, and (b) at the handgrip, following ISO 5349 placement guidance.
+2. **Test rig:** A gait-simulation drop-test rig replicating peak crutch-ground impact forces (400–700 N) and contact angles (10–30° from vertical) at physiological cadence.
+3. **Metrics:** Transmissibility ratio (handle acceleration / tip acceleration) as a function of frequency, computed via FFT. Comparison of the energy absorber tip versus a standard rubber ferrule.
+4. **Reporting:** Frequency-weighted acceleration magnitude (a_hv) per ISO 5349-1, daily exposure A(8), and comparison to the EU Directive 2002/44/EC action value (2.5 m/s²) and limit value (5 m/s²).
+
+### 3.4 Recommendation
+
+**Given current evidence, a "vibration attenuation" claim should not be made for a crutch tip.** The fundamental physics of crutch-ground impact (low-frequency transient) differs qualitatively from the sustained high-frequency vibration that causes HAVS. No published transmissibility data exist to support such a claim, and invoking HAVS without frequency-domain evidence would not survive peer review or Q&A scrutiny. The more defensible claim is **"impact energy absorption"** or **"peak force attenuation,"** which can be quantified via drop-tower or quasi-static compression testing of the lattice structure without invoking vibration science.
+
+---
+
+## Summary and Defensibility Assessment
+
+For a TMS 2027 conference abstract on a multi-material PETG-TPU crutch-tip energy absorber:
+
+- **Durability:** Interfacial debonding is the dominant failure mode in all studied rigid/soft multi-material FFF systems. Mode-I G_Ic data exist for analogous systems (CFPA-TPU: 8–42 kJ/m²; PLA-Nylon: 37–134 J/m²), but not for PETG-TPU specifically, and no high-cycle (10⁵+) fatigue data exist for any co-printed polymer interface. This is a defensible research gap to acknowledge. Mitigation strategies (thermal management, reduced layer height, interlocking geometry, material placement) are well-supported.
+
+- **Traction:** A co-printed TPU tread is essential; a bare PETG lattice will not meet the ≥0.4 COF threshold. Conventional rubber tips achieve 0.5–0.7 dry but can fall to 0.2–0.3 wet. Testing per modified ASTM F2913 is recommended.
+
+- **Vibration:** Do not claim "vibration attenuation" or invoke HAVS. Claim "impact energy absorption" instead. No peer-reviewed transmissibility data for crutch tips exist.
+
+---
+
+## References
+
+1. Jafor MA, Sayah N, Smith DE, Stano G, Fleck TJ. Systematic evaluation of adhesion and fracture toughness in multi-material fused deposition material extrusion. *Materials*. 2024;17:3953. doi:10.3390/ma17163953 (jafor2024systematicevaluationof pages 9-11, jafor2024systematicevaluationof pages 1-2, jafor2024systematicevaluationof pages 11-13)
+
+2. Rabbi MF, Chalivendra V. Interfacial fracture characterization of multi-material additively manufactured polymer composites. *Composites Part C: Open Access*. 2021;5:100145. doi:10.1016/j.jcomc.2021.100145 (rabbi2021interfacialfracturecharacterization pages 7-10, rabbi2021interfacialfracturecharacterization pages 6-7, rabbi2021interfacialfracturecharacterization pages 4-6)
+
+3. Ramasamy MN, Sliva A, Nag A, et al. Characterization of PC-ABS and PETG multi-material laminates fabricated by MEX method. *Polymers*. 2026;18:763. doi:10.3390/polym18060763 (ramasamy2026characterizationofpcabs pages 14-16, ramasamy2026characterizationofpcabs pages 1-2, ramasamy2026characterizationofpcabs pages 10-12, ramasamy2026characterizationofpcabs pages 4-7, ramasamy2026characterizationofpcabs pages 7-10)
+
+4. Tarrés N, Garcia-Romeu ML, Ferrer I. On the interlaminar bonding adhesion of the PLA-TPU printed multimaterial. *Int J Adv Manuf Technol*. 2025. doi:10.1007/s00170-025-17099-x (tarres2025ontheinterlaminar pages 7-9, tarres2025ontheinterlaminar pages 1-2, tarres2025ontheinterlaminar pages 11-13, tarres2025ontheinterlaminar pages 9-11)
+
+5. Kumar S, Singh I, Koloor SSR, Kumar D, Yahya MY. On laminated object manufactured FDM-printed ABS/TPU multimaterial specimens. *Polymers*. 2022;14:4066. doi:10.3390/polym14194066 (kumar2022onlaminatedobject pages 9-11, kumar2022onlaminatedobject pages 11-14)
+
+6. Khatri NR, Egan PF. Energy absorption of 3D printed ABS and TPU multimaterial honeycomb structures. *3D Print Addit Manuf*. 2024;11:e840–e850. doi:10.1089/3dp.2022.0196 (khatri2024energyabsorptionof pages 7-10, khatri2024energyabsorptionof pages 10-11)
+
+7. Frascio M, Zafferani A, Monti M, Avalle M. Investigating enhanced interfacial adhesion in multi-material filament 3D printing. *Prog Addit Manuf*. 2024;9:2113–2122. doi:10.1007/s40964-024-00570-8 (frascio2024investigatingenhancedinterfacial pages 1-2, frascio2024investigatingenhancedinterfacial pages 7-8, frascio2024investigatingenhancedinterfacial pages 4-7)
+
+8. Yilmaz S, Gul O, Coban O. Investigation of mechanical properties in layered multi-material 3D printing. *J Vinyl Addit Technol*. 2026;32:484–498. doi:10.1002/vnl.70051 (yilmaz2026investigationofmechanical pages 9-10, yilmaz2026investigationofmechanical pages 4-5, yilmaz2026investigationofmechanical pages 12-13)
+
+9. Wu Y, Wang L, Yi Z, Su Q, Qin Y, Cui B. Energy absorption and rebound behavior of 3D-printed TPU lattice structures. *Sci Rep*. 2026;16. doi:10.1038/s41598-026-36271-1 (wu2026energyabsorptionand pages 11-12, wu2026energyabsorptionand pages 4-5)
+
+10. Bustihan A, Hirian R, Botiz I. Reusable 3D-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. *Polymers*. 2025;17:3035. doi:10.3390/polym17223035 (bustihan2025reusable3dprintedthermoplastic pages 12-14, bustihan2025reusable3dprintedthermoplastic pages 2-4, bustihan2025reusable3dprintedthermoplastic pages 9-12)
+
+11. Abbas M, Azher K, Nazir A. Multi-material integration for multifunctional enhancement of additively manufactured cubic strut and plate-lattice structures. *Sci Rep*. 2026;16. doi:10.1038/s41598-026-41048-7 (abbas2026multimaterialintegrationfor pages 19-20, abbas2026multimaterialintegrationfor pages 16-17)
+
+12. Goh GL, Lee S, Cheng SH, et al. Enhancing interlaminar adhesion in multi-material 3D printing: a study of conductive PLA and TPU interfaces. *Mater Sci Addit Manuf*. 2024;3:2672. doi:10.36922/msam.2672 (goh2024enhancinginterlaminaradhesion pages 1-1)
+
+13. Brungraber RJ. An overview of floor slip-resistance research with annotated bibliography. NBS Technical Note 895. 1976. doi:10.6028/nbs.tn.895 (brungraber1976anoverviewof pages 46-49, brungraber1976anoverviewof pages 67-71, brungraber1976anoverviewof pages 71-76, brungraber1976anoverviewof pages 86-91, brungraber1976anoverviewof pages 40-44)
+
+14. Liu L, Li KW, Lee YH, Chen CC, Chen CY. Friction measurements on anti-slip floors under shoe sole, contamination, and inclination conditions. *Safety Sci*. 2010;48:1321–1326. doi:10.1016/j.ssci.2010.04.014 (liu2010frictionmeasurementson pages 3-4, liu2010frictionmeasurementson pages 4-5, liu2010frictionmeasurementson pages 2-3, liu2010frictionmeasurementson pages 5-6)
+
+15. Benos L, Tsaopoulos D, Bochtis D. A review on ergonomics in agriculture. Part II: Mechanized operations. *Appl Sci*. 2020;10:3484. doi:10.3390/app10103484 (benos2020areviewon pages 12-14, benos2020areviewon pages 3-5)
+
+16. Moulton RE. Anti-slip foot assembly. US Patent US20130276845A1. 2013. (US20130276845A1 pages 1-7, US20130276845A1 pages 8-9, US20130276845A1 pages 7-8)
+
+17. Reitano Z. Assistive walking cane. US Patent US20120260958A1. 2012. (US20120260958A1 pages 6-7, US20120260958A1 pages 7-8, US20120260958A1 pages 1-6)
+
+References
+
+1. (jafor2024systematicevaluationof pages 9-11): Md Abu Jafor, Neshat Sayah, Douglas E. Smith, Gianni Stano, and Trevor J. Fleck. Systematic evaluation of adhesion and fracture toughness in multi-material fused deposition material extrusion. Materials, 17:3953, Aug 2024. URL: https://doi.org/10.3390/ma17163953, doi:10.3390/ma17163953. This article has 12 citations.
+
+2. (jafor2024systematicevaluationof pages 1-2): Md Abu Jafor, Neshat Sayah, Douglas E. Smith, Gianni Stano, and Trevor J. Fleck. Systematic evaluation of adhesion and fracture toughness in multi-material fused deposition material extrusion. Materials, 17:3953, Aug 2024. URL: https://doi.org/10.3390/ma17163953, doi:10.3390/ma17163953. This article has 12 citations.
+
+3. (jafor2024systematicevaluationof pages 11-13): Md Abu Jafor, Neshat Sayah, Douglas E. Smith, Gianni Stano, and Trevor J. Fleck. Systematic evaluation of adhesion and fracture toughness in multi-material fused deposition material extrusion. Materials, 17:3953, Aug 2024. URL: https://doi.org/10.3390/ma17163953, doi:10.3390/ma17163953. This article has 12 citations.
+
+4. (rabbi2021interfacialfracturecharacterization pages 7-10): Md Fazlay Rabbi and Vijaya Chalivendra. Interfacial fracture characterization of multi-material additively manufactured polymer composites. Composites Part C: Open Access, 5:100145, Jul 2021. URL: https://doi.org/10.1016/j.jcomc.2021.100145, doi:10.1016/j.jcomc.2021.100145. This article has 39 citations.
+
+5. (rabbi2021interfacialfracturecharacterization pages 6-7): Md Fazlay Rabbi and Vijaya Chalivendra. Interfacial fracture characterization of multi-material additively manufactured polymer composites. Composites Part C: Open Access, 5:100145, Jul 2021. URL: https://doi.org/10.1016/j.jcomc.2021.100145, doi:10.1016/j.jcomc.2021.100145. This article has 39 citations.
+
+6. (rabbi2021interfacialfracturecharacterization pages 4-6): Md Fazlay Rabbi and Vijaya Chalivendra. Interfacial fracture characterization of multi-material additively manufactured polymer composites. Composites Part C: Open Access, 5:100145, Jul 2021. URL: https://doi.org/10.1016/j.jcomc.2021.100145, doi:10.1016/j.jcomc.2021.100145. This article has 39 citations.
+
+7. (ramasamy2026characterizationofpcabs pages 1-2): Mahalingam Nainaragaram Ramasamy, Ales Sliva, Akash Nag, Quoc-Phu Ma, Ondrej Hilser, Marie Heliova, Grazyna Simha Martynkova, Silvie Brozova, and Jan Dizo. Characterization of pc-abs and petg multi-material laminates fabricated by mex method. Polymers, 18:763, Mar 2026. URL: https://doi.org/10.3390/polym18060763, doi:10.3390/polym18060763. This article has 1 citations.
+
+8. (ramasamy2026characterizationofpcabs pages 7-10): Mahalingam Nainaragaram Ramasamy, Ales Sliva, Akash Nag, Quoc-Phu Ma, Ondrej Hilser, Marie Heliova, Grazyna Simha Martynkova, Silvie Brozova, and Jan Dizo. Characterization of pc-abs and petg multi-material laminates fabricated by mex method. Polymers, 18:763, Mar 2026. URL: https://doi.org/10.3390/polym18060763, doi:10.3390/polym18060763. This article has 1 citations.
+
+9. (ramasamy2026characterizationofpcabs pages 10-12): Mahalingam Nainaragaram Ramasamy, Ales Sliva, Akash Nag, Quoc-Phu Ma, Ondrej Hilser, Marie Heliova, Grazyna Simha Martynkova, Silvie Brozova, and Jan Dizo. Characterization of pc-abs and petg multi-material laminates fabricated by mex method. Polymers, 18:763, Mar 2026. URL: https://doi.org/10.3390/polym18060763, doi:10.3390/polym18060763. This article has 1 citations.
+
+10. (khatri2024energyabsorptionof pages 7-10): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 35 citations and is from a peer-reviewed journal.
+
+11. (tarres2025ontheinterlaminar pages 7-9): Nil Tarrés, Maria Luisa Garcia-Romeu, and Ines Ferrer. On the interlaminar bonding adhesion of the pla-tpu printed multimaterial. The International Journal of Advanced Manufacturing Technology, Dec 2025. URL: https://doi.org/10.1007/s00170-025-17099-x, doi:10.1007/s00170-025-17099-x. This article has 2 citations.
+
+12. (tarres2025ontheinterlaminar pages 11-13): Nil Tarrés, Maria Luisa Garcia-Romeu, and Ines Ferrer. On the interlaminar bonding adhesion of the pla-tpu printed multimaterial. The International Journal of Advanced Manufacturing Technology, Dec 2025. URL: https://doi.org/10.1007/s00170-025-17099-x, doi:10.1007/s00170-025-17099-x. This article has 2 citations.
+
+13. (tarres2025ontheinterlaminar pages 1-2): Nil Tarrés, Maria Luisa Garcia-Romeu, and Ines Ferrer. On the interlaminar bonding adhesion of the pla-tpu printed multimaterial. The International Journal of Advanced Manufacturing Technology, Dec 2025. URL: https://doi.org/10.1007/s00170-025-17099-x, doi:10.1007/s00170-025-17099-x. This article has 2 citations.
+
+14. (frascio2024investigatingenhancedinterfacial pages 1-2): M. Frascio, A. Zafferani, M. Monti, and M. Avalle. Investigating enhanced interfacial adhesion in multi-material filament 3d printing: a comparative study of t and mickey mouse geometries. Progress in Additive Manufacturing, 9:2113-2122, Feb 2024. URL: https://doi.org/10.1007/s40964-024-00570-8, doi:10.1007/s40964-024-00570-8. This article has 17 citations and is from a peer-reviewed journal.
+
+15. (frascio2024investigatingenhancedinterfacial pages 4-7): M. Frascio, A. Zafferani, M. Monti, and M. Avalle. Investigating enhanced interfacial adhesion in multi-material filament 3d printing: a comparative study of t and mickey mouse geometries. Progress in Additive Manufacturing, 9:2113-2122, Feb 2024. URL: https://doi.org/10.1007/s40964-024-00570-8, doi:10.1007/s40964-024-00570-8. This article has 17 citations and is from a peer-reviewed journal.
+
+16. (wu2026energyabsorptionand pages 11-12): Yinjin Wu, Lvmanlin Wang, Zijian Yi, Qin Su, Yu-kun Qin, and B. Cui. Energy absorption and rebound behavior of 3d-printed tpu lattice structures. Scientific Reports, Mar 2026. URL: https://doi.org/10.1038/s41598-026-36271-1, doi:10.1038/s41598-026-36271-1. This article has 0 citations and is from a peer-reviewed journal.
+
+17. (wu2026energyabsorptionand pages 4-5): Yinjin Wu, Lvmanlin Wang, Zijian Yi, Qin Su, Yu-kun Qin, and B. Cui. Energy absorption and rebound behavior of 3d-printed tpu lattice structures. Scientific Reports, Mar 2026. URL: https://doi.org/10.1038/s41598-026-36271-1, doi:10.1038/s41598-026-36271-1. This article has 0 citations and is from a peer-reviewed journal.
+
+18. (bustihan2025reusable3dprintedthermoplastic pages 12-14): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17(22):3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 6 citations.
+
+19. (bustihan2025reusable3dprintedthermoplastic pages 9-12): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17(22):3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 6 citations.
+
+20. (frascio2024investigatingenhancedinterfacial pages 7-8): M. Frascio, A. Zafferani, M. Monti, and M. Avalle. Investigating enhanced interfacial adhesion in multi-material filament 3d printing: a comparative study of t and mickey mouse geometries. Progress in Additive Manufacturing, 9:2113-2122, Feb 2024. URL: https://doi.org/10.1007/s40964-024-00570-8, doi:10.1007/s40964-024-00570-8. This article has 17 citations and is from a peer-reviewed journal.
+
+21. (yilmaz2026investigationofmechanical pages 9-10): Sinan Yilmaz, Okan Gul, and Onur Coban. Investigation of mechanical properties in layered multi‐material <scp>3d</scp> printing using commercial filaments: direct stacking of <scp>abs</scp> , <scp>pa</scp> , and compatibilizing layers. Journal of Vinyl and Additive Technology, 32:484-498, Dec 2026. URL: https://doi.org/10.1002/vnl.70051, doi:10.1002/vnl.70051. This article has 2 citations and is from a peer-reviewed journal.
+
+22. (yilmaz2026investigationofmechanical pages 12-13): Sinan Yilmaz, Okan Gul, and Onur Coban. Investigation of mechanical properties in layered multi‐material <scp>3d</scp> printing using commercial filaments: direct stacking of <scp>abs</scp> , <scp>pa</scp> , and compatibilizing layers. Journal of Vinyl and Additive Technology, 32:484-498, Dec 2026. URL: https://doi.org/10.1002/vnl.70051, doi:10.1002/vnl.70051. This article has 2 citations and is from a peer-reviewed journal.
+
+23. (abbas2026multimaterialintegrationfor pages 19-20): Muhammad Abbas, Kashif Azher, and Aamer Nazir. Multi-material integration for multifunctional enhancement of additively manufactured cubic strut and plate-lattice structures. Scientific Reports, Mar 2026. URL: https://doi.org/10.1038/s41598-026-41048-7, doi:10.1038/s41598-026-41048-7. This article has 0 citations and is from a peer-reviewed journal.
+
+24. (abbas2026multimaterialintegrationfor pages 16-17): Muhammad Abbas, Kashif Azher, and Aamer Nazir. Multi-material integration for multifunctional enhancement of additively manufactured cubic strut and plate-lattice structures. Scientific Reports, Mar 2026. URL: https://doi.org/10.1038/s41598-026-41048-7, doi:10.1038/s41598-026-41048-7. This article has 0 citations and is from a peer-reviewed journal.
+
+25. (tarres2025ontheinterlaminar pages 9-11): Nil Tarrés, Maria Luisa Garcia-Romeu, and Ines Ferrer. On the interlaminar bonding adhesion of the pla-tpu printed multimaterial. The International Journal of Advanced Manufacturing Technology, Dec 2025. URL: https://doi.org/10.1007/s00170-025-17099-x, doi:10.1007/s00170-025-17099-x. This article has 2 citations.
+
+26. (kumar2022onlaminatedobject pages 9-11): S. Kumar, I. Singh, S. S. R. Koloor, D. Kumar, and M. Y. Yahya. On laminated object manufactured fdm-printed abs/tpu multimaterial specimens: an insight into mechanical and morphological characteristics. Polymers, 14:4066, Sep 2022. URL: https://doi.org/10.3390/polym14194066, doi:10.3390/polym14194066. This article has 54 citations.
+
+27. (kumar2022onlaminatedobject pages 11-14): S. Kumar, I. Singh, S. S. R. Koloor, D. Kumar, and M. Y. Yahya. On laminated object manufactured fdm-printed abs/tpu multimaterial specimens: an insight into mechanical and morphological characteristics. Polymers, 14:4066, Sep 2022. URL: https://doi.org/10.3390/polym14194066, doi:10.3390/polym14194066. This article has 54 citations.
+
+28. (khatri2024energyabsorptionof pages 10-11): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 35 citations and is from a peer-reviewed journal.
+
+29. (yilmaz2026investigationofmechanical pages 4-5): Sinan Yilmaz, Okan Gul, and Onur Coban. Investigation of mechanical properties in layered multi‐material <scp>3d</scp> printing using commercial filaments: direct stacking of <scp>abs</scp> , <scp>pa</scp> , and compatibilizing layers. Journal of Vinyl and Additive Technology, 32:484-498, Dec 2026. URL: https://doi.org/10.1002/vnl.70051, doi:10.1002/vnl.70051. This article has 2 citations and is from a peer-reviewed journal.
+
+30. (brungraber1976anoverviewof pages 67-71): Robert J Brungraber. An overview of floor slip-resistance research with annotated bibliography :: addendum. ArXiv, Jan 1976. URL: https://doi.org/10.6028/nbs.tn.895, doi:10.6028/nbs.tn.895. This article has 78 citations.
+
+31. (brungraber1976anoverviewof pages 46-49): Robert J Brungraber. An overview of floor slip-resistance research with annotated bibliography :: addendum. ArXiv, Jan 1976. URL: https://doi.org/10.6028/nbs.tn.895, doi:10.6028/nbs.tn.895. This article has 78 citations.
+
+32. (brungraber1976anoverviewof pages 86-91): Robert J Brungraber. An overview of floor slip-resistance research with annotated bibliography :: addendum. ArXiv, Jan 1976. URL: https://doi.org/10.6028/nbs.tn.895, doi:10.6028/nbs.tn.895. This article has 78 citations.
+
+33. (liu2010frictionmeasurementson pages 3-4): Liwen Liu, Kai Way Li, Yung-Hui Lee, Ching Chung Chen, and Chih-Yong Chen. Friction measurements on anti-slip floors under shoe sole, contamination, and inclination conditions. Safety Science, 48:1321-1326, Dec 2010. URL: https://doi.org/10.1016/j.ssci.2010.04.014, doi:10.1016/j.ssci.2010.04.014. This article has 57 citations and is from a domain leading peer-reviewed journal.
+
+34. (liu2010frictionmeasurementson pages 2-3): Liwen Liu, Kai Way Li, Yung-Hui Lee, Ching Chung Chen, and Chih-Yong Chen. Friction measurements on anti-slip floors under shoe sole, contamination, and inclination conditions. Safety Science, 48:1321-1326, Dec 2010. URL: https://doi.org/10.1016/j.ssci.2010.04.014, doi:10.1016/j.ssci.2010.04.014. This article has 57 citations and is from a domain leading peer-reviewed journal.
+
+35. (liu2010frictionmeasurementson pages 5-6): Liwen Liu, Kai Way Li, Yung-Hui Lee, Ching Chung Chen, and Chih-Yong Chen. Friction measurements on anti-slip floors under shoe sole, contamination, and inclination conditions. Safety Science, 48:1321-1326, Dec 2010. URL: https://doi.org/10.1016/j.ssci.2010.04.014, doi:10.1016/j.ssci.2010.04.014. This article has 57 citations and is from a domain leading peer-reviewed journal.
+
+36. (brungraber1976anoverviewof pages 40-44): Robert J Brungraber. An overview of floor slip-resistance research with annotated bibliography :: addendum. ArXiv, Jan 1976. URL: https://doi.org/10.6028/nbs.tn.895, doi:10.6028/nbs.tn.895. This article has 78 citations.
+
+37. (US20130276845A1 pages 1-7): Reynolds E. Moulton. Anti-slip foot assembly. Patent (US), 2013.
+
+38. (US20130276845A1 pages 8-9): Reynolds E. Moulton. Anti-slip foot assembly. Patent (US), 2013.
+
+39. (US20130276845A1 pages 7-8): Reynolds E. Moulton. Anti-slip foot assembly. Patent (US), 2013.
+
+40. (US20120260958A1 pages 6-7): Zachariah Reitano. Assistive walking cane. Patent (US), 2012.
+
+41. (US20120260958A1 pages 7-8): Zachariah Reitano. Assistive walking cane. Patent (US), 2012.
+
+42. (US20120260958A1 pages 1-6): Zachariah Reitano. Assistive walking cane. Patent (US), 2012.
+
+43. (liu2010frictionmeasurementson pages 4-5): Liwen Liu, Kai Way Li, Yung-Hui Lee, Ching Chung Chen, and Chih-Yong Chen. Friction measurements on anti-slip floors under shoe sole, contamination, and inclination conditions. Safety Science, 48:1321-1326, Dec 2010. URL: https://doi.org/10.1016/j.ssci.2010.04.014, doi:10.1016/j.ssci.2010.04.014. This article has 57 citations and is from a domain leading peer-reviewed journal.
+
+44. (benos2020areviewon pages 12-14): Lefteris Benos, Dimitrios Tsaopoulos, and Dionysis Bochtis. A review on ergonomics in agriculture. part ii: mechanized operations. Applied Sciences, 10:3484, May 2020. URL: https://doi.org/10.3390/app10103484, doi:10.3390/app10103484. This article has 104 citations.
+
+45. (benos2020areviewon pages 3-5): Lefteris Benos, Dimitrios Tsaopoulos, and Dionysis Bochtis. A review on ergonomics in agriculture. part ii: mechanized operations. Applied Sciences, 10:3484, May 2020. URL: https://doi.org/10.3390/app10103484, doi:10.3390/app10103484. This article has 104 citations.
+
+46. (ramasamy2026characterizationofpcabs pages 14-16): Mahalingam Nainaragaram Ramasamy, Ales Sliva, Akash Nag, Quoc-Phu Ma, Ondrej Hilser, Marie Heliova, Grazyna Simha Martynkova, Silvie Brozova, and Jan Dizo. Characterization of pc-abs and petg multi-material laminates fabricated by mex method. Polymers, 18:763, Mar 2026. URL: https://doi.org/10.3390/polym18060763, doi:10.3390/polym18060763. This article has 1 citations.
+
+47. (ramasamy2026characterizationofpcabs pages 4-7): Mahalingam Nainaragaram Ramasamy, Ales Sliva, Akash Nag, Quoc-Phu Ma, Ondrej Hilser, Marie Heliova, Grazyna Simha Martynkova, Silvie Brozova, and Jan Dizo. Characterization of pc-abs and petg multi-material laminates fabricated by mex method. Polymers, 18:763, Mar 2026. URL: https://doi.org/10.3390/polym18060763, doi:10.3390/polym18060763. This article has 1 citations.
+
+48. (bustihan2025reusable3dprintedthermoplastic pages 2-4): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17(22):3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 6 citations.
+
+49. (goh2024enhancinginterlaminaradhesion pages 1-1): Guo Liang Goh, Samuel Lee, Shi Hui Cheng, Daniel Jee Seng Goh, Pothunuri Laya, Van Pho Nguyen, Boon Siew Han, and Wai Yee Yeong. Enhancing interlaminar adhesion in multi-material 3d printing: a study of conductive pla and tpu interfaces through fused filament fabrication. Materials Science in Additive Manufacturing, 3:2672, Feb 2024. URL: https://doi.org/10.36922/msam.2672, doi:10.36922/msam.2672. This article has 34 citations and is from a peer-reviewed journal.
+
+50. (brungraber1976anoverviewof pages 71-76): Robert J Brungraber. An overview of floor slip-resistance research with annotated bibliography :: addendum. ArXiv, Jan 1976. URL: https://doi.org/10.6028/nbs.tn.895, doi:10.6028/nbs.tn.895. This article has 78 citations.
