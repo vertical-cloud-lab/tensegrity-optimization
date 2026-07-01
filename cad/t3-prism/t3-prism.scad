@@ -256,8 +256,7 @@ accel_sink  = 2.0;               // depth the mount walls sink past the joint ap
 // stand accel_clear_top+accel_clear_bot proud of the seated accelerometer so
 // it is recessed BELOW the crown springline (the dome, not the sensor,
 // contacts the acrylic plate — PR #67 comment 4839988559 "shorter height of
-// housing than the accelerometer"). A dab of wax + the tweezer slots keep it
-// retained yet removable.
+// housing than the accelerometer"). A dab of wax retains it in the recess.
 function accel_pocket_x() = accel_l + 2 * accel_clear;
 function accel_pocket_y() = accel_w + 2 * accel_clear;
 function accel_pocket_z() = accel_h + accel_clear_top + accel_clear_bot;
