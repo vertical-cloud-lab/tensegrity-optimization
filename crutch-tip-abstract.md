@@ -1,6 +1,6 @@
 # Conference abstract — Tensegrity crutch-tip impact absorber
 
-Derived from this PR's Edison literature exploration (`edison-trajectories/01`–`09`)
+Derived from this PR's Edison literature exploration (`edison-trajectories/01`–`13`)
 and kept consistent with the author order / plain-text format established for the
 TMS 2027 abstract in #73.
 
@@ -43,12 +43,35 @@ TMS 2027 abstract in #73.
 - **No measured performance numbers yet — the abstract names the benchmark to *exceed*, not a
   placeholder.** We do not yet have measured SEA / peak-force-reduction values, and (per the
   Jul 1 2026 request, with the abstract due that night) we deliberately avoid a bracketed
-  placeholder. Instead the abstract states the control we intend to beat: a solid rubber
-  ferrule that **transmits >95% of applied load** (deforms <1.3 mm under 445 N → essentially
-  no shock absorption; trajectory `07`). The design goal is to exceed that baseline; for
-  context, miniaturized architected TPU / multi-material absorbers report **SEA ≈ 1–8 J/g**
-  (trajectory `07`), which is the performance envelope we are targeting. Replace with our
-  measured value once quasi-static/drop-weight tests are run.
+  placeholder. The abstract states the control we intend to beat: a conventional rubber
+  ferrule that provides **negligible energy absorption** (deforms <1.3 mm under 445 N,
+  transmitting essentially all applied load; trajectory `07`). *Round-2 note:* the earlier
+  ">95% of applied load" wording was **softened to "negligible energy absorption"** because
+  all four round-2 mock reviewers (trajectories `10`–`13`) flagged the exact ">95%" figure as
+  unsourced — it is a physically defensible engineering estimate, not a cited measurement.
+  For context, miniaturized architected TPU / multi-material absorbers report **SEA ≈ 1–8 J/g**
+  (trajectory `07`), the performance envelope we are targeting. Replace with our measured value
+  once quasi-static/drop-weight tests are run.
+- **Edison round-2 organizer-persona mock reviews (trajectories `10`–`13`, low-effort
+  `LITERATURE`, one per organizer) applied.** Four separate in-voice reviews from
+  Bandyopadhyay (`10`), Sachdev (`11`), Rodgers (`12`), and Bose (`13`); all four scored the
+  abstract **borderline / weak accept** with fit-to-scope as the main risk. Consensus edits
+  now applied: (a) softened the rubber-ferrule baseline (all four); (b) added **cyclic gait
+  loading** to the optimization objectives, signalling fatigue/durability awareness over
+  10⁵–10⁶ gait cycles (Sachdev, Bandyopadhyay, Bose); (c) tightened the regulatory line to
+  **510(k)-exempt Class I … and design controls guide translation** (Rodgers). *Kept
+  deliberately:* the **21 CFR 890.3790** code — Rodgers (the Zimmer Biomet device-regulatory
+  persona) verified it correctly covers cane/crutch/walker tips and pads as Class I, contra
+  Sachdev's concern that it is cane-only; and **"crutch abandonment exceeds 30%"** — Rodgers
+  verified this against Sugawara 2018 (crutch abandonment = 31.43%), overriding the three
+  reviewers who could not locate the source in a low-effort search. **Q&A prep from round 2:**
+  each organizer's most-likely podium question — PETG–TPU interface integrity / functionally
+  graded transition (Bandyopadhyay); fatigue life & FFF anisotropy over gait cycles (Sachdev);
+  intended-use scope creep into a Class II 510(k) if therapeutic injury-prevention claims are
+  made (Rodgers); skin-contact biocompatibility, wear-debris/particulate shedding, and ISO
+  10993-5 cytotoxicity of as-built PETG/TPU (Bose). All four also recommend framing the talk as
+  a **generalizable closed-loop AI/ML-to-market pipeline** with the crutch tip as a low-risk
+  demonstrator — the title already leads with the BO method to support this.
 
 ## Title
 
@@ -67,20 +90,20 @@ Department of Mechanical Engineering, Brigham Young University, Provo, UT
 Long-term crutch users load each crutch to ~0.5 body weights during
 partial-weight-bearing gait and experience substantial upper-extremity overuse
 injury, including crutch palsy, shoulder impingement, and carpal tunnel
-syndrome; commercial crutch tips predominantly use rubber ferrules, while
-existing spring-loaded dampers add bulk without architected tunability. We
-apply closed-loop, multi-objective Bayesian optimization to design a crutch-tip
-insert from multi-material fused-filament-fabrication tensegrity-inspired
-lattices, pairing rigid PETG struts with elastomeric TPU elements to exploit
-buckling-induced load-limiting plateaus and TPU viscoelastic hysteresis. Within
-the standard 19–25 mm crutch-shaft interface, we co-optimize unit-cell topology,
-strut diameter, relative density, and prestress to maximize specific energy
-absorption and minimize peak transmitted force across quasi-static compression
-and drop-weight impact, aiming to exceed a rubber-ferrule baseline that
-transmits over 95% of applied load. Prior-art review identified no
-tensegrity-based crutch-tip absorber; an anticipated Class I (21 CFR 890.3790),
-ISO 11334-1 pathway guides verification. Crutch abandonment exceeds 30%,
-motivating distributed, patient-tunable manufacturing.
+syndrome; commercial tips predominantly use rubber ferrules, while spring-loaded
+dampers add bulk without architected tunability. We apply closed-loop,
+multi-objective Bayesian optimization to design a crutch-tip insert from
+multi-material fused-filament-fabrication tensegrity-inspired lattices, pairing
+rigid PETG struts with elastomeric TPU elements to exploit buckling-induced
+load-limiting plateaus and TPU viscoelastic hysteresis. Within the standard
+19–25 mm crutch-shaft interface, we co-optimize unit-cell topology, strut
+diameter, relative density, and prestress to maximize specific energy absorption
+and minimize peak transmitted force under quasi-static, impact, and cyclic gait
+loading, aiming to exceed a rubber ferrule's negligible energy absorption.
+Prior-art review identified no tensegrity-based crutch-tip absorber; an
+anticipated 510(k)-exempt Class I listing (21 CFR 890.3790), ISO 11334-1
+verification, and design controls guide translation. Crutch abandonment exceeds
+30%, motivating distributed, patient-tunable manufacturing.
 
 ## Evidence base (for reviewer questions / longer versions)
 
