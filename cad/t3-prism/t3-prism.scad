@@ -217,18 +217,32 @@ accel_l     = 6.0;               // accelerometer length (X: slide-in / cable-ex
 accel_w     = 6.0;               // accelerometer width  (Y)
 accel_h     = 5.94;              // accelerometer height (Z)
 accel_clear = 0.4;               // per-side LATERAL (XY) clearance for the slide-in fit
-accel_clear_top = 0.2;           // Z clearance above the accelerometer (below the crown)
+accel_clear_top = 1.0;           // Z gap between the accelerometer top and the crown
+                                 // springline. Recesses the accelerometer fully
+                                 // BELOW the igloo dome so the dome (not the
+                                 // sensor) is what touches the acrylic drop plate
+                                 // and the housing walls stand proud of the sensor
+                                 // (PR #35 / PR #67 comment 4839988559: "the new
+                                 // design has shorter height of housing than the
+                                 // accelerometer").
 accel_clear_bot = 0.2;           // Z clearance below the accelerometer (adhesive-bead recess)
 accel_wall  = 2.0;               // PLA wall thickness around the pocket
 accel_floor = 1.5;               // PLA floor thickness between the joint apex and the pocket floor
 accel_dome  = 3.0;               // rounded PLA crown thickness above the pocket
 accel_sink  = 2.0;               // depth the mount walls sink past the joint apex (for bonding)
+accel_tweezer_d = 3.0;           // dia of the tweezer-access slots cut through the
+                                 // two side walls at the open mouth, so a tweezer
+                                 // can reach the accelerometer's sides and lift it
+                                 // out without pulling on the glued-on cable
 
 // Pocket inner dimensions (the open +X face is the cable exit / slide-in).
-// The Z depth carries an independent top + bottom clearance so the
-// accelerometer seats flat on the (solid, flat) pocket floor with a thin
-// adhesive recess below it and a small gap above it (PR #35 comment
-// 4805516634: "change the tolerances to 0.2 mm top and 0.2 mm bottom").
+// The accelerometer seats flat on the (solid, flat) pocket floor; the Z depth
+// = accel_h + accel_clear_top + accel_clear_bot makes the side/back walls
+// stand accel_clear_top+accel_clear_bot proud of the seated accelerometer so
+// it is recessed BELOW the crown springline (the dome, not the sensor,
+// contacts the acrylic plate — PR #67 comment 4839988559 "shorter height of
+// housing than the accelerometer"). A dab of wax + the tweezer slots keep it
+// retained yet removable.
 function accel_pocket_x() = accel_l + 2 * accel_clear;
 function accel_pocket_y() = accel_w + 2 * accel_clear;
 function accel_pocket_z() = accel_h + accel_clear_top + accel_clear_bot;
@@ -396,6 +410,17 @@ module accel_mount_local() {
         // sunk in below it.
         translate([0, -py / 2, 0])
             cube([px + byh + 5, py, pz]);
+        // Tweezer-access slots: two open vertical grooves cut clean through
+        // the ±Y side walls at the mouth so a tweezer can reach the
+        // accelerometer's sides and lift it out without tugging the glued-on
+        // cable (PR #67 comment 4839988559 "include little breakaways for a
+        // tweezer to fit in and grab it"). Centred on the wall mid-plane so
+        // the slot opens from the outside straight into the pocket.
+        for (sy = [-1, 1])
+            translate([bx1 - accel_tweezer_d / 2,
+                       sy * (py / 2 + accel_wall / 2),
+                       -0.5])
+                cylinder(h = pz + 1, d = accel_tweezer_d, $fn = 32);
     }
 }
 

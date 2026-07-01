@@ -49,7 +49,8 @@ All linear dimensions are `*_base * scale_factor`:
 | `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each top vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
 | `accel_l` / `accel_w` / `accel_h` | — | 6 / 6 / 5.94 mm | accelerometer pocket size (Dytran 3133A4, **not** scaled) |
 | `accel_clear` | — | 0.4 mm | per-side **lateral (XY)** pocket clearance for the slide-in fit |
-| `accel_clear_top` / `accel_clear_bot` | — | 0.2 / 0.2 mm | **Z** clearance above / below the accelerometer in the pocket (PR #35 comment 4805516634) |
+| `accel_clear_top` / `accel_clear_bot` | — | **1.0** / 0.2 mm | **Z** gap above / below the accelerometer. `accel_clear_top` was raised 0.2 → 1.0 so the sensor is recessed ~1.2 mm **below the crown springline** (the igloo dome, not the sensor, touches the acrylic drop plate) — fixes "shorter height of housing than the accelerometer" (PR #67 comment 4839988559) |
+| `accel_tweezer_d` | — | 3.0 mm | dia of the two tweezer-access slots cut through the side walls at the open mouth, so a tweezer can grab the sensor and lift it out without pulling the glued-on cable |
 
 Bounding box at scale 1.5 ≈ **75 × 75 × 115 mm**, volume ≈ **33 cm³** of
 solid material. Comfortably fits the Bambu Lab H2D's 350 × 320 mm plate
@@ -136,12 +137,21 @@ each of the three **top** vertices now carries a small PLA mount block
 (`accel_mount()` in `t3-prism.scad`) fused onto its joint shell:
 
 * a rectangular pocket sized to the accelerometer plus `accel_clear` = 0.4 mm
-  per side **laterally** (XY slide-in fit) and `accel_clear_top` /
-  `accel_clear_bot` = 0.2 mm above / below the sensor in **Z**
-  ([PR #35 comment 4805516634](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4805516634));
+  per side **laterally** (XY slide-in fit), `accel_clear_top` = **1.0 mm**
+  above and `accel_clear_bot` = 0.2 mm below the sensor in **Z**. The 1.0 mm
+  top gap recesses the accelerometer ~1.2 mm **below the crown springline** so
+  the igloo dome — not the sensor — contacts the acrylic drop plate and the
+  housing walls stand clearly proud of the sensor. This fixes the report that
+  the accelerometer stood taller than its housing and poked into the plate
+  ([PR #67 comment 4839988559](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67#issuecomment-4839988559));
+  retention is by a wax bead + the walls, and the extra gap is wax-filled;
 * **three walls + a floor** (back, both sides, bottom) and an **open
   outward-facing front** so the sensor slides in from the side and its
   cable feeds out horizontally;
+* two **tweezer-access slots** (`accel_tweezer_d` = 3 mm) cut clean through the
+  ±Y side walls at the open mouth, so a tweezer can reach the accelerometer's
+  sides and pull it out without tugging the glued-on cable
+  ([PR #67 comment 4839988559](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67#issuecomment-4839988559));
 * a **flat, solid pocket floor** sitting `accel_floor` = 1.5 mm **above** the
   rounded joint apex (`joint_outer_r()`), so the curved joint underneath can
   never poke up into the pocket and the accelerometer seats flat — the body
