@@ -24,6 +24,7 @@ For each task we commit two artifacts:
 | 6 | [`06-abstract-feedback.md`](06-abstract-feedback.md) / [`.json`](06-abstract-feedback.json) | `74ac013b-8ce9-41ab-89ce-13c3e6f5ad33` | success | https://platform.edisonscientific.com/tasks/74ac013b-8ce9-41ab-89ce-13c3e6f5ad33 |
 | 7 | [`07-ferrule-envelope-quantitative-benchmarks-regulatory.md`](07-ferrule-envelope-quantitative-benchmarks-regulatory.md) | `98a30884-4ba4-4b26-b59c-af5779b44479` | queued — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/98a30884-4ba4-4b26-b59c-af5779b44479 |
 | 8 | [`08-interface-fatigue-slip-resistance-vibration.md`](08-interface-fatigue-slip-resistance-vibration.md) | `46e06bf8-385a-4107-81e2-b43a032a2b8f` | queued — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/46e06bf8-385a-4107-81e2-b43a032a2b8f |
+| 9 | [`09-organizer-persona-mock-review.md`](09-organizer-persona-mock-review.md) | `6e00f3ca-b077-4ea6-83d4-4a30b63b7af5` | queued — placeholder, refresh next session | https://platform.edisonscientific.com/tasks/6e00f3ca-b077-4ea6-83d4-4a30b63b7af5 |
 
 To re-fetch / refresh any trajectory:
 
