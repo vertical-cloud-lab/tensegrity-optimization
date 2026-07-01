@@ -72,6 +72,22 @@ TMS 2027 abstract in #73.
   10993-5 cytotoxicity of as-built PETG/TPU (Bose). All four also recommend framing the talk as
   a **generalizable closed-loop AI/ML-to-market pipeline** with the crutch tip as a low-risk
   demonstrator — the title already leads with the BO method to support this.
+- **Pipeline framing carried into the body + implant-motivation bridge added (this revision).**
+  Per maintainer request, the "generalizable closed-loop AI/ML-to-market pipeline, crutch tip
+  as low-regulatory-risk demonstrator" framing is now stated explicitly in the **abstract body**,
+  not only the title: sentence 2 opens with *"a generalizable closed-loop, multi-objective
+  Bayesian-optimization pipeline for multi-material additive manufacturing, using the crutch-tip
+  impact absorber as a low-regulatory-risk demonstrator,"* and the regulatory sentence now closes
+  on *"let us mature the design-to-market loop."* A closing sentence adds the **implant-transfer
+  motivation** the symposium (implant-heavy: named challenges include *fatigue resistance of
+  additively manufactured metallic implants* and *anisotropy of AM materials*) rewards:
+  *"This architected-lattice, multi-material framework transfers to higher-stakes additively
+  manufactured implant lattices, where fatigue resistance and stress-shielding mitigation
+  dominate."* The transfer target uses **non-PLA+TPU materials** (e.g., Ti-6Al-4V / tantalum
+  metallic lattices, Mg/bioceramic scaffolds) — see the implant-bridge evidence bullet below.
+  To stay within 150 words (now 148), the standalone *"crutch abandonment exceeds 30%"* clause was
+  dropped; that lab-to-market signal is retained in the evidence base and the implant-transfer
+  sentence is the stronger scope-fit lever for *this* (implant-focused) symposium.
 
 ## Title
 
@@ -88,22 +104,22 @@ Department of Mechanical Engineering, Brigham Young University, Provo, UT
 ## Abstract (150 words)
 
 Long-term crutch users load each crutch to ~0.5 body weights during
-partial-weight-bearing gait and experience substantial upper-extremity overuse
-injury, including crutch palsy, shoulder impingement, and carpal tunnel
-syndrome; commercial tips predominantly use rubber ferrules, while spring-loaded
-dampers add bulk without architected tunability. We apply closed-loop,
-multi-objective Bayesian optimization to design a crutch-tip insert from
-multi-material fused-filament-fabrication tensegrity-inspired lattices, pairing
-rigid PETG struts with elastomeric TPU elements to exploit buckling-induced
-load-limiting plateaus and TPU viscoelastic hysteresis. Within the standard
-19–25 mm crutch-shaft interface, we co-optimize unit-cell topology, strut
-diameter, relative density, and prestress to maximize specific energy absorption
-and minimize peak transmitted force under quasi-static, impact, and cyclic gait
-loading, aiming to exceed a rubber ferrule's negligible energy absorption.
-Prior-art review identified no tensegrity-based crutch-tip absorber; an
-anticipated 510(k)-exempt Class I listing (21 CFR 890.3790), ISO 11334-1
-verification, and design controls guide translation. Crutch abandonment exceeds
-30%, motivating distributed, patient-tunable manufacturing.
+partial-weight-bearing gait and suffer substantial upper-extremity overuse
+injury, yet commercial tips predominantly use rubber ferrules, while spring
+dampers add bulk without architected tunability. We present a generalizable
+closed-loop, multi-objective Bayesian-optimization pipeline for multi-material
+additive manufacturing, using the crutch-tip impact absorber as a
+low-regulatory-risk demonstrator. Pairing rigid PETG struts with elastomeric TPU
+in tensegrity-inspired lattices, we co-optimize unit-cell topology, strut
+diameter, relative density, and prestress—exploiting buckling-induced
+load-limiting plateaus and viscoelastic hysteresis—to maximize specific energy
+absorption and minimize peak force under quasi-static, impact, and cyclic gait
+loading, aiming to exceed a rubber ferrule's negligible absorption. Prior-art
+review identified no tensegrity-based crutch-tip absorber; an anticipated
+510(k)-exempt Class I pathway (21 CFR 890.3790) and ISO 11334-1 verification let
+us mature the design-to-market loop. This architected-lattice, multi-material
+framework transfers to higher-stakes additively manufactured implant lattices,
+where fatigue resistance and stress-shielding mitigation dominate.
 
 ## Evidence base (for reviewer questions / longer versions)
 
@@ -138,6 +154,22 @@ verification, and design controls guide translation. Crutch abandonment exceeds
 - **Lab-to-market hooks (`03`, `05`, `09`):** crutch/assistive-device abandonment ≈ 31%
   (Sugawara 2018) and desktop FFF enables distributed, patient-tunable point-of-care
   manufacturing (Mottaghi 2025) — the basis for the closing translational clause.
+- **Implant-transfer bridge (motivation for an implant-heavy symposium).** The framework is
+  material- and length-scale-agnostic — the crutch tip is a fast, cheap, external, Class I
+  *demonstrator* for a closed-loop, multi-objective BO loop over multi-material architected
+  lattices whose methodology (and by-products: dissimilar-material interface toughness maps,
+  buckling energy-absorption/force-plateau surfaces, BO sample-efficiency for lattice design)
+  transfer to higher-stakes **implantable** devices using materials *other than PLA+TPU*:
+  (1) **AM metallic implant lattices** (Ti-6Al-4V, tantalum) tuned to bone-like modulus to
+  mitigate stress shielding — where *fatigue resistance of AM metallic implants* and
+  *minimizing AM anisotropy* are named TMS-2027-symposium challenges; (2) **functionally
+  graded / multi-material implants** (the rigid+compliant co-optimization maps directly onto
+  graded-stiffness interfaces — Bandyopadhyay's FGM/multi-material-AM wheelhouse); and
+  (3) **biodegradable-metal (Mg) and bioceramic/calcium-phosphate scaffolds** where pore
+  architecture governs both mechanics and osseointegration (Bose/Bandyopadhyay wheelhouse).
+  The crutch tip lets the closed-loop design-to-market pipeline be validated at low regulatory
+  risk *before* it is applied where clinical and 510(k)/PMA cost is high — the "lab-to-market"
+  arc the symposium is built around. Framed as motivation/transfer only; no implant work is claimed here.
 - **Scope-fit / organizer-persona review (`09`):** foreground the closed-loop BO / AI-driven
   design methodology (the symposium's AI/ML-in-manufacturing theme is the strongest hook);
   likely organizer questions center on PETG–TPU interface integrity (Bandyopadhyay),
