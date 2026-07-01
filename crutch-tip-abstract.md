@@ -1,6 +1,6 @@
 # Conference abstract — Tensegrity crutch-tip impact absorber
 
-Derived from this PR's Edison literature exploration (`edison-trajectories/01`–`05`)
+Derived from this PR's Edison literature exploration (`edison-trajectories/01`–`09`)
 and kept consistent with the author order / plain-text format established for the
 TMS 2027 abstract in #73.
 
@@ -24,12 +24,31 @@ TMS 2027 abstract in #73.
   (swing-through hand loads run 1.14–3.36 BW); damping re-attributed to TPU viscoelastic
   hysteresis (tensegrity supplies the load-limiting plateau, not rate-dependence);
   `confirms`→`found no`, `is clear`→`anticipated` + 21 CFR 890.3790; `severely limits`→
-  `constrains`; `high rates`→`substantial`. Remaining fact-checks pushed to Edison
-  trajectories `07`–`08` (fetch next session).
+  `constrains`; `high rates`→`substantial`. Remaining fact-checks resolved in Edison
+  trajectories `07`–`08`.
+- **Edison organizer-persona mock review (trajectory `09`, task `6e00f3ca…`) applied** —
+  a mock program-committee pass in the voices of the four TMS 2027 *Biomedical Materials
+  and Devices: From Laboratory to Market* organizers (Bandyopadhyay, Sachdev, Rodgers,
+  Bose); overall *borderline / weak accept*, verdict *submit-with-substantial-revisions*.
+  Its top scope-fit lever — **foreground the closed-loop Bayesian-optimization / AI-driven
+  design angle** — is now applied: retitled to lead with *Closed-Loop Bayesian
+  Optimization* and the method sentence now opens with the BO framework (the symposium
+  explicitly calls for AI/ML in biomedical-device manufacturing). Also softened the
+  prior-art claim (acknowledging US 11,712,394 B1 and other shock-absorbing ferrule prior
+  art rather than implying a technological vacuum); narrowed novelty to `no
+  tensegrity-based crutch-tip absorber` (tensegrity impact structures exist elsewhere);
+  reframed the regulatory line to `an anticipated Class I pathway … and ISO 11334-1
+  framework guide verification`; and added a lab-to-market clause (`crutch abandonment
+  exceeds 30%, motivating distributed, patient-tunable manufacturing`).
+- **Performance figures are targets, not measured data.** The `targeting a [~30–60%]
+  peak-force reduction versus a rubber-ferrule control` clause is a **design target**, not
+  a result — we do not yet have measured SEA / peak-force-reduction values. The bracketed
+  `[~30–60%]` is the defensible target range from trajectory `07`; replace it with the
+  actual value once quasi-static/drop-weight tests are run.
 
 ## Title
 
-**Bayesian-Optimized Multi-Material 3D-Printed Tensegrity Crutch Tips for Impact Attenuation**
+**Closed-Loop Bayesian Optimization of Multi-Material 3D-Printed Tensegrity Crutch-Tip Impact Absorbers**
 
 ## Authors
 
@@ -44,19 +63,20 @@ Department of Mechanical Engineering, Brigham Young University, Provo, UT
 Long-term crutch users load each crutch to roughly 0.5 body weights during
 partial-weight-bearing gait and experience substantial upper-extremity overuse
 injury, including crutch palsy, shoulder impingement, and carpal tunnel
-syndrome, yet commercial crutch tips still predominantly rely on rubber ferrules
-or bulky spring dampers. We present a shock-absorbing crutch-tip insert built
-from multi-material fused-filament-fabrication tensegrity-inspired lattices that
-pair rigid PETG struts with elastomeric TPU tension elements, exploiting
-buckling-induced load-limiting plateaus and TPU viscoelastic hysteresis. Because
-the standard 19 to 25 mm crutch-shaft interface constrains insert stroke, we
-co-optimize unit-cell topology, strut diameter, relative density, and prestress
-using closed-loop multi-objective Bayesian optimization, maximizing specific
-energy absorption while minimizing peak transmitted force across quasi-static
-compression and drop-weight impact tests. A prior-art survey found no crutch tip
-applying tensegrity architectures, and an anticipated FDA Class I (21 CFR
-890.3790) pathway under ISO 11334-1 applies. This design study advances
-miniaturized, patient-tunable absorbers for assistive devices.
+syndrome; commercial crutch tips predominantly use rubber ferrules, while
+existing spring-loaded dampers add bulk without architected tunability. We
+apply closed-loop, multi-objective Bayesian optimization to design a crutch-tip
+insert from multi-material fused-filament-fabrication tensegrity-inspired
+lattices that pair rigid PETG struts with elastomeric TPU tension elements,
+exploiting buckling-induced load-limiting plateaus and TPU viscoelastic
+hysteresis. Within the standard 19–25 mm crutch-shaft interface, we co-optimize
+unit-cell topology, strut diameter, relative density, and prestress to maximize
+specific energy absorption and minimize peak transmitted force across
+quasi-static compression and drop-weight impact, targeting a [~30–60%]
+peak-force reduction versus a rubber-ferrule control. Prior-art review
+identified no tensegrity-based crutch-tip absorber; an anticipated Class I
+pathway (21 CFR 890.3790) and ISO 11334-1 framework guide verification. Crutch
+abandonment exceeds 30%, motivating distributed, patient-tunable manufacturing.
 
 ## Evidence base (for reviewer questions / longer versions)
 
@@ -75,7 +95,22 @@ miniaturized, patient-tunable absorbers for assistive devices.
   standard (`06`; Mottaghi 2025). Prior art richer than "rubber-or-springs" — spring,
   bellows, gas-spring, and viscoelastic ferrules exist (US11712394B1, `06`).
 - PETG/TPU FFF engineering data and a starting Bayesian-optimization design space in `04`.
-- **Open gaps → trajectories `07`–`08`:** ferrule bore-vs-envelope stroke budget,
-  quantitative SEA (J/g) / peak-force-reduction benchmarks vs. a rubber-ferrule control,
-  PETG–TPU interface fatigue over 10⁵–10⁶ gait cycles, printed-tip slip resistance, and
-  whether any crutch-tip vibration/HAVS transmissibility benefit is measurable.
+- **Performance target basis (`07`):** miniaturized architected TPU / multi-material
+  absorbers report SEA ≈ 1–8 J/g, and a solid rubber ferrule deforms <1.3 mm under 445 N
+  (transmits >95% of load), so a ~30–60% peak-force reduction versus that control is a
+  defensible *design target* — hence the bracketed `[~30–60%]` placeholder in the abstract,
+  to be replaced with our measured value once tests are run.
+- **Honest gaps to acknowledge in Q&A (`08`):** no high-cycle (10⁵–10⁶) fatigue data exist
+  for *any* co-printed rigid/soft polymer interface, and PETG–TPU mode-I toughness is
+  un-measured — interfacial delamination is the dominant risk; a bare glassy PETG lattice
+  will not meet a COF ≥ 0.4 traction threshold, so a co-printed TPU tread is needed; and no
+  study quantifies vibration/HAVS transmissibility through a crutch tip (crutch impact is a
+  ~1–2 Hz transient, unlike sustained HAVS vibration) — hence the impact-only framing.
+- **Lab-to-market hooks (`03`, `05`, `09`):** crutch/assistive-device abandonment ≈ 31%
+  (Sugawara 2018) and desktop FFF enables distributed, patient-tunable point-of-care
+  manufacturing (Mottaghi 2025) — the basis for the closing translational clause.
+- **Scope-fit / organizer-persona review (`09`):** foreground the closed-loop BO / AI-driven
+  design methodology (the symposium's AI/ML-in-manufacturing theme is the strongest hook);
+  likely organizer questions center on PETG–TPU interface integrity (Bandyopadhyay),
+  fatigue/durability over gait cycles (Sachdev), design controls / FDA classification of a
+  novel insert (Rodgers), and skin-contact biocompatibility / wear debris (Bose).
