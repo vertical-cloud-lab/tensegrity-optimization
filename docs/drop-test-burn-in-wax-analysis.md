@@ -104,14 +104,33 @@ wax): output **+0.90 G/drop, p = 0.005 (significant)**; T +0.0064/drop, p = 0.01
 ## Video kinematics (5 recorded drops)
 
 The five recorded drops have slow-motion videos (the burn-in drops do not).
-@ctrhjk confirmed the RX100 IV captured at **960 fps** (GitHub serves a 30 fps
-playback container → 32× slow-mo), so timing is now reported in **calibrated real
-seconds** (`frame / 960`) rather than the prior pass's relative playback frames.
-Vertical motion is still in pixels (uncalibrated spatial scale).
+
+> **Time-base correction (2026-07-01).** The raw `drop5.mp4` committed to this PR
+> lets us verify the playback container directly. It is **30 fps** (808 frames /
+> 26.93 s) — but its encoder tag is `clipchamp.com` and it carries an audio track,
+> so it is **not** the camera-native file: it is a Clipchamp re-encode of a
+> **24p / 960 fps** HFR capture (native HFR clips are silent, 24 fps). The bytes are
+> **identical (MD5)** to the version GitHub serves from the comment, so GitHub does
+> **not** re-encode or drop the frame rate — the 30 fps comes from the Clipchamp
+> export, not GitHub. Consequently the earlier `frame / 960` mapping (which assumes
+> a 30 fps container that is a 32× slow-mo of 960 fps) is only exact for a
+> camera-*native* **24 fps** file; for this **30 fps** duration-preserving re-encode
+> the physical slow factor is 960 / 24 = **40×**, so the correct mapping is
+> `frame / 1200`, and the absolute in-frame descent time below is ~25 % smaller than
+> first reported (94.6 → **≈ 75.7 ms**). The video cannot self-calibrate this (the
+> structure enters the top of frame already falling, so there is no clean in-frame
+> free-fall segment, and there is no scale bar) — treat any absolute video time as
+> ± 25 % and use the **accelerometer** (Δv, free-fall) as the calibrated time source.
+> **All relative results below are unaffected** (CVs, rebound fraction, drift
+> in %/drop, transmissibility are dimensionless / relative and never used the
+> absolute time base).
+
+Vertical motion is in pixels (uncalibrated spatial scale); absolute timing carries
+the ± 25 % container caveat above.
 
 | metric | mean ± 1σ | CV |
 |---|--:|--:|
-| in-frame visible descent (real ms) | 94.6 ± 0.8 | 0.9 % |
+| in-frame visible descent (real ms, `frame/1200`) | 75.7 ± 0.6 | 0.9 % |
 | descent slope (px/frame) | 2.162 | 0.32 % |
 | rebound fraction (of drop depth) | 0.47 | 0.9 % |
 
@@ -124,10 +143,12 @@ Vertical motion is still in pixels (uncalibrated spatial scale).
   (the opposite of the early bungee-assisted lift-off).
 - **~47 % elastic rebound**, identical across all five drops — the tensegrity
   spring-back sits cleanly *after* the impact event and adds no scatter.
-- **Timing caveat:** the tracked 94.6 ms is only the **in-frame visible** descent
-  (the tracker onset is not the true release), so it is *not* the full free-fall
-  time from 13 in (≈ 260 ms) and should not be compared to it 1:1. It is valid for
-  the drop-to-drop *relative* comparison, which is the repeatability claim here.
+- **Timing caveat:** the tracked ~75.7 ms (`frame/1200`; ≈ 94.6 ms under the
+  superseded `frame/960`) is only the **in-frame visible** descent — the tracker
+  onset is not the true release, so it is *not* the full free-fall time from 13 in
+  (≈ 260 ms) and should not be compared to it 1:1. It is valid for the drop-to-drop
+  *relative* comparison, which is the repeatability claim here, and that relative
+  claim is independent of the 960-vs-1200 container factor.
 
 ## SOP / test-method implications
 
