@@ -47,12 +47,13 @@ All linear dimensions are `*_base * scale_factor`:
 | `captive_core_clear` | 0.5 mm | **0 mm** | radial gap (shell-ID − core-OD) / 2; **0** = bonded (TPU core touches the PLA inner wall) per PR #35 comment 4513722886 |
 | `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
 | `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each **top** vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
-| `add_accel_mount_bottom` | `true` | `true` | **flat** accelerometer key-seat below each **bottom** vertex for a third sensor (PR #35 / PR #67, @ctrhjk + @sgbaird 2026-07-01); set `false` to omit. With both mounts on there are **6 housing sites** (3 top igloo + 3 bottom flat), matched top+bottom per the placement analysis in [PR #35 comment 4857717314](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4857717314) |
+| `add_accel_mount_bottom` | `true` | `true` | **flat** accelerometer key-seat **beside** each **bottom** vertex for a third sensor (PR #35 / PR #67, @ctrhjk + @sgbaird 2026-07-01). Placed to the side of the vertex and lifted so it hovers above the plate — never touches the ground (PR #35 comment 4859762053). Set `false` to omit. With both mounts on there are **6 housing sites** (3 top igloo + 3 bottom flat), matched top+bottom per the placement analysis in [PR #35 comment 4857717314](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4857717314) |
 | `accel_size` | — | **`"A1"`** | housing sizing set: **A0** = original, **A1** = A0 + 0.3 mm pocket height (`accel_h_extra`). Absolute mm — **not** scaled. Set `-D accel_size='"A0"'` for the original |
 | `accel_l` / `accel_w` / `accel_h` | — | 6 / 6 / 5.94 mm | accelerometer pocket size (Dytran 3133A4, **not** scaled) |
 | `accel_clear` | — | 0.4 mm | per-side **lateral (XY)** pocket clearance for the slide-in fit |
 | `accel_clear_top` / `accel_clear_bot` | — | **1.0** / 0.2 mm | **Z** gap above / below the accelerometer. `accel_clear_top` was raised 0.2 → 1.0 so the sensor is recessed ~1.2 mm **below the crown springline** (the igloo dome, not the sensor, touches the acrylic drop plate) — fixes "shorter height of housing than the accelerometer" (PR #67 comment 4839988559) |
-| `accel_dome` / `accel_flat` | — | 3.0 / 2.0 mm | cap thickness over the pocket: rounded **dome** on the top igloo mounts, **flat** slab on the bottom key-seats (the flat outward face is the plate contact) |
+| `accel_dome` / `accel_flat` | — | 3.0 / 2.0 mm | cap thickness over the pocket: rounded **dome** on the top igloo mounts, **flat** slab on the bottom key-seats |
+| `accel_side_gap` / `accel_hover` | — | 1.0 / 2.0 mm | bottom key-seat **beside**-placement: radial PLA-skirt gap from the vertex sphere, and Z clearance of the seat underside above the joint underside so it hovers off the plate (PR #35 comment 4859762053) |
 
 Bounding box at sizing **S0** (`scale_factor ≈ 1.154`) ≈ **58 mm footprint ×
 ~115 mm tall** (the ~92 mm prism-plus-shells body plus the top igloo and bottom
@@ -127,10 +128,11 @@ the joints.
 
 When the accelerometer mounts are enabled (the defaults — see below) they
 change the struts STL's z-extents: the top igloo mounts (`add_accel_mount`)
-sit on top of the top-vertex shells and the bottom key-seats
-(`add_accel_mount_bottom`) hang below the bottom-vertex shells, so
-`cables_z_anchor()` extends its top spike by `accel_rise()` and its bottom
-spike by `accel_drop()` to keep the two halves' bounding boxes matched.
+sit on top of the top-vertex shells, so `cables_z_anchor()` extends its top
+spike by `accel_rise()` to keep the two halves' bounding boxes matched. The
+bottom key-seats (`add_accel_mount_bottom`) sit **beside** the bottom vertices
+and hover above the plate (they do not extend below the joint shells), so the
+bottom of the bounding box stays at the joint-shell underside.
 
 ## Accelerometer mount (`accel_mount()`)
 
@@ -195,7 +197,7 @@ housing height. Select the original with `-D accel_size='"A0"'`.
 ### Bottom-vertex key-seats (`accel_mount_bottom()`)
 
 To free up a **third** accelerometer position, each of the three **bottom**
-vertices carries a matching key-seat below it
+vertices carries a matching key-seat **beside** it
 ([PR #35](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35) /
 [PR #67](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67),
 @ctrhjk + @sgbaird 2026-07-01). It reuses the same slide-in pocket
@@ -203,30 +205,32 @@ vertices carries a matching key-seat below it
 with two differences from the top igloo mount:
 
 * it is **flat-capped, not domed** (`accel_flat` = 2 mm) — @sgbaird: "these
-  won't be domed igloos, just flat." The flat outward face is what sits on the
-  build plate (and against the acrylic drop plate), and it recesses the sensor
-  so PLA — not the sensor — makes plate contact;
-* it hangs **below** the bottom vertex (built by mirroring the mount through the
-  vertex's XY plane), and a **skirt** convex-hulls the key-seat's *upper*
-  footprint **up** onto the joint sphere so PLA runs continuously "from the
-  key-seat upper surface to the lower surface of the vertices" (@sgbaird) — no
-  overhanging lip. As with the top mount, the skirt re-cuts the joint cavity +
-  cable bores so the captive TPU core and the three cable exits stay open.
+  won't be domed igloos, just flat";
+* it sits **to the side of** the bottom vertex — **not** below it and **not**
+  touching the ground (PR #35 comment 4859762053, @sgbaird: "put the lower vertex
+  key seats to the side and not touching the ground"). The seat is pushed
+  radially outward along the vertex heading by `accel_side_gap` past the joint
+  sphere and lifted so its underside hovers `accel_hover` above the joint
+  underside, so the **joint sphere** — not the seat — is the plate contact. A
+  short **skirt** convex-hulls the seat's *inner* (vertex-facing) face across the
+  gap onto the joint sphere so PLA runs continuously from the vertex to the seat
+  (no gap / overhanging lip / stress riser). As with the top mount, the skirt
+  re-cuts the joint cavity + cable bores so the captive TPU core and the three
+  cable exits stay open.
 
 **Placement.** Per the accelerometer-housing placement analysis in
 [PR #35 comment 4857717314](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4857717314),
 the seats are kept **matched top+bottom** (identical geometry at all 6 vertices)
 so the added fixture mass is symmetric, the specimen can be dropped in either
 orientation reproducibly, and the fixture reads as a constant offset that mostly
-cancels in the relative BO comparison. Each bottom seat sits directly at its
-bottom vertex with the open mouth pointing radially outward (matching the top
-igloo heading), so all three are geometrically identical across specimens.
+cancels in the relative BO comparison. Each bottom seat hovers beside its bottom
+vertex with the open mouth pointing radially outward (matching the top igloo
+heading), so all three are geometrically identical across specimens.
 
-Because all three bottom vertices are coplanar (z = 0), their three flat caps
-land on the build plate together, giving the print a stable flat 3-point base.
-The key-seats extend the model's lowest point down by `accel_drop()` =
-`accel_floor + accel_pocket_z() + accel_flat`; `cables_z_anchor()` extends its
-bottom spike by the same amount so the cables STL keeps world-Z parity with the
+Because the bottom seats hover above the plate rather than hanging below the
+vertices, the model's lowest point stays at the bottom-vertex joint-shell
+underside (`-captive_shell_od/2`) — the three joint spheres form the flat 3-point
+base — and `cables_z_anchor()` keeps the cables STL's world-Z parity with the
 struts STL. Set `add_accel_mount_bottom=false` on the OpenSCAD CLI to omit them.
 
 > **Note (2026-07-01):** the tweezer breakaway slots that briefly lived on the

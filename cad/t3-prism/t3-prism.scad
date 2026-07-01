@@ -220,14 +220,21 @@ captive_teardrop_d = strut_d * 1.10;  // seed sphere for the teardrop blend
 // the side), and capped by a rounded crown (the "igloo" top).
 //
 // PR #35 / PR #67 (@ctrhjk + @sgbaird, 2026-07-01): we ALSO add a matching
-// key-seat below each of the three BOTTOM vertices so the team can mount a
+// key-seat at each of the three BOTTOM vertices so the team can mount a
 // third accelerometer at the bottom of the structure. The bottom housings
-// are NOT domed igloos — they are FLAT-capped (the flat outward face becomes
-// the build-plate / drop-plate contact). Each hangs *below* the bottom vertex
-// and is joined to it by a filled skirt that runs from the housing's upper
-// surface up to the underside of the vertex joint (no overhanging lip). The
-// pocket is still three walls + a closed cap + one open outward face for the
-// horizontal cable exit / slide-in. Toggle via `add_accel_mount_bottom`.
+// are NOT domed igloos — they are FLAT-capped.
+//
+// PR #35 comment 4859762053 (@sgbaird, 2026-07-01): "put the lower vertex key
+// seats to the side and not touching the ground". So rather than hanging the
+// key-seat *below* the vertex (where it became the lowest point of the model
+// and sat on the build/drop plate), each bottom key-seat now sits BESIDE the
+// vertex — pushed radially outward and lifted so its underside hovers
+// `accel_hover` above the bottom-vertex joint underside (the plate contact is
+// the joint sphere, not the seat). A short PLA skirt bridges the `accel_side_gap`
+// between the vertex sphere and the seat's inner face so PLA runs continuously
+// from the vertex to the seat (no overhanging lip / stress riser). The pocket is
+// still three walls + a closed cap + one open outward face for the horizontal
+// cable exit / slide-in. Toggle via `add_accel_mount_bottom`.
 //
 // The tweezer breakaway slots that briefly lived here were removed per
 // @sgbaird 2026-07-01 ("forget about the tweezer part. Remove that").
@@ -272,6 +279,14 @@ accel_flat  = 2.0;               // flat PLA cap thickness below the pocket (BOT
                                  // and it recesses the sensor so PLA (not the sensor)
                                  // touches the plate.
 accel_sink  = 2.0;               // depth the mount walls sink past the joint apex (for bonding)
+// BESIDE-mount placement of the BOTTOM key-seats (PR #35 comment 4859762053,
+// @sgbaird: "put the lower vertex key seats to the side and not touching the
+// ground"). Absolute mm — do NOT scale with the specimen.
+accel_side_gap = 1.0;            // radial gap between the bottom-vertex joint sphere
+                                 // and the seat's inner face (bridged by a PLA skirt)
+accel_hover    = 2.0;            // Z clearance between the seat's underside and the
+                                 // bottom-vertex joint underside, so the seat hovers
+                                 // above the build/drop plate (never touches the ground)
 
 // Pocket inner dimensions (the open +X face is the cable exit / slide-in).
 // The accelerometer seats flat on the (solid, flat) pocket floor; the Z depth
@@ -291,21 +306,17 @@ function joint_outer_r() = use_captive_core ? captive_shell_od / 2 : joint_d / 2
 // keep the cables STL bounding box matched to the (now taller) struts STL —
 // see cables_z_anchor().
 function accel_rise() = accel_floor + accel_pocket_z() + accel_dome;
-// How far the flat bottom key-seat drops below the bottom-joint apex
-// (V[2] - joint_outer_r()). Used to (a) extend cables_z_anchor() downward so
-// the cables STL keeps the same world-Z extents as the struts STL, and (b)
-// root the scaffold pillars at the true lowest model point (see pillar_to()).
-function accel_drop() = accel_floor + accel_pocket_z() + accel_flat;
 
 // Lowest world-Z feature of the assembly at the SCAD origin (offset_z = 0):
-// the bottom-vertex joint-shell underside at -captive_shell_od/2, minus the
-// flat bottom key-seat drop (when enabled). render_print.sh echoes this and
-// lifts every part by exactly -model_z_lo() so the assembled MM object sits on
-// the bed (z=0) instead of floating — the value depends on BOTH scale_factor
-// (shell OD scales) and the absolute-mm accel housing (does not), so it must
+// the bottom-vertex joint-shell underside at -captive_shell_od/2. The BOTTOM
+// key-seats now sit BESIDE the vertices and hover above the plate (PR #35
+// comment 4859762053), so they are NOT the lowest feature — the joint sphere
+// is (its underside coincides with the seat-skirt hull lowest point). render_print.sh
+// echoes this and lifts every part by exactly -model_z_lo() so the assembled MM
+// object sits on the bed (z=0) instead of floating — the value depends on
+// scale_factor (shell OD scales), so it must
 // be computed, not hardcoded (previously pinned to 18.29 for scale 1.5).
-function model_z_lo() = -captive_shell_od / 2
-                        - (add_accel_mount_bottom ? accel_drop() : 0);
+function model_z_lo() = -captive_shell_od / 2;
 
 // Optional rigid translation applied AFTER part selection. Used by
 // render_print.sh for the multi-material variant: both the struts STL
@@ -531,46 +542,46 @@ module accel_mount(V, ang, cable_dirs) {
     }
 }
 
-// Place a FLAT accelerometer key-seat BELOW the joint at vertex V (the bottom
+// Place a FLAT accelerometer key-seat BESIDE the joint at vertex V (the bottom
 // vertices), with its open face (and the exiting cable) pointing outward along
 // heading `ang`. This is the bottom-vertex counterpart of accel_mount(): the
-// same slide-in pocket, but the body hangs below the vertex and is capped by a
-// flat slab (not a dome) whose outward face is the build/drop-plate contact.
+// same slide-in pocket capped by a flat slab (not a dome), but the seat sits to
+// the SIDE of the vertex (pushed radially outward along `ang`) and hovers above
+// the plate rather than hanging below the vertex.
 //
-// The pocket floor sits accel_floor BELOW the joint apex (V[2]-joint_outer_r())
-// so the rounded joint can never poke into the pocket; the body walls still
-// sink accel_sink past the apex (into the joint) so the PLA fuses solidly. A
-// skirt hulls the body's UPPER footprint up to the joint sphere so PLA runs
-// continuously from the key-seat's upper surface to the underside of the vertex
-// (@sgbaird/@ctrhjk 2026-07-01: "an extrusion from the key-seat upper surface
-// to the lower surface of the vertices" — no overhanging lip / stress riser).
-//
-// Implemented by mirroring accel_mount_local() through the vertex's XY plane
-// (mirror([0,0,1])) so the shape that normally builds upward instead hangs
-// downward; the +X pocket mouth is preserved by the mirror (X is unchanged).
+// PR #35 comment 4859762053 (@sgbaird): "put the lower vertex key seats to the
+// side and not touching the ground". The seat's underside is lifted so it sits
+// `accel_hover` above the bottom-vertex joint underside (V[2]-joint_outer_r()),
+// so the joint sphere — not the seat — is the plate contact. A short PLA skirt
+// hulls the seat's inner (vertex-facing) face across the `accel_side_gap` to the
+// joint sphere so PLA runs continuously from the vertex to the seat (no gap /
+// overhanging lip / stress riser); the skirt re-cuts the joint cavity + cable
+// bores so the captive TPU core and the three cable exits stay open.
 module accel_mount_bottom(V, ang, cable_dirs) {
-    z0   = V[2] - joint_outer_r() - accel_floor;  // pocket floor: floor below the apex
     cx   = (-accel_wall + accel_pocket_x()) / 2;
     bz0  = -(accel_floor + accel_sink);           // body underside (matches accel_mount_local)
     blen = accel_pocket_x() + accel_wall;         // body length  (bx1 - bx0)
     byw  = accel_pocket_y() + 2 * accel_wall;     // body width   (2 * byh)
-    // Flat-capped body, mirrored so it hangs below the vertex.
+    // Radial push so the seat sits beside the vertex with its inner face
+    // accel_side_gap clear of the joint sphere (the skirt bridges the gap).
+    r_off = joint_outer_r() + blen / 2 + accel_side_gap;
+    // Lift the pocket floor so the body underside (z0 + bz0) hovers accel_hover
+    // above the joint underside (V[2] - joint_outer_r()).
+    z0   = V[2] - joint_outer_r() + accel_hover - bz0;
+    // Flat-capped body, offset radially outward beside the vertex.
     translate([V[0], V[1], z0])
         rotate([0, 0, ang])
-            mirror([0, 0, 1])
-                translate([-cx, 0, 0])
-                    accel_mount_local(domed = false);
-    // Skirt: convex-hull the body's upper footprint up onto the joint sphere,
-    // then re-cut the joint cavity + cable bores so the captive TPU core and
-    // the three cable exits stay open (mirrors accel_mount()).
+            translate([r_off - cx, 0, 0])
+                accel_mount_local(domed = false);
+    // Skirt: convex-hull the seat's inner (vertex-facing) face across to the
+    // joint sphere, then re-cut the joint cavity + cable bores so the captive
+    // TPU core and the three cable exits stay open (mirrors accel_mount()).
     difference() {
         hull() {
             translate([V[0], V[1], z0])
                 rotate([0, 0, ang])
-                    mirror([0, 0, 1])
-                        translate([-cx, 0, 0])
-                            translate([cx, 0, bz0 + 0.5])
-                                cube([blen, byw, 1], center=true);
+                    translate([r_off - blen / 2 + 0.5, 0, (bz0 + accel_pocket_z()) / 2])
+                        cube([1, byw, accel_pocket_z() - bz0], center=true);
             translate(V) sphere(d = 2 * joint_outer_r());
         }
         if (use_captive_core) {
@@ -578,8 +589,7 @@ module accel_mount_bottom(V, ang, cable_dirs) {
             translate(V)
                 for (d = cable_dirs)
                     bore_along(d, captive_bore_d,
-                               captive_shell_od + accel_pocket_x()
-                                   + accel_pocket_y() + 2 * accel_wall);
+                               captive_shell_od + 2 * (r_off + blen / 2));
         }
     }
 }
@@ -603,14 +613,14 @@ module accel_mount_bottom(V, ang, cable_dirs) {
 // both parts, keeping cables and joint shells aligned to their original
 // SCAD coordinates.
 module cables_z_anchor() {
-    // The extreme bottom point of the strut STL is the bottom-vertex
-    // joint shell's underside at z = -captive_shell_od/2 — minus the flat
-    // bottom key-seat (when enabled), which hangs below the bottom vertices.
-    // The extreme top point is the top-vertex shell at z = H +
-    // captive_shell_od/2, plus the accelerometer-mount crown (when enabled),
-    // which sits on top of the top-vertex shells and makes the struts STL
-    // taller.
-    z_lo = -captive_shell_od / 2 - (add_accel_mount_bottom ? accel_drop() : 0);
+    // The extreme bottom point of the strut STL is the bottom-vertex joint
+    // shell's underside at z = -captive_shell_od/2. The BESIDE-mounted bottom
+    // key-seats hover above the plate (PR #35 comment 4859762053), so they do
+    // NOT extend below the joint sphere. The extreme top point is the top-vertex
+    // shell at z = H + captive_shell_od/2, plus the accelerometer-mount crown
+    // (when enabled), which sits on top of the top-vertex shells and makes the
+    // struts STL taller.
+    z_lo = -captive_shell_od / 2;
     z_hi = H + captive_shell_od / 2 + (add_accel_mount ? accel_rise() : 0);
     eps  = 0.005;  // 5 micron, well below FDM extrusion width
     // Use the prism's centroid in XY so the anchor is geometry-only and
@@ -652,10 +662,11 @@ module t3_prism_struts() {
                 accel_mount(top_pt(i), 90 + 120*i + twist,
                             vertex_cable_dirs_t(i));
         }
-        // Flat accelerometer key-seats below each BOTTOM vertex (also PLA, so
-        // they travel with the struts half). The open face points radially
-        // outward (heading = the bottom vertex's polar angle) so the cable
-        // feeds away from the structure (@ctrhjk/@sgbaird 2026-07-01).
+        // Flat accelerometer key-seats BESIDE each BOTTOM vertex (also PLA, so
+        // they travel with the struts half), hovering above the plate (PR #35
+        // comment 4859762053). The open face points radially outward (heading =
+        // the bottom vertex's polar angle) so the cable feeds away from the
+        // structure (@ctrhjk/@sgbaird 2026-07-01).
         if (add_accel_mount_bottom) {
             for (i = [0:2])
                 accel_mount_bottom(bottom_pt(i), 90 + 120*i,
@@ -715,8 +726,7 @@ module pillar_to(target) {
     // base must sit at the same z as the lowest model point so that when
     // Bambu Studio lifts the assembly to put its lowest point on the bed,
     // every pillar base touches the build plate (PR #35 comment 4464399849).
-    z_base = (use_captive_core ? -captive_shell_od / 2 : -joint_d / 2)
-             - (add_accel_mount_bottom ? accel_drop() : 0);
+    z_base = (use_captive_core ? -captive_shell_od / 2 : -joint_d / 2);
     z_top  = target[2] - scaffold_d_top * 0.4;  // sink the cone tip slightly into the cable
     h      = z_top - z_base;
     if (h >= scaffold_min_h) {
