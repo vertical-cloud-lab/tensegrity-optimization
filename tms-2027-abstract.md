@@ -22,20 +22,19 @@ Brigham Young University, Provo, UT, USA
 
 ## Abstract
 
-Tensegrity-inspired architectures—rigid struts suspended within a continuous
-flexible network—exhibit tunable nonlinear force–displacement responses and high
-energy absorption per unit mass, but their design space (strut geometry,
-connectivity topology, and unit-cell tiling) is too large to explore by trial
-and error. We present a closed-loop, experiment-driven campaign that co-prints
-rigid PLA struts and flexible TPU tension elements by multi-material fused
-deposition modeling and uses Bayesian optimization to jointly tune architecture
-and FDM process parameters—nozzle temperature, print speed, and layer
-height—in a design–print–test workflow operating on physical measurements,
-without relying on calibrated finite-element simulation.
-A Gaussian-process surrogate trained on measured peak transmitted force,
-specific energy absorption, and compaction efficiency proposes successive
-batches via noisy multi-objective acquisition, with print failures handled as a
-probabilistic feasibility constraint. We report how optimized designs and Pareto
-trade-offs evolve across iterations and discuss lessons for accelerated,
-processing-aware machine learning in additive manufacturing of architected
-energy absorbers.
+Tensegrity-inspired architectures—rigid struts in a continuous flexible
+network—offer tunable nonlinear force–displacement responses and high energy
+absorption per mass, but their design space (strut geometry, connectivity
+topology, unit-cell tiling) is too large for trial and error. We present a
+closed-loop, experiment-driven campaign that co-prints rigid PLA struts and
+flexible TPU tension elements by multi-material fused deposition modeling and
+uses Bayesian optimization to jointly tune architecture and FDM process
+parameters—nozzle temperature, print speed, layer height—from physical
+measurements, not calibrated simulation. Moving toward a self-driving lab, we
+couple printer and orchestration software via direct Python integration, track
+full data and metadata provenance in the cloud, and keep a human in the loop,
+raising autonomy. A Gaussian-process surrogate over measured peak force, specific
+energy absorption, and compaction efficiency proposes batches via noisy
+multi-objective acquisition, with print failures as a feasibility constraint. We
+report how Pareto trade-offs evolve, distilling lessons for accelerated,
+processing-aware machine learning.
