@@ -1,0 +1,10 @@
+{
+  "task_id": "ea3eb635-bd42-4b39-b667-5741adda9dcb",
+  "job_name": "job-futurehouse-paperqa3-high",
+  "status": "success",
+  "has_successful_answer": true,
+  "created_at": "2026-07-01 21:03:34.150047+00:00",
+  "task_summary": null,
+  "endpoint": "https://api.platform.edisonscientific.com",
+  "fetched_committed": "2026-07-01"
+}
