@@ -12,22 +12,34 @@ script:
 (emits
 [`100drops_metrics.json`](../data/drop-tests/100drops/figures/100drops_metrics.json)).
 
-Instrumentation changes vs the 30-drop `RW5F61` run — all three
-recommendations from that run's fall-off forensics were adopted:
-trigger moved to **CH4** (top tri-axis, 1000 G), base-plate single-axis
+Instrumentation changes vs the 30-drop `RW5F61` run: base-plate single-axis
 (CH5) **taped** to the plate, cable ties kept on both tri-axis units. The
 bottom-vertex tri-axis is now a **low-range** unit (CH6/7/8 full scale
 1002.0 / 991.1 / 989.1 G, ~10 mV/G).
 
-## 1. Campaign health: 100/100 clean — the trigger/mount fixes worked
+> **Correction (2026-07-06):** the **trigger stayed on CH5** (1000 G). The
+> channel table posted with the data listed CH4 as the trigger, but @ctrhjk
+> corrected this in a follow-up comment — the 30-drop recommendation to move
+> the trigger off the plate sensor was *not* adopted this run. All numeric
+> results are unaffected (the analysis locates each impact from the TOP
+> resultant, not the trigger channel); the attribution of the clean-trigger
+> result changes: it is the **tape retention on CH5** that cured the
+> spurious-trigger failure mode, not a trigger relocation.
+
+## 1. Campaign health: 100/100 clean — the mount fixes worked
 
 - **All 100 captures are real drops.** No spurious triggers, no lost drops,
   no sensor fall-offs. The impact lands at **4.01 ± 0.01 ms** into every
-  record (2 % pre-trigger + CH4 trigger doing exactly its job) — vs the
-  30-drop run's 5 spurious captures, 3 lost drops, and impacts wandering out
-  to 35 ms on the detached trigger channel.
+  record (2 % pre-trigger + the taped CH5 trigger firing consistently) — vs
+  the 30-drop run's 5 spurious captures, 3 lost drops, and impacts wandering
+  out to 35 ms on the same channel after its sensor detached.
 - The taped CH5 stayed on the plate for all 100 drops (raw 5.5–8.1 kG,
-  58–86 % of full scale, never saturating).
+  58–86 % of full scale, never saturating — a 5.5×+ margin over its 1000 G
+  trigger level on every drop). The 30-drop run's spurious triggers were the
+  *detached* CH5 firing on its own rattle; taping the sensor removed the
+  cause, so the trigger didn't need to move to get a clean campaign. It does
+  remain a single point of failure on the one sensor with a fall-off history
+  (see recommendation 2).
 - Cadence: median 20 s (range 14–21 s), 100 drops in ~31 min.
 
 ![full series](../data/drop-tests/100drops/figures/01_full_series.png)
@@ -85,6 +97,9 @@ Stabilized-phase OLS (drops 10–100, n = 91, CFC-180 throughout):
 - Tape held mechanically for 100 drops (a win vs bare wax), but as a
   *couplant* it is not yet drift-free. Expect ISO 5347's ordering: stud >
   cement > wax/tape.
+- Since CH5 is also the **trigger channel**, note the drift has no bearing on
+  trigger reliability: it is a ~3 % amplitude creep on raw peaks that clear
+  the 1000 G level by 5.5–8×.
 
 ![stabilized OLS](../data/drop-tests/100drops/figures/04_stabilized_ols.png)
 
@@ -136,8 +151,13 @@ right fix; resultant-based metrics stay robust to it.
    comfortably in a 13.6 kG range), or drop from lower height if the
    low-range unit's resolution is needed. Do not use this run's BOT/T\*
    numbers quantitatively.
-2. **Keep the CH4 trigger, tape retention, and cable ties** — 100/100
-   clean captures validates the whole package.
+2. **Keep the tape retention and cable ties** — 100/100 clean captures
+   validates them. The trigger is still on the taped CH5, and that worked
+   here; but it keeps the trigger on the one sensor with a fall-off history,
+   so the 30-drop recommendation stands as a cheap defensive move: put the
+   trigger on CH4 (raw 3.4–4.3 kG on every drop here, > 3.3× a 1000 G
+   level, and it lives in the proven key-seat), or keep CH5 and accept the
+   tape as the safeguard.
 3. **Use T = TOP/CH5 with its drift caveat.** It is tight (CV 2.1 %) but
    carries a −0.043 %/drop tape-seating drift; for BO objectives either
    detrend, or upgrade the CH5 mount to a stud/cement interface, or burn the

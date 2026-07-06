@@ -5,11 +5,12 @@ First full-length (100-drop) campaign on the latest tensegrity structure
 (top + bottom vertex key-seat housings; specimen ID not yet assigned in the
 posting comment).  Instrumentation changes vs the 30-drop ``RW5F61`` run:
 
-  * The trigger moved OFF the base-plate single-axis sensor and onto **CH4**
-    (top tri-axis, 1000 G level) — the recommendation from the 30-drop
-    fall-off forensics.
   * The base-plate single-axis sensor (CH5) is now **taped** to the acrylic
-    plate so it cannot fall off.
+    plate so it cannot fall off.  Per @ctrhjk's follow-up correction the
+    **trigger stayed on CH5** (1000 G) — the channel table posted with the
+    data listed CH4 as the trigger, but the 30-drop recommendation to move
+    the trigger off the plate sensor was NOT adopted this run; the tape is
+    what cured the spurious-trigger failure mode.
   * The bottom-vertex tri-axis is now a **low-range** unit: CH6/CH7/CH8 full
     scale 1002.0 / 991.1 / 989.1 G at ~10 mV/G (vs the multi-kG ranges used
     before).  Part of this analysis is checking that range against the actual
@@ -17,9 +18,9 @@ posting comment).  Instrumentation changes vs the 30-drop ``RW5F61`` run:
     30-drop run — i.e. straddling the new full scale).
 
 Channel map:
-  * CH2, CH3, CH4 — tri-axis in the **top-vertex key-seat** = OUTPUT ("TOP");
-    CH4 is the trigger (1000 G).
-  * CH5           — single-axis on the **base plate** (taped) = plate input.
+  * CH2, CH3, CH4 — tri-axis in the **top-vertex key-seat** = OUTPUT ("TOP").
+  * CH5           — single-axis on the **base plate** (taped) = plate input
+    and the trigger channel (1000 G).
   * CH6, CH7, CH8 — low-range tri-axis in the **bottom-vertex housing**
     ("BOT") = specimen-base input reference.
 
@@ -287,7 +288,7 @@ def main() -> int:
     print(f"cadence: median {np.median(gaps):.0f} s (range {gaps.min():.0f}-{gaps.max():.0f} s); "
           f"campaign span {(times[-1] - times[0]).total_seconds() / 60:.0f} min")
     print(f"impact lands at {t_imps.mean():.2f} +- {t_imps.std():.2f} ms into every record "
-          f"(CH4 trigger healthy)")
+          f"(taped CH5 trigger healthy)")
 
     # ---------------- saturation audit -------------------------------
     print("\n=== saturation audit (raw |peak| vs nominal full scale) ===\n")
@@ -429,14 +430,14 @@ def main() -> int:
                                  gridspec_kw={"height_ratios": [3, 1]})
     s_all = np.array([r["signal"] for r in rows], float)
     a1.plot(s_all, [r["top_raw_g"] for r in rows], "s-", ms=3.5, color="tab:red",
-            label="TOP |tri-axis| raw peak (CH2-4, key-seat, CH4 = trigger)")
+            label="TOP |tri-axis| raw peak (CH2-4, key-seat)")
     a1.plot(s_all, [r["ch5_raw_g"] for r in rows], "o-", ms=3.5, color="tab:blue",
-            label="CH5 raw |peak| (base plate, taped)")
+            label="CH5 raw |peak| (base plate, taped, trigger)")
     a1.plot(s_all, [r["bot_raw_g"] for r in rows], "^-", ms=3.5, color="tab:green",
             label="BOT |tri-axis| raw peak (CH6-8, low-range)")
     a1.set(ylabel="raw |peak| (G)",
            title="100-drop campaign: all 100 captures are real impacts "
-                 "(CH4 trigger, no fall-offs, no spurious triggers)")
+                 "(taped CH5 trigger, no fall-offs, no spurious triggers)")
     a1.legend(fontsize=8)
     a1.grid(alpha=0.3)
     a2.plot(s_all[1:], gaps, "k.-", ms=3)

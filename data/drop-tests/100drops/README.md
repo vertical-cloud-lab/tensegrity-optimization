@@ -6,14 +6,17 @@ as four zips (`drop1.zip`–`drop4.zip`, 25 captures each).
 
 First full-length (100-drop) campaign, on the latest structure with key-seat
 housings at the top and a bottom vertex (**specimen ID not yet assigned** in
-the posting comment). Three instrumentation changes vs the 30-drop `RW5F61`
-run, all following that run's recommendations:
+the posting comment). Two instrumentation changes vs the 30-drop `RW5F61`
+run:
 
-1. the **trigger moved to CH4** (top tri-axis, 1000 G) — off the detachable
-   base-plate sensor;
-2. the base-plate single-axis sensor (CH5) is **taped** to the acrylic plate;
-3. the bottom-vertex tri-axis is a **low-range unit**: CH6/CH7/CH8 full scale
+1. the base-plate single-axis sensor (CH5) is **taped** to the acrylic plate;
+2. the bottom-vertex tri-axis is a **low-range unit**: CH6/CH7/CH8 full scale
    1002.0 / 991.1 / 989.1 G at ~10 mV/G.
+
+The **trigger stayed on CH5** (1000 G). The channel table posted with the data
+listed CH4 as the trigger, but @ctrhjk corrected this in a follow-up comment —
+the 30-drop recommendation to move the trigger off the plate sensor was not
+adopted this run.
 
 ## Recording setup
 
@@ -26,8 +29,8 @@ All channels AC-coupled, ICP on, Half-Sine analysis.
 |---|--:|--:|---|---|---|
 | CH2 | 14492.8 G | 0.69 mV/G | tri-axis, **top-vertex key-seat** + wax, cable tied | output ("TOP") | No |
 | CH3 | 14992.5 G | 0.667 mV/G | 〃 | 〃 | No |
-| CH4 | 13624.0 G | 0.734 mV/G | 〃 | 〃 | **Yes** (1000 G) |
-| CH5 | 9442.9 G | 1.059 mV/G | single-axis, base plate, **taped** | plate input | No |
+| CH4 | 13624.0 G | 0.734 mV/G | 〃 | 〃 | No |
+| CH5 | 9442.9 G | 1.059 mV/G | single-axis, base plate, **taped** | plate input | **Yes** (1000 G) |
 | CH6 | 1002.0 G | 9.98 mV/G | low-range tri-axis, **bottom-vertex housing**, cable tied | input reference ("BOT") | No |
 | CH7 | 991.1 G | 10.09 mV/G | 〃 | 〃 | No |
 | CH8 | 989.1 G | 10.11 mV/G | 〃 | 〃 | No |
