@@ -3,7 +3,7 @@
 Analysis of the **100-drop auto campaign** posted by @ctrhjk on
 [PR #67](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67)
 (TP4 session "100 drops", 07/06/2026): the latest tensegrity structure
-(top + bottom vertex key-seat housings; **specimen ID not yet assigned**),
+(top + bottom vertex key-seat housings; **specimen ID `RW5F61`**),
 100 drops at 13 in, ~20 s cadence, whole campaign ~31 min.
 
 Data + setup: [`data/drop-tests/100drops/`](../data/drop-tests/100drops/) ·
@@ -16,6 +16,16 @@ Instrumentation changes vs the 30-drop `RW5F61` run: base-plate single-axis
 (CH5) **taped** to the plate, cable ties kept on both tri-axis units. The
 bottom-vertex tri-axis is now a **low-range** unit (CH6/7/8 full scale
 1002.0 / 991.1 / 989.1 G, ~10 mV/G).
+
+> **Update (2026-07-06):** @ctrhjk confirmed the specimen is **`RW5F61`** —
+> the *same* structure as the 30-drop run, not a fresh print. Its cumulative
+> history is now 130 conducted / 127 captured drops at 13 in. This resolves
+> former recommendation 5 and re-frames two readings below: the §4 downward
+> burn-in transient is re-setup settling rather than fresh-print break-in,
+> and the §5 dominant-mode contrast (~530 → ~610 Hz across campaigns) is a
+> same-specimen shift in the *stiffer* direction, most plausibly from the
+> instrumentation/re-mount changes (different bottom-vertex sensor mass,
+> tape, fresh wax) or re-tensioning — not damage.
 
 > **Correction (2026-07-06):** the **trigger stayed on CH5** (1000 G). The
 > channel table posted with the data listed CH4 as the trigger, but @ctrhjk
@@ -109,11 +119,13 @@ The changepoint scan goes non-significant at **k = 9** and the
 exponential-approach fit gives plateau 241.5 G with **negative** amplitude
 (−13.0 G, τ = 7.7 drops): the output starts near 250 G and *settles
 downward*, opposite in sign to the wax-seating rise of the `prc1kn` runs.
-A downward transient looks like early *specimen* break-in (tendon/joint
-settling on a fresh structure) rather than couplant seating. Operationally
-nothing changes — **≥ 10 unrecorded burn-in drops** before a recorded
-campaign covers both signs — but the sign is worth remembering when
-interpreting first-drops data on fresh prints.
+With the specimen confirmed as `RW5F61` (~30 prior drops), "fresh-print
+break-in" is off the table — the downward transient is better read as
+**re-setup settling** (fresh wax in the top seat, the new tape interface,
+the swapped bottom sensor, and the structure re-seating on the plate after
+handling). Operationally nothing changes — **≥ 10 unrecorded burn-in drops**
+after any re-mount covers both signs — but note that even a
+previously-exercised specimen shows a ~9-drop transient after re-rigging.
 
 ## 5. Specimen over 100 drops: no damage signature, one watch item
 
@@ -135,6 +147,24 @@ a few reference drops) after long campaigns is now justified rather than
 paranoid. (Dominant-frequency scatter, CV 49 %, is bimodal mode-picking
 between the ~610 Hz structural mode and a 1.4–1.8 kHz mode — not physical
 wander.)
+
+With the ID confirmed, the cross-campaign picture for `RW5F61` (127 captured
+drops total) reads:
+
+- **Pulse width carries no accumulated damage across campaigns** — the
+  30-drop run held 1.53 ms (trend pointing *stiffer*) and this campaign ends
+  at 1.536 ms; the within-campaign +2.7 % creep starts from a *lower*
+  post-re-rig value (1.496 ms), so absolute pulse width is mount-confounded
+  across re-rigs and only the within-campaign trend is diagnostic. The watch
+  item stands, but as a per-campaign check, not an accumulated total.
+- **The dominant mode moved *up* between campaigns** (~530 Hz in the 30-drop
+  run, alternating with an ~1,100 Hz mode, → ~610 Hz here; 30.5 Hz bins, so
+  the shift is resolved). Stiffening is the opposite of a damage signature;
+  the plausible drivers are the swapped bottom-vertex sensor (different
+  seismic mass on a measured node), the tape/wax re-mounts, or tendon
+  re-tensioning between sessions. It does mean the ringdown mode is
+  **configuration-dependent**, so mode comparisons are only valid within a
+  rig configuration — same rule as T.
 
 The familiar slow in-seat rotation continues on **both** tri-axis units at
 near-constant resultant (CH6 raw peak 269 → 605 G, +0.83 %/drop, p = 7.6e−10;
@@ -164,15 +194,18 @@ right fix; resultant-based metrics stay robust to it.
    tape in (the drift is strongest in the first ~30 drops).
 4. **Burn in ≥ 10 drops** on fresh specimens/mounts before recording —
    this run's transient was 9 drops and downward.
-5. **Assign the specimen its unique ID** (per the `prc1kn`/`RW5F61`
-   convention) and log whether it is a fresh print or `RW5F61` re-tested —
-   the ~610 Hz mode vs `RW5F61`'s 549 Hz suggests a different (or
-   re-tensioned) structure, and the pulse-width watch item needs a traceable
-   history to be meaningful.
+5. ~~Assign the specimen its unique ID~~ **Resolved: the specimen is
+   `RW5F61`** (confirmed by @ctrhjk) — the same structure as the 30-drop
+   run, now at 130 conducted / 127 captured drops. The mode contrast that
+   motivated this item (~530 → ~610 Hz) is a same-specimen, *stiffer*-
+   direction shift attributable to the re-rig (see §5), not evidence of a
+   different structure. Going forward, log the specimen ID in the TP4
+   session name so it never has to be reconstructed after the fact.
 
 ## Caveats
 
-n = 1 specimen, ID unassigned; 200 ms window; Δv partial-pulse; tri-axis
+n = 1 specimen (`RW5F61`, a failed print — top-tendon bubbles); 200 ms
+window; Δv partial-pulse; tri-axis
 orientations unverified (and slowly rotating in both seats); BOT quantities
 saturation-biased throughout; ringdown frequency resolution 30.5 Hz; the
 tape-seating reading of the CH5 drift is inferred from the TOP/CH5 contrast,

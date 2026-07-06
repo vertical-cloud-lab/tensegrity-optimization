@@ -5,9 +5,10 @@ posted on [PR #67](https://github.com/vertical-cloud-lab/tensegrity-optimization
 as four zips (`drop1.zip`–`drop4.zip`, 25 captures each).
 
 First full-length (100-drop) campaign, on the latest structure with key-seat
-housings at the top and a bottom vertex (**specimen ID not yet assigned** in
-the posting comment). Two instrumentation changes vs the 30-drop `RW5F61`
-run:
+housings at the top and a bottom vertex. **Specimen ID: `RW5F61`** (assigned
+by @ctrhjk in a follow-up comment) — the **same specimen as the 30-drop run**,
+bringing its cumulative history to 130 conducted / 127 captured drops at
+13 in. Two instrumentation changes vs that 30-drop run:
 
 1. the base-plate single-axis sensor (CH5) is **taped** to the acrylic plate;
 2. the bottom-vertex tri-axis is a **low-range unit**: CH6/CH7/CH8 full scale

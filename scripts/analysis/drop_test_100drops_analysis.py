@@ -2,8 +2,9 @@
 """Analyze the 100-auto-drop campaign (PR #67, "100 drops" TP4 session).
 
 First full-length (100-drop) campaign on the latest tensegrity structure
-(top + bottom vertex key-seat housings; specimen ID not yet assigned in the
-posting comment).  Instrumentation changes vs the 30-drop ``RW5F61`` run:
+(top + bottom vertex key-seat housings; specimen ``RW5F61``, confirmed by
+@ctrhjk in a follow-up comment — the same structure as the 30-drop run).
+Instrumentation changes vs that 30-drop run:
 
   * The base-plate single-axis sensor (CH5) is now **taped** to the acrylic
     plate so it cannot fall off.  Per @ctrhjk's follow-up correction the
