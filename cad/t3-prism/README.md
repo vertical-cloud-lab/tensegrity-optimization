@@ -48,10 +48,10 @@ All linear dimensions are `*_base * scale_factor`:
 | `captive_wall_base`  | 1.6 mm | **2.4 mm** | PLA shell wall thickness (scaled with `scale_factor`) |
 | `add_accel_mount` | `true` | `true` | rounded "igloo" accelerometer mount on each **top** vertex (PR #35 comment 4794790065); set `false` to omit. See [Accelerometer mount](#accelerometer-mount-accel_mount) below |
 | `add_accel_mount_bottom` | `true` | `true` | **flat** accelerometer key-seat **beside** each **bottom** vertex for a third sensor (PR #35 / PR #67, @ctrhjk + @sgbaird 2026-07-01). Placed to the side of the vertex and lifted so it hovers above the plate — never touches the ground (PR #35 comment 4859762053). Set `false` to omit. With both mounts on there are **6 housing sites** (3 top igloo + 3 bottom flat), matched top+bottom per the placement analysis in [PR #35 comment 4857717314](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4857717314) |
-| `accel_size` | — | **`"A1"`** | housing sizing set: **A0** = original, **A1** = A0 + 0.3 mm pocket height (`accel_h_extra`). Absolute mm — **not** scaled. Set `-D accel_size='"A0"'` for the original |
+| `accel_size` | — | **`"A2"`** | housing sizing set: **A0** = original, **A1** = A0 + 0.3 mm pocket height (`accel_h_extra`), **A2** = A1 with tightened clearances (0.2 mm/side lateral, 0.2 mm top). Absolute mm — **not** scaled. Set `-D accel_size='"A1"'` / `'"A0"'` for the earlier sets |
 | `accel_l` / `accel_w` / `accel_h` | — | 6 / 6 / 5.94 mm | accelerometer pocket size (Dytran 3133A4, **not** scaled) |
-| `accel_clear` | — | 0.4 mm | per-side **lateral (XY)** pocket clearance for the slide-in fit |
-| `accel_clear_top` / `accel_clear_bot` | — | **1.0** / 0.2 mm | **Z** gap above / below the accelerometer. `accel_clear_top` was raised 0.2 → 1.0 so the sensor is recessed ~1.2 mm **below the crown springline** (the igloo dome, not the sensor, touches the acrylic drop plate) — fixes "shorter height of housing than the accelerometer" (PR #67 comment 4839988559) |
+| `accel_clear` | — | **0.2 mm** (A2) | per-side **lateral (XY)** pocket clearance for the slide-in fit (0.4 mm in A0/A1) |
+| `accel_clear_top` / `accel_clear_bot` | — | **0.2** / 0.2 mm (A2) | **Z** gap above / below the accelerometer (`accel_clear_top` is 1.0 mm in A0/A1). Keeps the sensor recessed **below the crown springline** (the igloo dome, not the sensor, touches the acrylic drop plate — PR #67 comment 4839988559) while the walls register the sensor (PR #35 comment 4895789291) |
 | `accel_dome` / `accel_flat` | — | 3.0 / 2.0 mm | cap thickness over the pocket: rounded **dome** on the top igloo mounts, **flat** slab on the bottom key-seats |
 | `accel_side_gap` / `accel_hover` | — | 1.0 / 2.0 mm | bottom key-seat **beside**-placement: radial PLA-skirt gap from the vertex sphere, and Z clearance of the seat underside above the joint underside so it hovers off the plate (PR #35 comment 4859762053) |
 
@@ -144,15 +144,18 @@ to a vertex of the structure. Per
 each of the three **top** vertices now carries a small PLA mount block
 (`accel_mount()` in `t3-prism.scad`) fused onto its joint shell:
 
-* a rectangular pocket sized to the accelerometer plus `accel_clear` = 0.4 mm
-  per side **laterally** (XY slide-in fit), `accel_clear_top` = **1.0 mm**
-  above and `accel_clear_bot` = 0.2 mm below the sensor in **Z**. The 1.0 mm
-  top gap recesses the accelerometer ~1.2 mm **below the crown springline** so
-  the igloo dome — not the sensor — contacts the acrylic drop plate and the
-  housing walls stand clearly proud of the sensor. This fixes the report that
-  the accelerometer stood taller than its housing and poked into the plate
-  ([PR #67 comment 4839988559](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67#issuecomment-4839988559));
-  retention is by a wax bead + the walls, and the extra gap is wax-filled;
+* a rectangular pocket sized to the accelerometer plus `accel_clear` = 0.2 mm
+  per side **laterally** (XY slide-in fit; A2 set — was 0.4 mm in A0/A1),
+  `accel_clear_top` = **0.2 mm** above (A2 — was 1.0 mm) and
+  `accel_clear_bot` = 0.2 mm below the sensor in **Z**. The top gap keeps the
+  accelerometer recessed **below the crown springline** so the igloo dome —
+  not the sensor — contacts the acrylic drop plate and the housing walls stand
+  proud of the sensor
+  ([PR #67 comment 4839988559](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67#issuecomment-4839988559)),
+  while the tightened A2 clearances make the walls register the sensor so it
+  cannot yaw/tilt in the seat and shear the wax bead off
+  ([PR #35 comment 4895789291](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4895789291));
+  retention is by a wax bead + the walls;
 * **three walls + a floor** (back, both sides, bottom) and an **open
   outward-facing front** so the sensor slides in from the side and its
   cable feeds out horizontally;
@@ -179,20 +182,19 @@ millimetres and are **not** multiplied by `scale_factor`. The mounts are
 PLA, so they travel with the struts half of the multi-material variant.
 Set `add_accel_mount=false` on the OpenSCAD CLI to omit them.
 
-#### Housing sizing set: A0 / A1 (`accel_size`)
+#### Housing sizing set: A0 / A1 / A2 (`accel_size`)
 
 The housing dimensions are selected by `accel_size` (absolute mm, **not**
-scaled with the prism):
+scaled with the prism). Pocket interior for the 6 × 6 × 5.94 mm Dytran:
 
-| Set  | Pocket height (Z) | vs. A0 | Notes |
-| ---- | ----------------: | -----: | --- |
-| `A0` | `accel_h + accel_clear_top + accel_clear_bot` = 7.14 mm | — | original housing |
-| `A1` *(default)* | 7.44 mm | **+0.3 mm** | `accel_h_extra` = 0.3 mm added to the pocket **height only** so the Dytran seats fully without standing proud of the walls (@achris0520, 2026-07-01) |
+| Set  | Pocket L × W (XY) | Pocket height (Z) | Notes |
+| ---- | ----------------: | ----------------: | --- |
+| `A0` | 6.8 × 6.8 mm | 7.14 mm | original housing (`accel_clear` 0.4 mm/side, `accel_clear_top` 1.0 mm) |
+| `A1` | 6.8 × 6.8 mm | 7.44 mm | `accel_h_extra` = 0.3 mm added to the pocket **height only** so the Dytran seats fully without standing proud of the walls (@achris0520, 2026-07-01) |
+| `A2` *(default)* | **6.4 × 6.4 mm** | **6.64 mm** | A1 with clearances tightened — `accel_clear` 0.4 → **0.2 mm/side**, `accel_clear_top` 1.0 → **0.2 mm** — so the walls register the sensor and it cannot rotate in the seat (@ctrhjk loose-housing report, PR #35 comment 4895789291). Keeps A1's +0.3 mm print-shrink height allowance; dome / flat cap remains the only plate contact |
 
-Every other housing dimension (L, W, walls, dome/flat cap, lateral clearance) is
-identical between the two sets — A1 differs from A0 **only** in the +0.3 mm Z
-depth, which flows through `accel_pocket_z()` to both the pocket and the overall
-housing height. Select the original with `-D accel_size='"A0"'`.
+Walls, dome/flat cap, and `accel_clear_bot` are identical across sets. Select an
+earlier set with `-D accel_size='"A1"'` (or `'"A0"'`).
 
 ### Bottom-vertex key-seats (`accel_mount_bottom()`)
 

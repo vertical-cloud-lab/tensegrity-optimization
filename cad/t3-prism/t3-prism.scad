@@ -250,25 +250,33 @@ add_accel_mount_bottom = true;   // set false to omit the BOTTOM (flat) accelero
 //          deeper pocket so the Dytran 3133A4 seats fully without the sensor
 //          standing proud of the walls (follow-up to the "shorter height of
 //          housing than the accelerometer" reports, PR #67 comment 4839988559).
-// All other housing dimensions (L, W, walls, dome, clearances) are IDENTICAL
-// between A0 and A1. The extra height feeds only the pocket Z depth via
-// accel_h_extra below, so both the pocket and the overall housing grow 0.3 mm
-// taller in A1. The housing is a PHYSICAL-part fixture: its dimensions are
-// absolute mm and are NOT multiplied by scale_factor.
-accel_size  = "A1";              // "A0" (original) | "A1" (= A0 + 0.3 mm pocket height)
-accel_h_extra = (accel_size == "A1") ? 0.3 : 0.0;  // added Z depth for the A1 set
+//   "A2" = A1 with the pocket CLEARANCES tightened so the walls register the
+//          sensor instead of letting it yaw/tilt in the seat and shear the wax
+//          bead off (@ctrhjk's loose-housing report, PR #35 comment 4895789291):
+//          lateral clearance 0.4 -> 0.2 mm/side and top Z gap 1.0 -> 0.2 mm.
+//          As-printed A1 pocket was 6.8 x 6.8 x 7.44 mm for the 6 x 6 x 5.94 mm
+//          Dytran; A2 is 6.4 x 6.4 x 6.64 mm. A1's +0.3 mm print-shrink height
+//          allowance is kept, and the dome / flat cap remains the only plate
+//          contact.
+// L, W, walls, and dome are IDENTICAL across sets. The housing is a
+// PHYSICAL-part fixture: its dimensions are absolute mm and are NOT multiplied
+// by scale_factor.
+accel_size  = "A2";              // "A0" (original) | "A1" (deeper pocket) | "A2" (tight fit)
+accel_h_extra = (accel_size == "A0") ? 0.0 : 0.3;  // added Z depth for the A1/A2 sets
 accel_l     = 6.0;               // accelerometer length (X: slide-in / cable-exit axis)
 accel_w     = 6.0;               // accelerometer width  (Y)
 accel_h     = 5.94;              // accelerometer height (Z)
-accel_clear = 0.4;               // per-side LATERAL (XY) clearance for the slide-in fit
-accel_clear_top = 1.0;           // Z gap between the accelerometer top and the crown
-                                 // springline. Recesses the accelerometer fully
-                                 // BELOW the igloo dome so the dome (not the
-                                 // sensor) is what touches the acrylic drop plate
-                                 // and the housing walls stand proud of the sensor
-                                 // (PR #35 / PR #67 comment 4839988559: "the new
-                                 // design has shorter height of housing than the
-                                 // accelerometer").
+accel_clear = (accel_size == "A2") ? 0.2 : 0.4;  // per-side LATERAL (XY) clearance
+                                 // for the slide-in fit (A2 halves it so the
+                                 // walls register the sensor)
+accel_clear_top = (accel_size == "A2") ? 0.2 : 1.0;  // Z gap between the accelerometer
+                                 // top and the crown springline. Keeps the
+                                 // accelerometer recessed BELOW the igloo dome
+                                 // so the dome (not the sensor) is what touches
+                                 // the acrylic drop plate and the housing walls
+                                 // stand proud of the sensor (PR #35 / PR #67
+                                 // comment 4839988559); A2 tightens it 1.0 ->
+                                 // 0.2 mm so the sensor cannot tilt in the seat.
 accel_clear_bot = 0.2;           // Z clearance below the accelerometer (adhesive-bead recess)
 accel_wall  = 2.0;               // PLA wall thickness around the pocket
 accel_floor = 1.5;               // PLA floor thickness between the joint apex and the pocket floor
