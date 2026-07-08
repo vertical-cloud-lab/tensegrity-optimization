@@ -122,7 +122,24 @@ not only the initial shock window.
   (@me-madsen, @ctrhjk, @achris0520) should be granted independent access
   to the lab so testing does not bottleneck on a single operator.
 
-## 6. Related modalities (out of scope for the first drop test)
+## 6. Data handling & upload
+
+- **Name the TP4 recording session after the specimen + campaign**
+  (e.g. `RW5F61_100drops`) so the specimen ID never has to be
+  reconstructed after the fact.
+- **Uploading large campaigns to GitHub:** a GitHub comment attachment is
+  capped at 25 MB. For a 100-drop campaign (100 CSVs, ~85 MB total),
+  **compress the CSV files in batches of 25 per zip** (e.g. `drop1.zip` =
+  Signals 1–25, `drop2.zip` = Signals 26–50, …) — each batch lands at
+  ~21 MB, safely under the limit. Keep the Signal numbering intact inside
+  the zips so drop order is preserved. (First used for the 5-in 100-drop
+  campaign, `data/drop-tests/5in-100drops/`.)
+- Raw camera files (e.g. RX100 IV HFR clips, >25 MB) go to a maintainer via
+  Slack for a direct commit from VS Code (100 MB limit), and should be the
+  camera-native export — editors like Clipchamp re-containerize the frame
+  rate and break absolute video timing.
+
+## 7. Related modalities (out of scope for the first drop test)
 
 Captured here so the protocol stays consistent with the broader objective
 matrix; details live in the companion `edison-trajectories/objective-functions/`
