@@ -261,7 +261,7 @@ add_accel_mount_bottom = true;   // set false to omit the BOTTOM (flat) accelero
 // L, W, walls, and dome are IDENTICAL across sets. The housing is a
 // PHYSICAL-part fixture: its dimensions are absolute mm and are NOT multiplied
 // by scale_factor.
-accel_size  = "A3";              // "A0" (original) | "A1" (deeper pocket) | "A2" (tight fit) | "A3" (explicit 6.2 x 6.2 x 6.8 mm pocket)
+accel_size  = "A3";              // "A0" (original) | "A1" (deeper pocket) | "A2" (tight fit) | "A3" (explicit 6.2 × 6.2 × 6.8 mm pocket)
 accel_h_extra = (accel_size == "A0") ? 0.0 : 0.3;  // added Z depth for the A1/A2 sets
 accel_l     = 6.0;               // accelerometer length (X: slide-in / cable-exit axis)
 accel_w     = 6.0;               // accelerometer width  (Y)
@@ -305,7 +305,7 @@ accel_hover    = 2.0;            // Z clearance between the seat's underside and
 // housing than the accelerometer"). A dab of wax retains it in the recess.
 // A3 (PR #35 comment 4939776434, @achris0520 via the manually-corrected OnShape
 // file) overrides the clearance-derived sizing with an EXPLICIT pocket interior
-// of 6.2 x 6.2 x 6.8 mm (X x Y x Z). Absolute mm — NOT multiplied by scale_factor.
+// of 6.2 × 6.2 × 6.8 mm (X × Y × Z). Absolute mm — NOT multiplied by scale_factor.
 accel_pocket_x_A3 = 6.2;          // A3 explicit pocket length (X)
 accel_pocket_y_A3 = 6.2;          // A3 explicit pocket width  (Y)
 accel_pocket_z_A3 = 6.8;          // A3 explicit pocket height (Z)
