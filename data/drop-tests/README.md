@@ -27,10 +27,11 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `200drops/` | 200 | 200-drop campaign, `7xadt6`, 10 in, CH5 trigger (posted as `200drops_{1..8}.zip`) | [`drop-test-200drops-analysis.md`](../../docs/drop-test-200drops-analysis.md) |
 | `200drops-check/` | 30 | 1st 30-drop check run (`check_Signal203–232`) after the 200-drop problems | [`drop-test-200drops-check-analysis.md`](../../docs/drop-test-200drops-check-analysis.md) |
 | `200drops-check2/` | 30 | 2nd 30-drop check run (`check2_Signal233–262`) | [`drop-test-200drops-check2-analysis.md`](../../docs/drop-test-200drops-check2-analysis.md) |
+| `5vs10/` | 60 | 5 in vs 10 in height comparison, 30 drops each, CH5 trigger lowered to 500 G (PR #82) | [`drop-test-5vs10-analysis.md`](../../docs/drop-test-5vs10-analysis.md) |
 | `prc1kn-health/` | — | Derived cross-dataset health check of `prc1kn` + sensor (no raw data of its own) | [`drop-test-prc1kn-health-check.md`](../../docs/drop-test-prc1kn-health-check.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
-Total: **669 raw CSVs** + the 5 original `.txt` exports.
+Total: **729 raw CSVs** + the 5 original `.txt` exports.
 
 ## Provenance / completeness
 
@@ -39,7 +40,8 @@ GitHub API with pagination, so hidden/collapsed comments are included) has
 been downloaded and byte-compared (SHA-256) against the committed files:
 269 unique loose-CSV links and 16 ZIPs (containing 400 CSVs) — all
 byte-identical, with no attachment missing from the repo and no committed
-file unaccounted for. Photos/videos posted as `user-attachments/assets`
+file unaccounted for. The `5vs10/` dataset was posted on PR #82 (60 CSV
+attachments, all committed). Photos/videos posted as `user-attachments/assets`
 links are intentionally not committed (see
 [`drop-test-video-analysis.md`](../../docs/drop-test-video-analysis.md) for
 the video-derived kinematics).
