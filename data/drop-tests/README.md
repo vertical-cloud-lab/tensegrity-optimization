@@ -29,10 +29,11 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `200drops-check2/` | 30 | 2nd 30-drop check run (`check2_Signal233–262`) | [`drop-test-200drops-check2-analysis.md`](../../docs/drop-test-200drops-check2-analysis.md) |
 | `5vs10/` | 60 | 5 in vs 10 in height comparison, 30 drops each, CH5 trigger lowered to 500 G (PR #82) | [`drop-test-5vs10-analysis.md`](../../docs/drop-test-5vs10-analysis.md) |
 | `500drops/` | 256 | 500-drop failure test (bubbled-TPU print, 10 in, CH5 trigger @ 300 G), stopped by a TP4 overload at drop 256 — CH6 over full scale (PR #82, posted as `500drops_{1..9}.zip`) | [`drop-test-500drops-analysis.md`](../../docs/drop-test-500drops-analysis.md) |
+| `500drops-nobot/` | 500 | 2nd 500-drop failure test, same specimen, bottom tri-axis (CH6–8) removed — completed 500/500 (PR #82, posted as `500_{1..17}.zip`) | [`drop-test-500drops-nobot-analysis.md`](../../docs/drop-test-500drops-nobot-analysis.md) |
 | `prc1kn-health/` | — | Derived cross-dataset health check of `prc1kn` + sensor (no raw data of its own) | [`drop-test-prc1kn-health-check.md`](../../docs/drop-test-prc1kn-health-check.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
-Total: **985 raw CSVs** + the 5 original `.txt` exports.
+Total: **1,485 raw CSVs** + the 5 original `.txt` exports.
 
 ## Provenance / completeness
 
@@ -41,8 +42,9 @@ GitHub API with pagination, so hidden/collapsed comments are included) has
 been downloaded and byte-compared (SHA-256) against the committed files:
 269 unique loose-CSV links and 16 ZIPs (containing 400 CSVs) — all
 byte-identical, with no attachment missing from the repo and no committed
-file unaccounted for. The `5vs10/` (60 CSV attachments) and `500drops/`
-(9 ZIPs containing 256 CSVs) datasets were posted on PR #82, all committed. Photos/videos posted as `user-attachments/assets`
+file unaccounted for. The `5vs10/` (60 CSV attachments), `500drops/`
+(9 ZIPs containing 256 CSVs) and `500drops-nobot/` (17 ZIPs containing 500
+CSVs) datasets were posted on PR #82, all committed. Photos/videos posted as `user-attachments/assets`
 links are intentionally not committed (see
 [`drop-test-video-analysis.md`](../../docs/drop-test-video-analysis.md) for
 the video-derived kinematics).
