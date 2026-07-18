@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 
 from edison_client import EdisonClient, JobNames
-from edison_client.models import TaskRequest
+from edison_client.models import RuntimeConfig, TaskRequest
 
 REPO = Path(__file__).resolve().parents[1]
 OUTDIR = REPO / "presentation" / "edison-mock-audience"
@@ -102,10 +102,33 @@ Write the whole result as a well-structured markdown report.
 
 
 def main() -> None:
-    client = EdisonClient(api_key=os.environ["EDISON_API_KEY"])
+    api_key = os.environ.get("EDISON_PLATFORM_API_KEY") or os.environ["EDISON_API_KEY"]
+    client = EdisonClient(api_key=api_key)
 
-    task_data = TaskRequest(name=JobNames.ANALYSIS, query=QUERY)
-    task_ids = client.create_task(task_data, files=FILES)
+    # Official upload flow per
+    # https://docs.edisonscientific.com/edison-client/file-management#upload:
+    # store each file first, then reference the returned data_storage ids via
+    # runtime_config.environment_config["data_storage_uris"]. (Passing
+    # files=... to create_task is NOT the documented path and failed twice
+    # with a dead sandbox and no failure reason.)
+    storage_uris = []
+    for path in FILES:
+        resp = client.store_file_content(
+            name=Path(path).name,
+            file_path=path,
+            description="Input document for IDETC mock-audience analysis",
+        )
+        storage_uris.append(f"data_entry:{resp.data_storage.id}")
+        print(f"uploaded {Path(path).name} -> {resp.data_storage.id}", flush=True)
+
+    task_data = TaskRequest(
+        name=JobNames.ANALYSIS,
+        query=QUERY,
+        runtime_config=RuntimeConfig(
+            environment_config={"data_storage_uris": storage_uris},
+        ),
+    )
+    task_ids = client.create_task(task_data)
     task_id = task_ids[0] if isinstance(task_ids, (list, tuple)) else task_ids
     task_id = str(task_id)
     (OUTDIR / "task-id.txt").write_text(task_id + "\n")

@@ -1,3 +1,82 @@
 {
-  "data": []
+  "data": [
+    {
+      "id": 25056311,
+      "data_storage_id": "e778509b-d983-4bd9-b187-9031457dcd51",
+      "operation": "create",
+      "actor_id": "4949af58-f08a-4541-ad1c-1f0a95c6f07d",
+      "actor_type": "trajectory",
+      "timestamp": "2026-07-18T17:57:27.257750Z",
+      "data_storage": {
+        "name": "4949af58-f08a-4541-ad1c-1f0a95c6f07d.ipynb",
+        "description": "",
+        "is_collection": false,
+        "status": "active",
+        "content": null,
+        "embedding": null,
+        "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+        "label": "a52770c895d3",
+        "parent_id": null,
+        "dataset_id": "fa7bc6f1-47f0-42e0-8b72-38c56221529d",
+        "project_id": null,
+        "share_status": "private",
+        "short_alias": null,
+        "id": "e778509b-d983-4bd9-b187-9031457dcd51",
+        "path": "a52770c895d3",
+        "created_at": "2026-07-18T17:57:27.184372Z",
+        "modified_at": "2026-07-18T17:57:28.642701Z",
+        "tags": null,
+        "file_path": "/workspace/notebooks/4949af58-f08a-4541-ad1c-1f0a95c6f07d.ipynb",
+        "metadata": {
+          "trajectory_id": "4949af58-f08a-4541-ad1c-1f0a95c6f07d",
+          "crow_name": "data analysis crow",
+          "job_data": [],
+          "size": 184
+        },
+        "trajectory_id": null,
+        "project_name": null,
+        "project_description": null,
+        "is_kosmos_project": null
+      }
+    },
+    {
+      "id": 25056308,
+      "data_storage_id": "6632709d-0013-44de-b9b0-2f364dc3db9d",
+      "operation": "create",
+      "actor_id": "4949af58-f08a-4541-ad1c-1f0a95c6f07d",
+      "actor_type": "trajectory",
+      "timestamp": "2026-07-18T17:57:25.648098Z",
+      "data_storage": {
+        "name": "4949af58-f08a-4541-ad1c-1f0a95c6f07d_memory_heron_c0_20260718T175417754536.jsonl",
+        "description": "",
+        "is_collection": false,
+        "status": "active",
+        "content": null,
+        "embedding": null,
+        "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+        "label": "1cdd10d8a229",
+        "parent_id": null,
+        "dataset_id": "07c2d4ef-d5ee-451b-961f-98080e4696b7",
+        "project_id": null,
+        "share_status": "private",
+        "short_alias": null,
+        "id": "6632709d-0013-44de-b9b0-2f364dc3db9d",
+        "path": "1cdd10d8a229",
+        "created_at": "2026-07-18T17:57:25.580512Z",
+        "modified_at": "2026-07-18T17:57:27.054713Z",
+        "tags": null,
+        "file_path": "/workspace/memory/4949af58-f08a-4541-ad1c-1f0a95c6f07d_memory_heron_c0_20260718T175417754536.jsonl",
+        "metadata": {
+          "trajectory_id": "4949af58-f08a-4541-ad1c-1f0a95c6f07d",
+          "crow_name": "data analysis crow",
+          "job_data": [],
+          "size": 106342
+        },
+        "trajectory_id": null,
+        "project_name": null,
+        "project_description": null,
+        "is_kosmos_project": null
+      }
+    }
+  ]
 }
