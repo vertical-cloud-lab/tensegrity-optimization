@@ -31,6 +31,7 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `500drops/` | 256 | 500-drop failure test (bubbled-TPU print, 10 in, CH5 trigger @ 300 G), stopped by a TP4 overload at drop 256 — CH6 over full scale (PR #82, posted as `500drops_{1..9}.zip`) | [`drop-test-500drops-analysis.md`](../../docs/drop-test-500drops-analysis.md) |
 | `500drops-nobot/` | 500 | 2nd 500-drop failure test, same specimen, bottom tri-axis (CH6–8) removed — completed 500/500 (PR #82, posted as `500_{1..17}.zip`) | [`drop-test-500drops-nobot-analysis.md`](../../docs/drop-test-500drops-nobot-analysis.md) |
 | `prc1kn-health/` | — | Derived cross-dataset health check of `prc1kn` + sensor (no raw data of its own) | [`drop-test-prc1kn-health-check.md`](../../docs/drop-test-prc1kn-health-check.md) |
+| `sample-size/` | — | Derived variance + sample-size + timing meta-analysis: how many drops per specimen, variance so far, and set duration at ~42 s/drop (no raw data of its own) | [`drop-test-sample-size-analysis.md`](../../docs/drop-test-sample-size-analysis.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
 Total: **1,485 raw CSVs** + the 5 original `.txt` exports.

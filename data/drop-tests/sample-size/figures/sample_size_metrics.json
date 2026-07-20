@@ -1,0 +1,255 @@
+{
+  "ask": "PR #82 comment 5026945744 (@me-madsen)",
+  "sec_per_drop_60in": 42.0,
+  "sec_per_drop_lowh_context": 16.0,
+  "campaigns": [
+    {
+      "dataset": "100drops",
+      "n_stable": 91,
+      "burn_in_drops": 9,
+      "output_cv": 1.005147485968083,
+      "input_cv": 1.8916482960645709,
+      "T_cv": 2.1242230517856706,
+      "cadence_median_s": 20.0
+    },
+    {
+      "dataset": "5in-100drops",
+      "n_stable": 90,
+      "burn_in_drops": 10,
+      "output_cv": 2.523780687920484,
+      "input_cv": 2.684458945998891,
+      "T_cv": 0.41993091381688863,
+      "cadence_median_s": 12.0
+    },
+    {
+      "dataset": "200drops",
+      "n_stable": 190,
+      "burn_in_drops": 10,
+      "output_cv": 1.9789609469942815,
+      "input_cv": 3.399483092691515,
+      "T_cv": 2.3687369832333456,
+      "cadence_median_s": 14.0
+    },
+    {
+      "dataset": "drift-calibration",
+      "n_stable": 19,
+      "burn_in_drops": 5,
+      "output_cv": 0.5287946410910009,
+      "input_cv": 2.5695293976363773,
+      "T_cv": 2.880029711121809,
+      "cadence_median_s": null
+    },
+    {
+      "dataset": "drift-calibration2",
+      "n_stable": 45,
+      "burn_in_drops": 5,
+      "output_cv": 0.6444653402516042,
+      "input_cv": 1.7384809370085192,
+      "T_cv": 1.9545222249973353,
+      "cadence_median_s": null
+    },
+    {
+      "dataset": "30drops-real",
+      "n_stable": 25,
+      "burn_in_drops": 2,
+      "output_cv": 0.9709450446096068,
+      "input_cv": 6.855841703824208,
+      "T_cv": 6.097998319435549,
+      "cadence_median_s": null
+    },
+    {
+      "dataset": "ch4-trigger",
+      "n_stable": 40,
+      "burn_in_drops": 10,
+      "output_cv": 1.553744910701209,
+      "input_cv": 1.1490061308283537,
+      "T_cv": 1.1966745005015342,
+      "cadence_median_s": 14.0
+    }
+  ],
+  "felt_sheet": {
+    "dataset": "felt-sheet (9 conditions x 5)",
+    "output_cv_range": [
+      0.22284232753745495,
+      2.0686244501275355
+    ],
+    "output_cv_median": 0.7170393328650628,
+    "input_cv_range": [
+      0.40296611327177123,
+      16.907718169403765
+    ]
+  },
+  "n5_series": [
+    {
+      "dataset": "input-output (4 geom x 5)",
+      "mount": "hot-glue vertex",
+      "input_cv": 1.3,
+      "output_cv": 3.5,
+      "T_cv": 4.6,
+      "source": "docs/drop-test-input-output-analysis.md (worst-specimen n0jdwk)"
+    },
+    {
+      "dataset": "key-mounted (5)",
+      "mount": "key-seat",
+      "input_cv": 2.0,
+      "output_cv": 1.3,
+      "T_cv": 2.4,
+      "source": "docs/drop-test-key-mounted-analysis.md"
+    },
+    {
+      "dataset": "key-mounted-wax (5)",
+      "mount": "key-seat + wax",
+      "input_cv": 0.5,
+      "output_cv": 0.6,
+      "T_cv": 1.1,
+      "source": "docs/drop-test-key-mounted-wax-analysis.md"
+    },
+    {
+      "dataset": "burn-in-wax (5)",
+      "mount": "key-seat + wax",
+      "input_cv": 0.47,
+      "output_cv": 0.31,
+      "T_cv": 1.07,
+      "source": "docs/drop-test-burn-in-wax-analysis.md (recorded phase)"
+    }
+  ],
+  "output_cv_pooled": {
+    "values_sorted": [
+      0.31,
+      0.5287946410910009,
+      0.6,
+      0.6444653402516042,
+      0.7170393328650628,
+      0.9709450446096068,
+      1.005147485968083,
+      1.3,
+      1.553744910701209,
+      1.9789609469942815,
+      2.523780687920484,
+      3.5
+    ],
+    "median": 0.9880462652888449,
+    "p90": 2.469298713827864,
+    "min": 0.31,
+    "max": 3.5
+  },
+  "T_cv_pooled": {
+    "values_sorted": [
+      0.41993091381688863,
+      1.07,
+      1.1,
+      1.1966745005015342,
+      1.9545222249973353,
+      2.1242230517856706,
+      2.3687369832333456,
+      2.4,
+      2.880029711121809,
+      4.6,
+      6.097998319435549
+    ],
+    "median": 2.1242230517856706
+  },
+  "precision_n": {
+    "0.5": {
+      "moe_1.0pct": 4,
+      "moe_2.0pct": 3,
+      "moe_3.0pct": 3
+    },
+    "1.0": {
+      "moe_1.0pct": 7,
+      "moe_2.0pct": 4,
+      "moe_3.0pct": 3
+    },
+    "1.5": {
+      "moe_1.0pct": 12,
+      "moe_2.0pct": 5,
+      "moe_3.0pct": 4
+    },
+    "2.0": {
+      "moe_1.0pct": 18,
+      "moe_2.0pct": 7,
+      "moe_3.0pct": 5
+    },
+    "2.5": {
+      "moe_1.0pct": 27,
+      "moe_2.0pct": 9,
+      "moe_3.0pct": 6
+    },
+    "3.5": {
+      "moe_1.0pct": 50,
+      "moe_2.0pct": 15,
+      "moe_3.0pct": 8
+    },
+    "5.0": {
+      "moe_1.0pct": 99,
+      "moe_2.0pct": 27,
+      "moe_3.0pct": 14
+    },
+    "6.5": {
+      "moe_1.0pct": 165,
+      "moe_2.0pct": 44,
+      "moe_3.0pct": 21
+    }
+  },
+  "discrimination_n": {
+    "1.5": {
+      "delta_5pct": 2,
+      "delta_10pct": 1,
+      "delta_20pct": 1
+    },
+    "2.5": {
+      "delta_5pct": 4,
+      "delta_10pct": 1,
+      "delta_20pct": 1
+    },
+    "3.5": {
+      "delta_5pct": 8,
+      "delta_10pct": 2,
+      "delta_20pct": 1
+    },
+    "6.5": {
+      "delta_5pct": 27,
+      "delta_10pct": 7,
+      "delta_20pct": 2
+    }
+  },
+  "plans": {
+    "minimal (recorded only)": {
+      "burn_in": 0,
+      "recorded": 5,
+      "total": 5,
+      "min_60in": 3.5,
+      "min_lowh": 1.3
+    },
+    "baseline": {
+      "burn_in": 2,
+      "recorded": 5,
+      "total": 7,
+      "min_60in": 4.9,
+      "min_lowh": 1.9
+    },
+    "conservative": {
+      "burn_in": 2,
+      "recorded": 10,
+      "total": 12,
+      "min_60in": 8.4,
+      "min_lowh": 3.2
+    }
+  },
+  "batch_hours_60in": {
+    "10designs_x7drops": 0.82,
+    "10designs_x12drops": 1.4,
+    "20designs_x7drops": 1.63,
+    "20designs_x12drops": 2.8,
+    "48designs_x7drops": 3.92,
+    "48designs_x12drops": 6.72,
+    "96designs_x7drops": 7.84,
+    "96designs_x12drops": 13.44
+  },
+  "recommendation": {
+    "burn_in_discarded": "2 (hot-glue mounts drift up to 5-10; the wax key-seat mount showed ~0 significant burn-in)",
+    "recorded_min": 5,
+    "recorded_conservative": 10,
+    "rationale": "Go-forward output CV is 0.31-3.50% (median 0.99%). At the median CV, 5 recorded drops give a 95% CI half-width of ~1.2% on the per-specimen mean, and easily resolve the >=10% differences seen between designs. Use 10 recorded drops when the metric is the noisier input/plate channel or transmissibility on a hot-glue mount (CV up to ~6.5%)."
+  }
+}
