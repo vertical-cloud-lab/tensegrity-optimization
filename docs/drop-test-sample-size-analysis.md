@@ -1,7 +1,13 @@
 # How many drops per specimen? Variance + sample-size + timing
 
 Answers @me-madsen's question on
-[PR #82](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/82#issuecomment-5026945744):
+[PR #82](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/82#issuecomment-5026945744),
+re-asked on PR #86 (2026-07-21) with the
+[60 in / 5 felts validation](drop-test-60in-5felts-analysis.md), the
+[5-vs-10-in comparison](drop-test-5vs10-analysis.md)
+([PR #82 comment 4973983998](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/82#issuecomment-4973983998)),
+and the [PR #67](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/67)
+datasets as explicit references — all now folded into the aggregation below:
 
 > Recommend a minimum number of drop tests per specimen to get accurate data.
 > How much variance have we had in our data per specimen being tested so far?
@@ -33,6 +39,10 @@ together:
 
 | dataset | drops used | mount | output CV | input/plate CV | T CV |
 |---|--:|---|--:|--:|--:|
+| `60in-5felts` 7xadt6 | 95 | key-seat | 1.7 %* | 1.7 %* | **0.12 %** |
+| `60in-5felts` 9GMQYQ | 96 | key-seat | 1.0 %* | 0.8 %* | **0.45 %** |
+| `5vs10` 5 in | 30 | key-seat | **0.7 %** | 0.4 % | 0.4 % |
+| `5vs10` 10 in | 30 | key-seat | **0.3 %** | 0.9 % | 0.8 % |
 | `drift-calibration2` | 45 | key-seat + wax | **0.6 %** | 1.7 % | 2.0 % |
 | `drift-calibration`  | 19 | key-seat + wax | **0.5 %** | 2.6 % | 2.9 % |
 | `100drops`           | 91 | key-seat | **1.0 %** | 1.9 % | 2.1 % |
@@ -46,15 +56,19 @@ together:
 | `key-mounted-wax` (5)| 5 | key-seat + wax | **0.6 %** | 0.5 % | 1.1 % |
 | `burn-in-wax` (5)    | 5 | key-seat + wax | **0.31 %** | 0.47 % | 1.07 % |
 
-\* the input/plate CH5 (and its `T*`) is the tape/wax-coupled, near-saturation
-channel — its large CVs are a mounting/saturation artifact, not specimen
-scatter (`30drops-real` had a suspect CH5; `felt-sheet` 20 in/1 felt clipped CH5).
+\* the `60in-5felts` TOP/CH5 CVs are inflated by the campaign-scale **felt-wear
+drift** (both channels climb in lockstep, per-drop corr = 0.999); the drift
+cancels in `T`, whose 0.12–0.45 % CV over ~95 drops is the tightest of any
+dataset. The `30drops-real` / `felt-sheet` input CVs marked in the earlier rows
+are a tape/wax-coupling and saturation artifact, not specimen scatter.
 
 **Bottom line on variance:** the go-forward **output** metric is tight and
 stable — pooled across all repeat-drop datasets the within-specimen CV is
-**0.31 – 3.5 %, median ≈ 1.0 %** (90th percentile ≈ 2.5 %). The best mount
-(key-seat + wax) sits at **CV ≈ 0.3 – 0.6 %**. Transmissibility `T` is a bit
-looser (median CV ≈ 2.1 %). For scale, the *between-design* spread we have
+**0.31 – 3.5 %, median ≈ 1.0 %** (90th percentile ≈ 2.3 %). The best mount
+(key-seat + wax) sits at **CV ≈ 0.3 – 0.6 %**. Transmissibility `T` pools to a
+median CV ≈ 1.2 %, and at the 60 in / 5 felts operating point it is the
+*tightest* metric of all (0.12 – 0.45 % over ~95 drops) because it cancels the
+felt-wear drift. For scale, the *between-design* spread we have
 already measured is far larger than this within-specimen scatter — the four
 input-output geometries span `T` ≈ 0.96 → 1.19 (~24 %) and output ≈ 230 → 290 G
 (~26 %) — so the signal-to-noise for ranking designs is comfortably high.
@@ -77,7 +91,7 @@ Smallest `n` whose 95 % t-CI half-width on the mean is within a target
 | 0.5 % (wax mount) | 4 | 3 | 3 |
 | 1.0 % (median output) | 7 | 4 | 3 |
 | 1.5 % | 12 | 5 | 4 |
-| 2.5 % (typical `T`) | 27 | 9 | 6 |
+| 2.5 % (conservative `T`) | 27 | 9 | 6 |
 | 3.5 % (hot-glue worst) | 50 | 15 | 8 |
 
 At the **median output CV (~1.0 %), 5 recorded drops give a ±1.2 % 95 % CI** on
@@ -130,7 +144,10 @@ bare hot-glue mount (CV up to ~6.5 %).
 
 ## 3. How long does a set take?
 
-At @me-madsen's measured **~42 s/drop at 60 in with automatic dropping**:
+At @me-madsen's measured **~42 s/drop at 60 in with automatic dropping** (the
+60 in / 5 felts validation logged a median inter-capture cadence of **41 s**
+across 201 drops, so this number is confirmed at campaign scale; the `5vs10`
+runs logged 11–14 s/drop at 5–10 in):
 
 | per-specimen plan | drops | time @ 60 in (42 s) | time @ low height (≈16 s)* |
 |---|--:|--:|--:|

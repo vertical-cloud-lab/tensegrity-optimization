@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """How many drops per specimen? Cross-dataset variance + sample-size analysis.
 
-@me-madsen asked (PR #82 comment 5026945744):
+@me-madsen asked (PR #82 comment 5026945744, re-asked on PR #86 with the
+60 in / 5 felts validation, the 5-vs-10-in comparison, and the PR #67 datasets
+as explicit references):
 
   1. Recommend a minimum number of drop tests per specimen to get accurate data.
   2. How much variance have we had per specimen being tested so far?
@@ -89,6 +91,43 @@ CAMPAIGNS = [
 ]
 
 
+def read_60in_5felts() -> list[dict]:
+    """The 60 in / 5 felts validation runs (PR #86): ~100 drops per specimen."""
+    d = json.loads((DROP / "60in-5felts-validation/figures/60in_5felts_metrics.json")
+                   .read_text())
+    rows = []
+    for sid, s in d["specimens"].items():
+        so = s["stabilized_ols"]
+        rows.append({
+            "dataset": f"60in-5felts {sid}",
+            "n_stable": so["TOP output"]["n"],
+            "burn_in_drops": s["burn_in_drops"],
+            "output_cv": so["TOP output"]["cv"],
+            "input_cv": so["CH5 input"]["cv"],
+            "T_cv": so["T TOP/CH5"]["cv"],
+            "cadence_median_s": s["cadence_s"]["median"],
+        })
+    return rows
+
+
+def read_5vs10() -> list[dict]:
+    """The 5-vs-10-in comparison (PR #82 comment 4973983998): 30 drops/height."""
+    d = json.loads((DROP / "5vs10/figures/5vs10_metrics.json").read_text())
+    rows = []
+    for g, gd in d["groups"].items():
+        m = gd["cfc180"]
+        rows.append({
+            "dataset": f"5vs10 {g}",
+            "n_stable": m["TOP output"]["n"],
+            "burn_in_drops": None,
+            "output_cv": m["TOP output"]["cv"],
+            "input_cv": m["CH5 input"]["cv"],
+            "T_cv": m["T = TOP/CH5"]["cv"],
+            "cadence_median_s": gd["cadence_s_median"],
+        })
+    return rows
+
+
 def read_campaigns() -> list[dict]:
     rows = []
     for name, rel, out_k, in_k, t_k in CAMPAIGNS:
@@ -152,7 +191,7 @@ def n_two_sample(cv_pct: float, delta_rel_pct: float,
 
 
 def main() -> None:
-    campaigns = read_campaigns()
+    campaigns = read_campaigns() + read_60in_5felts() + read_5vs10()
     felt = read_felt()
 
     # Pool the go-forward output CVs from every controlled repeat-drop dataset.
@@ -200,7 +239,7 @@ def main() -> None:
             batch[f"{ndes}designs_x{total}drops"] = round(secs / 3600.0, 2)
 
     metrics = {
-        "ask": "PR #82 comment 5026945744 (@me-madsen)",
+        "ask": "PR #82 comment 5026945744, re-asked PR #86 2026-07-21 (@me-madsen)",
         "sec_per_drop_60in": SEC_PER_DROP_60IN,
         "sec_per_drop_lowh_context": SEC_PER_DROP_LOWH,
         "campaigns": campaigns,
