@@ -1,0 +1,144 @@
+{
+  "capture_fps": 959.04,
+  "capture_fps_source": "Sony XML sidecar (captureFps=959.04p, formatFps=23.98p, DSC-RX100M4)",
+  "drop_height_m": 1.524,
+  "grid_square_mm": 20.0,
+  "free_fall_reference": {
+    "tau_s": 0.5575029163292983,
+    "v_ms": 5.467235974420713
+  },
+  "drops": {
+    "drop1": {
+      "descent_window": [
+        127,
+        167
+      ],
+      "contact_frame": 167,
+      "turnaround_frame": 168,
+      "catch_frame": 244,
+      "n_velocity_dups_removed": 4,
+      "descent_flatness": {
+        "a_px_per_frame2": 0.06904804738004557,
+        "a_err": 0.04559833867762893,
+        "expected_g_px_per_frame2": 0.03847096348032069,
+        "residual_px_per_frame": 1.8190366190568266,
+        "n_points": 26,
+        "interpretation": "free-fall velocity gain cancelled by perspective scale gradient"
+      },
+      "scale_px_per_m": 3608.1603522524574,
+      "scale_basis": "arrival speed assumed = free fall from 60 in (5.47 m/s); DAQ plate dv corroborates",
+      "v_impact_px_per_frame": 20.569177593544737,
+      "v_impact_ms_assumed": 5.467235974420713,
+      "impact_pulse_frames": 1,
+      "impact_pulse_ms": 1.0427093760427095,
+      "snapback_peak_px_per_frame": 21.555791521346272,
+      "snapback_ratio": 1.0479656477909534,
+      "v_rebound_px_per_frame": 9.155621629181729,
+      "v_rebound_ms": 2.4335413368668597,
+      "coeff_restitution_scalefree": 0.44511364577138246,
+      "brake_decel_g": 3.73697478690187,
+      "catch_delay_ms": 79.24591257924591,
+      "catch_rise_px": 542.0676355830042,
+      "catch_rise_mm": 150.2337985740043,
+      "specimen_compression": {
+        "valid_frames_near_impact": 30,
+        "static_height_px": 374.0,
+        "static_height_mm": 103.6539298389341,
+        "note": "deceleration pulse spans <= 3 capture frames; peak compression occurs between frames and is not resolvable with mask-based tracking at ~960 fps"
+      },
+      "video": {
+        "file": "prc1kn_video1_slomo.mp4",
+        "playback_frames": 791,
+        "unique_frames": 605,
+        "duplicate_fraction": 0.23514538558786346,
+        "real_duration_s": 0.6308391725058392
+      },
+      "grid": {
+        "bbox_xywh": [
+          282,
+          538,
+          660,
+          999
+        ],
+        "n_strips": 82,
+        "period_px": 83.73881530761719,
+        "period_iqr_px": 0.389801025390625,
+        "px_per_mm_at_grid": 2.0934703826904295,
+        "px_per_mm_at_specimen_freefall_anchor": 3.6081603522524572,
+        "specimen_over_grid_scale": 1.7235306417927057,
+        "speed_error_if_grid_used_directly_pct": 72.35306417927056
+      },
+      "daq_reference": {
+        "n_captures": 101,
+        "mean_ch5_dv_ms": 5.781170702644591,
+        "mean_top_width_ms": 1.5702970297029701
+      }
+    },
+    "drop2": {
+      "descent_window": [
+        78,
+        204
+      ],
+      "contact_frame": 204,
+      "turnaround_frame": 206,
+      "catch_frame": 279,
+      "n_velocity_dups_removed": 1,
+      "descent_flatness": {
+        "a_px_per_frame2": 0.015621988759310841,
+        "a_err": 0.011060068908383866,
+        "expected_g_px_per_frame2": 0.0381308618681325,
+        "residual_px_per_frame": 2.0337092959712333,
+        "n_points": 52,
+        "interpretation": "free-fall velocity gain cancelled by perspective scale gradient"
+      },
+      "scale_px_per_m": 3576.262498863309,
+      "scale_basis": "arrival speed assumed = free fall from 60 in (5.47 m/s); DAQ plate dv corroborates",
+      "v_impact_px_per_frame": 20.387336281862275,
+      "v_impact_ms_assumed": 5.467235974420713,
+      "impact_pulse_frames": 2,
+      "impact_pulse_ms": 2.085418752085419,
+      "snapback_peak_px_per_frame": 14.016930091556958,
+      "snapback_ratio": 0.6875312153470098,
+      "v_rebound_px_per_frame": 9.50774184009663,
+      "v_rebound_ms": 2.549674342200681,
+      "coeff_restitution_scalefree": 0.4663552760718061,
+      "brake_decel_g": 3.4054968116342077,
+      "catch_delay_ms": 76.11778445111779,
+      "catch_rise_px": 519.3122271428056,
+      "catch_rise_mm": 145.21088071914897,
+      "specimen_compression": {
+        "valid_frames_near_impact": 30,
+        "static_height_px": 69.5,
+        "static_height_mm": 19.43369649797522,
+        "note": "deceleration pulse spans <= 3 capture frames; peak compression occurs between frames and is not resolvable with mask-based tracking at ~960 fps"
+      },
+      "video": {
+        "file": "prc1kn_video2_slomo.mp4",
+        "playback_frames": 962,
+        "unique_frames": 757,
+        "duplicate_fraction": 0.21309771309771308,
+        "real_duration_s": 0.789330997664331
+      },
+      "grid": {
+        "bbox_xywh": [
+          350,
+          395,
+          497,
+          856
+        ],
+        "n_strips": 62,
+        "period_px": 64.48014068603516,
+        "period_iqr_px": 0.29800987243652344,
+        "px_per_mm_at_grid": 1.6120035171508789,
+        "px_per_mm_at_specimen_freefall_anchor": 3.5762624988633087,
+        "specimen_over_grid_scale": 2.218520282873912,
+        "speed_error_if_grid_used_directly_pct": 121.8520282873912
+      },
+      "daq_reference": {
+        "n_captures": 101,
+        "mean_ch5_dv_ms": 5.781170702644591,
+        "mean_top_width_ms": 1.5702970297029701
+      }
+    }
+  }
+}

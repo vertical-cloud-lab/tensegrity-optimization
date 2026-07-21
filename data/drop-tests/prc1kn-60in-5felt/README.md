@@ -37,3 +37,11 @@ reads the CSVs straight out of the zips — no need to extract.
 - Script: [`scripts/analysis/drop_test_prc1kn_60in_5felts_analysis.py`](../../../scripts/analysis/drop_test_prc1kn_60in_5felts_analysis.py)
 - Writeup: [`docs/drop-test-prc1kn-60in-5felts-analysis.md`](../../../docs/drop-test-prc1kn-60in-5felts-analysis.md)
 - Figures + machine-readable metrics: [`figures/`](figures/)
+
+## Slow-mo videos
+
+Two 959.04 fps videos (Sony RX100M4, XML sidecars included) of rehearsal
+drops shot ~5.5 h before the DAQ session, with the 20 mm checkerboard
+calibration grid in frame — see [`video/`](video/) and
+[`docs/drop-test-prc1kn-video-analysis.md`](../../../docs/drop-test-prc1kn-video-analysis.md)
+(kinematics, three-structure cross-reference, grid-placement guidance).
