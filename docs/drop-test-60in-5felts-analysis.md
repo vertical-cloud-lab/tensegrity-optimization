@@ -171,3 +171,22 @@ as a consumable.** Specifically:
   meaningful quantities.
 - 200 ms window only; Δv is partial-pulse; the felt-wear extrapolation
   beyond 201 drops is a straight-line eyeball, not a fitted wear model.
+
+## 7. Slow-mo video record
+
+@ctrhjk posted slow-motion videos of both campaigns (PR #86, recorded
+2026-07-20): [7xadt6](https://youtube.com/shorts/Nab3hfuF4Dw) and
+[9GMQYQ](https://youtube.com/shorts/zkum2JlHpYk), on the BYU Vertical Cloud
+Lab channel. Full downloads are blocked from CI (YouTube sign-in/bot gate
+for datacenter IPs), so the analysis in
+[`data/drop-tests/60in-5felts-validation/video/`](../data/drop-tests/60in-5felts-validation/video/)
+works from the eight real preview frames YouTube serves publicly
+(~25/50/75 % of each runtime + poster). Frame-level findings, all
+consistent with the accelerometer record: bungee-free carriage-on-rails
+setup with the key-seat top-vertex mount and slack cable routing; specimen
+intact, upright, tendons taut in every frame of both videos; in the two
+mid-run 9GMQYQ frames the carriage and specimen positions match to ≤1 px
+(parked hold, no residual specimen motion); and the top felt sheet shows a
+darker mottled zone at the impact center, consistent with §3's cumulative
+compaction. Frame-by-frame kinematics need the original files + recording
+fps — see the video README for what to post.

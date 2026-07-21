@@ -40,3 +40,12 @@ drift regressions, the felt-wear saturation story (CH5 raw spike 2.1 →
 | `figures/02_stabilized_ols.png` | stabilized-phase OLS fits: TOP and T = TOP/CH5 per specimen |
 | `figures/03_saturation.png` | CH5 / CH4 raw peak as % of full scale across the evening |
 | `figures/04_specimen_comparison.png` | stabilized TOP and T boxplots, Welch p, Cohen's d |
+
+## Slow-mo video
+
+[`video/`](video/) — links to @ctrhjk's slow-motion videos of both campaigns
+(YouTube shorts, 2026-07-20), the eight publicly-served real preview frames
+(full downloads are bot-gated from CI), frame-level observations
+(rig/mount/tie-down verification, specimen intact throughout, felt
+impact-zone mottling), and what to post to enable full frame-by-frame
+kinematics.
