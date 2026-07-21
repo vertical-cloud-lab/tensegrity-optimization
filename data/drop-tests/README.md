@@ -34,11 +34,12 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `7xadt6 _60in_5felts folder/` | 100 (zips) | 60 in / 5 felt validation campaign, specimen `7xadt6` (`Marcus_{1..4}.zip`, PR #86) | [`drop-test-60in-5felts-analysis.md`](../../docs/drop-test-60in-5felts-analysis.md) |
 | `9GMQYQ_60in_5felts/` | 101 (zips) | 60 in / 5 felt validation campaign, specimen `9GMQYQ` (`jin_{1..4}.zip`, PR #86) | [`drop-test-60in-5felts-analysis.md`](../../docs/drop-test-60in-5felts-analysis.md) |
 | `60in-5felts-validation/` | — | Derived analysis of the two 60 in / 5 felt campaigns: stabilized OLS drift, felt-wear saturation, specimen discrimination (no raw data of its own) + 960 fps slo-mo videos and frame-by-frame kinematics (`video/`) | [`drop-test-60in-5felts-analysis.md`](../../docs/drop-test-60in-5felts-analysis.md) |
+| `prc1kn-60in-5felt/` | 101 (zips) | `prc1kn` 60 in campaign (`prc1kn - set 1 - {1..4}.zip`, PR #86) — TP4 session says **4 felt + 1 cardboard**, not 5 felt — + mock three-structure transmissibility comparison | [`drop-test-prc1kn-60in-5felts-analysis.md`](../../docs/drop-test-prc1kn-60in-5felts-analysis.md) |
 | `prc1kn-health/` | — | Derived cross-dataset health check of `prc1kn` + sensor (no raw data of its own) | [`drop-test-prc1kn-health-check.md`](../../docs/drop-test-prc1kn-health-check.md) |
 | `sample-size/` | — | Derived variance + sample-size + timing meta-analysis: how many drops per specimen, variance so far, and set duration at ~42 s/drop (no raw data of its own) | [`drop-test-sample-size-analysis.md`](../../docs/drop-test-sample-size-analysis.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
-Total: **1,530 loose raw CSVs** + **201 CSVs inside the 60 in / 5 felt
+Total: **1,530 loose raw CSVs** + **302 CSVs inside the 60 in campaign
 zips** + the 5 original `.txt` exports.
 
 ## Provenance / completeness
