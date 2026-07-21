@@ -43,9 +43,11 @@ drift regressions, the felt-wear saturation story (CH5 raw spike 2.1 →
 
 ## Slow-mo video
 
-[`video/`](video/) — links to @ctrhjk's slow-motion videos of both campaigns
-(YouTube shorts, 2026-07-20), the eight publicly-served real preview frames
-(full downloads are bot-gated from CI), frame-level observations
-(rig/mount/tie-down verification, specimen intact throughout, felt
-impact-zone mottling), and what to post to enable full frame-by-frame
-kinematics.
+[`video/`](video/) — @ctrhjk's slow-motion videos of both campaigns
+(Sony RX100 IV @ 960 fps, 2026-07-20; committed as
+`{7xadt6,9GMQYQ}_slomo.mp4` by @sgbaird) plus the full frame-by-frame
+kinematics pass (`drop_test_60in_5felts_video_analysis.py`): pulse ≤ 2
+capture frames ≈ 1–2 ms (corroborates the DAQ's ~1.6 ms), anti-rebound
+brake catch ~86–89 ms after impact (no secondary hits), top-vertex
+snap-back ~0.7× impact speed, specimens intact throughout. Writeup: §7 of
+the analysis doc.

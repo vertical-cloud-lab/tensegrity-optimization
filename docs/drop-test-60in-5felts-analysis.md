@@ -172,21 +172,67 @@ as a consumable.** Specifically:
 - 200 ms window only; Δv is partial-pulse; the felt-wear extrapolation
   beyond 201 drops is a straight-line eyeball, not a fitted wear model.
 
-## 7. Slow-mo video record
+## 7. Slow-mo video kinematics
 
 @ctrhjk posted slow-motion videos of both campaigns (PR #86, recorded
 2026-07-20): [7xadt6](https://youtube.com/shorts/Nab3hfuF4Dw) and
-[9GMQYQ](https://youtube.com/shorts/zkum2JlHpYk), on the BYU Vertical Cloud
-Lab channel. Full downloads are blocked from CI (YouTube sign-in/bot gate
-for datacenter IPs), so the analysis in
-[`data/drop-tests/60in-5felts-validation/video/`](../data/drop-tests/60in-5felts-validation/video/)
-works from the eight real preview frames YouTube serves publicly
-(~25/50/75 % of each runtime + poster). Frame-level findings, all
-consistent with the accelerometer record: bungee-free carriage-on-rails
-setup with the key-seat top-vertex mount and slack cable routing; specimen
-intact, upright, tendons taut in every frame of both videos; in the two
-mid-run 9GMQYQ frames the carriage and specimen positions match to ≤1 px
-(parked hold, no residual specimen motion); and the top felt sheet shows a
-darker mottled zone at the impact center, consistent with §3's cumulative
-compaction. Frame-by-frame kinematics need the original files + recording
-fps — see the video README for what to post.
+[9GMQYQ](https://youtube.com/shorts/zkum2JlHpYk). The files were initially
+analyzable only via YouTube's public preview frames (CI is bot-gated);
+@sgbaird then committed the downloads to the branch, now organized as
+[`data/drop-tests/60in-5felts-validation/video/{7xadt6,9GMQYQ}_slomo.mp4`](../data/drop-tests/60in-5felts-validation/video/),
+enabling the full frame-by-frame pass
+(`scripts/analysis/drop_test_60in_5felts_video_analysis.py`, figures
+`05–07` + `video_metrics.json` in `video/figures/`).
+
+**Time base.** The camera is the Sony RX100 IV at **960 fps** HFR (camera
+spec posted by @ctrhjk in PR #67; workflow recorded in the burn-in-wax
+README). The committed files are 30 fps YouTube containers; the script
+detects and removes pulldown-duplicated frames — 19.8 % / 14.1 % duplicates
+found — so real time is exactly `unique frame / 960` with no container
+ambiguity (this resolves the ±25 % caveat the burn-in-wax pass had to
+carry). One drop per video: 0.566 s / 0.743 s of real time.
+
+**Kinematics (one drop per specimen):**
+
+| quantity | 7xadt6 | 9GMQYQ |
+|---|--:|--:|
+| impact speed (px/frame) | 19.4 | 12.8 |
+| deceleration bracket | ≤ 2 frames ≈ **1–2 ms** | ≤ 2 frames ≈ **1–2 ms** |
+| top-vertex snap-back ratio | 0.70 | 0.68 |
+| sustained rebound / impact speed (e*) | 0.35 | 0.43 |
+| rebound speed (m/s) | 1.9 | 2.4 |
+| brake deceleration | 2.1 g | 2.4 g |
+| brake catch after impact | +89 ms / 130 mm rise | +86 ms / 150 mm rise |
+
+- **The video corroborates the DAQ pulse width.** The tracked top vertex
+  goes from full descent speed to reversal within 1–2 capture frames
+  (≈1–2 ms) — independent optical confirmation of the ~1.6 ms CFC pulse
+  width the accelerometers report (§2). The felt stack, compacted by this
+  point in the evening, is a *stiff* arrestor.
+- **The rig has an anti-rebound catch.** After impact the carriage rebounds
+  at ~0.4× impact speed and is decelerated at ~2.1–2.4 g (gravity + brake,
+  not free flight), coming to a dead stop ~130–150 mm above the felt
+  ~86–89 ms after impact and holding there — **no secondary impact reaches
+  the specimen**, so each capture is a single clean shock. This also
+  explains why the earlier preview-frame pass found the carriage "parked"
+  above the felt mid-video.
+- **Elastic specimen response, no damage.** The top vertex snaps back at
+  ~0.7× impact speed on both specimens (the tensegrity re-extending) before
+  settling into the carriage rebound. The 7xadt6 montage shows the struts
+  visibly bowed in the contact/turnaround/+15 ms frames and straight again
+  at the hold — elastic flexure, fully recovered; struts/tendons intact in
+  every inspected frame of both videos.
+- **Scale + checks.** No scale bar is in frame and the visible descent is
+  too short for curvature self-calibration (the measured pixel velocity is
+  flat to ±2 % — the free-fall gain is cancelled by the camera's
+  perspective gradient), so the pixel scale is anchored on the arrival
+  speed being free-fall from 60 in (5.47 m/s), which the DAQ plate Δv
+  (5.53 / 5.69 m/s campaign means) independently corroborates. Under that
+  anchor the two *independently framed* videos imply the same physical
+  specimen size (orange-strut extent 82 mm vs 78 mm) — a consistency check
+  that would fail if either the 960 fps time base or the 60 in height were
+  wrong.
+- **Limit.** Peak specimen compression happens inside the 1–2 ms pulse —
+  between capture frames — so it is not resolvable at 960 fps; the ≥5000 fps
+  DIC recommendation from the Edison synthesis stands for deformation
+  measurement.
