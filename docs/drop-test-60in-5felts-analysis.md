@@ -78,7 +78,8 @@ explains the input rise. See `figures/02_stabilized_ols.png`.
 
 The saturation audit (`figures/03_saturation.png`) is the campaign-scale
 story. The **raw** CH5 spike grows monotonically across the evening — the
-two campaigns were run back-to-back, presumably on the same felt stack:
+two campaigns were run back-to-back on the same felt stack (confirmed by
+@ctrhjk on PR #86 — the felt was not changed between specimens):
 
 | | CH5 raw \|peak\| first 5 | last 5 | worst | worst %FS |
 |---|--:|--:|--:|--:|
@@ -156,12 +157,12 @@ as a consumable.** Specifically:
 - n = 1 specimen per geometry; the two specimens' 100-drop campaigns are
   what make the per-drop statistics strong, but geometry conclusions still
   rest on one print each.
-- The "same felt stack all evening" reading is inferred from the monotonic
-  CH5 raw trend across the two back-to-back sessions (and its recovery after
-  the 12.9 min pause); @ctrhjk should confirm whether the felt was changed
-  between specimens — if it *was*, the `9GMQYQ` starting level (~42 % FS)
-  suggests felt sheets also vary unit-to-unit, which strengthens, not
-  weakens, the case for logging felt state and normalizing by the input.
+- ~~The "same felt stack all evening" reading is inferred~~ **Confirmed by
+  @ctrhjk (PR #86): the felt stack was not changed between the two
+  specimens.** The monotonic CH5 raw trend is therefore cumulative
+  compaction of one stack across 201 drops, and the `9GMQYQ` starting level
+  (~42 % FS) is simply where `7xadt6` left the felt — the ~100-drop
+  refresh cadence in §5 applies as written.
 - Full-scale values are carried over from the felt-sheet sweep channel
   table (CH2–CH4: 14,492.8 / 14,992.5 / 13,624.0 G; CH5: 9,442.9 G);
   sensor serial numbers weren't posted with this dataset.
