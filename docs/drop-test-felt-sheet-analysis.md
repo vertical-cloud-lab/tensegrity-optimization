@@ -142,3 +142,8 @@ around 10–12 in per sheet.
 - The real long-term fix for head-room is a higher-range base sensor, not
   more felt — felt also changes the pulse shape (widens it), which matters if
   SEA / pulse-shape metrics are later added to the objective stack.
+- Felt itself turned out to be a consumable (it compacts measurably over
+  ~100 drops; see the 60 in validation §3). Durable non-consumable
+  alternatives (elastomer programmer pads, Sorbothane, rubber mats) are
+  surveyed in
+  [drop-test-absorber-alternatives.md](drop-test-absorber-alternatives.md).

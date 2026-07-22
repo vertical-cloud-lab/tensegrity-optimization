@@ -150,7 +150,10 @@ as a consumable.** Specifically:
    evening started already past the threshold for exactly this reason) —
    so **procure replacement felt sheets** before the planned
    50–100-drop-per-specimen campaigns; at that cadence felt is a
-   consumable.
+   consumable. Alternatively, replace the consumable outright: durable
+   absorber options (urethane programmer pads, Sorbothane, rubber mats)
+   and a bridging protocol are laid out in
+   [drop-test-absorber-alternatives.md](drop-test-absorber-alternatives.md).
 3. **If mid-campaign swaps are impractical, run 60 in with one more
    sheet (6 total).** One extra sheet attenuates the base hit ×0.36
    (felt-sheet model), which would have held even this evening's worst
