@@ -12,6 +12,12 @@ sheets**), posted by @ctrhjk on PR #86:
 The raw TP4 exports (200 ms / 125 kHz) stay inside the committed zips; the
 analysis script reads them directly.
 
+**Stack composition:** per @me-madsen (PR #86), every "5 felt" session —
+these two included — physically used **4 felt sheets + 1 cardboard** (the
+lab owns only four felt sheets). Composition was constant across sessions,
+so the analysis conclusions are unaffected; the names keep the label the
+data was posted under.
+
 ## Setup / channel map
 
 Rig unchanged from the felt-sheet sweep and `500drops-nobot` runs; bottom

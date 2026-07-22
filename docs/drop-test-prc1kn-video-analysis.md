@@ -74,8 +74,11 @@ Highlights:
   catch ~10 ms earlier). Same single-shock behavior, just a firmer catch.
 - `prc1kn`'s carriage rebound (e* 0.45–0.47) is higher than 7xadt6's
   (0.35) / 9GMQYQ's (0.43), but this is a whole-collision property
-  dominated by the impact stack — and `prc1kn`'s stack was the stiffer
-  4-felt + cardboard one — so it cannot be attributed to the structure.
+  dominated by the impact stack — and `prc1kn`'s stack, while the same
+  4-felt + 1-cardboard composition used in every "5 felt" session
+  (confirmed by @me-madsen on PR #86), carried ~200 more drops of
+  compaction and was measurably stiffer — so it cannot be attributed to
+  the structure.
 
 ## 3. Cross-reference: which structure is the better energy absorber?
 
@@ -100,7 +103,8 @@ ranking**, for two structural reasons:
   all three pass the shock essentially 1:1, exactly what T ≈ 1.01–1.03
   says.
 - The one video metric that *does* differ (carriage e*) is stack-dominated,
-  and the stack changed between campaigns (§2), so it is confounded in
+  and the stack's wear state changed between campaigns (§2 — same
+  composition, ~200 more drops of compaction), so it is confounded in
   precisely the way the accelerometer writeup's caveat predicted.
 
 Bottom line: for ranking energy absorbers, trust the DAQ transmissibility

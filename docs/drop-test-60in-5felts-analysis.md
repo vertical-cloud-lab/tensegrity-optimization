@@ -7,6 +7,15 @@ distinct-geometry specimens, **`7xadt6`** (100 captures, `Marcus_{1..4}.zip`)
 and **`9GMQYQ`** (101 captures, `jin_{1..4}.zip`), both on 2026-07-20
 (7xadt6 first, 19:51–20:59; 9GMQYQ second, 21:12–22:32).
 
+**Stack composition note (added after @me-madsen's confirmation on
+PR #86):** every session labeled "5 felt" — including these two and the
+felt-sheet sweep's 5-sheet conditions — physically used **4 felt sheets +
+1 cardboard sheet**; the lab owns only four felt sheets. "5 felt" in this
+document means that mixed stack. Since the composition was identical
+across all sessions, no comparison or conclusion here changes, but the
+absolute CH5 levels and the wear trajectory in §3 belong to the 4-felt +
+1-cardboard stack, and the procurement implications are folded into §5.
+
 Rig unchanged from the felt-sheet sweep / `500drops-nobot` runs: **CH2/CH3/CH4**
 = top-vertex key-seat tri-axis (X/Y/Z, "TOP" output), **CH5** = single-axis on
 the base acrylic plate (input + trigger @ 300 G), bottom tri-axis removed,
@@ -129,21 +138,29 @@ as a consumable.** Specifically:
    geometry discrimination. No head-room problem originates from the
    condition itself: with fresh felt, CH5 sits at ~22 % FS (≈ 4.6×
    head-room).
-2. **Replace (or top up) the felt stack when CH5's raw |peak| exceeds
+2. **Replace (or top up) the stack when CH5's raw |peak| exceeds
    FS/3 ≈ 3.1 kG — in practice roughly every ~100 drops at 60 in.** The
-   entire campaign-scale drift in this dataset is felt compaction: the raw
+   entire campaign-scale drift in this dataset is stack compaction: the raw
    CH5 spike tripled (2.1 → 6.5 kG) over the 201-drop evening. Refreshing
-   felt per specimen (or per ~100 drops) keeps every specimen's input
+   the stack per specimen (or per ~100 drops) keeps every specimen's input
    comparable and preserves the clip margin for stiffer BO designs. Log the
-   felt state (drops-on-stack) with each session.
-3. **If mid-campaign felt swaps are impractical, run 60 in / 6 felt
-   sheets.** One extra sheet attenuates the base hit ×0.36 (felt-sheet
-   model), which would have held even this evening's worst case at ~25 % FS
-   — at nearly zero cost in output signal, since the output is set by the
-   specimen, not the input (306–462 G across a 7× input swing in the sweep).
-   The lower-height fallback remains 50 in / 4–5 felt (~42 % less input
-   energy, 12–20 s faster per drop) if hoisting to 60 in becomes the
-   bottleneck.
+   stack state (drops-on-stack) and actual composition with each session.
+   **This rule currently can't be followed: with only 4 felt sheets in the
+   lab there are no spares to rotate in** (the `prc1kn` session the next
+   evening started already past the threshold for exactly this reason) —
+   so **procure replacement felt sheets** before the planned
+   50–100-drop-per-specimen campaigns; at that cadence felt is a
+   consumable.
+3. **If mid-campaign swaps are impractical, run 60 in with one more
+   sheet (6 total).** One extra sheet attenuates the base hit ×0.36
+   (felt-sheet model), which would have held even this evening's worst
+   case at ~25 % FS — at nearly zero cost in output signal, since the
+   output is set by the specimen, not the input (306–462 G across a 7×
+   input swing in the sweep). This too requires buying felt (the model's
+   coefficient was fit mostly on felt sheets; prefer a 5-felt + 1-cardboard
+   or all-felt stack over adding a second cardboard). The lower-height
+   fallback remains 50 in / 4–5 felt (~42 % less input energy, 12–20 s
+   faster per drop) if hoisting to 60 in becomes the bottleneck.
 4. **Prefer T = TOP/CH5 (or output-at-logged-input) as the BO objective**,
    as already recommended by the input-output analysis: T cancels the
    felt-wear drift almost entirely (CV 0.12–0.45 % vs 1.0–1.7 % for the raw
@@ -163,6 +180,12 @@ as a consumable.** Specifically:
   compaction of one stack across 201 drops, and the `9GMQYQ` starting level
   (~42 % FS) is simply where `7xadt6` left the felt — the ~100-drop
   refresh cadence in §5 applies as written.
+- **Stack composition confirmed by @me-madsen (PR #86): 4 felt + 1
+  cardboard, not 5 felt** — the lab has no fifth felt sheet, and every
+  "5 felt"-labeled session used this mixed stack. Composition was constant
+  across sessions, so all within- and between-session comparisons stand;
+  only the naming (and the assumption behind "add a 5th/6th felt sheet")
+  changes. Future session IDs should record the real composition.
 - Full-scale values are carried over from the felt-sheet sweep channel
   table (CH2–CH4: 14,492.8 / 14,992.5 / 13,624.0 G; CH5: 9,442.9 G);
   sensor serial numbers weren't posted with this dataset.

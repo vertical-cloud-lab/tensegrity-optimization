@@ -7,11 +7,15 @@ campaign as the [60 in / 5 felt validation](drop-test-60in-5felts-analysis.md)
 the evening after the `7xadt6`/`9GMQYQ` campaigns — plus the requested
 **mock comparison of transmissibility across the three structures**.
 
-**⚠️ The stack was not 5 felt sheets.** The TP4 session ID reads
-`prc1kn 60in - 4 felt 1 cardboard`. That substitution matters (§3): the
-cardboard-for-felt swap roughly **doubles the raw base-plate spike**, and
-CH5 spent the entire session above the FS/3 head-room target, peaking at
-**79 % of full scale**.
+**On the stack (updated after @me-madsen's confirmation, PR #86).** The
+TP4 session ID reads `prc1kn 60in - 4 felt 1 cardboard` — and this is not
+a substitution unique to this session: **every test labeled "5 felt" used
+4 felt sheets + 1 cardboard, because the lab owns only four felt sheets.**
+The session ID is simply the first honest label. So the stack
+*composition* was identical across all three campaigns; what §3 measures
+is the same one stack's cumulative **wear**, and the head-room problem it
+documents (CH5 above the FS/3 target all session, peaking at **79 % of
+full scale**) is a worn-stack problem, not a cardboard-vs-felt one.
 
 Rig otherwise unchanged: CH2–CH4 = top-vertex key-seat tri-axis ("TOP"
 output), CH5 = single-axis on the base plate (input + trigger), 200 ms /
@@ -45,7 +49,7 @@ seating transient), so the SOP burn-in of 5 is used.
 | T = TOP/CH5 | 1.011 | 0.51 % | +1.5e-4 | +0.015 | 1.4e-24 | 0.674 | 2.50 |
 
 Split-half (TOP): +0.047 %/drop (drops 6–54) → +0.030 %/drop (55–101) —
-same decelerating input-driven climb as the 5-felt campaigns, and T again
+same decelerating input-driven climb as the 07-20 campaigns, and T again
 absorbs most of it (total drift ≈ +1.4 % over 96 drops). Health
 indicators are clean: output pulse width 1.57 ms (CV 0.58 %, slope
 −0.017 %/drop — a slight *shortening* as the stack stiffens, the opposite
@@ -56,30 +60,43 @@ is the familiar bin-hop between the ~120 Hz and ~500 Hz lobes, cf. the
 drops at 60 in as calmly as it survived 48 at 13 in** — the dummy remains
 a valid calibration standard at campaign energy.
 
-## 3. The cardboard substitution: CH5 near saturation all session
+## 3. The stack: same composition every session — this is cumulative wear
 
-`figures/03_saturation.png` overlays this session on the 5-felt campaigns:
+**Composition confirmed constant** (@me-madsen, PR #86): all three
+campaigns ran on 4 felt + 1 cardboard; the lab has no fifth felt sheet.
+`figures/03_saturation.png` therefore reads as one absorber stack's wear
+trajectory across ~300 drops on two consecutive evenings:
 
-| session (chronological) | stack | CH5 raw first 5 | last 5 | worst %FS |
+| session (chronological) | stack state | CH5 raw first 5 | last 5 | worst %FS |
 |---|---|--:|--:|--:|
-| `7xadt6` (07-20) | 5 felt, fresh | 2,448 G | 3,163 G | 35.1 % |
-| `9GMQYQ` (07-20) | 5 felt, worn | 4,210 G | 6,068 G | 68.6 % |
-| **`prc1kn` (07-21)** | **4 felt + 1 cardboard** | **5,775 G** | **7,276 G** | **79.2 %** |
+| `7xadt6` (07-20) | 4 felt + 1 cb, fresh | 2,448 G | 3,163 G | 35.1 % |
+| `9GMQYQ` (07-20) | same stack, +100 drops | 4,210 G | 6,068 G | 68.6 % |
+| **`prc1kn` (07-21)** | **same composition, +201 drops** | **5,775 G** | **7,276 G** | **79.2 %** |
 
-- Every one of the 101 captures is above the FS/3 target (drop 1 already
-  hits 45 % FS); the session ends ~20 % below the sensor's full scale. A
-  stiffer intact specimen (or one more evening of compaction) would risk
-  clipping the input channel.
-- The CFC-180 input barely notices (472.2 G vs 446–463 G on 5 felt —
-  within ~6 %): the cardboard adds short high-frequency spike content, the
-  signature already established for compacted felt. So the *filtered*
-  physics stayed comparable, which is what rescues the three-way
-  comparison below — but the raw head-room is nearly gone.
-- **Recommendation: don't substitute cardboard for felt.** Restore the
-  5-felt stack (or 6 felt if swaps are impractical) and keep the refresh
-  rule from the validation writeup: refresh when CH5 raw exceeds
-  FS/3 ≈ 3.1 kG. On this stack that threshold was exceeded before the
-  first drop.
+- The 07-21 starting level (45 % FS, drop 1) sits *below* where the 07-20
+  evening ended (~69 % FS) — consistent with partial overnight
+  viscoelastic recovery, the same effect seen at smaller scale after the
+  12.9 min mid-campaign pause on 07-20 (65 % → 56 % FS). The wear then
+  resumes monotonically to 79 % FS. (Whether it was the literal same
+  physical stack wasn't logged, but with only four felt sheets in the lab
+  it very likely was.)
+- Every one of the 101 captures is above the FS/3 target; the session
+  ends ~20 % below the sensor's full scale. A stiffer intact specimen (or
+  one more evening on this stack) would risk clipping the input channel.
+- The CFC-180 input barely notices (472.2 G vs 446–463 G the evening
+  before — within ~6 %): compaction adds short high-frequency spike
+  content while leaving the filtered physics almost intact. That is what
+  rescues the three-way comparison below — but the raw head-room is
+  nearly gone.
+- **Recommendation: buy felt.** The refresh rule from the validation
+  writeup (refresh when CH5 raw exceeds FS/3 ≈ 3.1 kG, i.e. roughly every
+  ~100 drops at 60 in) is currently *impossible to follow* — there are no
+  spare sheets to swap in, which is exactly how this session came to
+  start already past the threshold. With 50–100-drop-per-specimen
+  campaigns planned, felt is a consumable: stock several replacement
+  sheets, refresh per specimen (or per ~100 drops), and log the actual
+  stack composition + drops-on-stack in the session ID (e.g.
+  `4felt+1cb, session 3`) rather than a nominal "5 felt".
 
 ## 4. Mock three-structure transmissibility comparison
 
@@ -116,8 +133,8 @@ Two honest readings of that ranking:
   head-room to search for.
 - **The nominal winner is the failed print.** `prc1kn` is the bubbled-TPU
   dummy — softer tendons plausibly do transmit a touch less peak — but its
-  campaign differs from the other two in stack (§3) and in mount
-  re-waxing, so treat the 1.6–2.3 % gaps as indicative, not settled
+  campaign differs from the other two in stack wear state (§3) and in
+  mount re-waxing, so treat the 1.6–2.3 % gaps as indicative, not settled
   (see caveats). What the comparison *does* establish cleanly is
   methodological: with ~95 stabilized drops each, three structures whose T
   values span only 2.3 % separate with |d| = 2.1–6.2. **T resolves
@@ -126,11 +143,13 @@ Two honest readings of that ranking:
 
 ## 5. Caveats
 
-- **Stack mismatch:** `prc1kn` ran on 4 felt + 1 cardboard, the others on
-  a shared 5-felt stack a day earlier. T normalizes the input level
-  (CFC-180 inputs agree within ~6 %), but a stiffer stack shifts the input
-  spectrum, and T is frequency-dependent — part of the 1.6–2.3 % gap could
-  be stack, not structure.
+- **Stack wear state:** composition was the same 4 felt + 1 cardboard in
+  all three campaigns (confirmed by @me-madsen — the cardboard-vs-felt
+  confound originally flagged here is gone), but `prc1kn` ran on a stack
+  carrying ~200 more drops of compaction. T normalizes the input level
+  (CFC-180 inputs agree within ~6 %), yet a more-compacted stack shifts
+  the input spectrum, and T is frequency-dependent — part of the
+  1.6–2.3 % gap could be stack condition, not structure.
 - **Mount confound:** the tri-axis was re-waxed between campaigns, and the
   [health check](drop-test-prc1kn-health-check.md) showed re-mounts can
   shift T's *level* (0.99 → 1.20 across the 13 in sessions; the recent

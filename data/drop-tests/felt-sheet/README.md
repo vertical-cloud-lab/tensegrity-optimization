@@ -6,7 +6,10 @@ to map where the accelerometers **saturate** and to find a drop height /
 cushioning combination that keeps the whole rig inside its measurement range.
 Felt sheets are stacked **beneath the drop block** to soften the impact; the
 drop height is stepped up while the felt count is stepped with it so the base
-hit stays bounded. This directly answers @sgbaird's concern that a specimen
+hit stays bounded. (Per @me-madsen's later confirmation on PR #86, the
+5-sheet conditions were physically **4 felt + 1 cardboard** — the lab owns
+only four felt sheets; every "5 felt" label in this repo means that mixed
+stack.) This directly answers @sgbaird's concern that a specimen
 which is *already near saturation* leaves no head-room for the stiffer designs
 the BO search space will visit.
 

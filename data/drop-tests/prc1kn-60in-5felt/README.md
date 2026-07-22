@@ -7,11 +7,13 @@ at the campaign operating point, posted by @me-madsen on PR #86 on
 evening after the `7xadt6`/`9GMQYQ` validation campaigns.
 
 **Note the stack:** the TP4 session ID is
-`prc1kn 60in - 4 felt 1 cardboard` — **4 felt sheets + 1 cardboard**, not
-the 5 felt sheets used on 2026-07-20. The folder name keeps the "5felt"
-label it was posted under; the analysis treats the stack difference
-explicitly (the cardboard substitution roughly doubles the raw base-plate
-spike — see the analysis writeup).
+`prc1kn 60in - 4 felt 1 cardboard` — **4 felt sheets + 1 cardboard**.
+@me-madsen later confirmed (PR #86) that this is the composition of
+*every* session labeled "5 felt" (the lab has no fifth felt sheet), so
+this session ID is just the first honest label, not a substitution. The
+folder name keeps the "5felt" label it was posted under; the elevated
+raw base-plate spike relative to 2026-07-20 is cumulative stack wear,
+not a composition change (see the analysis writeup, §3).
 
 ## Files
 
