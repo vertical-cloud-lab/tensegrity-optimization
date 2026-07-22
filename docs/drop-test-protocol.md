@@ -69,6 +69,10 @@ issue at <https://github.com/user-attachments/assets/878f940a-0778-4de7-a0bf-0d0
    off-axis loading of the accelerometer.
 3. **Framing.** Slow-motion footage to date starts after the hoist has
    already begun lowering, so the initial descent is out of frame.
+4. **Release hook sticking open** (reported 2026-07-22, after ~1,500+ drops):
+   the hoist's gravity-reset latch hook no longer falls closed to re-engage
+   the carriage. Diagnosis ladder and fixes:
+   [`drop-test-hook-troubleshooting.md`](drop-test-hook-troubleshooting.md).
 
 ## 4. Next-iteration test plan
 
