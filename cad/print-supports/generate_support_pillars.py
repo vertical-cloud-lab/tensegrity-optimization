@@ -637,6 +637,384 @@ def tree_from_tips(tips: list[tuple[float, float, float]], *,
     return clamped, len(tips), feet
 
 
+# ---- Tendon-cage mode (anti-wobble guide cages, PR #35 proposal) -----------
+# me-madsen observed (PR #35) that a near-vertical TPU tendon "tends to move
+# around quite a bit while being printed as it's only resting on one point and
+# the tip of the nozzle can push it around", producing the bubbling /
+# imperfection defects photographed there, and proposed "a cage of 3 hollow
+# pillars/supports around each tendon" to keep it from wandering.
+#
+# The ``--cage`` mode implements that proposal:
+#
+#   * **Tendon detection** — horizontal cross-sections of the part mesh are
+#     taken every ``--cage_slice_dz`` mm; small, nearly-circular section
+#     components (equivalent diameter between ``--cage_min_d`` and
+#     ``--cage_max_d``) are linked slice-to-slice into chains; chains longer
+#     than ``--cage_min_len`` whose fitted axis is within ``--cage_max_tilt``
+#     degrees of vertical are tendons. (On the PR #35 T3-prism this finds
+#     the three Ø4.6 mm TPU cables, which tilt ~20° from vertical.)
+#   * **Guide pillars** — three Ø ``--cage_pillar_d`` pillars run parallel to
+#     the tendon axis at 120° spacing, standing off the tendon surface by
+#     ``--cage_pillar_gap`` so they never touch it. Their common azimuth
+#     offset is optimised (in ``--cage_azimuth_step``° steps) so the pillars
+#     stay at least ``--cage_clearance`` clear of the rest of the part;
+#     where a strut/joint still blocks a pillar the pillar is trimmed to
+#     just below the clash.
+#   * **C-ring braces** — every ``--cage_ring_spacing`` mm an open annular
+#     ring (inner face ``--cage_ring_gap`` from the tendon surface) ties the
+#     pillars together, so the cage is a stiff triangulated column rather
+#     than three floppy lone pillars, and constrains the tendon's lateral
+#     wobble to ~the ring gap. Each ring leaves a ``--cage_opening``° opening
+#     (auto-widened until the opening chord exceeds the tendon diameter) so
+#     the finished cage can be pulled off the tendon sideways after the
+#     pillar feet are snapped off the plate. Rings that would clash with a
+#     crossing member are skipped automatically.
+#
+# The cage never touches the part: it bounds the tendon's motion during the
+# print (the nozzle can only push it ~the ring gap) without fusing to it.
+def _section_components(mesh: "object", z: float) -> list[dict]:
+    """Cross-section the mesh at height ``z`` and return one entry per
+    connected section loop: its XY centroid, mean/max radius about the
+    centroid, and radial std-dev (circularity proxy). Uses raw
+    ``mesh_plane`` segments + a union-find over shared endpoints so it
+    needs no shapely/networkx."""
+    from trimesh.intersections import mesh_plane
+    segs = mesh_plane(mesh, plane_normal=[0.0, 0.0, 1.0],
+                      plane_origin=[0.0, 0.0, z])
+    if len(segs) == 0:
+        return []
+    n = len(segs)
+    parent = list(range(n))
+
+    def find(a: int) -> int:
+        while parent[a] != a:
+            parent[a] = parent[parent[a]]
+            a = parent[a]
+        return a
+
+    endpoint_map: dict[tuple[float, float], list[int]] = defaultdict(list)
+    for i, s in enumerate(segs):
+        for e in s:
+            endpoint_map[(round(float(e[0]), 3),
+                          round(float(e[1]), 3))].append(i)
+    for owners in endpoint_map.values():
+        r0 = find(owners[0])
+        for k in owners[1:]:
+            rk = find(k)
+            if rk != r0:
+                parent[rk] = r0
+    groups: dict[int, list[int]] = defaultdict(list)
+    for i in range(n):
+        groups[find(i)].append(i)
+    out: list[dict] = []
+    for idx in groups.values():
+        pts = segs[idx][:, :, :2].reshape(-1, 2)
+        c = pts.mean(axis=0)
+        r = np.linalg.norm(pts - c, axis=1)
+        out.append(dict(center=c, r_mean=float(r.mean()),
+                        r_max=float(r.max()), r_std=float(r.std())))
+    return out
+
+
+def detect_tendons(mesh: "object", *, base_z: float, cage_min_d: float,
+                   cage_max_d: float, cage_max_tilt: float,
+                   cage_min_len: float, slice_dz: float,
+                   link_tol: float = 3.0) -> list[dict]:
+    """Find near-vertical thin members ("tendons") by linking small circular
+    cross-section components across horizontal slices.
+
+    Returns one dict per tendon with the slice z-range (``z_lo``/``z_hi``),
+    the tendon radius ``r`` (median of the per-slice max radii), the tilt
+    from vertical in degrees, and linear fits ``fx``/``fy`` giving the
+    centerline as ``x = polyval(fx, z)``, ``y = polyval(fy, z)``.
+    """
+    z0 = float(mesh.bounds[0, 2])
+    z1 = float(mesh.bounds[1, 2])
+    tilt_slope = math.tan(math.radians(cage_max_tilt))
+    chains: list[list[tuple[float, np.ndarray, float]]] = []
+    active: list[list[tuple[float, np.ndarray, float]]] = []
+    for z in np.arange(z0 + 1.0, z1 - 0.5, slice_dz):
+        comps = [c for c in _section_components(mesh, float(z))
+                 if cage_min_d <= 2.0 * c["r_mean"] <= cage_max_d
+                 and c["r_std"] <= 0.2 * c["r_mean"] + 0.05]
+        used: set[int] = set()
+        still_active = []
+        for ch in active:
+            zp, cp, rp = ch[-1]
+            best = None
+            best_d = None
+            allow = link_tol + (float(z) - zp) * tilt_slope
+            for i, c in enumerate(comps):
+                if i in used:
+                    continue
+                d = float(np.linalg.norm(c["center"] - cp))
+                if d <= allow and abs(c["r_max"] - rp) <= 0.35 * rp:
+                    if best_d is None or d < best_d:
+                        best_d = d
+                        best = i
+            if best is not None:
+                used.add(best)
+                ch.append((float(z), comps[best]["center"],
+                           comps[best]["r_max"]))
+                still_active.append(ch)
+            else:
+                chains.append(ch)
+        for i, c in enumerate(comps):
+            if i not in used:
+                still_active.append([(float(z), c["center"], c["r_max"])])
+        active = still_active
+    chains.extend(active)
+
+    tendons: list[dict] = []
+    for ch in chains:
+        if len(ch) < 3:
+            continue
+        zs = np.array([e[0] for e in ch])
+        if zs[-1] - zs[0] < cage_min_len:
+            continue
+        cxy = np.array([e[1] for e in ch])
+        rr = np.array([e[2] for e in ch])
+        fx = np.polyfit(zs, cxy[:, 0], 1)
+        fy = np.polyfit(zs, cxy[:, 1], 1)
+        tilt = math.degrees(math.atan(math.hypot(fx[0], fy[0])))
+        if tilt > cage_max_tilt:
+            continue
+        tendons.append(dict(z_lo=float(zs[0]), z_hi=float(zs[-1]),
+                            r=float(np.median(rr)), tilt=float(tilt),
+                            fx=[float(v) for v in fx],
+                            fy=[float(v) for v in fy]))
+    return tendons
+
+
+def _quad(p00: np.ndarray, p01: np.ndarray, p11: np.ndarray,
+          p10: np.ndarray) -> list[tuple[np.ndarray, ...]]:
+    return [(p00, p01, p11), (p00, p11, p10)]
+
+
+def _annular_sector(center_xy: np.ndarray, z0: float, z1: float,
+                    r_in: float, r_out: float, a0_deg: float,
+                    sweep_deg: float, seg_deg: float = 8.0
+                    ) -> list[tuple[np.ndarray, ...]]:
+    """Closed solid: an annular sector (C-ring segment) extruded from
+    ``z0`` to ``z1``, centred on ``center_xy``, spanning ``sweep_deg``
+    degrees counter-clockwise from ``a0_deg``."""
+    n = max(6, int(math.ceil(sweep_deg / seg_deg)))
+    angs = np.radians(a0_deg + np.linspace(0.0, sweep_deg, n + 1))
+    cx, cy = float(center_xy[0]), float(center_xy[1])
+
+    def pt(r: float, t: float, z: float) -> np.ndarray:
+        return np.array([cx + r * math.cos(t), cy + r * math.sin(t), z])
+
+    tris: list[tuple[np.ndarray, ...]] = []
+    for i in range(n):
+        tA, tB = float(angs[i]), float(angs[i + 1])
+        iA0, iB0 = pt(r_in, tA, z0), pt(r_in, tB, z0)
+        iA1, iB1 = pt(r_in, tA, z1), pt(r_in, tB, z1)
+        oA0, oB0 = pt(r_out, tA, z0), pt(r_out, tB, z0)
+        oA1, oB1 = pt(r_out, tA, z1), pt(r_out, tB, z1)
+        tris += _quad(oA0, oB0, oB1, oA1)   # outer wall (normal +r)
+        tris += _quad(iB0, iA0, iA1, iB1)   # inner wall (normal -r)
+        tris += _quad(iA1, oA1, oB1, iB1)   # top (normal +z)
+        tris += _quad(iA0, iB0, oB0, oA0)   # bottom (normal -z)
+    t_start, t_end = float(angs[0]), float(angs[-1])
+    tris += _quad(pt(r_in, t_start, z0), pt(r_out, t_start, z0),
+                  pt(r_out, t_start, z1), pt(r_in, t_start, z1))  # start cap
+    tris += _quad(pt(r_in, t_end, z0), pt(r_in, t_end, z1),
+                  pt(r_out, t_end, z1), pt(r_out, t_end, z0))     # end cap
+    return tris
+
+
+def build_tendon_cages(mesh: "object", tendons: list[dict], *,
+                       base_z: float, pillar_d: float, pillar_gap: float,
+                       ring_gap: float, ring_h: float, ring_spacing: float,
+                       opening_deg: float, clearance: float, foot_d: float,
+                       foot_h: float, top_margin: float, bottom_margin: float,
+                       azimuth_step: float, facets: int
+                       ) -> tuple[list[tuple[np.ndarray, ...]], list[dict]]:
+    """Emit an anti-wobble guide cage (3 pillars + C-ring braces) around
+    each detected tendon. Returns ``(triangles, per-tendon stats)``."""
+    from trimesh.proximity import ProximityQuery
+    pq = ProximityQuery(mesh)
+    pillar_r = pillar_d / 2.0
+    tris: list[tuple[np.ndarray, ...]] = []
+    stats: list[dict] = []
+    for tn in tendons:
+        r_t = tn["r"]
+        r_in = r_t + ring_gap
+        r_p = r_t + pillar_gap + pillar_r
+        r_out = r_p + pillar_r
+
+        def cx(z):
+            return np.polyval(tn["fx"], z)
+
+        def cy(z):
+            return np.polyval(tn["fy"], z)
+
+        z_top = tn["z_hi"] - top_margin
+        # The pillar's *guard* segment runs parallel to the tendon axis over
+        # the tendon's free span. Below the tendon (where the extended axis
+        # dives into the anchoring joint / strut cluster) each pillar gets a
+        # separate *approach* segment leaning from a clash-free plate foot
+        # up to the guard's lower end.
+        z_guard_lo = tn["z_lo"] + 1.0
+        zs = np.arange(z_guard_lo, z_top, 2.0)
+        if len(zs) < 3:
+            continue
+        # -- pick the pillar-triad azimuth maximising clash-free guard span
+        phis = np.arange(0.0, 120.0, azimuth_step)
+        cand_pts = []
+        for phi0 in phis:
+            for k in range(3):
+                a = math.radians(phi0 + 120.0 * k)
+                cand_pts.append(np.column_stack([
+                    cx(zs) + r_p * math.cos(a),
+                    cy(zs) + r_p * math.sin(a),
+                    zs]))
+        sd = pq.signed_distance(np.vstack(cand_pts))
+        clear = np.nan_to_num(-sd, nan=-1.0).reshape(
+            len(phis), 3, len(zs))  # distance outside the part
+        ok = clear >= pillar_r + clearance
+        best = None
+        for pi, phi0 in enumerate(phis):
+            heights = []
+            for k in range(3):
+                bad = np.where(~ok[pi, k])[0]
+                h = z_top if len(bad) == 0 else max(
+                    z_guard_lo, float(zs[bad[0]]) - 2.0)
+                heights.append(float(h))
+            score = sum(heights)
+            if best is None or score > best[0]:
+                best = (score, float(phi0), heights)
+        _, phi0, heights = best
+
+        # -- clash-free approach from a plate foot up to each guard start
+        centre_xy = np.array([float(cx(0.5 * (tn["z_lo"] + tn["z_hi"]))),
+                              float(cy(0.5 * (tn["z_lo"] + tn["z_hi"])))])
+        outward = centre_xy - np.asarray(mesh.centroid)[:2]
+        outward = (outward / np.linalg.norm(outward)
+                   if np.linalg.norm(outward) > 1e-9 else np.array([1.0, 0.0]))
+        out_az = math.degrees(math.atan2(outward[1], outward[0]))
+        approach_cands: list[tuple[float, float]] = [(0.0, 0.0)]
+        for lean in (10.0, 20.0, 30.0):
+            for daz in sorted(range(0, 360, 30),
+                              key=lambda d: min(d, 360 - d)):
+                approach_cands.append((lean, out_az + daz))
+        pillar_info: list[dict | None] = []
+        seg_pts = []
+        seg_meta = []
+        for k in range(3):
+            guard_h = heights[k]
+            if guard_h < z_guard_lo + 5.0:
+                pillar_info.append(None)   # guard blocked almost immediately
+                continue
+            a = math.radians(phi0 + 120.0 * k)
+            off = np.array([r_p * math.cos(a), r_p * math.sin(a)])
+            p0 = np.array([cx(z_guard_lo) + off[0],
+                           cy(z_guard_lo) + off[1], z_guard_lo])
+            for lean, az in approach_cands:
+                shift = math.tan(math.radians(lean)) * (z_guard_lo - base_z)
+                foot = np.array([
+                    p0[0] + shift * math.cos(math.radians(az)),
+                    p0[1] + shift * math.sin(math.radians(az)), base_z])
+                t_samples = np.linspace(0.02, 0.98,
+                                        max(6, int(z_guard_lo / 2.0)))
+                pts = foot[None, :] + t_samples[:, None] * (p0 - foot)[None, :]
+                seg_pts.append(pts)
+                seg_meta.append((k, lean, az, foot, p0, guard_h,
+                                 len(pts)))
+            pillar_info.append("pending")
+        chosen: dict[int, tuple] = {}
+        if seg_pts:
+            sd = np.nan_to_num(-pq.signed_distance(np.vstack(seg_pts)),
+                               nan=-1.0)
+            ofs = 0
+            for k, lean, az, foot, p0, guard_h, n_s in seg_meta:
+                d = sd[ofs:ofs + n_s]
+                ofs += n_s
+                if k in chosen:
+                    continue
+                # near the plate the wide foot flare needs the clearance
+                margin = pillar_r + clearance
+                low = foot[2] + 2.0
+                zvals = foot[2] + (p0[2] - foot[2]) * np.linspace(
+                    0.02, 0.98, n_s)
+                req = np.where(zvals < low, foot_d / 2.0 + clearance, margin)
+                if bool((d >= req).all()):
+                    chosen[k] = (foot, p0, guard_h)
+        # -- emit pillar geometry
+        n_pillars = 0
+        guard_tops: list[float] = []
+        for k in range(3):
+            if pillar_info[k] is None or k not in chosen:
+                guard_tops.append(0.0)
+                continue
+            foot, p0, guard_h = chosen[k]
+            a = math.radians(phi0 + 120.0 * k)
+            off = np.array([r_p * math.cos(a), r_p * math.sin(a)])
+            top = np.array([cx(guard_h) + off[0],
+                            cy(guard_h) + off[1], guard_h])
+            u = (p0 - foot)
+            u = u / np.linalg.norm(u)
+            flare_top = foot + u * foot_h
+            tris.extend(_frustum_general(   # foot flare on the plate
+                foot, foot_d / 2.0, flare_top, pillar_r, facets))
+            tris.extend(_frustum_general(   # approach segment
+                flare_top, pillar_r, p0, pillar_r, facets))
+            tris.extend(_frustum_general(   # guard segment (‖ tendon)
+                p0, pillar_r, top, pillar_r, facets))
+            guard_tops.append(guard_h)
+            n_pillars += 1
+        heights = guard_tops
+
+        # -- C-ring braces
+        opening = max(
+            opening_deg,
+            math.degrees(2.0 * math.asin(
+                min(1.0, (2.0 * r_t + 0.6) / (2.0 * r_in)))))
+        sweep = 360.0 - opening
+        a0 = phi0 + 300.0 + opening / 2.0  # opening centred between
+        #                                     pillar k=2 and pillar k=0
+        z_ring_hi = (sorted(guard_tops)[1] if len(guard_tops) == 3
+                     else max(guard_tops, default=0.0))  # 2nd-highest: a
+        #                                    ring needs >= 2 pillar anchors
+        ring_zs = np.arange(tn["z_lo"] + bottom_margin,
+                            z_ring_hi - ring_h, ring_spacing)
+        n_rings = 0
+        for rz in ring_zs:
+            anchored = sum(1 for h in guard_tops if h >= rz + ring_h)
+            if anchored < 2:
+                continue
+            zc = float(rz) + ring_h / 2.0
+            centre = np.array([cx(zc), cy(zc)])
+            # clash check: sample the ring solid; the tendon itself sits
+            # ring_gap away from the inner face, so a healthy ring clears
+            # the part everywhere — any closer hit is a crossing member.
+            samp_a = np.radians(a0 + np.linspace(0.0, sweep, 24))
+            samp_r = np.array([r_in + 0.2, 0.5 * (r_in + r_out),
+                               r_out - 0.2])
+            pts = np.array([[centre[0] + r * math.cos(t),
+                             centre[1] + r * math.sin(t), zc]
+                            for t in samp_a for r in samp_r])
+            if float((-pq.signed_distance(pts)).min()) < 0.25:
+                continue
+            tris.extend(_annular_sector(centre, float(rz),
+                                        float(rz) + ring_h,
+                                        r_in, r_out, a0, sweep))
+            n_rings += 1
+        stats.append(dict(
+            r=r_t, tilt=tn["tilt"], z_lo=tn["z_lo"], z_hi=tn["z_hi"],
+            phi0=phi0, pillar_heights=heights, n_pillars=n_pillars,
+            n_rings=n_rings, r_ring_in=r_in, r_pillar=r_p,
+            opening_deg=opening,
+            opening_chord=2.0 * r_in * math.sin(math.radians(opening / 2.0)),
+            fx=tn["fx"], fy=tn["fy"]))
+    # A tilted foot-flare's bottom cap can dip below the plate; clamp every
+    # vertex to base_z (flat-on-plate feet, same as the tree mode).
+    tris = [tuple(np.array([v[0], v[1], max(float(v[2]), base_z)])
+                  for v in tri) for tri in tris]
+    return tris, stats
+
+
 def member_tips(p1: np.ndarray, p2: np.ndarray, d: float, trim_ends: bool, *,
                 spacing: float, end_trim: float, base_z: float
                 ) -> list[tuple[float, float, float]]:
@@ -825,6 +1203,69 @@ def _parse_args() -> argparse.Namespace:
                     help="[--tree] Maximum XY separation (mm) of two nodes "
                          "that may merge into one branch; larger = fewer "
                          "feet. Default 22.")
+    # Tendon-cage mode knobs (anti-wobble guide cages, PR #35 proposal)
+    ap.add_argument("--cage", action="store_true",
+                    help="[--stl only] Also emit an anti-wobble guide cage "
+                         "(3 pillars + C-ring braces, never touching the "
+                         "part) around each detected near-vertical tendon, "
+                         "in addition to the normal supports. Implements "
+                         "me-madsen's PR #35 proposal for TPU cables the "
+                         "nozzle pushes around mid-print.")
+    ap.add_argument("--cage_only", action="store_true",
+                    help="[--stl only] Emit ONLY the tendon cages (no tree "
+                         "supports / pillars) — useful for writing the cage "
+                         "as its own STL to load as a separate object.")
+    ap.add_argument("--cage_report", type=Path, default=None,
+                    help="[--cage] Write per-tendon cage geometry stats to "
+                         "this JSON path (consumed by "
+                         "verification/verify_cage_geometry.py).")
+    ap.add_argument("--cage_pillar_d", type=float, default=2.5,
+                    help="[--cage] Guide-pillar diameter (mm). Default 2.5.")
+    ap.add_argument("--cage_pillar_gap", type=float, default=1.5,
+                    help="[--cage] Clearance between the tendon surface and "
+                         "the nearest pillar surface (mm). Default 1.5.")
+    ap.add_argument("--cage_ring_gap", type=float, default=1.2,
+                    help="[--cage] Clearance between the tendon surface and "
+                         "the C-ring inner face (mm) — the tendon's maximum "
+                         "lateral wobble. Default 1.2.")
+    ap.add_argument("--cage_ring_h", type=float, default=1.2,
+                    help="[--cage] C-ring height (mm). Default 1.2 (6 "
+                         "layers at 0.2 mm).")
+    ap.add_argument("--cage_ring_spacing", type=float, default=18.0,
+                    help="[--cage] Vertical spacing between C-rings (mm). "
+                         "Default 18.")
+    ap.add_argument("--cage_opening", type=float, default=120.0,
+                    help="[--cage] C-ring opening angle (deg) for pulling "
+                         "the cage off the tendon after printing; auto-"
+                         "widened until the opening chord exceeds the "
+                         "tendon diameter. Default 120.")
+    ap.add_argument("--cage_clearance", type=float, default=0.8,
+                    help="[--cage] Minimum clearance between cage pillars "
+                         "and any non-tendon part geometry (mm); pillars "
+                         "are trimmed below anything closer. Default 0.8.")
+    ap.add_argument("--cage_foot_d", type=float, default=6.0,
+                    help="[--cage] Pillar foot-flare diameter on the plate "
+                         "(mm). Default 6.")
+    ap.add_argument("--cage_min_d", type=float, default=1.5,
+                    help="[--cage] Minimum cross-section diameter (mm) for "
+                         "a component to count as a tendon. Default 1.5.")
+    ap.add_argument("--cage_max_d", type=float, default=7.0,
+                    help="[--cage] Maximum cross-section diameter (mm) for "
+                         "a component to count as a tendon (excludes "
+                         "struts). Default 7.")
+    ap.add_argument("--cage_max_tilt", type=float, default=25.0,
+                    help="[--cage] Maximum tendon tilt from vertical (deg) "
+                         "to receive a cage. Default 25 (the PR #35 "
+                         "T3-prism TPU cables tilt ~20 deg).")
+    ap.add_argument("--cage_min_len", type=float, default=25.0,
+                    help="[--cage] Minimum tendon length (mm of z-extent) "
+                         "to receive a cage. Default 25.")
+    ap.add_argument("--cage_slice_dz", type=float, default=3.0,
+                    help="[--cage] Cross-section slice spacing (mm) for "
+                         "tendon detection. Default 3.")
+    ap.add_argument("--cage_azimuth_step", type=float, default=5.0,
+                    help="[--cage] Step (deg) for the clash-avoiding "
+                         "pillar-triad azimuth search. Default 5.")
     ap.add_argument("--include_bed_contact", action="store_true",
                     help="Also emit pillars under members marked "
                          "`trim_ends=False` (bed-contact cables). Off by "
@@ -847,12 +1288,65 @@ def _parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = _parse_args()
+    if (args.cage or args.cage_only) and args.stl is None:
+        raise SystemExit("--cage/--cage_only require --stl mode (tendon "
+                         "detection cross-sections the actual mesh).")
     if args.stl is not None:
         hits, lifted_mesh = raycast_underside(
             args.stl, spacing=args.spacing,
             min_clearance=args.min_clearance, base_z=args.base_z,
             min_gap=args.min_gap, down_normal_max=args.down_normal_max,
         )
+        cage_tris: list = []
+        if args.cage or args.cage_only:
+            tendons = detect_tendons(
+                lifted_mesh, base_z=args.base_z,
+                cage_min_d=args.cage_min_d, cage_max_d=args.cage_max_d,
+                cage_max_tilt=args.cage_max_tilt,
+                cage_min_len=args.cage_min_len,
+                slice_dz=args.cage_slice_dz)
+            cage_tris, cage_stats = build_tendon_cages(
+                lifted_mesh, tendons, base_z=args.base_z,
+                pillar_d=args.cage_pillar_d,
+                pillar_gap=args.cage_pillar_gap,
+                ring_gap=args.cage_ring_gap, ring_h=args.cage_ring_h,
+                ring_spacing=args.cage_ring_spacing,
+                opening_deg=args.cage_opening,
+                clearance=args.cage_clearance, foot_d=args.cage_foot_d,
+                foot_h=1.5, top_margin=3.0, bottom_margin=3.0,
+                azimuth_step=args.cage_azimuth_step, facets=args.facets)
+            print(f"Tendon cages       : {len(cage_stats)} tendons",
+                  file=sys.stderr)
+            for i, st in enumerate(cage_stats):
+                print(f"  tendon[{i}]: Ø{2*st['r']:.2f} mm, "
+                      f"tilt {st['tilt']:.1f}°, "
+                      f"z {st['z_lo']:.1f}–{st['z_hi']:.1f}, "
+                      f"{st['n_pillars']} pillars "
+                      f"(h {', '.join(f'{h:.0f}' for h in st['pillar_heights'])}), "
+                      f"{st['n_rings']} rings, "
+                      f"opening {st['opening_deg']:.0f}° "
+                      f"(chord {st['opening_chord']:.2f} mm vs tendon "
+                      f"Ø{2*st['r']:.2f} mm)", file=sys.stderr)
+            if args.cage_report is not None:
+                args.cage_report.parent.mkdir(parents=True, exist_ok=True)
+                args.cage_report.write_text(json.dumps(dict(
+                    base_z=args.base_z, pillar_d=args.cage_pillar_d,
+                    pillar_gap=args.cage_pillar_gap,
+                    ring_gap=args.cage_ring_gap, ring_h=args.cage_ring_h,
+                    ring_spacing=args.cage_ring_spacing,
+                    clearance=args.cage_clearance,
+                    tendons=cage_stats), indent=2))
+                print(f"  cage report       : {args.cage_report}",
+                      file=sys.stderr)
+        if args.cage_only:
+            n_tris = write_binary_stl(cage_tris, args.out)
+            print(f"Wrote {args.out} (cage only)", file=sys.stderr)
+            print(f"  triangles         : {n_tris:,}", file=sys.stderr)
+            if args.out_part is not None:
+                write_trimesh_binary_stl(lifted_mesh, args.out_part)
+                print(f"  lifted part STL   : {args.out_part}",
+                      file=sys.stderr)
+            return
         if args.tree:
             triangles, n_tips, n_feet = tree_from_tips(
                 hits, base_z=args.base_z, tip_d=args.tip_d,
@@ -862,6 +1356,7 @@ def main() -> None:
                 max_branch_angle=args.max_branch_angle,
                 merge_radius=args.merge_radius, facets=args.facets,
             )
+            triangles = triangles + cage_tris
             n_tris = write_binary_stl(triangles, args.out)
             print(f"Wrote {args.out} (tree mode)", file=sys.stderr)
             print(f"  triangles         : {n_tris:,}", file=sys.stderr)
@@ -874,7 +1369,7 @@ def main() -> None:
                 hits, base_d=args.base_d, tip_d=args.tip_d,
                 base_z=args.base_z, tip_overshoot=args.tip_overshoot,
                 facets=args.facets,
-            )
+            ) + cage_tris
             n_tris = write_binary_stl(triangles, args.out)
             print(f"Wrote {args.out}", file=sys.stderr)
             print(f"  triangles         : {n_tris:,}", file=sys.stderr)
