@@ -836,6 +836,16 @@ def build_tendon_cages(mesh: "object", tendons: list[dict], *,
     from trimesh.proximity import ProximityQuery
     pq = ProximityQuery(mesh)
     pillar_r = pillar_d / 2.0
+
+    def _touches_part(cand: list, margin: float = 0.4) -> bool:
+        # Vertex-level final gate on emitted geometry. The sample-based
+        # pre-checks below walk sparse points (2 mm z-steps on pillar
+        # centerlines; mid-height rings only), which can miss thin diagonal
+        # members converging near the joints — verified by
+        # verification/verify_cage_geometry.py against the same metric.
+        pts = np.unique(np.vstack([np.vstack(t) for t in cand]), axis=0)
+        sd = np.nan_to_num(-pq.signed_distance(pts), nan=-1.0)
+        return bool((sd < margin).any())
     tris: list[tuple[np.ndarray, ...]] = []
     stats: list[dict] = []
     for tn in tendons:
@@ -951,19 +961,33 @@ def build_tendon_cages(mesh: "object", tendons: list[dict], *,
             foot, p0, guard_h = chosen[k]
             a = math.radians(phi0 + 120.0 * k)
             off = np.array([r_p * math.cos(a), r_p * math.sin(a)])
-            top = np.array([cx(guard_h) + off[0],
-                            cy(guard_h) + off[1], guard_h])
             u = (p0 - foot)
             u = u / np.linalg.norm(u)
             flare_top = foot + u * foot_h
-            tris.extend(_frustum_general(   # foot flare on the plate
-                foot, foot_d / 2.0, flare_top, pillar_r, facets))
-            tris.extend(_frustum_general(   # approach segment
-                flare_top, pillar_r, p0, pillar_r, facets))
-            tris.extend(_frustum_general(   # guard segment (‖ tendon)
-                p0, pillar_r, top, pillar_r, facets))
-            guard_tops.append(guard_h)
-            n_pillars += 1
+            # try the full guard first, then successively shorter guards if
+            # the emitted surface clips a member the pre-check missed
+            emitted = False
+            for h_try in (guard_h,
+                          z_guard_lo + 0.66 * (guard_h - z_guard_lo),
+                          z_guard_lo + 0.40 * (guard_h - z_guard_lo)):
+                top = np.array([cx(h_try) + off[0],
+                                cy(h_try) + off[1], h_try])
+                cand = [
+                    *_frustum_general(   # foot flare on the plate
+                        foot, foot_d / 2.0, flare_top, pillar_r, facets),
+                    *_frustum_general(   # approach segment
+                        flare_top, pillar_r, p0, pillar_r, facets),
+                    *_frustum_general(   # guard segment (‖ tendon)
+                        p0, pillar_r, top, pillar_r, facets),
+                ]
+                if not _touches_part(cand):
+                    tris.extend(cand)
+                    guard_tops.append(float(h_try))
+                    n_pillars += 1
+                    emitted = True
+                    break
+            if not emitted:
+                guard_tops.append(0.0)
         heights = guard_tops
 
         # -- C-ring braces
@@ -997,9 +1021,12 @@ def build_tendon_cages(mesh: "object", tendons: list[dict], *,
                             for t in samp_a for r in samp_r])
             if float((-pq.signed_distance(pts)).min()) < 0.25:
                 continue
-            tris.extend(_annular_sector(centre, float(rz),
+            ring_tris = _annular_sector(centre, float(rz),
                                         float(rz) + ring_h,
-                                        r_in, r_out, a0, sweep))
+                                        r_in, r_out, a0, sweep)
+            if _touches_part(ring_tris):
+                continue
+            tris.extend(ring_tris)
             n_rings += 1
         stats.append(dict(
             r=r_t, tilt=tn["tilt"], z_lo=tn["z_lo"], z_hi=tn["z_hi"],

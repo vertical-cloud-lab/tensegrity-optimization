@@ -792,8 +792,23 @@ python3 render_pillars_preview.py --combined /tmp/part-cages.stl \
     --title "PR35 T3-prism + anti-wobble tendon cages (orange)"
 ```
 
-The C-rings leave a 120° opening (chord 5.3–6.4 mm > tendon Ø) so each cage
-pulls off the finished tendon sideways after printing. The per-tendon
-geometry stats land in `t3-prism-pr35-cage-report.json` for a future
-`verify_cage_geometry.py` (no-contact / on-plate / encirclement checks —
-still TODO).
+The C-rings leave a 120° opening (chord 6.2–6.4 mm > tendon Ø) so each cage
+pulls off the finished tendon sideways after printing.
+
+Verify with `verify_cage_geometry.py` (exits non-zero on failure, mirrors
+`verify_support_geometry.py`; note it lifts the part to the cage frame —
+the raw PR #35 mesh sits at z_min = −7.65 mm and the generator builds all
+output in the lifted, on-plate frame):
+
+```bash
+python3 verify_cage_geometry.py --part /tmp/t3-prism.stl \
+    --cages t3-prism-pr35-cages.stl --report t3-prism-pr35-cage-report.json
+```
+
+All four checks PASS on the committed artefact: **NO-CONTACT** (closest
+cage-to-part distance 0.92 mm, 0 vertices inside), **ON-PLATE** (min z 0,
+82 foot vertices on the plate), **ENCIRCLE** (max empty azimuth gap 92°
+≤ opening 120° + 45° slack, 3 pillars per tendon), **REMOVABLE** (ring
+opening chord 6.2–6.4 mm > tendon Ø 4.8–4.95 mm). The generator also runs a
+vertex-level final clash gate on every emitted pillar/ring (same metric as
+the verifier) on top of its sparse sample-based pre-checks.
