@@ -757,3 +757,43 @@ slice; the only difference is which extruder picks up each member.
 | Estimated print time    | ~21 h 21 m (TPU + prime-tower dominated)           |
 | Pillar count            | 183 (PLA on T0, snap-off tips on each member)      |
 | Slicer-side supports    | disabled (`enable_support = 0`); pillars are part of the printable mesh |
+
+## Anti-wobble tendon guide cages (`--cage` / `--cage_only`) — PR #35 proposal
+
+Implements me-madsen's proposal from PR #35: each near-vertical thin member
+("tendon", i.e. the TPU cables) is surrounded by **3 guide pillars** running
+parallel to its axis, tied together by **open C-ring braces**, bounding the
+tendon's lateral wobble during printing **without ever touching the part**.
+Tendons are auto-detected by linking small circular cross-section components
+across horizontal mesh slices — no hand-authored geometry needed. Full knob
+list: `generate_support_pillars.py --help` (all `--cage_*` flags).
+
+```bash
+# IMPORTANT: use the *pinned* PR #35 mesh (65d0d3f), NOT PR #35 branch HEAD —
+# the branch mesh has drifted (blob d552684 vs 4db9b48) and no longer matches
+# the struts/cables STLs linked from HOW-TO-PRINT.md or the committed pillar
+# artefacts. Regenerating from HEAD yields a smaller structure (tendons
+# z 16–76 instead of 22–100) that will not line up on the plate.
+git fetch origin 65d0d3f2b1d673f74755e1c8900af5af2500fc53
+git show 65d0d3f2b1d673f74755e1c8900af5af2500fc53:cad/t3-prism/t3-prism.stl > /tmp/t3-prism.stl
+
+# Cage-only STL (upload as a 4th part alongside struts/cables/pillars, PLA):
+python3 ../generate_support_pillars.py --stl /tmp/t3-prism.stl --cage_only \
+    --cage_report t3-prism-pr35-cage-report.json \
+    --out t3-prism-pr35-cages.stl
+# → 3 tendons (Ø 4.8–4.95 mm, tilt 19.7°, z 22–100 mm), each caged by
+#   3 × 97 mm pillars + 3–4 C-rings, 3,736 tris. Or add --cage to a normal
+#   --tree run to emit tree supports + cages in one STL.
+
+# Preview (committed as t3-prism-pr35-cages-preview.png):
+python3 merge_stls.py /tmp/part-cages.stl /tmp/t3-prism.stl t3-prism-pr35-cages.stl
+python3 render_pillars_preview.py --combined /tmp/part-cages.stl \
+    --pillars t3-prism-pr35-cages.stl --out t3-prism-pr35-cages-preview.png \
+    --title "PR35 T3-prism + anti-wobble tendon cages (orange)"
+```
+
+The C-rings leave a 120° opening (chord 5.3–6.4 mm > tendon Ø) so each cage
+pulls off the finished tendon sideways after printing. The per-tendon
+geometry stats land in `t3-prism-pr35-cage-report.json` for a future
+`verify_cage_geometry.py` (no-contact / on-plate / encirclement checks —
+still TODO).
