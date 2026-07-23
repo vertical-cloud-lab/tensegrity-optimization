@@ -50,6 +50,12 @@ jobs:
           additional_permissions: |
             actions: read
 
+          # Optional (riskier): Print the full turn-by-turn JSON execution log in the step output
+          show_full_output: true
+
+          # Optional (riskier): Render a human-readable "Claude Code Report" in the job's Step Summary
+          display_report: true
+
           # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
           # prompt: 'Update the pull request description to include a summary of changes.'
 
@@ -60,3 +66,11 @@ jobs:
           claude_args: |
             --model claude-fable-5
             --permission-mode bypassPermissions
+
+      # Optional, recommended if you set show_full_output=True
+      - name: Upload Claude execution log
+        if: always() && steps.claude.outputs.execution_file != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-execution-log
+          path: ${{ steps.claude.outputs.execution_file }}
