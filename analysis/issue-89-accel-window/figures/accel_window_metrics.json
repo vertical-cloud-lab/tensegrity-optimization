@@ -1,0 +1,988 @@
+{
+  "n_captures": 25,
+  "capture_len_ms": 200.0,
+  "f_ref_hz": 30.0,
+  "pre_trigger_ms": {
+    "n": 25,
+    "median": 3.9839999999999995,
+    "p95": 3.992,
+    "max": 4.0,
+    "min": 3.968
+  },
+  "post_window_ms": {
+    "n": 25,
+    "median": 196.016,
+    "p95": 196.03040000000001,
+    "max": 196.032,
+    "min": 196.0
+  },
+  "peak_top_g": {
+    "n": 25,
+    "median": 2979.2056970569206,
+    "p95": 3162.9085177099346,
+    "max": 3178.446398654941,
+    "min": 2779.320524458545
+  },
+  "peak_disp_mm": {
+    "n": 25,
+    "median": 30.31865638111604,
+    "p95": 30.516012101989936,
+    "max": 30.539185349571422,
+    "min": 29.16402972361178
+  },
+  "brake_ms": {
+    "n": 25,
+    "median": 104.2,
+    "p95": 105.04319999999998,
+    "max": 105.872,
+    "min": 103.128
+  },
+  "brake_g": {
+    "n": 25,
+    "median": 600.9436093418486,
+    "p95": 932.6966743997084,
+    "max": 985.649837726432,
+    "min": 465.542316654178
+  },
+  "decay_tau_ms": {
+    "n": 25,
+    "median": 34.31022297505386,
+    "p95": 49.46910689592216,
+    "max": 50.629267053723765,
+    "min": 21.138462250262517
+  },
+  "t_cross_ms_by_threshold": {
+    "0.5": {
+      "median": 166.232,
+      "p95": 171.0528,
+      "n_extrapolated": 0
+    },
+    "0.2": {
+      "median": 185.16794029265782,
+      "p95": 202.5133995696092,
+      "n_extrapolated": 20
+    },
+    "0.1": {
+      "median": 206.8710145451619,
+      "p95": 236.54743558254674,
+      "n_extrapolated": 23
+    },
+    "0.05": {
+      "median": 231.12040901423995,
+      "p95": 270.756530751973,
+      "n_extrapolated": 25
+    },
+    "0.02": {
+      "median": 263.1763648469205,
+      "p95": 316.30805688243686,
+      "n_extrapolated": 25
+    },
+    "0.01": {
+      "median": 287.4257593159985,
+      "p95": 350.7664561755884,
+      "n_extrapolated": 25
+    }
+  },
+  "per_capture": [
+    {
+      "file": "prc1kn set 1_Signal1.csv",
+      "pre_trigger_ms": 4.0,
+      "post_window_ms": 196.0,
+      "peak_top_g": 2779.320524458545,
+      "peak_disp_mm": 29.16402972361178,
+      "brake_ms": 104.00800000000001,
+      "brake_g": 465.542316654178,
+      "decay_tau_ms": 26.23771179784393,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 152.304,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 165.28,
+          "how": "direct"
+        },
+        "0.1": {
+          "ms": 185.36794830381663,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 203.55454426083656,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 227.59591640678616,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 245.78251236380606,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal2.csv",
+      "pre_trigger_ms": 3.992,
+      "post_window_ms": 196.00799999999998,
+      "peak_top_g": 2914.4337930002303,
+      "peak_disp_mm": 30.019779264365038,
+      "brake_ms": 105.872,
+      "brake_g": 574.6206089677257,
+      "decay_tau_ms": 50.629267053723765,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 163.36,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 203.14131351091072,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 238.23484722301586,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 273.328380935121,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 319.7195090980296,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 354.8130428101348,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal3.csv",
+      "pre_trigger_ms": 3.992,
+      "post_window_ms": 196.00799999999998,
+      "peak_top_g": 2975.134936585974,
+      "peak_disp_mm": 29.959842497063775,
+      "brake_ms": 104.832,
+      "brake_g": 570.8799659454776,
+      "decay_tau_ms": 26.88675200436678,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 165.776,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 178.1015881448079,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 196.7380644910492,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 215.37454083729045,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 240.01062250909064,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 258.64709885533193,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal4.csv",
+      "pre_trigger_ms": 3.992,
+      "post_window_ms": 196.00799999999998,
+      "peak_top_g": 3045.4195813962788,
+      "peak_disp_mm": 30.01685724822384,
+      "brake_ms": 104.49600000000001,
+      "brake_g": 600.9436093418486,
+      "decay_tau_ms": 28.502794150054143,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 158.50400000000002,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 179.008,
+          "how": "direct"
+        },
+        "0.1": {
+          "ms": 201.5292394580595,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 221.28587086125003,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 247.40271697346154,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 267.159348376652,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal5.csv",
+      "pre_trigger_ms": 3.992,
+      "post_window_ms": 196.00799999999998,
+      "peak_top_g": 3071.7449078869104,
+      "peak_disp_mm": 29.97426242947273,
+      "brake_ms": 104.67999999999999,
+      "brake_g": 614.715185869815,
+      "decay_tau_ms": 26.275217625165496,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 163.656,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 177.3736581447548,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 195.58625116023725,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 213.7988441757197,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 237.87458256363527,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 256.08717557911774,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal6.csv",
+      "pre_trigger_ms": 3.992,
+      "post_window_ms": 196.00799999999998,
+      "peak_top_g": 3141.0611966843558,
+      "peak_disp_mm": 30.180206869757093,
+      "brake_ms": 104.2,
+      "brake_g": 702.4451904714889,
+      "decay_tau_ms": 42.4921259050798,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 171.152,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 193.34216698433693,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 222.79546425144122,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 252.2487615185455,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 291.1839026629998,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 320.6371999301041,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal7.csv",
+      "pre_trigger_ms": 3.992,
+      "post_window_ms": 196.00799999999998,
+      "peak_top_g": 3178.446398654941,
+      "peak_disp_mm": 30.303836135652396,
+      "brake_ms": 105.09599999999999,
+      "brake_g": 985.649837726432,
+      "decay_tau_ms": 28.2719462296352,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 163.36800000000002,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 174.024,
+          "how": "direct"
+        },
+        "0.1": {
+          "ms": 196.55740862318657,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 216.1540284412006,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 242.0593507434598,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 261.6559705614738,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal8.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 3168.3703479663295,
+      "peak_disp_mm": 29.98857481024906,
+      "brake_ms": 103.992,
+      "brake_g": 982.8213239767108,
+      "decay_tau_ms": 33.11976592526354,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 139.512,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 177.256,
+          "how": "direct"
+        },
+        "0.1": {
+          "ms": 183.63199999999998,
+          "how": "direct"
+        },
+        "0.05": {
+          "ms": 215.60689352336846,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 245.9542280825289,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 268.91110045443065,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal9.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 3092.7114732066334,
+      "peak_disp_mm": 30.269445903343282,
+      "brake_ms": 103.67999999999999,
+      "brake_g": 721.1748822304984,
+      "decay_tau_ms": 42.252393130636534,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 169.912,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 197.92188718307762,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 227.20901435348873,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 256.49614152389984,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 295.2116177490053,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 324.49874491941637,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal10.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2979.2056970569206,
+      "peak_disp_mm": 30.206012114542766,
+      "brake_ms": 103.792,
+      "brake_g": 633.9130491859155,
+      "decay_tau_ms": 41.77933882100879,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 167.80800000000002,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 199.7247033650233,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 228.6839342744642,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 257.6431651839051,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 295.9251861294256,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 324.8844170388665,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal11.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2952.0850461503774,
+      "peak_disp_mm": 30.266887222455807,
+      "brake_ms": 103.88,
+      "brake_g": 593.7100971680482,
+      "decay_tau_ms": 36.84604861878931,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 169.76,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 191.95898575756246,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 217.49872047245094,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 243.03845518733942,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 276.80014804292057,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 302.33988275780905,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal12.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2941.284135220937,
+      "peak_disp_mm": 30.34016772899806,
+      "brake_ms": 103.88799999999999,
+      "brake_g": 586.4729115396839,
+      "decay_tau_ms": 42.98660667161206,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 170.27999999999997,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 200.00174380440308,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 229.7977890206703,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 259.59383423693754,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 298.9820635248554,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 328.7781087411226,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal13.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2945.4775990366206,
+      "peak_disp_mm": 30.31865638111604,
+      "brake_ms": 104.608,
+      "brake_g": 575.2822449748052,
+      "decay_tau_ms": 34.984481145099174,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 160.536,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 182.62162007608384,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 206.8710145451619,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 231.12040901423995,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 263.1763648469205,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 287.4257593159985,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal14.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2947.002727722525,
+      "peak_disp_mm": 30.362731773936403,
+      "brake_ms": 103.952,
+      "brake_g": 607.616180479255,
+      "decay_tau_ms": 43.839894034333085,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 163.096,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 195.4765250530671,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 225.86402399901183,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 256.2515229449566,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 296.421611534961,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 326.8091104809058,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal15.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2952.763462403385,
+      "peak_disp_mm": 30.24947171567379,
+      "brake_ms": 104.624,
+      "brake_g": 567.2704187074772,
+      "decay_tau_ms": 21.138462250262517,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 168.72799999999998,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 174.12800000000001,
+          "how": "direct"
+        },
+        "0.1": {
+          "ms": 177.49599999999998,
+          "how": "direct"
+        },
+        "0.05": {
+          "ms": 205.53860518038107,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 224.90758222636828,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 239.55964773651056,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal16.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2984.869500193058,
+      "peak_disp_mm": 30.4829535427141,
+      "brake_ms": 104.03999999999999,
+      "brake_g": 671.3016759540296,
+      "decay_tau_ms": 46.047740671112535,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 170.656,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 196.63340678470672,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 228.5512684020439,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 260.46913001938105,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 302.66224802006604,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 334.5801096374032,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal17.csv",
+      "pre_trigger_ms": 3.9760000000000004,
+      "post_window_ms": 196.024,
+      "peak_top_g": 2968.0884832063316,
+      "peak_disp_mm": 30.524276741808897,
+      "brake_ms": 104.568,
+      "brake_g": 586.0522463173262,
+      "decay_tau_ms": 30.12753846121561,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 167.488,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 180.31612999223725,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 201.19894833384018,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 222.08176667544308,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 249.6873509416371,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 270.57016928324,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal18.csv",
+      "pre_trigger_ms": 3.9839999999999995,
+      "post_window_ms": 196.016,
+      "peak_top_g": 2964.1110142554517,
+      "peak_disp_mm": 30.418383390829394,
+      "brake_ms": 104.16799999999999,
+      "brake_g": 591.3642257557557,
+      "decay_tau_ms": 34.31022297505386,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 147.064,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 182.31632567239015,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 206.09835999193177,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 229.88039431147342,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 261.31853363205096,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 285.1005679515926,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal19.csv",
+      "pre_trigger_ms": 3.9760000000000004,
+      "post_window_ms": 196.024,
+      "peak_top_g": 2969.21637267416,
+      "peak_disp_mm": 30.361678773826945,
+      "brake_ms": 104.488,
+      "brake_g": 631.8943977990589,
+      "decay_tau_ms": 28.940137601056865,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 159.576,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 185.16794029265782,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 205.22771507584724,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 225.28748985903667,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 251.80506972204782,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 271.8648445052372,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal20.csv",
+      "pre_trigger_ms": 3.9760000000000004,
+      "post_window_ms": 196.024,
+      "peak_top_g": 2973.6798028594567,
+      "peak_disp_mm": 30.35308097684385,
+      "brake_ms": 103.128,
+      "brake_g": 578.0590496092576,
+      "decay_tau_ms": 50.324448452124585,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 171.424,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 204.12312156991266,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 239.0053711277371,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 273.8876206855616,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 319.999446388922,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 354.8816959467464,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal21.csv",
+      "pre_trigger_ms": 3.9760000000000004,
+      "post_window_ms": 196.024,
+      "peak_top_g": 2980.373513810679,
+      "peak_disp_mm": 30.45614653330516,
+      "brake_ms": 104.28,
+      "brake_g": 551.2728770483525,
+      "decay_tau_ms": 33.68466935158673,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 167.36,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 193.82115754589148,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 217.16959113503782,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 240.51802472418416,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 271.3829750572885,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 294.73140864643483,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal22.csv",
+      "pre_trigger_ms": 3.9760000000000004,
+      "post_window_ms": 196.024,
+      "peak_top_g": 2988.9389321001563,
+      "peak_disp_mm": 30.418097611738308,
+      "brake_ms": 104.672,
+      "brake_g": 645.3262796491449,
+      "decay_tau_ms": 25.75201994643785,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 167.04,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 174.51997698338752,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 192.36991700298438,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 210.21985702258127,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 233.81619422654063,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 251.66613424613752,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal23.csv",
+      "pre_trigger_ms": 3.9760000000000004,
+      "post_window_ms": 196.024,
+      "peak_top_g": 3002.8557427099126,
+      "peak_disp_mm": 30.390513392589128,
+      "brake_ms": 103.984,
+      "brake_g": 537.334383436245,
+      "decay_tau_ms": 27.562091500763614,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 166.232,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 176.53960668548686,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 195.64419269957637,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 214.7487787136659,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 240.00366770688305,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 259.1082537209726,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal24.csv",
+      "pre_trigger_ms": 3.968,
+      "post_window_ms": 196.032,
+      "peak_top_g": 3001.471954113941,
+      "peak_disp_mm": 30.45232114919052,
+      "brake_ms": 104.28800000000001,
+      "brake_g": 732.1980760917022,
+      "decay_tau_ms": 39.085291566145195,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 167.432,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 187.0774916021645,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 214.16935125260147,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 241.2612109030384,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 277.0747013176963,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 304.16656096813324,
+          "how": "extrapolated"
+        }
+      }
+    },
+    {
+      "file": "prc1kn set 1_Signal25.csv",
+      "pre_trigger_ms": 3.968,
+      "post_window_ms": 196.032,
+      "peak_top_g": 3003.399317086942,
+      "peak_disp_mm": 30.539185349571422,
+      "brake_ms": 103.84,
+      "brake_g": 624.6770717207243,
+      "decay_tau_ms": 40.661002470118675,
+      "t_cross_mm": {
+        "0.5": {
+          "ms": 160.712,
+          "how": "direct"
+        },
+        "0.2": {
+          "ms": 193.75840963251787,
+          "how": "extrapolated"
+        },
+        "0.1": {
+          "ms": 221.9424688534216,
+          "how": "extrapolated"
+        },
+        "0.05": {
+          "ms": 250.12652807432534,
+          "how": "extrapolated"
+        },
+        "0.02": {
+          "ms": 287.3838277864072,
+          "how": "extrapolated"
+        },
+        "0.01": {
+          "ms": 315.5678870073109,
+          "how": "extrapolated"
+        }
+      }
+    }
+  ]
+}
