@@ -123,9 +123,14 @@ def beam_inp(length_m: float, radius_m: float, *, step: str,
     for e in range(n_elem):
         a = 2 * e + 1
         lines.append(f"{e + 1}, {a}, {a + 1}, {a + 2}")
+    # ccx 2.21's SECTION=CIRC beam expansion is broken (~14x too compliant,
+    # diverges under mesh refinement; RECT converges to the analytic
+    # cantilever — see fea_tendon_wobble.py). Use the I-equivalent square
+    # section (side = (12*I_circ)^(1/4); area matches within 2.3%).
+    side_m = (12.0 * math.pi * radius_m**4 / 4.0) ** 0.25
     lines += [
-        "*BEAM SECTION, ELSET=EALL, MATERIAL=PLA, SECTION=CIRC",
-        f"{radius_m:.8e}",
+        "*BEAM SECTION, ELSET=EALL, MATERIAL=PLA, SECTION=RECT",
+        f"{side_m:.8e}, {side_m:.8e}",
         "0., 1., 0.",
         "*MATERIAL, NAME=PLA",
         "*ELASTIC",

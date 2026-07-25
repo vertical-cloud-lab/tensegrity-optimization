@@ -24,7 +24,8 @@
 # (large-deflection and contact effects are ignored; forces scale linearly).
 #
 # Defaults mirror the committed cage artefacts (t3-prism-pr35-cage-report.json):
-# tendon d=4.8 mm, printed span 80 mm, ring spacing 18 mm, clearance 0.8 mm.
+# tendon d=4.8 mm, printed span 80 mm, ring spacing 12 mm, clearance 0.8 mm
+# (sim-tuned defaults; see sweep_cage_design.py / fea_tendon_wobble.py).
 # Printed-material moduli: TPU 85A E~15 MPa, PLA E~2.3 GPa (same as the FEA).
 #
 # Requires: numpy, matplotlib.
@@ -73,7 +74,7 @@ def main() -> None:
                     help="lateral nozzle/bead-drag force, N (deflections scale linearly)")
     ap.add_argument("--e_tpu", type=float, default=15.0, help="printed TPU 85A modulus, MPa")
     ap.add_argument("--e_pla", type=float, default=2300.0, help="printed PLA modulus, MPa")
-    ap.add_argument("--ring_spacing", type=float, default=18.0, help="cage ring spacing, mm")
+    ap.add_argument("--ring_spacing", type=float, default=12.0, help="cage ring spacing, mm")
     ap.add_argument("--ring_clearance", type=float, default=0.8, help="cage ring clearance, mm")
     ap.add_argument("--upscale", type=float, default=1.5, help="uniform scale factor scenario")
     ap.add_argument("--out", type=Path,

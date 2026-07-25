@@ -2,10 +2,11 @@
   "base_z": 0.0,
   "pillar_d": 2.5,
   "pillar_gap": 1.5,
-  "ring_gap": 1.2,
+  "ring_gap": 0.8,
   "ring_h": 1.2,
-  "ring_spacing": 18.0,
+  "ring_spacing": 12.0,
   "clearance": 0.8,
+  "squeeze": 0.75,
   "tendons": [
     {
       "r": 2.4748571534604373,
@@ -19,11 +20,11 @@
         97.0
       ],
       "n_pillars": 3,
-      "n_rings": 4,
-      "r_ring_in": 3.6748571534604375,
+      "n_rings": 6,
+      "r_ring_in": 3.274857153460437,
       "r_pillar": 5.224857153460437,
-      "opening_deg": 120.0,
-      "opening_chord": 6.365039300351416,
+      "opening_deg": 70.0,
+      "opening_chord": 3.7567617912811366,
       "fx": [
         2.4390546772445315e-05,
         -32.37961857232737
@@ -45,11 +46,11 @@
         97.0
       ],
       "n_pillars": 3,
-      "n_rings": 3,
-      "r_ring_in": 3.5985489112572724,
+      "n_rings": 5,
+      "r_ring_in": 3.198548911257273,
       "r_pillar": 5.148548911257272,
-      "opening_deg": 120.0,
-      "opening_chord": 6.232869547819263,
+      "opening_deg": 70.0,
+      "opening_chord": 3.6692245720269296,
       "fx": [
         -0.309716159279857,
         34.86057243135158
@@ -71,11 +72,11 @@
         97.0
       ],
       "n_pillars": 3,
-      "n_rings": 3,
-      "r_ring_in": 3.6073803490795573,
+      "n_rings": 5,
+      "r_ring_in": 3.207380349079558,
       "r_pillar": 5.157380349079558,
-      "opening_deg": 120.0,
-      "opening_chord": 6.248166046831345,
+      "opening_deg": 70.0,
+      "opening_chord": 3.6793555812948537,
       "fx": [
         0.3097839603753318,
         -2.376141494540935

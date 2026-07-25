@@ -45,9 +45,16 @@ showed the vertical TPU cables wobbling/bubbling as they print, also import
 [`verification/t3-prism-pr35-cages.stl`](verification/t3-prism-pr35-cages.stl)
 (assign it **PLA**, same as the pillars, and include it in the **Assemble**
 step). Each TPU cable gets three PLA guide pillars + open C-ring braces that
-bound its wobble **without touching it** (verified ≥ 0.9 mm clearance by
-`verification/verify_cage_geometry.py`); after printing, each cage pulls off
-the finished cable sideways through its ring opening. Regenerate for another
+bound its wobble **without touching it** (verified ≥ 0.5 mm clearance by
+`verification/verify_cage_geometry.py`). The cage geometry was tuned by a
+three-level simulation ladder (analytic sweep → CalculiX contact FEA →
+g-code-driven thermal FEA, see the verification README): rings every
+12 mm with a 0.8 mm gap bound the cable's wobble to ~1 mm in every
+direction, and the 70° ring opening is deliberately *narrower* than the
+cable (chord ≈ 0.76×Ø) so the cable can't wobble out through it during
+the print — after printing, snap the cage feet off the plate and
+**squeeze** the soft finished cable out sideways through the opening.
+Regenerate for another
 mesh with `generate_support_pillars.py --stl part.stl --cage_only` (or add
 `--cage` to the normal `--tree` run to get supports + cages in one STL).
 

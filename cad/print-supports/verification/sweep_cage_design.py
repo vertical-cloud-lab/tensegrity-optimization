@@ -173,7 +173,9 @@ def main() -> None:
     r_t = max(t["r"] for t in rep["tendons"])
     tilt = max(t["tilt"] for t in rep["tendons"])
     committed = dict(ring_gap=rep["ring_gap"], pillar_gap=rep["pillar_gap"],
-                     pillar_d=rep["pillar_d"], opening=120.0,
+                     pillar_d=rep["pillar_d"],
+                     opening=float(rep["tendons"][0].get("opening_deg",
+                                                         120.0)),
                      spacing=rep["ring_spacing"])
     d_t = 2.0 * r_t
 

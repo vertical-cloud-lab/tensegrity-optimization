@@ -15,8 +15,10 @@ ON-PLATE     no cage geometry below base_z; feet actually land on the plate.
 ENCIRCLE     at sampled heights along each tendon the cage vertices surround
              the tendon axis: the largest empty azimuth gap stays within the
              designed C-ring opening (+ slack), i.e. no missing pillar.
-REMOVABLE    each ring's opening chord exceeds the tendon diameter, so the
-             finished cage pulls off the tendon sideways.
+REMOVABLE    each ring's opening chord is at least --min_squeeze x the
+             tendon diameter, so the finished cage squeezes off the soft
+             TPU tendon sideways (a chord *above* the diameter would be an
+             escape corridor during the print — see sweep_cage_design.py).
 
 Usage
 -----
@@ -53,6 +55,11 @@ def main() -> None:
     ap.add_argument("--min_standoff", type=float, default=0.3,
                     help="Minimum allowed cage-to-part surface distance (mm). "
                          "Default 0.3 (design clearance is >= 0.8).")
+    ap.add_argument("--min_squeeze", type=float, default=0.75,
+                    help="Minimum ring-opening chord / tendon diameter for "
+                         "REMOVABLE (soft-TPU squeeze-out). Overridden by "
+                         "the report's own 'squeeze' value when present. "
+                         "Default 0.75.")
     ap.add_argument("--gap_slack_deg", type=float, default=45.0,
                     help="Allowed azimuth-gap slack beyond the ring opening "
                          "before ENCIRCLE fails. Default 45.")
@@ -124,13 +131,20 @@ def main() -> None:
               f"{t['n_rings']} rings")
 
     # ---- REMOVABLE ----------------------------------------------------
+    # A soft TPU tendon squeezes out of an opening chord >= ~0.75x its
+    # diameter (the generator's --cage_squeeze). A chord *above* the
+    # diameter would let the tendon escape the ring during the print
+    # (see sweep_cage_design.py), so bigger is not better here.
+    min_squeeze = float(rep.get("squeeze", args.min_squeeze))
     for i, t in enumerate(rep["tendons"]):
         chord, dia = t["opening_chord"], 2.0 * t["r"]
-        if chord <= dia:
+        if chord < min_squeeze * dia - 1e-6:
             _fail(f"REMOVABLE: tendon[{i}] ring opening chord {chord:.2f} mm "
-                  f"<= tendon dia {dia:.2f} mm — cage cannot be pulled off")
-        print(f"PASS  REMOVABLE: tendon[{i}] opening chord {chord:.2f} mm > "
-              f"tendon dia {dia:.2f} mm")
+                  f"< {min_squeeze:.2f} x tendon dia {dia:.2f} mm — cage "
+                  f"cannot be squeezed off the finished tendon")
+        print(f"PASS  REMOVABLE: tendon[{i}] opening chord {chord:.2f} mm "
+              f">= {min_squeeze:.2f} x tendon dia {dia:.2f} mm "
+              f"(soft-TPU squeeze-out)")
 
     print("ALL CHECKS PASSED")
 

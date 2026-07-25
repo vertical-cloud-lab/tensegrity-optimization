@@ -402,9 +402,14 @@ python3 cad/print-supports/verification/fea_support_stability.py \
 Results for the PR #35 supports:
 
 - **Self-weight buckling** (the decisive collapse mode for a vertical
-  support) — minimum safety factor **61×** at full 108 mm height, and
+  support) — minimum safety factor **245×** at full 108 mm height, and
   thousands-× at the heights where the column is shorter. The column cannot
-  Euler/Greenhill-buckle under its own weight as it prints. PASS.
+  Euler/Greenhill-buckle under its own weight as it prints. PASS. (An
+  earlier revision reported 61×; that run was affected by a CalculiX 2.21
+  defect in `SECTION=CIRC` beam expansion — ~14× too compliant, found by
+  cross-validating `fea_tendon_wobble.py` against the analytic cantilever —
+  so the script now uses an I-equivalent square section. The old number
+  was *conservative*, so all prior PASS verdicts stand.)
 - **Tip-over** — the centre of mass of the combined part+supports sits
   **27.8 mm** inside the convex hull of the **1148** build-plate contact
   vertices (base span 79 mm), so the object cannot topple on the plate. PASS.
@@ -782,18 +787,26 @@ python3 ../generate_support_pillars.py --stl /tmp/t3-prism.stl --cage_only \
     --cage_report t3-prism-pr35-cage-report.json \
     --out t3-prism-pr35-cages.stl
 # → 3 tendons (Ø 4.8–4.95 mm, tilt 19.7°, z 22–100 mm), each caged by
-#   3 × 97 mm pillars + 3–4 C-rings, 3,736 tris. Or add --cage to a normal
+#   3 × 97 mm pillars + 5–6 C-rings, 6,096 tris. Or add --cage to a normal
 #   --tree run to emit tree supports + cages in one STL.
 
-# Preview (committed as t3-prism-pr35-cages-preview.png):
-python3 merge_stls.py /tmp/part-cages.stl /tmp/t3-prism.stl t3-prism-pr35-cages.stl
+# Preview (committed as t3-prism-pr35-cages-preview.png; the @0,0,7.65
+# translation lifts the raw mesh into the on-plate frame the cages use):
+python3 merge_stls.py /tmp/part-cages.stl /tmp/t3-prism.stl@0,0,7.65 t3-prism-pr35-cages.stl
 python3 render_pillars_preview.py --combined /tmp/part-cages.stl \
     --pillars t3-prism-pr35-cages.stl --out t3-prism-pr35-cages-preview.png \
     --title "PR35 T3-prism + anti-wobble tendon cages (orange)"
 ```
 
-The C-rings leave a 120° opening (chord 6.2–6.4 mm > tendon Ø) so each cage
-pulls off the finished tendon sideways after printing.
+The cage defaults (`--cage_ring_gap 0.8`, `--cage_ring_spacing 12`,
+`--cage_opening 70`, `--cage_squeeze 0.75`) were tuned by the simulation
+ladder below. The C-rings leave a 70° opening whose chord is ~0.76× the
+tendon diameter: the finished cage *squeezes* off the soft TPU tendon
+sideways, while during the print the sub-diameter chord means the tendon
+cannot wobble out through the opening. (The previous 120°/chord-above-
+diameter design guaranteed rigid-body removal but the Level-1 restraint
+rose showed it was an escape corridor — the tendon could leave the cage
+entirely in that direction.)
 
 Verify with `verify_cage_geometry.py` (exits non-zero on failure, mirrors
 `verify_support_geometry.py`; note it lifts the part to the cage frame —
@@ -806,9 +819,60 @@ python3 verify_cage_geometry.py --part /tmp/t3-prism.stl \
 ```
 
 All four checks PASS on the committed artefact: **NO-CONTACT** (closest
-cage-to-part distance 0.92 mm, 0 vertices inside), **ON-PLATE** (min z 0,
+cage-to-part distance 0.54 mm, 0 vertices inside), **ON-PLATE** (min z 0,
 82 foot vertices on the plate), **ENCIRCLE** (max empty azimuth gap 92°
-≤ opening 120° + 45° slack, 3 pillars per tendon), **REMOVABLE** (ring
-opening chord 6.2–6.4 mm > tendon Ø 4.8–4.95 mm). The generator also runs a
-vertex-level final clash gate on every emitted pillar/ring (same metric as
-the verifier) on top of its sparse sample-based pre-checks.
+≤ opening 70° + 45° slack, 3 pillars per tendon), **REMOVABLE** (ring
+opening chord 3.67–3.76 mm ≥ 0.75× tendon Ø 4.8–4.95 mm, soft-TPU
+squeeze-out). The generator also runs a vertex-level final clash gate on
+every emitted pillar/ring (same metric as the verifier) on top of its
+sparse sample-based pre-checks.
+
+## Simulation ladder — how the cage parameters were chosen
+
+The cage design was tuned by the three-level pre-print simulation ladder
+recommended by the Edison literature review
+(`outputs/edison-pr35-print-advice/answer.md` §4), run end-to-end on this
+geometry. Each level cross-validates the one below it:
+
+1. **Level 1 — `sweep_cage_design.py`** (reduced-order beam/contact
+   screening). Models the exact cage cross-section (3 pillars + C-ring)
+   and computes the tendon's free travel in every lateral direction (the
+   "restraint rose"), plus a growing-cantilever wobble model with nozzle
+   force, self-weight sag of the 19.7°-tilted tendon, and a Newton-cooling
+   hot tip, swept over ring spacing × ring gap × opening angle. Findings:
+   the ring gap is the wobble floor; the old 120° opening (chord > tendon
+   Ø, the rigid-body removability rule) was an **escape corridor** — the
+   tendon could translate clean out of the cage; a 70° opening bounds
+   every direction to ~1 mm while a soft TPU tendon still squeezes out
+   (chord 0.76×Ø). Writes
+   `t3-prism-pr35-cage-design-sweep.png` + `…-recommendation.json`.
+2. **Level 2 — `fea_tendon_wobble.py`** (CalculiX growing-tendon contact
+   FEA). Tilted B32-beam tendon grown layer-by-layer, NLGEOM statics with
+   gravity + 10 mN nozzle force, rings as active-set unilateral stops.
+   Cross-validates Level 1 (bare tendon 4.2 mm vs 4.75 mm analytic; ccx
+   `*BUCKLE` self-weight SF 30.5 vs Greenhill ≈29) and adds what the
+   analytic model misses: a ring caps translation but rotation carries
+   past it, so the old cage really allowed **1.83 mm** worst print-front
+   wobble (fresh-clamp analytic said 1.25); the tuned design holds
+   **1.15 mm**. Also exposed the ccx 2.21 `SECTION=CIRC` defect noted
+   above. Writes `t3-prism-pr35-fea-tendon-wobble.png` / `.json`.
+3. **Level 3 — `gcode_thermal_wobble.py`** (g-code-driven
+   thermo-mechanical). Parses per-layer times out of the real
+   `slice_bambu_h2d.py` H2D g-code (~30 s/layer across the tendon span),
+   runs Newton cooling + an engineering E(T) map for TPU 85A, and feeds
+   the resulting per-element modulus profile back into the Level-2 FEA.
+   Finding: only ~1.0 mm of tendon below the print front is still soft
+   (E < E/2) when the nozzle returns — 0.2 mm on the slower PLA+TPU
+   schedule — so **thermal softening is second-order and cage clearance
+   is the lever**; even a worst-case 3 s/layer tendon-only schedule
+   (9.5 mm soft) only moves the caged wobble from 1.03 to 1.10 mm, which
+   quantifies Edison's "print several parts at once" advice (#10) as
+   insurance rather than a primary fix for this geometry. Writes
+   `t3-prism-pr35-gcode-thermal-wobble.png` / `.json`.
+
+Bottom line of the ladder: bare tendon ≈ 4–5 mm wobble at 10 mN (fails),
+old cage ≈ 1.8 mm closed-direction but *unbounded through the opening*,
+tuned cage ≈ 1.0–1.15 mm in **every** direction. The single unknown that
+most affects the absolute numbers is the real nozzle lateral force
+(deflections scale linearly in it); Edison flagged a one-off load-cell
+measurement as more valuable than any further model refinement.

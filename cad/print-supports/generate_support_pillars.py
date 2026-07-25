@@ -665,10 +665,14 @@ def tree_from_tips(tips: list[tuple[float, float, float]], *,
 #     pillars together, so the cage is a stiff triangulated column rather
 #     than three floppy lone pillars, and constrains the tendon's lateral
 #     wobble to ~the ring gap. Each ring leaves a ``--cage_opening``° opening
-#     (auto-widened until the opening chord exceeds the tendon diameter) so
-#     the finished cage can be pulled off the tendon sideways after the
-#     pillar feet are snapped off the plate. Rings that would clash with a
-#     crossing member are skipped automatically.
+#     (auto-widened until the opening chord reaches ``--cage_squeeze`` × the
+#     tendon diameter) so the finished cage can be squeezed off the soft
+#     tendon sideways after the pillar feet are snapped off the plate. The
+#     opening deliberately stays *below* the tendon diameter: the Level-1
+#     design sweep (verification/sweep_cage_design.py) showed a wider
+#     opening is an escape corridor the tendon can wobble through during
+#     the print. Rings that would clash with a crossing member are skipped
+#     automatically.
 #
 # The cage never touches the part: it bounds the tendon's motion during the
 # print (the nozzle can only push it ~the ring gap) without fusing to it.
@@ -829,7 +833,8 @@ def build_tendon_cages(mesh: "object", tendons: list[dict], *,
                        ring_gap: float, ring_h: float, ring_spacing: float,
                        opening_deg: float, clearance: float, foot_d: float,
                        foot_h: float, top_margin: float, bottom_margin: float,
-                       azimuth_step: float, facets: int
+                       azimuth_step: float, facets: int,
+                       squeeze: float = 0.75
                        ) -> tuple[list[tuple[np.ndarray, ...]], list[dict]]:
     """Emit an anti-wobble guide cage (3 pillars + C-ring braces) around
     each detected tendon. Returns ``(triangles, per-tendon stats)``."""
@@ -991,10 +996,17 @@ def build_tendon_cages(mesh: "object", tendons: list[dict], *,
         heights = guard_tops
 
         # -- C-ring braces
+        # Removability floor: the opening chord must let the tendon out of
+        # the ring after printing. A *rigid* member needs chord > diameter,
+        # but a soft TPU tendon squeezes out of a chord down to ~0.75x its
+        # diameter — and the Level-1 sweep (sweep_cage_design.py) showed a
+        # chord above the diameter is an escape corridor *during* the print
+        # (the tendon can wobble clean out of the cage), so the opening
+        # should stay as small as removability allows.
         opening = max(
             opening_deg,
             math.degrees(2.0 * math.asin(
-                min(1.0, (2.0 * r_t + 0.6) / (2.0 * r_in)))))
+                min(1.0, (squeeze * 2.0 * r_t) / (2.0 * r_in)))))
         sweep = 360.0 - opening
         a0 = phi0 + 300.0 + opening / 2.0  # opening centred between
         #                                     pillar k=2 and pillar k=0
@@ -1251,21 +1263,34 @@ def _parse_args() -> argparse.Namespace:
     ap.add_argument("--cage_pillar_gap", type=float, default=1.5,
                     help="[--cage] Clearance between the tendon surface and "
                          "the nearest pillar surface (mm). Default 1.5.")
-    ap.add_argument("--cage_ring_gap", type=float, default=1.2,
+    ap.add_argument("--cage_ring_gap", type=float, default=0.8,
                     help="[--cage] Clearance between the tendon surface and "
                          "the C-ring inner face (mm) — the tendon's maximum "
-                         "lateral wobble. Default 1.2.")
+                         "lateral wobble. Default 0.8 (was 1.2; the Level-1 "
+                         "design sweep sweep_cage_design.py showed the ring "
+                         "gap is the wobble floor).")
     ap.add_argument("--cage_ring_h", type=float, default=1.2,
                     help="[--cage] C-ring height (mm). Default 1.2 (6 "
                          "layers at 0.2 mm).")
-    ap.add_argument("--cage_ring_spacing", type=float, default=18.0,
+    ap.add_argument("--cage_ring_spacing", type=float, default=12.0,
                     help="[--cage] Vertical spacing between C-rings (mm). "
-                         "Default 18.")
-    ap.add_argument("--cage_opening", type=float, default=120.0,
+                         "Default 12 (was 18; the Level-2 contact FEA "
+                         "fea_tendon_wobble.py showed rings are point "
+                         "stops, not clamps, so they must engage together).")
+    ap.add_argument("--cage_opening", type=float, default=70.0,
                     help="[--cage] C-ring opening angle (deg) for pulling "
                          "the cage off the tendon after printing; auto-"
-                         "widened until the opening chord exceeds the "
-                         "tendon diameter. Default 120.")
+                         "widened until the opening chord reaches "
+                         "--cage_squeeze x tendon diameter. Default 70 "
+                         "(was 120; the Level-1 restraint rose showed a "
+                         "chord above the tendon diameter is an escape "
+                         "corridor during the print).")
+    ap.add_argument("--cage_squeeze", type=float, default=0.75,
+                    help="[--cage] Minimum ring-opening chord as a fraction "
+                         "of the tendon diameter. A soft TPU tendon "
+                         "squeezes out of a chord ~0.75x its diameter; use "
+                         ">= 1.0 to restore the rigid-member guarantee "
+                         "(at the cost of an escape corridor). Default 0.75.")
     ap.add_argument("--cage_clearance", type=float, default=0.8,
                     help="[--cage] Minimum clearance between cage pillars "
                          "and any non-tendon part geometry (mm); pillars "
@@ -1341,7 +1366,8 @@ def main() -> None:
                 opening_deg=args.cage_opening,
                 clearance=args.cage_clearance, foot_d=args.cage_foot_d,
                 foot_h=1.5, top_margin=3.0, bottom_margin=3.0,
-                azimuth_step=args.cage_azimuth_step, facets=args.facets)
+                azimuth_step=args.cage_azimuth_step, facets=args.facets,
+                squeeze=args.cage_squeeze)
             print(f"Tendon cages       : {len(cage_stats)} tendons",
                   file=sys.stderr)
             for i, st in enumerate(cage_stats):
@@ -1362,6 +1388,7 @@ def main() -> None:
                     ring_gap=args.cage_ring_gap, ring_h=args.cage_ring_h,
                     ring_spacing=args.cage_ring_spacing,
                     clearance=args.cage_clearance,
+                    squeeze=args.cage_squeeze,
                     tendons=cage_stats), indent=2))
                 print(f"  cage report       : {args.cage_report}",
                       file=sys.stderr)
