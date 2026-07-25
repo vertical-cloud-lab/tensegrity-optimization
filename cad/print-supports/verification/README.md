@@ -876,3 +876,10 @@ tuned cage ≈ 1.0–1.15 mm in **every** direction. The single unknown that
 most affects the absolute numbers is the real nozzle lateral force
 (deflections scale linearly in it); Edison flagged a one-off load-cell
 measurement as more valuable than any further model refinement.
+
+As an end-to-end sanity check, the merged part + tree pillars + tuned
+cages mesh slices cleanly on the live `bambu-studio` CLI / H2D 0.4-nozzle
+PLA profile (`slice_bambu_h2d.py … --no-repo-overrides --override
+enable_support=0`): **646 layers, 21 976 mm / 52.9 cm³ filament,
+~6 h 25 m** (+51 min over the part+pillars-only slice — the cost of the
+extra rings).
