@@ -118,6 +118,19 @@ Top bar → set up two filaments:
   **TPU High Flow** nozzle option ("Direct Drive TPU High Flow") so the soft
   filament feeds reliably.
 
+**Materials-handling status (July 2026).** The lab's TPU feed path now
+matches the highest-impact recommendation of the Edison literature review
+(`outputs/edison-pr35-print-advice/answer.md`, priority 1): the TPU spool
+feeds from the Bambu single-slot heated/desiccant dry box (AMS HT-class
+unit) through a sealed PTFE tube directly into the printer chamber, and the
+H2D's TPU assist module is installed. That closes the mid-print
+moisture-re-uptake path that the review identified as the likely cause of
+the bubbling. What remains on the materials side (Edison priorities 2–3):
+run the strongest spool-safe drying cycle *before* loading (50–55 °C / 6–8 h
+baseline, escalate toward 70–80 °C only if the spool tolerates it), transfer
+to the dry box without ambient exposure, and verify dryness by **spool mass
+before/after drying** rather than box RH.
+
 ### 2b. Import the meshes and merge into one object
 
 1. **Import all three meshes** (drag them all onto the plate, or **File →
