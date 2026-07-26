@@ -1,0 +1,116 @@
+{
+  "data": [
+    {
+      "id": 25566445,
+      "data_storage_id": "65f179f7-0b62-4bd5-963c-772eae649157",
+      "operation": "create",
+      "actor_id": "afade0b1-f49e-4031-a86d-cb5ec4652536",
+      "actor_type": "trajectory",
+      "timestamp": "2026-07-26T02:32:00.211826Z",
+      "data_storage": {
+        "name": "afade0b1-f49e-4031-a86d-cb5ec4652536_memory_heron_c0_20260726T022908996752.jsonl",
+        "description": "",
+        "is_collection": false,
+        "status": "active",
+        "content": null,
+        "embedding": null,
+        "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+        "label": "ca89499b8857",
+        "parent_id": null,
+        "dataset_id": "71b462b1-1c45-4480-b86e-5a2e5620b820",
+        "project_id": null,
+        "share_status": "private",
+        "short_alias": null,
+        "id": "65f179f7-0b62-4bd5-963c-772eae649157",
+        "path": "ca89499b8857",
+        "created_at": "2026-07-26T02:32:00.118028Z",
+        "modified_at": "2026-07-26T02:32:01.791178Z",
+        "tags": null,
+        "file_path": "/workspace/memory/afade0b1-f49e-4031-a86d-cb5ec4652536_memory_heron_c0_20260726T022908996752.jsonl",
+        "metadata": {
+          "trajectory_id": "afade0b1-f49e-4031-a86d-cb5ec4652536",
+          "crow_name": "data analysis crow",
+          "job_data": [
+            {
+              "entry_id": "2a03725b-2a56-4bfe-a6c8-8ac23e2a8186",
+              "filename": "slide-deck-draft1-extracted.md"
+            },
+            {
+              "entry_id": "77b29c6d-b9dd-477d-85f4-b9f2aa2abcc3",
+              "filename": "doumont-video-notes.md"
+            },
+            {
+              "entry_id": "80397667-b56a-407d-8c4e-cb1c1e9b986c",
+              "filename": "idetc-abstract.tex"
+            },
+            {
+              "entry_id": "9cddb197-eeea-4831-8e3d-6dcff2abee97",
+              "filename": "doumont-presentation-template.md"
+            }
+          ],
+          "size": 144624
+        },
+        "trajectory_id": null,
+        "project_name": null,
+        "project_description": null,
+        "is_kosmos_project": null
+      }
+    },
+    {
+      "id": 25566442,
+      "data_storage_id": "93668e9d-2a2d-4e74-8d6d-998de9193686",
+      "operation": "create",
+      "actor_id": "afade0b1-f49e-4031-a86d-cb5ec4652536",
+      "actor_type": "trajectory",
+      "timestamp": "2026-07-26T02:31:58.359515Z",
+      "data_storage": {
+        "name": "afade0b1-f49e-4031-a86d-cb5ec4652536.ipynb",
+        "description": "",
+        "is_collection": false,
+        "status": "active",
+        "content": null,
+        "embedding": null,
+        "user_id": "UxTMERa8SbeYkryBDMlwEgoJNF53",
+        "label": "8df610690576",
+        "parent_id": null,
+        "dataset_id": "fe44f75f-6079-49e8-bdb7-96a640a929d1",
+        "project_id": null,
+        "share_status": "private",
+        "short_alias": null,
+        "id": "93668e9d-2a2d-4e74-8d6d-998de9193686",
+        "path": "8df610690576",
+        "created_at": "2026-07-26T02:31:58.264178Z",
+        "modified_at": "2026-07-26T02:31:59.925500Z",
+        "tags": null,
+        "file_path": "/workspace/notebooks/afade0b1-f49e-4031-a86d-cb5ec4652536.ipynb",
+        "metadata": {
+          "trajectory_id": "afade0b1-f49e-4031-a86d-cb5ec4652536",
+          "crow_name": "data analysis crow",
+          "job_data": [
+            {
+              "entry_id": "2a03725b-2a56-4bfe-a6c8-8ac23e2a8186",
+              "filename": "slide-deck-draft1-extracted.md"
+            },
+            {
+              "entry_id": "77b29c6d-b9dd-477d-85f4-b9f2aa2abcc3",
+              "filename": "doumont-video-notes.md"
+            },
+            {
+              "entry_id": "80397667-b56a-407d-8c4e-cb1c1e9b986c",
+              "filename": "idetc-abstract.tex"
+            },
+            {
+              "entry_id": "9cddb197-eeea-4831-8e3d-6dcff2abee97",
+              "filename": "doumont-presentation-template.md"
+            }
+          ],
+          "size": 184
+        },
+        "trajectory_id": null,
+        "project_name": null,
+        "project_description": null,
+        "is_kosmos_project": null
+      }
+    }
+  ]
+}
