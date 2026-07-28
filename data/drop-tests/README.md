@@ -35,12 +35,15 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `9GMQYQ_60in_5felts/` | 101 (zips) | 60 in / 5 felt validation campaign, specimen `9GMQYQ` (`jin_{1..4}.zip`, PR #86) | [`drop-test-60in-5felts-analysis.md`](../../docs/drop-test-60in-5felts-analysis.md) |
 | `60in-5felts-validation/` | — | Derived analysis of the two 60 in / 5 felt campaigns: stabilized OLS drift, felt-wear saturation, specimen discrimination (no raw data of its own) + 960 fps slo-mo videos and frame-by-frame kinematics (`video/`) | [`drop-test-60in-5felts-analysis.md`](../../docs/drop-test-60in-5felts-analysis.md) |
 | `prc1kn-60in-5felt/` | 101 (zips) | `prc1kn` 60 in campaign (`prc1kn - set 1 - {1..4}.zip`, PR #86) — stack **4 felt + 1 cardboard**, per @me-madsen the actual composition of every "5 felt"-labeled session — + mock three-structure transmissibility comparison + 959.04 fps slo-mo videos with XML sidecars and calibration-grid parallax analysis (`video/`) | [`drop-test-prc1kn-60in-5felts-analysis.md`](../../docs/drop-test-prc1kn-60in-5felts-analysis.md), [`drop-test-prc1kn-video-analysis.md`](../../docs/drop-test-prc1kn-video-analysis.md) |
+| `7-22-2026 prc1kn 100drops/` | 100 (zips) | `prc1kn` second 100-drop campaign at 60 in (posted by @ctrhjk) — byte-identical zips also committed under `7-22 - 7-27 Drop Tests/` | [`drop-test-7-22-7-27-batch-analysis.md`](../../docs/drop-test-7-22-7-27-batch-analysis.md) |
+| `7-22 - 7-27 Drop Tests/` | 402 (zips) | Second-batch 60 in campaigns: `prc1kn` 07-22 (4-channel re-run of the 07-21 campaign), `RW5F61` 07-23, `7xadt6` 07-27, `9GMQYQ` 07-27 (the latter three **CH5-only** exports, 20 ms @ 1.25 MHz — no transmissibility) + batch-1 consistency comparison (`figures/`) | [`drop-test-7-22-7-27-batch-analysis.md`](../../docs/drop-test-7-22-7-27-batch-analysis.md) |
 | `prc1kn-health/` | — | Derived cross-dataset health check of `prc1kn` + sensor (no raw data of its own) | [`drop-test-prc1kn-health-check.md`](../../docs/drop-test-prc1kn-health-check.md) |
 | `sample-size/` | — | Derived variance + sample-size + timing meta-analysis: how many drops per specimen, variance so far, and set duration at ~42 s/drop (no raw data of its own) | [`drop-test-sample-size-analysis.md`](../../docs/drop-test-sample-size-analysis.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
-Total: **1,530 loose raw CSVs** + **302 CSVs inside the 60 in campaign
-zips** + the 5 original `.txt` exports.
+Total: **1,530 loose raw CSVs** + **704 unique CSVs inside the 60 in
+campaign zips** (302 batch 1 + 402 batch 2; the `prc1kn` 07-22 zips are
+additionally committed twice) + the 5 original `.txt` exports.
 
 ## Provenance / completeness
 
