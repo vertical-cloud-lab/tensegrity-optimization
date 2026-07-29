@@ -39,6 +39,7 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `7-22 - 7-27 Drop Tests/` | 402 (zips) | Second-batch 60 in campaigns: `prc1kn` 07-22 (4-channel re-run of the 07-21 campaign), `RW5F61` 07-23, `7xadt6` 07-27, `9GMQYQ` 07-27 (the latter three **CH5-only** exports, 20 ms @ 1.25 MHz — no transmissibility) + batch-1 consistency comparison (`figures/`) | [`drop-test-7-22-7-27-batch-analysis.md`](../../docs/drop-test-7-22-7-27-batch-analysis.md) |
 | `prc1kn-health/` | — | Derived cross-dataset health check of `prc1kn` + sensor (no raw data of its own) | [`drop-test-prc1kn-health-check.md`](../../docs/drop-test-prc1kn-health-check.md) |
 | `sample-size/` | — | Derived variance + sample-size + timing meta-analysis: how many drops per specimen, variance so far, and set duration at ~42 s/drop (no raw data of its own) | [`drop-test-sample-size-analysis.md`](../../docs/drop-test-sample-size-analysis.md) |
+| `compaction/` | — | Derived CH5-only absorber-stack compaction analysis: wear per drop, recovery, the "unusable" point, and T-vs-compaction robustness over 704 drops (no raw data of its own) | [`drop-test-compaction-analysis.md`](../../docs/drop-test-compaction-analysis.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
 Total: **1,530 loose raw CSVs** + **704 unique CSVs inside the 60 in

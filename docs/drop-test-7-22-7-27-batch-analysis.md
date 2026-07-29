@@ -67,11 +67,12 @@ from batch 1, and `9GMQYQ`'s −0.3 % is negligible even where n ≈ 100 makes
 it "significant". This is strong validation of test consistency at the
 CFC-180 level, despite the raw spike varying ×3 with stack wear (§5).
 
-`RW5F61`'s lower level (420 G) and higher CV (3.69 %) are the fresh-stack
-session: its input climbs +0.125 %/drop all session (R² = 0.89) as the
-refreshed stack compacts — the same campaign-scale burn-in the 07-20
-evening showed on fresh felt. Its specimen-specific level also cannot be
-separated from stack state with the input channel alone.
+`RW5F61`'s lower level (420 G) and higher CV (3.69 %) reflect a
+rested/re-set stack plus a specimen-specific level: its input climbs
++0.125 %/drop all session (R² = 0.89) as the stack re-compacts — the same
+campaign-scale burn-in the 07-20 evening showed. The specimen effect and
+stack state cannot be separated with the input channel alone (see the
+[compaction analysis](drop-test-compaction-analysis.md) §1).
 
 ## 4. Transmissibility: batch 1 vs batch 2 (the requested comparison)
 
@@ -108,8 +109,11 @@ What the one available comparison says (figure
 `prc1kn` 07-22 continued the same absorber stack's trajectory from the
 07-20/07-21 evenings: CH5 raw spike **median 83 % FS, peaking at 91 %**
 (8.6 kG of the 9,442.9 G full scale) — the closest any campaign has come to
-clipping the input. The stack was evidently refreshed before 07-23
-(`RW5F61` restarts at ~15–20 % FS after a 52 % first-drop transient), then
+clipping the input. The stack was *not* replaced before 07-23 — the lab
+owns only the one stack (issue #88) — but its raw-spike growth largely
+reset (`RW5F61` restarts at ~15–20 % FS after a 52 % first-drop
+transient; part specimen effect, part recovery/re-handling — see the
+[compaction analysis](drop-test-compaction-analysis.md)), then it
 recompacted through 07-23 → 07-27 (7xadt6 ends at 70 %, 9GMQYQ at 77 %).
 Meanwhile the CFC-180 input moved ≤1 % (§3) — compaction adds
 high-frequency spike content, not low-frequency severity, exactly as the
