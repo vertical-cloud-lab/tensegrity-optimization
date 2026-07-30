@@ -133,6 +133,17 @@ frequency-response story again, now visible *within* a session.
 | TOP CV ≤ ~2 % | 26.8 % (input-driven) | ❌ fail (T CV 1.3 % ✅) |
 
 **Read: right material, wrong operating point + an unstabilized stack.**
+
+> **Resolved (07-30 p.m.)** — the four-arrangement sweep in
+> [`drop-test-pu-configs-analysis.md`](drop-test-pu-configs-analysis.md)
+> ran steps 1–2 below and answers both open items: the **1/4 in sheet
+> alone** lands the input at 371 G / 1.66 ms (vs felt's 408 G / 1.67 ms)
+> and passes all seven criteria, and the bimodality here was the **two
+> sheets stacked and seating inconsistently** — every drop in this run
+> matches either the "both sheets" or the "1/2 in alone" point of that
+> sweep. Properly seated, the same two-sheet stack gives input CV 1.7 %
+> instead of 25.7 %; a single sheet avoids the interface entirely.
+
 Recommended next iteration, in order:
 
 1. **Stiffen the operating point** — remove sheets (or use a thinner /

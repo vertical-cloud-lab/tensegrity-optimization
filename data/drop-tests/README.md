@@ -41,12 +41,18 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `sample-size/` | — | Derived variance + sample-size + timing meta-analysis: how many drops per specimen, variance so far, and set duration at ~42 s/drop (no raw data of its own) | [`drop-test-sample-size-analysis.md`](../../docs/drop-test-sample-size-analysis.md) |
 | `compaction/` | — | Derived CH5-only absorber-stack compaction analysis: wear per drop, recovery, the "unusable" point, and T-vs-compaction robustness over 704 drops (no raw data of its own) | [`drop-test-compaction-analysis.md`](../../docs/drop-test-compaction-analysis.md) |
 | `pu-vs-felt/` | 10 + 2 (zips) | Polyurethane-rubber vs 4 felt + 1 cardboard paired A/B test, specimen `bpx68c`, 5 drops each, 07-30 (posted by @me-madsen via Box, PR #86) — first data on the durable-absorber replacement (issue #88), full 4-channel 1.25 MHz / 20 ms exports | [`drop-test-pu-vs-felt-analysis.md`](../../docs/drop-test-pu-vs-felt-analysis.md) |
+| `print-defects/` | 502 (zips) | Print-defect study: five nominally identical T3-prism prints (`57vqhx`, `mdt6ja`, `j1crxg`, `cruela`, `bpx68c`), ~100 drops each at 60 in on 4 felt + 1 cardboard, 07-28/07-29 (posted by @me-madsen via Box, PR #86) — first direct measurement of print-to-print scatter in `T`; the stack was adjusted before specimens 4–5, which confounds the defect grouping | [`drop-test-print-defects-analysis.md`](../../docs/drop-test-print-defects-analysis.md) |
+| `pu-configs/` | 40 (zips) | Polyurethane sheet-arrangement sweep, specimen `bpx68c`, 4 arrangements × 10 drops at 60 in, 07-30 (posted by @me-madsen via Box, PR #86) — picks the transmissibility operating point; the 1/4 in sheet alone reproduces the felt shock and passes all 7 qualification criteria | [`drop-test-pu-configs-analysis.md`](../../docs/drop-test-pu-configs-analysis.md) |
+| `7-30-2026 - 100 drops - 60 in - 4 flt 1 crdbrd/` | 151 | Direct-to-branch upload of two print-defect sessions (`57vqhx` loose CSVs, `mdt6ja` 2 zips = 50 of 100 captures) — partial duplicate of `print-defects/raw/`; folder name is the upload date, the tests were 07-28 | [`drop-test-print-defects-analysis.md`](../../docs/drop-test-print-defects-analysis.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
 Total: **1,530 loose raw CSVs** + **704 unique CSVs inside the 60 in
 campaign zips** (302 batch 1 + 402 batch 2; the `prc1kn` 07-22 zips are
 additionally committed twice) + **12 CSVs in the `pu-vs-felt/` zips**
-+ the 5 original `.txt` exports.
++ **40 CSVs in the `pu-configs/` zips** + **502 CSVs in the
+`print-defects/` zips** (151 of which are additionally present as the
+direct-to-branch upload under `7-30-2026 - 100 drops - 60 in - 4 flt 1
+crdbrd/`) + the 5 original `.txt` exports.
 
 ## Provenance / completeness
 

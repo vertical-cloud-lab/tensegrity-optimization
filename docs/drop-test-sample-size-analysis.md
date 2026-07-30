@@ -174,9 +174,17 @@ Scaled to a BO batch at 60 in (baseline 7-drop set unless noted):
 
 - CVs are *within a single physical specimen* (repeat drops). True
   print-to-print reproducibility (a fresh print of the same geometry) is **not**
-  yet characterised — the recommendation assumes one physical article per
-  specimen; add replicate *prints* per geometry (n ≥ 3) before treating peak-g /
-  `T` as a settled BO objective, per the input-output and vertex-acrylic SOPs.
+  characterised by *this* analysis — the recommendation assumes one physical
+  article per specimen.
+  **Update (07-30): it has since been measured directly.** Five nominally
+  identical T3-prism prints, ~100 drops each, give a between-print CV of
+  **0.72 %** in `T` (1.95 % worst-to-best spread) — see
+  [`drop-test-print-defects-analysis.md`](drop-test-print-defects-analysis.md).
+  Because repeat drops on one article are only 1.4× tighter than that,
+  **replicate prints, not extra drops, are what buy precision for a
+  between-design comparison**: ~3 prints per geometry to resolve a 2 %
+  difference at 80 % power, 1 print for ≥3 %. The n ≥ 3 replicate-print advice
+  below stands and now has a number behind it.
 - The 200 ms / 125 kHz capture window truncates the full ring-down, so Δv/SEA
   are partial-pulse; these `n` targets are for the **peak/transmissibility**
   objective, not energy metrics (extend the window for SEA — see

@@ -19,6 +19,17 @@ absorber removes both the procurement problem and the drift.
 > (input −60 % vs the felt era) and toggles between two stiffness states
 > drop-to-drop — it needs fewer/firmer sheets plus seating/restraint, then
 > the §4.2 stability check.
+>
+> **Update 2026-07-30 (p.m.): §4.1 is complete and passed.** A
+> four-arrangement sweep of the two PU sheets (10 drops each) is in
+> [`drop-test-pu-configs-analysis.md`](drop-test-pu-configs-analysis.md).
+> The **1/4 in sheet alone** passes all seven acceptance criteria — input
+> 371 G / 1.66 ms against the felt era's 408 G / 1.67 ms, raw peak 26 % FS
+> (vs worn felt's 91 %), trigger margin 5.4×, T CV 0.43 % — and the
+> earlier soft/stiff toggling is explained as interface seating between
+> two stacked sheets, which a single sheet removes. Remaining: the §4.2
+> stability check (~25 drops, to confirm the 1/4 in sheet's bedding-in
+> transient plateaus) and then the §4.3 bridging campaign.
 
 ## 1. What a replacement must reproduce
 
