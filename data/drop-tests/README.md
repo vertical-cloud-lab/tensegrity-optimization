@@ -40,11 +40,13 @@ script in [`scripts/analysis/`](../../scripts/analysis/).
 | `prc1kn-health/` | — | Derived cross-dataset health check of `prc1kn` + sensor (no raw data of its own) | [`drop-test-prc1kn-health-check.md`](../../docs/drop-test-prc1kn-health-check.md) |
 | `sample-size/` | — | Derived variance + sample-size + timing meta-analysis: how many drops per specimen, variance so far, and set duration at ~42 s/drop (no raw data of its own) | [`drop-test-sample-size-analysis.md`](../../docs/drop-test-sample-size-analysis.md) |
 | `compaction/` | — | Derived CH5-only absorber-stack compaction analysis: wear per drop, recovery, the "unusable" point, and T-vs-compaction robustness over 704 drops (no raw data of its own) | [`drop-test-compaction-analysis.md`](../../docs/drop-test-compaction-analysis.md) |
+| `pu-vs-felt/` | 10 + 2 (zips) | Polyurethane-rubber vs 4 felt + 1 cardboard paired A/B test, specimen `bpx68c`, 5 drops each, 07-30 (posted by @me-madsen via Box, PR #86) — first data on the durable-absorber replacement (issue #88), full 4-channel 1.25 MHz / 20 ms exports | [`drop-test-pu-vs-felt-analysis.md`](../../docs/drop-test-pu-vs-felt-analysis.md) |
 | `figures/` | — | Plots for the first-drops analysis (`scripts/analysis/drop_test_analysis.py`) | — |
 
 Total: **1,530 loose raw CSVs** + **704 unique CSVs inside the 60 in
 campaign zips** (302 batch 1 + 402 batch 2; the `prc1kn` 07-22 zips are
-additionally committed twice) + the 5 original `.txt` exports.
+additionally committed twice) + **12 CSVs in the `pu-vs-felt/` zips**
++ the 5 original `.txt` exports.
 
 ## Provenance / completeness
 

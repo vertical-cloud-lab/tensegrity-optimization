@@ -11,6 +11,15 @@ and drove every OLS drift term — and the lab owns no spare felt, so the
 "refresh every ~100 drops" rule can't currently be followed. A durable
 absorber removes both the procurement problem and the drift.
 
+> **Update 2026-07-30:** the lab bought polyurethane rubber sheets and ran
+> the §4.1 mini-sweep — a paired 5 + 5 drop A/B test on specimen `bpx68c`.
+> Results and the graded acceptance criteria are in
+> [`drop-test-pu-vs-felt-analysis.md`](drop-test-pu-vs-felt-analysis.md):
+> raw head-room passes with 6× margin, but the stack as tested is too soft
+> (input −60 % vs the felt era) and toggles between two stiffness states
+> drop-to-drop — it needs fewer/firmer sheets plus seating/restraint, then
+> the §4.2 stability check.
+
 ## 1. What a replacement must reproduce
 
 From the measured campaigns (60 in, ~5.5 m/s impact, carriage + acrylic plate):
