@@ -30,6 +30,44 @@ auto-support threshold" from PR #35 — below it the top-triangle TPU
 bridges fail mid-print (the `cable_d = 2.4 mm` spaghetti event diagnosed
 by Edison ANALYSIS `25c1c897`).
 
+The Sobol coordinates above are the **design coordinates** (what the BO
+model sees). The **as-printed** dimensions differ by a per-specimen uniform
+scale, because every specimen is projected onto the constant-mass manifold —
+see [Constraints](#constraints-constant-mass--max-envelope-volume) below.
+After projection the as-printed `cable_d` can fall below the 3 mm bridge
+floor; those specimens are flagged `cable_bridge_ok=False` in the CSV
+(acceptable under the manual-painted-supports workflow — the floor only
+matters for unsupported self-bridging).
+
+## Constraints (constant mass + max envelope volume)
+
+Per PR #35 comment `5132975378` (@sgbaird) the batch enforces the two
+constraints of the PR #33 hybrid campaign
+([`simulations/sim_bo_hybrid_campaign.py`](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/copilot/explore-simulations-for-tensegrity/simulations/sim_bo_hybrid_campaign.py)):
+
+* **Route A — constant cell mass `m*`.** Each specimen's `(R, H, strut_d,
+  cable_d, joint_d)` are uniformly re-scaled (twist and all shape ratios
+  preserved) until its estimated as-printed mass equals `m*`. The default
+  `m*` is the solid-volume mass of the committed S0 reference design
+  (`cad/t3-prism/t3-prism-{struts,cables}.stl` — the geometry of the most
+  recent instrumented prints): `V_struts·1.24 g/cm³ + V_cables·1.21 g/cm³`.
+  The sensor housings are absolute-size physical fixtures and do **not**
+  scale, so the solve iterates on rendered STL volumes
+  (`m(s) = m_housings + m_body(1)·s³`) until `|m − m*| ≤ 0.15 g` — the
+  converged mass includes every real geometry feature (captive cores,
+  teardrops, skirts, housings, boolean overlaps).
+* **Route B — max envelope volume `V*`.** `envelope_cm3 = π·R_print²·H_print`
+  (circumscribing cylinder of the prism, the
+  `bo_evaluator.cell_geometry_metrics` definition) must be ≤ **250 cm³**
+  (`sim_bo_hybrid_campaign.DEFAULT_ENVELOPE_MAX_CM3`). Because the uniform
+  scale is consumed by the mass constraint, a shape whose envelope still
+  exceeds `V*` at `m*` is **constraint-infeasible**: it is flagged
+  `envelope_ok=False` in the CSV/JSON rather than silently dropped or
+  re-scaled (printing it still yields a valid infeasibility observation
+  for the BO model; excluding it from the plate is the team's call).
+
+Both targets are CLI-overridable (`--mass-g`, `--envelope-max-cm3`).
+
 ## What's frozen (and why)
 
 | Variable             | Value             | Reason |
@@ -50,6 +88,21 @@ The slicer-side modeled-in PLA scaffold pillars from PR #35 commit
 slicer's auto-support gap on near-vertical TPU cables, and Audrey's
 painted-supports approach in PR #35 comments `4502140147` /
 `4502171087` supersedes them.
+
+## Rendered from the canonical SCAD (sensor housings included)
+
+Since PR #35 comment `5132975378` the generator no longer carries its own
+embedded SCAD template. Each specimen is rendered **directly from
+[`cad/t3-prism/t3-prism.scad`](../cad/t3-prism/t3-prism.scad)** via `-D`
+parameter overrides (`R_base`, `H_base`, `twist`, `strut_d_base`,
+`cable_d_base`, `joint_d_base`, `scale_factor`, `part`), so every specimen
+automatically carries the **latest** joint and sensor-housing design and can
+never drift out of sync with the single-specimen CAD again. At HEAD that
+means: captive-core joints (bonded, teardrop blend), the three top-vertex
+rounded "igloo" accelerometer mounts (A3 explicit 6.2 × 6.2 × 6.8 mm
+pocket), and the three beside-mounted flat bottom key-seats hovering above
+the plate. The housings are physical-part fixtures in absolute mm — they do
+not scale with the specimen.
 
 ## Captive TPU core inside PLA outer shell joints
 
@@ -72,37 +125,52 @@ from **10.0 mm** (small-cable specimens, clamped to `joint_d=7` → bore
 3.8 → core 6.8 → still smaller than joint_d so shell_od defaults to
 `bore + 5.4` = 9.2 mm; with the second `max(., joint_d)` clamp, shell_id
 collapses to ≥7 mm and final shell_od to `max(8 + 3.2, 7)` = 11.2 mm)
-to **13.2 mm** (`cable_d=5.5` specimens). The plate-grid cell size
-(`specimen_footprint`) is sized off the worst-case `2R + shell_od` so
-every specimen still fits inside its own cell.
+to **13.2 mm** (`cable_d=5.5` specimens). The plate-grid cells are sized
+from each specimen's **measured** STL footprint (joint shells, igloo
+mounts, and beside-mounted bottom key-seats included), so every specimen
+fits inside its own cell.
 
 ## How to run
 
 ```bash
-pip install ax-platform numpy
 sudo apt-get install -y openscad admesh xvfb \
     gstreamer1.0-plugins-base libsoup-3.0-0 libwebkit2gtk-4.1-0
-python3 bo/t3_prism_sobol_batch.py        # default n=9, seed=0
+python3 bo/t3_prism_sobol_batch.py        # default n=9, pinned first-batch designs
 ```
 
-Knobs:
+By default the 9 first-batch Sobol design coordinates are read back from
+the committed `t3-prism-bo-batch.csv`, so re-running regenerates the same
+physical designs against the current CAD (no `ax-platform` install
+needed). Knobs:
 
 * `--n N` — number of specimens (default `9`, packed `3 rows × 3 cols` on
   the 350×320 mm H2D plate with a 50 mm +X strip held back for the IDEX
-  prime/flush tower; PR #35 comment 4513445377 reverted to 3×3 from the
-  temporary 3×2 layout in PR #35 comment 4513164299 by tightening the
-  inter-cell gap to 6 mm and the tower reserve to 50 mm so 9 specimens
-  still fit alongside the wipe tower)
-* `--seed S` — Sobol seed (default `0`; bump to regenerate)
-* `--skip-render` — skip the OpenSCAD STL/PNG passes (CI smoke test)
+  prime/flush tower and a 6 mm inter-cell air gap; since the constant-mass
+  projection the grid uses **variable column widths / row heights** — the
+  largest specimens share a column and a row — so 3×3 still fits inside
+  the prime-tower-reduced usable area)
+* `--resample` — draw a fresh Sobol batch via Ax instead of reusing the
+  pinned designs (requires `pip install ax-platform`; `--seed S` applies)
+* `--mass-g M` — override the Route-A constant mass m\* (default: computed
+  from the committed S0 reference STLs)
+* `--envelope-max-cm3 V` — override the Route-B envelope cap V\* (default 250)
+* `--jobs J` — parallel OpenSCAD render workers (default 4)
+* `--skip-render` — CSV/JSON with analytic scale estimates only (CI smoke test)
 * `--skip-mm-3mf` — skip the BambuStudio CLI multi-material project assembly
 
 ## Outputs (next to this script)
 
-* `t3-prism-bo-batch.csv`        — design table (one row per specimen)
-* `t3-prism-bo-batch.json`       — same data plus plate-layout metadata
-* `t3-prism-bo-batch.scad`       — generated OpenSCAD wrapper with a
-  `part = "all"|"struts"|"cables"` switch (mirrors `cad/t3-prism/t3-prism.scad`)
+* `t3-prism-bo-batch.csv`        — design table: one row per specimen with
+  the original Sobol coordinates (`R_mm` … `cable_d_mm`), the constant-mass
+  projection (`scale`, `*_print_mm` as-printed dimensions), the mass audit
+  (`mass_g`, `pla_g`, `tpu_g`, `mass_target_g`, `mass_ok`), and the
+  constraint flags (`envelope_cm3`, `envelope_max_cm3`, `envelope_ok`,
+  `cable_bridge_ok`)
+* `t3-prism-bo-batch.json`       — same data plus constraint + plate-layout metadata
+* `t3-prism-bo-batch.scad`       — preview wrapper that `import()`s the
+  plate-positioned per-specimen STLs, with a
+  `part = "all"|"struts"|"cables"` switch (the geometry itself is rendered
+  from `cad/t3-prism/t3-prism.scad`)
 * `t3-prism-bo-batch.stl`        — packed STL, struts + cables fused
   (preview / single-material use only — Bambu Studio cannot split this
   into PLA and TPU after import)
