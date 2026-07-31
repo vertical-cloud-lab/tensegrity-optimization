@@ -93,8 +93,11 @@ CONFIGS = [
      "zip": RAW / "half-top-quarter-bottom.zip", "trigger_g": 150.0, "color": "tab:blue"},
 ]
 
-# Reference points for the acceptance criteria (docs/drop-test-absorber-alternatives.md
-# section 4.1) and for continuity with the felt-era catalogue.
+# The felt+cardboard stack is kept only as a *descriptive* reference row. Per
+# @sgbaird (PR #86), no felt-era measurement feeds any downstream optimization
+# task and everything relevant is being re-measured, so "reproduces the felt
+# shock" is NOT scored as an acceptance criterion -- the arrangement is chosen
+# on measurement quality alone.
 FELT_REF = {
     "label": "4 felt + 1 cardboard (bpx68c, 07-30 a.m.)",
     "ch5_180_g": 407.59, "ch5_180_cv": 2.8, "ch5_width_ms": 1.67,
@@ -107,9 +110,22 @@ PU_AB_REF = {"ch5_180_g": 186.21, "ch5_180_cv": 25.7, "ch5_width_ms": 3.31,
              "ch5_raw_g": 428.77}
 
 HEADROOM_TARGET_G = FULL_SCALE_G["CH5"] / 3.0  # 3.1 kG FS/3 target
-INPUT_BAND_G = (0.8 * FELT_REF["ch5_180_g"], 1.2 * FELT_REF["ch5_180_g"])
-WIDTH_BAND_MS = (1.0, 2.5)
 TRIGGER_MARGIN_MIN = 2.0  # raw |peak| / trigger level
+
+# The specimens' first structural mode, measured at 519-549 Hz across the
+# ringdown analyses in this repo (docs/drop-test-prc1kn-health-check.md,
+# docs/drop-test-100drops-analysis.md), with a second cluster at ~1.3-1.7 kHz.
+STRUCT_BAND_HZ = (450.0, 800.0)
+STRUCT_F_HZ = 550.0
+# The input must stay in the shock regime for that mode rather than pressing
+# the specimen quasi-statically: an SDOF at STRUCT_F_HZ driven by a half-sine
+# of duration tau responds near its maximax plateau while STRUCT_F_HZ * tau
+# is <= ~1.5, and decays toward unit (quasi-static) gain beyond it.
+FTAU_MAX = 1.5
+WIDTH_MAX_MS = 1e3 * FTAU_MAX / STRUCT_F_HZ  # 2.7 ms
+# Output peak must sit well clear of the tri-axis noise floor; 1 % of that
+# sensor's full scale is a conservative floor.
+OUTPUT_FLOOR_G = 0.01 * FULL_SCALE_G["CH4"]
 
 
 def load_captures(zpath: Path) -> list[tuple[int, str]]:
@@ -183,11 +199,26 @@ def analyze_capture(sig_no: int, text: str) -> dict:
         pk = float(np.max(np.abs(ch[:, col])))
         sat[name] = {"peak_g": pk, "frac_fs": pk / FULL_SCALE_G[name]}
 
+    # A broader-band transmissibility, for the same drops. CFC-180 rolls off at
+    # 300 Hz and so attenuates the specimens' 520-700 Hz structural mode by
+    # ~12x; CFC-1000 (1650 Hz) retains it. Whether a configuration's T survives
+    # the wider band with usable repeatability decides whether it can carry the
+    # FRF/SRS-band metrics the Edison synthesis recommends as the maturation
+    # path -- so it is measured here rather than assumed.
+    top1000 = np.stack([cfc_filter(top[:, j], fs, 1000) for j in range(3)], axis=1)
+    res1000 = resultant(top1000)
+    t_1000 = float(np.max(res1000[lo:hi]) / np.max(np.abs(ch5_1000[lo:hi])))
+
     # output spectrum: energy centroid of the tri-axis resultant over the impact
     seg = resultant(top)[max(0, i_imp - int(0.001 / dt)) : i_imp + int(0.008 / dt)]
     f, p = sig.welch(seg - seg.mean(), fs=fs, nperseg=min(4096, len(seg)))
     band = (f >= 100.0) & (f <= 20000.0)
     centroid = float(np.sum(f[band] * p[band]) / np.sum(p[band]))
+    # share of that output energy actually landing in the structural band. The
+    # centroid alone cannot distinguish structural ringing from broadband
+    # contact-spike content, and on a hard stack most of it is the latter.
+    struct = (f >= STRUCT_BAND_HZ[0]) & (f <= STRUCT_BAND_HZ[1])
+    struct_share = float(p[struct].sum() / p[band].sum())
 
     return {
         "signal": sig_no,
@@ -205,7 +236,9 @@ def analyze_capture(sig_no: int, text: str) -> dict:
         "top_180_g": m_top["peak_abs_g"],
         "top_width_ms": m_top["pulse_width_ms"],
         "top_centroid_hz": centroid,
+        "top_struct_share": struct_share,
         "t_ch5": m_top["peak_abs_g"] / m_ch5["peak_abs_g"],
+        "t_ch5_1000": t_1000,
         "sat": sat,
         "series": {
             "t_ms": (t[:n_dv:40] * 1e3).tolist(),
@@ -222,7 +255,8 @@ def summarize(rows: list[dict], cfg: dict) -> dict:
     idx = np.arange(1, n + 1, dtype=float)
     agg, drift = {}, {}
     for key in ["ch5_raw_g", "ch5_180_g", "ch5_width_ms", "ch5_dv_captured_ms",
-                "top_180_g", "top_width_ms", "top_centroid_hz", "t_ch5"]:
+                "top_180_g", "top_width_ms", "top_centroid_hz",
+                "top_struct_share", "t_ch5", "t_ch5_1000"]:
         a = arr(rows, key)
         agg[key] = {"mean": float(a.mean()), "sd": float(a.std(ddof=1)), "cv": cv(a),
                     "min": float(a.min()), "max": float(a.max())}
@@ -238,16 +272,17 @@ def summarize(rows: list[dict], cfg: dict) -> dict:
             "value_g": float(raw.max()),
             "pass": bool(raw.max() <= HEADROOM_TARGET_G),
         },
-        "input_severity": {
-            "criterion": f"CH5 CFC-180 within +-20 % of the felt era "
-                         f"({INPUT_BAND_G[0]:.0f}-{INPUT_BAND_G[1]:.0f} G)",
-            "value_g": agg["ch5_180_g"]["mean"],
-            "pass": bool(INPUT_BAND_G[0] <= agg["ch5_180_g"]["mean"] <= INPUT_BAND_G[1]),
+        "output_level": {
+            "criterion": f"TOP CFC-180 >= {OUTPUT_FLOOR_G:.0f} G (1 % of tri-axis FS)",
+            "value_g": agg["top_180_g"]["mean"],
+            "pass": bool(agg["top_180_g"]["mean"] >= OUTPUT_FLOOR_G),
         },
-        "pulse_width": {
-            "criterion": f"input pulse width {WIDTH_BAND_MS[0]}-{WIDTH_BAND_MS[1]} ms",
+        "shock_regime": {
+            "criterion": f"input pulse width <= {WIDTH_MAX_MS:.1f} ms "
+                         f"(f*tau <= {FTAU_MAX} at the {STRUCT_F_HZ:.0f} Hz mode)",
             "value_ms": agg["ch5_width_ms"]["mean"],
-            "pass": bool(WIDTH_BAND_MS[0] <= agg["ch5_width_ms"]["mean"] <= WIDTH_BAND_MS[1]),
+            "value_ftau": agg["ch5_width_ms"]["mean"] * 1e-3 * STRUCT_F_HZ,
+            "pass": bool(agg["ch5_width_ms"]["mean"] <= WIDTH_MAX_MS),
         },
         "output_repeatability": {
             "criterion": "TOP CFC-180 CV <= 2 %",
@@ -255,9 +290,14 @@ def summarize(rows: list[dict], cfg: dict) -> dict:
             "pass": bool(agg["top_180_g"]["cv"] <= 2.0),
         },
         "t_repeatability": {
-            "criterion": "T CV <= 2 %",
+            "criterion": "T (CFC-180) CV <= 2 %",
             "value_pct": agg["t_ch5"]["cv"],
             "pass": bool(agg["t_ch5"]["cv"] <= 2.0),
+        },
+        "broadband_t_repeatability": {
+            "criterion": "T (CFC-1000, retains the structural band) CV <= 2 %",
+            "value_pct": agg["t_ch5_1000"]["cv"],
+            "pass": bool(agg["t_ch5_1000"]["cv"] <= 2.0),
         },
         "trigger_margin": {
             "criterion": f"raw |peak| >= {TRIGGER_MARGIN_MIN:.0f}x the trigger level "
@@ -334,7 +374,7 @@ def main() -> int:
               f"{a['ch5_180_g']['cv']:5.1f}% {a['ch5_width_ms']['mean']:6.2f}m "
               f"{a['top_180_g']['mean']:8.1f} {a['top_180_g']['cv']:5.1f}% "
               f"{a['t_ch5']['mean']:7.3f} {a['t_ch5']['cv']:5.2f}% "
-              f"{s['trigger_margin_min']:5.1f}x {s['n_pass']:3d}/7")
+              f"{s['trigger_margin_min']:5.1f}x {s['n_pass']:3d}/{len(s['checks'])}")
     print(f"  {'felt + cardboard ref':22s} {FELT_REF['ch5_raw_g']:10.0f} "
           f"{100 * FELT_REF['ch5_raw_g'] / FULL_SCALE_G['CH5']:5.1f}% "
           f"{FELT_REF['ch5_180_g']:9.1f} {FELT_REF['ch5_180_cv']:5.1f}% "
@@ -423,13 +463,12 @@ def main() -> int:
     vals = [summaries[c["key"]]["aggregates"]["ch5_180_g"]["mean"] for c in CONFIGS]
     errs = [summaries[c["key"]]["aggregates"]["ch5_180_g"]["sd"] for c in CONFIGS]
     ax.bar(x, vals, yerr=errs, capsize=4, color=colors, alpha=0.85)
-    ax.axhspan(*INPUT_BAND_G, color="tab:green", alpha=0.12,
-               label="felt-era severity ±20 %")
-    ax.axhline(FELT_REF["ch5_180_g"], color="k", ls="--", lw=1.2, label="felt + cardboard")
+    ax.axhline(FELT_REF["ch5_180_g"], color="k", ls="--", lw=1.2,
+               label="felt + cardboard (reference only)")
     ax.axhline(PU_AB_REF["ch5_180_g"], color="tab:purple", ls=":", lw=1.4,
                label="earlier PU A/B run")
     ax.set(xticks=x, xticklabels=labels, ylabel="CH5 input CFC-180 (G)",
-           title="input severity vs the felt-era operating point")
+           title="input severity (felt shown for reference, not scored)")
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3, axis="y")
 
@@ -449,7 +488,8 @@ def main() -> int:
     vals = [summaries[c["key"]]["aggregates"]["ch5_width_ms"]["mean"] for c in CONFIGS]
     errs = [summaries[c["key"]]["aggregates"]["ch5_width_ms"]["sd"] for c in CONFIGS]
     ax.bar(x, vals, yerr=errs, capsize=4, color=colors, alpha=0.85)
-    ax.axhspan(*WIDTH_BAND_MS, color="tab:green", alpha=0.12, label="target 1–2.5 ms")
+    ax.axhspan(0.0, WIDTH_MAX_MS, color="tab:green", alpha=0.12,
+               label=f"shock regime (≤ {WIDTH_MAX_MS:.1f} ms)")
     ax.axhline(FELT_REF["ch5_width_ms"], color="k", ls="--", lw=1.2,
                label="felt + cardboard")
     ax.set(xticks=x, xticklabels=labels, ylabel="input half-max width (ms)",
@@ -466,7 +506,7 @@ def main() -> int:
                   label=f"{cfg['short']}: {tv.mean():.3f} (CV {cv(tv):.2f} %)")
     ax.axhline(1.0, color="k", ls=":", lw=1.2)
     ax.axhline(FELT_REF["t"], color="tab:brown", ls="--", lw=1.2,
-               label=f"felt + cardboard: {FELT_REF['t']:.3f}")
+               label=f"felt + cardboard (reference): {FELT_REF['t']:.3f}")
     ax.set(xticks=x, xticklabels=labels, ylabel="T = TOP/CH5 (CFC-180)",
            title="transmissibility per drop")
     ax.legend(fontsize=7.5)
@@ -516,15 +556,68 @@ def main() -> int:
         ax.plot([r["ch5_width_ms"] for r in m], [r["ch5_180_g"] for r in m], "x",
                 ms=11, mew=2.2, color="tab:purple",
                 label="earlier PU A/B run (loose stack, 5 drops)")
-    ax.axhspan(*INPUT_BAND_G, color="tab:green", alpha=0.10)
-    ax.axvspan(*WIDTH_BAND_MS, color="tab:green", alpha=0.10)
+    ax.axvspan(0.0, WIDTH_MAX_MS, color="tab:green", alpha=0.10)
     ax.set(xlabel="input half-max pulse width (ms)", ylabel="CH5 input CFC-180 (G)",
-           title="severity–duration map: the 1/4 in sheet alone reproduces the felt shock\n"
-                 "(green band = qualification target)")
+           title="severity–duration map (green band = shock regime for the "
+                 f"{STRUCT_F_HZ:.0f} Hz mode)")
     ax.legend(fontsize=8.5)
     ax.grid(alpha=0.3)
     fig.tight_layout()
     fig.savefig(FIG / "04_severity_duration_map.png", dpi=130)
+    plt.close(fig)
+
+    # Fig 5: does the choice of arrangement survive a wider analysis band?
+    # CFC-180 rolls off at 300 Hz and so removes most of the 520-700 Hz
+    # structural response; CFC-1000 keeps it. An arrangement whose T is only
+    # repeatable under the narrow filter cannot carry an FRF/SRS-band metric.
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    x = np.arange(len(CONFIGS))
+    labels = [c["short"].replace(" over ", "\nover ") for c in CONFIGS]
+    colors = [c["color"] for c in CONFIGS]
+
+    ax = axes[0]
+    w = 0.38
+    for off, key, lbl in [(-w / 2, "t_ch5", "T (CFC-180, 300 Hz)"),
+                          (+w / 2, "t_ch5_1000", "T (CFC-1000, 1650 Hz)")]:
+        vals = [summaries[c["key"]]["aggregates"][key]["mean"] for c in CONFIGS]
+        errs = [summaries[c["key"]]["aggregates"][key]["sd"] for c in CONFIGS]
+        ax.bar(x + off, vals, w, yerr=errs, capsize=3, alpha=0.85, label=lbl)
+    ax.axhline(1.0, color="k", ls=":", lw=1.2)
+    ax.set(xticks=x, xticklabels=labels, ylabel="transmissibility",
+           ylim=(0.9, 1.25),
+           title="T depends on the analysis band,\nnot just the stack")
+    ax.legend(fontsize=8)
+    ax.grid(alpha=0.3, axis="y")
+
+    ax = axes[1]
+    vals = [summaries[c["key"]]["aggregates"]["t_ch5_1000"]["cv"] for c in CONFIGS]
+    base = [summaries[c["key"]]["aggregates"]["t_ch5"]["cv"] for c in CONFIGS]
+    ax.bar(x - w / 2, base, w, color=colors, alpha=0.40)
+    ax.bar(x + w / 2, vals, w, color=colors, alpha=0.95)
+    ax.axhline(2.0, color="k", ls=":", lw=1.2)
+    handles = [plt.Rectangle((0, 0), 1, 1, fc="0.45", alpha=0.40),
+               plt.Rectangle((0, 0), 1, 1, fc="0.45", alpha=0.95),
+               plt.Line2D([], [], color="k", ls=":", lw=1.2)]
+    ax.legend(handles, ["T CV (CFC-180)", "T CV (CFC-1000)", "2 % acceptance limit"],
+              fontsize=8)
+    ax.set(xticks=x, xticklabels=labels, ylabel="within-configuration CV (%)",
+           title="broadband repeatability is where\nthe 1/4 in sheet alone fails")
+    ax.grid(alpha=0.3, axis="y")
+
+    ax = axes[2]
+    vals = [100 * summaries[c["key"]]["aggregates"]["top_struct_share"]["mean"]
+            for c in CONFIGS]
+    errs = [100 * summaries[c["key"]]["aggregates"]["top_struct_share"]["sd"]
+            for c in CONFIGS]
+    ax.bar(x, vals, yerr=errs, capsize=4, color=colors, alpha=0.85)
+    ax.set(xticks=x, xticklabels=labels,
+           ylabel=f"output energy in {STRUCT_BAND_HZ[0]:.0f}–{STRUCT_BAND_HZ[1]:.0f} Hz (%)",
+           title="share of output energy in the\nstructural band")
+    ax.grid(alpha=0.3, axis="y")
+
+    fig.suptitle("bpx68c: how much structural information each arrangement delivers")
+    fig.tight_layout()
+    fig.savefig(FIG / "05_broadband.png", dpi=130)
     plt.close(fig)
 
     # ---------------- machine-readable summary --------------------------
@@ -537,8 +630,9 @@ def main() -> int:
                                              "(13:26), excluded per @me-madsen"},
         "criteria": {
             "headroom_g": HEADROOM_TARGET_G,
-            "input_band_g": list(INPUT_BAND_G),
-            "width_band_ms": list(WIDTH_BAND_MS),
+            "width_max_ms": WIDTH_MAX_MS,
+            "struct_band_hz": list(STRUCT_BAND_HZ),
+            "output_floor_g": OUTPUT_FLOOR_G,
             "trigger_margin_min": TRIGGER_MARGIN_MIN,
         },
         "references": {"felt": FELT_REF, "pu_ab_run": PU_AB_REF},

@@ -56,14 +56,24 @@ The trigger level was lowered from 300 G to 150 G for arrangements C and D
 - The sheets are adhesive, so lateral movement is not considered a problem and
   fastening them down would be awkward. The analysis agrees fastening is
   unnecessary: the earlier bimodal input traces to *interface seating* between
-  two stacked sheets, not sliding, and arrangement A uses a single sheet.
+  two stacked sheets, not sliding, and the recommended arrangement uses a
+  single sheet.
 
 ## Headline result
 
-Arrangement **A (1/4 in sheet alone)** is the recommended operating point — the
-only one passing all seven qualification criteria, reproducing the felt+cardboard
-shock (371 G / 1.66 ms vs 408 G / 1.67 ms) with a 5.4× trigger margin and no
-compaction problem. Full reasoning and the caveats in the analysis doc.
+Arrangement **B (1/2 in sheet alone), with the trigger set to 150 G**, is the
+recommended operating point: the most repeatable transmissibility of the four
+under both analysis bands (CV 0.34 % at CFC-180, 1.36 % at CFC-1000), the
+largest share of output energy in the specimens' 450–800 Hz structural band
+(22.5 %), inside the shock regime for that mode, 6 % FS raw peak, and no
+bedding-in trend.
+
+Note: an earlier version recommended arrangement A (1/4 in alone) largely
+because it reproduced the felt+cardboard shock. That criterion was withdrawn
+after @sgbaird confirmed no felt-era measurement feeds any downstream
+optimization task, and re-deriving the choice on measurement quality alone
+selects B. Full reasoning, the corrected claims, and the caveats are in the
+analysis doc.
 
 ## Figures
 
@@ -71,6 +81,7 @@ compaction problem. Full reasoning and the caveats in the analysis doc.
 |---|---|
 | `figures/01_pulse_overlays.png` | input + output CFC-180 pulses, 10 drops per arrangement |
 | `figures/02_config_comparison.png` | severity, head-room, pulse width and T vs the qualification criteria |
+| `figures/05_broadband.png` | T under CFC-180 vs CFC-1000, broadband repeatability, and structural-band energy share |
 | `figures/03_stability.png` | within-arrangement drift over the 10 drops |
 | `figures/04_severity_duration_map.png` | where each arrangement (and the felt stack, and the earlier bimodal A/B run) sits in (input peak, pulse width) |
 | `figures/pu_configs_metrics.json` | all per-capture and per-arrangement metrics |

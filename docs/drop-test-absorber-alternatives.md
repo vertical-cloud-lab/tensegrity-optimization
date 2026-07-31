@@ -23,13 +23,24 @@ absorber removes both the procurement problem and the drift.
 > **Update 2026-07-30 (p.m.): §4.1 is complete and passed.** A
 > four-arrangement sweep of the two PU sheets (10 drops each) is in
 > [`drop-test-pu-configs-analysis.md`](drop-test-pu-configs-analysis.md).
-> The **1/4 in sheet alone** passes all seven acceptance criteria — input
-> 371 G / 1.66 ms against the felt era's 408 G / 1.67 ms, raw peak 26 % FS
-> (vs worn felt's 91 %), trigger margin 5.4×, T CV 0.43 % — and the
-> earlier soft/stiff toggling is explained as interface seating between
-> two stacked sheets, which a single sheet removes. Remaining: the §4.2
-> stability check (~25 drops, to confirm the 1/4 in sheet's bedding-in
-> transient plateaus) and then the §4.3 bridging campaign.
+> The recommendation is the **1/2 in sheet alone at a 150 G trigger**:
+> raw peak 6 % FS (vs worn felt's 91 %), T CV 0.34 % at CFC-180 and 1.36 %
+> at CFC-1000, the largest share of output energy in the specimens'
+> 450–800 Hz structural band, and no bedding-in trend. The earlier
+> soft/stiff toggling is explained as interface seating between two
+> stacked sheets, which a single sheet removes. Remaining: the §4.2
+> stability check (~25 drops).
+>
+> **Two amendments to the criteria below, per @sgbaird
+> ([PR #86](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86#issuecomment-5137508024)):**
+> no felt-era measurement feeds a downstream optimization task and
+> everything relevant is being re-measured, so (a) the §4.1 criterion
+> *"input within ±20 % of the felt era"* is **withdrawn** — a replacement
+> stack is qualified on measurement quality, not on resemblance to the
+> stack it replaces — and (b) the **§4.3 bridging campaign is dropped**,
+> since its only product was comparability with the retired felt
+> configuration. Re-baseline the geometries of interest on the new stack
+> instead.
 
 ## 1. What a replacement must reproduce
 
