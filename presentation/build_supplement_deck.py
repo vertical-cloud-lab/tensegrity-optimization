@@ -282,47 +282,67 @@ def s_caveat(prs):
 
 def s_video_capture(prs):
     s = title_only(prs)
-    set_message(s, "The impact lasts about 1.6 ms, so we film every drop at "
-                   "960 frames per second.")
+    set_message(s, "At 960 fps one frame is 1.04 ms — so the camera is not "
+                   "here for the impact.")
     add_video(s, "clip-our-slomo-drop.mp4", (720, 720),
               (Inches(7.35), BODY_TOP, Inches(5.4), Inches(5.0)),
               poster="poster-our-drop.jpg")
-    textbox(s, MARGIN, Inches(2.55), Inches(6.3), Inches(3.6), [
-        "Sony RX100 IV at 959 fps",
-        "A 20 mm checkerboard turns pixels into millimetres",
-    ], size=26, space=22)
+    textbox(s, MARGIN, Inches(2.35), Inches(6.3), Inches(4.4), [
+        "Sony RX100 IV, 959 fps",
+        "It is here for the 150 ms after: rebound, sag, recovery",
+        "All of that lives below 100 Hz",
+    ], size=26, space=40)
     credit(s, "Our own footage: prc1kn specimen, 60 in drop, 5-felt input "
               "(data/drop-tests/prc1kn-60in-5felt/video/).")
-    notes(s, "Play it once, silently. The checkerboard is the whole reason the "
-             "video is quantitative and not decorative.")
+    notes(s, "Play it once, silently. Say the honest thing out loud: 960 fps "
+             "cannot resolve a 1.6 ms pulse — one frame is 1.04 ms. The "
+             "accelerometer owns the pulse; the camera owns everything after "
+             "it, and everything after it is slow. Resolving specimen "
+             "compression *during* the pulse would need >=5000 fps DIC "
+             "(docs/drop-test-prc1kn-video-analysis.md, section 3).")
     return s
 
 
 def s_video_processing(prs):
     s = title_only(prs)
-    set_message(s, "Correlation tracking time-stamps every phase of the "
-                   "impact, from contact to rebound.")
+    set_message(s, "One clean shock, an elastic rebound, and the brake catches "
+                   "the carriage 79 ms later.")
     add_image(s, "fig-video-montage.png",
               (MARGIN, Inches(1.95), SW - 2 * MARGIN, Inches(4.9)))
-    credit(s, "prc1kn drop 1 — frames labelled in real milliseconds from "
-              "turnaround (959.04 fps).")
-    notes(s, "Walk the montage left to right in one sentence: entry, contact, "
-             "turnaround, rebound, brake catch. Contact to turnaround is one "
-             "millisecond — that is why 120 fps was never going to work.")
+    credit(s, "prc1kn drop 1, 959.04 fps — contact and turnaround are "
+              "consecutive frames, 1.04 ms apart.")
+    notes(s, "Walk it left to right in one sentence: entry, contact, "
+             "turnaround, rebound, brake catch, hold. Do not claim the "
+             "montage resolves the pulse — contact and turnaround are "
+             "adjacent frames. What it does prove is rig physics and specimen "
+             "integrity: one shock per drop, no plastic deformation, and the "
+             "anti-rebound brake catching 150 mm above the stack.")
     return s
 
 
-def s_video_accel_agree(prs):
+def s_instrument_split(prs):
     s = title_only(prs)
-    set_message(s, "Camera and accelerometer agree: 5.3 m/s in, a ~1 ms pulse, "
-                   "and 46% of the speed comes back.")
-    add_image(s, "fig-video-velocity-drop1.png",
-              (Inches(2.4), Inches(1.95), Inches(8.5), Inches(4.9)))
-    credit(s, "Specimen velocity tracked from the 959 fps footage; the DAQ "
-              "measured a 1.6 ms pulse on the same drop.")
-    notes(s, "This is the credibility slide for the FEA-veteran persona: two "
-             "independent measurements of the same millisecond. e* ~ 0.46 is "
-             "the rebound coefficient; it is also a free reusability metric.")
+    set_message(s, "The camera brackets the pulse in one frame; the DAQ puts "
+                   "190 samples inside it.")
+    add_image(s, "fig-video-impact-zoom.png",
+              (MARGIN, Inches(2.00), Inches(7.5), Inches(4.85)))
+    textbox(s, Inches(8.35), Inches(2.35), Inches(4.4), Inches(4.3), [
+        "Camera: 1.04 ms per frame",
+        "DAQ: 8 µs per sample, 1.57 ms pulse",
+        "Camera still earns its keep: e* = 0.45 and a 79 ms brake catch",
+    ], size=25, space=24)
+    credit(s, "prc1kn drop 1, 959 fps — the entire deceleration is the single "
+              "step at t = 0; the TP4 samples at 125 kHz.")
+    notes(s, "This is the credibility slide, and it works by conceding the "
+             "limit rather than hiding it. Point at the step: there are no "
+             "camera samples inside the pulse, only on either side of it. "
+             "That is why the accelerometer, not the video, produces the "
+             "objectives. The camera's own deliverable is the scale-free "
+             "coefficient of restitution (0.45) — a free reusability metric — "
+             "plus rig physics and specimen integrity. Do not say the two "
+             "instruments 'agree on the same drop': the prc1kn videos were "
+             "shot ~5.5 h before that DAQ campaign, so drop-level pairing is "
+             "not possible (docs/drop-test-prc1kn-video-analysis.md).")
     return s
 
 
@@ -331,12 +351,13 @@ def s_accel_setup(prs):
     set_message(s, "A drop tower with an instrumented payload measures the "
                    "force that actually reaches the payload.")
     textbox(s, MARGIN, BODY_TOP, Inches(12.2), Inches(3.6), [
-        "Lansmont M23 tower · TP4 DAQ · Dytran 3133A4 accelerometers",
-        "Key-seat mounting on the payload, felt stack on the anvil",
+        "Lansmont M23 tower · Dytran 3133A4 accelerometers",
+        "TP4 DAQ at 125 kHz — this is the instrument that sees the pulse",
         "Standard test: 60 in drop onto 5 felts, repeated per specimen",
     ], size=26, space=16)
     credit(s, "Setup and standard conditions per the drop-test protocol "
-              "(PR #86 branch).")
+              "(PR #86 branch); 25 kHz is the measured floor for the current "
+              "pipeline (issue #89 sample-rate study).")
     notes(s, "Add a photo of the tower here before the talk if one is "
              "available; the text is a stand-in, not a design choice.")
     return s
@@ -381,7 +402,7 @@ def s_challenges_map(prs):
     textbox(s, MARGIN, BODY_TOP, Inches(12.2), Inches(4.6), [
         "Sensor sensitivity error → cross-calibration → own slide (24)",
         "Channel clipping at high drops → headroom check → spoken on slide 22",
-        "120 fps too slow → 960 fps study → spoken on slide 19",
+        "No camera resolves the 1.6 ms pulse → DAQ owns it → slide 21",
         "Felt stack drifts with use → replace on schedule → spoken on slide 22",
         "Print defects confound specimens → replicates → Q&A backup",
         "Cables not in tension → pre-tensioned prints → slide 18",
@@ -415,7 +436,7 @@ def main():
         s_readme, s_hook, s_what_is_tensegrity, s_reusable, s_prior_work,
         s_gap,
         # <- EMC block gets moved in here (position 6)
-        s_caveat, s_video_capture, s_video_processing, s_video_accel_agree,
+        s_caveat, s_video_capture, s_video_processing, s_instrument_split,
         s_accel_setup, s_accel_processing, s_sensors_lied,
         s_challenges_map, s_media_shortlist,
     ]

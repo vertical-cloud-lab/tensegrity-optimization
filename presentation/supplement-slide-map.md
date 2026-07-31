@@ -14,9 +14,9 @@ restored below, with the media it was waiting for.
 | 6 — the gap | 4 (need) | new: the motivation → gap → solution transition |
 | 7–17 — EMC Bayesian-optimization block | **5 (was hidden)**, 7 | **restored.** Sterling's originals, animations intact |
 | 18 — tensegrity-inspired caveat | 8 (multi-material printing) | plays immediately after slide 8, in the same breath |
-| 19 — 960 fps capture (our own drop clip) | 9 | fills the "slo motion of drop test" placeholder |
+| 19 — what the 960 fps camera is actually for | 9 | fills the "slo motion of drop test" placeholder |
 | 20 — impact sequence montage | 9 | fills the "looped gif of drop test at 60 in" placeholder |
-| 21 — camera/accelerometer agreement | 9 → 11 | new: measured evidence, sets up the results block |
+| 21 — camera vs. DAQ: which instrument owns the pulse | 9 → 11 | new: measured evidence, sets up the results block |
 | 22 — drop tower and payload instrumentation | 9 | fills the setup half of the slide |
 | 23 — SAE J211 filtering → three objectives | 7 / 9 | connects the measurement to the objective function |
 | 24 — the calibration error we caught | — | new: challenge/mitigation beat |
