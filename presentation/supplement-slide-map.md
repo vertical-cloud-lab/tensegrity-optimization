@@ -15,13 +15,18 @@ restored below, with the media it was waiting for.
 | 7 — the gap | 4 (need) | new: the motivation → gap → solution transition |
 | 8–18 — EMC Bayesian-optimization block | **5 (was hidden)**, 7 | **restored.** Sterling's originals, animations intact |
 | 19 — tensegrity-inspired caveat | 8 (multi-material printing) | plays immediately after slide 8, in the same breath |
-| 20 — what the 960 fps camera is actually for | 9 | fills the "slo motion of drop test" placeholder |
-| 21 — impact sequence montage | 9 | fills the "looped gif of drop test at 60 in" placeholder |
-| 22 — camera vs. DAQ: which instrument owns the pulse | 9 → 11 | new: measured evidence, sets up the results block |
-| 23 — drop tower and payload instrumentation | 9 | fills the setup half of the slide |
-| 24 — SAE J211 filtering → three objectives | 7 / 9 | connects the measurement to the objective function |
-| 25 — the calibration error we caught | — | new: challenge/mitigation beat |
-| 26–27 | — | working slides; delete before the talk |
+| 20 — print timelapse (H2D, two materials, one build) | 8 | new; **same clip also opens the background addendum — keep one copy** |
+| 21 — supports still come off by hand | 8 | new: challenge/mitigation beat for the AM section |
+| 22 — the whole experiment in real time (**with sound**) | 9 | new: the from-afar drop @sgbaird supplied |
+| 23 — phone slow motion (**with sound**) | 9 | new: the cheap instrument, and what it cannot do |
+| 24 — what the 960 fps camera is actually for | 9 | fills the "slo motion of drop test" placeholder |
+| 25 — elastic snap-back at 0.7× impact speed | 9 → 12 | new: reusability argued with **our** data, not NASA's |
+| 26 — impact sequence montage | 9 | fills the "looped gif of drop test at 60 in" placeholder |
+| 27 — camera vs. DAQ: which instrument owns the pulse | 9 → 11 | new: measured evidence, sets up the results block |
+| 28 — drop tower and payload instrumentation | 9 | fills the setup half of the slide |
+| 29 — SAE J211 filtering → three objectives | 7 / 9 | connects the measurement to the objective function |
+| **30–35 — the issue #94 block** | 9 / Q&A | new: opens the drop-tower analysis to spot-checking — see [`issue-94-analysis-slides.md`](issue-94-analysis-slides.md) |
+| 36–37 | — | working slides; delete before the talk |
 
 Draft 1 slide 6 (specimen information value / experiment-first) stays a slide of
 its own. It is the pre-emptive answer to the sharpest predicted Q&A challenge,
@@ -34,23 +39,35 @@ internet needed at the podium. Sources and crops are in
 [`build_supplement_deck.py`](build_supplement_deck.py); the clips themselves are
 in [`media/`](media/).
 
-| Clip | Source | Length |
-|---|---|---|
-| `clip-titan-descent.mp4` | NASA Super Ball Bot / NIAC Titan concept | 20 s |
-| `clip-tensegrity-2d.mp4` | Steve Mould, "Tensegrity Explained" | 18 s |
-| `clip-nasa-toy-lander.mp4` | Adrian Agogino, "NASA 360 Talks: Super Ball Bot" | 16 s, **played with sound** |
-| `clip-superball-3m-drop.mp4` | SUPERball v2, IEEE Spectrum / NASA Ames | 10 s |
-| `clip-our-slomo-drop.mp4` | our own 959 fps footage, prc1kn 60 in / 5 felt | 9 s |
+| Clip | Source | Length | Audio |
+|---|---|---|---|
+| `clip-titan-descent.mp4` | NASA Super Ball Bot / NIAC Titan concept | 20 s | — |
+| `clip-tensegrity-2d.mp4` | Steve Mould, "Tensegrity Explained" | 18 s | — |
+| `clip-nasa-toy-lander.mp4` | Adrian Agogino, "NASA 360 Talks: Super Ball Bot" | 16 s | **yes** |
+| `clip-superball-3m-drop.mp4` | SUPERball v2, IEEE Spectrum / NASA Ames | 10 s | — |
+| `clip-print-timelapse.mp4` | our own print timelapse, TT3_01 (`nQNmi-NiL5I`) | 16 s | — |
+| `clip-support-removal.mp4` | our own footage, manual support removal (PR #35, 2026-06-09) | 12 s | — |
+| `clip-drop-afar.mp4` | our own footage, whole-room drop (@sgbaird attachment `b16e3d32`) | 7 s | **yes** |
+| `clip-drop-phone-audio.mp4` | our own phone slow-mo, specimen `n0jdwk`, 13 in (PR #67) | 3.3 s | **yes** |
+| `clip-our-slomo-drop.mp4` | our own 959 fps footage, prc1kn 60 in / 5 felt | 9 s | — |
+| `clip-drop-highspeed.mp4` | our own 960 fps footage, specimen `7xadt6`, 60 in / 5 felt (PR #86 branch) | 6 s | — |
 
 The four external clips carry an on-slide credit line. The NASA footage needs
 only "Credit: NASA"; the Steve Mould and IEEE Spectrum clips are copyrighted and
-keep channel + title + URL on screen while they play. Every clip plays silently
-except the NASA 360 one, which is played *for* its audio.
+keep channel + title + URL on screen while they play. The six clips of our own
+work carry a provenance line pointing at the campaign they came from.
+
+**Three clips are played with the sound on** — the NASA 360 origin story
+(slide 4), the whole-room drop (slide 22) and the phone slow-mo (slide 23). On
+the two drops the bang is doing real work: it conveys how violent a
+millisecond-scale event this is before any plot appears. Everything else plays
+silently.
 
 ## Still needed
 
-Drop-tower photo, printer-bed shot, and the campaign ledger / Pareto-front
-figures once the campaign closes. Slide 27 tracks these.
+Drop-tower photo, and the campaign ledger / Pareto-front
+figures once the campaign closes, and the Colab notebook owed to issue #94.
+Slide 37 tracks these.
 
 ## Title slide
 

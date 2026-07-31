@@ -302,6 +302,249 @@ def s_caveat(prs):
     return s
 
 
+def s_print_timelapse(prs):
+    s = title_only(prs)
+    set_message(s, "One machine lays down the rigid struts and the stretchy "
+                   "cables in a single build.")
+    add_video(s, "clip-print-timelapse.mp4", (1120, 720),
+              (Inches(6.35), Inches(1.95), Inches(6.45), Inches(4.9)),
+              poster="poster-print-timelapse.jpg")
+    textbox(s, MARGIN, Inches(2.55), Inches(5.5), Inches(3.8), [
+        "Bambu Lab H2D, two materials: PLA struts, TPU cables",
+        "No jig, no knots, no post-assembly step",
+    ], size=26, space=26)
+    credit(s, "Our own print timelapse, TT3_01 — 16 s excerpt "
+              "(youtube.com/watch?v=nQNmi-NiL5I, BYU Vertical Cloud Lab).")
+    notes(s, "The same clip opens the background addendum; keep whichever copy "
+             "survives into the final deck, not both. Spoken line: twenty-odd "
+             "minutes of printing and no assembly step is what makes a "
+             "design-per-day loop possible at all. Play it once, silently.")
+    return s
+
+
+def s_support_removal(prs):
+    s = title_only(prs)
+    set_message(s, "Printing it in one build is not the same as getting it out "
+                   "clean — supports still come off by hand.")
+    add_video(s, "clip-support-removal.mp4", (960, 540),
+              (Inches(4.1), Inches(2.0), Inches(8.7), Inches(4.8)),
+              poster="poster-support-removal.jpg")
+    textbox(s, MARGIN, Inches(2.6), Inches(3.3), Inches(3.4), [
+        "The honest bottleneck in the loop today",
+    ], size=24, color=GRAY)
+    credit(s, "Our own footage — manual support removal on a T3 prism "
+              "(PR #35, 2026-06-09).")
+    notes(s, "Challenge slide, ten seconds. Say the mitigation out loud: "
+             "painted manual supports and a 0.4 mm tip cut removal time, and "
+             "automating this step is exactly what stands between us and a "
+             "self-driving lab. Do not over-dwell; it is a caveat, not a "
+             "confession.")
+    return s
+
+
+def s_drop_room(prs):
+    s = title_only(prs)
+    set_message(s, "The whole experiment takes a quarter of a second — here it "
+                   "is in real time.")
+    add_video(s, "clip-drop-afar.mp4", (1280, 720),
+              (Inches(2.15), BODY_TOP, Inches(9.0), Inches(5.0)),
+              poster="poster-drop-afar.jpg")
+    credit(s, "Our own footage — drop tower, BYU Smart Materials lab. "
+              "Play with sound.")
+    notes(s, "PLAY THIS WITH SOUND ON. Seven seconds, real time, whole room. "
+             "The bang is the point: it tells the audience how violent a "
+             "millisecond-scale event this is before any plot appears. Then "
+             "say the standard condition out loud — 60 in onto the same felt "
+             "stack every time, repeated per specimen — and move on.")
+    return s
+
+
+def s_drop_phone(prs):
+    s = title_only(prs)
+    set_message(s, "A phone in slow motion is enough to see the drop — and to "
+                   "hear the impact.")
+    add_video(s, "clip-drop-phone-audio.mp4", (540, 960),
+              (Inches(8.0), Inches(1.85), Inches(4.6), Inches(5.05)),
+              poster="poster-drop-phone.jpg")
+    textbox(s, MARGIN, Inches(2.45), Inches(6.9), Inches(3.9), [
+        "Free, instant, and good enough to catch setup mistakes",
+        "No camera we have resolves the pulse itself — that is the DAQ's job",
+    ], size=25, space=24)
+    credit(s, "Our own footage — specimen n0jdwk, 13 in drop (PR #67). "
+              "Play with sound.")
+    notes(s, "Play with sound. Roughly eight times slower than real time "
+             "(1.6 s of descent for a fall that takes under 0.26 s), which is "
+             "the usual 240 fps phone mode. This is the cheap instrument and "
+             "it earned its place: phone slow-mo is how we caught the specimen "
+             "lifting off the base plate on the bungee-assisted tower, and how "
+             "we caught the accelerometer coming loose. It sets up the next "
+             "two slides, which say what the fast camera is and is not for.")
+    return s
+
+
+def s_elastic_recovery(prs):
+    s = title_only(prs)
+    set_message(s, "What it is here for: the top vertex leaves the impact at "
+                   "0.7 times the speed it arrived.")
+    add_video(s, "clip-drop-highspeed.mp4", (528, 720),
+              (Inches(8.2), Inches(1.9), Inches(4.4), Inches(4.95)),
+              poster="poster-drop-highspeed.jpg")
+    textbox(s, MARGIN, Inches(2.45), Inches(7.1), Inches(3.9), [
+        "Elastic re-extension, not permanent collapse",
+        "Measured on both validation specimens; both intact afterwards",
+    ], size=25, space=24)
+    credit(s, "Our own 960 fps footage — specimen 7xadt6, 60 in / 5-felt "
+              "validation campaign (PR #86 branch).")
+    notes(s, "This is the reusability claim made with our own data instead of "
+             "NASA's, and it is squarely in the post-pulse regime the previous "
+             "slide said the camera owns. Snap-back at ~0.7x impact speed with "
+             "visibly intact specimens is in the 60in-5felts video writeup. "
+             "Say it plainly: a crushable absorber would not do this, and it "
+             "is why one specimen can serve many drops in the campaign.")
+    return s
+
+
+def s_pipeline(prs):
+    s = title_only(prs)
+    set_message(s, "One drop becomes one row of data: three numbers and the "
+                   "scatter around them.")
+    steps = [
+        ("Raw", "1.25 MHz\n4 channels"),
+        ("Baseline", "pre-trigger\nmedian"),
+        ("J211 filter", "CFC-180\nand CFC-1000"),
+        ("Metrics", "peak force, SEA,\ncompaction"),
+    ]
+    x = MARGIN
+    w, gap = Inches(2.72), Inches(0.35)
+    for i, (head, sub) in enumerate(steps):
+        box = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, Inches(2.55),
+                                 w, Inches(1.85))
+        box.fill.solid()
+        box.fill.fore_color.rgb = BLUE if i < 3 else ORANGE
+        box.line.fill.background()
+        tf = box.text_frame
+        tf.word_wrap = True
+        tf.text = head
+        for r in tf.paragraphs[0].runs:
+            r.font.size, r.font.bold = Pt(24), True
+        p = tf.add_paragraph()
+        p.text = sub
+        for r in p.runs:
+            r.font.size = Pt(16)
+        if i < 3:
+            arrow = s.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, x + w + Emu(30000),
+                                       Inches(3.25), gap - Emu(60000),
+                                       Inches(0.45))
+            arrow.fill.solid()
+            arrow.fill.fore_color.rgb = GRAY
+            arrow.line.fill.background()
+        x = x + w + gap
+    textbox(s, MARGIN, Inches(4.95), Inches(12.2), Inches(1.8), [
+        "Replicate drops give the noise model the optimizer needs — a single "
+        "drop is never one point.",
+    ], size=24, color=NAVY)
+    credit(s, "scripts/analysis/drop_test_*_analysis.py on the PR #86 branch; "
+              "raw CSVs committed next to every campaign.")
+    notes(s, "Answers issue #94 directly: this is the black box opened. Four "
+             "steps, one sentence each. The only judgement calls are step 2 "
+             "and step 3 — and both of them bit us, which is the next few "
+             "slides.")
+    return s
+
+
+def s_filter_class(prs):
+    s = title_only(prs)
+    set_message(s, "SAE J211 sets the filter, not us — and the class you pick "
+                   "changes the peak by a factor of two.")
+    add_image(s, "fig-baseline-and-cfc.png",
+              (MARGIN, Inches(1.80), SW - 2 * MARGIN, Inches(4.4)))
+    textbox(s, MARGIN, Inches(6.25), Inches(12.2), Inches(0.7), [
+        "Same drop, same sensor: raw 567 G · CFC-1000 344 G · CFC-180 245 G",
+    ], size=24, color=BLUE)
+    credit(s, "Specimen bpx68c, Signal 11 (data/drop-tests/pu-configs/). "
+              "Two-pole Butterworth, forward and backward, per SAE J211-1.")
+    notes(s, "For issue #94. CFC-180 is a 300 Hz corner, CFC-1000 is 1650 Hz — "
+             "the number in the class name times 1.65. Neither is more correct; "
+             "CFC-180 is the automotive-crash convention for what a body feels, "
+             "CFC-1000 keeps the structural ringing we need to hear the "
+             "specimen. That is why our tables report both, and why moving "
+             "between them changed a recommendation.")
+    return s
+
+
+def s_two_bands(prs):
+    s = title_only(prs)
+    set_message(s, "We report both bands because they answer two different "
+                   "questions.")
+    textbox(s, MARGIN, Inches(2.1), Inches(6.0), Inches(4.3), [
+        "CFC-180 · 300 Hz",
+        "“What does the payload feel?”",
+        "Smooth pulse, stable peak, the number that goes in the force "
+        "constraint",
+    ], size=25, color=BLUE, bold_first=True, space=18)
+    textbox(s, Inches(7.0), Inches(2.1), Inches(5.7), Inches(4.3), [
+        "CFC-1000 · 1650 Hz",
+        "“What is the structure doing?”",
+        "Keeps the 500–550 Hz specimen mode — the part that actually differs "
+        "between designs",
+    ], size=25, color=ORANGE, bold_first=True, space=18)
+    credit(s, "Specimen first mode measured at 519–549 Hz across the ringdown "
+              "analyses in this repo.")
+    notes(s, "The honest version of the answer to Sterling's question in #94. "
+             "We did not abandon CFC-180; we stopped using it as the only "
+             "band, because at a 300 Hz corner the specimen's own mode is "
+             "filtered away and every design looks alike. If asked which one "
+             "feeds the optimizer: the constraint is CFC-180, the "
+             "discrimination diagnostics are CFC-1000.")
+    return s
+
+
+def s_adversary(prs):
+    s = title_only(prs)
+    set_message(s, "We paid an adversary to break our own analysis, and it "
+                   "broke it.")
+    textbox(s, MARGIN, Inches(1.75), Inches(12.2), Inches(1.5), [
+        "Our script assumed the record began at the trigger. It does not — "
+        "0.41 ms of it is pre-impact.",
+    ], size=24, space=6)
+    add_image(s, "fig-baseline-flip.png",
+              (Inches(1.55), Inches(2.75), Inches(10.2), Inches(3.35)))
+    textbox(s, MARGIN, Inches(6.18), Inches(12.2), Inches(0.75), [
+        "Verdict we adopted: none of the four — that sweep could not decide.",
+    ], size=24, color=BLUE)
+    credit(s, "Edison Scientific adversarial review, task d9092c5a; "
+              "recomputation reproduced independently in-repo.")
+    notes(s, "This is the credibility slide, and it is the direct answer to "
+             "issue #94's “we would like to spot-check you.” Deliver it "
+             "without drama: we asked for the analysis to be attacked, four "
+             "of our grounds fell, we marked the document superseded rather "
+             "than quietly patching it. If a reviewer asks what else it "
+             "touched: two sibling analyses share the baseline, both flagged "
+             "for re-run.")
+    return s
+
+
+def s_checkable(prs):
+    s = title_only(prs)
+    set_message(s, "Every number on these slides can be re-derived from "
+                   "committed raw data.")
+    textbox(s, MARGIN, BODY_TOP, Inches(12.2), Inches(4.4), [
+        "Raw CSVs and the analysis script live beside each campaign in the "
+        "repo",
+        "The filter is a published standard: SAE J211-1 / ISO 6487, channel "
+        "class × 1.65 Hz",
+        "The adversarial re-analysis, its recomputed tables, and its notebook "
+        "are committed too",
+    ], size=25, space=18)
+    credit(s, "Backup slide: repo paths and the tutorial notebook for issue "
+              "#94 are listed in presentation/issue-94-analysis-slides.md.")
+    notes(s, "Backup slide for Q&A, and the place to put the Colab link once "
+             "the tutorial notebook from issue #94 exists. The spoken version "
+             "is one sentence: nothing here is a black box you have to take "
+             "on trust.")
+    return s
+
+
 def s_video_capture(prs):
     s = title_only(prs)
     set_message(s, "At 960 fps one frame is 1.04 ms — so the camera is not "
@@ -422,10 +665,11 @@ def s_challenges_map(prs):
     s = title_only(prs)
     set_message(s, "Working slide: challenges and where each one gets told", 28)
     textbox(s, MARGIN, BODY_TOP, Inches(12.2), Inches(4.6), [
-        "Sensor sensitivity error → cross-calibration → own slide (25)",
-        "Channel clipping at high drops → headroom check → spoken on slide 23",
-        "No camera resolves the 1.6 ms pulse → DAQ owns it → slide 22",
-        "Felt stack drifts with use → replace on schedule → spoken on slide 23",
+        "Sensor sensitivity error → cross-calibration → own slide (33)",
+        "Wrong baseline window → adversarial re-analysis → own slide (34)",
+        "No camera resolves the 1.6 ms pulse → DAQ owns it → slides 24, 27",
+        "Supports still removed by hand → painted supports → slide 21",
+        "Channel clipping at high drops → headroom check → spoken on slide 28",
         "Print defects confound specimens → replicates → Q&A backup",
         "Cables not in tension → pre-tensioned prints → slide 19",
     ], size=20, space=8)
@@ -438,14 +682,15 @@ def s_media_shortlist(prs):
     set_message(s, "Working slide: media inventory and what still needs "
                    "shooting", 28)
     textbox(s, MARGIN, BODY_TOP, Inches(12.2), Inches(4.6), [
-        "EMBEDDED HERE: Titan descent · 2D tensegrity · NASA toy-to-lander "
-        "(with sound) · SUPERball drop · our "
-        "960 fps drop",
-        "ONLINE: print timelapses on YouTube — Insert ▸ Video ▸ Online Video; "
-        "keep a local copy as backup",
-        "STILL NEEDED: drop-tower photo, printer bed shot, campaign ledger and "
-        "Pareto-front figures",
-    ], size=20, space=10)
+        "EXTERNAL, EMBEDDED: Titan descent · 2D tensegrity · NASA "
+        "toy-to-lander (sound) · SUPERball drop",
+        "OURS, EMBEDDED: print timelapse · support removal · whole-room drop "
+        "(sound) · phone slow-mo (sound) · 960 fps drop · 7xadt6 snap-back",
+        "DUPLICATE: the print timelapse also opens the background addendum — "
+        "keep one copy, not both",
+        "STILL NEEDED: drop-tower photo, campaign ledger and Pareto-front "
+        "figures, Colab link for issue #94",
+    ], size=19, space=10)
     notes(s, "Planning aid. Delete before the talk.")
     return s
 
@@ -459,8 +704,12 @@ def main():
         s_readme, s_hook, s_what_is_tensegrity, s_toy_to_lander, s_reusable,
         s_prior_work, s_gap,
         # <- EMC block gets moved in here (position 7)
-        s_caveat, s_video_capture, s_video_processing, s_instrument_split,
-        s_accel_setup, s_accel_processing, s_sensors_lied,
+        s_caveat, s_print_timelapse, s_support_removal,
+        s_drop_room, s_drop_phone, s_video_capture, s_elastic_recovery,
+        s_video_processing, s_instrument_split,
+        s_accel_setup, s_accel_processing,
+        s_pipeline, s_filter_class, s_two_bands, s_sensors_lied, s_adversary,
+        s_checkable,
         s_challenges_map, s_media_shortlist,
     ]
     for b in builders:
