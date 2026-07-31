@@ -37,9 +37,16 @@ jobs:
         uses: anthropics/claude-code-action@v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EDISON_API_KEY: ${{ secrets.EDISON_API_KEY }}
+          EDISON_PLATFORM_API_KEY: ${{ secrets.EDISON_PLATFORM_API_KEY }}
           ONSHAPE_ACCESS_KEY: ${{ secrets.ONSHAPE_ACCESS_KEY }}
           ONSHAPE_SECRET_KEY: ${{ secrets.ONSHAPE_SECRET_KEY }}
+          PPT_EDIT_LINK: ${{ secrets.PPT_EDIT_LINK }}
+          OT2_STREAM_CAM_HOSTNAME: ${{ secrets.OT2_STREAM_CAM_HOSTNAME }} # should swap out once we get new RPis in
+          OT2_STREAM_CAM_USERNAME: ${{ secrets.OT2_STREAM_CAM_USERNAME }}
+          OT2_STREAM_CAM_PASSWORD: ${{ secrets.OT2_STREAM_CAM_PASSWORD }}
+          TAILNET_ID: ${{ secrets.TAILNET_ID }}
+          TS_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          TS_OAUTH_SECRET: ${{ secrets.TS_OAUTH_SECRET }}
           # Allow long-blocking foreground commands (e.g., Edison polling)
           BASH_DEFAULT_TIMEOUT_MS: "900000" # 15 min default per Bash call
           BASH_MAX_TIMEOUT_MS: "3600000" # 60 min ceiling per Bash call
@@ -50,11 +57,11 @@ jobs:
           additional_permissions: |
             actions: read
 
-          # Optional (riskier): Print the full turn-by-turn JSON execution log in the step output
-          show_full_output: true
+          # # Optional (riskier): Print the full turn-by-turn JSON execution log in the step output
+          # show_full_output: true
 
-          # Optional (riskier): Render a human-readable "Claude Code Report" in the job's Step Summary
-          display_report: true
+          # # Optional (riskier): Render a human-readable "Claude Code Report" in the job's Step Summary
+          # display_report: true
 
           # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
           # prompt: 'Update the pull request description to include a summary of changes.'
@@ -67,10 +74,10 @@ jobs:
             --model claude-opus-5
             --permission-mode bypassPermissions
 
-      # Optional, recommended if you set show_full_output=True
-      - name: Upload Claude execution log
-        if: always() && steps.claude.outputs.execution_file != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: claude-execution-log
-          path: ${{ steps.claude.outputs.execution_file }}
+      # # Optional, recommended if you set show_full_output=True
+      # - name: Upload Claude execution log
+      #   if: always() && steps.claude.outputs.execution_file != ''
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: claude-execution-log
+      #     path: ${{ steps.claude.outputs.execution_file }}
