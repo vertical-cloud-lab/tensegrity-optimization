@@ -127,6 +127,62 @@ def notes(slide, text):
     slide.notes_slide.notes_text_frame.text = text
 
 
+# --------------------------------------------------------------------------
+# generated figures
+# --------------------------------------------------------------------------
+
+# Callout geometry for the tensegrity anatomy figure. The labels are drawn at
+# canvas resolution rather than as PowerPoint text boxes so the leader lines
+# can land on specific members; the sizes below put the label text at ~26 pt
+# once the figure is placed on the slide.
+ANATOMY_CANVAS = (1600, 800)
+ANATOMY_PHOTO = (30, 45, 700)  # left, top, height in canvas px
+ANATOMY_LABEL_X = 800
+
+# (anchor x, anchor y) in photo-native px; label top; heading; sub-line
+ANATOMY_CALLOUTS = [
+    ((300, 165), 150, "Struts", "carry compression only"),
+    ((360, 263), 320, "No strut touches another",
+     "load passes through the cables"),
+    ((600, 400), 500, "Cables", "carry tension only"),
+]
+
+
+def build_anatomy_figure():
+    """Draw fig-tensegrity-anatomy.png from the 2D teaching-model still."""
+    from PIL import Image, ImageDraw, ImageFont
+
+    out = MEDIA / "fig-tensegrity-anatomy.png"
+    photo = Image.open(MEDIA / "photo-tensegrity-2d-model.jpg").convert("RGB")
+    left, top, height = ANATOMY_PHOTO
+    scale = height / photo.height
+    photo = photo.resize((int(photo.width * scale), height), Image.LANCZOS)
+
+    canvas = Image.new("RGB", ANATOMY_CANVAS, "white")
+    canvas.paste(photo, (left, top))
+    draw = ImageDraw.Draw(canvas)
+
+    font_dir = "/usr/share/fonts/truetype/dejavu"
+    bold = ImageFont.truetype(f"{font_dir}/DejaVuSans-Bold.ttf", 52)
+    plain = ImageFont.truetype(f"{font_dir}/DejaVuSans.ttf", 44)
+    orange, navy, gray = (0xE9, 0x71, 0x32), (0x0E, 0x28, 0x41), (0x59,) * 3
+
+    for (ax, ay), ly, head, tail in ANATOMY_CALLOUTS:
+        cx, cy = left + ax * scale, top + ay * scale
+        draw.line([(ANATOMY_LABEL_X - 30, ly + 34), (cx, cy)], fill=orange,
+                  width=7)
+        draw.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], fill=orange)
+        draw.text((ANATOMY_LABEL_X, ly), head, font=bold, fill=navy)
+        draw.text((ANATOMY_LABEL_X, ly + 66), tail, font=plain, fill=gray)
+        for text, font in ((head, bold), (tail, plain)):
+            if ANATOMY_LABEL_X + draw.textlength(text, font=font) > \
+                    ANATOMY_CANVAS[0] - 20:
+                raise ValueError(f"callout overruns the canvas: {text!r}")
+
+    canvas.save(out)
+    return out
+
+
 def strip_to_emc_block(prs):
     """Delete every v1 slide except the imported EMC block, preserving XML."""
     id_lst = prs.slides._sldIdLst
@@ -198,16 +254,48 @@ def s_hook(prs):
 
 def s_what_is_tensegrity(prs):
     s = title_only(prs)
-    set_message(s, "Tensegrity: rigid struts that never touch each other, "
-                   "held apart by cables in pure tension.")
-    add_video(s, "clip-tensegrity-2d.mp4", (1280, 719),
+    set_message(s, "A tensegrity holds itself up with rigid struts that never "
+                   "touch, floating in a net of cables.")
+    add_video(s, "clip-tensegrity-2d-teaching.mp4", (1280, 718),
               (Inches(2.15), BODY_TOP, Inches(9.0), Inches(5.0)),
-              poster="poster-mould.jpg")
+              poster="poster-mould-teaching.jpg")
     credit(s, "Steve Mould, “Tensegrity Explained” (youtube.com/watch?v="
-              "0onncd0_0-o) — 18 s excerpt, used with on-screen credit.")
-    notes(s, "The 2D teaching model is the fastest way to make the mechanism "
-             "obvious: push it, it springs back, nothing is glued. Say out "
-             "loud that load paths are tension-only in the cables.")
+              "0onncd0_0-o) — 35 s excerpt, played with sound, used with "
+              "on-screen credit.")
+    notes(s,
+          "BACKGROUND, first beat. Play the whole 35 s with the sound up and "
+          "stay quiet — the narration does the teaching, and the 2D model is "
+          "the fastest way to make the mechanism obvious to anyone who has "
+          "never seen a tensegrity.\n\n"
+          "Watch for: the model standing with nothing glued or hinged; the "
+          "push; the spring back. That elastic return is the whole reason a "
+          "tensegrity is interesting as an energy absorber.\n\n"
+          "The earlier 18 s silent crop cut the push-and-recovery off the "
+          "end, which threw away the part that teaches. Source: the Box "
+          "folder shared on PR #84.")
+    return s
+
+
+def s_tensegrity_anatomy(prs):
+    """Freeze the teaching model and name its parts."""
+    s = title_only(prs)
+    set_message(s, "Every load path is either pure compression in a strut or "
+                   "pure tension in a cable — nothing in between.")
+    add_image(s, "fig-tensegrity-anatomy.png",
+              (MARGIN, BODY_TOP, SW - 2 * MARGIN, Inches(4.85)))
+    credit(s, "Still from the same clip — Steve Mould, “Tensegrity "
+              "Explained” (youtube.com/watch?v=0onncd0_0-o).")
+    notes(s,
+          "BACKGROUND, second beat. Freeze the model and name the parts, so "
+          "the vocabulary is in place before the tensegrity-inspired caveat "
+          "later on.\n\n"
+          "Say: this is why a tensegrity can be light and still stiff — no "
+          "member ever sees a bending moment, and the cables set the "
+          "stiffness. It is also why the geometry matters so much: change a "
+          "strut length or a cable pre-tension and the whole response "
+          "changes, which is what makes it an optimization problem.\n\n"
+          "This is the mechanism visual the mock audience said the grad "
+          "student needed in order to tell a tensegrity from a lattice.")
     return s
 
 
@@ -315,10 +403,12 @@ def s_print_timelapse(prs):
     ], size=26, space=26)
     credit(s, "Our own print timelapse, TT3_01 — 16 s excerpt "
               "(youtube.com/watch?v=nQNmi-NiL5I, BYU Vertical Cloud Lab).")
-    notes(s, "The same clip opens the background addendum; keep whichever copy "
-             "survives into the final deck, not both. Spoken line: twenty-odd "
-             "minutes of printing and no assembly step is what makes a "
-             "design-per-day loop possible at all. Play it once, silently.")
+    notes(s, "Spoken line: twenty-odd minutes of printing and no assembly step "
+             "is what makes a design-per-day loop possible at all. Play it "
+             "once, silently.\n\n"
+             "Pulled from our own YouTube channel through the lab Raspberry "
+             "Pi — the CI runner is bot-blocked by YouTube. Embedded here, so "
+             "it needs no internet at the podium.")
     return s
 
 
@@ -696,14 +786,16 @@ def s_media_shortlist(prs):
 
 
 def main():
+    build_anatomy_figure()
     prs = Presentation(str(SRC))
     kept = strip_to_emc_block(prs)
     print(f"kept {kept} EMC slides")
 
     builders = [
-        s_readme, s_hook, s_what_is_tensegrity, s_toy_to_lander, s_reusable,
+        s_readme, s_hook, s_what_is_tensegrity, s_tensegrity_anatomy,
+        s_toy_to_lander, s_reusable,
         s_prior_work, s_gap,
-        # <- EMC block gets moved in here (position 7)
+        # <- EMC block gets moved in here (position 8)
         s_caveat, s_print_timelapse, s_support_removal,
         s_drop_room, s_drop_phone, s_video_capture, s_elastic_recovery,
         s_video_processing, s_instrument_split,
@@ -715,7 +807,7 @@ def main():
     for b in builders:
         b(prs)
 
-    move_block_after(prs, kept, 7)
+    move_block_after(prs, kept, 8)
     prs.save(str(OUT))
     print(f"wrote {OUT} with {len(prs.slides.__iter__.__self__._sldIdLst)} slides")
 

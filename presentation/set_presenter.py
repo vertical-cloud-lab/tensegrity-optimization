@@ -37,10 +37,9 @@ TITLE_RUNS = [
 TARGETS = [
     HERE / "Slide Decks" / "IDETC Tensegrity Slides Draft 1.pptx",
     HERE / "Slide Decks" / "IDETC Supplement Slides (BO block + gap + video + accel).pptx",
-    HERE / "Slide Decks" / "IDETC Background Addendum.pptx",
     HERE / "emc2026-idetc-demo.pptx",
     HERE / "emc-bo-block.pptx",          # build source for the supplement deck
-    HERE / "emc2026-bare-template.pptx",  # build source for the addendum
+    HERE / "emc2026-bare-template.pptx",  # bare EMC theme, no slides
 ]
 
 STALE_TITLE = "high-performing alloys"

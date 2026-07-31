@@ -25,11 +25,13 @@ resolution, not the native player resolution).
 | Deck clip | Cut from | Window | Why |
 |---|---|---|---|
 | `media/clip-titan-descent.mp4` | NIAC mission-concept animation | 13–33 s | hook |
-| `media/clip-tensegrity-2d.mp4` | Steve Mould snip | 8–26 s | mechanism intuition |
+| `media/clip-tensegrity-2d-teaching.mp4` | Steve Mould snip | 0–35 s (whole snip) | background: what a tensegrity is |
 | `media/clip-superball-3m-drop.mp4` | IEEE Spectrum snip | 45–55 s | reusability |
 | `media/clip-nasa-toy-lander.mp4` | `youtube-0eC4A2PXM-U.mp4` | 0–16.4 s | baby toy → landing robot |
 
-The NASA 360 cut is the only clip played **with sound**. Transcript of the cut
+The Steve Mould and NASA 360 cuts are played **with sound**. The Mould snip is
+used whole rather than trimmed: an earlier 8–26 s crop cut off the push and the
+spring-back at the end, which is the part that teaches. Transcript of the cut
 (Adrian Agogino, NASA Ames):
 
 > "When you took one of these toys and we said, what can we use this for? Well,
