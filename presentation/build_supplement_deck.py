@@ -23,11 +23,14 @@ from pptx.util import Emu, Inches, Pt
 HERE = Path(__file__).parent
 DECKS = HERE / "Slide Decks"
 MEDIA = HERE / "media"
-SRC = DECKS / "IDETC Supplement Slides (BO block + gap + video + accel).pptx"
+# Read from the pristine EMC block, never from the output deck: SRC == OUT
+# made the build non-idempotent, and a second run silently sliced its own
+# freshly-written slides 4-14 out in place of the BO explainer.
+SRC = HERE / "emc-bo-block.pptx"
 OUT = DECKS / "IDETC Supplement Slides (BO block + gap + video + accel).pptx"
 
-# EMC slides to keep from the v1 deck (1-indexed): the BO explainer block.
-KEEP = list(range(4, 15))
+# EMC slides to keep from SRC (1-indexed): the whole BO explainer block.
+KEEP = list(range(1, 12))
 
 NAVY = RGBColor(0x0E, 0x28, 0x41)
 BLUE = RGBColor(0x15, 0x60, 0x82)
