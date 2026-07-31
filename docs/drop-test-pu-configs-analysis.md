@@ -18,6 +18,30 @@ and the qualification protocol in
 
 ---
 
+> ## ⚠️ SUPERSEDED — do not act on the recommendation below
+>
+> An adversarial re-analysis by Edison Scientific (task `d9092c5a`, report:
+> [`edison-trajectories/pu-configs/report/adversarial-review.md`](../edison-trajectories/pu-configs/report/adversarial-review.md))
+> found that **the 20 ms exports do contain ~0.39 ms of real pre-trigger data**,
+> contradicting the premise behind this analysis's full-record-median baseline.
+> Re-baselining on the pre-trigger window changes CFC-180 `T` from
+> A/B/C/D = 1.022/0.996/0.986/0.989 to **1.037/1.063/1.050/1.094** and the T CVs
+> from 0.43/0.34/0.95/0.49 % to **0.54/1.18/1.22/2.48 %** — reproduced
+> independently in this repo. Consequences: **no arrangement attenuates**, B is
+> neither closest to unity nor the most repeatable CFC-180 arrangement, and the
+> monotonic T-vs-duration relation in §4 disappears (ρ = 0.40, p = 0.60).
+> The §3 band-energy criterion is a one-bin estimator artifact that reverses
+> under signed-axis energy, the `f·τ ≤ 1.5` cutoff in §3.1 is not a valid
+> derivation, the 519–549 Hz mode is unidentified, and every arrangement-level
+> p-value here is pseudo-replicated (one fixed-order block per arrangement).
+>
+> **Verdict: "none of these — the sweep cannot decide."** The next step is the
+> 20-drop randomized two-geometry × A/B crossover in the report's §5, with a
+> common trigger and ≥ 2 ms pre-trigger / 50–100 ms post-impact capture. The
+> sections below are retained as the record of what was concluded and why;
+> the *measurements* stand, the *processing and the criteria applied to them*
+> do not.
+
 ## 1. Headline
 
 **Run transmissibility on the 1/2 in sheet alone (arrangement B), with the
