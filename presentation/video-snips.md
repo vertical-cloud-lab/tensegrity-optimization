@@ -20,6 +20,28 @@ shown in the talk.
 All four snips: H.264 video + AAC audio, 30 fps, ~1586×892 (screen-capture
 resolution, not the native player resolution).
 
+## Cuts embedded in the supplement deck
+
+| Deck clip | Cut from | Window | Why |
+|---|---|---|---|
+| `media/clip-titan-descent.mp4` | NIAC mission-concept animation | 13–33 s | hook |
+| `media/clip-tensegrity-2d.mp4` | Steve Mould snip | 8–26 s | mechanism intuition |
+| `media/clip-superball-3m-drop.mp4` | IEEE Spectrum snip | 45–55 s | reusability |
+| `media/clip-nasa-toy-lander.mp4` | `youtube-0eC4A2PXM-U.mp4` | 0–16.4 s | baby toy → landing robot |
+
+The NASA 360 cut is the only clip played **with sound**. Transcript of the cut
+(Adrian Agogino, NASA Ames):
+
+> "When you took one of these toys and we said, what can we use this for? Well,
+> they make them as baby toys because they're really safe, it's hard to break
+> them, hard to hurt yourself with it … and you can throw it on the ground really
+> hard and you're not going to break it, you're like, hey, that's a landing
+> robot."
+
+He reaches the phrase "planetary landers" verbatim at 24.5–31 s of the same snip
+("we're using those to build robots or planetary landers that can land on another
+planet"), which is the longer cut to use if the tighter one feels too abrupt.
+
 ## Source video descriptions (for slide captions / attribution)
 
 - **NASA 360 Talks – Super Ball Bot** — "Could the next planetary rover be a

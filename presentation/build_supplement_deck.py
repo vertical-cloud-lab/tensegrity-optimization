@@ -170,7 +170,7 @@ def s_readme(prs):
     s = title_only(prs)
     set_message(s, "How to use this supplement (delete before the talk)", 28)
     textbox(s, MARGIN, BODY_TOP, SW - 2 * MARGIN, Inches(4.4), [
-        "Slides 7–17 are Sterling's EMC 2026 originals — animations intact. "
+        "Slides 8–18 are Sterling's EMC 2026 originals — animations intact. "
         "Copy with “Keep Source Formatting.”",
         "Every video on these slides is a real embedded clip; click to play, "
         "no internet needed.",
@@ -208,6 +208,25 @@ def s_what_is_tensegrity(prs):
     notes(s, "The 2D teaching model is the fastest way to make the mechanism "
              "obvious: push it, it springs back, nothing is glued. Say out "
              "loud that load paths are tension-only in the cables.")
+    return s
+
+
+def s_toy_to_lander(prs):
+    s = title_only(prs)
+    set_message(s, "NASA's idea started with a baby toy: throw it at the floor, "
+                   "nothing breaks — that is a landing robot.")
+    add_video(s, "clip-nasa-toy-lander.mp4", (1280, 720),
+              (Inches(2.15), BODY_TOP, Inches(9.0), Inches(5.0)),
+              poster="poster-nasa-toy.jpg")
+    credit(s, "Adrian Agogino, NASA Ames — “NASA 360 Talks: Super Ball Bot” "
+              "(youtube.com/watch?v=0eC4A2PXM-U), first 16 s. Credit: NASA.")
+    notes(s, "PLAY THIS ONE WITH SOUND — the audio is the slide. He holds a "
+             "tensegrity baby toy, says they are made as baby toys because they "
+             "are almost impossible to break, throws it at the floor, and lands "
+             "on “hey, that's a landing robot.” Say nothing over it; pick up "
+             "with our own version of that idea. He reaches “planetary landers” "
+             "verbatim a few seconds later in the source video if you ever want "
+             "the longer cut (24.5-31 s).")
     return s
 
 
@@ -403,12 +422,12 @@ def s_challenges_map(prs):
     s = title_only(prs)
     set_message(s, "Working slide: challenges and where each one gets told", 28)
     textbox(s, MARGIN, BODY_TOP, Inches(12.2), Inches(4.6), [
-        "Sensor sensitivity error → cross-calibration → own slide (24)",
-        "Channel clipping at high drops → headroom check → spoken on slide 22",
-        "No camera resolves the 1.6 ms pulse → DAQ owns it → slide 21",
-        "Felt stack drifts with use → replace on schedule → spoken on slide 22",
+        "Sensor sensitivity error → cross-calibration → own slide (25)",
+        "Channel clipping at high drops → headroom check → spoken on slide 23",
+        "No camera resolves the 1.6 ms pulse → DAQ owns it → slide 22",
+        "Felt stack drifts with use → replace on schedule → spoken on slide 23",
         "Print defects confound specimens → replicates → Q&A backup",
-        "Cables not in tension → pre-tensioned prints → slide 18",
+        "Cables not in tension → pre-tensioned prints → slide 19",
     ], size=20, space=8)
     notes(s, "Planning aid. Delete before the talk.")
     return s
@@ -419,7 +438,8 @@ def s_media_shortlist(prs):
     set_message(s, "Working slide: media inventory and what still needs "
                    "shooting", 28)
     textbox(s, MARGIN, BODY_TOP, Inches(12.2), Inches(4.6), [
-        "EMBEDDED HERE: Titan descent · 2D tensegrity · SUPERball drop · our "
+        "EMBEDDED HERE: Titan descent · 2D tensegrity · NASA toy-to-lander "
+        "(with sound) · SUPERball drop · our "
         "960 fps drop",
         "ONLINE: print timelapses on YouTube — Insert ▸ Video ▸ Online Video; "
         "keep a local copy as backup",
@@ -436,9 +456,9 @@ def main():
     print(f"kept {kept} EMC slides")
 
     builders = [
-        s_readme, s_hook, s_what_is_tensegrity, s_reusable, s_prior_work,
-        s_gap,
-        # <- EMC block gets moved in here (position 6)
+        s_readme, s_hook, s_what_is_tensegrity, s_toy_to_lander, s_reusable,
+        s_prior_work, s_gap,
+        # <- EMC block gets moved in here (position 7)
         s_caveat, s_video_capture, s_video_processing, s_instrument_split,
         s_accel_setup, s_accel_processing, s_sensors_lied,
         s_challenges_map, s_media_shortlist,
@@ -446,7 +466,7 @@ def main():
     for b in builders:
         b(prs)
 
-    move_block_after(prs, kept, 6)
+    move_block_after(prs, kept, 7)
     prs.save(str(OUT))
     print(f"wrote {OUT} with {len(prs.slides.__iter__.__self__._sldIdLst)} slides")
 
