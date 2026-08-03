@@ -4,6 +4,16 @@
 Proposed by @me-madsen on
 [PR #86](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86#issuecomment-5172705873).
 
+**Amendment 1 (still before any data exists)** — @me-madsen revised the design in
+[a follow-up comment](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86#issuecomment-5172815953):
+set 2 becomes **20 fully randomized drops** rather than four contiguous blocks
+of 5, two specimens of different geometry are in play, and the capture settings
+are fixed (100 ms, 1.25 MHz, 125,000 samples, 2 % = 2 ms pre-trigger, 150 G
+trigger throughout). §1 and §6 record the revision; the §2 decision rule is
+unchanged except that the block-order readout in step 5 no longer applies.
+Note the amendment strictly *removes* information available to the analysis
+(no block structure to lean on), so it cannot flatter the result.
+
 The point of committing this before the data arrives is that the decision rule
 cannot be tuned after the fact. If the rule below misclassifies, that is a
 recorded miss, not something to be re-derived.
@@ -17,15 +27,51 @@ Related: [`drop-test-pu-configs-analysis.md`](drop-test-pu-configs-analysis.md)
 
 ## 1. Design as proposed
 
-**Capture:** 100 ms record, 10 % pre-trigger, one trigger level for all drops.
+### 1.1 Terminology (the two factors are independent)
 
-**Set 1 — labeled.** 10 drops arrangement A (1/4 in PU sheet alone), then
-10 drops arrangement B (1/2 in PU sheet alone). Order disclosed. Used to fit
-the classifier thresholds *in-session*.
+- **Arrangement** — the polyurethane absorber stack under the carriage.
+  **A = 1/4 in sheet alone**, **B = 1/2 in sheet alone**. A property of the
+  *rig*; it sets the severity and duration of the input pulse.
+- **Geometry / specimen** — the printed T3 article being dropped. A property of
+  the *article under test*; it sets how the top vertex responds to that pulse.
 
-**Set 2 — blind.** 20 drops as four contiguous blocks of 5: two A blocks and
-two B blocks in randomized order, known to the operator, withheld from the
-analysis. The analysis emits a predicted order; the operator scores it.
+They are crossed, not alternatives: any specimen can be dropped on any
+arrangement. "2 arrangements × 2 geometries × 5 drops" means the four cells
+
+| | arrangement A (1/4 in) | arrangement B (1/2 in) |
+|---|---|---|
+| **specimen 1** | 5 drops | 5 drops |
+| **specimen 2** | 5 drops | 5 drops |
+
+for 20 drops total. This is what makes the run a *crossover*: it measures
+whether the specimen difference shows up on both arrangements, and whether one
+arrangement shows it more clearly — the discrimination question the adversarial
+review said the single-specimen sweep could not answer.
+
+### 1.2 Capture (as fixed by the operator)
+
+100 ms record · 1.25 MHz · 125,000 samples · 2 % (= 2 ms) pre-trigger ·
+**150 G trigger for every drop**. The arithmetic is self-consistent
+(1.25 MHz × 100 ms = 125,000 samples; 2 % × 100 ms = 2 ms), and 2 ms of
+pre-trigger meets the ≥ 2 ms requirement while leaving 98 ms of post-impact
+record for the ringdown fit. Expected export size ≈ 9 MB/drop across 4 channels
+(5× the 20 ms exports).
+
+### 1.3 Sets
+
+**Set 1 — labeled.** 10 drops arrangement A, then 10 drops arrangement B.
+Order disclosed. Used to fit the classifier thresholds *in-session*. If the
+specimen axis is also to be called blind, set 1 must cover all four cells of
+§1.1 (5 labeled drops per cell), otherwise there is no labeled data from which
+to fit a specimen threshold.
+
+**Set 2 — blind.** 20 drops in **fully randomized per-drop order** (amendment
+1; e.g. `ABBBBAABA…`), the key known to the operator and withheld from the
+analysis. The analysis emits a per-drop label sequence; the operator scores it.
+Per-drop randomization is a strict improvement over the original blocks of 5:
+it breaks the confound between arrangement and elapsed time / sheet history,
+gives each drop an independent re-seating of the stack, and lowers the
+guess-alone pass probability from 1-in-6 to ~1-in-10⁶.
 
 ---
 
@@ -64,10 +110,16 @@ drifts +4.6 %/drop.
 3. Report a per-drop label plus its margin in pooled σ on the primary feature.
 4. **Prespecified abstention:** any drop landing within 3 σ of the threshold on
    the primary feature is reported as *uncertain*, not guessed.
-5. Only after per-drop labels are fixed, read off the block order. If the
-   per-drop labels are not consistent with four contiguous blocks of 5, report
-   the raw per-drop labeling as-is rather than snapping it to the expected
-   design.
+5. ~~Only after per-drop labels are fixed, read off the block order.~~
+   **Superseded by amendment 1:** set 2 is fully randomized per drop, so there
+   is no block structure to read off. The reported answer is the raw 20-label
+   sequence in capture order. No smoothing, no majority vote over neighbours,
+   and no adjustment toward an assumed 10/10 split — if the labels come out
+   13 A / 7 B, that is what is reported.
+6. If a specimen classifier was fitted (set 1 covering all four cells), the
+   specimen call is made from the **output** channel and reported as a second,
+   independent 20-label sequence. Arrangement labels are not used to inform
+   specimen labels or vice versa.
 
 **Prediction of record:** 20/20 correct, with margins > 5 σ.
 
@@ -100,12 +152,14 @@ exceed noise — because that requires more than one specimen.
    intact and gets richer: the **input** channel carries arrangement, the
    **output** channel carries specimen, so both can be called blind from
    independent evidence.
-2. **One trigger level throughout** (~150 G). The July sweep changed the
-   trigger between blocks, confounding arrangement with trigger. At 150 G,
-   B has ~3.3× margin on its minimum observed raw peak and A ~8.6×.
-3. **Reconcile the pre-trigger numbers.** 10 % of a 100 ms record is 10 ms, not
-   2 ms. 10 ms is the better setting and comfortably exceeds the ≥ 2 ms ask —
-   just confirm which the instrument is actually applying.
+2. ✅ **Adopted.** One trigger level throughout (150 G). The July sweep changed
+   the trigger between blocks, confounding arrangement with trigger. At 150 G,
+   the July minimum raw peaks give **10.8× margin on A and 3.3× on B**.
+3. ✅ **Resolved.** The revised setting is 2 % of 100 ms = 2 ms, which is
+   arithmetically consistent and satisfies the ≥ 2 ms requirement. The earlier
+   suggestion of 10 % is withdrawn: with the record length fixed at 100 ms, a
+   smaller pre-trigger fraction buys more post-impact record for the ringdown
+   fit, and 2 ms (2,500 samples at 1.25 MHz) is an ample baseline window.
 4. **Randomize with an RNG and record the key before the first drop.**
 5. **Do not disturb the accelerometer mount between sets.** Mount re-seating
    has produced ~2.3 % shifts in `T`, larger than anything being measured; log
@@ -116,12 +170,18 @@ exceed noise — because that requires more than one specimen.
 
 ---
 
-## 5. Expected export properties (to be checked on arrival)
+## 5. Export properties
 
-The TP4 appears to hold a fixed 25,000-sample buffer — 200 ms at 125 kHz and
-20 ms at 1.25 MHz both export 25,000 samples. A 100 ms record should therefore
-arrive at **~250 kHz, 25,000 samples**, which is ~31× the SAE J211 minimum for
-CFC-1000. If it differs, the analysis notes it rather than assuming.
+**Corrected:** an earlier version of this document inferred that the TP4 holds a
+fixed 25,000-sample buffer (200 ms at 125 kHz and 20 ms at 1.25 MHz both export
+25,000 samples). The operator's settings — 100 ms at 1.25 MHz = **125,000
+samples** — show that record length and rate are set independently. The
+sample interval is 0.8 µs, ~156× the SAE J211 minimum sample rate for CFC-1000,
+so filtering is unconstrained.
+
+Practical consequence: at ~1.83 MB per 25,000-sample 4-channel CSV, a
+125,000-sample capture is **≈ 9 MB**, so 40 drops ≈ 365 MB uncompressed. Zip
+per session and upload to Box rather than committing loose CSVs.
 
 Two consequences of the longer record, both anticipated:
 
@@ -133,3 +193,23 @@ Two consequences of the longer record, both anticipated:
   the ~550 Hz output band, enough to fit a ringdown decay. This is the largest
   scientific gain in the proposal: ringdown damping is a defensible
   energy-dissipation metric, unlike the peak ratio `T`.
+
+---
+
+## 6. Revision log
+
+**Amendment 1 — 2026-08-03, before any set-2 data exists.**
+
+| item | original proposal | revised | effect on the test |
+|---|---|---|---|
+| set-2 order | four contiguous blocks of 5 | 20 fully randomized drops | **harder** — no block structure to lean on; chance pass 1-in-6 → ~1-in-10⁶ |
+| specimens | one | two, different geometry | enables the crossover; adds an independent output-side blind call |
+| pre-trigger | "10 % (2 ms)" — inconsistent | 2 % = 2 ms at 100 ms | resolved; 98 ms post-impact retained |
+| sample rate | assumed ~250 kHz / 25,000 | 1.25 MHz / 125,000 | none analytically; 5× file size |
+| trigger | "one level, ~150 G" | exactly 150 G throughout | adopted as recommended |
+
+Open item at the time of writing: whether the two specimens are randomized
+**independently of** arrangement (giving the four crossed cells of §1.1) or
+swapped together with it. Only the crossed version answers the discrimination
+question; if specimen and arrangement are changed together they are perfectly
+confounded and neither factor can be attributed.
