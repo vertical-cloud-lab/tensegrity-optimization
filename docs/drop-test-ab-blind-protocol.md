@@ -14,6 +14,16 @@ unchanged except that the block-order readout in step 5 no longer applies.
 Note the amendment strictly *removes* information available to the analysis
 (no block structure to lean on), so it cannot flatter the result.
 
+**Amendment 2 (still before any data exists)** — @me-madsen proposed an 80-drop
+variant in
+[a further comment](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86#issuecomment-5172937746):
+back to blocks of 5, four arrangements (A, B, C, D) × two specimens, one
+labeled set of 8 blocks in fixed order and one blind set of the same 8 blocks
+shuffled. §7 records the decidability analysis for that variant — in
+particular the prediction, made here before any data exists, that **C and D
+cannot be told apart from the input channel** and would be reported as
+*uncertain* under the §2 step-4 abstention rule.
+
 The point of committing this before the data arrives is that the decision rule
 cannot be tuned after the fact. If the rule below misclassifies, that is a
 recorded miss, not something to be re-derived.
@@ -220,3 +230,114 @@ Open item at the time of writing: whether the two specimens are randomized
 swapped together with it. Only the crossed version answers the discrimination
 question; if specimen and arrangement are changed together they are perfectly
 confounded and neither factor can be attributed.
+
+**Amendment 2 — 2026-08-03, before any set-2 data exists.** The 80-drop
+four-arrangement variant, and the C/D decidability analysis of §7. The §2
+decision rule is unchanged; §7 only records, in advance, which cells it is
+expected to abstain on.
+
+---
+
+## 7. Decidability of a four-arrangement blind set (amendment 2)
+
+Computed from the adversarial review's independently recomputed per-drop
+metrics for the July sweep
+([`independent_per_drop_metrics.csv`](../edison-trajectories/pu-configs/report/independent_per_drop_metrics.csv),
+pre-trigger baseline, 10 drops per arrangement). Pairwise separation of the
+arrangements on the primary discriminant, **CH5 input pulse FWHM**:
+
+| pair | Δ (ms) | pooled sd | separation | ranges overlap? |
+|---|--:|--:|--:|:--:|
+| A vs B | 0.498 | 0.022 | 22.8 σ | no |
+| A vs C | 1.634 | 0.047 | 35.1 σ | no |
+| A vs D | 1.501 | 0.041 | 36.9 σ | no |
+| B vs C | 1.136 | 0.045 | 25.0 σ | no |
+| B vs D | 1.004 | 0.039 | 25.5 σ | no |
+| **C vs D** | **0.132** | **0.057** | **2.3 σ** | **yes** |
+
+The same pattern holds on every other input feature, and C/D is worse on all
+of them: input CFC-180 peak 167.29 vs 167.33 G (**0.01 σ**), input CFC-1000
+peak 0.45 σ, hardness ratio CFC-1000/CFC-180 1.21 σ, raw peak 2.40 σ. Every
+one overlaps. There is no input-side feature that separates the two stacking
+orders.
+
+**Consequence under the committed rule.** A midpoint threshold on pulse FWHM
+misclassifies 2 of the 20 July C/D drops, and **no C or D drop exceeds 2.9 σ of
+margin** — so §2 step 4 (abstain within 3 σ) would report *every* C and D drop
+as *uncertain*. Any C/D drops in a blind set are therefore prepaid abstentions,
+not scored calls.
+
+**The 2.3 σ that does exist is not attributable to stacking order.** The two
+blocks were sequential (C = signals 22–31, D = 32–41) and drift within them in
+*opposite* directions: C +0.0124 ms/drop, D −0.0120 ms/drop. Over ten drops
+each that is ±0.12 ms, essentially the entire 0.132 ms block-mean difference.
+The implied effect also depends on which drops are compared — first-3 means
+differ by 0.053 ms, last-3 means by 0.207 ms, a 4× swing. With one block per
+arrangement there are zero arrangement-level degrees of freedom, so this
+contrast cannot be assigned to the stacking order rather than to elapsed time
+or bedding-in.
+
+**Recorded prediction for the four-arrangement variant:** A and B called
+correctly with > 5 σ margins; the two-sheet blocks separated from A and B with
+> 20 σ margins but **not** resolved into C vs D, and reported as uncertain.
+
+**Recommendation (made before data exists):** collapse C and D into a single
+two-sheet arrangement and prefer the **1/4 in on top** order (July CVs: input
+CFC-180 1.6 % vs 3.8 %, `T` CFC-180 1.2 % vs 2.5 % — the harder sheet as the
+contact surface is the more repeatable of the two). Retaining one two-sheet
+configuration is worthwhile: it gives a third point on the severity–duration
+axis (≈ 1.64 / 2.14 / 3.2 ms input pulse), which turns "which arrangement
+discriminates best" into a dose–response question rather than a two-way
+comparison. Retaining *both* orders spends drops on a contrast the input
+channel demonstrably cannot resolve.
+
+### 7.1 The freed drops: a same-geometry replicate print
+
+The binding limit on any discrimination claim is that print-to-print scatter
+among nominally identical articles is the same order as the between-geometry
+differences being measured (print-defect study: five copies of one geometry
+spanned 1.95 % in `T`; the three-structure 60 in "different geometries"
+ranking spanned 2.3 %). A run with one article per geometry cannot separate
+those two variances, whatever the arrangement.
+
+Adding a **second print of the same geometry** as a third specimen level fixes
+this within the same budget, because discrimination becomes a directly measured
+ratio: between-geometry response difference ÷ between-print response
+difference, per arrangement. Two of the print-defect articles (`cruela`,
+`bpx68c` — the two lowest-defect copies) already exist and serve.
+
+An 80-drop layout on that basis, 5 drops per cell, 8 cells, two sets:
+
+| | arrangement A (1/4) | arrangement B (1/2) | arrangement E (1/4 over 1/2) |
+|---|:--:|:--:|:--:|
+| specimen 1 | 5 | 5 | 5 |
+| specimen 1b *(replicate print of 1)* | 5 | 5 | — |
+| specimen 2 *(different geometry)* | 5 | 5 | 5 |
+
+Same 80 drops, same 8 blind labels per set. The blind test then becomes
+informative rather than confirmatory: **failing to separate 1 from 1b while
+separating 1 from 2 is the success case**, since it demonstrates the
+measurement responds to geometry and not to print noise. Separating 1 from 1b
+as easily as 1 from 2 would show the opposite, and is the outcome that would
+invalidate single-print design ranking in the BO campaign.
+
+### 7.2 Mount re-seating is the dominant threat to the specimen call
+
+Changing specimen re-seats the top-vertex accelerometer, and mount re-seating
+has produced ~2.3 % shifts in `T` — larger than the specimen differences under
+test. This is why **blocks of 5 are the right unit here** and per-drop
+randomization of the specimen factor is not recommended (it would inject a
+mount re-seat into every drop); amendment 1's per-drop randomization argument
+applies to the arrangement factor, where a swap is only a sheet change.
+
+Two consequences to accept in advance:
+
+- Randomize the **block order** with an RNG and record the key before drop 1.
+  Each cell then occupies one labeled block and one blind block, separated in
+  time, which gives the mount and the stack an independent re-seating per cell
+  — the block-level replication every previous absorber dataset lacked.
+- If the specimen call fails while the arrangement call succeeds, the leading
+  explanation is mount re-seating, not the pipeline. That result would itself
+  be first-order: it would mean specimens can only be compared within a single
+  mount seating, which constrains how the BO campaign must be sequenced. Log
+  every re-seat so the two explanations stay separable.
