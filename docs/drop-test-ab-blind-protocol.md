@@ -138,9 +138,16 @@ replicates the absorber factor at the block level.
 **Does not:** probe the failure mode that actually bit the last analysis. The
 error Edison found was an *output-side processing* error (a full-record-median
 baseline biasing `T`); a blind arrangement classification driven by the input
-channel would have passed cleanly with that bug fully present. Nor does it
-test **discrimination** — whether an arrangement lets geometry differences
-exceed noise — because that requires more than one specimen.
+channel would have passed cleanly with that bug fully present.
+
+**Discrimination** — whether an arrangement lets geometry differences exceed
+noise — is testable **only if** the two specimens of amendment 1 are randomized
+independently of arrangement, i.e. all four cells of §1.1 are populated. If
+specimen and arrangement change together, the two factors are perfectly
+confounded and the run reverts to a confirmation test. Either way the run
+cannot estimate print-to-print variance (that needs replicate prints, measured
+at ~0.72 % CV in the print-defect study), so it bounds discrimination from
+above, not from below.
 
 ---
 
