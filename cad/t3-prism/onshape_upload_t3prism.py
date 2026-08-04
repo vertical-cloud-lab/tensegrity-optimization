@@ -22,10 +22,20 @@ Overrides (same conventions as the powder-doser script)::
 Run with::
 
     python3 cad/t3-prism/onshape_upload_t3prism.py
+
+Any other set of STLs (e.g. the per-specimen BO batch pairs) can be pushed to
+their own document without editing the file::
+
+    python3 cad/t3-prism/onshape_upload_t3prism.py \\
+        --doc-name "T3-prism Sobol batch 01 (PR #35)" --jobs 6 \\
+        --stl spec00-struts=bo/per-specimen-stls/t3-prism-bo-spec00-struts.stl \\
+        --stl spec00-cables=bo/per-specimen-stls/t3-prism-bo-spec00-cables.stl
 """
 from __future__ import annotations
 
+import argparse
 import base64
+import concurrent.futures
 import datetime
 import hashlib
 import hmac
@@ -249,7 +259,12 @@ def _upload_stl(access: str, sk: bytes, did: str, wid: str,
 
 def _bbox_mm(access: str, sk: bytes, did: str, wid: str,
              eid: str) -> str | None:
-    """Read a Part Studio's bounding box and format it in mm (API is metres)."""
+    """Read a Part Studio's bounding box and format it in mm.
+
+    `/partstudios/.../boundingboxes` reports **millimetres** already (verified
+    against the local STL extents), so no unit conversion is applied here — an
+    earlier ``* 1000`` made every import look 1000x oversized.
+    """
     code, body = signed(
         "GET", access, sk,
         f"/api/v6/partstudios/d/{did}/w/{wid}/e/{eid}/boundingboxes",
@@ -262,12 +277,45 @@ def _bbox_mm(access: str, sk: bytes, did: str, wid: str,
         hi = (j["highX"], j["highY"], j["highZ"])
     except KeyError:
         return None
-    dims = [(h - l) * 1000.0 for l, h in zip(lo, hi)]
+    dims = [h - l for l, h in zip(lo, hi)]
     return (f"{dims[0]:.2f} x {dims[1]:.2f} x {dims[2]:.2f} mm "
             f"(X x Y x Z)")
 
 
-def main() -> int:
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        "--stl", action="append", default=[], metavar="NAME=PATH",
+        help="upload this STL as Part Studio NAME (repeatable); replaces the "
+             "default four production STLs when given",
+    )
+    ap.add_argument(
+        "--doc-name", default=None,
+        help=f"Onshape document name (default: {TARGET_DOC_NAME!r})",
+    )
+    ap.add_argument(
+        "--jobs", type=int, default=1,
+        help="concurrent uploads/translations (default 1)",
+    )
+    return ap.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    global TARGET_DOC_NAME
+    args = _parse_args(argv)
+    if args.doc_name:
+        TARGET_DOC_NAME = args.doc_name
+
+    stls = STLS
+    if args.stl:
+        stls = []
+        for spec in args.stl:
+            if "=" not in spec:
+                print(f"--stl expects NAME=PATH, got {spec!r}")
+                return 2
+            name, _, path = spec.partition("=")
+            stls.append((name, pathlib.Path(path).resolve()))
+
     access = os.environ.get("ONSHAPE_ACCESS_KEY")
     secret = os.environ.get("ONSHAPE_SECRET_KEY")
     if not access or not secret:
@@ -283,30 +331,39 @@ def main() -> int:
     doc_url = f"{BASE}/documents/{did}/w/{wid}"
     print(f"document URL: {doc_url}")
 
-    to_upload = [(n, p) for n, p in STLS if p.exists()]
-    for n, p in STLS:
+    to_upload = [(n, p) for n, p in stls if p.exists()]
+    for n, p in stls:
         if not p.exists():
             print(f"  [{n}] missing at {p}, skipping")
 
-    print(f"\n== uploading {len(to_upload)} STLs ==")
-    results = []
-    for name, stl_path in to_upload:
-        print(f"\n[{name}] uploading {stl_path.name} "
-              f"({stl_path.stat().st_size} bytes) ...")
+    print(f"\n== uploading {len(to_upload)} STLs "
+          f"(jobs={max(1, args.jobs)}) ==")
+
+    def _one(item):
+        name, stl_path = item
+        print(f"[{name}] uploading {stl_path.name} "
+              f"({stl_path.stat().st_size} bytes) ...", flush=True)
         eids = _upload_stl(access, sk, did, wid, name, stl_path)
-        results.append((name, eids))
-        for eid in eids:
-            print(f"  -> {BASE}/documents/{did}/w/{wid}/e/{eid}")
-            bbox = _bbox_mm(access, sk, did, wid, eid)
-            print(f"     bounding box: {bbox or '(unavailable)'}")
+        boxes = [(eid, _bbox_mm(access, sk, did, wid, eid)) for eid in eids]
+        for eid, bbox in boxes:
+            print(f"  [{name}] -> {BASE}/documents/{did}/w/{wid}/e/{eid}\n"
+                  f"     bounding box: {bbox or '(unavailable)'}", flush=True)
+        return name, boxes
+
+    if max(1, args.jobs) > 1:
+        with concurrent.futures.ThreadPoolExecutor(args.jobs) as ex:
+            results = list(ex.map(_one, to_upload))
+    else:
+        results = [_one(item) for item in to_upload]
 
     print("\n== Clickable Onshape URLs ==")
     print(f"Document: {doc_url}")
-    for name, eids in results:
-        if not eids:
+    for name, boxes in results:
+        if not boxes:
             print(f"  {name}: (upload failed or no element id)")
-        for eid in eids:
-            print(f"  {name}: {BASE}/documents/{did}/w/{wid}/e/{eid}")
+        for eid, bbox in boxes:
+            print(f"  {name}: {BASE}/documents/{did}/w/{wid}/e/{eid}"
+                  f"   [{bbox or 'bbox unavailable'}]")
     return 0
 
 

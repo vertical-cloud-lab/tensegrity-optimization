@@ -187,6 +187,28 @@ needed). Knobs:
   Supports are intentionally OFF; @achris0520 paints them on per
   comment [`4502140147`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4502140147).
 
+## Onshape spot-check upload
+
+The per-specimen STLs can be pushed to a public Onshape document so the
+geometry can be inspected/measured in a browser before printing (PR #35
+comment [`5133453991`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-5133453991)).
+`cad/t3-prism/onshape_upload_t3prism.py` accepts an explicit STL list, a
+document name, and a concurrency setting:
+
+```bash
+ARGS=""
+for i in 00 01 02 03 04 05 06 07 08; do
+  ARGS="$ARGS --stl spec$i-struts-PLA=bo/per-specimen-stls/t3-prism-bo-spec$i-struts.stl"
+  ARGS="$ARGS --stl spec$i-cables-TPU=bo/per-specimen-stls/t3-prism-bo-spec$i-cables.stl"
+done
+python3 cad/t3-prism/onshape_upload_t3prism.py \
+    --doc-name "T3-prism Sobol batch 01 - constant mass (PR #35)" --jobs 6 $ARGS
+```
+
+Each import's bounding box is read back through the API and printed in mm as
+a scale check — it should match the local STL extents exactly (the
+`/partstudios/.../boundingboxes` endpoint reports millimetres, not metres).
+
 ## Reporting outcomes back
 
 This first batch deliberately **does not** call `complete_trial(...)`.
