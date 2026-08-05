@@ -39,7 +39,16 @@ the thing a STEP import can never give you, no matter how clean the STEP is.
 `--dry-run` validates the FeatureScript source and the parameter payloads
 locally, without touching Onshape or needing credentials.
 
-### Four things that cost real time, recorded so they cost nobody else any
+Parameter driving is verified live, not assumed. Each kind was pushed through
+the API and the regenerated bounding box read back:
+
+| `--param` | effect on the model |
+|---|---|
+| `'pocketZ=7.6 mm'` (quantity) | height 103.83 → **104.63 mm**, i.e. exactly the +0.80 mm asked for |
+| `addAccelBottom=false` (boolean) | footprint 81.19 × 78.66 → **62.16 × 69.46 mm**, the bottom key-seats gone |
+| `part=STRUTS` (enum) | TPU part dropped, PLA unchanged at 81.19 × 78.66 × 103.83 mm |
+
+### Five things that cost real time, recorded so they cost nobody else any
 
 1. **`BLEND_BOUNDS` is already exported by `onshape/std/fillet.fs`.**
    Redeclaring it kills the entire Feature Studio's compile, and the API
@@ -62,6 +71,12 @@ locally, without touching Onshape or needing credentials.
    older `{"type": 134, "typeName": "BTMFeature", "message": {...}}` envelope
    is rejected with a bare `"Feature has invalid type"`. Use
    `{"btType": "BTMFeature-134", "featureType": ..., "parameters": [...]}`.
+5. **`BTMParameterEnum` needs the custom feature's namespace.** `T3Part` is
+   declared in our own Feature Studio, so the `namespace` field has to repeat
+   the `d…::v…::e…::m…` string. Leaving it empty is accepted by the API — the
+   `POST` returns 200 — and then fails at regeneration with a bare
+   `featureStatus: ERROR` and no message. Quantity and boolean parameters do
+   not need it, which makes this one easy to miss.
 
 Debugging tip: Feature Studio compile failures are silent, but the Part
 Studio's `POST .../featurescript` eval endpoint gives real, line-numbered
@@ -140,6 +155,16 @@ Reading the numbers:
   bounding box so Bambu Studio's per-part auto-bed-placement shifts both halves
   identically. Inside one Part Studio (or one STEP assembly) both parts already
   share a coordinate system, so it has nothing to do.
+
+## Scope: what is deliberately *not* ported
+
+`t3_prism_scaffold()` — the 7-per-cable PLA breakaway pillars — is in neither
+route. Those pillars are print-support geometry that exists because Bambu's
+overhang detector measures angle from vertical and skips the near-vertical
+members; they are not part of the specimen. They stay in the SCAD, which is
+what feeds the slicer. If a STEP of the as-printed (scaffolded) body is ever
+wanted, the pillars are truncated cones and map onto `Solid.make_cone` /
+`fCone` with no hull problem at all.
 
 ## What this does *not* replace
 

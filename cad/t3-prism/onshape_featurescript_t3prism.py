@@ -308,14 +308,20 @@ def element_microversion(c: Client, did: str, vid: str, eid: str) -> str:
     raise SystemExit(f"element {eid} not present in version {vid}")
 
 
-def _param_payload(key: str, value: str) -> dict:
-    """Turn NAME=VALUE into the right BTMParameter* payload."""
+def _param_payload(key: str, value: str, namespace: str = "") -> dict:
+    """Turn NAME=VALUE into the right BTMParameter* payload.
+
+    Enums need the *custom feature's* namespace, not an empty one: the enum
+    type is declared in our Feature Studio, so Onshape has to be told where to
+    resolve `T3Part` from. Leaving it blank is accepted by the API and then
+    fails at regeneration time with a bare `featureStatus: ERROR`.
+    """
     if key in BOOLEAN_PARAMS:
         return {"btType": BT_BOOLEAN, "parameterId": key,
                 "value": _truthy(value)}
     if key in ENUM_PARAMS:
         return {"btType": BT_ENUM, "parameterId": key, "value": value.upper(),
-                "enumName": ENUM_PARAMS[key], "namespace": ""}
+                "enumName": ENUM_PARAMS[key], "namespace": namespace}
     return {"btType": BT_QUANTITY, "parameterId": key, "expression": value}
 
 
@@ -349,7 +355,8 @@ def add_custom_feature(c: Client, did: str, wid: str, ps_eid: str,
             "name": FEATURE_NAME,
             "namespace": namespace,
             "suppressed": False,
-            "parameters": [_param_payload(k, v) for k, v in params.items()],
+            "parameters": [_param_payload(k, v, namespace)
+                           for k, v in params.items()],
         }
     }
     code, body = c.call(
