@@ -1,5 +1,18 @@
 # Blind A/B arrangement test — pre-registered analysis plan
 
+> **Executed and scored.** The run happened on 2026-08-04/08-05 as a
+> **three**-arrangement × **three**-specimen crossover (A, B, C × specimens
+> 1, 2, 3), 45 drops per set. Results, the reconstructed key, and an honest
+> accounting of where this pre-registration held and where it did not are in
+> [`drop-test-abc123-blind-analysis.md`](drop-test-abc123-blind-analysis.md).
+> Two outcomes worth carrying back here: the §2 abstention rule fired on
+> 39 of 44 drops because "pooled σ" was defined per *class* rather than per
+> *cell*, and arrangement C's class σ is inflated 4× by a specimen effect
+> inside the class — so **define σ within-cell next time**. And the §7
+> prediction that C-type stacks would be undecidable did not apply, because
+> the operator collapsed C/D into a single two-sheet arrangement exactly as
+> §7 recommended.
+
 **Status:** pre-registration, written **before** any set-2 data exists.
 Proposed by @me-madsen on
 [PR #86](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86#issuecomment-5172705873).
