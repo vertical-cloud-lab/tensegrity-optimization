@@ -249,6 +249,22 @@ four-arrangement variant, and the C/D decidability analysis of §7. The §2
 decision rule is unchanged; §7 only records, in advance, which cells it is
 expected to abstain on.
 
+**Outcome — 2026-08-06.** The test was executed as a 90-drop ABC × 123
+crossover (three arrangements × three specimens, blocks of 5; the C/D
+stacking-order pair was collapsed to a single two-sheet arrangement, as §7
+recommended). The blind key was reconstructed under the §2 rule and the
+operator confirmed it correct on **all nine blocks — 18/18 labels**,
+including the two nominally identical prints (B1/B2), despite an unlogged
+~22 % impact-velocity deficit later attributed to tower damage
+([issue #92](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/92)
+— a drop pin broke during set-2 drop 6; the shape-based discriminant chosen
+in §2 is what survived it). The §1.1-noted pre-registration flaw (σ pooled
+within-class instead of within-cell) triggered as predicted and is recorded
+in the analysis. Full results:
+[`drop-test-abc123-blind-analysis.md`](drop-test-abc123-blind-analysis.md).
+Consequence adopted by the lab: **arrangement B (1/2 in PU alone) is the
+go-forward absorber.**
+
 ---
 
 ## 7. Decidability of a four-arrangement blind set (amendment 2)

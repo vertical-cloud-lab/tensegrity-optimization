@@ -27,6 +27,28 @@ found contaminating the 20 ms exports.
 
 ---
 
+## 0. Outcome (added 2026-08-06, after the operator's review)
+
+@me-madsen released the true key on
+[PR #86](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86):
+`B2 A1 C1 B1 C3 A3 A2 B3 C2`. **The reconstructed key in §1 matches on all
+nine blocks — 18/18 labels (9 arrangement + 9 specimen), including the
+B1/B2 pair flagged in §1.2 as the lowest-confidence call.** Chance for the
+specimen-within-arrangement matching alone is (3!)³ = 1-in-216; combined
+with the arrangement grouping the whole key is far beyond guessing.
+
+Two operator confirmations reinterpret parts of this document:
+
+- **Every drop in both sets was released from 60 in.** The ~22 % impact-velocity
+  drop in session 2 (§2a) is **drop-tower damage, not a height change**: the
+  second drop pin broke during set-2 drop 6 — exactly the capture missing from
+  the record — and the Δv series splits cleanly before/after it
+  ([issue #92](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/92)).
+  §2a now carries the corrected reading.
+- **Arrangement B (1/2 in PU alone) is adopted** as the go-forward absorber
+  per §3.2's recommendation, and the next experiment is the two-ideal-prints
+  consistency run (§6, updated).
+
 ## 1. Reconstructed key for "ABC - 123 - Random Arrangement"
 
 | block | signals | **call** | arrangement margin | specimen evidence |
@@ -51,8 +73,15 @@ happen to form a bijection.
 **Excluded capture:** Signal 12 has a base-plate raw peak of **108.6 G**,
 below the 150 G trigger it was captured on, with the "impact" at 9.9 ms and
 a 10 ms pulse — not a clean drop. Excluded by a stated rule (raw peak ≥
-trigger level), leaving block 3 with 4 valid drops. Worth checking whether
-this was an aborted drop or a spurious trigger.
+trigger level), leaving block 3 with 4 valid drops.
+
+*Resolved by the §0 confirmations:* with the tower damaged, arrangement C's
+raw base peaks fell to 156–207 G in session 2 — a bare 1.04–1.38× margin over
+the 150 G trigger. Signal 12 is a real drop whose base peak never crossed the
+trigger cleanly (the capture fired late on something else). It was a
+trigger-margin casualty of the reduced impact energy, not an aborted drop —
+and it is moot going forward, since arrangement B's post-repair raw peaks
+(546–638 G in set 1) carry a 3.6× margin.
 
 ### 1.1 How the arrangement call was made (the pre-registered rule, unchanged)
 
@@ -134,14 +163,41 @@ Clustering the capture timestamps by elapsed-time gaps:
 | **session 2 — set 2 blocks 2–9** | 7–46 | **08-05 23:42 → 08-06 00:40** | **4.22 ± 0.64 m/s** |
 
 Set 2's first block was recorded 10 minutes after set 1 finished; the other
-eight blocks came two days later at a **~22 % lower impact velocity**
-(consistent with a lower drop height, ≈ 43 in vs 60 in, or an equivalent
-change in the release). Absolute level features (input/output peak in G)
-therefore do **not** transfer between the sets — set-2 arrangement A reads
-292–303 G where set-1 A read 354–369 G. This is exactly the failure mode the
-pre-registration chose a *shape* discriminant to avoid, and the arrangement
-call is untouched by it. It is also the reason the specimen call needed the
-session-aware treatment above.
+eight blocks came two days later at a **~22 % lower impact velocity**.
+Absolute level features (input/output peak in G) therefore do **not**
+transfer between the sets — set-2 arrangement A reads 292–303 G where set-1 A
+read 354–369 G. This is exactly the failure mode the pre-registration chose a
+*shape* discriminant to avoid, and the arrangement call is untouched by it.
+It is also the reason the specimen call needed the session-aware treatment
+above.
+
+*Corrected reading (2026-08-06):* the original text inferred a lower drop
+height (≈ 43 in equivalent). The operator confirms **every drop was released
+from 60 in**; the velocity deficit is **tower damage** — the second drop pin
+broke during set-2 drop 6
+([issue #92](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/92)),
+the exact capture missing from the record, and the Δv series splits cleanly
+at that point (signals 1–5: 5.35 ± 0.03 m/s ≈ 98 % of the 5.47 m/s free-fall
+arrival; signals 7 onward: ~4.3–4.9 m/s on the Δv-reliable A/B blocks).
+Three details in the data now make sense as *friction*, not geometry:
+
+- The deficit **worsens through session 2**: matched-arrangement block means
+  decline monotonically (A: 4.72 → 4.63 → 4.59 m/s; B: 4.38 → 4.27 m/s). A
+  mis-set height would give a constant offset; progressive rail/pin friction
+  drifts.
+- On the reliable blocks the carriage arrived at 79–86 % of free-fall speed —
+  i.e. **~26–38 % of the drop energy was going into the damaged tower**, which
+  is large enough to matter and small enough to be invisible to the eye and
+  to casual slow-mo review.
+- `e_rebound`'s invariance across the split (§2b) shows the specimens scaled
+  with the *actual* impact velocity, corroborating that Δv was measuring
+  something real.
+
+**Practical consequence: the first-block Δv is a free rig-health monitor.**
+At 60 in a healthy tower delivers ~5.4–5.5 m/s; a first block below ~5.2 m/s
+means the tower is eating energy and the session's absolute levels will not
+be comparable. Worth adding to the SOP as a start-of-session check after the
+issue #92 repair.
 
 **(b) Every record contains a large secondary event 17–35 ms after impact.**
 This is the single most consequential thing in the dataset and it is only
@@ -343,8 +399,10 @@ being the objective.
   re-seating shift, and it is ~35 % of the B1–B2 specimen gap. Resolvable,
   but not with margin to spare.
 - **The two sets were not run under one condition.** The ~22 % impact-velocity
-  change between sessions was not logged in the session metadata and had to
-  be inferred from Δv; please record drop height per session.
+  change between sessions had to be inferred from Δv. *(Closed 2026-08-06:
+  height was 60 in throughout; the change was the broken drop pin of issue
+  #92 — see §2a. The surviving lesson is to log rig incidents/repairs per
+  session and to read the first-block Δv as a health check.)*
 - **Δv is a processing-dependent descriptor**, not a validated velocity. It
   is unreliable in the set-2 C blocks (per-drop values swing 2.5–4.3 m/s
   within a block), which is why `e_rebound` was not used to decide C.
@@ -354,17 +412,36 @@ being the objective.
 
 ---
 
-## 6. What I would run next
+## 6. What to run next (updated 2026-08-06 — B adopted, testing paused for the issue #92 repair)
 
-1. **Restrained vs unrestrained, 2 blocks × 5 drops on arrangement B.**
+Prerequisite: the tower repair. First post-repair block should show Δv back
+at ~5.4–5.5 m/s from 60 in before anything else is trusted.
+
+1. **The two-ideal-prints consistency run** (@me-madsen's proposal — it *is*
+   §7.1's replicate-print cell, now with better articles than the print-defect
+   leftovers). Two low-defect prints of the same structure, arrangement B,
+   60 in. Two design notes:
+   - **Include a positive control in the same session** — one clearly
+     different geometry (e.g. this run's specimen 3). If the two ideal prints
+     come out indistinguishable, that result is only meaningful if the same
+     session demonstrably still separates *something*; without the control,
+     "indistinguishable" is ambiguous between print consistency and a
+     measurement that lost sensitivity that day.
+   - **Two blocks of 5 per article, block order randomized**, so each article
+     gets an independent mount re-seating. The B1↔B2 near-miss showed the
+     re-seat shift is ~35 % of the *defective*-print gap; between two ideal
+     prints the gap will be smaller still, so the comparison that matters is
+     print-vs-print difference against re-seat noise, and that needs re-seat
+     replication. 6 blocks × 5 drops = 30 drops ≈ 21 min at the 42 s cadence.
+   - Score it on `e_rebound`/`t_second` (the sensitive channel) as well as
+     `T`; "indistinguishable on the most sensitive discriminator we have" is
+     a much stronger consistency statement than "indistinguishable on `T`".
+2. **Restrained vs unrestrained, 2 blocks × 5 drops on arrangement B.**
    Settles whether the secondary event is specimen dynamics or the specimen
-   leaving the plate, and whether `e_rebound` survives. Cheapest decisive
-   experiment available.
-2. **The replicate-print cell.** Two prints of one geometry, arrangement B,
-   5 drops each. Turns every discrimination number in §3.2 from
-   "distinguishes these articles" into "distinguishes these designs".
-3. **Log drop height and any release change per session** — the one piece of
-   metadata whose absence cost the most here.
+   leaving the plate, and whether `e_rebound` survives. Can share the session
+   above.
+3. **Log rig incidents/repairs per session**, and record the first-block Δv
+   as a start-of-session health check (§2a).
 4. Keep the 100 ms / 2 ms pre-trigger / 150 G capture exactly as it is. It
    is strictly better than everything before it, and the pre-trigger window
    alone retires the baseline problem the adversarial review found.

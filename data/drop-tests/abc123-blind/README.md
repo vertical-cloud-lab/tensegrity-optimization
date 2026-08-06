@@ -53,15 +53,22 @@ sessions, not two sets:
 | session 2 — set 2 blocks 2–9 | 7–46 | 08-05 23:42 → 08-06 00:40 | **4.22 ± 0.64 m/s** |
 
 The session-2 impact velocity is ~22 % lower, which absolute level features
-do not survive. Drop height per session is not recorded in the session
-metadata and had to be inferred.
+do not survive. **Confirmed cause (operator, 2026-08-06): all drops were
+released from 60 in; the deficit is tower damage — the second drop pin broke
+during set-2 drop 6 (the missing capture), see
+[issue #92](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/92).**
 
 ## Data hygiene
 
 - **Signal 12** (set 2) is not a clean drop: base-plate raw peak 108.6 G,
   *below* the 150 G trigger, "impact" at 9.9 ms with a 10 ms pulse. Excluded
   by the stated rule (raw peak ≥ trigger level). All other 89 captures are
-  clean.
+  clean. Explanation: on the damaged tower, arrangement C's raw base peaks
+  fell to 156–207 G — 1.04–1.38× the trigger — and Signal 12 is a real drop
+  that never crossed it cleanly.
+- **Blind-key outcome:** the operator confirmed the reconstructed key correct
+  on all nine blocks (`B2 A1 C1 B1 C3 A3 A2 B3 C2`) — see
+  [findings doc §0](../../../docs/drop-test-abc123-blind-analysis.md).
 
 ## Raw data is not committed
 
