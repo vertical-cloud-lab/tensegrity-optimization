@@ -79,6 +79,13 @@ restitution (mat state).
 
 ## 4. On the proposed 100-drop run — yes, worth it, with three specifics
 
+> **Outcome (08-11/08-12):** the run happened — 55 + 100 drops, analyzed in
+> [`drop-test-speed-decay-analysis.md`](drop-test-speed-decay-analysis.md).
+> Headline: no decay with drop count in steady state (the 100-drop session
+> is flat at Δv slope p = 0.75); a one-time ~3 % settling transient in the
+> first ~39 drops after the greasing; the gain largely held (steady
+> 4.55–4.66 m/s vs 4.44 pre-grease).
+
 A 100-drop campaign is the right way to answer what 5+5 cannot: whether the
 greasing gain holds at campaign scale (grease migrating/collecting debris
 is exactly the WD-40 failure mode from the hook episode). Suggestions:
