@@ -48,6 +48,7 @@ jobs:
           ONSHAPE_ACCESS_KEY: ${{ secrets.ONSHAPE_ACCESS_KEY }}
           ONSHAPE_SECRET_KEY: ${{ secrets.ONSHAPE_SECRET_KEY }}
           PPT_EDIT_LINK: ${{ secrets.PPT_EDIT_LINK }}
+          PPT_EDIT_PASSWORD: ${{ secrets.PPT_EDIT_PASSWORD }}
           OT2_STREAM_CAM_HOSTNAME: ${{ secrets.OT2_STREAM_CAM_HOSTNAME }} # should swap out once we get new RPis in
           OT2_STREAM_CAM_USERNAME: ${{ secrets.OT2_STREAM_CAM_USERNAME }}
           OT2_STREAM_CAM_PASSWORD: ${{ secrets.OT2_STREAM_CAM_PASSWORD }}
