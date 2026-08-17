@@ -1,18 +1,22 @@
-# OneDrive/SharePoint PowerPoint: programmatic access recipe
+# OneDrive/SharePoint PowerPoint: direct web edits
 
-How to download and edit a PowerPoint file that is shared through a OneDrive or
-SharePoint sharing link, from a headless environment such as a CI runner.
-Validated against a real password-protected OneDrive for Business link.
+How to edit a PowerPoint file that is shared through a OneDrive or SharePoint
+sharing link, from a headless environment such as a CI runner. Validated
+against a real password-protected OneDrive for Business link.
 
 This page is self-contained. Every technique below is given as a runnable
 snippet rather than as a pointer to a script, so nothing here depends on a file
 that lives somewhere else. No secrets appear.
 
-**The short version.** The link password buys a guest `FedAuth` cookie. That
-cookie authorizes the SharePoint REST API for reading, and it also lets a
-headless browser skip the password page and land directly in the Office web
-editor. So: read over REST, write through the browser, and prove every write by
-re-downloading the stored file and parsing it.
+**The whole method is direct web edits.** A headless browser opens the deck in
+PowerPoint for the web and edits it the way a person would, click by click and
+keystroke by keystroke, and autosave merges each change with anyone else who
+has the file open, including a human editing at that moment. The file is never
+written any other way: no upload, no API write, no locally rebuilt copy pushed
+over the original. Two supporting reads make the editing possible. The password
+unlock buys the guest `FedAuth` cookie the browser needs, and a download of the
+stored file is what every edit is planned against beforehand and proved by
+afterwards.
 
 Almost everything on this page was established by probing a live editor, and
 most of it is here because the obvious alternative fails. The failures are
@@ -26,7 +30,7 @@ nothing costs far more than one that raises.
 - [Step 2: find the file's id](#step-2-find-the-files-id)
 - [Step 3: download the stored file](#step-3-download-the-stored-file)
 - [Step 4: read the file offline, and plan against it](#step-4-read-the-file-offline-and-plan-against-it)
-- [The write rule: browser yes, REST no](#the-write-rule-browser-yes-rest-no)
+- [Why there is no other write path](#why-there-is-no-other-write-path)
 - [Booting the web editor](#booting-the-web-editor)
 - [Driving the editor](#driving-the-editor)
 - [Slide operations](#slide-operations)
@@ -53,7 +57,7 @@ Terms used throughout:
 | Sharing link | `https://<tenant>-my.sharepoint.com/:p:/g/personal/<owner>/<share-token>` |
 | Link password | Injected as an environment variable or workflow secret (`ONEDRIVE_EDIT_PASSWORD` below). Never print it |
 | Site base | `https://<tenant>-my.sharepoint.com` |
-| Site path | `/personal/<owner>`, the path segment the REST API hangs off |
+| Site path | `/personal/<owner>`, the path segment the download endpoint hangs off |
 | UniqueId | The file's GUID in the document library, read from the viewer URL after unlock |
 | EMU | English Metric Unit, PowerPoint's internal length. 914,400 to the inch |
 
@@ -69,10 +73,13 @@ indistinguishable by inspection:
 ## Step 1: unlock the link
 
 An anonymous GET of the sharing link returns the `guestaccess.aspx` password
-page, which is a standard ASP.NET form. Submit the password as a postback. On
-success the response redirects to `Doc.aspx` (the PowerPoint web viewer) and the
-cookie jar gains a guest `FedAuth` cookie that authorizes the REST API. A wrong
-password stays on the page with "Link password is incorrect."
+page, which is a standard ASP.NET form, and unlocking is nothing more than
+submitting that form the way the page itself would. On success the response
+redirects to `Doc.aspx` (the PowerPoint web viewer) and the cookie jar gains a
+guest `FedAuth` cookie. That cookie is the credential for everything else on
+this page: the browser presents it to skip the password page, and the download
+below presents it to read the stored file. A wrong password stays on the page
+with "Link password is incorrect."
 
 ```python
 import os, re, html, urllib.request, urllib.parse, http.cookiejar
@@ -133,7 +140,7 @@ def fedauth(share_url):
 
 ## Step 2: find the file's id
 
-The `Doc.aspx` URL carries both halves of the REST address:
+The `Doc.aspx` URL carries both halves of the download address:
 
 ```python
 def doc_info(doc_url):
@@ -166,24 +173,28 @@ def file_meta(op, site_path, unique_id):
 `GetFileByUniqueId` does not exist on this endpoint. Use
 `GetFileById(guid'...')`.
 
+Both calls are GETs, and reading is all this endpoint is ever used for here.
+Nothing on this page POSTs bytes back to it; [Why there is no other write
+path](#why-there-is-no-other-write-path) is about what happens to those who do.
+
 ### Reading the file without the link password
 
 Getting the bytes and authenticating with the sharing-link password are two
 different jobs, and tools tend to conflate them because unlocking the link is
 the one route to the bytes that they happened to write first. A copy pulled
 through a signed-in browser is the same stored blob, so a tool that only needs
-to *read* a file should accept a path on disk as an alternative to a REST
-session. Everything downstream parses the same bytes, so diffs, byte-size media
-checks and slide-count comparisons are unchanged.
+to *read* a file should accept a path on disk as an alternative to unlocking
+and downloading. Everything downstream parses the same bytes, so diffs,
+byte-size media checks and slide-count comparisons are unchanged.
 
 Two limits are real, and are worth enforcing in code rather than leaving to the
 reader:
 
 - **Applying an edit cannot take this route.** Edits go through the live web
   editor, and a file on disk is a copy of the stored blob, not the file.
-- **A freshness guard cannot take this route.** With no REST session there is no
-  `TimeLastModified` to re-read, so a check that compares against it has nothing
-  to compare with.
+- **A freshness guard cannot take this route.** A file on disk carries no
+  `TimeLastModified` to re-read, so a check that compares against the stored
+  file's clock has nothing to compare with.
 
 **A directory is only as current as the moment it was filled.** The
 verify-by-re-download discipline below is unchanged: pull again after an edit,
@@ -231,47 +242,40 @@ told apart by clicking, so the only honest way to remove one is to delete the
 front shape and then confirm from the Selection Pane that the survivor is the
 one you meant to keep.
 
-## The write rule: browser yes, REST no
+## Why there is no other write path
 
-**Edit through the headless browser. Do not write to the file with the REST
-API.** The browser path merges with whoever else has the file open. The REST
-path replaces the file underneath them.
+Everything after this point drives the editor, so it is worth being explicit
+about the alternative this page does not contain. SharePoint will accept an
+upload that replaces the stored file, and automation built around a local
+`.pptx` rebuild plus that upload looks simpler than driving an editor. It is
+also how shared files get damaged, which is why no upload code appears
+anywhere on this page. Three observed reasons:
 
-Three reasons this is a rule rather than a preference:
-
-- REST upload is a **whole-file replace**. It cannot merge, so it discards
+- An upload is a **whole-file replace**. It cannot merge, so it discards
   whatever the owner changed since your download, and it gives no sign that it
   did.
-- It returns **HTTP 423 `SPFileLockException`** ("locked for shared use")
-  whenever anyone has the file open. That is a co-authoring lock rather than a
-  permission failure, and it lingers about 10 minutes after they close. A
-  process that leans on REST therefore stalls or races.
+- It is refused with **HTTP 423 `SPFileLockException`** ("locked for shared
+  use") whenever anyone has the file open. That is a co-authoring lock rather
+  than a permission failure, and it lingers about ten minutes after they close
+  the tab, so an upload-based process stalls or races exactly when a person is
+  most engaged with the file.
 - It forces a `python-pptx` round trip on a file the library did not write.
   Round-tripping a deck built by PowerPoint has silently produced duplicate zip
   part names, which cost the last slide of two decks in one project, and it
   reformats more than you asked it to.
 
-The mechanism, recorded so a 423 in a log is recognizable rather than so it can
-be used:
+The browser has none of these problems. Its changes merge, a live co-author is
+routine rather than a lock error, and the stored bytes are only ever rewritten
+by PowerPoint itself. If old automation code turns up that builds a request
+with an `X-HTTP-Method: PUT` header and an `X-RequestDigest` token, that is
+the replace-upload, and the right port of it is deletion.
 
-```python
-# NOT a fallback. Here to explain failures you will see while reading metadata.
-digest = json.loads(op.open(urllib.request.Request(
-    BASE + site_path + "/_api/contextinfo", data=b"",
-    headers={"Accept": "application/json"})).read())["FormDigestValue"]
-req = urllib.request.Request(
-    BASE + site_path + "/_api/web/GetFileById(guid'%s')/$value" % unique_id,
-    data=new_pptx_bytes, method="POST",
-    headers={"X-HTTP-Method": "PUT", "X-RequestDigest": digest})
-op.open(req)                                    # 423 while anyone has it open
-```
-
-If you have built a `.pptx` locally that the web editor genuinely cannot produce
-(see [What genuinely cannot be done
-here](#what-genuinely-cannot-be-done-here)), say where the file is and let the
-file's owner open it in desktop PowerPoint. That list is much shorter than it
-looks, and three entries that used to be on it turned out to be assumptions
-nobody had probed.
+If you have built a `.pptx` locally because the web editor genuinely cannot
+produce what you need (see [What genuinely cannot be done
+here](#what-genuinely-cannot-be-done-here)), the answer is still not an upload.
+Say where the file is and let the file's owner open it in desktop PowerPoint.
+That list is much shorter than it looks, and three entries that used to be on
+it turned out to be assumptions nobody had probed.
 
 ## Booting the web editor
 
@@ -966,8 +970,8 @@ Upload, then delete, then place. The order is the whole design:
 ## Precision drawing
 
 Validated by building a multi-shape diagram slide entirely in the web editor
-while the file's owner was editing live, with the REST upload path 423-locked
-the whole time.
+while the file's owner was editing live, the exact situation in which only a
+merging write path can work at all.
 
 - **Exact sizes**: the contextual **Shape** ribbon tab has numeric Width and
   Height fields. Triple-click the field, type `0.34"`, press Enter. Verify it
@@ -1023,12 +1027,13 @@ so a reader does not have to take that on trust.
 | Trust the "Saved" indicator's text | Its `innerText` is empty. The state is in its `aria-label`. |
 | Confirm a slide operation by the slide count | A delete that removed the wrong slide leaves the count correct and the file wrong. |
 | Load the view link and edit | Opens read-only and swallows every change without raising. |
+| Rebuild the deck locally, upload it over the stored file | The one trap that lives outside the editor. A whole-file replace: it discards concurrent edits, is refused with HTTP 423 while anyone has the file open, and the rebuild itself has eaten slides. [Why there is no other write path](#why-there-is-no-other-write-path). |
 
 ## Verifying persistence
 
 **Re-download the stored file and parse it.** Do not trust the editor's "Saved"
-indicator, an apparently successful upload, or the thumbnail rail. One run
-believed an upload had landed when it had not.
+indicator, an apparently successful media upload, or the thumbnail rail. One
+run believed a change had landed when it had not.
 
 Wait one to two minutes after the edit before pulling, because SharePoint does
 not publish the co-authoring save the instant the editor says it is done. Then
