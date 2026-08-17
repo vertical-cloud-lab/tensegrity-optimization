@@ -78,8 +78,8 @@ sel = (tm > -0.3) & (tm < 2.2)
 ax1.plot(tm[sel], base1000[sel], color=BLUE, lw=2.0, label="bottom sensor", zorder=3)
 ax1.plot(tm[sel], top1000[sel], color=ORANGE, lw=2.0, label="top sensor", zorder=2)
 ax1.set_xlabel("thousandths of a second (ms)\nafter the plate lands")
-ax1.set_ylabel("acceleration (G — multiples of gravity)")
-ax1.set_title("Part 1 — the jolt (first 2 ms)", fontsize=16, color=INK, pad=8)
+ax1.set_ylabel("acceleration (G, multiples of gravity)")
+ax1.set_title("Part 1: the jolt (first 2 ms)", fontsize=16, color=INK, pad=8)
 ax1.grid(axis="y", color="#e6e4de", lw=0.8, zorder=0)
 ax1.set_ylim(-350, np.max(top1000) * 1.38)
 ax1.axhline(0, color=INK2, lw=0.8)
@@ -109,16 +109,16 @@ env = np.array(env)
 ax2.plot(env_t, env, color=INK2, lw=1.6, ls=(0, (4, 3)))
 ax2.plot(env_t, -env, color=INK2, lw=1.6, ls=(0, (4, 3)))
 ax2.set_xlabel("thousandths of a second (ms) after the plate lands")
-ax2.set_title("Part 2 — the ringing (the next 16 ms, top sensor)", fontsize=16, color=INK, pad=8)
+ax2.set_title("Part 2: the ringing (the next 16 ms, top sensor)", fontsize=16, color=INK, pad=8)
 ax2.grid(axis="y", color="#e6e4de", lw=0.8, zorder=0)
 ax2.set_ylim(-np.max(env) * 1.15, np.max(env) * 1.55)
 ax2.axhline(0, color=INK2, lw=0.8)
-ax2.annotate("the structure keeps vibrating — like a struck bell\n(about 560 wobbles per second)",
+ax2.annotate("the structure keeps vibrating, like a struck bell\n(about 560 wobbles per second)",
              xy=(5.3, env[7]), xycoords="data",
              xytext=(0.16, 0.965), textcoords="axes fraction",
              color=INK, fontsize=13.5, ha="left", va="top",
              arrowprops=dict(arrowstyle="-", color=INK2, lw=1.2, relpos=(0.15, 0.0)))
-ax2.annotate("the fade-out is the structure soaking up the\nshaking energy — a faster fade means\na better shock absorber",
+ax2.annotate("the fade-out is the structure soaking up the\nshaking energy: a faster fade means\na better shock absorber",
              xy=(13.2, -env[-11] * 1.15), xycoords="data",
              xytext=(0.985, 0.04), textcoords="axes fraction",
              color=INK, fontsize=13.5, ha="right", va="bottom",
@@ -145,7 +145,7 @@ ax1.set_title("Why every lab smooths shock recordings", fontsize=16, color=INK, 
 ax1.grid(axis="y", color="#e6e4de", lw=0.8, zorder=0)
 ax1.set_ylim(-2100, 6300)
 ax1.axhline(0, color=INK2, lw=0.8)
-ax1.annotate("raw trace: dominated by super-fast wiggles of\nthe metal parts and the sensor itself (spikes\npast 5,000 G) — not the structure\'s motion",
+ax1.annotate("raw trace: dominated by super-fast wiggles of\nthe metal parts and the sensor itself (spikes\npast 5,000 G), not the structure\'s motion",
              xy=(0.42, 4400), xycoords="data",
              xytext=(0.99, 0.72), textcoords="axes fraction",
              color=INK2, fontsize=13, ha="right", va="top",
