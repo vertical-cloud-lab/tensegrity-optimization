@@ -59,6 +59,13 @@ pdflatex proposal
 - **References** — (does not count toward page limit)
 - **Bio Sketches** — Hill & Baird (does not count toward page limit)
 
+## Hands-on / fabrication resources
+
+- [`reviews/tensegrity-build-kits.md`](reviews/tensegrity-build-kits.md) —
+  recommended commercial kits and a DIY bill-of-materials for hand-assembling
+  tensegrity models (icosahedron 6-bar, prism, Snelson X-module, etc.) as a
+  fast complement to the multi-material 3D-printing workflow.
+
 ## TODO
 
 - [ ] Add figures (tensegrity schematic, BO loop diagram, test setup)
