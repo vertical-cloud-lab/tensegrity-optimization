@@ -42,6 +42,7 @@ Two caveats:
 | [22](#22-24-the-two-data-slides-for-claude) | Rewrite the two data-slide titles (current ones "read like AI slop") | Claude | 58:26 |
 | [23](#22-24-the-two-data-slides-for-claude) | Cut the information density of those two slides | Claude | 58:46 |
 | [24](#22-24-the-two-data-slides-for-claude) | Attenuation slide: plot filtered data, not the raw comparison | Claude | 59:00 |
+| [24b](#22-24-the-two-data-slides-for-claude) | Axis labels: never "thousandths of a second (ms)"; write "time (ms)" | Claude | PR comment, 2026-08-18 |
 | [25](#25-speaker-notes-need-curation) | Curate speaker notes; Marcus to find his own voice | Marcus | 56:56 |
 
 Everything else below was **resolved live during the recording** and is
@@ -493,15 +494,21 @@ test setup. The photo's red arrows mark the sensor positions.
 Sterling, wrapping up: "I might stop here and just end with these two slides,
 like, for Claude." The slides are **"Each drop tells a two-part story: the jolt
 going in, and the ringing that follows."** and **"Every recording gets the same
-standard treatment, and each drop boils down to one score."** Three specific
-criticisms:
+standard treatment, and each drop boils down to one score."** Four specific
+fixes:
 
 1. **"First off, the titles read like AI slop."** Rewrite both as plain message
    titles a person would say out loud.
 2. **"The two slides here are incredibly information-dense and not easily
    parsable. There's just too much on these."** Cut annotation layers and text;
    one message per slide.
-3. The third slide, attenuation ("The data we obtain helps us understand how
+3. From Sterling's [follow-up PR comment](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/84#issuecomment-5334026194)
+   minutes after this task started: "don't use 'thousandths of a second (ms)'.
+   Ridiculous." Both plots label their time axes "thousandths of a second (ms)
+   after the plate lands"; the over-explained unit has to go. "time (ms) after
+   the plate lands", or just "time (ms)", is enough. Sweep the deck and the
+   plotting scripts for the same phrasing before regenerating these figures.
+4. The third slide, attenuation ("The data we obtain helps us understand how
    each structure attenuates a shock..."): "you have to look at it for a little
    while and it doesn't really say much, to me at least." Marcus: it was pulled
    in earlier just to have some data on there. Sterling: use "one that's already
