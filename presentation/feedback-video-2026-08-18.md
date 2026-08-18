@@ -29,24 +29,77 @@ Two caveats:
 
 ## Open action items (quick list)
 
-| # | Item | Owner | Detail |
-|---|---|---|---|
-| [2](#2-note-to-claude-check-the-title-against-the-symposium) | Check the final title against the symposium/session the abstract was submitted to, for audience fit | Claude | 05:23, 09:04 |
-| [5](#5-the-concept-video-is-titan-not-mars) | Speaker note clarifying the concept video is a Titan mission, not Mars | Marcus/Claude | 10:35 |
-| [6](#6-credit-everything-in-the-speaker-notes) | Source link in speaker notes for every borrowed asset; missing for the planetary-lander video | Marcus/Claude | 11:49 |
-| [7](#7-titan-video-trim-and-title) | Trim the Titan video to just the fall; decide on removing the on-slide title | Marcus | pre-existing note, discussed 05:56 |
-| [9](#9-anatomy-slide-get-our-own-model) | Replace the Wikipedia tensegrity model with a photo/render of our own | Marcus | 13:58 |
-| [11](#11-unique-properties-slide-what-to-show) | Decide the visual for the hidden "unique properties" slide (throw video vs. no-grinding-flexure vs. impact) | Marcus + Sterling | 19:08 |
-| [12](#12-assembly-slide-keep-one-video) | Keep one assembly video, not two in sequence; play-once, silent, timelapsed | Marcus | 21:29 |
-| [16](#16-prior-work-slide-say-the-gap-out-loud) | Marcus to read the Pajunen paper and the Filipe material closely enough to present them correctly | Marcus | 32:14 |
-| [22](#22-24-the-two-data-slides-for-claude) | Rewrite the two data-slide titles (current ones "read like AI slop") | Claude | 58:26 |
-| [23](#22-24-the-two-data-slides-for-claude) | Cut the information density of those two slides | Claude | 58:46 |
-| [24](#22-24-the-two-data-slides-for-claude) | Attenuation slide: plot filtered data, not the raw comparison | Claude | 59:00 |
-| [24b](#22-24-the-two-data-slides-for-claude) | Axis labels: never "thousandths of a second (ms)"; write "time (ms)" | Claude | PR comment, 2026-08-18 |
-| [25](#25-speaker-notes-need-curation) | Curate speaker notes; Marcus to find his own voice | Marcus | 56:56 |
+Status column updated 2026-08-18 (evening) after the Claude-owned items were
+applied to `idetc-2026.pptx` through the web editor and verified against the
+re-downloaded stored file. Details of what changed are in
+[Implementation update](#implementation-update-2026-08-18) below.
+
+| # | Item | Owner | Detail | Status |
+|---|---|---|---|---|
+| [2](#2-note-to-claude-check-the-title-against-the-symposium) | Check the final title against the symposium/session the abstract was submitted to, for audience fit | Claude | 05:23, 09:04 | Done; verdict below |
+| [5](#5-the-concept-video-is-titan-not-mars) | Speaker note clarifying the concept video is a Titan mission, not Mars | Marcus/Claude | 10:35 | Done |
+| [6](#6-credit-everything-in-the-speaker-notes) | Source link in speaker notes for every borrowed asset; missing for the planetary-lander video | Marcus/Claude | 11:49 | Done; one TODO left (side-table photo source) |
+| [7](#7-titan-video-trim-and-title) | Trim the Titan video to just the fall; decide on removing the on-slide title | Marcus | pre-existing note, discussed 05:56 | Done (trimmed 20 s clip swapped in; slide has no title) |
+| [9](#9-anatomy-slide-get-our-own-model) | Replace the Wikipedia tensegrity model with a photo/render of our own | Marcus | 13:58 | Open |
+| [11](#11-unique-properties-slide-what-to-show) | Decide the visual for the hidden "unique properties" slide (throw video vs. no-grinding-flexure vs. impact) | Marcus + Sterling | 19:08 | Open |
+| [12](#12-assembly-slide-keep-one-video) | Keep one assembly video, not two in sequence; play-once, silent, timelapsed | Marcus | 21:29 | Open |
+| [16](#16-prior-work-slide-say-the-gap-out-loud) | Marcus to read the Pajunen paper and the Filipe material closely enough to present them correctly | Marcus | 32:14 | Open |
+| [22](#22-24-the-two-data-slides-for-claude) | Rewrite the two data-slide titles (current ones "read like AI slop") | Claude | 58:26 | Done |
+| [23](#22-24-the-two-data-slides-for-claude) | Cut the information density of those two slides | Claude | 58:46 | Done |
+| [24](#22-24-the-two-data-slides-for-claude) | Attenuation slide: plot filtered data, not the raw comparison | Claude | 59:00 | Done |
+| [24b](#22-24-the-two-data-slides-for-claude) | Axis labels: never "thousandths of a second (ms)"; write "time (ms)" | Claude | PR comment, 2026-08-18 | Done |
+| [25](#25-speaker-notes-need-curation) | Curate speaker notes; Marcus to find his own voice | Marcus | 56:56 | Open |
 
 Everything else below was **resolved live during the recording** and is
 documented so the next editor knows what changed and why.
+
+## Implementation update (2026-08-18)
+
+Applied to `idetc-2026.pptx` via the Office web editor (co-authoring, so the
+edits merged with the live session) and verified by re-downloading the stored
+file:
+
+- **Item 2, title vs. symposium.** The abstract was submitted to Track
+  **DAC-10: Design of Engineering Materials and Structures** (see
+  [idetc-cie-2026-tracks-topics.csv](../idetc-cie-2026-tracks-topics.csv) and
+  the header of [idetc-abstract.tex](../idetc-abstract.tex)). Its invited
+  topics include data-driven design of materials and structures, machine
+  learning methods, integrated design of products, fabrication processes, and
+  materials, and new experimental techniques that support design. The new
+  title ("Discovering multi-material, tensegrity-inspired energy absorbers via
+  closed-loop Bayesian optimization") fits that list well. Two small flags:
+  the title dropped "3D-printed", which the submitted abstract title contains
+  and which speaks directly to the process-integration topic, so consider
+  restoring it if the program prints both side by side. And the session
+  description leads with modeling and simulation, so expect a
+  simulation-minded audience; that shapes Q&A prep more than the title.
+- **Items 22/23/24/24b, the data slides.** Titles are now "We measure the
+  jolt that reaches the top and how quickly the ringing fades" (both copies of
+  the two-part-story slide) and "Every recording goes through the same
+  crash-test filter (SAE J211)". All three figures were regenerated from the
+  committed 60 in validation campaigns (specimens 7xadt6 and 9GMQYQ, channel
+  map per the PR #86 branch docs: CH5 = base-plate input, CH2/CH3/CH4 =
+  top-vertex tri-axis) by
+  [regen_data_slide_figures.py](regen_data_slide_figures.py), with the
+  annotation layers cut to a legend and a one-line caption, and every time
+  axis labeled "time (ms) after the plate lands". The attenuation slide now
+  shows CFC-filtered traces for two specimens under identical conditions
+  instead of the raw two-sensor dump. Note for the next editor: the
+  two-part-story slide exists **twice** (slides 16 and 17, identical after
+  this pass); one of them should eventually be deleted.
+- **Items 5/6/7, the opening videos.** The lander slide's video was replaced
+  with the trimmed 20 s fall clip
+  ([media/clip-titan-descent.mp4](media/clip-titan-descent.mp4), byte-exact
+  upload), placed full-bleed. Its speaker note now carries the NASA source
+  link, the Titan-not-Mars clarification, and the hook narration. Source
+  links were added to the speaker notes of every borrowed asset found in the
+  deck audit: the hook-slide media (Tandem Second Spine, NASA Super Ball Bot
+  poster), the Steve Mould 2D clip, both TensoLogic assembly videos, the
+  Pajunen figure, the Filipe photos (permission noted, no public link), the
+  Baird & Sparks Matter (2022) BO figures, and the future-applications images
+  (Al Sabouni-Zawadzka et al. 2025, Gu et al. 2026). One TODO remains: the
+  tensegrity side-table photo on the hook slide has no identified original
+  source yet.
 
 ---
 
