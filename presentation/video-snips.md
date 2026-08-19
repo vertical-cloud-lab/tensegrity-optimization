@@ -44,6 +44,18 @@ He reaches the phrase "planetary landers" verbatim at 24.5–31 s of the same sn
 ("we're using those to build robots or planetary landers that can land on another
 planet"), which is the longer cut to use if the tighter one feels too abrupt.
 
+## Clips embedded in idetc-2026.pptx (the OneDrive deck)
+
+| Deck clip | Source | Length | Where |
+|---|---|---|---|
+| `media/clip-tensologic-fold-release.mp4` (4.2 MB) | [Super Ball Bot-style Tensegrity structure (tensologic), folding together and releasing](https://www.youtube.com/watch?v=y8KjBRH4Wis), BYU Vertical Cloud Lab, uploaded 2026-08-19 | 0:11, 1080p, 30 fps | Slide 5 (its own slide, right after the hook), inserted 2026-08-19 via the web editor |
+
+The clip is our own footage (Marcus in the lab folding a TensoLogic Super Ball
+Bot-style structure flat and letting it spring back), so no external
+attribution is needed; the source link lives in the slide's speaker notes. The
+video is used whole. It was downloaded through the Pi because YouTube blocks
+the Actions runner.
+
 ## Source video descriptions (for slide captions / attribution)
 
 - **NASA 360 Talks – Super Ball Bot** — "Could the next planetary rover be a
