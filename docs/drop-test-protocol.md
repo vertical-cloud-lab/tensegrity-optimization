@@ -26,6 +26,17 @@ The training walkthrough is captured on video:
 | Specimen cage | Two acrylic plates + four 18 in threaded rods + nuts (built in the Prototyping Lab by @me-madsen and @ctrhjk). Holds the top plate over the specimen and constrains its motion after impact. |
 | Slow-motion camera | Phone slow-mo is acceptable for preliminary results; high-speed camera can be checked out from PSC for higher-fidelity tests. |
 
+**Canonical DAQ settings record:** the TP4 Recording Setup / Analog
+Channels screen as re-entered after the 08-18-2026 settings reset is
+committed at
+[`data/drop-tests/calibration-check/tp4-settings-2026-08-18.jpg`](../data/drop-tests/calibration-check/tp4-settings-2026-08-18.jpg)
+(CH2–CH5 sensitivities 0.690 / 0.667 / 0.734 / 1.059 mV/G, 150 G trigger
+on CH5, 100 ms / 1.25 MHz / 2 % pre-trigger) and was verified
+empirically against pre-reset data in
+[`drop-test-calibration-check-analysis.md`](drop-test-calibration-check-analysis.md).
+Re-photograph this screen whenever settings change. Sensor
+make/model/serials and factory calibration sheets are still unrecorded.
+
 ## 2. Quantities of interest
 
 Per the proposal and Edison literature synthesis (see
