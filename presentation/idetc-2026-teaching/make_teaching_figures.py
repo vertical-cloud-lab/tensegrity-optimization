@@ -73,28 +73,21 @@ fig, (ax1, ax2) = plt.subplots(
     1, 2, figsize=(12.4, 5.6), dpi=200, gridspec_kw={"width_ratios": [1, 1.45]}
 )
 fig.subplots_adjust(left=0.075, right=0.985, top=0.90, bottom=0.21, wspace=0.18)
+# this figure gets annotated live on the slide, so: pure white background,
+# short axis labels, and no in-panel callout text (the curve area stays clear)
+fig.set_facecolor("#ffffff")
+for ax in (ax1, ax2):
+    ax.set_facecolor("#ffffff")
 
 sel = (tm > -0.3) & (tm < 2.2)
 ax1.plot(tm[sel], base1000[sel], color=BLUE, lw=2.0, label="bottom sensor", zorder=3)
 ax1.plot(tm[sel], top1000[sel], color=ORANGE, lw=2.0, label="top sensor", zorder=2)
-ax1.set_xlabel("thousandths of a second (ms)\nafter the plate lands")
-ax1.set_ylabel("acceleration (G, multiples of gravity)")
+ax1.set_xlabel("time (ms)")
+ax1.set_ylabel("acceleration (G)")
 ax1.set_title("Part 1: the jolt (first 2 ms)", fontsize=16, color=INK, pad=8)
 ax1.grid(axis="y", color="#e6e4de", lw=0.8, zorder=0)
 ax1.set_ylim(-350, np.max(top1000) * 1.38)
 ax1.axhline(0, color=INK2, lw=0.8)
-imax2 = np.argmax(top1000)
-ax1.annotate("what arrives\nat the top",
-             xy=(tm[imax2] + 0.04, top1000[imax2] * 1.0), xycoords="data",
-             xytext=(0.52, 0.74), textcoords="axes fraction",
-             color=ORANGE, fontsize=13.5, fontweight="bold", ha="left", va="top",
-             arrowprops=dict(arrowstyle="-", color=ORANGE, lw=1.2))
-imax = np.argmax(np.abs(base1000))
-ax1.annotate("the jolt going in\n(bottom of the structure)",
-             xy=(tm[imax] - 0.05, base1000[imax] * 0.92), xycoords="data",
-             xytext=(0.40, 0.47), textcoords="axes fraction",
-             color=BLUE, fontsize=13.5, fontweight="bold", ha="left", va="top",
-             arrowprops=dict(arrowstyle="-", color=BLUE, lw=1.2, relpos=(0.0, 0.8)))
 
 sel2 = (tm > 1.5) & (tm < 18.5)
 ax2.plot(tm[sel2], ring[sel2], color=ORANGE, lw=1.0)
@@ -108,7 +101,7 @@ for b0 in bins:
 env = np.array(env)
 ax2.plot(env_t, env, color=INK2, lw=1.6, ls=(0, (4, 3)))
 ax2.plot(env_t, -env, color=INK2, lw=1.6, ls=(0, (4, 3)))
-ax2.set_xlabel("thousandths of a second (ms) after the plate lands")
+ax2.set_xlabel("time (ms)")
 ax2.set_title("Part 2: the ringing (the next 16 ms, top sensor)", fontsize=16, color=INK, pad=8)
 ax2.grid(axis="y", color="#e6e4de", lw=0.8, zorder=0)
 ax2.set_ylim(-np.max(env) * 1.15, np.max(env) * 1.55)
@@ -127,7 +120,7 @@ ax1.legend(loc="upper right", frameon=False, fontsize=12.5)
 fig.text(0.075, 0.015,
          "One real drop from this project (July 28 session, 60-inch drop). Both traces lightly smoothed for display; 1 G = the pull of gravity.",
          color=INK2, fontsize=11.5)
-fig.savefig(HERE / "fig1_one_drop_two_parts.png")
+fig.savefig(HERE / "fig1_one_drop_two_parts.png", facecolor="#ffffff")
 plt.close(fig)
 
 # ---------------------------------------------------------------- figure 2
