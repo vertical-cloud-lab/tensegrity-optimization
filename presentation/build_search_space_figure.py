@@ -113,20 +113,28 @@ def members(params):
 
 
 def draw_structure(ax, params, ppmm):
-    """Depth-sorted round-capped segments; ppmm = display points per mm."""
+    """Depth-sorted round-capped segments; ppmm = display points per mm.
+
+    Segments sort by the depth of their front *surface* (centerline depth
+    plus radius), not the centerline alone. With centerline sorting, a
+    thin cable whose centerline sits marginally in front of a thick strut
+    was drawn over it even though the strut's surface bulges past the
+    cable, which read as the orange tendons slipping through the black
+    struts (PR #84, me-madsen, 2026-08-20).
+    """
     segs = []
     for p0, p1, d_mm, color in members(params):
         if p0 == p1:  # joint sphere: zero-length round-capped line
             u, v, dep = project(p0)
-            segs.append((dep, [u, u], [v, v], d_mm, color))
+            segs.append((dep + d_mm / 2, [u, u], [v, v], d_mm, color))
             continue
-        n = 24
+        n = 48
         pts = [tuple(a + (b - a) * t / n for a, b in zip(p0, p1))
                for t in range(n + 1)]
         proj = [project(p) for p in pts]
         for a, b in zip(proj[:-1], proj[1:]):
-            segs.append(((a[2] + b[2]) / 2, [a[0], b[0]], [a[1], b[1]],
-                         d_mm, color))
+            segs.append(((a[2] + b[2]) / 2 + d_mm / 2,
+                         [a[0], b[0]], [a[1], b[1]], d_mm, color))
     segs.sort(key=lambda s: s[0])  # far first
     for _, us, vs, d_mm, color in segs:
         ax.plot(us, vs, color=color, linewidth=d_mm * ppmm,
