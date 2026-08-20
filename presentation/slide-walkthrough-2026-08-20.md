@@ -180,9 +180,13 @@ and closer to 0 is better. Notes: (1) vibration textbooks define
 transmissibility for steady sinusoidal input as the ratio of response
 amplitude to input amplitude, and the peak-ratio version used for a single
 shock is often called shock transmissibility, so it is worth saying
-"peak-to-peak-ratio" explicitly on stage; (2) our pipeline computes exactly
-this peak ratio on SAE J211 CFC-filtered signals, with CH5 as the bottom
-input sensor and CH4 as the top vertical channel, see
+"peak-to-peak-ratio" explicitly on stage; (2) verified against the
+campaign analysis code (`drop_test_60in_5felts_analysis.py` on the PR #86
+branch): the pipeline computes exactly this peak ratio on SAE J211
+CFC-180-filtered signals, T = peak top / peak CH5, where the top value is
+the magnitude of the top sensor's three axes combined (CH2/CH3/CH4), not
+the vertical channel alone, and each peak is the largest excursion within
+1.5 ms of impact, so the two peaks need not be simultaneous. See also
 [`regen_data_slide_figures.py`](regen_data_slide_figures.py) and
 [`issue-94-analysis-slides.md`](issue-94-analysis-slides.md). For a
 textbook treatment: S. S. Rao, *Mechanical Vibrations* (transmissibility

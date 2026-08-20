@@ -24,18 +24,22 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.signal import butter, filtfilt
+from scipy.signal import filtfilt
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+import build_search_space_figure as ssf
 
 # Colors: EMC-adjacent blue/orange, adjusted to pass the palette validator
 # (chroma floor and 3:1 surface contrast) while staying near the deck theme.
 BLUE = "#1878B8"    # bottom (input) sensor, CH5
 ORANGE = "#D96A24"  # top-vertex sensor, CH4 vertical / CH2 lateral
 GRAY = "#9a9a9a"    # raw recording
+GUIDE_GRAY = "#8c8c8c"  # schematic leader lines
 INK = "#333333"
+INK2 = "#595959"
 MUTED = "#707070"
 
 plt.rcParams.update({
@@ -77,10 +81,29 @@ def load_tp4(source):
 
 
 def cfc(x, fs, cls):
-    """SAE J211-1 channel-class filter: 2-pole Butterworth, run forward and
-    backward (phaseless), corner at 1.65x the class number in Hz."""
-    b, a = butter(2, cls * 1.65 / (fs / 2))
-    return filtfilt(b, a, x)
+    """SAE J211-1 Appendix C channel-class filter: the standard's 2-pole
+    coefficients (single-pass corner at 2.0775x the class number), run
+    forward and backward (phaseless) so the double pass lands at the
+    class's -3 dB point. A plain Butterworth at 1.65x the class and then
+    filtfilt ends up about 20 percent narrow (the issue #94 finding)."""
+    wa = np.tan(np.pi * cls * 2.0775 / fs)
+    den = 1.0 + np.sqrt(2.0) * wa + wa * wa
+    a0 = wa * wa / den
+    b1 = -2.0 * (wa * wa - 1.0) / den
+    b2 = (-1.0 + np.sqrt(2.0) * wa - wa * wa) / den
+    return filtfilt(np.array([a0, 2.0 * a0, a0]),
+                    np.array([1.0, -b1, -b2]), x)
+
+
+def windowed_peak(tm, x, half_ms=1.5):
+    """|peak| within +/-1.5 ms of the largest excursion, as the campaign
+    analysis does (drop_test_60in_5felts_analysis.py windowed_peak);
+    returns (peak_abs, t_peak_ms, signed value at the peak)."""
+    i_imp = int(np.argmax(np.abs(x)))
+    m = np.abs(tm - tm[i_imp]) <= half_ms
+    seg, seg_t = x[m], tm[m]
+    j = int(np.argmax(np.abs(seg)))
+    return abs(seg[j]), seg_t[j], seg[j]
 
 
 def contact_time(t, input_filtered, frac=0.2):
@@ -90,7 +113,8 @@ def contact_time(t, input_filtered, frac=0.2):
 
 
 def caption(fig, text):
-    fig.text(0.5, 0.014, text, ha="center", fontsize=16, color=MUTED)
+    fig.text(0.5, 0.014, text, ha="center", va="bottom", fontsize=16,
+             color=MUTED)
 
 
 def rel_ms(t, ch, fs):
@@ -109,7 +133,7 @@ def fig_jolt_and_ringing(t, ch, fs, out):
     m = (tm > -0.3) & (tm < 2.0)
     ax1.plot(tm[m], bottom[m], color=BLUE, lw=2.5, label="bottom sensor")
     ax1.plot(tm[m], top_z[m], color=ORANGE, lw=2.5, label="top sensor")
-    ax1.set_title("The jolt (first 2 ms)")
+    # Panel deliberately untitled (me-madsen, PR #84, 2026-08-20).
     ax1.set_xlabel("time (ms) after the plate lands")
     ax1.set_ylabel("acceleration (G)")
     ax1.legend(frameon=False)
@@ -153,24 +177,102 @@ def fig_standard_filter(t, ch, fs, out):
     plt.close(fig)
 
 
+def draw_sensor_schematic(ax, fig):
+    """Left panel: where the two sensors sit on the drop stack (mid-range
+    T3 prism from the search-space figure, so the styles match)."""
+    params = dict(ssf.MID)
+    cu, cv = ssf.struct_center(params)
+    # Extra room below the structure for the base plate and impact arrow.
+    ppmm = ssf.setup_axes(ax, fig, (cu, cv - 16.0), 128.0, 168.0)
+    ssf.draw_structure(ax, params, ppmm)
+
+    bot, top = ssf.nodes(params)
+    v_bot = min(ssf.project(p)[1] for p in bot)
+    plate_top = v_bot - 6.0
+    ax.add_patch(plt.Rectangle((cu - 46.0, plate_top - 8.0), 92.0, 8.0,
+                               facecolor="#b8b8b8", edgecolor="none", zorder=2))
+
+    # Sensor dots: blue input sensor on the base plate, orange tri-axis
+    # sensor at a top vertex (the nearest one, so the dot reads in front).
+    u_top, v_top, _ = max((ssf.project(p) for p in top), key=lambda q: q[2])
+    v_rim = max(ssf.project(p)[1] for p in top)
+    for (u, v, color) in [(cu - 36.0, plate_top - 4.0, BLUE),
+                          (u_top, v_top, ORANGE)]:
+        ax.plot([u], [v], marker="o", ms=13, color=color,
+                markeredgecolor="white", markeredgewidth=2, zorder=6)
+    ax.text(cu - 36.0, plate_top - 16.0, "bottom sensor\n(input)",
+            ha="center", va="top", fontsize=18, color=INK)
+    ax.annotate("top sensor", xy=(u_top, v_top + 4.0),
+                xytext=(u_top, v_rim + 13.0), ha="center", va="bottom",
+                fontsize=18, color=INK, zorder=6,
+                arrowprops=dict(arrowstyle="-", lw=1.4, color=GUIDE_GRAY,
+                                shrinkA=2, shrinkB=6))
+
+    ax.annotate("", xy=(cu + 30.0, plate_top - 10.0),
+                xytext=(cu + 30.0, plate_top - 30.0),
+                arrowprops=dict(arrowstyle="-|>", lw=3.5, color=INK2,
+                                mutation_scale=28), zorder=6)
+    ax.text(cu + 30.0, plate_top - 36.0, "impact", ha="center", va="top",
+            fontsize=18, color=INK2)
+
+
 def fig_attenuation(drops, out):
-    """Slide 19: filtered traces for two specimens under the same conditions."""
-    fig, axes = plt.subplots(1, 2, figsize=(12.0, 6.0), dpi=200, sharey=True)
+    """The attenuation slide: same drop conditions for two specimens, peak
+    markers on both sensors, and the metric the campaign computes,
+    T = peak top acceleration / peak bottom acceleration
+    (drop_test_60in_5felts_analysis.py: t_ch5 = top CFC-180 tri-axis
+    resultant peak / CH5 CFC-180 peak, each within +/-1.5 ms of impact)."""
+    fig = plt.figure(figsize=(13.2, 7.0), dpi=200)
+    gs = fig.add_gridspec(1, 3, width_ratios=[0.92, 1.5, 1.5],
+                          left=0.045, right=0.985, top=0.875, bottom=0.245,
+                          wspace=0.24)
+    ax_s = fig.add_subplot(gs[0])
+    draw_sensor_schematic(ax_s, fig)
+
+    axes = [fig.add_subplot(gs[1])]
+    axes.append(fig.add_subplot(gs[2], sharey=axes[0]))
     for ax, (label, (t, ch, fs)) in zip(axes, drops.items()):
-        bottom = cfc(ch["CH5"], fs, 1000)
-        top_z = cfc(ch["CH4"], fs, 1000)
+        bottom = cfc(ch["CH5"], fs, 180)
+        top = np.sqrt(sum(cfc(ch[c], fs, 180) ** 2
+                          for c in ("CH2", "CH3", "CH4")))
         tm = rel_ms(t, ch, fs)
-        m = (tm > -1) & (tm < 20)
-        ax.plot(tm[m], bottom[m], color=BLUE, lw=1.8, label="bottom sensor")
-        ax.plot(tm[m], top_z[m], color=ORANGE, lw=1.8, label="top sensor")
-        ax.set_title(label)
-        ax.set_xlabel("time (ms) after the plate lands")
+        m = (tm > -1) & (tm < 8)
+        ax.plot(tm[m], bottom[m], color=BLUE, lw=2.2, label="bottom sensor")
+        ax.plot(tm[m], top[m], color=ORANGE, lw=2.2, label="top sensor")
+        ax.set_title(label, fontsize=20, color=MUTED, loc="left", pad=10)
         ax.axhline(0, color="#bbbbbb", lw=1)
+
+        pk_b, t_b, y_b = windowed_peak(tm[m], bottom[m])
+        pk_t, t_t, y_t = windowed_peak(tm[m], top[m])
+        for t_pk, y_pk, pk, color, name, dy in [
+                (t_t, y_t, pk_t, ORANGE, "top", 60.0),
+                (t_b, y_b, pk_b, BLUE, "bottom", -60.0)]:
+            ax.plot([t_pk], [y_pk], marker="o", ms=9, color=color,
+                    markeredgecolor="white", markeredgewidth=1.5, zorder=5)
+            ax.plot([t_pk, 7.8], [y_pk, y_pk], ls=(0, (4, 3)), lw=1.4,
+                    color=color, zorder=4)
+            ax.text(7.7, y_pk + dy,
+                    rf"$\hat{{a}}_\mathrm{{{name}}}$ = {pk:.0f} G",
+                    ha="right", va="center", fontsize=19, color=INK)
+        ax.text(3.5, 880.0,
+                rf"$T = \hat{{a}}_\mathrm{{top}} \,/\, "
+                rf"\hat{{a}}_\mathrm{{bottom}}$ = {pk_t / pk_b:.2f}",
+                ha="center", va="top", fontsize=21, color=INK)
+        ax.set_ylim(-170, 900)
+
     axes[0].set_ylabel("acceleration (G)")
-    axes[0].legend(frameon=False, loc="upper right")
-    caption(fig, "Two printed specimens, 60 in onto the same felt stack, same "
-                 "day; SAE J211 CFC-1000 filter.")
-    fig.tight_layout(rect=(0, 0.045, 1, 1))
+    plt.setp(axes[1].get_yticklabels(), visible=False)
+    fig.text(0.63, 0.145, "time (ms) after the plate lands", ha="center",
+             fontsize=23, color=INK)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, ncol=2, frameon=False, loc="upper center",
+               bbox_to_anchor=(0.63, 1.005))
+    caption(fig, "Two printed specimens, 60 in onto the same felt stack, "
+                 "same day; SAE J211 CFC-180 filter,\n"
+                 "the class the campaign metric uses. The top trace combines "
+                 "the top sensor's three axes;\n"
+                 "peaks are the largest excursion within 1.5 ms of impact. "
+                 "T > 1 amplified, T < 1 attenuated.")
     fig.savefig(out)
     plt.close(fig)
 
