@@ -16,6 +16,11 @@ cuboctahedron metamaterials) are rendered in
 
 ![Extended preview of additional tensegrity design families](../figures/tensegrity_models_extended_preview.png)
 
+A shaded, text-free version of the same seven panels lives in
+[`figures/tensegrity_models_extended_preview_shaded.png`](../figures/tensegrity_models_extended_preview_shaded.png),
+regenerable with [`render_extended_preview_shaded.py`](render_extended_preview_shaded.py)
+(red = struts, blue = cables).
+
 A second follow-up Edison literature survey (task
 `6226a551-b46a-49b4-936a-bca600cd8d30`, May 2026; see
 [`edison-trajectories/2026-05-12-tensegrity-design-gaps-6226a551-b46a-49b4-936a-bca600cd8d30.md`](../edison-trajectories/2026-05-12-tensegrity-design-gaps-6226a551-b46a-49b4-936a-bca600cd8d30.md))
