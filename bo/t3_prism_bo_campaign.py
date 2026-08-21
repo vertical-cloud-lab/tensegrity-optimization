@@ -280,7 +280,13 @@ def render_objective_figure(observed, suggestions, round_number):
             )
 
         ax.set_xlabel("Shock transmissibility t180 (lower is better)")
-        ax.set_ylabel("Rebound energy to payload,\nmJ per drop (lower is better)")
+        # Horizontal y-axis label, parked above the axis so it reads at a glance
+        # from a slide instead of asking the audience to tilt their head.
+        ax.set_ylabel(
+            "Rebound energy to payload\n(mJ per drop, lower is better)",
+            rotation=0, ha="left", va="bottom", linespacing=1.4,
+        )
+        ax.yaxis.set_label_coords(-0.035, 1.04)
         ax.set_xlim(0.80, 1.12)
         ax.set_ylim(5.5, 14.8)
         ax.set_xticks(np.arange(0.8, 1.101, 0.1))
