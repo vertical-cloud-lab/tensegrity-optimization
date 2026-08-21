@@ -201,7 +201,41 @@ Ten repeats were run in-session (`--model botorch`, `--init sobol`,
 `--jobs 4`, four batches of 9 = 36 simulated designs each, so the same
 per-seed budget as the earlier three-seed run):
 
-RESULTS_TABLE_PLACEHOLDER
+| seed | final hypervolume | best `t180` | best `e_reb_mJ` |
+|---|--:|--:|--:|
+| 0 | 17.83 | 0.4848 | 170.20 |
+| 1 | 17.36 | 0.4992 | 170.17 |
+| 2 | 17.43 | 0.4996 | 169.89 |
+| 3 | 17.39 | 0.5025 | 169.59 |
+| 4 | 17.75 | 0.4880 | 170.20 |
+| 5 | 17.57 | 0.4979 | 169.57 |
+| 6 | 17.26 | 0.5015 | 170.18 |
+| 7 | 17.31 | 0.5035 | 169.73 |
+| 8 | 17.96 | 0.4877 | 169.00 |
+| 9 | 17.18 | 0.5072 | 169.59 |
+
+Ten independent draws start much further apart than they finish. After
+round 0 alone the hypervolume spans 7.71 to 11.07, a spread of 13.8 % of
+its mean, and the best `t180` in the initial batch spans 0.584 to 0.646.
+Four batches later the hypervolume is 17.50 +/- 0.26, a spread of 1.51 %,
+and the best `t180` spans 0.485 to 0.507. So the loop is convergent under
+resampling of its own initial design, which is the claim the earlier
+three-seed run could not make: those seeds shared round 0, so their
+agreement was arithmetic rather than evidence. The three shared-round-0
+seeds finished at 17.59 to 17.79 against the same reference point, inside
+the spread of the ten independent ones and near its top, which is what a
+hand-picked initial batch should do.
+
+All ten walk to the same corner: `R` at its maximum 40 mm, `H` at its
+minimum 60 mm, `twist` at its minimum 40 deg, `cable_d` at its minimum
+3.0 mm. Short, wide, thin-cabled. `strut_d` is the one loose axis and it is
+loose across the whole box (6.35 to 12.0 mm over the ten best-`t180`
+designs, with no trend in the objective), so the model is genuinely
+indifferent to it once the other four are cornered rather than merely
+under-resolved on it.
+
+![](outputs/pr102_sim_bo_botorch_sobol_aggregate.png)
+
 
 Two things to notice before reading that as a recommendation. It agrees with
 the measured campaign on thin cables -- `6lhxfy`, the one article that
