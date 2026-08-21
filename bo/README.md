@@ -12,8 +12,15 @@ suggests the next print batch.
   fully Bayesian SAASBO, batch, existing data, visualization). Ingests the
   measured drop results, attaches them as completed Ax trials in the base
   Sobol parameter space from PR #35, attaches printed-but-untested specs as
-  pending trials, and records the next suggested batch. See its docstring
-  for objective definitions and the three documented deviations from the
+  pending trials, and records the next suggested batch. Accounts for the
+  per-print mass differences (18.5 to 22.3 g despite the constant-mass
+  constraint, which holds solid CAD volume rather than printed grams): the
+  rebound objective is the absolute energy returned to the payload per drop
+  (`e_reb_mJ = e_rebound * m_printed * g * h`), its noise folds in the
+  print-to-print mass scatter measured from the spec-08 triplicate, and
+  `mass_g` is a tracking metric so the model learns printed mass from the
+  base coordinates. See the docstring for the objective rationale (why
+  `t180` stays a ratio) and the four documented deviations from the
   rendered template. Run from the repo root:
   `python bo/t3_prism_bo_campaign.py`.
 - `t3-prism-bo-batch-drop-results.csv`: snapshot of the BO-ready
@@ -25,7 +32,10 @@ suggests the next print batch.
   mapping and is skipped by the script until identified.
 - `t3-prism-bo-suggestions-round1.csv`: the recorded round-1 output of the
   script: suggested base-space designs for the next print batch with
-  posterior-mean predictions for both objectives. Feed these rows to
+  posterior-mean predictions for both objectives, the predicted as-printed
+  mass of each design (`pred_mass_g_mean`), and the implied rebound
+  fraction at that mass (`pred_e_rebound_approx`, for comparison with the
+  raw `e_rebound` column of the results CSV). Feed these rows to
   `t3_prism_sobol_batch.py` (PR #35) for constant-mass projection and
   slicing.
 - `t3-prism-bo-ax-client-round1.json`: full AxClient state (experiment,
