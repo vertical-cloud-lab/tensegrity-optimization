@@ -171,9 +171,41 @@ the staged workflow parallelizes. Each matrix leg is one seed, which is
 worth doing because SAASBO's per-round NUTS fit, not the 0.3 s simulation,
 is the wall-clock.
 
-See `outputs/pr102_sim_bo_*_seed*.png` for per-seed convergence and
-objective-space plots and `outputs/pr102_sim_bo_*_aggregate.png` for the
-cross-seed mean with a +/- 1 sd band.
+Three seeds were run in-session (`--model botorch`, 3 rounds of 9 after the
+printed batch, 36 simulated designs each):
+
+| seed | final hypervolume | best `t180` | best `e_reb_mJ` |
+|---|--:|--:|--:|
+| 0 | 17.79 | 0.4869 | 170.05 |
+| 1 | 17.59 | 0.4942 | 170.04 |
+| 2 | 17.59 | 0.4945 | 170.01 |
+
+The nine printed articles score `t180` 0.584 to 0.827 in simulation, so the
+loop improves on the best of them by about 17 % and the three seeds agree to
+under 2 %. All three walk to the same corner of the box: `R` at its maximum
+40 mm, `H` at its minimum 60 mm, `twist` at its minimum 40 deg and `cable_d`
+at its minimum 3.0 mm, with `strut_d` the only loose axis (6.6 to 8.0 mm).
+Short, wide, thin-cabled.
+
+Two things to notice before reading that as a recommendation. It agrees with
+the measured campaign on thin cables -- `6lhxfy`, the one article that
+genuinely attenuated on the bench, is the thin-cable corner -- and disagrees
+on twist, where `6lhxfy` sits at the box maximum. And unlike the
+regime sims, this model *does* consume the twist axis (the geometry is built
+at the supplied twist), so a twist result here is a physical claim rather
+than the un-consumed plumbing `sobol_t3_diagnostics.md` documents for
+`run_regimes`. Given that the model cannot amplify at all (section 2), the
+disagreement is more likely the model's than the bench's.
+
+One SAASBO seed was also run to check that path (the default, matching
+PR #102): one round of 3 designs took 570 s on a contended runner core
+against 0.3 s per simulation, which is exactly why the staged workflow
+parallelizes over seeds rather than running them in series.
+
+Per-seed convergence and objective-space plots are in
+`outputs/pr102_sim_bo_botorch_seed*.png`, the cross-seed mean with a
++/- 1 sd band is `outputs/pr102_sim_bo_botorch_aggregate.png`, and the
+per-seed trial tables are the matching CSVs.
 
 ## 5. Caveats
 
