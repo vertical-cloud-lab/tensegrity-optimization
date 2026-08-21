@@ -175,6 +175,17 @@ python simulations/pr102_sim_campaign.py --model botorch \
     --seeds 0 1 2 3 4 5 6 7 8 9 --rounds 3 --jobs 4
 # -> outputs/pr102_sim_bo_<model>_<init>_seed<k>.{csv,png}
 # -> outputs/pr102_sim_bo_<model>_<init>_aggregate.png + _summary.csv
+# Baselines and a reference optimum for that campaign (PR comment 5376310081).
+#   The reference is a 65,536-design Sobol sweep plus a Nelder-Mead polish of
+#   21 weightings: the ceiling every trace is drawn against.  The baselines
+#   run at the campaign's own 36-design budget over the same ten seeds.
+python simulations/pr102_baselines.py --reference --jobs 4      # ~21 min
+python simulations/pr102_baselines.py \
+    --strategies random sobol lhs heuristic --seeds 0 1 2 3 4 5 6 7 8 9 --jobs 4
+# -> outputs/pr102_reference_cloud.csv.gz  (all 68,944 evaluations)
+# -> outputs/pr102_reference_front.csv + _summary.csv + _front.png
+# -> outputs/pr102_baseline_<strategy>_seed<k>.csv  (every evaluation)
+# -> outputs/pr102_baselines_comparison.png, _objective_space.png, _summary.csv
 ```
 
 ## Matching the PR #102 bench campaign in simulation
@@ -186,7 +197,11 @@ study against the eight tested articles, and the repeat-seed campaign. The
 headline: the purpose-built `t180` analogue is *not* the best simulated
 predictor of measured `t180` (rho = +0.46, n = 7); `lander_eta` from the
 existing Tier-C regime sims is (rho = -0.96), and no simulated observable
-predicts measured `e_reb_mJ` yet.
+predicts measured `e_reb_mJ` yet. Section 5 adds the baselines: against a
+68,944-evaluation reference front, the 36-design BO reaches 97 % of the
+ceiling while compass search reaches 80 %, Sobol 66 %, Latin hypercube 65 %
+and random search 60 %, every one of them completely separated from the BO
+over ten seeds.
 
 ## Fair-evaluation analysis (PR comment 4760939061)
 

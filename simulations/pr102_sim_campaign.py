@@ -226,7 +226,7 @@ def _run_seed_worker(job: tuple) -> str:
 
 def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
               init: str = "sobol") -> None:
-    fig, (ax_c, ax_p) = plt.subplots(1, 2, figsize=(11, 4.2), dpi=200)
+    fig, (ax_c, ax_b, ax_p) = plt.subplots(1, 3, figsize=(16, 4.2), dpi=200)
     ax_c.plot(df.index + 1, df["hv"], color="#2a78d6", lw=1.8)
     ax_c.set_xlabel("simulated design")
     ax_c.set_ylabel("dominated hypervolume")
@@ -239,6 +239,22 @@ def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
     ax_c.annotate(label, (n_init, ax_c.get_ylim()[0]),
                   textcoords="offset points", xytext=(4, 12), fontsize=7,
                   color="#52514e")
+
+    # Running best on each objective separately.  Hypervolume alone hides
+    # which of the two is actually improving, and they are on scales two
+    # orders of magnitude apart, so they get one axis each.
+    x = df.index + 1
+    ax_b.plot(x, df["best_t180"], color="#2a78d6", lw=1.8, label="best t180")
+    ax_b.set_xlabel("simulated design")
+    ax_b.set_ylabel("running-best t180", color="#2a78d6")
+    ax_b.tick_params(axis="y", labelcolor="#2a78d6")
+    ax_b.grid(alpha=0.25, lw=0.5)
+    ax_e = ax_b.twinx()
+    ax_e.plot(x, df["best_e_reb_mJ"], color="#c0392b", lw=1.8, ls="--",
+              label="best e_reb_mJ")
+    ax_e.set_ylabel("running-best e_reb_mJ (mJ)", color="#c0392b")
+    ax_e.tick_params(axis="y", labelcolor="#c0392b")
+    ax_b.set_title("running best, per objective", fontsize=10)
 
     sc = ax_p.scatter(df[OBJ1], df[OBJ2], c=df["round"], cmap="viridis", s=32)
     ax_p.set_xlabel("t180 (simulated, minimize)")
@@ -262,11 +278,14 @@ def aggregate(outdir: Path, model: str, init: str = "sobol") -> None:
     n = min(len(f) for f in frames)
     hv = np.vstack([f["hv"].to_numpy()[:n] for f in frames])
     t180 = np.vstack([f["best_t180"].to_numpy()[:n] for f in frames])
+    ereb = np.vstack([f["best_e_reb_mJ"].to_numpy()[:n] for f in frames])
 
-    fig, (ax_h, ax_t, ax_0) = plt.subplots(1, 3, figsize=(15.5, 4.2), dpi=200)
+    fig, (ax_h, ax_t, ax_e, ax_0) = plt.subplots(1, 4, figsize=(20.5, 4.2),
+                                                 dpi=200)
     x = np.arange(1, n + 1)
     for ax, arr, label in ((ax_h, hv, "dominated hypervolume"),
-                           (ax_t, t180, "running-best t180")):
+                           (ax_t, t180, "running-best t180"),
+                           (ax_e, ereb, "running-best e_reb_mJ (mJ)")):
         for row in arr:
             ax.plot(x, row, color="#9aa0a6", lw=0.8, alpha=0.7)
         mean, sd = arr.mean(axis=0), arr.std(axis=0)

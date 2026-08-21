@@ -268,7 +268,121 @@ the +/- 1 sd band and the round-0 panel is
 tables are the matching CSVs. The earlier shared-round-0 run is kept
 alongside under `..._printed_...` for the comparison.
 
-## 5. Caveats
+## 5. Baselines, and how far the box actually goes
+
+A hypervolume trace that climbs proves nothing on its own: the question is
+whether it climbs faster than something with no model in it, and whether it
+finishes anywhere near what the box contains. `pr102_baselines.py` supplies
+both.
+
+### The reference optimum
+
+65,536 scrambled Sobol designs (about 1,800x the campaign's budget, 1,120 s
+over four processes at 17 ms each) followed by a Nelder-Mead polish of the
+best point under each of 21 weightings, 3,408 further evaluations. The
+non-dominated set of all 68,944 is the best estimate of the true front
+available at this fidelity: 247 points, hypervolume 18.024 against the same
+fixed reference point the campaign uses, best `t180` 0.4848, best
+`e_reb_mJ` 169.00.
+
+This is a dense sample, not a proof of global optimality. What makes it
+usable as a ceiling is that the polish moves it essentially nowhere: the
+front sits on box bounds, so a local optimizer started from the sweep's best
+points converges onto the same corners rather than finding anything the
+sweep missed.
+
+![reference front](outputs/pr102_reference_front.png)
+
+The front is sharply L-shaped, and its geometry is the actionable read.
+`cable_d_mm` is pinned at its low bound (3.0 mm) along the entire front, and
+`twist_deg` at its low bound for most of it. The trade-off is carried by
+`strut_d_mm` and `H_mm`: the minimum-`t180` end is a short, wide, thin-strut
+cell (`R` 40, `H` 60, `strut_d` about 6.4 mm) and the minimum-`e_reb_mJ` end
+is a tall, narrow, fat-strut one (`R` 25, `H` 110, `strut_d` 12). Two of the
+five axes are therefore doing nothing but sitting on a wall, which is worth
+knowing before the next plate is printed: the box should probably be
+extended below `cable_d_mm` 3.0 mm and below `twist_deg` 40 deg rather than
+re-searched as it stands.
+
+### The baselines
+
+Four, each at the campaign's own 36-design budget and over the same ten
+seeds:
+
+| baseline | what it is |
+|---|---|
+| `random` | uniform i.i.d. draws; the floor |
+| `sobol` | scrambled Sobol over the whole budget, i.e. the campaign's round 0 extended to fill it, so the gap to the campaign is exactly what the surrogate contributes |
+| `lhs` | scrambled Latin hypercube, the other standard space-filling design |
+| `heuristic` | compass (pattern) search with a halving step on a normalized weighted sum, budget split over three weightings (0.15 / 0.5 / 0.85) so it produces a spread of trade-offs rather than one point; the seed sets the start and the axis order |
+
+![baseline comparison](outputs/pr102_baselines_comparison.png)
+
+| method | final HV (mean +/- sd) | fraction of reference | best `t180` | best `e_reb_mJ` | p vs BO |
+|---|--:|--:|--:|--:|--:|
+| BO (qNEHVI) | 17.50 +/- 0.25 | **97.1 %** | 0.4972 | 169.81 | - |
+| compass search | 14.49 +/- 1.78 | 80.4 % | 0.5408 | 172.59 | 9.1e-5 |
+| Sobol | 11.82 +/- 1.11 | 65.6 % | 0.5790 | 172.17 | 9.1e-5 |
+| Latin hypercube | 11.66 +/- 1.54 | 64.7 % | 0.5864 | 172.00 | 9.1e-5 |
+| random search | 10.86 +/- 1.09 | 60.3 % | 0.5972 | 172.30 | 9.1e-5 |
+
+`p` is a one-sided Mann-Whitney U on the ten final hypervolumes; 9.1e-5 is
+the smallest value that test can return at n = 10 against n = 10, so every
+baseline is *completely* separated from the BO, with no overlap between the
+two sets of ten.
+
+Three things the comparison settles:
+
+1. **The surrogate is what is doing the work, not the space-filling design.**
+   The BO's first nine designs *are* a Sobol batch (Ax's own generator, a
+   different scramble from the `sobol` baseline's, hence the small offset at
+   design 9: 9.25 against 9.81, with the baseline slightly ahead). The moment
+   the model takes over the traces separate and never re-cross: one
+   model-driven batch takes the BO from 51 % of the reference ceiling to
+   83 %, and it is at 96 % by design 18 and 97 % by design 27. Sobol run out
+   to the full 36 designs finishes at 66 %. Space filling is not the
+   ingredient.
+2. **Sobol and LHS are indistinguishable from each other, and barely beat
+   random.** 65.6 % against 64.7 % against 60.3 %, with sd of 1.1 to 1.5. At
+   36 points in 5 dimensions, quasi-random stratification buys very little.
+3. **The heuristic is the strongest baseline and still loses by a wide
+   margin**, and it has the largest seed-to-seed spread of any method
+   (sd 1.78, and 4.04 mJ on best `e_reb_mJ`). That is the expected signature
+   of a local method on a front whose extremes are box corners: whether a run
+   ends up near one depends on where it started.
+
+The BO's spread is also the smallest of the five (sd 0.25 = 1.4 % of its
+mean, against 9 to 12 % for the baselines). Across ten independent repeats it
+is both better and more repeatable, which is the property that matters when
+each real evaluation is a print plus a drop session.
+
+![objective space](outputs/pr102_baselines_objective_space.png)
+
+Pooled over ten seeds, the BO's points lie along the front; every baseline's
+points are a cloud in the interior. Note the BO does *not* reach the extreme
+low-`e_reb_mJ` tail of the front, which lives at `R` 25 / `H` 110 /
+`strut_d` 12: qNEHVI spends its budget on the knee, which is where
+hypervolume is, and the tail is worth about 1 mJ.
+
+### Caveat on all of the above
+
+This compares optimizers on a **simulated** objective, so what it measures is
+search efficiency on this response surface, not accuracy against the bench.
+Section 3's caveats still apply to the objective itself. The transfer that
+does hold is the shape of the problem: 5 continuous axes, 2 objectives,
+a smooth deterministic response, a front on the box boundary. On that shape,
+36 model-driven evaluations reach 97 % of a 68,944-evaluation ceiling and 36
+space-filling ones reach 66 %.
+
+Files. `outputs/pr102_reference_cloud.csv.gz` (all 68,944 evaluations,
+gzipped, read directly by pandas), `outputs/pr102_reference_front.csv` (the
+247 non-dominated designs), `outputs/pr102_reference_summary.csv`,
+`outputs/pr102_baseline_<strategy>_seed<k>.csv` (40 runs, every evaluation
+with its parameters, objectives, printed mass, constant-mass scale and
+feasibility flag), `outputs/pr102_baselines_summary.csv`, and the two
+figures. Nothing needs re-running to redo a plot.
+
+## 6. Caveats
 
 * Seven articles. Every correlation in section 3 is a small-n rank
   statistic screened across about 30 candidates; treat the leader as a
