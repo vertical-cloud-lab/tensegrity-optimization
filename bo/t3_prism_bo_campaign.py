@@ -135,21 +135,32 @@ Usage (from the repo root)::
 
 Figures. ``--plot-only`` redraws the objective-space panel from the recorded
 CSVs (no model refit, ~1 s). ``--prototype-next-round`` draws the layout the
-campaign will want once the next batch comes back, as two stills plus an
-animation that moves between them. The stills are the two rest points of one
-story: ``stage="travel"`` (each orange diamond joined by a straight path to
-where that article actually landed, drawn as an open circle like any other
-tested article, with no front and no print IDs on the panel) and
-``stage="front"`` (the front recomputed over both rounds, the print IDs, and
-nothing else). The animation plays hold, retire the round-1 front and the
-IDs, travel, hold, clean up, redraw the front, bring every ID back and hold:
-one idea per beat, and nothing is labeled while anything is moving
-(PR #102 review). The round-2 outcomes it
-uses are SYNTHETIC (nothing has been printed or dropped yet); see
-``synthesize_round2_outcomes``, which is the single function to replace with
-the measured summary when the real numbers arrive. Pass ``--no-animation`` to
-skip the GIF/MP4. The MP4 needs ffmpeg on PATH; without it only a
-Pillow-written GIF is produced.
+campaign will want once the next batch comes back: three stills plus an
+animation that moves between them, all of them frames of one figure.
+
+The stills are the three points at which that figure is at rest, and they are
+written in slide order:
+
+1. ``-start-PROTOTYPE.png``: the round-1 figure, its front, its print IDs and
+   the orange suggested points.
+2. ``-predicted-vs-actual-PROTOTYPE.png``: each orange diamond joined by a
+   straight path to where that article actually landed, drawn as an open
+   circle like any other tested article. No front and no print IDs.
+3. ``-front-final-PROTOTYPE.png``: the front recomputed over both rounds,
+   every article labeled, and none of the scaffolding.
+
+Because they are frames of one figure rather than three drawings, they are
+the same pixel size (``ANIM_FIGSIZE * ANIM_DPI``, 2200 x 1400) and every
+element that survives a beat sits at the same pixel in all three, so they can
+go on three consecutive slides and be cross-faded or morphed. The animation
+plays the same story in time: hold, retire the round-1 front and the IDs,
+travel, hold, clean up, redraw the front, bring every ID back and hold. One
+idea per beat, and nothing is labeled while anything is moving (PR #102
+review). The round-2 outcomes it uses are SYNTHETIC (nothing has been printed
+or dropped yet); see ``synthesize_round2_outcomes``, which is the single
+function to replace with the measured summary when the real numbers arrive.
+Pass ``--no-animation`` for the stills alone. The MP4 needs ffmpeg on PATH;
+without it only a Pillow-written GIF is produced.
 """
 
 from __future__ import annotations
@@ -776,208 +787,27 @@ def _prototype_limits(combined, suggestions):
     return xticks, yticks
 
 
-def render_prediction_vs_actual_figure(
-    observed, suggestions, actual, round_number, stage="travel"
-):
-    """The two rest points of the round-2 story, as stills.
+# ---- round-2 prototype: one figure, three stills and an animation --------
+# One idea per beat (PR #102 review: too many things were moving and too much
+# text was on screen at once). The round-1 front is retired BEFORE anything
+# moves, the diamonds then travel alone, and the new front is redrawn as its
+# own step after every article has landed and turned into an open black
+# circle. Still SYNTHETIC outcomes; see synthesize_round2_outcomes.
+#
+# The three stills are frames of this same figure rather than separately
+# drawn panels, which is what lets them be dropped on three consecutive
+# slides and cross-faded: same canvas, same size, same axes, same label
+# placement, so every element that survives a beat stays exactly where it
+# was (PR #102 review). Drawing them twice could not guarantee that, since
+# each panel solves its own label placement.
 
-    ``stage="travel"``: what the model predicted (faded orange diamonds)
-    joined by straight paths to where each article actually landed, drawn as
-    an open black circle like any other tested article. **No front is drawn,
-    and no print IDs.** The round-1 front has already been retired and the
-    round-2 one has not been computed yet, which is precisely the beat the
-    animation holds on; the IDs are retired with it, because seventeen of them
-    over the travel paths is exactly the crowding the beat list exists to
-    avoid (PR #102 review). Identity comes back on the ``"front"`` still.
+ANIM_FIGSIZE = (11.0, 7.0)
+ANIM_DPI = 200  # 11 x 7 in -> 2200 x 1400 px, both even (h.264 needs even)
+GIF_WIDTH_PX = 1280  # the GIF is for threads and the README, not for slides
 
-    ``stage="front"``: the round-2 figure alone. One front, computed over both
-    rounds, one set of articles, none of the scaffolding that explained how
-    the batch got there.
-
-    Both stages share tick ranges and label placement inputs, so the two PNGs
-    (and the animation frames they correspond to) register.
-    """
-    if stage not in ("travel", "front"):
-        raise ValueError(f"stage must be 'travel' or 'front', got {stage!r}")
-
-    combined = pd.concat(
-        [
-            observed[["print_id", obj1_name, obj2_name]],
-            actual[["print_id", obj1_name, obj2_name]],
-        ],
-        ignore_index=True,
-    )
-    old_front = pareto_front(observed)
-    new_front = pareto_front(combined)
-    on_new_front = combined["print_id"].isin(new_front["print_id"])
-    xticks, yticks = _prototype_limits(combined, suggestions)
-
-    with plt.rc_context(FIG_RC):
-        fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=200)
-        _style_axes(
-            ax,
-            xlim=(xticks[0] - 0.015, xticks[-1] + 0.02),
-            ylim=(yticks[0] - 0.5, yticks[-1] + 0.6),
-            xticks=xticks,
-            yticks=yticks,
-        )
-
-        if stage == "travel":
-            # predicted -> measured travel paths
-            for (_, pred), (_, act) in zip(suggestions.iterrows(), actual.iterrows()):
-                ax.annotate(
-                    "",
-                    xy=(act[obj1_name], act[obj2_name]),
-                    xytext=(
-                        pred[f"pred_{obj1_name}_mean"],
-                        pred[f"pred_{obj2_name}_mean"],
-                    ),
-                    arrowprops=dict(
-                        arrowstyle="-|>",
-                        color=SUGGEST_ORANGE,
-                        lw=1.8,
-                        alpha=0.55,
-                        shrinkA=8,
-                        shrinkB=10,
-                    ),
-                    zorder=1,
-                )
-            # where the model thought round 2 would land (now superseded)
-            ax.scatter(
-                suggestions[f"pred_{obj1_name}_mean"],
-                suggestions[f"pred_{obj2_name}_mean"],
-                marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", alpha=0.38, zorder=2,
-            )
-            # every article is just a tested article at this point
-            ax.scatter(
-                combined[obj1_name], combined[obj2_name],
-                fc="none", ec=INK, s=190, lw=2.4, zorder=4,
-            )
-        else:
-            ax.plot(
-                new_front[obj1_name], new_front[obj2_name],
-                color=FRONT_BLUE, lw=3.4, zorder=3,
-            )
-            ax.scatter(
-                combined.loc[~on_new_front, obj1_name],
-                combined.loc[~on_new_front, obj2_name],
-                fc="none", ec=INK, s=190, lw=2.4, zorder=4,
-            )
-            ax.scatter(
-                new_front[obj1_name], new_front[obj2_name],
-                fc=FRONT_BLUE, ec=INK, s=190, lw=2.4, zorder=5,
-            )
-
-        # Callouts first, so the print IDs can dodge them. At most two are
-        # ever on the panel at once: one idea per figure, per the PR #102
-        # review of the animation.
-        if stage == "travel":
-            # Name the longest predicted-to-measured travel, the clearest one
-            # to read the grammar off, and only that one.
-            travel = int(
-                np.hypot(
-                    actual[obj1_name].to_numpy(float)
-                    - suggestions[f"pred_{obj1_name}_mean"].to_numpy(float),
-                    (
-                        actual[obj2_name].to_numpy(float)
-                        - suggestions[f"pred_{obj2_name}_mean"].to_numpy(float)
-                    )
-                    / 40.0,
-                ).argmax()
-            )
-            pred_row, act_row = suggestions.iloc[travel], actual.iloc[travel]
-            pred_xy = (
-                pred_row[f"pred_{obj1_name}_mean"],
-                pred_row[f"pred_{obj2_name}_mean"],
-            )
-            act_xy = (act_row[obj1_name], act_row[obj2_name])
-            callouts = [
-                _callout(
-                    ax, f"Predicted (round {round_number})", pred_xy,
-                    _axes_frac(ax, pred_xy, -0.05, -0.13), SUGGEST_ORANGE, ha="right",
-                ),
-                _callout(
-                    ax, "Measured", act_xy,
-                    _axes_frac(ax, act_xy, 0.06, 0.09), INK, leader=LEADER_GRAY,
-                ),
-            ]
-        else:
-            # Nothing can sit below-left of a Pareto front, so that is where
-            # this callout goes; it is a property of the front, not a
-            # hand-placement that breaks when the data moves.
-            new_anchor = _front_anchor(new_front, 0.55)
-            callouts = [
-                _callout(
-                    ax, f"Pareto front after round {round_number}", new_anchor,
-                    _axes_frac(ax, new_anchor, -0.36, -0.20), FRONT_BLUE, ha="left",
-                ),
-            ]
-        blockers = _text_boxes(fig, callouts) + _segment_boxes(
-            _leader_ends(ax, callouts), half=9, weight=W_LEADER
-        )
-        if stage == "travel":
-            blockers += _segment_boxes(
-                list(
-                    zip(
-                        ax.transData.transform(
-                            suggestions[
-                                [f"pred_{obj1_name}_mean", f"pred_{obj2_name}_mean"]
-                            ].to_numpy(float)
-                        ),
-                        ax.transData.transform(
-                            actual[[obj1_name, obj2_name]].to_numpy(float)
-                        ),
-                    )
-                )
-            )
-        else:
-            blockers += _segment_boxes(
-                _polyline_ends(ax, new_front[obj1_name], new_front[obj2_name]),
-                half=9, weight=W_FRONT,
-            )
-        if stage == "front":
-            # Only the resting figure is labeled: at the travel beat the
-            # panel is about the arrows, not about which article is which.
-            _label_points(
-                ax, combined, "print_id", obj1_name, obj2_name, obstacles=blockers,
-            )
-
-        ax.text(
-            1.0, 1.06, "PROTOTYPE: round-2 outcomes are synthetic",
-            transform=ax.transAxes, ha="right", va="bottom",
-            fontsize=15, color=SUGGEST_ORANGE,
-        )
-
-        fig_dir = BO_DIR / "figures"
-        fig_dir.mkdir(exist_ok=True)
-        stem = (
-            f"t3-prism-bo-round{round_number}-predicted-vs-actual"
-            if stage == "travel"
-            else f"t3-prism-bo-round{round_number}-front-final"
-        )
-        out_png = fig_dir / f"{stem}-PROTOTYPE.png"
-        fig.savefig(out_png, bbox_inches="tight", facecolor="white")
-        plt.close(fig)
-
-    if stage == "front":
-        gained = set(new_front["print_id"]) - set(old_front["print_id"])
-        print(
-            f"[prototype, synthetic data] round-{round_number} front: "
-            + ", ".join(new_front["print_id"])
-            + (f"; new entrants: {', '.join(sorted(gained))}" if gained else "")
-        )
-    return out_png
-
-
-# ---- round-2 prototype, animated ----------------------------------------
-# Same grammar as the static prototypes, played out in time, one idea per
-# beat (PR #102 review: too many things were moving and too much text was on
-# screen at once). The round-1 front is retired BEFORE anything moves, the
-# diamonds then travel alone, and the new front is redrawn as its own step
-# after every article has landed and turned into an open black circle.
-# Still SYNTHETIC outcomes; see synthesize_round2_outcomes.
-
-ANIM_DPI = 100  # 11 x 7 in -> 1100 x 700 px, both even (h.264 needs even)
+# Frames exported as stills, in slide order. Keyed on the beat they rest in;
+# resolved against the frame table inside render_round2_prototype.
+STILL_STAGES = ("start", "travel", "front")
 
 
 def _smoothstep(x):
@@ -1002,10 +832,24 @@ def _callout_alpha(ann, alpha):
         ann.arrow_patch.set_alpha(0.75 * alpha)
 
 
-def render_prediction_animation(
-    observed, suggestions, actual, round_number, fps=25
+def render_round2_prototype(
+    observed, suggestions, actual, round_number, fps=25, animate=True
 ):
-    """Animate predicted -> measured for the suggested batch (GIF + MP4).
+    """The round-2 story as three registered stills plus an animation.
+
+    Returns ``(stills, gif, mp4)``. ``stills`` is a dict keyed by
+    ``STILL_STAGES``, in slide order:
+
+    * ``"start"``: the round-1 figure, front and print IDs and the orange
+      suggestions.
+    * ``"travel"``: predicted joined to measured, no front and no IDs.
+    * ``"front"``: the round-2 figure alone, front recomputed over both
+      rounds, every article labeled.
+
+    All three are frames of one figure, exported at ``ANIM_DPI`` with no
+    ``bbox_inches="tight"``, so they are the same pixel size as each other
+    and as the video. Put them on three consecutive slides and any transition
+    between them registers, because nothing that survives a beat has moved.
 
     Choreographed one idea per beat, after the PR #102 review found the first
     cut had too much moving and too much text on screen at once:
@@ -1030,11 +874,8 @@ def render_prediction_animation(
     round-2 IDs arrive on top of them is not (PR #102 review). Nothing is
     labeled while anything is moving.
 
-    Beats 4 and 7 hold the same content as the two committed stills
-    (``stage="travel"`` and ``stage="front"``), which is what keeps the
-    animation and the PNGs telling the same story. Only the point-label
-    placement differs, because each figure solves it against its own set of
-    obstacles.
+    The exported stills are beats 1, 4 and 7, the three points at which the
+    figure is at rest.
     """
     from matplotlib.animation import FFMpegWriter, FuncAnimation, PillowWriter
     from matplotlib.collections import LineCollection
@@ -1112,7 +953,7 @@ def render_prediction_animation(
     n_frames = t_rest + n_hold2
 
     with plt.rc_context(FIG_RC):
-        fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=ANIM_DPI)
+        fig, ax = plt.subplots(figsize=ANIM_FIGSIZE, dpi=ANIM_DPI)
         # No bbox_inches="tight" for animations, so the margins are explicit;
         # the y-axis label sits above the axes and needs the headroom.
         fig.subplots_adjust(left=0.115, right=0.975, top=0.80, bottom=0.175)
@@ -1333,46 +1174,76 @@ def render_prediction_animation(
             _callout_alpha(c_front2, _smoothstep((v - 0.55) / 0.45))
             return ()
 
-        anim = FuncAnimation(fig, update, frames=n_frames, interval=1000 / fps)
-
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
-        stem = f"t3-prism-bo-round{round_number}-predicted-vs-actual-PROTOTYPE"
-        out_mp4 = fig_dir / f"{stem}.mp4"
-        out_gif = fig_dir / f"{stem}.gif"
+        stem = f"t3-prism-bo-round{round_number}"
 
+        # The three rest points, exported from this figure rather than
+        # redrawn: beat 1 (before anything moves), the end of beat 4 (both
+        # travel callouts fully lit) and the last frame. No bbox_inches, so
+        # every PNG is exactly ANIM_FIGSIZE * ANIM_DPI and the set lines up
+        # on consecutive slides.
+        still_frames = {
+            "start": 0,
+            "travel": t_clean - 1,
+            "front": n_frames - 1,
+        }
+        still_names = {
+            "start": f"{stem}-start-PROTOTYPE.png",
+            "travel": f"{stem}-predicted-vs-actual-PROTOTYPE.png",
+            "front": f"{stem}-front-final-PROTOTYPE.png",
+        }
+        stills = {}
+        for stage in STILL_STAGES:
+            update(still_frames[stage])
+            out = fig_dir / still_names[stage]
+            fig.savefig(out, dpi=ANIM_DPI, facecolor="white")
+            stills[stage] = out
+
+        out_mp4 = out_gif = None
         have_ffmpeg = shutil.which("ffmpeg") is not None
-        if have_ffmpeg:
-            anim.save(
-                out_mp4,
-                writer=FFMpegWriter(
-                    fps=fps, codec="libx264", bitrate=-1,
-                    extra_args=["-pix_fmt", "yuv420p", "-crf", "20"],
-                ),
-                savefig_kwargs={"facecolor": "white"},
+        if animate:
+            anim = FuncAnimation(
+                fig, update, frames=n_frames, interval=1000 / fps
             )
-        else:
-            out_mp4 = None
-            print("ffmpeg not found: skipping the MP4, writing the GIF only")
+            out_mp4 = fig_dir / f"{stem}-predicted-vs-actual-PROTOTYPE.mp4"
+            out_gif = fig_dir / f"{stem}-predicted-vs-actual-PROTOTYPE.gif"
+            if have_ffmpeg:
+                anim.save(
+                    out_mp4,
+                    writer=FFMpegWriter(
+                        fps=fps, codec="libx264", bitrate=-1,
+                        extra_args=["-pix_fmt", "yuv420p", "-crf", "18"],
+                    ),
+                    savefig_kwargs={"facecolor": "white"},
+                )
+            else:
+                out_mp4 = None
+                print("ffmpeg not found: skipping the MP4, writing the GIF only")
+                anim.save(out_gif, writer=PillowWriter(fps=12))
         plt.close(fig)
 
-    if have_ffmpeg:
+    if animate and have_ffmpeg:
         # Palette-based GIF off the MP4: far smaller and cleaner than a
         # frame-by-frame quantization, and it keeps the two in sync.
         subprocess.run(
             [
                 "ffmpeg", "-y", "-loglevel", "error", "-i", str(out_mp4),
                 "-vf",
-                "fps=12,scale=980:-2:flags=lanczos,split[a][b];"
-                "[a]palettegen=max_colors=96[p];[b][p]paletteuse=dither=bayer:bayer_scale=3",
+                f"fps=12,scale={GIF_WIDTH_PX}:-2:flags=lanczos,split[a][b];"
+                "[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=bayer:bayer_scale=3",
                 "-loop", "0", str(out_gif),
             ],
             check=True,
         )
-    else:
-        anim.save(out_gif, writer=PillowWriter(fps=12))
 
-    return out_gif, out_mp4
+    gained = set(new_front_ids) - set(old_front["print_id"])
+    print(
+        f"[prototype, synthetic data] round-{round_number} front: "
+        + ", ".join(new_front["print_id"])
+        + (f"; new entrants: {', '.join(sorted(gained))}" if gained else "")
+    )
+    return stills, out_gif, out_mp4
 
 
 def main(argv=None):
@@ -1422,8 +1293,8 @@ def main(argv=None):
         "--no-animation",
         action="store_true",
         help=(
-            "with --prototype-next-round, write only the still PNG and skip "
-            "the animated GIF/MP4"
+            "with --prototype-next-round, write only the three still PNGs "
+            "and skip the animated GIF/MP4"
         ),
     )
     args = ap.parse_args(argv)
@@ -1449,22 +1320,20 @@ def main(argv=None):
             actual[["print_id", "trial_index", *PARAM_NAMES, obj1_name, obj2_name]].to_csv(
                 dummy_csv, index=False, float_format="%.4f"
             )
-            # the two beats the animation holds on
-            out = render_prediction_vs_actual_figure(
-                observed, suggestions, actual, args.round + 1, stage="travel"
+            stills, gif, mp4 = render_round2_prototype(
+                observed, suggestions, actual, args.round + 1,
+                animate=not args.no_animation,
             )
-            out_final = render_prediction_vs_actual_figure(
-                observed, suggestions, actual, args.round + 1, stage="front"
-            )
-            print(
-                f"Prototype figures saved to {out} and {out_final} "
-                f"(dummy outcomes: {dummy_csv})"
-            )
-            if not args.no_animation:
-                gif, mp4 = render_prediction_animation(
-                    observed, suggestions, actual, args.round + 1
+            w, h = int(ANIM_FIGSIZE[0] * ANIM_DPI), int(ANIM_FIGSIZE[1] * ANIM_DPI)
+            print(f"Prototype stills ({w} x {h} px each, slide order):")
+            for i, stage in enumerate(STILL_STAGES, start=1):
+                print(f"  slide {i} ({stage}): {stills[stage]}")
+            print(f"Dummy outcomes: {dummy_csv}")
+            if gif or mp4:
+                print(
+                    "Prototype animation saved to "
+                    + ", ".join(str(x) for x in (mp4, gif) if x)
                 )
-                print(f"Prototype animation saved to {gif}" + (f" and {mp4}" if mp4 else ""))
         return 0
 
     from ax.core.observation import ObservationFeatures
