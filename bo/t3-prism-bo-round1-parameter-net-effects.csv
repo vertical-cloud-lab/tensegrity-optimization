@@ -1,0 +1,16 @@
+metric,parameter,net_effect,swing,monotonic
+t180,R_mm,-0.02556,0.02556,True
+t180,H_mm,0.08874,0.08874,True
+t180,twist_deg,-0.03559,0.03559,True
+t180,strut_d_mm,-0.09926,0.09926,True
+t180,cable_d_mm,0.01855,0.01855,True
+e_reb_mJ,R_mm,3.64651,3.64651,True
+e_reb_mJ,H_mm,-3.76705,3.76705,True
+e_reb_mJ,twist_deg,2.71221,2.71221,True
+e_reb_mJ,strut_d_mm,1.83339,1.83339,True
+e_reb_mJ,cable_d_mm,-2.43808,2.43808,True
+mass_g,R_mm,0.36641,0.36717,False
+mass_g,H_mm,0.61889,0.61889,True
+mass_g,twist_deg,-1.60612,1.60612,True
+mass_g,strut_d_mm,-1.24910,1.24910,True
+mass_g,cable_d_mm,0.85402,0.85402,True

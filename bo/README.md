@@ -78,6 +78,62 @@ suggests the next print batch.
   built from the MP4 with an ffmpeg palette pass (12 fps, 980 px wide), which
   is what keeps it under a megabyte.
 
+## Model interpretability (diagnostics)
+
+- `t3_prism_bo_diagnostics.py`: refits the round-1 SAASBO model from the
+  committed AxClient snapshot and writes three interpretability figures plus
+  the tables behind them. Nothing here comes from the Honegumi template
+  (its `visualize=True` block is the Pareto scatter and nothing else); the
+  first two are Ax 0.5.0's own diagnostic API and the third is built on top
+  of the model's posterior. Run from the repo root:
+  `python bo/t3_prism_bo_diagnostics.py` (about 6 min: one full NUTS fit for
+  the importances and effects, a second reduced fit plus 7 refits for the
+  leave-one-out folds). `--skip-cv` drops the expensive part, and
+  `--plot-only` redraws all three figures from the recorded CSVs in about a
+  second with only pandas and matplotlib.
+- `figures/t3-prism-bo-round1-feature-importance.png` (+
+  `t3-prism-bo-round1-feature-importance.csv`): SAAS inverse lengthscales
+  per metric, via `TorchModelBridge.feature_importances`, which takes the
+  median lengthscale over the MCMC draws, inverts it, and normalizes the
+  five parameters to sum to 1. Ax's `MBM_X_trans` maps the search space onto
+  the unit cube before fitting, so those numbers are comparable across
+  parameters and read as "share of the model's sensitivity". The whiskers
+  are the interquartile range across the individual MCMC draws, which the
+  single-number Ax API discards; they are what tells you how firmly the
+  ranking is held.
+- `figures/t3-prism-bo-round1-loocv.png` (+ `t3-prism-bo-round1-loocv.csv`,
+  `t3-prism-bo-round1-loocv-diagnostics.json`): leave-one-out via
+  `ax.modelbridge.cross_validation.cross_validate(model, folds=-1)`, scored
+  by `compute_diagnostics`. One gotcha worth knowing: `BoTorchModel` takes
+  `refit_on_cv=False` by default in Ax 0.5.0, so an out-of-the-box
+  cross-validation reconditions on the held-out training set while keeping
+  hyperparameters fitted on all of the data, which leaks the held-out point
+  and flatters the result. The diagnostics fit passes `refit_on_cv=True` and
+  pays for the NUTS rerun per fold; that is the whole of the runtime.
+- `figures/t3-prism-bo-round1-parameter-effects.png` and
+  `figures/t3-prism-bo-round1-parameter-net-effects.png` (+
+  `t3-prism-bo-round1-partial-dependence.csv`,
+  `t3-prism-bo-round1-parameter-net-effects.csv`): the signed
+  "does raising this parameter raise or lower this metric" view. Ax 0.5.0
+  has no plot for this on a continuous space (`ax.plot.marginal_effects` is
+  for factorial designs, and `plot_slice` fixes the other four parameters at
+  one arbitrary point), so the script computes model-based partial
+  dependence: sweep one parameter across its range while averaging the
+  posterior mean over quasi-random draws of the other four. The first figure
+  is the swept curves with a +/- 1 posterior sd band, the second is the net
+  change from the low bound to the high bound as a signed tornado. Read them
+  together: the tornado compresses each curve to one number, so a parameter
+  that turns mid-range is marked with an asterisk and only the curve shows
+  what it does. Partial dependence assumes the swept parameter is roughly
+  independent of the others (true here, the search space is a plain box) and
+  it does not show interactions.
+
+Two cautions that apply to all three, since n = 7 tested articles in a 5-D
+space is a small sample: the importances sit close to the 1/5 equal-share
+line with overlapping MCMC bands, and most of the partial-dependence curves
+move by less than their own posterior sd. Read the direction and the
+ranking, not the decimals.
+
 ## Print key files
 
 - `t3-prism-bo-batch-print-key.csv`: one row per physical print. Maps the
