@@ -22,6 +22,14 @@ hardware" and "here is what the data tells us":
    recipe (SAE J211), and the score = biggest jolt at top divided by biggest
    jolt at bottom (below 1 = softened).
 
+Per the PR #100 review on 2026-08-20, fig1's jolt panel carries no in-panel
+callout text (the space is kept clear for annotation on the slide), its axis
+labels are the short "time (ms)" and "acceleration (G)", and the background is
+pure white. `fig1_part1_only.png` is that panel alone: the exact crop that
+slides 18 and 19 of `idetc-2026.pptx` display. The web editor's Change Picture
+re-crops a swapped image to fill its shape, so deck swaps use this pre-cropped
+file rather than the full two-panel figure.
+
 Both new slides carry full speaker-note talk tracks (see
 `add_teaching_slides.py`), including the honest caveats from the issue #86/#94
 audits: the quoted peak depends on the smoothing recipe (hence a fixed
