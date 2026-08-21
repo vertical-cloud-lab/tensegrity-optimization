@@ -260,3 +260,49 @@ objective if the BO goes multi-output.
   at healthy-tower speeds. The tail baseline handles it in analysis, but if
   the TP4 allows a longer pre-trigger (e.g. 5 ms = 5 %), the foot would be
   fully in-record and the estimator debate disappears at the capture level.
+
+## 7. Addendum (2026-08-21): why the printed masses vary despite the constant-mass constraint
+
+@sgbaird flagged that the measured masses (18.50–22.04 g, CV 5.9 %) vary
+more than expected given the batch generator's constant-mass constraint
+(PR #35, `bo/t3_prism_sobol_batch.py`).
+
+**The constraint was implemented and converged.** Route A projects every
+Sobol design onto the constant-mass manifold by uniform re-scaling, with
+m\* = 30.95 g defined as the *solid-volume* mass of the S0 reference STLs
+(ρ_PLA = 1.24, ρ_TPU = 1.21 g/cm³). The committed
+`bo/t3-prism-bo-batch.csv` shows all 9 designs at 30.90–30.97 g predicted
+(`mass_ok=True`, tolerance ±0.15 g).
+
+**The gap is solid volume vs printed mass.** The slicer prints the PLA
+struts/joints/housings with walls + sparse infill but the thin TPU cables
+essentially solid. Regressing the 7 measured masses on the CSV's predicted
+per-material solid masses (S0's split, 23.42 g PLA + 7.53 g TPU, computed
+from the committed reference STLs):
+
+```
+measured ≈ 0.565 · m_PLA,solid + 0.986 · m_TPU,solid   (R² = 0.78, resid sd 0.64 g)
+```
+
+PLA prints at ~57 % of solid, TPU at ~99 %. Because the constant-mass
+projection preserves shape ratios, the PLA/TPU split varies strongly by
+design (TPU fraction 12–36 %), so each gram of solid mass the design moves
+from PLA to TPU adds ~0.42 g of printed mass. That deterministically maps
+the constant-solid-mass batch onto an ~±9 % printed-mass spread — e.g.
+`6lhxfy` (spec 01, TPU fraction 0.118) is the lightest at 18.50 g while the
+TPU-rich `9hhbkp`/`6nheas` (0.35–0.36) sit at 21.6–21.7 g. The ±0.3–0.8 g
+residuals are true print-to-print variance (~3 %), consistent with the
+print-defect study.
+
+**Fix for future batches** (in `bo/t3_prism_sobol_batch.py` on PR #35):
+either weight the scale solve's per-material volumes by effective print
+densities (0.565 / 0.986 as fitted — one-line change, but profile-dependent),
+or iterate the solve on the BambuStudio CLI's sliced per-filament grams,
+which is exact for the active print profile. Which is "right" depends on
+what the constraint is for: if the BO comparison is per-gram-of-printed-
+structure, printed mass is the physical quantity to hold constant.
+
+**Side effect worth using:** the fit predicts printed masses for the
+untested specs — 03 (`ebdna8`) ≈ 20.4 g, 06 ≈ 19.2 g, 07 ≈ 21.5 g. Weighing
+`amdjwm` (§5 open item 1) against these would help disambiguate which spec
+it is (a ~19 g reading points at 06, ~21.5 g at 07).
