@@ -135,16 +135,19 @@ Usage (from the repo root)::
 
 Figures. ``--plot-only`` redraws the objective-space panel from the recorded
 CSVs (no model refit, ~1 s). ``--prototype-next-round`` draws the layout the
-campaign will want once the next batch comes back: each orange diamond joined
-by a straight path to where that article actually landed, which is then drawn
-as an open circle like any other tested article, with the Pareto front
-recomputed over both rounds and the previous front left dashed underneath.
-The round-2 outcomes it uses are SYNTHETIC (nothing has been printed or
-dropped yet); see ``synthesize_round2_outcomes``, which is the single function
-to replace with the measured summary when the real numbers arrive. That run
-also writes the animated version of the same figure (GIF plus MP4, ~7.5 s,
-last frame identical to the still); pass ``--no-animation`` to skip it. The
-MP4 needs ffmpeg on PATH; without it only a Pillow-written GIF is produced.
+campaign will want once the next batch comes back, as two stills plus an
+animation that moves between them. The stills are the two rest points of one
+story: ``stage="travel"`` (each orange diamond joined by a straight path to
+where that article actually landed, drawn as an open circle like any other
+tested article, with no front on the panel) and ``stage="front"`` (the front
+recomputed over both rounds, and nothing else). The animation plays hold,
+retire the round-1 front, travel, hold, clean up, redraw the front, hold: one
+idea per beat, so nothing overlaps (PR #102 review). The round-2 outcomes it
+uses are SYNTHETIC (nothing has been printed or dropped yet); see
+``synthesize_round2_outcomes``, which is the single function to replace with
+the measured summary when the real numbers arrive. Pass ``--no-animation`` to
+skip the GIF/MP4. The MP4 needs ffmpeg on PATH; without it only a
+Pillow-written GIF is produced.
 """
 
 from __future__ import annotations
@@ -394,7 +397,8 @@ X_LABEL = "Shock transmissibility t180 (lower is better)"
 LABEL_CANDIDATES = [
     (12, 7), (12, -20), (-12, 7), (-12, -20),
     (12, 20), (-12, 20), (0, 24), (0, -30),
-    (28, -6), (-28, -6),
+    (28, -6), (-28, -6), (26, 16), (-26, 16),
+    (26, -28), (-26, -28), (0, 38), (0, -44),
 ]
 
 
@@ -460,35 +464,112 @@ def _axes_frac(ax, xy, dx, dy):
     return float(np.clip(fx + dx, 0.02, 0.98)), float(np.clip(fy + dy, 0.03, 0.98))
 
 
-def _label_points(ax, frame, id_col, x_col, y_col, color=LABEL_GRAY, fontsize=17):
-    """Place point labels, greedily avoiding other labels and markers.
+# Relative cost of a point label overlapping each kind of obstacle. A label
+# struck through by a callout leader looks far worse than one crossing a
+# hairline travel path, and covering another label's words is worse still, so
+# the placement search minimizes weighted overlap rather than raw area.
+W_TEXT = 4.0
+W_MARKER = 1.5
+W_LEADER = 2.5
+W_FRONT = 2.2   # the front is a bold 3.4 pt line, not a hairline
+W_LINE = 1.0
+
+
+def _text_boxes(fig, anns, pad=6):
+    """Display-space boxes of the callout *text* (not their leader lines).
+
+    Point labels are laid out after the callouts and treat these as
+    obstacles, which is what stops an ID from landing under a series name.
+    Text.get_window_extent is used explicitly because Annotation's own
+    version folds in the leader line, which spans half the panel and would
+    block far more than the words do.
+    """
+    from matplotlib.text import Text
+
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    boxes = []
+    for ann in anns:
+        bb = Text.get_window_extent(ann, renderer)
+        boxes.append((bb.x0 - pad, bb.y0 - pad, bb.x1 + pad, bb.y1 + pad, W_TEXT))
+    return boxes
+
+
+def _segment_boxes(ends, n=14, half=6, weight=W_LINE):
+    """Small display-space boxes strung along each (start, end) display-space
+    segment, so point labels dodge the travel arrows, the callout leaders and
+    the front polyline instead of landing on top of them."""
+    boxes = []
+    for (x0, y0), (x1, y1) in ends:
+        for t in np.linspace(0.06, 0.94, n):
+            x, y = x0 + t * (x1 - x0), y0 + t * (y1 - y0)
+            boxes.append((x - half, y - half, x + half, y + half, weight))
+    return boxes
+
+
+def _leader_ends(ax, anns):
+    """Display-space endpoints of each callout's leader line."""
+    return [
+        (
+            tuple(ax.transData.transform(ann.xy)),
+            tuple(ax.transAxes.transform(ann.get_position())),
+        )
+        for ann in anns
+    ]
+
+
+def _polyline_ends(ax, xs, ys):
+    """Display-space endpoints of each leg of a data-space polyline."""
+    pts = ax.transData.transform(np.column_stack([xs, ys]))
+    return [(tuple(a), tuple(b)) for a, b in zip(pts[:-1], pts[1:])]
+
+
+def _label_points(
+    ax, frame, id_col, x_col, y_col, color=LABEL_GRAY, fontsize=17, obstacles=()
+):
+    """Place point labels, greedily avoiding markers, callouts and each other.
 
     Boxes are estimated rather than measured (no renderer round trip), which
     is enough to keep IDs legible as the point cloud moves round to round.
+    When no candidate offset is fully clear the least-overlapping one wins,
+    rather than whichever happened to be last in the list.
     """
     pts = ax.transData.transform(frame[[x_col, y_col]].to_numpy(float))
     dpp = ax.figure.dpi / 72.0  # points -> display pixels
     marker_r = 11 * dpp
-    taken = [(x - marker_r, y - marker_r, x + marker_r, y + marker_r) for x, y in pts]
+    taken = [
+        (x - marker_r, y - marker_r, x + marker_r, y + marker_r, W_MARKER)
+        for x, y in pts
+    ]
+    taken.extend(obstacles)
 
-    def overlaps(box):
-        return any(
-            box[0] < t[2] and t[0] < box[2] and box[1] < t[3] and t[1] < box[3]
-            for t in taken
-        )
+    def overlap_area(box):
+        area = 0.0
+        for t in taken:
+            w = min(box[2], t[2]) - max(box[0], t[0])
+            h = min(box[3], t[3]) - max(box[1], t[1])
+            if w > 0 and h > 0:
+                area += w * h * t[4]
+        return area
 
     anns = []
     for (px, py), (_, row) in zip(pts, frame.iterrows()):
         text = str(row[id_col])
         w = 0.56 * fontsize * len(text) * dpp
         h = 1.25 * fontsize * dpp
+        best = None
         for dx, dy in LABEL_CANDIDATES:
             x0 = px + dx * dpp if dx >= 0 else px + dx * dpp - w
             y0 = py + dy * dpp
             box = (x0, y0, x0 + w, y0 + h)
-            if not overlaps(box):
+            area = overlap_area(box)
+            if area <= 0.0:
+                best = (0.0, dx, dy, box)
                 break
-        taken.append(box)
+            if best is None or area < best[0]:
+                best = (area, dx, dy, box)
+        _, dx, dy, box = best
+        taken.append((*box, W_TEXT))
         anns.append(
             ax.annotate(
                 text,
@@ -579,8 +660,6 @@ def render_objective_figure(observed, suggestions, round_number):
             suggestions[f"pred_{obj1_name}_mean"], suggestions[f"pred_{obj2_name}_mean"],
             marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", zorder=4,
         )
-        _label_points(ax, observed, "print_id", obj1_name, obj2_name)
-
         _style_axes(
             ax,
             xlim=(0.79, 1.13),
@@ -590,21 +669,38 @@ def render_objective_figure(observed, suggestions, round_number):
         )
 
         # Series names as leader-line callouts instead of a legend box.
-        _callout(
-            ax, "Pareto front", _front_anchor(front, 0.35),
-            (0.58, 0.96), FRONT_BLUE,
-        )
+        # Placed before the point labels, which then dodge them.
         sug_anchor = suggestions.loc[suggestions[f"pred_{obj2_name}_mean"].idxmin()]
-        _callout(
-            ax, f"Suggested points (round {round_number + 1})",
-            (sug_anchor[f"pred_{obj1_name}_mean"], sug_anchor[f"pred_{obj2_name}_mean"]),
-            (0.02, 0.10), SUGGEST_ORANGE,
-        )
         obs_anchor = observed.loc[observed[obj1_name].idxmax()]
-        _callout(
-            ax, "Existing data",
-            (obs_anchor[obj1_name], obs_anchor[obj2_name]),
-            (0.99, 0.13), INK, leader=LEADER_GRAY, ha="right",
+        callouts = [
+            _callout(
+                ax, "Pareto front", _front_anchor(front, 0.35),
+                (0.58, 0.96), FRONT_BLUE,
+            ),
+            _callout(
+                ax, f"Suggested points (round {round_number + 1})",
+                (
+                    sug_anchor[f"pred_{obj1_name}_mean"],
+                    sug_anchor[f"pred_{obj2_name}_mean"],
+                ),
+                (0.02, 0.10), SUGGEST_ORANGE,
+            ),
+            _callout(
+                ax, "Existing data",
+                (obs_anchor[obj1_name], obs_anchor[obj2_name]),
+                (0.99, 0.13), INK, leader=LEADER_GRAY, ha="right",
+            ),
+        ]
+        _label_points(
+            ax, observed, "print_id", obj1_name, obj2_name,
+            obstacles=(
+                _text_boxes(fig, callouts)
+                + _segment_boxes(_leader_ends(ax, callouts), half=9, weight=W_LEADER)
+                + _segment_boxes(
+                    _polyline_ends(ax, front[obj1_name], front[obj2_name]),
+                    half=9, weight=W_FRONT,
+                )
+            ),
         )
 
         fig_dir = BO_DIR / "figures"
@@ -655,21 +751,42 @@ def synthesize_round2_outcomes(suggestions, seed=0, shrink=0.3):
     return out
 
 
+def _prototype_limits(combined, suggestions):
+    """Tick arrays shared by every round-2 artifact, so the stills and the
+    animation register frame for frame."""
+    xs = np.concatenate(
+        [combined[obj1_name].to_numpy(float), suggestions[f"pred_{obj1_name}_mean"]]
+    )
+    ys = np.concatenate(
+        [combined[obj2_name].to_numpy(float), suggestions[f"pred_{obj2_name}_mean"]]
+    )
+    xticks = _nice_ticks(xs.min(), xs.max(), 0.1)
+    yticks = _nice_ticks(ys.min(), ys.max(), 2)
+    return xticks, yticks
+
+
 def render_prediction_vs_actual_figure(
-    observed, suggestions, actual, round_number, show_predictions=True
+    observed, suggestions, actual, round_number, stage="travel"
 ):
-    """Prototype of the post-round-2 figure: predictions travel to measurements.
+    """The two rest points of the round-2 story, as stills.
 
-    Each orange diamond (what the model predicted for a suggested design) is
-    joined by a straight path to the open black circle where that article
-    actually landed, and the Pareto front is recomputed over round 1 plus
-    round 2. The round-1 front stays as a dashed line so the improvement is
-    visible.
+    ``stage="travel"``: what the model predicted (faded orange diamonds)
+    joined by straight paths to where each article actually landed, drawn as
+    an open black circle like any other tested article. **No front is drawn.**
+    The round-1 front has already been retired and the round-2 one has not
+    been computed yet, which is precisely the beat the animation holds on, and
+    keeping the panel free of it is what makes the travel readable.
 
-    With `show_predictions=False` the whole prediction layer (diamonds,
-    travel paths, round-1 front and their callouts) is left out, which is the
-    resting state the animation ends on: one front, one set of articles.
+    ``stage="front"``: the round-2 figure alone. One front, computed over both
+    rounds, one set of articles, none of the scaffolding that explained how
+    the batch got there.
+
+    Both stages share tick ranges and label placement inputs, so the two PNGs
+    (and the animation frames they correspond to) register.
     """
+    if stage not in ("travel", "front"):
+        raise ValueError(f"stage must be 'travel' or 'front', got {stage!r}")
+
     combined = pd.concat(
         [
             observed[["print_id", obj1_name, obj2_name]],
@@ -680,20 +797,19 @@ def render_prediction_vs_actual_figure(
     old_front = pareto_front(observed)
     new_front = pareto_front(combined)
     on_new_front = combined["print_id"].isin(new_front["print_id"])
-
-    xs = np.concatenate(
-        [combined[obj1_name], suggestions[f"pred_{obj1_name}_mean"]]
-    )
-    ys = np.concatenate(
-        [combined[obj2_name], suggestions[f"pred_{obj2_name}_mean"]]
-    )
-    xticks = _nice_ticks(xs.min(), xs.max(), 0.1)
-    yticks = _nice_ticks(ys.min(), ys.max(), 2)
+    xticks, yticks = _prototype_limits(combined, suggestions)
 
     with plt.rc_context(FIG_RC):
         fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=200)
+        _style_axes(
+            ax,
+            xlim=(xticks[0] - 0.015, xticks[-1] + 0.02),
+            ylim=(yticks[0] - 0.5, yticks[-1] + 0.6),
+            xticks=xticks,
+            yticks=yticks,
+        )
 
-        if show_predictions:
+        if stage == "travel":
             # predicted -> measured travel paths
             for (_, pred), (_, act) in zip(suggestions.iterrows(), actual.iterrows()):
                 ax.annotate(
@@ -713,55 +829,38 @@ def render_prediction_vs_actual_figure(
                     ),
                     zorder=1,
                 )
-
-            # where the model thought round 2 would land (now superseded, faded)
+            # where the model thought round 2 would land (now superseded)
             ax.scatter(
                 suggestions[f"pred_{obj1_name}_mean"],
                 suggestions[f"pred_{obj2_name}_mean"],
                 marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", alpha=0.38, zorder=2,
             )
-
+            # every article is just a tested article at this point
+            ax.scatter(
+                combined[obj1_name], combined[obj2_name],
+                fc="none", ec=INK, s=190, lw=2.4, zorder=4,
+            )
+        else:
             ax.plot(
-                old_front[obj1_name], old_front[obj2_name],
-                color=FRONT_BLUE, lw=2.4, ls=(0, (5, 4)), alpha=0.45, zorder=2,
+                new_front[obj1_name], new_front[obj2_name],
+                color=FRONT_BLUE, lw=3.4, zorder=3,
             )
-        ax.plot(
-            new_front[obj1_name], new_front[obj2_name],
-            color=FRONT_BLUE, lw=3.4, zorder=3,
-        )
-        ax.scatter(
-            combined.loc[~on_new_front, obj1_name], combined.loc[~on_new_front, obj2_name],
-            fc="none", ec=INK, s=190, lw=2.4, zorder=4,
-        )
-        ax.scatter(
-            new_front[obj1_name], new_front[obj2_name],
-            fc=FRONT_BLUE, ec=INK, s=190, lw=2.4, zorder=5,
-        )
-        _label_points(ax, combined, "print_id", obj1_name, obj2_name)
-
-        _style_axes(
-            ax,
-            xlim=(xticks[0] - 0.015, xticks[-1] + 0.02),
-            ylim=(yticks[0] - 0.5, yticks[-1] + 0.6),
-            xticks=xticks,
-            yticks=yticks,
-        )
-
-        # Callouts are placed relative to what they point at, because the
-        # front and the point cloud both move every round.
-        new_anchor = _front_anchor(new_front, 0.45)
-        _callout(
-            ax, f"Pareto front after round {round_number}", new_anchor,
-            _axes_frac(ax, new_anchor, -0.42, -0.02), FRONT_BLUE, ha="left",
-        )
-        if show_predictions:
-            old_anchor = _front_anchor(old_front, 0.75)
-            _callout(
-                ax, "Round-1 front", old_anchor,
-                _axes_frac(ax, old_anchor, 0.06, 0.12), FRONT_BLUE,
+            ax.scatter(
+                combined.loc[~on_new_front, obj1_name],
+                combined.loc[~on_new_front, obj2_name],
+                fc="none", ec=INK, s=190, lw=2.4, zorder=4,
             )
-            # Label the longest predicted-to-measured travel, the clearest one
-            # to read the grammar off.
+            ax.scatter(
+                new_front[obj1_name], new_front[obj2_name],
+                fc=FRONT_BLUE, ec=INK, s=190, lw=2.4, zorder=5,
+            )
+
+        # Callouts first, so the print IDs can dodge them. At most two are
+        # ever on the panel at once: one idea per figure, per the PR #102
+        # review of the animation.
+        if stage == "travel":
+            # Name the longest predicted-to-measured travel, the clearest one
+            # to read the grammar off, and only that one.
             travel = int(
                 np.hypot(
                     actual[obj1_name].to_numpy(float)
@@ -778,15 +877,55 @@ def render_prediction_vs_actual_figure(
                 pred_row[f"pred_{obj1_name}_mean"],
                 pred_row[f"pred_{obj2_name}_mean"],
             )
-            _callout(
-                ax, "Predicted (round 2)", pred_xy,
-                _axes_frac(ax, pred_xy, -0.10, -0.30), SUGGEST_ORANGE, ha="right",
-            )
             act_xy = (act_row[obj1_name], act_row[obj2_name])
-            _callout(
-                ax, "Measured", act_xy,
-                _axes_frac(ax, act_xy, 0.10, 0.13), INK, leader=LEADER_GRAY,
+            callouts = [
+                _callout(
+                    ax, f"Predicted (round {round_number})", pred_xy,
+                    _axes_frac(ax, pred_xy, -0.05, -0.13), SUGGEST_ORANGE, ha="right",
+                ),
+                _callout(
+                    ax, "Measured", act_xy,
+                    _axes_frac(ax, act_xy, 0.06, 0.09), INK, leader=LEADER_GRAY,
+                ),
+            ]
+        else:
+            # Nothing can sit below-left of a Pareto front, so that is where
+            # this callout goes; it is a property of the front, not a
+            # hand-placement that breaks when the data moves.
+            new_anchor = _front_anchor(new_front, 0.55)
+            callouts = [
+                _callout(
+                    ax, f"Pareto front after round {round_number}", new_anchor,
+                    _axes_frac(ax, new_anchor, -0.36, -0.20), FRONT_BLUE, ha="left",
+                ),
+            ]
+        blockers = _text_boxes(fig, callouts) + _segment_boxes(
+            _leader_ends(ax, callouts), half=9, weight=W_LEADER
+        )
+        if stage == "travel":
+            blockers += _segment_boxes(
+                list(
+                    zip(
+                        ax.transData.transform(
+                            suggestions[
+                                [f"pred_{obj1_name}_mean", f"pred_{obj2_name}_mean"]
+                            ].to_numpy(float)
+                        ),
+                        ax.transData.transform(
+                            actual[[obj1_name, obj2_name]].to_numpy(float)
+                        ),
+                    )
+                )
             )
+        else:
+            blockers += _segment_boxes(
+                _polyline_ends(ax, new_front[obj1_name], new_front[obj2_name]),
+                half=9, weight=W_FRONT,
+            )
+        _label_points(
+            ax, combined, "print_id", obj1_name, obj2_name, obstacles=blockers,
+        )
+
         ax.text(
             1.0, 1.06, "PROTOTYPE: round-2 outcomes are synthetic",
             transform=ax.transAxes, ha="right", va="bottom",
@@ -797,28 +936,30 @@ def render_prediction_vs_actual_figure(
         fig_dir.mkdir(exist_ok=True)
         stem = (
             f"t3-prism-bo-round{round_number}-predicted-vs-actual"
-            if show_predictions
+            if stage == "travel"
             else f"t3-prism-bo-round{round_number}-front-final"
         )
         out_png = fig_dir / f"{stem}-PROTOTYPE.png"
         fig.savefig(out_png, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
-    gained = set(new_front["print_id"]) - set(old_front["print_id"])
-    print(
-        f"[prototype, synthetic data] round-{round_number} front: "
-        + ", ".join(new_front["print_id"])
-        + (f"; new entrants: {', '.join(sorted(gained))}" if gained else "")
-    )
+    if stage == "front":
+        gained = set(new_front["print_id"]) - set(old_front["print_id"])
+        print(
+            f"[prototype, synthetic data] round-{round_number} front: "
+            + ", ".join(new_front["print_id"])
+            + (f"; new entrants: {', '.join(sorted(gained))}" if gained else "")
+        )
     return out_png
 
 
 # ---- round-2 prototype, animated ----------------------------------------
-# Same grammar as the static prototype, played out in time: the orange
-# diamonds (predictions) travel along straight paths to where the articles
-# actually landed, turning into open black circles on arrival, and the front
-# is then recomputed with the round-1 front left dashed underneath. Still
-# SYNTHETIC outcomes; see synthesize_round2_outcomes.
+# Same grammar as the static prototypes, played out in time, one idea per
+# beat (PR #102 review: too many things were moving and too much text was on
+# screen at once). The round-1 front is retired BEFORE anything moves, the
+# diamonds then travel alone, and the new front is redrawn as its own step
+# after every article has landed and turned into an open black circle.
+# Still SYNTHETIC outcomes; see synthesize_round2_outcomes.
 
 ANIM_DPI = 100  # 11 x 7 in -> 1100 x 700 px, both even (h.264 needs even)
 
@@ -846,18 +987,30 @@ def _callout_alpha(ann, alpha):
 
 
 def render_prediction_animation(
-    observed, suggestions, actual, round_number, fps=25, seconds=None
+    observed, suggestions, actual, round_number, fps=25
 ):
     """Animate predicted -> measured for the suggested batch (GIF + MP4).
 
-    Frames: hold on the suggested batch, then each prediction travels to its
-    measurement (staggered, eased) and lands as an open circle, then the
-    Pareto front is recomputed while the round-1 front drops back to a pale
-    dashed line and the new print IDs fade in. Finally the whole prediction
-    layer (diamonds, travel paths, arrowheads, the round-1 front) fades away,
-    so the clip rests on the round-2 figure alone rather than on the
-    scaffolding that explained how it got there. The last frame is the
-    `show_predictions=False` still, so the two artifacts agree.
+    Choreographed one idea per beat, after the PR #102 review found the first
+    cut had too much moving and too much text on screen at once:
+
+    1. *Hold*: the round-1 figure exactly as the slide already shows it.
+    2. *Retire*: the round-1 front and its blue point fills fade out, taking
+       the "Pareto front" and "Existing data" callouts with them. Nothing
+       moves. The panel is left as tested articles plus suggestions.
+    3. *Travel*: the diamonds ease to their measurements and hand off to open
+       black circles, alone on the panel, with no front to read across.
+    4. *Hold*: predicted versus measured, named by one labeled pair.
+    5. *Clean*: the prediction layer and those two callouts fade out.
+    6. *Front*: the new front is redrawn over both rounds, as its own step,
+       wiping in along the polyline and filling each article as it reaches it.
+    7. *Hold*: the round-2 figure alone.
+
+    Beats 4 and 7 hold the same content as the two committed stills
+    (``stage="travel"`` and ``stage="front"``), which is what keeps the
+    animation and the PNGs telling the same story. Only the point-label
+    placement differs, because each figure solves it against its own set of
+    obstacles.
     """
     from matplotlib.animation import FFMpegWriter, FuncAnimation, PillowWriter
     from matplotlib.collections import LineCollection
@@ -870,8 +1023,8 @@ def render_prediction_animation(
         ignore_index=True,
     )
     old_front = pareto_front(observed)
-    new_front_ids = set(pareto_front(combined)["print_id"])
     new_front = pareto_front(combined)
+    new_front_ids = set(new_front["print_id"])
 
     pred_xy = suggestions[
         [f"pred_{obj1_name}_mean", f"pred_{obj2_name}_mean"]
@@ -884,19 +1037,54 @@ def render_prediction_animation(
     obs_on_new = observed["print_id"].isin(new_front_ids).to_numpy()
     act_on_new = actual["print_id"].isin(new_front_ids).to_numpy()
 
-    xs = np.concatenate([combined[obj1_name].to_numpy(float), pred_xy[:, 0]])
-    ys = np.concatenate([combined[obj2_name].to_numpy(float), pred_xy[:, 1]])
-    xticks = _nice_ticks(xs.min(), xs.max(), 0.1)
-    yticks = _nice_ticks(ys.min(), ys.max(), 2)
+    xticks, yticks = _prototype_limits(combined, suggestions)
 
-    # phase lengths in frames
-    n_hold0 = int(round(1.2 * fps))
-    n_travel = int(round(2.6 * fps))
-    n_front = int(round(1.1 * fps))
-    n_hold1 = int(round(1.5 * fps))   # read predicted vs measured
-    n_clean = int(round(0.9 * fps))   # then drop the prediction layer
-    n_hold2 = int(round(2.4 * fps))   # rest on the round-2 figure alone
-    n_frames = n_hold0 + n_travel + n_front + n_hold1 + n_clean + n_hold2
+    # Arc position of every article along the new front, normalized to [0, 1],
+    # so the wipe and the fills that follow it are one motion rather than a
+    # line and a set of markers that happen to share a phase.
+    fx = new_front[obj1_name].to_numpy(float)
+    fy = new_front[obj2_name].to_numpy(float)
+    xr = max(float(np.ptp(fx)), 1e-9)
+    yr = max(float(np.ptp(fy)), 1e-9)
+    seg = np.hypot(np.diff(fx) / xr, np.diff(fy) / yr)
+    cum = np.concatenate([[0.0], np.cumsum(seg)])
+    s_front = cum / max(cum[-1], 1e-9)
+    arc_of = dict(zip(new_front["print_id"], s_front))
+    obs_s = np.array(
+        [arc_of[p] for p in observed.loc[obs_on_new, "print_id"]], float
+    )
+    act_s = np.array(
+        [arc_of[p] for p in actual.loc[act_on_new, "print_id"]], float
+    )
+
+    def front_upto(v):
+        """The front polyline truncated at normalized arc length `v`."""
+        if v <= 0.0:
+            return [], []
+        if v >= 1.0:
+            return fx, fy
+        k = int(np.searchsorted(s_front, v))
+        i = max(k - 1, 0)
+        t = (v - s_front[i]) / max(s_front[i + 1] - s_front[i], 1e-9)
+        return (
+            [*fx[:k], fx[i] + t * (fx[i + 1] - fx[i])],
+            [*fy[:k], fy[i] + t * (fy[i + 1] - fy[i])],
+        )
+
+    # phase lengths in frames, one idea each
+    n_hold0 = int(round(1.3 * fps))    # the round-1 figure, as-is
+    n_retire = int(round(0.9 * fps))   # drop the round-1 front, nothing moves
+    n_travel = int(round(2.6 * fps))   # predictions travel, nothing else
+    n_hold1 = int(round(1.7 * fps))    # read predicted vs measured
+    n_clean = int(round(0.9 * fps))    # drop the prediction layer
+    n_front = int(round(1.3 * fps))    # redraw the front, its own step
+    n_hold2 = int(round(2.4 * fps))    # rest on the round-2 figure
+    t_retire = n_hold0
+    t_travel = t_retire + n_retire
+    t_hold1 = t_travel + n_travel
+    t_clean = t_hold1 + n_hold1
+    t_front = t_clean + n_clean
+    n_frames = t_front + n_front + n_hold2
 
     with plt.rc_context(FIG_RC):
         fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=ANIM_DPI)
@@ -948,19 +1136,21 @@ def render_prediction_animation(
             old_front[obj1_name], old_front[obj2_name],
             color=FRONT_BLUE, lw=3.4, zorder=3,
         )
-        new_line, = ax.plot(
-            new_front[obj1_name], new_front[obj2_name],
-            color=FRONT_BLUE, lw=3.4, alpha=0.0, zorder=3,
-        )
+        new_line, = ax.plot([], [], color=FRONT_BLUE, lw=3.4, zorder=3)
 
-        # round-1 articles: always drawn, blue fill only while on the front
+        # round-1 articles: always drawn, blue fill only while on a front
         ax.scatter(obs_xy[:, 0], obs_xy[:, 1], fc="none", ec=INK, s=190, lw=2.4, zorder=4)
-        r1_fill = ax.scatter(
+        r1_old_fill = ax.scatter(
             obs_xy[obs_on_old, 0], obs_xy[obs_on_old, 1],
             fc=_rgba(FRONT_BLUE, np.ones(int(obs_on_old.sum()))),
             ec=INK, s=190, lw=2.4, zorder=5,
         )
-        r1_stays = obs_on_new[obs_on_old]  # of the round-1 front, who survives
+        r1_new_fill = ax.scatter(
+            obs_xy[obs_on_new, 0], obs_xy[obs_on_new, 1],
+            fc=_rgba(FRONT_BLUE, np.zeros(int(obs_on_new.sum()))),
+            ec=_rgba(INK, np.zeros(int(obs_on_new.sum()))),
+            s=190, lw=2.4, zorder=5,
+        )
 
         landed = ax.scatter(
             act_xy[:, 0], act_xy[:, 1], fc="none",
@@ -973,37 +1163,23 @@ def render_prediction_animation(
             s=190, lw=2.4, zorder=5,
         )
 
-        # Labels are laid out once, for the final frame, so nothing shuffles
-        # mid-animation; the round-2 IDs fade in as their articles land.
-        anns = _label_points(ax, combined, "print_id", obj1_name, obj2_name)
-        r2_anns = anns[len(observed):]
-        for ann in r2_anns:
-            ann.set_alpha(0.0)
-
-        # callouts: the round-1 set fades out as the round-2 set fades in
+        # Callouts, laid out before the point labels so the IDs dodge them.
+        # At most three are ever lit at once (the opening frame, which is the
+        # round-1 slide), and at most one while anything is moving.
         obs_anchor = observed.loc[observed[obj1_name].idxmax()]
         c_exist = _callout(
             ax, "Existing data (round 1)",
             (obs_anchor[obj1_name], obs_anchor[obj2_name]),
             (0.995, 0.72), INK, leader=LEADER_GRAY, ha="right",
         )
-        old_anchor = _front_anchor(old_front, 0.30)
         c_front1 = _callout(
-            ax, "Pareto front", old_anchor, (0.56, 0.98), FRONT_BLUE,
+            ax, "Pareto front", _front_anchor(old_front, 0.30),
+            (0.56, 0.98), FRONT_BLUE,
         )
         sug_i = int(np.argmin(pred_xy[:, 1]))
         c_sug = _callout(
             ax, f"Suggested points (round {round_number})",
             tuple(pred_xy[sug_i]), (0.02, 0.09), SUGGEST_ORANGE,
-        )
-        new_anchor = _front_anchor(new_front, 0.45)
-        c_front2 = _callout(
-            ax, f"Pareto front after round {round_number}", new_anchor,
-            _axes_frac(ax, new_anchor, -0.42, -0.02), FRONT_BLUE, ha="left",
-        )
-        old_anchor2 = _front_anchor(old_front, 0.75)
-        c_front1b = _callout(
-            ax, "Round-1 front", old_anchor2, (0.985, 0.47), FRONT_BLUE, ha="right",
         )
         travel_i = int(
             np.hypot(
@@ -1012,13 +1188,18 @@ def render_prediction_animation(
         )
         c_pred = _callout(
             ax, f"Predicted (round {round_number})", tuple(pred_xy[travel_i]),
-            _axes_frac(ax, pred_xy[travel_i], -0.10, -0.30), SUGGEST_ORANGE, ha="right",
+            _axes_frac(ax, pred_xy[travel_i], -0.05, -0.13), SUGGEST_ORANGE, ha="right",
         )
         c_meas = _callout(
             ax, "Measured", tuple(act_xy[travel_i]),
-            _axes_frac(ax, act_xy[travel_i], 0.10, 0.13), INK, leader=LEADER_GRAY,
+            _axes_frac(ax, act_xy[travel_i], 0.06, 0.09), INK, leader=LEADER_GRAY,
         )
-        for ann in (c_front2, c_front1b, c_pred, c_meas):
+        new_anchor = _front_anchor(new_front, 0.55)
+        c_front2 = _callout(
+            ax, f"Pareto front after round {round_number}", new_anchor,
+            _axes_frac(ax, new_anchor, -0.36, -0.20), FRONT_BLUE, ha="left",
+        )
+        for ann in (c_pred, c_meas, c_front2):
             _callout_alpha(ann, 0.0)
 
         ax.text(
@@ -1027,24 +1208,53 @@ def render_prediction_animation(
             fontsize=15, color=SUGGEST_ORANGE,
         )
 
+        # Labels are laid out once, for the final frame, so nothing shuffles
+        # mid-animation; the round-2 IDs fade in as their own article lands.
+        # Labels are static, so they dodge everything that is drawn at any
+        # point in the clip: every callout and its leader, both fronts, and
+        # the travel paths.
+        all_callouts = [c_exist, c_front1, c_sug, c_pred, c_meas, c_front2]
+        anns = _label_points(
+            ax, combined, "print_id", obj1_name, obj2_name,
+            obstacles=(
+                _text_boxes(fig, all_callouts)
+                + _segment_boxes(
+                    _leader_ends(ax, all_callouts), half=9, weight=W_LEADER
+                )
+                + _segment_boxes(_polyline_ends(ax, fx, fy), half=9, weight=W_FRONT)
+                + _segment_boxes(
+                    _polyline_ends(
+                        ax, old_front[obj1_name], old_front[obj2_name]
+                    ),
+                    half=9, weight=W_FRONT,
+                )
+                + _segment_boxes(
+                    list(zip(ax.transData.transform(pred_xy),
+                             ax.transData.transform(act_xy)))
+                )
+            ),
+        )
+        r2_anns = anns[len(observed):]
+        for ann in r2_anns:
+            ann.set_alpha(0.0)
+
         # per-point stagger, so the batch reads as nine articles rather than
         # one rigid swarm
         starts = np.linspace(0.0, 0.34, n_r2) if n_r2 > 1 else np.zeros(1)
         span = 0.66
 
         def update(f):
-            u = np.clip((f - n_hold0) / max(n_travel, 1), 0.0, 1.0)
-            v = _smoothstep((f - n_hold0 - n_travel) / max(n_front, 1))
-            # w: the clean-up fade, 0 until the predicted-vs-measured hold is
-            # over, 1 once the prediction layer is gone
-            w = _smoothstep(
-                (f - n_hold0 - n_travel - n_front - n_hold1) / max(n_clean, 1)
-            )
+            # one progress variable per beat; each is zero until its beat
+            q = _smoothstep((f - t_retire) / max(n_retire, 1))   # retire front
+            u = np.clip((f - t_travel) / max(n_travel, 1), 0.0, 1.0)
+            m = _smoothstep((f - t_hold1) / max(0.45 * fps, 1))  # name the pair
+            w = _smoothstep((f - t_clean) / max(n_clean, 1))     # clean up
+            v = _smoothstep((f - t_front) / max(n_front, 1))     # redraw front
             keep = 1.0 - w  # everything that only existed to explain the move
             p = _smoothstep((u - starts) / span)
 
             cur = pred_xy + p[:, None] * (act_xy - pred_xy)
-            trails.set_segments([np.array([q, c]) for q, c in zip(pred_xy, cur)])
+            trails.set_segments([np.array([q0, c]) for q0, c in zip(pred_xy, cur)])
             trails.set_color(mcolors.to_rgba(SUGGEST_ORANGE, 0.55 * keep))
             mover.set_offsets(cur)
             # the diamond hands off to the open circle over the last 40% of
@@ -1063,29 +1273,35 @@ def render_prediction_animation(
                 head.arrow_patch.set_alpha(
                     0.55 * _smoothstep((pi - 0.85) / 0.15) * keep
                 )
+            # each round-2 ID arrives with its own article, not as a block
+            for ann, pi in zip(r2_anns, p):
+                ann.set_alpha(float(_smoothstep((pi - 0.7) / 0.3)))
 
-            old_line.set_alpha((1.0 - 0.55 * v) * keep)
-            old_line.set_linewidth(3.4 - 1.0 * v)
-            old_line.set_linestyle("solid" if v < 0.35 else (0, (5, 4)))
-            new_line.set_alpha(v)
-            r1_fill.set_facecolor(
-                _rgba(FRONT_BLUE, np.where(r1_stays, 1.0, 1.0 - v))
+            # beat 2: the round-1 front leaves before anything moves
+            old_line.set_alpha(1.0 - q)
+            r1_old_fill.set_facecolor(
+                _rgba(FRONT_BLUE, np.full(int(obs_on_old.sum()), 1.0 - q))
             )
-            r1_fill.set_edgecolor(_rgba(INK, np.where(r1_stays, 1.0, 1.0 - v)))
-            r2_fill.set_facecolor(_rgba(FRONT_BLUE, np.full(int(act_on_new.sum()), v)))
-            r2_fill.set_edgecolor(_rgba(INK, np.full(int(act_on_new.sum()), v)))
-            for ann in r2_anns:
-                ann.set_alpha(v)
-            for ann in (c_front1, c_sug):
-                _callout_alpha(ann, 1.0 - v)
-            _callout_alpha(c_front2, v)
-            # "Round-1 front", "Predicted" and "Measured" name things that are
-            # about to leave, so they leave with them
-            for ann in (c_front1b, c_pred, c_meas):
-                _callout_alpha(ann, v * keep)
-            # Once round 2 is measured, "existing data" is every point on the
-            # panel, so the distinction stops earning its ink
-            _callout_alpha(c_exist, keep)
+            r1_old_fill.set_edgecolor(
+                _rgba(INK, np.full(int(obs_on_old.sum()), 1.0 - q))
+            )
+
+            # beat 6: the new front wipes in and fills each article it reaches
+            new_line.set_data(*front_upto(v))
+            r1_new_fill.set_facecolor(
+                _rgba(FRONT_BLUE, _smoothstep((v - obs_s) / 0.18))
+            )
+            r1_new_fill.set_edgecolor(_rgba(INK, _smoothstep((v - obs_s) / 0.18)))
+            r2_fill.set_facecolor(_rgba(FRONT_BLUE, _smoothstep((v - act_s) / 0.18)))
+            r2_fill.set_edgecolor(_rgba(INK, _smoothstep((v - act_s) / 0.18)))
+
+            # callouts: never more than one live while anything is in motion
+            _callout_alpha(c_exist, 1.0 - q)
+            _callout_alpha(c_front1, 1.0 - q)
+            _callout_alpha(c_sug, 1.0 - _smoothstep(u / 0.25))
+            _callout_alpha(c_pred, m * keep)
+            _callout_alpha(c_meas, m * keep)
+            _callout_alpha(c_front2, _smoothstep((v - 0.55) / 0.45))
             return ()
 
         anim = FuncAnimation(fig, update, frames=n_frames, interval=1000 / fps)
@@ -1204,13 +1420,12 @@ def main(argv=None):
             actual[["print_id", "trial_index", *PARAM_NAMES, obj1_name, obj2_name]].to_csv(
                 dummy_csv, index=False, float_format="%.4f"
             )
+            # the two beats the animation holds on
             out = render_prediction_vs_actual_figure(
-                observed, suggestions, actual, args.round + 1
+                observed, suggestions, actual, args.round + 1, stage="travel"
             )
-            # the resting state the animation ends on
             out_final = render_prediction_vs_actual_figure(
-                observed, suggestions, actual, args.round + 1,
-                show_predictions=False,
+                observed, suggestions, actual, args.round + 1, stage="front"
             )
             print(
                 f"Prototype figures saved to {out} and {out_final} "

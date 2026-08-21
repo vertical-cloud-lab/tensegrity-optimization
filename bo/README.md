@@ -68,40 +68,46 @@ suggests the next print batch.
   `python bo/t3_prism_bo_campaign.py --plot-only`. Styling follows the
   hand-made reference on PR #102: no legend box (series are named by
   leader-line callouts in the plot area), detached left and bottom spines,
-  no gridlines, gray print IDs, horizontal y-axis label above the axis.
+  no gridlines, gray print IDs, horizontal y-axis label above the axis. Print
+  IDs are placed by a search that dodges the markers, the other IDs, the
+  callout text, the callout leaders and the front line, weighted so that a
+  label would rather cross a hairline than sit on top of words; nothing here
+  is hand-positioned, because the point cloud moves every round.
 - `figures/t3-prism-bo-round2-predicted-vs-actual-PROTOTYPE.png` and
   `t3-prism-bo-round2-outcomes-PROTOTYPE-dummy.csv`: **prototype, synthetic
   data.** The layout the campaign will want once round 2 comes back: each
   orange diamond (predicted) is joined by a straight path to the open black
-  circle where that article actually landed, the Pareto front is recomputed
-  over both rounds, and the round-1 front stays dashed underneath so the
-  improvement reads at a glance. No round-2 article has been printed or
+  circle where that article actually landed. No front is drawn on this one.
+  The round-1 front has been retired and the round-2 front has not been
+  computed yet, which is the beat the animation holds on, and leaving it off
+  is what makes the travel readable. No round-2 article has been printed or
   dropped, so the outcomes are drawn from the model's own predictive
   distribution at 0.3 sd (a full draw scatters the batch off the panel).
   Replace `synthesize_round2_outcomes` with the measured campaign summary to
   turn this into the real figure. Draw it with
   `python bo/t3_prism_bo_campaign.py --prototype-next-round`.
 - `figures/t3-prism-bo-round2-front-final-PROTOTYPE.png`: the same data with
-  the prediction layer left out (no diamonds, no travel paths, no round-1
-  front), which is the resting state the animation ends on and the frame to
-  put on a slide when the point is the new front rather than how the model
-  did. Same `--prototype-next-round` run renders both.
+  the prediction layer left out (no diamonds, no travel paths) and the front
+  recomputed over both rounds. It is the resting state the animation ends on
+  and the frame to put on a slide when the point is the new front rather than
+  how the model did. Same `--prototype-next-round` run renders both.
 - `figures/t3-prism-bo-round2-predicted-vs-actual-PROTOTYPE.gif` and
   `.mp4`: the same prototype played out in time, which is how it is meant to
-  be shown. The batch holds as orange diamonds, each diamond then travels its
-  straight path to the measurement and hands off to an open black circle on
-  arrival, and the front is recomputed while the round-1 front drops back to
-  a pale dashed line and the new print IDs fade in. It then clears its own
-  scaffolding: after a beat on predicted-versus-measured, the diamonds,
-  travel paths, arrowheads and round-1 front fade out together with the
-  callouts that named them, so the clip rests on the round-2 figure alone.
-  About 9.7 s, and the last frame matches
+  be shown. Choreographed one idea per beat, after the PR #102 review found
+  the first cut had too much moving and too much text on screen at once:
+  hold on the round-1 figure (1.3 s), retire the round-1 front and its
+  callouts with nothing else moving (0.9 s), travel the diamonds to their
+  measurements on an otherwise clean panel (2.6 s), hold on predicted versus
+  measured (1.7 s), clear the prediction layer (0.9 s), redraw the new front
+  as its own step, wiping in along the polyline and filling each article as
+  it reaches it (1.3 s), and rest (2.4 s). About 11 s. At most one callout is
+  ever lit while anything is in motion, and the last frame matches
   `t3-prism-bo-round2-front-final-PROTOTYPE.png`. Written by the same
-  `--prototype-next-round` run; add `--no-animation` to write only the still.
-  The MP4 needs `ffmpeg` on PATH (`apt-get install ffmpeg`); without it the
-  script falls back to a Pillow-written GIF and skips the MP4. The GIF is
-  built from the MP4 with an ffmpeg palette pass (12 fps, 980 px wide), which
-  is what keeps it under a megabyte.
+  `--prototype-next-round` run; add `--no-animation` to write only the
+  stills. The MP4 needs `ffmpeg` on PATH (`apt-get install ffmpeg`); without
+  it the script falls back to a Pillow-written GIF and skips the MP4. The GIF
+  is built from the MP4 with an ffmpeg palette pass (12 fps, 980 px wide),
+  which is what keeps it under a megabyte.
 
 ### Constant printed mass, and the `fit_out_of_design` kwarg it needs
 
