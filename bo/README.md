@@ -65,6 +65,18 @@ suggests the next print batch.
   Replace `synthesize_round2_outcomes` with the measured campaign summary to
   turn this into the real figure. Draw it with
   `python bo/t3_prism_bo_campaign.py --prototype-next-round`.
+- `figures/t3-prism-bo-round2-predicted-vs-actual-PROTOTYPE.gif` and
+  `.mp4`: the same prototype played out in time, which is how it is meant to
+  be shown. The batch holds as orange diamonds, each diamond then travels its
+  straight path to the measurement and hands off to an open black circle on
+  arrival, and the front is recomputed while the round-1 front drops back to
+  a pale dashed line and the new print IDs fade in. About 7.5 s, and the last
+  frame matches the still PNG. Written by the same
+  `--prototype-next-round` run; add `--no-animation` to write only the still.
+  The MP4 needs `ffmpeg` on PATH (`apt-get install ffmpeg`); without it the
+  script falls back to a Pillow-written GIF and skips the MP4. The GIF is
+  built from the MP4 with an ffmpeg palette pass (12 fps, 980 px wide), which
+  is what keeps it under a megabyte.
 
 ## Print key files
 
