@@ -160,32 +160,48 @@ objective it feeds is wrong by that factor before any physics happens.
 
 ## 4. The closed-loop simulation-only campaign
 
-`pr102_sim_campaign.py` mirrors PR #102's structure: the nine printed
-articles are attached as completed trials (scored in simulation), then the
-loop proposes 9 more per round. Objectives, search space, batch size and the
-`mass_g` tracking metric are identical; the generation strategy defaults to
-the same SAASBO step.
+`pr102_sim_campaign.py` mirrors PR #102's structure: the same five-parameter
+box, the same two minimized objectives, the same 9-per-plate batch size, the
+same `mass_g` tracking metric and the same SAASBO generation step by
+default. What it adds is that the loop can continue past one round and can
+be repeated, which is the only reason to run it in simulation at all.
 
-Repeat seeds are the point of running it in simulation, and they are what
-the staged workflow parallelizes. Each matrix leg is one seed, which is
-worth doing because SAASBO's per-round NUTS fit, not the 0.3 s simulation,
-is the wall-clock.
+### What a repeat has to be
 
-Three seeds were run in-session (`--model botorch`, 3 rounds of 9 after the
-printed batch, 36 simulated designs each):
+A repeat is only a repeat if the whole campaign is redrawn. The first
+version of this script attached the nine physically printed articles as
+round 0 of every seed, so every repeat began from an identical initial
+design and the seed reached nothing but the surrogate's own randomness. The
+seeds then agreed to under 2 %, which measured the determinism of the
+plumbing rather than the reproducibility of the optimizer.
 
-| seed | final hypervolume | best `t180` | best `e_reb_mJ` |
-|---|--:|--:|--:|
-| 0 | 17.79 | 0.4869 | 170.05 |
-| 1 | 17.59 | 0.4942 | 170.04 |
-| 2 | 17.59 | 0.4945 | 170.01 |
+`--init sobol`, now the default, starts each repeat from scratch: round 0 is
+the campaign's own nine-point Sobol draw, scrambled with that repeat's seed
+(passed to Ax's Sobol generator explicitly as well as through
+`AxClient(random_seed=...)`, so the draw is pinned to the seed rather than
+to process state). `--init printed` keeps the PR #102-exact behaviour for
+when the question is specifically what the measured batch implies.
 
-The nine printed articles score `t180` 0.584 to 0.827 in simulation, so the
-loop improves on the best of them by about 17 % and the three seeds agree to
-under 2 %. All three walk to the same corner of the box: `R` at its maximum
-40 mm, `H` at its minimum 60 mm, `twist` at its minimum 40 deg and `cable_d`
-at its minimum 3.0 mm, with `strut_d` the only loose axis (6.6 to 8.0 mm).
-Short, wide, thin-cabled.
+One thing had to move with it. The hypervolume reference point used to be
+derived from the seed's own round 0, which is harmless when every seed
+shares round 0 and wrong as soon as they do not: a repeat that happened to
+draw a bad initial batch would be handed a generous reference point and
+score a larger hypervolume for it. It is now computed once from the nine
+printed articles scored in simulation, inflated 5 %, so it is the same
+number for every seed and every initialization.
+
+The third panel of the aggregate figure plots each repeat's round 0 in
+objective space. Under `--init sobol` those are ten different clouds; under
+`--init printed` they collapse onto one set of nine markers. That panel is
+there so the failure mode above is visible rather than inferred.
+
+### Ten repeats
+
+Ten repeats were run in-session (`--model botorch`, `--init sobol`,
+`--jobs 4`, four batches of 9 = 36 simulated designs each, so the same
+per-seed budget as the earlier three-seed run):
+
+RESULTS_TABLE_PLACEHOLDER
 
 Two things to notice before reading that as a recommendation. It agrees with
 the measured campaign on thin cables -- `6lhxfy`, the one article that
@@ -199,13 +215,24 @@ disagreement is more likely the model's than the bench's.
 
 One SAASBO seed was also run to check that path (the default, matching
 PR #102): one round of 3 designs took 570 s on a contended runner core
-against 0.3 s per simulation, which is exactly why the staged workflow
-parallelizes over seeds rather than running them in series.
+against 0.3 s per simulation. That is why the repeats above use the cheap
+qNEHVI surrogate, and why the staged workflow parallelizes over seeds
+rather than running them in series. Even with the cheap model the fit is
+the wall-clock: a fourth batch of 9 costs minutes while the 36 simulations
+behind it cost about 11 s in total.
 
-Per-seed convergence and objective-space plots are in
-`outputs/pr102_sim_bo_botorch_seed*.png`, the cross-seed mean with a
-+/- 1 sd band is `outputs/pr102_sim_bo_botorch_aggregate.png`, and the
-per-seed trial tables are the matching CSVs.
+Parallelism is local as well as in Actions. `--jobs N` runs N repeats as
+separate processes, one campaign each, with the numeric libraries pinned to
+one thread per worker (the acquisition optimization is the cost and it does
+not thread well, so the parallelism belongs at the seed level). Ten repeats
+on this four-core runner is three waves.
+
+Files. Per-seed convergence and objective-space plots are
+`outputs/pr102_sim_bo_botorch_sobol_seed*.png`, the cross-seed figure with
+the +/- 1 sd band and the round-0 panel is
+`outputs/pr102_sim_bo_botorch_sobol_aggregate.png`, and the per-seed trial
+tables are the matching CSVs. The earlier shared-round-0 run is kept
+alongside under `..._printed_...` for the comparison.
 
 ## 5. Caveats
 

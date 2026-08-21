@@ -163,13 +163,18 @@ python simulations/drop_tower_sim.py --spec 1      # one Sobol article
 python simulations/pr102_correlation.py
 # -> outputs/pr102_sim_vs_measured.csv, pr102_correlations.csv,
 #    pr102_correlation.png
-# Closed-loop simulation-only campaign, one run per seed (SAASBO by default,
-# matching PR #102).  Parallel seed matrix:
+# Closed-loop simulation-only campaign, one independent run per seed
+# (SAASBO by default, matching PR #102).  --init sobol, the default, redraws
+# round 0 from each repeat's own seed, so a repeat is a whole campaign rather
+# than one re-roll of the surrogate; --init printed reproduces PR #102's
+# shared round 0.  --jobs runs repeats concurrently, one process each.
+# Parallel seed matrix for Actions:
 #   simulations/workflows-staged/sim-bo-pr102-matrix.yml (move into
 #   .github/workflows/ to run it; this PR's app cannot write there).
-python simulations/pr102_sim_campaign.py --model botorch --seeds 0 1 2 --rounds 3
-# -> outputs/pr102_sim_bo_<model>_seed<k>.{csv,png}
-# -> outputs/pr102_sim_bo_<model>_aggregate.png + _summary.csv
+python simulations/pr102_sim_campaign.py --model botorch \
+    --seeds 0 1 2 3 4 5 6 7 8 9 --rounds 3 --jobs 4
+# -> outputs/pr102_sim_bo_<model>_<init>_seed<k>.{csv,png}
+# -> outputs/pr102_sim_bo_<model>_<init>_aggregate.png + _summary.csv
 ```
 
 ## Matching the PR #102 bench campaign in simulation

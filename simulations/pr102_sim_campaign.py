@@ -15,15 +15,29 @@ Matched to PR #102, deliberately:
   ``drop_tower_sim`` to the same definitions,
 * the same ``mass_g`` tracking metric, here the infill-corrected printed
   mass from ``print_infill`` rather than a weighed article,
-* the same initialization: round 0 is the nine-point Sobol batch that was
-  physically printed (``data/pr102/t3-prism-bo-batch.csv``), attached as
-  completed trials,
 * the same batch size (9, one print plate) and the same SAASBO generation
   strategy by default.
 
-Differences, all forced by running in simulation: the loop continues past
-one round; noise is zero (the sim is deterministic, so no SEM is attached);
-and the seed varies, which is the entire point.
+Two initializations are available, and they answer different questions.
+``--init sobol`` (the default) starts each repeat **from scratch**: round 0
+is the campaign's own nine-point Sobol draw, scrambled with that repeat's
+seed, so the whole campaign -- initial design and every subsequent
+suggestion -- is an independent draw.  That is what makes a repeat a
+repeat, and it is the only way the spread across seeds means anything.
+``--init printed`` reproduces PR #102 exactly instead, attaching the nine
+articles that were physically printed as completed trials; every repeat
+then shares an identical round 0, so the seeds differ only in the
+surrogate's own randomness and agree far more closely than the problem
+warrants.
+
+The hypervolume reference point is fixed across seeds and across
+initializations (it is derived once from the nine printed articles, scored
+in simulation, inflated by 5 %), so traces from different seeds are
+directly comparable even though their round 0 differs.
+
+Differences from PR #102, all forced by running in simulation: the loop
+continues past one round, and noise is zero (the sim is deterministic, so
+no SEM is attached).
 
 SAASBO fits a fully Bayesian NUTS model per round, which dominates the
 wall-clock here (the simulation itself is about 0.3 s per design).  Use
@@ -33,14 +47,21 @@ about the loop rather than about the model.
 Run::
 
     python pr102_sim_campaign.py --seed 0 --rounds 4
-    python pr102_sim_campaign.py --aggregate          # figures across seeds
+    python pr102_sim_campaign.py --seeds 0 1 2 3 --jobs 4   # repeats in parallel
+    python pr102_sim_campaign.py --aggregate                # figures across seeds
 """
 from __future__ import annotations
 
 import argparse
-import json
+import os
 import time
 from pathlib import Path
+
+# One thread per process: the parallelism here is one campaign per seed, and
+# oversubscribing BLAS inside each of them makes every repeat slower.
+for _v in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+           "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
 
 import numpy as np
 import pandas as pd
@@ -67,11 +88,15 @@ PARAMETERS = [
     {"name": "cable_d_mm", "type": "range", "bounds": [3.0, 5.5], "value_type": "float"},
 ]
 
-# Hypervolume reference point.  Fixed across seeds so the traces are
-# comparable, and derived from the initial Sobol batch rather than typed in:
-# the worst value each objective takes on the nine printed articles, inflated
-# 5 %, so every subsequent design contributes.
+# Hypervolume reference point.  Derived rather than typed in: the worst
+# value each objective takes over the nine printed articles, scored in
+# simulation and inflated 5 %, so every subsequent design contributes.  It
+# must not depend on the seed's own round 0, or a repeat that happened to
+# draw a bad initial batch would be handed a generous reference point and
+# score a larger hypervolume for it, which is exactly the comparison the
+# repeats exist to make.
 REF_INFLATION = 1.05
+_REF_CACHE: dict[bool, np.ndarray] = {}
 
 
 def evaluate(params: dict, *, solid: bool = False) -> dict:
@@ -85,6 +110,16 @@ def sobol_batch_params() -> list[dict]:
     """The nine printed T-3_01 articles, at their base Sobol coordinates."""
     batch = pd.read_csv(DATA / "t3-prism-bo-batch.csv").set_index("specimen")
     return [{n: float(row[n]) for n in PARAM_NAMES} for _, row in batch.iterrows()]
+
+
+def reference_point(solid: bool = False) -> np.ndarray:
+    """Seed-independent hypervolume reference, from the printed articles."""
+    if solid not in _REF_CACHE:
+        scored = [evaluate(p, solid=solid) for p in sobol_batch_params()]
+        worst = np.array([max(r[OBJ1] for r in scored),
+                          max(r[OBJ2] for r in scored)], dtype=float)
+        _REF_CACHE[solid] = REF_INFLATION * worst
+    return _REF_CACHE[solid]
 
 
 def hypervolume_2d(points: np.ndarray, ref: np.ndarray) -> float:
@@ -101,20 +136,35 @@ def hypervolume_2d(points: np.ndarray, ref: np.ndarray) -> float:
     return float(hv)
 
 
+def seed_tag(model: str, init: str, seed: int, solid: bool = False) -> str:
+    return f"{model}_{init}_seed{seed}" + ("_solid" if solid else "")
+
+
 def run_seed(seed: int, rounds: int, batch_size: int, model: str,
-             outdir: Path, solid: bool = False) -> pd.DataFrame:
+             outdir: Path, solid: bool = False,
+             init: str = "sobol") -> pd.DataFrame:
     from ax.modelbridge.factory import Models
     from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
     from ax.service.ax_client import AxClient, ObjectiveProperties
 
     step_model = Models.SAASBO if model == "saasbo" else Models.BOTORCH_MODULAR
-    gs = GenerationStrategy(steps=[GenerationStep(
-        model=step_model, num_trials=-1,
-        max_parallelism=batch_size)])
+    steps = []
+    if init == "sobol":
+        # From scratch: this repeat draws its own initial batch, scrambled
+        # with its own seed.  Ax's Sobol generator is seeded explicitly as
+        # well as through AxClient(random_seed=...) so the draw is pinned to
+        # the seed rather than to whatever global state the process is in.
+        steps.append(GenerationStep(
+            model=Models.SOBOL, num_trials=batch_size,
+            min_trials_observed=batch_size, max_parallelism=batch_size,
+            model_kwargs={"seed": seed}))
+    steps.append(GenerationStep(model=step_model, num_trials=-1,
+                                max_parallelism=batch_size))
+    gs = GenerationStrategy(steps=steps)
     ax_client = AxClient(generation_strategy=gs, random_seed=seed,
                          verbose_logging=False)
     ax_client.create_experiment(
-        name=f"t3_prism_sim_campaign_seed{seed}",
+        name=f"t3_prism_sim_campaign_{init}_seed{seed}",
         parameters=PARAMETERS,
         objectives={OBJ1: ObjectiveProperties(minimize=True),
                     OBJ2: ObjectiveProperties(minimize=True)},
@@ -122,17 +172,22 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
     )
 
     rows = []
-    # round 0: the printed Sobol batch, scored in simulation
-    for params in sobol_batch_params():
-        _, idx = ax_client.attach_trial(params)
-        res = evaluate(params, solid=solid)
-        # snapshot before completing: complete_trial rewrites the dict in
-        # place into (mean, sem) tuples
-        rows.append({"seed": seed, "round": 0, "trial": idx, **params,
-                     **dict(res)})
-        ax_client.complete_trial(trial_index=idx, raw_data=res)
+    if init == "printed":
+        # PR #102's own round 0: the nine articles that were printed,
+        # attached as completed trials.  Identical for every seed.
+        for params in sobol_batch_params():
+            _, idx = ax_client.attach_trial(params)
+            res = evaluate(params, solid=solid)
+            # snapshot before completing: complete_trial rewrites the dict in
+            # place into (mean, sem) tuples
+            rows.append({"seed": seed, "round": 0, "trial": idx, **params,
+                         **dict(res)})
+            ax_client.complete_trial(trial_index=idx, raw_data=res)
+        first_round = 1
+    else:
+        first_round = 0
 
-    for rnd in range(1, rounds + 1):
+    for rnd in range(first_round, rounds + 1):
         t0 = time.time()
         parameterizations, _ = ax_client.get_next_trials(batch_size)
         for idx, params in parameterizations.items():
@@ -142,24 +197,35 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
                          **dict(res)})
             ax_client.complete_trial(trial_index=idx, raw_data=res)
         print(f"  seed {seed} round {rnd}: {batch_size} designs, "
-              f"{time.time() - t0:.1f} s")
+              f"{time.time() - t0:.1f} s", flush=True)
 
     df = pd.DataFrame(rows)
-    init = df[df["round"] == 0]
-    ref = REF_INFLATION * init[[OBJ1, OBJ2]].to_numpy(dtype=float).max(axis=0)
+    ref = reference_point(solid)
     obj = df[[OBJ1, OBJ2]].to_numpy(dtype=float)
     df["hv"] = [hypervolume_2d(obj[: i + 1], ref) for i in range(len(obj))]
     df["best_t180"] = df[OBJ1].cummin()
     df["best_e_reb_mJ"] = df[OBJ2].cummin()
 
     outdir.mkdir(parents=True, exist_ok=True)
-    tag = f"{model}_seed{seed}" + ("_solid" if solid else "")
+    tag = seed_tag(model, init, seed, solid)
     df.to_csv(outdir / f"pr102_sim_bo_{tag}.csv", index=False, float_format="%.6g")
-    plot_seed(df, outdir / f"pr102_sim_bo_{tag}.png", seed, model)
+    plot_seed(df, outdir / f"pr102_sim_bo_{tag}.png", seed, model, init=init)
     return df
 
 
-def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str) -> None:
+def _run_seed_worker(job: tuple) -> str:
+    """multiprocessing entry point; returns the tag it wrote."""
+    seed, rounds, batch_size, model, outdir, solid, init = job
+    t0 = time.time()
+    run_seed(seed, rounds, batch_size, model, Path(outdir), solid=solid,
+             init=init)
+    tag = seed_tag(model, init, seed, solid)
+    print(f"seed {seed} done in {time.time() - t0:.1f} s", flush=True)
+    return tag
+
+
+def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
+              init: str = "sobol") -> None:
     fig, (ax_c, ax_p) = plt.subplots(1, 2, figsize=(11, 4.2), dpi=200)
     ax_c.plot(df.index + 1, df["hv"], color="#2a78d6", lw=1.8)
     ax_c.set_xlabel("simulated design")
@@ -168,7 +234,9 @@ def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str) -> None:
     ax_c.grid(alpha=0.25, lw=0.5)
     n_init = int((df["round"] == 0).sum())
     ax_c.axvline(n_init, color="#52514e", ls=":", lw=1)
-    ax_c.annotate("printed Sobol batch", (n_init, ax_c.get_ylim()[0]),
+    label = ("printed Sobol batch" if init == "printed"
+             else f"Sobol batch (seed {seed})")
+    ax_c.annotate(label, (n_init, ax_c.get_ylim()[0]),
                   textcoords="offset points", xytext=(4, 12), fontsize=7,
                   color="#52514e")
 
@@ -183,18 +251,19 @@ def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str) -> None:
     plt.close(fig)
 
 
-def aggregate(outdir: Path, model: str) -> None:
-    files = sorted(outdir.glob(f"pr102_sim_bo_{model}_seed*.csv"))
+def aggregate(outdir: Path, model: str, init: str = "sobol") -> None:
+    files = sorted(outdir.glob(f"pr102_sim_bo_{model}_{init}_seed*.csv"),
+                   key=lambda f: int(f.stem.split("seed")[-1].split("_")[0]))
     files = [f for f in files if "_solid" not in f.name]
     if not files:
-        print(f"no per-seed CSVs for model {model} in {outdir}")
+        print(f"no per-seed CSVs for {model}/{init} in {outdir}")
         return
     frames = [pd.read_csv(f) for f in files]
     n = min(len(f) for f in frames)
     hv = np.vstack([f["hv"].to_numpy()[:n] for f in frames])
     t180 = np.vstack([f["best_t180"].to_numpy()[:n] for f in frames])
 
-    fig, (ax_h, ax_t) = plt.subplots(1, 2, figsize=(11, 4.2), dpi=200)
+    fig, (ax_h, ax_t, ax_0) = plt.subplots(1, 3, figsize=(15.5, 4.2), dpi=200)
     x = np.arange(1, n + 1)
     for ax, arr, label in ((ax_h, hv, "dominated hypervolume"),
                            (ax_t, t180, "running-best t180")):
@@ -208,30 +277,58 @@ def aggregate(outdir: Path, model: str) -> None:
         ax.set_ylabel(label)
         ax.grid(alpha=0.25, lw=0.5)
         ax.legend(fontsize=8)
-    fig.suptitle(f"Simulation-only T-3_01 campaign, {len(frames)} seeds ({model})",
-                 fontsize=11)
+
+    # Third panel: every repeat's own round 0.  With --init sobol these are
+    # different draws, which is the point; with --init printed they collapse
+    # onto one set of nine markers, which is the failure mode this panel
+    # exists to make visible.
+    cmap = plt.get_cmap("tab10")
+    for i, f in enumerate(frames):
+        r0 = f[f["round"] == 0]
+        ax_0.scatter(r0[OBJ1], r0[OBJ2], s=26, alpha=0.8,
+                     color=cmap(i % 10), label=f"seed {int(f['seed'].iloc[0])}")
+    ax_0.set_xlabel("t180 (simulated)")
+    ax_0.set_ylabel("e_reb_mJ (simulated)")
+    ax_0.set_title("round 0, per seed", fontsize=10)
+    ax_0.grid(alpha=0.25, lw=0.5)
+    ax_0.legend(fontsize=6, ncol=2)
+
+    init_label = ("printed Sobol batch, shared" if init == "printed"
+                  else "from scratch, per-seed Sobol")
+    fig.suptitle(f"Simulation-only T-3_01 campaign, {len(frames)} seeds "
+                 f"({model}, {init_label})", fontsize=11)
     fig.tight_layout()
-    fig.savefig(outdir / f"pr102_sim_bo_{model}_aggregate.png", bbox_inches="tight")
+    fig.savefig(outdir / f"pr102_sim_bo_{model}_{init}_aggregate.png",
+                bbox_inches="tight")
     plt.close(fig)
 
     summary = pd.concat(frames).groupby("seed").agg(
         final_hv=("hv", "max"), best_t180=(OBJ1, "min"),
         best_e_reb_mJ=(OBJ2, "min"), n=("trial", "count"))
-    summary.to_csv(outdir / f"pr102_sim_bo_{model}_summary.csv",
+    summary.to_csv(outdir / f"pr102_sim_bo_{model}_{init}_summary.csv",
                    float_format="%.6g")
     print(summary.to_string())
-    print(f"Wrote {outdir}/pr102_sim_bo_{model}_aggregate.png and _summary.csv")
+    cv = summary["final_hv"].std() / summary["final_hv"].mean()
+    print(f"final hypervolume across seeds: mean {summary['final_hv'].mean():.4g}, "
+          f"sd {summary['final_hv'].std():.4g} ({100 * cv:.2f} % of the mean)")
+    print(f"Wrote {outdir}/pr102_sim_bo_{model}_{init}_aggregate.png and _summary.csv")
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--seeds", type=int, nargs="*", default=None,
-                    help="run several seeds in this process")
+                    help="run several repeats, each an independent campaign")
     ap.add_argument("--rounds", type=int, default=4)
     ap.add_argument("--batch-size", type=int, default=9, help="prints per plate")
     ap.add_argument("--model", choices=("saasbo", "botorch"), default="saasbo",
                     help="saasbo mirrors PR #102; botorch is the cheap qNEHVI")
+    ap.add_argument("--init", choices=("sobol", "printed"), default="sobol",
+                    help="sobol: each repeat draws its own seeded round 0 "
+                         "(from scratch).  printed: every repeat starts from "
+                         "the nine physically printed articles, as PR #102 did")
+    ap.add_argument("--jobs", type=int, default=1,
+                    help="repeats to run concurrently (one process per seed)")
     ap.add_argument("--solid", action="store_true",
                     help="ablation: ignore infill, run at solid PLA density")
     ap.add_argument("--aggregate", action="store_true",
@@ -240,19 +337,33 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     if args.aggregate:
-        aggregate(args.outdir, args.model)
+        aggregate(args.outdir, args.model, args.init)
         return 0
 
     seeds = args.seeds if args.seeds else [args.seed]
-    for seed in seeds:
-        t0 = time.time()
-        print(f"seed {seed}: {args.rounds} rounds x {args.batch_size} designs "
-              f"({args.model})")
-        run_seed(seed, args.rounds, args.batch_size, args.model, args.outdir,
-                 solid=args.solid)
-        print(f"seed {seed} done in {time.time() - t0:.1f} s")
+    jobs = [(seed, args.rounds, args.batch_size, args.model, str(args.outdir),
+             args.solid, args.init) for seed in seeds]
+    print(f"{len(seeds)} repeat(s): {args.rounds} rounds x {args.batch_size} "
+          f"designs, {args.model}, init={args.init}, jobs={args.jobs}")
+
+    t0 = time.time()
+    if args.jobs > 1 and len(jobs) > 1:
+        import multiprocessing as mp
+        # Each worker runs one campaign end to end.  MuJoCo and the BoTorch
+        # fit are both effectively single-threaded here, and the fit is the
+        # wall-clock, so keep every library to one thread per worker and let
+        # the parallelism come from the seeds.
+        ctx = mp.get_context("spawn")
+        with ctx.Pool(processes=min(args.jobs, len(jobs))) as pool:
+            for tag in pool.imap_unordered(_run_seed_worker, jobs):
+                print(f"  wrote {tag}", flush=True)
+    else:
+        for job in jobs:
+            _run_seed_worker(job)
+    print(f"{len(seeds)} repeat(s) in {time.time() - t0:.1f} s")
+
     if len(seeds) > 1:
-        aggregate(args.outdir, args.model)
+        aggregate(args.outdir, args.model, args.init)
     return 0
 
 
