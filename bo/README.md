@@ -1,10 +1,40 @@
-# T-3_01 Sobol batch: print key and slicer files
+# T-3_01 Sobol batch: print key, slicer files, and BO campaign script
 
 This directory holds the key linking each printed T3-prism specimen ID to its
 Sobol design parameters, for use when parsing drop data during the testing
-campaign (issue [#98](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98)).
+campaign (issue [#98](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98)),
+plus the Bayesian-optimization script that ingests the campaign results and
+suggests the next print batch.
 
-## Files
+## BO campaign files
+
+- `t3_prism_bo_campaign.py`: Honegumi-templated Ax script (multi-objective,
+  fully Bayesian SAASBO, batch, existing data, visualization). Ingests the
+  measured drop results, attaches them as completed Ax trials in the base
+  Sobol parameter space from PR #35, attaches printed-but-untested specs as
+  pending trials, and records the next suggested batch. See its docstring
+  for objective definitions and the three documented deviations from the
+  rendered template. Run from the repo root:
+  `python bo/t3_prism_bo_campaign.py`.
+- `t3-prism-bo-batch-drop-results.csv`: snapshot of the BO-ready
+  `campaign_summary.csv` produced on PR #86 (branch
+  `copilot/add-drop-test-protocol-again`, commit `642b8c0`, path
+  `data/drop-tests/sobol-campaign/figures/campaign_summary.csv`): one row
+  per tested specimen with objectives (mean and sd) and joined as-printed
+  geometry. 8 of 9 specimens as of 2026-08-21; `amdjwm` has no known spec
+  mapping and is skipped by the script until identified.
+- `t3-prism-bo-suggestions-round1.csv`: the recorded round-1 output of the
+  script: suggested base-space designs for the next print batch with
+  posterior-mean predictions for both objectives. Feed these rows to
+  `t3_prism_sobol_batch.py` (PR #35) for constant-mass projection and
+  slicing.
+- `t3-prism-bo-ax-client-round1.json`: full AxClient state (experiment,
+  data, generation strategy) for reproducibility and warm-starting round 2.
+- `figures/t3-prism-bo-round1-pareto.png`: objective-space view (observed
+  points, model Pareto front, suggested candidates) plus a parameter-space
+  panel.
+
+## Print key files
 
 - `t3-prism-bo-batch-print-key.csv`: one row per physical print. Maps the
   6-character print ID to its Sobol specimen number (0 to 8, or S0 for the
