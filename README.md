@@ -24,6 +24,12 @@ This proposal develops a multifidelity Bayesian optimization framework to design
 │   ├── coverpage.tex         # MRG cover page (abstract, budget table, external funding)
 │   ├── budget.tex            # Budget table and justification
 │   └── biosketch.tex         # PI and Co-PI biographical sketches
+├── bo/                       # Bayesian-optimization scaffold (honegumi-generated)
+│   ├── generate_scaffold.py  # Renders tensegrity_bo.py via the honegumi Python API
+│   ├── tensegrity_bo.py      # Generated Ax/BoTorch BO loop (placeholder objective)
+│   ├── requirements.txt      # Pinned BO stack (honegumi, ax-platform, ...)
+│   ├── tests/                # Smoke tests for the generator
+│   └── README.md             # How to (re)generate, configure, and run the scaffold
 ├── Makefile                  # Build commands
 ├── .gitignore
 └── README.md
@@ -58,6 +64,21 @@ pdflatex proposal
 - **Budget** — $25k (undergraduate wages, graduate wages, supplies, travel, other)
 - **References** — (does not count toward page limit)
 - **Bio Sketches** — Hill & Baird (does not count toward page limit)
+
+## Bayesian Optimization Scaffold
+
+The [`bo/`](bo/) directory contains a `honegumi`-generated Ax/BoTorch
+multi-objective Bayesian-optimization scaffold for the campaign described in
+this proposal. See [`bo/README.md`](bo/README.md) for configuration, usage,
+and the customization checklist (replace the placeholder objective with the
+peak-force / specific-energy-absorption measurements, swap in the design
+variables agreed in PR #24, etc.).
+
+```bash
+pip install -r bo/requirements.txt
+python bo/generate_scaffold.py            # (re)render bo/tensegrity_bo.py
+MPLBACKEND=Agg python bo/tensegrity_bo.py # run the BO loop end-to-end
+```
 
 ## TODO
 

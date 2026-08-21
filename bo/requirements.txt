@@ -1,0 +1,16 @@
+# Pinned to the versions verified to render and run the honegumi-generated
+# scaffold end-to-end (see bo/README.md). Honegumi's template currently
+# embeds `# %pip install ax-platform==0.4.3 ...` so we follow that pin and
+# constrain the surrounding stack accordingly.
+honegumi==0.4.3
+ax-platform==0.4.3
+numpy<2
+pandas<2.3
+matplotlib
+# `black` is imported directly by bo/generate_scaffold.py to format the
+# honegumi-rendered script. Pinned to a version compatible with the rest of
+# the toolchain (any modern black accepts the rendered Ax script).
+black>=24.0
+# Include pytest so a fresh environment created from this file can run the
+# scaffold's pytest-based smoke tests (for example, `pytest bo/tests`).
+pytest>=8.0
