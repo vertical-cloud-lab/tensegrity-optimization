@@ -230,6 +230,54 @@ consequence of holding mass constant on a thick-strut, thin-cable design
 manual-painted-supports workflow, but those three need the most careful
 support painting on the top-triangle cables.
 
+### Manually-supported round-1 project (as prepared for printing)
+
+`slices/t3-prism-bo-round1.H2D-MM-PLAstruts-TPUcables_manual-supports.3mf`
+is @achris0520's Bambu Studio project for this plate, uploaded in PR #35
+comment [`5374553137`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-5374553137).
+It is the generated round-1 project with supports painted by hand on all
+nine specimens and the printing presets applied, so it is the file that was
+actually sent to the printer rather than a regenerated artifact.
+
+| Setting | Value |
+| --- | --- |
+| Printer / process | Bambu Lab H2D 0.6 nozzle, 0.30mm Standard @BBL H2D 0.6 nozzle |
+| Filaments | Bambu PLA Basic (ext 1, struts) + Bambu TPU 85A (ext 2, cables) |
+| Filament map | Manual, `['1','2']` |
+| Supports | `tree(manual)`, painted, `support_filament=1` (PLA), build-plate only |
+| Prime tower | on, 60 mm |
+| Infill / walls | 15% sparse, 2 walls |
+| Bed | Textured PEI Plate |
+
+Painted-support coverage is stored per object as `paint_supports` triangle
+attributes: 16,628 painted facets across the nine `3D/Objects/object_*.model`
+parts.
+
+Slicing it headlessly (BambuStudio CLI v02.06.00.51) gives 13 h 58 m,
+255.45 g PLA + 66.94 g TPU, with 198,567 support and 63,545
+support-interface extrusion moves out of 883,256 total. Two provenance
+renders of that g-code are committed next to the design table:
+`t3-prism-bo-round1-manual-supports-sliced-iso.png` and
+`-sliced-top.png`, both produced by
+
+```bash
+RS_MODEL_MAX=220000 python3 cad/t3-prism/render_supports.py \
+    plate_1.gcode bo/t3-prism-bo-round1-manual-supports-sliced-iso.png
+RS_MODEL_MAX=220000 RS_VIEW=89,-90 python3 cad/t3-prism/render_supports.py \
+    plate_1.gcode bo/t3-prism-bo-round1-manual-supports-sliced-top.png
+```
+
+`RS_MODEL_MAX` raises the model-segment cap (the default 40,000 leaves a
+nine-specimen plate looking like haze) and `RS_VIEW` sets `elev,azim`.
+`t3-prism-bo-round1-manual-supports-bambu-plate.png` is Bambu Studio's own
+plate thumbnail carried inside the project file.
+
+The CLI run itself ends with `return_code=-102` ("G-code in unprintable area
+of multi-extruder printers"), the same headless IDEX extruder-mapping
+limitation documented in `cad/t3-prism/render_print.sh` `slice_bambu_mm`. It
+writes valid toolpaths, which is what the renders above are drawn from, but
+the printable job still has to come out of the Bambu Studio GUI.
+
 ## Onshape spot-check upload
 
 The per-specimen STLs can be pushed to a public Onshape document so the

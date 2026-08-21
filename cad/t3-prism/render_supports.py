@@ -106,7 +106,9 @@ def render(src: str, out: str, title: str | None = None) -> None:
     support_color = (0.95, 0.20, 0.20, 0.95)
     iface_color = (1.0, 0.55, 0.0, 0.95)
 
-    model_ds = downsample(model, 40000)
+    # Dense multi-specimen plates need more model segments before the
+    # structures read as anything but haze; `RS_MODEL_MAX` raises the cap.
+    model_ds = downsample(model, int(os.environ.get("RS_MODEL_MAX", "40000")))
 
     fig = plt.figure(figsize=(11, 9))
     ax = fig.add_subplot(111, projection="3d")
@@ -135,11 +137,16 @@ def render(src: str, out: str, title: str | None = None) -> None:
     if len(allpts):
         mn, mx = allpts.min(0), allpts.max(0)
         ctr = (mn + mx) / 2
-        half = (mx - mn).max() / 2 * 1.05
+        span = mx - mn
+        half = span[:2].max() / 2 * 1.05
         ax.set_xlim(ctr[0] - half, ctr[0] + half)
         ax.set_ylim(ctr[1] - half, ctr[1] + half)
-        ax.set_zlim(max(0, ctr[2] - half), ctr[2] + half)
-    ax.set_box_aspect((1, 1, 1))
+        # Scale Z to the part height instead of forcing a cube: on a full
+        # 350 mm plate a square box aspect spends most of the frame on air.
+        ax.set_zlim(max(0, mn[2]), mn[2] + max(span[2], 1e-6) * 1.05)
+        ax.set_box_aspect((1, 1, max(span[2] / max(span[:2].max(), 1e-6), 0.15)))
+    else:
+        ax.set_box_aspect((1, 1, 1))
     ax.set_xlabel("X (mm)")
     ax.set_ylabel("Y (mm)")
     ax.set_zlabel("Z (mm)")
@@ -149,7 +156,10 @@ def render(src: str, out: str, title: str | None = None) -> None:
         f"support extrusion moves: {len(support) + len(iface)} of "
         f"{len(support) + len(iface) + len(model)}"
     )
-    ax.view_init(elev=22, azim=-58)
+    elev, azim = (
+        float(v) for v in os.environ.get("RS_VIEW", "22,-58").split(",")
+    )
+    ax.view_init(elev=elev, azim=azim)
     ax.legend(
         handles=[
             Line2D([0], [0], color=model_color, lw=2,
