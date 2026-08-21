@@ -10,6 +10,16 @@ capture settings as the abc123 blind crossover, so that campaign supplies
 matched references: healthy tower (08-04) Δv = 5.276–5.347 m/s; damaged
 tower (08-05/06, B blocks) 4.27–4.38 m/s.
 
+> **Correction (08-21, SOBOL-campaign analysis §2):** the absolute Δv
+> levels here are mild **underestimates** (TP4 series table: 4.62 m/s mean
+> vs the pipeline's 4.44/4.68 split) because the pre-trigger baseline was
+> starting to ride the mat-contact foot. The greasing *step* is real and
+> confirmed on the TP4 numbers; the "still ~28 % of the deficit
+> outstanding" framing understated the recovery, which continued with
+> traffic — by campaign week (08-19/20) the tower was at 5.3–5.5 m/s,
+> effectively healthy. See
+> [`drop-test-sobol-campaign-analysis.md`](drop-test-sobol-campaign-analysis.md) §3.
+
 ## 1. Answer: yes — a real +5.4 % velocity step, but only ~28 % of the damage deficit
 
 | | before (S1–5) | after (S6–10) | change | p (Welch) |

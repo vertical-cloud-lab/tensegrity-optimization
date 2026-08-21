@@ -250,14 +250,27 @@ def ringdown_fit(tri, i_imp, fs):
             "second_rel_db": float(second_rel_db)}
 
 
-def analyze_capture(path: Path) -> dict:
+def analyze_capture(path: Path, baseline: str = "pretrigger") -> dict:
+    """baseline="pretrigger" is the frozen abc123 convention.  From 08-17 on
+    the carriage arrives fast enough that mat contact begins >2 ms before the
+    150 G trigger crossing, so the pre-trigger window rides a +20-35 G contact
+    foot and is no longer a valid zero (it biases dv by several m/s and T by
+    several %).  baseline="tail" instead takes each channel's median over the
+    final 30 ms of the 100 ms record — validated against the TP4 series
+    table's independent per-event raw peaks and Delta V (agreement to ~2-4 %);
+    on clean-pretrigger sessions the two estimators coincide."""
     t, ch, ev = parse_capture(path)
     dt = float(np.median(np.diff(t)))
     fs = 1.0 / dt
     nb = max(1, int(PRETRIGGER_S / dt))
 
-    top = ch[:, TOP_COLS] - np.median(ch[:nb, TOP_COLS], axis=0)
-    ch5 = ch[:, CH5] - np.median(ch[:nb, CH5])
+    if baseline == "tail":
+        base = np.median(ch[int(0.070 / dt):], axis=0)
+    else:
+        base = np.median(ch[:nb], axis=0)
+    foot = np.median(ch[:nb], axis=0) - base   # pre-trigger contact foot (G)
+    top = ch[:, TOP_COLS] - base[list(TOP_COLS)]
+    ch5 = ch[:, CH5] - base[CH5]
 
     ns = int(SEARCH_S / dt)
     ch5_180 = cfc_filter(ch5, fs, 180)
@@ -285,7 +298,7 @@ def analyze_capture(path: Path) -> dict:
 
     sat = {}
     for name, col in [("CH2", 0), ("CH3", 1), ("CH4", 2), ("CH5", 3)]:
-        x = np.abs(ch[:, col] - np.median(ch[:nb, col]))
+        x = np.abs(ch[:, col] - base[col])
         sat[name] = float(x.max() / FULL_SCALE_G[name])
 
     row = {
@@ -307,6 +320,8 @@ def analyze_capture(path: Path) -> dict:
         "t1000": o1000["peak_abs_g"] / in1000["peak_abs_g"],
         "lag_ms": o180["t_peak_ms"] - in180["t_peak_ms"],
         "frac_fs": sat,
+        "foot_ch5_g": float(foot[CH5]),
+        "foot_top_g": float(np.max(np.abs(foot[list(TOP_COLS)]))),
     }
     row.update(ring)
     # Dimensionless specimen rebound coefficient. The secondary top-vertex

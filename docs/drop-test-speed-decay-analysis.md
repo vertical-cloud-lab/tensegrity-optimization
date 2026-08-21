@@ -13,6 +13,19 @@ reference cell, same capture settings as `abc123-blind` (100 ms record,
 ~41 s cadence; session 2 was interrupted by a **9.7 min pause after
 drop 39**; session 3 ran uninterrupted.
 
+> **Correction (08-21, SOBOL-campaign analysis §2):** the Δv values in this
+> doc are **underestimates**. By these sessions the carriage was arriving
+> fast enough that mat contact begins before the 2 ms pre-trigger window,
+> so the pre-trigger baseline rides a contact foot that biases the Δv
+> integral low (and increasingly so as the mat warms within a session).
+> The TP4 series tables (committed in `raw/`) read 4.92 / 4.99 m/s for
+> sessions 2/3 — ~0.3–0.4 m/s above the pipeline values below — and show
+> session 2 *rising* slightly rather than declining, so the "one-time
+> post-grease settling" in §2 is largely the foot artifact. The headline
+> conclusion (no cumulative decay with drop count) is unchanged. See
+> [`drop-test-sobol-campaign-analysis.md`](drop-test-sobol-campaign-analysis.md)
+> for the corrected estimator and the tower's subsequent full recovery.
+
 ## 1. Answer: no decay with drop count in steady state
 
 The 100-drop uninterrupted session is statistically **flat** in every

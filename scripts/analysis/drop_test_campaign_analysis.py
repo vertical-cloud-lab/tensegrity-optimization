@@ -39,8 +39,10 @@ from __future__ import annotations
 
 import argparse
 import csv
+import functools
 import itertools
 import json
+import multiprocessing
 import sys
 import tempfile
 import zipfile
@@ -75,7 +77,7 @@ DV_LOW_FLAG = 4.40              # below the 08-10 pre-grease level: rig alarm
 # stabilized aggregate + drift for each of these per-drop keys
 METRIC_KEYS = ("t180", "t1000", "out_180_g", "out_1000_g", "in_180_g",
                "in_raw_g", "in_width_ms", "in_dv_ms", "t_second_ms",
-               "e_rebound")
+               "e_rebound", "foot_ch5_g")
 RING_KEYS = ("fn_hz", "zeta_pct")   # gated on ring_r2 >= RING_R2_MIN
 CSV_FIELDS = ("t180", "t1000", "out_180_g", "in_180_g", "in_dv_ms",
               "t_second_ms", "e_rebound", "fn_hz", "zeta_pct")
@@ -123,15 +125,22 @@ def pauses(rows):
             if (b - a).total_seconds() > PAUSE_S]
 
 
-def analyze_specimen(spec_id: str, folder: Path, scratch: Path, warmup: int) -> dict:
+def analyze_specimen(spec_id: str, folder: Path, scratch: Path, warmup: int,
+                     procs: int = 1) -> dict:
     paths = find_captures(folder, scratch)
     if not paths:
         print(f"  !! no Signal CSVs under {folder} — skipped")
         return {}
-    rows = []
-    for p in paths:
-        r = analyze_capture(p)
-        rows.append(r)
+    # Tail baseline: from 08-17 on, mat contact starts >2 ms before the 150 G
+    # trigger, so the pre-trigger window is not a valid zero (see the
+    # analyze_capture docstring).  Validated against the TP4 series tables.
+    cap = functools.partial(analyze_capture, baseline="tail")
+    if procs > 1:
+        with multiprocessing.Pool(procs) as pool:
+            rows = pool.map(cap, paths)
+    else:
+        rows = [cap(p) for p in paths]
+    for r in rows:
         print(f"  S{r['signal']:3d}  in180 {r['in_180_g']:6.1f} G  "
               f"T {r['t180']:.3f}  dv {r['in_dv_ms']:.3f} m/s  "
               f"t_sec {r.get('t_second_ms', float('nan')):6.2f} ms", flush=True)
@@ -200,6 +209,8 @@ def main():
     ap.add_argument("--warmup", type=int, default=WARMUP_DROPS)
     ap.add_argument("--params", type=Path, default=None,
                     help="optional JSON: specimen id -> design parameters")
+    ap.add_argument("--procs", type=int, default=1,
+                    help="worker processes per specimen (capture-level)")
     args = ap.parse_args()
 
     params = json.loads(args.params.read_text()) if args.params else {}
@@ -214,7 +225,8 @@ def main():
         for folder in folders:
             spec_id = folder.name.split()[0].lower()
             print(f"== {spec_id}  ({folder.name})")
-            specs[spec_id] = analyze_specimen(spec_id, folder, Path(td), args.warmup)
+            specs[spec_id] = analyze_specimen(spec_id, folder, Path(td),
+                                              args.warmup, args.procs)
 
     specs = {s: d for s, d in specs.items() if d}
     camp = {k: campaign_stats(specs, k) for k in ("t180", "t1000", "e_rebound")}
