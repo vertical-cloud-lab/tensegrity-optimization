@@ -85,6 +85,17 @@ Usage (from the repo root)::
     python bo/t3_prism_bo_campaign.py --batch-size 9 --round 1
     python bo/t3_prism_bo_campaign.py --plot-only  # redraw the figure only
                                                    # (pandas + matplotlib)
+    python bo/t3_prism_bo_campaign.py --prototype-next-round  # see below
+
+Figures. ``--plot-only`` redraws the objective-space panel from the recorded
+CSVs (no model refit, ~1 s). ``--prototype-next-round`` draws the layout the
+campaign will want once the next batch comes back: each orange diamond joined
+by a straight path to where that article actually landed, which is then drawn
+as an open circle like any other tested article, with the Pareto front
+recomputed over both rounds and the previous front left dashed underneath.
+The round-2 outcomes it uses are SYNTHETIC (nothing has been printed or
+dropped yet); see ``synthesize_round2_outcomes``, which is the single function
+to replace with the measured summary when the real numbers arrive.
 """
 
 from __future__ import annotations
@@ -205,10 +216,167 @@ def load_training_data(results_path: Path, design_path: Path):
 
 
 # ---- figure styling (presentation-ready, per PR #102 review) -------------
+# Matches the hand-made reference posted on PR #102 (comment 5373145690):
+# no legend box (series are named by leader-line callouts in the plot area),
+# detached left/bottom spines, no grid, gray print IDs, large type.
 INK = "#0b0b0b"          # observed-point outlines and axis ink
 LABEL_GRAY = "#83827d"   # print IDs: present but de-emphasized
+LEADER_GRAY = "#8d8c88"  # callout leader lines
 FRONT_BLUE = "#2a78d6"   # Pareto front
 SUGGEST_ORANGE = "#eb6834"  # next-round suggestions
+
+# Humanist sans first (the reference figure's face), degrading to whatever a
+# given machine has. Figures re-rendered elsewhere may pick a different face.
+FIG_RC = {
+    "font.family": "sans-serif",
+    "font.sans-serif": [
+        "Source Sans Pro", "Source Sans 3", "Open Sans", "Lato",
+        "Helvetica", "Arial", "Liberation Sans", "DejaVu Sans",
+    ],
+    "font.size": 20,
+    "axes.labelsize": 22,
+    "axes.labelcolor": INK,
+    "xtick.labelsize": 21,
+    "ytick.labelsize": 21,
+    "text.color": INK,
+    "xtick.color": INK,
+    "ytick.color": INK,
+    "axes.edgecolor": "#4a4a47",
+    "axes.linewidth": 1.6,
+    "xtick.major.size": 6,
+    "ytick.major.size": 6,
+    "xtick.major.width": 1.6,
+    "ytick.major.width": 1.6,
+}
+
+Y_LABEL = "Rebound energy to payload\n(mJ per drop, lower is better)"
+X_LABEL = "Shock transmissibility t180 (lower is better)"
+
+# Candidate label placements, in points relative to the marker, tried in
+# order until one lands clear of the other labels and markers. Hand-tuned
+# offsets would break the moment the data moves, which it will every round.
+LABEL_CANDIDATES = [
+    (12, 7), (12, -20), (-12, 7), (-12, -20),
+    (12, 20), (-12, 20), (0, 24), (0, -30),
+    (28, -6), (-28, -6),
+]
+
+
+def _nice_ticks(lo, hi, step):
+    """Tick array at `step` covering [lo, hi], snapped to multiples of step."""
+    first = np.floor(lo / step) * step
+    last = np.ceil(hi / step) * step
+    return np.arange(first, last + step / 2, step)
+
+
+def _style_axes(ax, xlim, ylim, xticks, yticks):
+    """Detached left/bottom spines, no grid, slide-sized ticks."""
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+    ax.set_xticks(xticks)
+    ax.set_yticks(yticks)
+    ax.grid(False)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_position(("outward", 14))
+    # Spines stop at the outermost ticks, so the axes read as two rules
+    # rather than a box corner.
+    ax.spines["bottom"].set_bounds(xticks[0], xticks[-1])
+    ax.spines["left"].set_bounds(yticks[0], yticks[-1])
+
+    ax.set_xlabel(X_LABEL, labelpad=12)
+    # Horizontal y-axis label, parked above the axis so it reads at a glance
+    # from a slide instead of asking the audience to tilt their head.
+    ax.set_ylabel(Y_LABEL, rotation=0, ha="left", va="bottom", linespacing=1.35)
+    ax.yaxis.set_label_coords(-0.045, 1.06)
+
+
+def _callout(ax, text, xy, xytext, color, leader=None, ha="left", va="center"):
+    """Named series label with a thin leader line, in place of a legend."""
+    ax.annotate(
+        text,
+        xy=xy,
+        xycoords="data",
+        xytext=xytext,
+        textcoords="axes fraction",
+        color=color,
+        ha=ha,
+        va=va,
+        arrowprops=dict(
+            arrowstyle="-",
+            color=leader if leader is not None else color,
+            lw=1.8,
+            alpha=0.75,
+            shrinkA=10,
+            shrinkB=10,
+        ),
+        zorder=6,
+    )
+
+
+def _axes_frac(ax, xy, dx, dy):
+    """Axes-fraction position offset from a data point, kept inside the axes."""
+    fx, fy = ax.transLimits.transform(xy)
+    return float(np.clip(fx + dx, 0.02, 0.98)), float(np.clip(fy + dy, 0.03, 0.98))
+
+
+def _label_points(ax, frame, id_col, x_col, y_col, color=LABEL_GRAY, fontsize=17):
+    """Place point labels, greedily avoiding other labels and markers.
+
+    Boxes are estimated rather than measured (no renderer round trip), which
+    is enough to keep IDs legible as the point cloud moves round to round.
+    """
+    pts = ax.transData.transform(frame[[x_col, y_col]].to_numpy(float))
+    dpp = ax.figure.dpi / 72.0  # points -> display pixels
+    marker_r = 11 * dpp
+    taken = [(x - marker_r, y - marker_r, x + marker_r, y + marker_r) for x, y in pts]
+
+    def overlaps(box):
+        return any(
+            box[0] < t[2] and t[0] < box[2] and box[1] < t[3] and t[1] < box[3]
+            for t in taken
+        )
+
+    for (px, py), (_, row) in zip(pts, frame.iterrows()):
+        text = str(row[id_col])
+        w = 0.56 * fontsize * len(text) * dpp
+        h = 1.25 * fontsize * dpp
+        for dx, dy in LABEL_CANDIDATES:
+            x0 = px + dx * dpp if dx >= 0 else px + dx * dpp - w
+            y0 = py + dy * dpp
+            box = (x0, y0, x0 + w, y0 + h)
+            if not overlaps(box):
+                break
+        taken.append(box)
+        ax.annotate(
+            text,
+            (row[x_col], row[y_col]),
+            textcoords="offset points",
+            xytext=(dx, dy),
+            ha="left" if dx >= 0 else "right",
+            va="bottom",
+            fontsize=fontsize,
+            color=color,
+            zorder=5,
+        )
+
+
+def _front_anchor(front, frac=0.45):
+    """Point at `frac` of the way along the front polyline, for a callout."""
+    xs = front[obj1_name].to_numpy(float)
+    ys = front[obj2_name].to_numpy(float)
+    if len(xs) < 2:
+        return float(xs[0]), float(ys[0])
+    # Interpolate in axes-ish units by normalizing each objective's range
+    xr = max(float(np.ptp(xs)), 1e-9)
+    yr = max(float(np.ptp(ys)), 1e-9)
+    seg = np.hypot(np.diff(xs) / xr, np.diff(ys) / yr)
+    cum = np.concatenate([[0.0], np.cumsum(seg)])
+    target = frac * cum[-1]
+    i = int(np.clip(np.searchsorted(cum, target) - 1, 0, len(seg) - 1))
+    t = (target - cum[i]) / max(seg[i], 1e-9)
+    return float(xs[i] + t * (xs[i + 1] - xs[i])), float(ys[i] + t * (ys[i + 1] - ys[i]))
 
 
 def observed_frame(y_train, labels):
@@ -233,6 +401,12 @@ def pareto_mask(xs, ys):
     )
 
 
+def pareto_front(frame):
+    """Non-dominated subset of `frame`, sorted along the first objective."""
+    mask = pareto_mask(frame[obj1_name], frame[obj2_name])
+    return frame[mask].sort_values(obj1_name)
+
+
 def render_objective_figure(observed, suggestions, round_number):
     """Single objective-space panel, sized and styled for slides.
 
@@ -240,63 +414,54 @@ def render_objective_figure(observed, suggestions, round_number):
     The front is the non-dominated set of the *observed* points, which for
     round 1 is the same three articles as Ax's model-predicted Pareto set.
     """
-    front = observed[pareto_mask(observed[obj1_name], observed[obj2_name])]
-    front = front.sort_values(obj1_name)
+    front = pareto_front(observed)
+    on_front = observed["print_id"].isin(front["print_id"])
 
-    with plt.rc_context(
-        {
-            "font.size": 15,
-            "axes.labelsize": 17,
-            "axes.labelcolor": INK,
-            "xtick.labelsize": 15,
-            "ytick.labelsize": 15,
-            "text.color": INK,
-            "xtick.color": INK,
-            "ytick.color": INK,
-            "axes.edgecolor": "#4a4a47",
-        }
-    ):
-        fig, ax = plt.subplots(figsize=(9.0, 5.6), dpi=220)
+    with plt.rc_context(FIG_RC):
+        fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=200)
 
         ax.scatter(
-            observed[obj1_name], observed[obj2_name],
-            fc="none", ec=INK, s=110, lw=1.8, label="Tested (round 1)", zorder=3,
+            observed.loc[~on_front, obj1_name], observed.loc[~on_front, obj2_name],
+            fc="none", ec=INK, s=190, lw=2.4, zorder=3,
         )
         ax.plot(
             front[obj1_name], front[obj2_name],
-            color=FRONT_BLUE, lw=2.6, marker="o", ms=9, zorder=2,
-            label="Pareto front",
+            color=FRONT_BLUE, lw=3.4, zorder=2,
+        )
+        ax.scatter(
+            front[obj1_name], front[obj2_name],
+            fc=FRONT_BLUE, ec=INK, s=190, lw=2.4, zorder=4,
         )
         ax.scatter(
             suggestions[f"pred_{obj1_name}_mean"], suggestions[f"pred_{obj2_name}_mean"],
-            marker="D", s=95, fc=SUGGEST_ORANGE, ec="white", lw=1.2, zorder=4,
-            label=f"Suggested round {round_number + 1}",
+            marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", zorder=4,
         )
-        for _, row in observed.iterrows():
-            ax.annotate(
-                row["print_id"], (row[obj1_name], row[obj2_name]),
-                textcoords="offset points", xytext=(9, 6),
-                fontsize=12.5, color=LABEL_GRAY,
-            )
+        _label_points(ax, observed, "print_id", obj1_name, obj2_name)
 
-        ax.set_xlabel("Shock transmissibility t180 (lower is better)")
-        # Horizontal y-axis label, parked above the axis so it reads at a glance
-        # from a slide instead of asking the audience to tilt their head.
-        ax.set_ylabel(
-            "Rebound energy to payload\n(mJ per drop, lower is better)",
-            rotation=0, ha="left", va="bottom", linespacing=1.4,
+        _style_axes(
+            ax,
+            xlim=(0.79, 1.13),
+            ylim=(5.4, 15.0),
+            xticks=np.arange(0.8, 1.101, 0.1),
+            yticks=np.arange(6, 14.1, 2),
         )
-        ax.yaxis.set_label_coords(-0.035, 1.04)
-        ax.set_xlim(0.80, 1.12)
-        ax.set_ylim(5.5, 14.8)
-        ax.set_xticks(np.arange(0.8, 1.101, 0.1))
-        ax.set_yticks(np.arange(6, 14.1, 2))
-        ax.grid(False)
-        for side in ("top", "right"):
-            ax.spines[side].set_visible(False)
-        ax.legend(
-            loc="upper left", bbox_to_anchor=(1.02, 1.0),
-            frameon=False, fontsize=14, handletextpad=0.6, borderaxespad=0.0,
+
+        # Series names as leader-line callouts instead of a legend box.
+        _callout(
+            ax, "Pareto front", _front_anchor(front, 0.35),
+            (0.58, 0.96), FRONT_BLUE,
+        )
+        sug_anchor = suggestions.loc[suggestions[f"pred_{obj2_name}_mean"].idxmin()]
+        _callout(
+            ax, f"Suggested points (round {round_number + 1})",
+            (sug_anchor[f"pred_{obj1_name}_mean"], sug_anchor[f"pred_{obj2_name}_mean"]),
+            (0.02, 0.10), SUGGEST_ORANGE,
+        )
+        obs_anchor = observed.loc[observed[obj1_name].idxmax()]
+        _callout(
+            ax, "Existing data",
+            (obs_anchor[obj1_name], obs_anchor[obj2_name]),
+            (0.99, 0.13), INK, leader=LEADER_GRAY, ha="right",
         )
 
         fig_dir = BO_DIR / "figures"
@@ -311,6 +476,179 @@ def render_objective_figure(observed, suggestions, round_number):
             f"{r['print_id']} (t180 {r[obj1_name]:.3f}, {r[obj2_name]:.1f} mJ)"
             for _, r in front.iterrows()
         )
+    )
+    return out_png
+
+
+# ---- round-2 prototype: predicted vs. measured ---------------------------
+# Prototype only. The round-2 articles have not been printed or dropped, so
+# the "measured" points below are SYNTHETIC, drawn from the model's own
+# predictive distribution for the suggested designs. The figure exists to fix
+# the visual grammar now (diamond travels along a straight path to the
+# measurement, and lands as an open circle like every other tested article)
+# so that swapping the dummy column for the real one is a one-line change.
+
+
+def synthesize_round2_outcomes(suggestions, seed=0, shrink=0.3):
+    """DUMMY round-2 outcomes: predictive mean plus a draw at `shrink` * sd.
+
+    `shrink` is well below 1 on purpose: the SAAS posterior sd after 7 points
+    in 5D is wide enough that a full draw scatters the batch off the panel,
+    which would make the prototype about the noise rather than about the
+    layout it is meant to fix.
+
+    Replace this function's output with the measured campaign summary once
+    the round-2 batch has been printed and dropped. Deterministic given
+    `seed` so the prototype figure is reproducible.
+    """
+    rng = np.random.default_rng(seed)
+    out = suggestions.copy()
+    for obj in (obj1_name, obj2_name):
+        mean = suggestions[f"pred_{obj}_mean"].to_numpy(float)
+        sd = suggestions[f"pred_{obj}_sd"].to_numpy(float)
+        draw = mean + shrink * sd * rng.standard_normal(len(mean))
+        out[obj] = np.clip(draw, 0.6 * mean.min(), None)
+    out["print_id"] = [f"r2-{i:02d}" for i in suggestions["trial_index"]]
+    return out
+
+
+def render_prediction_vs_actual_figure(observed, suggestions, actual, round_number):
+    """Prototype of the post-round-2 figure: predictions travel to measurements.
+
+    Each orange diamond (what the model predicted for a suggested design) is
+    joined by a straight path to the open black circle where that article
+    actually landed, and the Pareto front is recomputed over round 1 plus
+    round 2. The round-1 front stays as a dashed line so the improvement is
+    visible.
+    """
+    combined = pd.concat(
+        [
+            observed[["print_id", obj1_name, obj2_name]],
+            actual[["print_id", obj1_name, obj2_name]],
+        ],
+        ignore_index=True,
+    )
+    old_front = pareto_front(observed)
+    new_front = pareto_front(combined)
+    on_new_front = combined["print_id"].isin(new_front["print_id"])
+
+    xs = np.concatenate(
+        [combined[obj1_name], suggestions[f"pred_{obj1_name}_mean"]]
+    )
+    ys = np.concatenate(
+        [combined[obj2_name], suggestions[f"pred_{obj2_name}_mean"]]
+    )
+    xticks = _nice_ticks(xs.min(), xs.max(), 0.1)
+    yticks = _nice_ticks(ys.min(), ys.max(), 2)
+
+    with plt.rc_context(FIG_RC):
+        fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=200)
+
+        # predicted -> measured travel paths
+        for (_, pred), (_, act) in zip(suggestions.iterrows(), actual.iterrows()):
+            ax.annotate(
+                "",
+                xy=(act[obj1_name], act[obj2_name]),
+                xytext=(pred[f"pred_{obj1_name}_mean"], pred[f"pred_{obj2_name}_mean"]),
+                arrowprops=dict(
+                    arrowstyle="-|>",
+                    color=SUGGEST_ORANGE,
+                    lw=1.8,
+                    alpha=0.55,
+                    shrinkA=8,
+                    shrinkB=10,
+                ),
+                zorder=1,
+            )
+
+        # where the model thought round 2 would land (now superseded, so faded)
+        ax.scatter(
+            suggestions[f"pred_{obj1_name}_mean"], suggestions[f"pred_{obj2_name}_mean"],
+            marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", alpha=0.38, zorder=2,
+        )
+
+        ax.plot(
+            old_front[obj1_name], old_front[obj2_name],
+            color=FRONT_BLUE, lw=2.4, ls=(0, (5, 4)), alpha=0.45, zorder=2,
+        )
+        ax.plot(
+            new_front[obj1_name], new_front[obj2_name],
+            color=FRONT_BLUE, lw=3.4, zorder=3,
+        )
+        ax.scatter(
+            combined.loc[~on_new_front, obj1_name], combined.loc[~on_new_front, obj2_name],
+            fc="none", ec=INK, s=190, lw=2.4, zorder=4,
+        )
+        ax.scatter(
+            new_front[obj1_name], new_front[obj2_name],
+            fc=FRONT_BLUE, ec=INK, s=190, lw=2.4, zorder=5,
+        )
+        _label_points(ax, combined, "print_id", obj1_name, obj2_name)
+
+        _style_axes(
+            ax,
+            xlim=(xticks[0] - 0.015, xticks[-1] + 0.02),
+            ylim=(yticks[0] - 0.5, yticks[-1] + 0.6),
+            xticks=xticks,
+            yticks=yticks,
+        )
+
+        # Callouts are placed relative to what they point at, because the
+        # front and the point cloud both move every round.
+        new_anchor = _front_anchor(new_front, 0.45)
+        _callout(
+            ax, f"Pareto front after round {round_number}", new_anchor,
+            _axes_frac(ax, new_anchor, -0.02, 0.20), FRONT_BLUE, ha="right",
+        )
+        old_anchor = _front_anchor(old_front, 0.75)
+        _callout(
+            ax, "Round-1 front", old_anchor,
+            _axes_frac(ax, old_anchor, 0.06, 0.12), FRONT_BLUE,
+        )
+        # Label the longest predicted-to-measured travel, the clearest one to
+        # read the grammar off.
+        travel = int(
+            np.hypot(
+                actual[obj1_name].to_numpy(float)
+                - suggestions[f"pred_{obj1_name}_mean"].to_numpy(float),
+                (
+                    actual[obj2_name].to_numpy(float)
+                    - suggestions[f"pred_{obj2_name}_mean"].to_numpy(float)
+                )
+                / 40.0,
+            ).argmax()
+        )
+        pred_row, act_row = suggestions.iloc[travel], actual.iloc[travel]
+        pred_xy = (pred_row[f"pred_{obj1_name}_mean"], pred_row[f"pred_{obj2_name}_mean"])
+        _callout(
+            ax, "Predicted (round 2)", pred_xy,
+            _axes_frac(ax, pred_xy, -0.10, -0.30), SUGGEST_ORANGE, ha="right",
+        )
+        act_xy = (act_row[obj1_name], act_row[obj2_name])
+        _callout(
+            ax, "Measured", act_xy,
+            _axes_frac(ax, act_xy, 0.10, 0.13), INK, leader=LEADER_GRAY,
+        )
+        ax.text(
+            1.0, 1.06, "PROTOTYPE: round-2 outcomes are synthetic",
+            transform=ax.transAxes, ha="right", va="bottom",
+            fontsize=15, color=SUGGEST_ORANGE,
+        )
+
+        fig_dir = BO_DIR / "figures"
+        fig_dir.mkdir(exist_ok=True)
+        out_png = (
+            fig_dir
+            / f"t3-prism-bo-round{round_number}-predicted-vs-actual-PROTOTYPE.png"
+        )
+        fig.savefig(out_png, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+    gained = set(new_front["print_id"]) - set(old_front["print_id"])
+    print(
+        f"[prototype, synthetic data] round-{round_number} front: "
+        + ", ".join(new_front["print_id"])
+        + (f"; new entrants: {', '.join(sorted(gained))}" if gained else "")
     )
     return out_png
 
@@ -340,18 +678,42 @@ def main(argv=None):
             "without refitting the model (needs only pandas + matplotlib)"
         ),
     )
+    ap.add_argument(
+        "--prototype-next-round",
+        action="store_true",
+        help=(
+            "draw the PROTOTYPE predicted-vs-measured figure for the next "
+            "round using SYNTHETIC outcomes drawn from the model's own "
+            "predictive distribution (no real round-2 measurements exist yet)"
+        ),
+    )
     args = ap.parse_args(argv)
 
     X_train, y_train, labels, masses, pending = load_training_data(args.results, args.design)
 
-    if args.plot_only:
+    if args.plot_only or args.prototype_next_round:
+        observed = observed_frame(y_train, labels)
         suggestions = pd.read_csv(
             BO_DIR / f"t3-prism-bo-suggestions-round{args.round}.csv"
         )
-        print(
-            f"Figure saved to "
-            f"{render_objective_figure(observed_frame(y_train, labels), suggestions, args.round)}"
-        )
+        if args.plot_only:
+            print(
+                "Figure saved to "
+                f"{render_objective_figure(observed, suggestions, args.round)}"
+            )
+        if args.prototype_next_round:
+            actual = synthesize_round2_outcomes(suggestions, seed=args.seed)
+            dummy_csv = (
+                BO_DIR
+                / f"t3-prism-bo-round{args.round + 1}-outcomes-PROTOTYPE-dummy.csv"
+            )
+            actual[["print_id", "trial_index", *PARAM_NAMES, obj1_name, obj2_name]].to_csv(
+                dummy_csv, index=False, float_format="%.4f"
+            )
+            out = render_prediction_vs_actual_figure(
+                observed, suggestions, actual, args.round + 1
+            )
+            print(f"Prototype figure saved to {out} (dummy outcomes: {dummy_csv})")
         return 0
 
     from ax.core.observation import ObservationFeatures

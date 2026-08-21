@@ -49,7 +49,22 @@ suggests the next print batch.
   the same three articles (`6lhxfy`, `6nheas`, `bpx68c`) that Ax's
   model-predicted Pareto set picks out. Redraw it without refitting the model
   (pandas + matplotlib only, no Ax install needed) with
-  `python bo/t3_prism_bo_campaign.py --plot-only`.
+  `python bo/t3_prism_bo_campaign.py --plot-only`. Styling follows the
+  hand-made reference on PR #102: no legend box (series are named by
+  leader-line callouts in the plot area), detached left and bottom spines,
+  no gridlines, gray print IDs, horizontal y-axis label above the axis.
+- `figures/t3-prism-bo-round2-predicted-vs-actual-PROTOTYPE.png` and
+  `t3-prism-bo-round2-outcomes-PROTOTYPE-dummy.csv`: **prototype, synthetic
+  data.** The layout the campaign will want once round 2 comes back: each
+  orange diamond (predicted) is joined by a straight path to the open black
+  circle where that article actually landed, the Pareto front is recomputed
+  over both rounds, and the round-1 front stays dashed underneath so the
+  improvement reads at a glance. No round-2 article has been printed or
+  dropped, so the outcomes are drawn from the model's own predictive
+  distribution at 0.3 sd (a full draw scatters the batch off the panel).
+  Replace `synthesize_round2_outcomes` with the measured campaign summary to
+  turn this into the real figure. Draw it with
+  `python bo/t3_prism_bo_campaign.py --prototype-next-round`.
 
 ## Print key files
 
