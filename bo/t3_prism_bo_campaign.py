@@ -655,7 +655,9 @@ def synthesize_round2_outcomes(suggestions, seed=0, shrink=0.3):
     return out
 
 
-def render_prediction_vs_actual_figure(observed, suggestions, actual, round_number):
+def render_prediction_vs_actual_figure(
+    observed, suggestions, actual, round_number, show_predictions=True
+):
     """Prototype of the post-round-2 figure: predictions travel to measurements.
 
     Each orange diamond (what the model predicted for a suggested design) is
@@ -663,6 +665,10 @@ def render_prediction_vs_actual_figure(observed, suggestions, actual, round_numb
     actually landed, and the Pareto front is recomputed over round 1 plus
     round 2. The round-1 front stays as a dashed line so the improvement is
     visible.
+
+    With `show_predictions=False` the whole prediction layer (diamonds,
+    travel paths, round-1 front and their callouts) is left out, which is the
+    resting state the animation ends on: one front, one set of articles.
     """
     combined = pd.concat(
         [
@@ -687,33 +693,38 @@ def render_prediction_vs_actual_figure(observed, suggestions, actual, round_numb
     with plt.rc_context(FIG_RC):
         fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=200)
 
-        # predicted -> measured travel paths
-        for (_, pred), (_, act) in zip(suggestions.iterrows(), actual.iterrows()):
-            ax.annotate(
-                "",
-                xy=(act[obj1_name], act[obj2_name]),
-                xytext=(pred[f"pred_{obj1_name}_mean"], pred[f"pred_{obj2_name}_mean"]),
-                arrowprops=dict(
-                    arrowstyle="-|>",
-                    color=SUGGEST_ORANGE,
-                    lw=1.8,
-                    alpha=0.55,
-                    shrinkA=8,
-                    shrinkB=10,
-                ),
-                zorder=1,
+        if show_predictions:
+            # predicted -> measured travel paths
+            for (_, pred), (_, act) in zip(suggestions.iterrows(), actual.iterrows()):
+                ax.annotate(
+                    "",
+                    xy=(act[obj1_name], act[obj2_name]),
+                    xytext=(
+                        pred[f"pred_{obj1_name}_mean"],
+                        pred[f"pred_{obj2_name}_mean"],
+                    ),
+                    arrowprops=dict(
+                        arrowstyle="-|>",
+                        color=SUGGEST_ORANGE,
+                        lw=1.8,
+                        alpha=0.55,
+                        shrinkA=8,
+                        shrinkB=10,
+                    ),
+                    zorder=1,
+                )
+
+            # where the model thought round 2 would land (now superseded, faded)
+            ax.scatter(
+                suggestions[f"pred_{obj1_name}_mean"],
+                suggestions[f"pred_{obj2_name}_mean"],
+                marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", alpha=0.38, zorder=2,
             )
 
-        # where the model thought round 2 would land (now superseded, so faded)
-        ax.scatter(
-            suggestions[f"pred_{obj1_name}_mean"], suggestions[f"pred_{obj2_name}_mean"],
-            marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", alpha=0.38, zorder=2,
-        )
-
-        ax.plot(
-            old_front[obj1_name], old_front[obj2_name],
-            color=FRONT_BLUE, lw=2.4, ls=(0, (5, 4)), alpha=0.45, zorder=2,
-        )
+            ax.plot(
+                old_front[obj1_name], old_front[obj2_name],
+                color=FRONT_BLUE, lw=2.4, ls=(0, (5, 4)), alpha=0.45, zorder=2,
+            )
         ax.plot(
             new_front[obj1_name], new_front[obj2_name],
             color=FRONT_BLUE, lw=3.4, zorder=3,
@@ -741,37 +752,41 @@ def render_prediction_vs_actual_figure(observed, suggestions, actual, round_numb
         new_anchor = _front_anchor(new_front, 0.45)
         _callout(
             ax, f"Pareto front after round {round_number}", new_anchor,
-            _axes_frac(ax, new_anchor, -0.02, 0.20), FRONT_BLUE, ha="right",
+            _axes_frac(ax, new_anchor, -0.42, -0.02), FRONT_BLUE, ha="left",
         )
-        old_anchor = _front_anchor(old_front, 0.75)
-        _callout(
-            ax, "Round-1 front", old_anchor,
-            _axes_frac(ax, old_anchor, 0.06, 0.12), FRONT_BLUE,
-        )
-        # Label the longest predicted-to-measured travel, the clearest one to
-        # read the grammar off.
-        travel = int(
-            np.hypot(
-                actual[obj1_name].to_numpy(float)
-                - suggestions[f"pred_{obj1_name}_mean"].to_numpy(float),
-                (
-                    actual[obj2_name].to_numpy(float)
-                    - suggestions[f"pred_{obj2_name}_mean"].to_numpy(float)
-                )
-                / 40.0,
-            ).argmax()
-        )
-        pred_row, act_row = suggestions.iloc[travel], actual.iloc[travel]
-        pred_xy = (pred_row[f"pred_{obj1_name}_mean"], pred_row[f"pred_{obj2_name}_mean"])
-        _callout(
-            ax, "Predicted (round 2)", pred_xy,
-            _axes_frac(ax, pred_xy, -0.10, -0.30), SUGGEST_ORANGE, ha="right",
-        )
-        act_xy = (act_row[obj1_name], act_row[obj2_name])
-        _callout(
-            ax, "Measured", act_xy,
-            _axes_frac(ax, act_xy, 0.10, 0.13), INK, leader=LEADER_GRAY,
-        )
+        if show_predictions:
+            old_anchor = _front_anchor(old_front, 0.75)
+            _callout(
+                ax, "Round-1 front", old_anchor,
+                _axes_frac(ax, old_anchor, 0.06, 0.12), FRONT_BLUE,
+            )
+            # Label the longest predicted-to-measured travel, the clearest one
+            # to read the grammar off.
+            travel = int(
+                np.hypot(
+                    actual[obj1_name].to_numpy(float)
+                    - suggestions[f"pred_{obj1_name}_mean"].to_numpy(float),
+                    (
+                        actual[obj2_name].to_numpy(float)
+                        - suggestions[f"pred_{obj2_name}_mean"].to_numpy(float)
+                    )
+                    / 40.0,
+                ).argmax()
+            )
+            pred_row, act_row = suggestions.iloc[travel], actual.iloc[travel]
+            pred_xy = (
+                pred_row[f"pred_{obj1_name}_mean"],
+                pred_row[f"pred_{obj2_name}_mean"],
+            )
+            _callout(
+                ax, "Predicted (round 2)", pred_xy,
+                _axes_frac(ax, pred_xy, -0.10, -0.30), SUGGEST_ORANGE, ha="right",
+            )
+            act_xy = (act_row[obj1_name], act_row[obj2_name])
+            _callout(
+                ax, "Measured", act_xy,
+                _axes_frac(ax, act_xy, 0.10, 0.13), INK, leader=LEADER_GRAY,
+            )
         ax.text(
             1.0, 1.06, "PROTOTYPE: round-2 outcomes are synthetic",
             transform=ax.transAxes, ha="right", va="bottom",
@@ -780,10 +795,12 @@ def render_prediction_vs_actual_figure(observed, suggestions, actual, round_numb
 
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
-        out_png = (
-            fig_dir
-            / f"t3-prism-bo-round{round_number}-predicted-vs-actual-PROTOTYPE.png"
+        stem = (
+            f"t3-prism-bo-round{round_number}-predicted-vs-actual"
+            if show_predictions
+            else f"t3-prism-bo-round{round_number}-front-final"
         )
+        out_png = fig_dir / f"{stem}-PROTOTYPE.png"
         fig.savefig(out_png, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
@@ -836,8 +853,11 @@ def render_prediction_animation(
     Frames: hold on the suggested batch, then each prediction travels to its
     measurement (staggered, eased) and lands as an open circle, then the
     Pareto front is recomputed while the round-1 front drops back to a pale
-    dashed line and the new print IDs fade in. The last frame is the static
-    prototype figure, so the two artifacts agree.
+    dashed line and the new print IDs fade in. Finally the whole prediction
+    layer (diamonds, travel paths, arrowheads, the round-1 front) fades away,
+    so the clip rests on the round-2 figure alone rather than on the
+    scaffolding that explained how it got there. The last frame is the
+    `show_predictions=False` still, so the two artifacts agree.
     """
     from matplotlib.animation import FFMpegWriter, FuncAnimation, PillowWriter
     from matplotlib.collections import LineCollection
@@ -873,8 +893,10 @@ def render_prediction_animation(
     n_hold0 = int(round(1.2 * fps))
     n_travel = int(round(2.6 * fps))
     n_front = int(round(1.1 * fps))
-    n_hold1 = int(round(2.6 * fps))
-    n_frames = n_hold0 + n_travel + n_front + n_hold1
+    n_hold1 = int(round(1.5 * fps))   # read predicted vs measured
+    n_clean = int(round(0.9 * fps))   # then drop the prediction layer
+    n_hold2 = int(round(2.4 * fps))   # rest on the round-2 figure alone
+    n_frames = n_hold0 + n_travel + n_front + n_hold1 + n_clean + n_hold2
 
     with plt.rc_context(FIG_RC):
         fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=ANIM_DPI)
@@ -960,7 +982,7 @@ def render_prediction_animation(
 
         # callouts: the round-1 set fades out as the round-2 set fades in
         obs_anchor = observed.loc[observed[obj1_name].idxmax()]
-        _callout(
+        c_exist = _callout(
             ax, "Existing data (round 1)",
             (obs_anchor[obj1_name], obs_anchor[obj2_name]),
             (0.995, 0.72), INK, leader=LEADER_GRAY, ha="right",
@@ -977,7 +999,7 @@ def render_prediction_animation(
         new_anchor = _front_anchor(new_front, 0.45)
         c_front2 = _callout(
             ax, f"Pareto front after round {round_number}", new_anchor,
-            _axes_frac(ax, new_anchor, -0.02, 0.20), FRONT_BLUE, ha="right",
+            _axes_frac(ax, new_anchor, -0.42, -0.02), FRONT_BLUE, ha="left",
         )
         old_anchor2 = _front_anchor(old_front, 0.75)
         c_front1b = _callout(
@@ -1013,25 +1035,36 @@ def render_prediction_animation(
         def update(f):
             u = np.clip((f - n_hold0) / max(n_travel, 1), 0.0, 1.0)
             v = _smoothstep((f - n_hold0 - n_travel) / max(n_front, 1))
+            # w: the clean-up fade, 0 until the predicted-vs-measured hold is
+            # over, 1 once the prediction layer is gone
+            w = _smoothstep(
+                (f - n_hold0 - n_travel - n_front - n_hold1) / max(n_clean, 1)
+            )
+            keep = 1.0 - w  # everything that only existed to explain the move
             p = _smoothstep((u - starts) / span)
 
             cur = pred_xy + p[:, None] * (act_xy - pred_xy)
             trails.set_segments([np.array([q, c]) for q, c in zip(pred_xy, cur)])
+            trails.set_color(mcolors.to_rgba(SUGGEST_ORANGE, 0.55 * keep))
             mover.set_offsets(cur)
             # the diamond hands off to the open circle over the last 40% of
             # its own travel
-            mover.set_facecolor(_rgba(SUGGEST_ORANGE, 1.0 - _smoothstep((p - 0.7) / 0.3)))
+            mover.set_facecolor(
+                _rgba(SUGGEST_ORANGE, (1.0 - _smoothstep((p - 0.7) / 0.3)) * keep)
+            )
             landed.set_edgecolor(_rgba(INK, _smoothstep((p - 0.6) / 0.4)))
             ghost.set_facecolor(
                 _rgba(
                     SUGGEST_ORANGE,
-                    np.full(n_r2, 1.0 - 0.62 * _smoothstep(u / 0.3)),
+                    np.full(n_r2, 1.0 - 0.62 * _smoothstep(u / 0.3)) * keep,
                 )
             )
             for head, pi in zip(heads, p):
-                head.arrow_patch.set_alpha(0.55 * _smoothstep((pi - 0.85) / 0.15))
+                head.arrow_patch.set_alpha(
+                    0.55 * _smoothstep((pi - 0.85) / 0.15) * keep
+                )
 
-            old_line.set_alpha(1.0 - 0.55 * v)
+            old_line.set_alpha((1.0 - 0.55 * v) * keep)
             old_line.set_linewidth(3.4 - 1.0 * v)
             old_line.set_linestyle("solid" if v < 0.35 else (0, (5, 4)))
             new_line.set_alpha(v)
@@ -1045,8 +1078,14 @@ def render_prediction_animation(
                 ann.set_alpha(v)
             for ann in (c_front1, c_sug):
                 _callout_alpha(ann, 1.0 - v)
-            for ann in (c_front2, c_front1b, c_pred, c_meas):
-                _callout_alpha(ann, v)
+            _callout_alpha(c_front2, v)
+            # "Round-1 front", "Predicted" and "Measured" name things that are
+            # about to leave, so they leave with them
+            for ann in (c_front1b, c_pred, c_meas):
+                _callout_alpha(ann, v * keep)
+            # Once round 2 is measured, "existing data" is every point on the
+            # panel, so the distinction stops earning its ink
+            _callout_alpha(c_exist, keep)
             return ()
 
         anim = FuncAnimation(fig, update, frames=n_frames, interval=1000 / fps)
@@ -1168,7 +1207,15 @@ def main(argv=None):
             out = render_prediction_vs_actual_figure(
                 observed, suggestions, actual, args.round + 1
             )
-            print(f"Prototype figure saved to {out} (dummy outcomes: {dummy_csv})")
+            # the resting state the animation ends on
+            out_final = render_prediction_vs_actual_figure(
+                observed, suggestions, actual, args.round + 1,
+                show_predictions=False,
+            )
+            print(
+                f"Prototype figures saved to {out} and {out_final} "
+                f"(dummy outcomes: {dummy_csv})"
+            )
             if not args.no_animation:
                 gif, mp4 = render_prediction_animation(
                     observed, suggestions, actual, args.round + 1
