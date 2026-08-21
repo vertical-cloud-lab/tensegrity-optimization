@@ -877,10 +877,19 @@ def build_mm_3mf(
     shutil.copyfile(proj_outdir / proj_3mf, out_3mf)
 
 
-def load_designs_from_csv(csv_path: Path, n: int) -> list[dict]:
-    """Read the pinned first-batch Sobol coordinates back from the committed
-    design table (only the five swept parameter columns are consumed, so the
-    file may carry any number of extra as-printed / constraint columns)."""
+def load_designs_from_csv(csv_path: Path, n: int) -> tuple[list[dict], list[str]]:
+    """Read design coordinates back from a committed design table.
+
+    Only the five swept parameter columns are consumed, so the file may carry
+    any number of extra as-printed / constraint / prediction columns.  That
+    makes this readable both for the pinned first-batch Sobol table
+    (``t3-prism-bo-batch.csv``) and for a BO suggestion table emitted by
+    ``bo/t3_prism_bo_campaign.py`` (``t3-prism-bo-suggestions-roundN.csv``),
+    which uses the same five column names.
+
+    Returns the design dicts plus a per-row label used to trace each plate
+    specimen back to its source row (the Ax ``trial_index`` when present).
+    """
     with csv_path.open() as f:
         rows = list(csv.DictReader(f))
     if len(rows) < n:
@@ -888,7 +897,15 @@ def load_designs_from_csv(csv_path: Path, n: int) -> list[dict]:
             f"{csv_path} has only {len(rows)} rows but --n={n}; "
             f"pass --resample to draw a fresh Sobol batch instead")
     keys = [p["name"] for p in PARAMETERS]
-    return [{k: float(row[k]) for k in keys} for row in rows[:n]]
+    missing = [k for k in keys if k not in (rows[0] if rows else {})]
+    if missing:
+        raise SystemExit(
+            f"{csv_path} is missing the design column(s) {missing}; "
+            f"expected all of {keys}")
+    designs = [{k: float(row[k]) for k in keys} for row in rows[:n]]
+    labels = [str(row.get("trial_index") or row.get("specimen") or i)
+              for i, row in enumerate(rows[:n])]
+    return designs, labels
 
 
 def sample_designs_sobol(n: int, seed: int) -> list[dict]:
@@ -925,6 +942,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--resample", action="store_true",
                         help="draw a fresh Sobol batch via Ax instead of reading "
                              "the pinned designs back from the committed CSV")
+    parser.add_argument("--designs-csv", type=Path, default=None,
+                        help="read the design coordinates from this CSV instead "
+                             "of the pinned first-batch table (any file carrying "
+                             "the five swept columns works, e.g. the BO "
+                             "suggestion table t3-prism-bo-suggestions-round1.csv)")
+    parser.add_argument("--out-prefix", default=None,
+                        help="basename for every emitted artifact (default "
+                             "'t3-prism-bo-batch'); use e.g. "
+                             "'t3-prism-bo-round1' to keep a BO round's plate "
+                             "alongside the pinned Sobol batch")
     parser.add_argument("--mass-g", type=float, default=None,
                         help="Route-A constant cell mass m* in grams (default: "
                              "solid-volume mass of the committed S0 reference "
@@ -945,25 +972,42 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     out_dir = Path(__file__).resolve().parent
-    csv_path = out_dir / "t3-prism-bo-batch.csv"
-    json_path = out_dir / "t3-prism-bo-batch.json"
-    scad_path = out_dir / "t3-prism-bo-batch.scad"
-    stl_path = out_dir / "t3-prism-bo-batch.stl"
-    stl_struts_path = out_dir / "t3-prism-bo-batch-struts.stl"
-    stl_cables_path = out_dir / "t3-prism-bo-batch-cables.stl"
-    plate_png = out_dir / "t3-prism-bo-batch-plate.png"
-    iso_png = out_dir / "t3-prism-bo-batch-iso.png"
+    prefix = args.out_prefix or "t3-prism-bo-batch"
+    if args.out_prefix:
+        # Keep a non-default run's per-specimen STLs from colliding with the
+        # pinned batch's (both land in per-specimen-stls/).
+        global SPEC_STL_FMT
+        SPEC_STL_FMT = f"{prefix}-spec{{idx:02d}}-{{part}}.stl"
+    csv_path = out_dir / f"{prefix}.csv"
+    json_path = out_dir / f"{prefix}.json"
+    scad_path = out_dir / f"{prefix}.scad"
+    stl_path = out_dir / f"{prefix}.stl"
+    stl_struts_path = out_dir / f"{prefix}-struts.stl"
+    stl_cables_path = out_dir / f"{prefix}-cables.stl"
+    plate_png = out_dir / f"{prefix}-plate.png"
+    iso_png = out_dir / f"{prefix}-iso.png"
     slices_dir = out_dir / "slices"
-    mm_3mf_path = slices_dir / "t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.3mf"
+    mm_3mf_path = slices_dir / f"{prefix}.H2D-MM-PLAstruts-TPUcables.3mf"
     per_spec_dir = out_dir / "per-specimen-stls"
 
-    # ---- The first-batch Sobol designs -------------------------------------
-    if args.resample or not csv_path.exists():
+    # ---- Designs: BO suggestions, the pinned Sobol table, or a fresh draw ---
+    if args.designs_csv is not None:
+        src = args.designs_csv
+        if not src.is_absolute():
+            src = (Path.cwd() / src) if src.exists() else (out_dir / src)
+        print(f"==> Reading designs from {src}")
+        specimens, labels = load_designs_from_csv(src, args.n)
+        designs_source = str(src.relative_to(REPO_ROOT)
+                             if src.is_relative_to(REPO_ROOT) else src)
+    elif args.resample or not csv_path.exists():
         print(f"==> Drawing a fresh Sobol batch (n={args.n}, seed={args.seed})")
         specimens = sample_designs_sobol(args.n, args.seed)
+        labels = [str(i) for i in range(len(specimens))]
+        designs_source = "resampled"
     else:
         print(f"==> Reusing the pinned first-batch designs from {csv_path.name}")
-        specimens = load_designs_from_csv(csv_path, args.n)
+        specimens, labels = load_designs_from_csv(csv_path, args.n)
+        designs_source = "pinned-csv"
 
     # ---- Constraint targets -------------------------------------------------
     m_star = args.mass_g if args.mass_g is not None else reference_mass_g()
@@ -1050,12 +1094,14 @@ def main(argv: list[str] | None = None) -> int:
     ]
     with csv_path.open("w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["specimen", *(p["name"] for p in PARAMETERS),
+        writer.writerow(["specimen", "source_trial",
+                         *(p["name"] for p in PARAMETERS),
                          *derived_cols, *sorted(frozen)])
         for idx, (params, res) in enumerate(zip(specimens, results)):
             s = res["scale"]
             writer.writerow([
                 idx,
+                labels[idx],
                 *(f"{params[p['name']]:.4f}" for p in PARAMETERS),
                 f"{s:.4f}",
                 f"{params['R_mm'] * s:.3f}",
@@ -1078,7 +1124,7 @@ def main(argv: list[str] | None = None) -> int:
         {
             "seed": args.seed,
             "n": args.n,
-            "designs_source": ("resampled" if args.resample else "pinned-csv"),
+            "designs_source": designs_source,
             "constraints": {
                 "mass_target_g": m_star,
                 "mass_tol_g": MASS_TOL_G,
@@ -1102,7 +1148,7 @@ def main(argv: list[str] | None = None) -> int:
             "parameters": PARAMETERS,
             "frozen": frozen,
             "specimens": [
-                {"idx": i, **params,
+                {"idx": i, "source_trial": labels[i], **params,
                  **{k: res[k] for k in ("scale", "mass_g", "pla_g", "tpu_g",
                                         "envelope_cm3", "envelope_ok", "mass_ok",
                                         "cable_d_print_mm", "cable_bridge_ok")}}

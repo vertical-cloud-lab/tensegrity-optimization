@@ -1,0 +1,260 @@
+{
+  "seed": 0,
+  "n": 9,
+  "designs_source": "bo/t3-prism-bo-suggestions-round1.csv",
+  "constraints": {
+    "mass_target_g": 30.94789906161643,
+    "mass_tol_g": 0.15,
+    "housing_mass_g": 6.761075212594943,
+    "envelope_max_cm3": 250.0,
+    "rho_pla_g_per_cm3": 1.24,
+    "rho_tpu_g_per_cm3": 1.21,
+    "mass_anchor": "solid-volume mass of cad/t3-prism/t3-prism-{struts,cables}.stl (S0 reference)",
+    "envelope_definition": "pi * R_print^2 * H_print (bo_evaluator.cell_geometry_metrics)"
+  },
+  "grid": {
+    "rows": 3,
+    "cols": 3,
+    "air_gap_mm": 6.0,
+    "col_widths_mm": [
+      97.06892395019531,
+      81.1097183227539,
+      71.24674987792969
+    ],
+    "row_heights_mm": [
+      97.06892395019531,
+      88.19925689697266,
+      84.1402587890625
+    ],
+    "total_w_mm": 261.4253921508789,
+    "total_h_mm": 281.40843963623047
+  },
+  "plate": {
+    "x_mm": 350.0,
+    "y_mm": 320.0,
+    "margin_mm": 5.0,
+    "prime_tower_reserve_x_mm": 50.0
+  },
+  "parameters": [
+    {
+      "name": "R_mm",
+      "type": "range",
+      "bounds": [
+        25.0,
+        40.0
+      ],
+      "value_type": "float"
+    },
+    {
+      "name": "H_mm",
+      "type": "range",
+      "bounds": [
+        60.0,
+        110.0
+      ],
+      "value_type": "float"
+    },
+    {
+      "name": "twist_deg",
+      "type": "range",
+      "bounds": [
+        40.0,
+        80.0
+      ],
+      "value_type": "float"
+    },
+    {
+      "name": "strut_d_mm",
+      "type": "range",
+      "bounds": [
+        6.0,
+        12.0
+      ],
+      "value_type": "float"
+    },
+    {
+      "name": "cable_d_mm",
+      "type": "range",
+      "bounds": [
+        3.0,
+        5.5
+      ],
+      "value_type": "float"
+    }
+  ],
+  "frozen": {
+    "topology": "t3_prism",
+    "tiling": "1x1x1",
+    "struts_per_cell": 3,
+    "build_orientation": "vertical",
+    "tpu_shore": "85A",
+    "strut_material": "PLA",
+    "cable_material": "TPU",
+    "supports": "manual_painted",
+    "joint_d_mm": 7.0
+  },
+  "specimens": [
+    {
+      "idx": 0,
+      "source_trial": "10",
+      "R_mm": 25.0,
+      "H_mm": 60.0,
+      "twist_deg": 80.0,
+      "strut_d_mm": 12.0,
+      "cable_d_mm": 3.0,
+      "scale": 0.8778529902535073,
+      "mass_g": 30.98968789353593,
+      "pla_g": 27.880429379058288,
+      "tpu_g": 3.1092585144776406,
+      "envelope_cm3": 79.69783408026458,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 2.6335589707605216,
+      "cable_bridge_ok": false
+    },
+    {
+      "idx": 1,
+      "source_trial": "11",
+      "R_mm": 40.0,
+      "H_mm": 60.0,
+      "twist_deg": 80.0,
+      "strut_d_mm": 12.0,
+      "cable_d_mm": 5.5,
+      "scale": 0.7530920025414901,
+      "mass_g": 30.91038331079331,
+      "pla_g": 22.974581799849314,
+      "tpu_g": 7.935801510943997,
+      "envelope_cm3": 128.81463659449113,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 4.142006013978196,
+      "cable_bridge_ok": true
+    },
+    {
+      "idx": 2,
+      "source_trial": "12",
+      "R_mm": 25.0,
+      "H_mm": 60.0,
+      "twist_deg": 40.0,
+      "strut_d_mm": 12.0,
+      "cable_d_mm": 3.0,
+      "scale": 0.8985370553821969,
+      "mass_g": 31.00885759812474,
+      "pla_g": 27.56921563449013,
+      "tpu_g": 3.439641963634611,
+      "envelope_cm3": 85.46516125024311,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 2.6956111661465907,
+      "cable_bridge_ok": false
+    },
+    {
+      "idx": 3,
+      "source_trial": "13",
+      "R_mm": 25.0,
+      "H_mm": 60.0,
+      "twist_deg": 80.0,
+      "strut_d_mm": 7.4015,
+      "cable_d_mm": 3.0,
+      "scale": 1.0920308826665797,
+      "mass_g": 30.949018769759252,
+      "pla_g": 24.96357656805926,
+      "tpu_g": 5.9854422016999935,
+      "envelope_cm3": 153.42138593406446,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 3.276092647999739,
+      "cable_bridge_ok": true
+    },
+    {
+      "idx": 4,
+      "source_trial": "14",
+      "R_mm": 25.0,
+      "H_mm": 60.0,
+      "twist_deg": 40.0,
+      "strut_d_mm": 12.0,
+      "cable_d_mm": 5.5,
+      "scale": 0.8159223942765935,
+      "mass_g": 30.878337991740292,
+      "pla_g": 23.23395251928387,
+      "tpu_g": 7.644385472456421,
+      "envelope_cm3": 63.992297083373934,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 4.487573168521265,
+      "cable_bridge_ok": true
+    },
+    {
+      "idx": 5,
+      "source_trial": "15",
+      "R_mm": 40.0,
+      "H_mm": 60.0,
+      "twist_deg": 40.0,
+      "strut_d_mm": 12.0,
+      "cable_d_mm": 3.0,
+      "scale": 0.8721610407052737,
+      "mass_g": 30.997291818279397,
+      "pla_g": 26.783762656756263,
+      "tpu_g": 4.213529161523134,
+      "envelope_cm3": 200.08344410641325,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 2.616483122115821,
+      "cable_bridge_ok": false
+    },
+    {
+      "idx": 6,
+      "source_trial": "16",
+      "R_mm": 25.0,
+      "H_mm": 60.0,
+      "twist_deg": 80.0,
+      "strut_d_mm": 12.0,
+      "cable_d_mm": 5.5,
+      "scale": 0.8028821165383562,
+      "mass_g": 30.88367173978745,
+      "pla_g": 23.829971734487657,
+      "tpu_g": 7.053700005299793,
+      "envelope_cm3": 60.97284980631642,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 4.415851640960959,
+      "cable_bridge_ok": true
+    },
+    {
+      "idx": 7,
+      "source_trial": "17",
+      "R_mm": 40.0,
+      "H_mm": 110.0,
+      "twist_deg": 80.0,
+      "strut_d_mm": 12.0,
+      "cable_d_mm": 5.5,
+      "scale": 0.6731647737474327,
+      "mass_g": 30.935296007331097,
+      "pla_g": 23.909451524770386,
+      "tpu_g": 7.025844482560712,
+      "envelope_cm3": 168.66566587405111,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 3.70240625561088,
+      "cable_bridge_ok": true
+    },
+    {
+      "idx": 8,
+      "source_trial": "18",
+      "R_mm": 25.0,
+      "H_mm": 60.0,
+      "twist_deg": 80.0,
+      "strut_d_mm": 6.0,
+      "cable_d_mm": 5.5,
+      "scale": 1.0022811996022751,
+      "mass_g": 30.8482836184146,
+      "pla_g": 17.585590621147045,
+      "tpu_g": 13.262692997267557,
+      "envelope_cm3": 118.61780759827889,
+      "envelope_ok": true,
+      "mass_ok": true,
+      "cable_d_print_mm": 5.512546597812513,
+      "cable_bridge_ok": true
+    }
+  ]
+}

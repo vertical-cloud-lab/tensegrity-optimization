@@ -151,6 +151,19 @@ needed). Knobs:
   the prime-tower-reduced usable area)
 * `--resample` — draw a fresh Sobol batch via Ax instead of reusing the
   pinned designs (requires `pip install ax-platform`; `--seed S` applies)
+* `--designs-csv PATH`: take the design coordinates from any CSV carrying
+  the five swept columns instead of the pinned first-batch table. This is
+  how a **model-based** round gets built: point it at the suggestion table
+  written by `bo/t3_prism_bo_campaign.py`
+  (`t3-prism-bo-suggestions-roundN.csv`), which uses the same column names.
+  The row's `trial_index` is carried into the batch table as `source_trial`
+  so each plate specimen traces back to its Ax trial.
+* `--out-prefix NAME`: basename for every emitted artifact (default
+  `t3-prism-bo-batch`). Use it so a BO round lands beside the pinned Sobol
+  batch instead of overwriting it (e.g. `--out-prefix t3-prism-bo-round1`
+  writes `t3-prism-bo-round1.csv`, `-struts.stl`, `-plate.png`,
+  `slices/t3-prism-bo-round1.H2D-MM-PLAstruts-TPUcables.3mf`, and
+  `per-specimen-stls/t3-prism-bo-round1-specNN-*.stl`).
 * `--mass-g M` — override the Route-A constant mass m\* (default: computed
   from the committed S0 reference STLs)
 * `--envelope-max-cm3 V` — override the Route-B envelope cap V\* (default 250)
@@ -187,6 +200,36 @@ needed). Knobs:
   Supports are intentionally OFF; @achris0520 paints them on per
   comment [`4502140147`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35#issuecomment-4502140147).
 
+## Round 1 (model-based, mass-aware) plate
+
+The first model-based batch. Its nine designs are the round-1 suggestions
+from the mass-aware campaign in PR #102 (comment
+[`5365706779`](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5365706779)),
+Ax trials 10 to 18, committed here verbatim as
+`t3-prism-bo-suggestions-round1.csv`. Rebuild it with:
+
+```bash
+python3 bo/t3_prism_sobol_batch.py \
+    --designs-csv bo/t3-prism-bo-suggestions-round1.csv \
+    --out-prefix t3-prism-bo-round1
+```
+
+Everything else is unchanged from the Sobol batch: same constant-mass
+projection onto m\* = 30.95 g, same 250 cm^3 envelope cap, same captive-core
+joints and A3 sensor housings, same 3x3 plate with the 50 mm prime-tower
+reserve, supports off for manual painting. Artifacts carry the
+`t3-prism-bo-round1` prefix; the production file is
+`slices/t3-prism-bo-round1.H2D-MM-PLAstruts-TPUcables.3mf`.
+
+All nine clear the envelope cap and land within 0.15 g of the mass target.
+Three (specimens 00, 02, 05 = trials 10, 12, 15) fall to an as-printed cable
+diameter of 2.6 to 2.7 mm, below the 3.0 mm TPU self-bridging floor, and are
+flagged `cable_bridge_ok=False` in the design table. That is the expected
+consequence of holding mass constant on a thick-strut, thin-cable design
+(12 mm struts and 3 mm cables at base scale), and it is workable under the
+manual-painted-supports workflow, but those three need the most careful
+support painting on the top-triangle cables.
+
 ## Onshape spot-check upload
 
 The per-specimen STLs can be pushed to a public Onshape document so the
@@ -196,13 +239,14 @@ comment [`5133453991`](https://github.com/vertical-cloud-lab/tensegrity-optimiza
 document name, and a concurrency setting:
 
 ```bash
+PREFIX=t3-prism-bo-round1   # or t3-prism-bo for the pinned Sobol batch
 ARGS=""
 for i in 00 01 02 03 04 05 06 07 08; do
-  ARGS="$ARGS --stl spec$i-struts-PLA=bo/per-specimen-stls/t3-prism-bo-spec$i-struts.stl"
-  ARGS="$ARGS --stl spec$i-cables-TPU=bo/per-specimen-stls/t3-prism-bo-spec$i-cables.stl"
+  ARGS="$ARGS --stl spec$i-struts-PLA=bo/per-specimen-stls/$PREFIX-spec$i-struts.stl"
+  ARGS="$ARGS --stl spec$i-cables-TPU=bo/per-specimen-stls/$PREFIX-spec$i-cables.stl"
 done
 python3 cad/t3-prism/onshape_upload_t3prism.py \
-    --doc-name "T3-prism Sobol batch 01 - constant mass (PR #35)" --jobs 6 $ARGS
+    --doc-name "T3-prism BO round 1 - constant mass (PR #35)" --jobs 6 $ARGS
 ```
 
 Each import's bounding box is read back through the API and printed in mm as
