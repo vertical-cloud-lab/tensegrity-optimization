@@ -123,6 +123,16 @@ fig.text(0.075, 0.015,
 fig.savefig(HERE / "fig1_one_drop_two_parts.png", facecolor="#ffffff")
 plt.close(fig)
 
+# Deck variant: Part 1 panel only. Slides 18/19 of idetc-2026.pptx show fig1
+# cropped to the left panel (srcRect keeps the left 43.541% and top 95.155%),
+# and the web editor's Change Picture re-crops a swapped image to fill the
+# shape, so the deck needs the crop baked into the file itself.
+from PIL import Image
+im = Image.open(HERE / "fig1_one_drop_two_parts.png")
+w, h = im.size
+im.crop((0, 0, round(w * 0.43541), round(h * 0.95155))).save(
+    HERE / "fig1_part1_only.png")
+
 # ---------------------------------------------------------------- figure 2
 fig, (ax1, ax2) = plt.subplots(
     1, 2, figsize=(12.4, 5.6), dpi=200, gridspec_kw={"width_ratios": [1.7, 1]}
