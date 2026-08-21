@@ -10,19 +10,33 @@ suggests the next print batch.
 
 - `t3_prism_bo_campaign.py`: Honegumi-templated Ax script (multi-objective,
   fully Bayesian SAASBO, batch, existing data, visualization). Ingests the
-  measured drop results, attaches them as completed Ax trials in the base
-  Sobol parameter space from PR #35, attaches printed-but-untested specs as
-  pending trials, and records the next suggested batch. Accounts for the
-  per-print mass differences (18.5 to 22.3 g despite the constant-mass
-  constraint, which holds solid CAD volume rather than printed grams): the
-  rebound objective is the absolute energy returned to the payload per drop
-  (`e_reb_mJ = e_rebound * m_printed * g * h`), its noise folds in the
-  print-to-print mass scatter measured from the spec-08 triplicate, and
-  `mass_g` is a tracking metric so the model learns printed mass from the
-  base coordinates. See the docstring for the objective rationale (why
-  `t180` stays a ratio) and the four documented deviations from the
-  rendered template. Run from the repo root:
-  `python bo/t3_prism_bo_campaign.py`.
+  measured drop results, attaches them as completed Ax trials, attaches
+  printed-but-untested specs as pending trials, and records the next
+  suggested batch. The rebound objective is the absolute energy returned to
+  the payload per drop (`e_reb_mJ = e_rebound * m_printed * g * h`), computed
+  from each article's own weighed mass, and its noise folds in the
+  print-to-print mass scatter measured from the spec-08 triplicate. See the
+  docstring for the objective rationale (why `t180` stays a ratio) and the
+  five documented deviations from the rendered template. Run from the repo
+  root: `python bo/t3_prism_bo_campaign.py`.
+- `t3_prism_mass_model.py`: the as-printed mass model, and the
+  constant-printed-mass projection built on it. **What round 1 actually held
+  constant was solid mass, not volume and not printed grams**: PR #35's
+  Route A uniformly re-scales each design until
+  `rho_PLA * V_PLA + rho_TPU * V_TPU = 30.95 g` (the solid mass of the S0
+  reference STLs), converged to 0.15 g on rendered STL volumes. All 9
+  articles sit at that solid mass and still weigh 18.50 to 22.29 g, because
+  PLA prints sparse while thin TPU cables print near solid and the PLA/TPU
+  split swings from 20.0/10.9 g to 27.3/3.6 g across the batch. This module
+  calibrates the gap in two stages (analytic volumes against the 9 rendered
+  designs, then rendered solid grams against the 12 weighed articles using a
+  wall-plus-infill term in the as-printed strut diameter) and inverts it, so
+  a design can be projected onto a constant *printed* mass with a closed
+  bisection and no slicer in the loop. Residual sd 0.378 g, at or below the
+  0.457 g print-to-print scatter, versus 0.927 g for a flat pair of density
+  factors. `python bo/t3_prism_mass_model.py` prints the calibration report
+  and re-projects the 9 round-1 articles.
+
 - `t3-prism-bo-batch-drop-results.csv`: snapshot of the BO-ready
   `campaign_summary.csv` produced on PR #86 (branch
   `copilot/add-drop-test-protocol-again`, commit `642b8c0`, path
@@ -31,13 +45,15 @@ suggests the next print batch.
   geometry. 8 of 9 specimens as of 2026-08-21; `amdjwm` has no known spec
   mapping and is skipped by the script until identified.
 - `t3-prism-bo-suggestions-round1.csv`: the recorded round-1 output of the
-  script: suggested base-space designs for the next print batch with
-  posterior-mean predictions for both objectives, the predicted as-printed
-  mass of each design (`pred_mass_g_mean`), and the implied rebound
-  fraction at that mass (`pred_e_rebound_approx`, for comparison with the
-  raw `e_rebound` column of the results CSV). Feed these rows to
-  `t3_prism_sobol_batch.py` (PR #35) for constant-mass projection and
-  slicing.
+  script. Per suggested design: the base (shape) coordinates, the constant
+  `mass_printed_g` target, posterior-mean predictions for both objectives,
+  the implied rebound fraction at that mass (`pred_e_rebound_approx`, for
+  comparison with the raw `e_rebound` column of the results CSV), and the
+  as-printed geometry the constant-printed-mass projection produces
+  (`scale`, `*_print_mm`, `solid_mass_g`) with PR #35's two printability
+  checks evaluated on it (`envelope_ok` for the 250 cm^3 cylinder,
+  `cable_bridge_ok` for the 3.0 mm TPU self-bridging floor). Violations are
+  flagged, not dropped, exactly as in round 1.
 - `t3-prism-bo-ax-client-round1.json`: full AxClient state (experiment,
   data, generation strategy) for reproducibility and warm-starting round 2.
 - `figures/t3-prism-bo-round1-pareto.png`: objective-space view (tested
@@ -78,6 +94,58 @@ suggests the next print batch.
   built from the MP4 with an ffmpeg palette pass (12 fps, 980 px wide), which
   is what keeps it under a megabyte.
 
+### Constant printed mass, and the `fit_out_of_design` kwarg it needs
+
+The search space is 6-dimensional. The first five are PR #35's base Sobol
+coordinates with the joint diameter frozen at 7 mm; since the projection
+re-scales every dimension including the joint, those five fix the article's
+*shape*. The sixth, `mass_printed_g`, fixes its *size*: the projection solves
+for the uniform scale that hits that printed mass. Shape and mass together
+determine the article exactly, which is what makes "hold the mass constant"
+expressible at all.
+
+That splits the space in two. The **fit space** carries `mass_printed_g` over
+18.0 to 23.0 g, covering every weighed round-1 article. The **generation
+space** pins it to the target (default 20.23 g, the weighed mass of the S0
+reference `bpx68c`; `--target-mass-g` overrides). Round-1 data therefore sits
+outside the generation space along the mass axis, so:
+
+- the experiment is created on the fit space and the trials attached there,
+  because `attach_trial` validates search-space membership and would raise
+  long before any model exists;
+- the search space is then narrowed, which needs
+  `immutable_search_space_and_opt_config=False`;
+- the SAASBO step gets
+  `model_kwargs={"fit_out_of_design": True, "expand_model_space": True}`, so
+  those out-of-design observations are still used to fit while `gen` stays
+  inside the narrowed space (facebook/Ax#768). `fit_out_of_design` is
+  deprecated after Ax 1.1.2, where `expand_model_space` alone is the live
+  mechanism, so this pairing is correct for the pinned 0.5.0 and needs
+  revisiting if the pin moves.
+
+The generation slab is +/- 0.01 g rather than a `FixedParameter` or the
++/- 0.457 g print tolerance, for two separate reasons. A `FixedParameter`
+would be stripped by Ax's `RemoveFixed` transform, taking the mass dimension
+out of the model entirely, and the model needs it: attributing part of the
+round-1 objective spread to mass rather than to shape is the whole point. And
+a slab as wide as the print tolerance has an exploitable gradient, since
+rebound energy scales with mass; with +/- 0.457 g, qNEHVI put all 9
+suggestions on the light edge, choosing shapes at 19.77 g and then reporting
+them at 20.23 g. The printer's tolerance is not a design variable.
+
+One limitation this does not fix. Round-1 articles were built under the old
+projection, so the same coordinates map to slightly different physical
+articles now (re-projected scales move by up to 3.5 percent). Carrying
+measured mass as the sixth parameter lets the model account for that instead
+of silently averaging over it, but it is not the same as re-fitting on
+as-printed geometry (facebook/Ax#3577, planned-vs-executed parameters, still
+unimplemented upstream).
+
+Still to do before the suggested designs can be printed: PR #35's
+`t3_prism_sobol_batch.py` Route A solve has to be re-pointed at printed grams
+(target `t3_prism_mass_model`'s model instead of solid mass) so its STLs
+match the geometry the suggestions CSV reports.
+
 ## Model interpretability (diagnostics)
 
 - `t3_prism_bo_diagnostics.py`: refits the round-1 SAASBO model from the
@@ -95,7 +163,7 @@ suggests the next print batch.
   `t3-prism-bo-round1-feature-importance.csv`): SAAS inverse lengthscales
   per metric, via `TorchModelBridge.feature_importances`, which takes the
   median lengthscale over the MCMC draws, inverts it, and normalizes the
-  five parameters to sum to 1. Ax's `MBM_X_trans` maps the search space onto
+  six parameters to sum to 1. Ax's `MBM_X_trans` maps the search space onto
   the unit cube before fitting, so those numbers are comparable across
   parameters and read as "share of the model's sensitivity". The whiskers
   are the interquartile range across the individual MCMC draws, which the
@@ -116,10 +184,10 @@ suggests the next print batch.
   `t3-prism-bo-round1-parameter-net-effects.csv`): the signed
   "does raising this parameter raise or lower this metric" view. Ax 0.5.0
   has no plot for this on a continuous space (`ax.plot.marginal_effects` is
-  for factorial designs, and `plot_slice` fixes the other four parameters at
+  for factorial designs, and `plot_slice` fixes the other five parameters at
   one arbitrary point), so the script computes model-based partial
   dependence: sweep one parameter across its range while averaging the
-  posterior mean over quasi-random draws of the other four. The first figure
+  posterior mean over quasi-random draws of the other five. The first figure
   is the swept curves with a +/- 1 posterior sd band, the second is the net
   change from the low bound to the high bound as a signed tornado. Read them
   together: the tornado compresses each curve to one number, so a parameter
@@ -128,11 +196,21 @@ suggests the next print batch.
   independent of the others (true here, the search space is a plain box) and
   it does not show interactions.
 
-Two cautions that apply to all three, since n = 7 tested articles in a 5-D
-space is a small sample: the importances sit close to the 1/5 equal-share
+`mass_printed_g` appears on the parameter axis of all three figures rather
+than as a metric: under a constant-printed-mass projection the mass is chosen,
+not observed, so predicting it would be predicting an input. It is worth
+looking at, since it carries 20 percent of the model's t180 sensitivity and
+16 percent of its rebound sensitivity, more than either strut or cable
+diameter.
+
+Two cautions that apply to all three, since n = 7 tested articles in a 6-D
+space is a small sample: the importances sit close to the 1/6 equal-share
 line with overlapping MCMC bands, and most of the partial-dependence curves
 move by less than their own posterior sd. Read the direction and the
-ranking, not the decimals.
+ranking, not the decimals. The mass curves need one more caution of their
+own: printed mass and geometry are confounded by construction in round 1
+(the light articles *are* the PLA-heavy thick-strut corner), so the sign of
+the mass effect is the least trustworthy number on either figure.
 
 ## Print key files
 

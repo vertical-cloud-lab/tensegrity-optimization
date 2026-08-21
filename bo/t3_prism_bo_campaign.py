@@ -21,18 +21,63 @@ real campaign rather than preference:
    "experiment" is a physical print + 101-drop session, so the loop runs
    exactly once, records the suggested batch to CSV, and exits. Results get
    reported back by re-running this script once the next batch is tested.
-4. Per-print mass accounting (requested on PR #102). The batch generator's
-   constant-mass projection holds solid CAD volume constant, but printed
-   grams vary by design (18.5 to 22.3 g: PLA prints at ~57 percent of solid
-   density, thin TPU cables ~solid, and the PLA/TPU split varies by design;
-   see docs/drop-test-sobol-campaign-analysis.md section 7 on PR #86). Each
-   tested article's measured mass therefore enters the objectives and the
-   model; see the Objectives section below.
+4. Per-print mass accounting (requested on PR #102). Each tested article's
+   weighed mass enters the objectives; see the Objectives section below.
+5. Constant *printed* mass (PR #102, 2026-08-21). Round 1 was projected onto
+   a constant **solid** mass manifold (PR #35 Route A: uniformly re-scale
+   until rho_PLA*V_PLA + rho_TPU*V_TPU = 30.95 g, the solid mass of the S0
+   reference STLs). That is constant solid mass, not constant volume and not
+   constant printed mass: all 9 articles sit at 30.95 g solid and yet weigh
+   18.50 to 22.29 g, because PLA prints sparse and thin TPU cables print near
+   solid while the PLA/TPU split swings with the geometry. Suggestions are now
+   projected onto a constant *printed* mass instead, using the calibrated
+   model in ``t3_prism_mass_model.py``, and printed mass is an explicit BO
+   parameter (below) rather than a tracking metric.
 
-Search space: the base Sobol coordinates from PR #35's generator (not the
-as-printed geometry). Each suggestion is a 5-vector (R, H, twist, strut d,
-cable d) that feeds straight into ``t3_prism_sobol_batch.py``'s constant-mass
-projection to produce printable STLs, exactly like round 1.
+Search space (6 parameters). The first five are PR #35's base Sobol
+coordinates (R, H, twist, strut d, cable d) with the joint diameter frozen at
+7 mm; because the projection re-scales every dimension including the joint,
+those five fix the article's *shape*. The sixth, ``mass_printed_g``, fixes its
+*size*: the projection solves for the uniform scale that hits that printed
+mass. (Shape, mass) together determine the article exactly, with no degeneracy
+and no redundancy, which is what makes "hold the mass constant" expressible at
+all.
+
+The two spaces this implies, and the Ax kwarg that joins them:
+
+* *Fit space*: mass in [18.0, 23.0] g, covering every weighed round-1 article.
+* *Generation space*: mass in target +/- 0.457 g (the print-to-print scatter
+  measured from the spec-08 triplicate), so every suggested article is
+  specified at the same intended mass. Default target 20.23 g, the weighed
+  mass of the S0 reference article ``bpx68c``; round 1 anchored its solid
+  target to the same reference design. Override with ``--target-mass-g``.
+
+Round-1 data therefore sits OUTSIDE the generation space along the mass axis.
+The experiment is created on the fit space, the completed and pending trials
+are attached there (``attach_trial`` validates search-space membership and
+would raise otherwise, long before any model exists), and the search space is
+then narrowed to the generation space, which requires
+``immutable_search_space_and_opt_config=False``. The SAASBO step is given
+``model_kwargs={"fit_out_of_design": True, "expand_model_space": True}`` so
+those out-of-design observations are still used to fit while ``gen`` stays
+inside the narrowed space (facebook/Ax#768; deprecated after Ax 1.1.2, where
+``expand_model_space`` alone is the live mechanism, so this pairing is correct
+for the pinned 0.5.0 and would need revisiting on 1.x).
+
+Each suggestion is reported both as base coordinates and as the as-printed
+geometry the constant-printed-mass projection produces, with PR #35's
+envelope (<= 250 cm^3) and cable self-bridging (>= 3.0 mm) checks evaluated on
+that geometry. The base coordinates still feed ``t3_prism_sobol_batch.py``;
+its Route A solve has to be re-pointed at printed grams (target the model in
+``t3_prism_mass_model.py`` instead of solid mass) before the STLs match.
+
+Known limitation, unchanged by this: round-1 articles were built under the old
+projection, so their coordinates map to slightly different physical articles
+than the same coordinates would now (re-projected scales move by up to 3.5
+percent). Carrying measured mass as the sixth parameter is what lets the model
+account for that instead of silently averaging over it, but it is not the same
+as re-fitting on as-printed geometry (facebook/Ax#3577, planned-vs-executed
+parameters, still unimplemented upstream).
 
 Objectives (both minimized), per the campaign analysis doc's BO hand-off
 section (docs/drop-test-sobol-campaign-analysis.md on PR #86) and the
@@ -47,7 +92,7 @@ energy-absorption review (PR #97), adjusted for per-print mass:
   (light articles ARE the PLA-heavy thick-strut/thin-cable corner), so with
   n = 7 designs that correlation is confounded with the geometry effect the
   campaign is trying to learn, and regressing it out would remove signal.
-  The SAAS model sees mass through the ``mass_g`` tracking metric instead.
+  The model sees mass through the ``mass_printed_g`` parameter instead.
 * ``e_reb_mJ``: absolute rebound energy returned to the payload per drop,
   e_rebound * m_printed * g * h_drop (h = 60 in). The raw ``e_rebound`` is
   a fraction of the impact energy, and at fixed drop height the impact
@@ -61,12 +106,11 @@ energy-absorption review (PR #97), adjusted for per-print mass:
   ~2 percent t180 print floor is still not (no mass-free estimate of it
   exists).
 
-``mass_g`` is also attached as a tracking metric, so the SAAS model learns
-printed mass as a function of the base coordinates from the weighed
-articles, and every suggested design is reported with its predicted
-as-printed mass (``pred_mass_g_mean`` in the suggestions CSV). Trades off
-against nothing directly (it is not an objective), but deconfounds the
-model and tells the next print session what to expect on the scale.
+Printed mass was a tracking metric in the first version of this script
+(predicted per design). It is a BO *parameter* now: under a constant-printed-
+mass projection the mass is chosen, not observed, so predicting it would be
+predicting an input. The measured masses of the round-1 articles are what make
+that parameter identifiable at all.
 
 Ingestion notes, current as of the 2026-08-21 upload (8 of 9 specimens):
 
@@ -83,6 +127,8 @@ Usage (from the repo root)::
     pip install ax-platform==0.5.0 pandas matplotlib
     python bo/t3_prism_bo_campaign.py            # writes suggestions + figure
     python bo/t3_prism_bo_campaign.py --batch-size 9 --round 1
+    python bo/t3_prism_bo_campaign.py --target-mass-g 20.6  # different target
+    python bo/t3_prism_mass_model.py             # mass-model calibration report
     python bo/t3_prism_bo_campaign.py --plot-only  # redraw the figure only
                                                    # (pandas + matplotlib)
     python bo/t3_prism_bo_campaign.py --prototype-next-round  # see below
@@ -122,12 +168,25 @@ import matplotlib.pyplot as plt
 
 BO_DIR = Path(__file__).resolve().parent
 
+# Constant-printed-mass projection and its calibration (this directory).
+sys.path.insert(0, str(BO_DIR))
+from t3_prism_mass_model import (  # noqa: E402
+    DEFAULT_PRINTED_MASS_TARGET_G,
+    calibrate,
+    calibration_report,
+)
+
 # define these names as variables for reuse (Honegumi convention)
 obj1_name = "t180"
 obj2_name = "e_reb_mJ"
-mass_metric = "mass_g"
+# Printed mass is a parameter, not a metric: the projection chooses it.
+mass_param = "mass_printed_g"
 
+# Shape coordinates (PR #35 base Sobol space). The projection scales all of
+# them plus the 7 mm joint uniformly, so these five fix the shape and
+# ``mass_param`` fixes the size.
 PARAM_NAMES = ["R_mm", "H_mm", "twist_deg", "strut_d_mm", "cable_d_mm"]
+DESIGN_PARAMS = PARAM_NAMES + [mass_param]
 
 G_M_S2 = 9.80665
 DROP_H_M = 1.524  # 60 in drop height (issue #98 campaign protocol)
@@ -136,15 +195,67 @@ DROP_H_M = 1.524  # 60 in drop height (issue #98 campaign protocol)
 # more than once. Used as the design-level mass noise everywhere.
 MASS_PRINT_SD_G = 0.457
 
-# Search space: identical to PARAMETERS in bo/t3_prism_sobol_batch.py (PR #35),
-# the space the printed Sobol batch was drawn from.
-PARAMETERS = [
+# Shape half of the search space: identical to PARAMETERS in
+# bo/t3_prism_sobol_batch.py (PR #35), the space the printed Sobol batch was
+# drawn from.
+SHAPE_PARAMETERS = [
     {"name": "R_mm", "type": "range", "bounds": [25.0, 40.0], "value_type": "float"},
     {"name": "H_mm", "type": "range", "bounds": [60.0, 110.0], "value_type": "float"},
     {"name": "twist_deg", "type": "range", "bounds": [40.0, 80.0], "value_type": "float"},
     {"name": "strut_d_mm", "type": "range", "bounds": [6.0, 12.0], "value_type": "float"},
     {"name": "cable_d_mm", "type": "range", "bounds": [3.0, 5.5], "value_type": "float"},
 ]
+# Mass axis of the FIT space: wide enough to hold every weighed round-1
+# article (18.50 to 22.29 g) so attach_trial accepts them.
+MASS_FIT_BOUNDS = [18.0, 23.0]
+
+
+def fit_parameters():
+    return SHAPE_PARAMETERS + [
+        {"name": mass_param, "type": "range",
+         "bounds": list(MASS_FIT_BOUNDS), "value_type": "float"}
+    ]
+
+
+# Half-width of the constant-mass generation slab. Not a FixedParameter and
+# not the +/-0.457 g print scatter, for two different reasons:
+#
+# * FixedParameter would be stripped by Ax's RemoveFixed transform, taking the
+#   mass dimension out of the model entirely. The model needs it: attributing
+#   part of the round-1 objective spread to mass rather than to shape is the
+#   whole reason mass is a parameter.
+# * A slab as wide as the print scatter has an exploitable gradient. Rebound
+#   energy scales with mass, so qNEHVI put all 9 suggestions on the light edge
+#   of a +/-0.457 g slab, which means the shapes were chosen at 19.77 g and
+#   then reported at 20.23 g. The tolerance is a fact about the printer, not a
+#   design variable.
+MASS_GEN_HALF_WIDTH_G = 0.01
+
+
+def _search_space(mass_bounds):
+    from ax.core.parameter import ParameterType, RangeParameter
+    from ax.core.search_space import SearchSpace
+
+    params = [
+        RangeParameter(name=spec["name"], parameter_type=ParameterType.FLOAT,
+                       lower=spec["bounds"][0], upper=spec["bounds"][1])
+        for spec in SHAPE_PARAMETERS
+    ]
+    params.append(
+        RangeParameter(name=mass_param, parameter_type=ParameterType.FLOAT,
+                       lower=mass_bounds[0], upper=mass_bounds[1])
+    )
+    return SearchSpace(parameters=params)
+
+
+def fit_search_space():
+    """The wide space every round-1 article is a member of."""
+    return _search_space(MASS_FIT_BOUNDS)
+
+
+def gen_search_space(target_g, half_width_g=MASS_GEN_HALF_WIDTH_G):
+    """Fit space narrowed to the constant-printed-mass slab used for `gen`."""
+    return _search_space((target_g - half_width_g, target_g + half_width_g))
 
 # Base coordinates of the S0 reference prism (bpx68c): the T3 base design,
 # printed at uniform scale 1.1538 (issue #98, 2026-08-17). In-bounds, so it
@@ -158,14 +269,26 @@ S0_BASE_PARAMS = {
 }
 
 
-def load_training_data(results_path: Path, design_path: Path):
-    """Join measured objectives onto base Sobol coordinates.
+def load_training_data(results_path: Path, design_path: Path,
+                       key_path: Path | None = None):
+    """Join measured objectives onto base Sobol coordinates + weighed mass.
 
-    Returns (X_train, y_train, labels, masses, pending) where pending holds
-    the base coordinates of designed-and-printed specs with no results yet.
+    Returns (X_train, y_train, labels, masses, pending). Each X row is a full
+    6-parameter design point: the five shape coordinates plus the article's
+    weighed printed mass. ``pending`` holds the same for designed-and-printed
+    specs with no drop results yet, whose masses come from the print key.
     """
     results = pd.read_csv(results_path, dtype={"spec": "string"})
     design = pd.read_csv(design_path).set_index("specimen")
+    key_path = key_path or (BO_DIR / "t3-prism-bo-batch-print-key.csv")
+    key = pd.read_csv(key_path, dtype={"specimen": "string"})
+    # one weighed mass per untested spec; average when a spec was printed more
+    # than once (only spec 08, and only its official article was tested)
+    printed_mass_by_spec = (
+        key[key["specimen"] != "S0"]
+        .assign(spec=lambda d: d["specimen"].astype(int))
+        .groupby("spec")["mass_g"].mean()
+    )
 
     X_train, y_train, labels, masses = [], [], [], []
     for _, row in results.iterrows():
@@ -202,9 +325,9 @@ def load_training_data(results_path: Path, design_path: Path):
             {
                 obj1_name: (float(row["t180_mean"]), float(row["t180_sd"]) / np.sqrt(n)),
                 obj2_name: (e_reb_mJ, e_reb_sem),
-                mass_metric: (mass_g, MASS_PRINT_SD_G),
             }
         )
+        params[mass_param] = mass_g
         X_train.append(params)
         labels.append(f"{row['specimen']} (spec {spec})")
         masses.append(mass_g)
@@ -215,9 +338,16 @@ def load_training_data(results_path: Path, design_path: Path):
     pending = []
     for spec_idx in sorted(set(design.index) - tested_specs):
         base = design.loc[spec_idx]
-        pending.append(
-            (f"spec {spec_idx:02d}", {name: float(base[name]) for name in PARAM_NAMES})
-        )
+        mass_g = printed_mass_by_spec.get(spec_idx, float("nan"))
+        if not np.isfinite(mass_g):
+            print(
+                f"WARNING: spec {spec_idx:02d} is printed but has no weighed "
+                "mass in the print key, so it cannot be attached as pending."
+            )
+            continue
+        params = {name: float(base[name]) for name in PARAM_NAMES}
+        params[mass_param] = float(mass_g)
+        pending.append((f"spec {spec_idx:02d}", params))
     return X_train, y_train, labels, masses, pending
 
 
@@ -976,6 +1106,15 @@ def main(argv=None):
         help="Sobol batch design table (base coordinates), from PR #35",
     )
     ap.add_argument("--batch-size", type=int, default=9, help="prints per round (9 plates)")
+    ap.add_argument(
+        "--target-mass-g",
+        type=float,
+        default=DEFAULT_PRINTED_MASS_TARGET_G,
+        help=(
+            "constant as-printed mass every suggested article is projected "
+            "onto (default: the weighed mass of the S0 reference bpx68c)"
+        ),
+    )
     ap.add_argument("--round", type=int, default=1, help="suggestion round number, for file names")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument(
@@ -1042,6 +1181,10 @@ def main(argv=None):
     from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
     from ax.service.ax_client import AxClient, ObjectiveProperties
 
+    mass_model = calibrate()
+    print(calibration_report(mass_model, args.target_mass_g))
+    print()
+
     n_train = len(X_train)
     print(f"Attaching {n_train} completed trials; {len(pending)} printed-but-untested pending.")
 
@@ -1054,8 +1197,9 @@ def main(argv=None):
     print(
         f"Masses of tested articles: {masses_arr.min():.2f} to {masses_arr.max():.2f} g "
         f"(CV {100 * masses_arr.std(ddof=1) / masses_arr.mean():.1f} percent); "
-        f"corr(mass, t180) r = {r_mass_t180:.2f} (confounded with geometry, "
-        "handled via the mass_g tracking metric, not regression)"
+        f"corr(mass, t180) r = {r_mass_t180:.2f}. That spread is the reason "
+        f"mass is a parameter: round 2 pins it at {args.target_mass_g:.2f} g "
+        "so the same correlation cannot be re-created by the suggestions."
     )
 
     # Fully Bayesian (SAASBO) generation strategy. The Sobol step from the
@@ -1067,6 +1211,18 @@ def main(argv=None):
                 model=Models.SAASBO,
                 num_trials=-1,  # no limit on trials (final model step)
                 max_parallelism=max(args.batch_size, len(pending) + args.batch_size),
+                model_kwargs={
+                    # Round-1 articles sit outside the constant-mass generation
+                    # space along the mass axis. Fit on them anyway; gen still
+                    # respects the narrowed space (facebook/Ax#768).
+                    "fit_out_of_design": True,
+                    # expand the model's internal range-parameter bounds to the
+                    # data so the out-of-design masses are not normalized as
+                    # extreme outliers (default True in 0.5.0; explicit here
+                    # because it is the live mechanism on Ax 1.x, where
+                    # fit_out_of_design is deprecated)
+                    "expand_model_space": True,
+                },
             ),
         ]
     )
@@ -1074,14 +1230,15 @@ def main(argv=None):
     ax_client = AxClient(generation_strategy=gs, random_seed=args.seed, verbose_logging=False)
     ax_client.create_experiment(
         name="t3_prism_drop_campaign",
-        parameters=PARAMETERS,
+        # created on the FIT space so the out-of-design round-1 masses can be
+        # attached at all; narrowed to the constant-mass slab below
+        parameters=fit_parameters(),
         objectives={
             obj1_name: ObjectiveProperties(minimize=True),
             obj2_name: ObjectiveProperties(minimize=True),
         },
-        # printed mass as a learned function of the base coordinates, so
-        # suggestions carry a predicted as-printed mass (not an objective)
-        tracking_metric_names=[mass_metric],
+        # required to narrow the search space after trials exist
+        immutable_search_space_and_opt_config=False,
     )
 
     # Add existing data to the AxClient
@@ -1099,6 +1256,25 @@ def main(argv=None):
         pending_indices[trial_index] = label
         print(f"  pending trial {trial_index}: {label}")
 
+    # Narrow to the constant-printed-mass slab. Every trial attached above is
+    # now out of design on the mass axis, which is exactly what
+    # fit_out_of_design=True is for: they stay in the fit, and gen is confined
+    # to the target mass.
+    space = gen_search_space(args.target_mass_g)
+    ax_client.experiment.search_space = space
+    lo = space.parameters[mass_param].lower
+    hi = space.parameters[mass_param].upper
+    out_of_design = sum(
+        1 for x in X_train + [d for _, d in pending]
+        if not (lo <= x[mass_param] <= hi)
+    )
+    print(
+        f"\nGeneration space narrowed: {mass_param} in [{lo:.3f}, {hi:.3f}] g "
+        f"(target {args.target_mass_g:.2f} g +/- {MASS_GEN_HALF_WIDTH_G:.3f} g). "
+        f"{out_of_design} of {len(X_train) + len(pending)} attached "
+        "trials are out of design and are kept in the fit via fit_out_of_design."
+    )
+
     # one physical round per script run: fit + suggest the next batch
     # (note the plural "trials" for batch optimization)
     parameterizations, optimization_complete = ax_client.get_next_trials(args.batch_size)
@@ -1114,16 +1290,38 @@ def main(argv=None):
     for j, (trial_index, parameterization) in enumerate(parameterizations.items()):
         row = {"round": args.round, "trial_index": trial_index}
         row.update({name: parameterization[name] for name in PARAM_NAMES})
-        for metric in (obj1_name, obj2_name, mass_metric):
+        row[mass_param] = float(parameterization[mass_param])
+        for metric in (obj1_name, obj2_name):
             row[f"pred_{metric}_mean"] = f_mean[metric][j]
             row[f"pred_{metric}_sd"] = float(np.sqrt(f_cov[metric][metric][j]))
-        # implied rebound fraction at the predicted mass, for comparison
-        # with the raw e_rebound column of the results CSV
+        # implied rebound fraction at the target mass, for comparison with the
+        # raw e_rebound column of the results CSV
         row["pred_e_rebound_approx"] = row[f"pred_{obj2_name}_mean"] / (
-            row[f"pred_{mass_metric}_mean"] * G_M_S2 * DROP_H_M
+            args.target_mass_g * G_M_S2 * DROP_H_M
         )
+        # as-printed geometry under the constant-printed-mass projection, with
+        # PR #35's two printability checks evaluated on it
+        row["target_mass_g"] = args.target_mass_g
+        projected = mass_model.project(
+            {name: parameterization[name] for name in PARAM_NAMES},
+            args.target_mass_g,
+        )
+        row.update({k: projected[k] for k in (
+            "scale", "R_print_mm", "H_print_mm", "strut_d_print_mm",
+            "cable_d_print_mm", "joint_d_print_mm", "solid_mass_g",
+            "envelope_cm3", "envelope_ok", "cable_bridge_ok",
+        )})
         rows.append(row)
     suggestions = pd.DataFrame(rows)
+
+    n_env = int((~suggestions["envelope_ok"]).sum())
+    n_cab = int((~suggestions["cable_bridge_ok"]).sum())
+    print(
+        f"\nProjected onto {args.target_mass_g:.2f} g printed: scale "
+        f"{suggestions['scale'].min():.3f} to {suggestions['scale'].max():.3f}; "
+        f"{n_env} over the 250 cm^3 envelope, {n_cab} under the 3.0 mm cable "
+        "self-bridging floor (flagged, not dropped, same as round 1)."
+    )
 
     out_csv = BO_DIR / f"t3-prism-bo-suggestions-round{args.round}.csv"
     suggestions.to_csv(out_csv, index=False, float_format="%.4f")

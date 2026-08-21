@@ -79,36 +79,39 @@ from t3_prism_bo_campaign import (  # noqa: E402  (same directory)
     FIG_RC,
     INK,
     LABEL_GRAY,
-    PARAM_NAMES,
-    PARAMETERS,
+    DESIGN_PARAMS,
+    fit_parameters,
+    fit_search_space,
     obj1_name,
     obj2_name,
-    mass_metric,
+    mass_param,
     load_training_data,
     _label_points,
 )
 
-# Order the figures use: objectives first, then the tracking metric.
-METRIC_ORDER = [obj1_name, obj2_name, mass_metric]
+# Both objectives. Printed mass used to be a third (tracking) metric; it is a
+# search-space parameter now (PR #102 constant-printed-mass change), so it
+# appears on the parameter axis of every figure here instead of the metric one.
+METRIC_ORDER = [obj1_name, obj2_name]
 
 METRIC_LABEL = {
     obj1_name: "t180\n(transmissibility)",
     obj2_name: "Rebound energy\n(mJ per drop)",
-    mass_metric: "Printed mass\n(g)",
 }
-METRIC_SHORT = {obj1_name: "t180", obj2_name: "rebound (mJ)", mass_metric: "mass (g)"}
+METRIC_SHORT = {obj1_name: "t180", obj2_name: "rebound (mJ)"}
 # One-line variants, for panels whose horizontal axis label sits at the same
 # height as the title (the LOOCV grid).
 METRIC_TITLE = {
     obj1_name: "t180 (transmissibility)",
     obj2_name: "Rebound energy (mJ per drop)",
-    mass_metric: "Printed mass (g)",
 }
 METRIC_COLOR = {
     obj1_name: "#2a78d6",
     obj2_name: "#eb6834",
-    mass_metric: "#5b8c5a",
 }
+
+# Every figure here sweeps the full design vector, mass included.
+PARAM_NAMES = DESIGN_PARAMS
 
 PARAM_LABEL = {
     "R_mm": "R (mm)",
@@ -116,9 +119,13 @@ PARAM_LABEL = {
     "twist_deg": "twist (deg)",
     "strut_d_mm": "strut Ø (mm)",
     "cable_d_mm": "cable Ø (mm)",
+    mass_param: "printed mass (g)",
 }
 
-BOUNDS = {p["name"]: tuple(p["bounds"]) for p in PARAMETERS}
+# Fit-space bounds, not the constant-mass generation slab: the diagnostics
+# describe the model that was fitted, and it was fitted on articles spanning
+# 18.50 to 22.29 g.
+BOUNDS = {p["name"]: tuple(p["bounds"]) for p in fit_parameters()}
 
 
 # ---- model ---------------------------------------------------------------
@@ -203,7 +210,9 @@ def render_feature_importance(table, out_path):
     params = [p for p in PARAM_NAMES if p in set(table["parameter"])]
 
     with plt.rc_context(FIG_RC):
-        fig, axes = plt.subplots(1, 3, figsize=(19.5, 6.4), dpi=200, sharex=True)
+        fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.4),
+                                 dpi=200, sharex=True, squeeze=False)
+        axes = axes[0]
         y = np.arange(len(params))[::-1]
         for ax, metric in zip(axes, METRIC_ORDER):
             sub = table[table.metric == metric].set_index("parameter").loc[params]
@@ -229,7 +238,7 @@ def render_feature_importance(table, out_path):
             ax.axvline(1.0 / len(params), color=LABEL_GRAY, lw=1.4, ls=(0, (4, 4)), zorder=1)
 
         axes[0].annotate(
-            "equal sensitivity (1/5)",
+            f"equal sensitivity (1/{len(params)})",
             xy=(1.0 / len(params), len(params) - 0.55),
             xytext=(6, 0), textcoords="offset points",
             fontsize=15, color=LABEL_GRAY, va="center",
@@ -286,7 +295,9 @@ def run_loocv(model, labels_by_arm, diagnostics_path):
 
 def render_loocv(table, diagnostics, out_path):
     with plt.rc_context(FIG_RC):
-        fig, axes = plt.subplots(1, 3, figsize=(19.5, 6.6), dpi=200)
+        fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.6),
+                                 dpi=200, squeeze=False)
+        axes = axes[0]
         for ax, metric in zip(axes, METRIC_ORDER):
             sub = table[table.metric == metric]
             lo = float(min(sub.observed.min(), sub.predicted.min()))
@@ -422,7 +433,7 @@ def render_parameter_effects(pdp, net, out_curves, out_tornado):
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(
             len(METRIC_ORDER), len(PARAM_NAMES),
-            figsize=(21.0, 11.0), dpi=180,
+            figsize=(3.5 * len(PARAM_NAMES), 5.5 * len(METRIC_ORDER)), dpi=180,
         )
         for i, metric in enumerate(METRIC_ORDER):
             row = pdp[["parameter", "value", metric, f"{metric}__sd"]]
@@ -466,7 +477,9 @@ def render_parameter_effects(pdp, net, out_curves, out_tornado):
         plt.close(fig)
 
     with plt.rc_context(FIG_RC):
-        fig, axes = plt.subplots(1, 3, figsize=(19.5, 6.4), dpi=200)
+        fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.4),
+                                 dpi=200, squeeze=False)
+        axes = axes[0]
         y = np.arange(len(PARAM_NAMES))[::-1]
         for ax, metric in zip(axes, METRIC_ORDER):
             sub = net[net.metric == metric].set_index("parameter").loc[PARAM_NAMES]
@@ -570,6 +583,11 @@ def main(argv=None):
 
     ax_client = AxClient.load_from_json_file(str(args.snapshot))
     experiment = ax_client.experiment
+    # The snapshot was saved with the search space narrowed to the constant-mass
+    # generation slab, which would make 9 of 10 articles out of design and drop
+    # them from the fit. Diagnostics describe the fitted model, not the next
+    # batch, so widen back to the fit space before refitting.
+    experiment.search_space = fit_search_space()
     data = experiment.fetch_data()
 
     # Trial 0..n-1 were attached in the order load_training_data returns, so
