@@ -68,7 +68,13 @@ suggests the next print batch.
   `python bo/t3_prism_bo_campaign.py --plot-only`. Styling follows the
   hand-made reference on PR #102: no legend box (series are named by
   leader-line callouts in the plot area), detached left and bottom spines,
-  no gridlines, gray print IDs, horizontal y-axis label above the axis. Print
+  no gridlines, gray print IDs, horizontal y-axis label above the axis. Both
+  axis labels mark the good direction with a down-arrow glyph rather than the
+  words "lower is better" (PR #102 review); it is set as `ARROW_DOWN` in the
+  script, and matplotlib falls through the sans-serif list per character if a
+  machine's chosen face lacks U+2193. **Every figure written by either script
+  is 300 dpi** (`FIGURE_DPI` in `t3_prism_bo_campaign.py`, imported by the
+  diagnostics), so they hold up on a projector and in a printed deck. Print
   IDs are placed by a search that dodges the markers, the other IDs, the
   callout text, the callout leaders and the front line, weighted so that a
   label would rather cross a hairline than sit on top of words; nothing here
@@ -101,9 +107,11 @@ suggests the next print batch.
      did.
 
   All three are **frames of one figure** rather than three separate drawings,
-  exported at 2200 x 1400 px with no tight bounding box. That makes them the
-  same pixel size and puts every element that survives a beat (the axes, the
-  ticks, the axis labels, and each print ID) at the same pixel in all three, so
+  exported at 300 dpi (3300 x 2100 px, with that dpi written into the PNG so
+  PowerPoint places them at 11 x 7 in) and with no tight bounding box. That
+  makes them the same pixel size and puts every element that survives a beat
+  (the axes, the ticks, the axis labels, and each print ID) at the same pixel
+  in all three, so
   they can go on three consecutive slides and be cross-faded or morphed without
   anything sliding. Drawing them independently could not guarantee that, since
   each panel would solve its own label placement; labels are laid out once,
@@ -122,7 +130,7 @@ suggests the next print batch.
   most one callout is ever lit while anything is in motion, and nothing is
   labeled while anything is moving (eight IDs is fine on the round-1 slide,
   but carrying them through the travel while nine more arrive is not). The
-  MP4 is 2200 x 1400 at 25 fps (h.264, yuv420p, so it plays in PowerPoint and
+  MP4 is 3300 x 2100 at 25 fps (h.264, yuv420p, so it plays in PowerPoint and
   Keynote as well as a browser), pixel-for-pixel the same canvas as the
   stills. Add `--no-animation` to write only the stills. The MP4 needs
   `ffmpeg` on PATH (`apt-get install ffmpeg`); without it the script falls

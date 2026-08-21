@@ -76,6 +76,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from t3_prism_bo_campaign import (  # noqa: E402  (same directory)
     BO_DIR,
+    FIGURE_DPI,
     FIG_RC,
     INK,
     LABEL_GRAY,
@@ -211,7 +212,7 @@ def render_feature_importance(table, out_path):
 
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.4),
-                                 dpi=200, sharex=True, squeeze=False)
+                                 dpi=FIGURE_DPI, sharex=True, squeeze=False)
         axes = axes[0]
         y = np.arange(len(params))[::-1]
         for ax, metric in zip(axes, METRIC_ORDER):
@@ -252,7 +253,7 @@ def render_feature_importance(table, out_path):
             ha="center", fontsize=15, color=LABEL_GRAY,
         )
         fig.tight_layout()
-        fig.savefig(out_path, bbox_inches="tight", facecolor="white")
+        fig.savefig(out_path, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
 
@@ -296,7 +297,7 @@ def run_loocv(model, labels_by_arm, diagnostics_path):
 def render_loocv(table, diagnostics, out_path):
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.6),
-                                 dpi=200, squeeze=False)
+                                 dpi=FIGURE_DPI, squeeze=False)
         axes = axes[0]
         for ax, metric in zip(axes, METRIC_ORDER):
             sub = table[table.metric == metric]
@@ -349,7 +350,7 @@ def render_loocv(table, diagnostics, out_path):
             ha="center", fontsize=15, color=LABEL_GRAY,
         )
         fig.tight_layout()
-        fig.savefig(out_path, bbox_inches="tight", facecolor="white")
+        fig.savefig(out_path, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
 
@@ -433,7 +434,7 @@ def render_parameter_effects(pdp, net, out_curves, out_tornado):
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(
             len(METRIC_ORDER), len(PARAM_NAMES),
-            figsize=(3.5 * len(PARAM_NAMES), 5.5 * len(METRIC_ORDER)), dpi=180,
+            figsize=(3.5 * len(PARAM_NAMES), 5.5 * len(METRIC_ORDER)), dpi=FIGURE_DPI,
         )
         for i, metric in enumerate(METRIC_ORDER):
             row = pdp[["parameter", "value", metric, f"{metric}__sd"]]
@@ -473,12 +474,12 @@ def render_parameter_effects(pdp, net, out_curves, out_tornado):
             ha="center", fontsize=15, color=LABEL_GRAY,
         )
         fig.tight_layout(rect=(0, 0.03, 1, 1))
-        fig.savefig(out_curves, bbox_inches="tight", facecolor="white")
+        fig.savefig(out_curves, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.4),
-                                 dpi=200, squeeze=False)
+                                 dpi=FIGURE_DPI, squeeze=False)
         axes = axes[0]
         y = np.arange(len(PARAM_NAMES))[::-1]
         for ax, metric in zip(axes, METRIC_ORDER):
@@ -516,12 +517,12 @@ def render_parameter_effects(pdp, net, out_curves, out_tornado):
         fig.text(
             0.5, -0.06,
             "Bar right (red) = raising the parameter raises the metric; left (blue) = lowers it.\n"
-            "Both objectives are minimized, so for t180 and rebound energy, left is better. "
+            "Both objectives are minimized, so for t180 and rebound energy, \u2190 is better. "
             "* marks a parameter whose swept curve turns, so the net effect hides it.",
             ha="center", fontsize=15, color=LABEL_GRAY,
         )
         fig.tight_layout()
-        fig.savefig(out_tornado, bbox_inches="tight", facecolor="white")
+        fig.savefig(out_tornado, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
 

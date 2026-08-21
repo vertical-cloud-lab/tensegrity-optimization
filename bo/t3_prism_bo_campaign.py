@@ -150,7 +150,7 @@ written in slide order:
    every article labeled, and none of the scaffolding.
 
 Because they are frames of one figure rather than three drawings, they are
-the same pixel size (``ANIM_FIGSIZE * ANIM_DPI``, 2200 x 1400) and every
+the same pixel size (``ANIM_FIGSIZE * ANIM_DPI``, 3300 x 2100) and every
 element that survives a beat sits at the same pixel in all three, so they can
 go on three consecutive slides and be cross-faded or morphed. The animation
 plays the same story in time: hold, retire the round-1 front and the IDs,
@@ -379,6 +379,11 @@ SUGGEST_ORANGE = "#eb6834"  # next-round suggestions
 
 # Humanist sans first (the reference figure's face), degrading to whatever a
 # given machine has. Figures re-rendered elsewhere may pick a different face.
+# 300 dpi throughout: the stills go on slides and into print-resolution
+# decks, and the video is exported from the same canvas so the clip and
+# the stills stay interchangeable.
+FIGURE_DPI = 300
+
 FIG_RC = {
     "font.family": "sans-serif",
     "font.sans-serif": [
@@ -401,8 +406,13 @@ FIG_RC = {
     "ytick.major.width": 1.6,
 }
 
-Y_LABEL = "Rebound energy to payload\n(mJ per drop, lower is better)"
-X_LABEL = "Shock transmissibility t180 (lower is better)"
+# U+2193 in place of the words "lower is better": it reads at a glance from
+# the back of a room, and it survives being shrunk into a slide corner. The
+# glyph is present in every face in FIG_RC["font.sans-serif"]; matplotlib
+# falls through that list per character if a machine's pick lacks it.
+ARROW_DOWN = "\u2193"
+Y_LABEL = f"Rebound energy to payload\n(mJ per drop, {ARROW_DOWN} is better)"
+X_LABEL = f"Shock transmissibility t180 ({ARROW_DOWN} is better)"
 
 # Candidate label placements, in points relative to the marker, tried in
 # order until one lands clear of the other labels and markers. Hand-tuned
@@ -664,7 +674,7 @@ def render_objective_figure(observed, suggestions, round_number):
     on_front = observed["print_id"].isin(front["print_id"])
 
     with plt.rc_context(FIG_RC):
-        fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=200)
+        fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=FIGURE_DPI)
 
         ax.scatter(
             observed.loc[~on_front, obj1_name], observed.loc[~on_front, obj2_name],
@@ -728,7 +738,7 @@ def render_objective_figure(observed, suggestions, round_number):
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
         out_png = fig_dir / f"t3-prism-bo-round{round_number}-pareto.png"
-        fig.savefig(out_png, bbox_inches="tight", facecolor="white")
+        fig.savefig(out_png, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
     print(
@@ -802,7 +812,7 @@ def _prototype_limits(combined, suggestions):
 # each panel solves its own label placement.
 
 ANIM_FIGSIZE = (11.0, 7.0)
-ANIM_DPI = 200  # 11 x 7 in -> 2200 x 1400 px, both even (h.264 needs even)
+ANIM_DPI = FIGURE_DPI  # 11 x 7 in -> 3300 x 2100 px, both even (h.264 needs even)
 GIF_WIDTH_PX = 1280  # the GIF is for threads and the README, not for slides
 
 # Frames exported as stills, in slide order. Keyed on the beat they rest in;
