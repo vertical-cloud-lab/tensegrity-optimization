@@ -139,10 +139,12 @@ campaign will want once the next batch comes back, as two stills plus an
 animation that moves between them. The stills are the two rest points of one
 story: ``stage="travel"`` (each orange diamond joined by a straight path to
 where that article actually landed, drawn as an open circle like any other
-tested article, with no front on the panel) and ``stage="front"`` (the front
-recomputed over both rounds, and nothing else). The animation plays hold,
-retire the round-1 front, travel, hold, clean up, redraw the front, hold: one
-idea per beat, so nothing overlaps (PR #102 review). The round-2 outcomes it
+tested article, with no front and no print IDs on the panel) and
+``stage="front"`` (the front recomputed over both rounds, the print IDs, and
+nothing else). The animation plays hold, retire the round-1 front and the
+IDs, travel, hold, clean up, redraw the front, bring every ID back and hold:
+one idea per beat, and nothing is labeled while anything is moving
+(PR #102 review). The round-2 outcomes it
 uses are SYNTHETIC (nothing has been printed or dropped yet); see
 ``synthesize_round2_outcomes``, which is the single function to replace with
 the measured summary when the real numbers arrive. Pass ``--no-animation`` to
@@ -507,6 +509,15 @@ def _segment_boxes(ends, n=14, half=6, weight=W_LINE):
     return boxes
 
 
+def _marker_boxes(ax, xy, r_pt=11, weight=W_MARKER):
+    """Display-space boxes over a set of data-space markers, so point labels
+    dodge markers that are not in the frame being labeled (the suggestion
+    diamonds sit under the round-1 IDs in the animation's opening frame)."""
+    r = r_pt * ax.figure.dpi / 72.0
+    pts = ax.transData.transform(np.asarray(xy, float))
+    return [(x - r, y - r, x + r, y + r, weight) for x, y in pts]
+
+
 def _leader_ends(ax, anns):
     """Display-space endpoints of each callout's leader line."""
     return [
@@ -772,10 +783,12 @@ def render_prediction_vs_actual_figure(
 
     ``stage="travel"``: what the model predicted (faded orange diamonds)
     joined by straight paths to where each article actually landed, drawn as
-    an open black circle like any other tested article. **No front is drawn.**
-    The round-1 front has already been retired and the round-2 one has not
-    been computed yet, which is precisely the beat the animation holds on, and
-    keeping the panel free of it is what makes the travel readable.
+    an open black circle like any other tested article. **No front is drawn,
+    and no print IDs.** The round-1 front has already been retired and the
+    round-2 one has not been computed yet, which is precisely the beat the
+    animation holds on; the IDs are retired with it, because seventeen of them
+    over the travel paths is exactly the crowding the beat list exists to
+    avoid (PR #102 review). Identity comes back on the ``"front"`` still.
 
     ``stage="front"``: the round-2 figure alone. One front, computed over both
     rounds, one set of articles, none of the scaffolding that explained how
@@ -922,9 +935,12 @@ def render_prediction_vs_actual_figure(
                 _polyline_ends(ax, new_front[obj1_name], new_front[obj2_name]),
                 half=9, weight=W_FRONT,
             )
-        _label_points(
-            ax, combined, "print_id", obj1_name, obj2_name, obstacles=blockers,
-        )
+        if stage == "front":
+            # Only the resting figure is labeled: at the travel beat the
+            # panel is about the arrows, not about which article is which.
+            _label_points(
+                ax, combined, "print_id", obj1_name, obj2_name, obstacles=blockers,
+            )
 
         ax.text(
             1.0, 1.06, "PROTOTYPE: round-2 outcomes are synthetic",
@@ -995,16 +1011,24 @@ def render_prediction_animation(
     cut had too much moving and too much text on screen at once:
 
     1. *Hold*: the round-1 figure exactly as the slide already shows it.
-    2. *Retire*: the round-1 front and its blue point fills fade out, taking
-       the "Pareto front" and "Existing data" callouts with them. Nothing
-       moves. The panel is left as tested articles plus suggestions.
+    2. *Retire*: the round-1 front, its blue point fills and **every print ID**
+       fade out, taking the "Pareto front" and "Existing data" callouts with
+       them. Nothing moves. The panel is left as unlabeled tested articles
+       plus suggestions.
     3. *Travel*: the diamonds ease to their measurements and hand off to open
        black circles, alone on the panel, with no front to read across.
     4. *Hold*: predicted versus measured, named by one labeled pair.
     5. *Clean*: the prediction layer and those two callouts fade out.
     6. *Front*: the new front is redrawn over both rounds, as its own step,
        wiping in along the polyline and filling each article as it reaches it.
-    7. *Hold*: the round-2 figure alone.
+    7. *Hold*: the print IDs come back, all of them at once and only once the
+       figure is at rest, and the round-2 figure holds.
+
+    The IDs leaving in beat 2 and returning in beat 7 is the second half of
+    the same review note that produced the beat list: eight IDs on the
+    round-1 slide is fine, but carrying them through the travel while the
+    round-2 IDs arrive on top of them is not (PR #102 review). Nothing is
+    labeled while anything is moving.
 
     Beats 4 and 7 hold the same content as the two committed stills
     (``stage="travel"`` and ``stage="front"``), which is what keeps the
@@ -1084,7 +1108,8 @@ def render_prediction_animation(
     t_hold1 = t_travel + n_travel
     t_clean = t_hold1 + n_hold1
     t_front = t_clean + n_clean
-    n_frames = t_front + n_front + n_hold2
+    t_rest = t_front + n_front   # the IDs come back here, and only here
+    n_frames = t_rest + n_hold2
 
     with plt.rc_context(FIG_RC):
         fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=ANIM_DPI)
@@ -1209,10 +1234,12 @@ def render_prediction_animation(
         )
 
         # Labels are laid out once, for the final frame, so nothing shuffles
-        # mid-animation; the round-2 IDs fade in as their own article lands.
-        # Labels are static, so they dodge everything that is drawn at any
-        # point in the clip: every callout and its leader, both fronts, and
-        # the travel paths.
+        # mid-animation. They are on screen in exactly two beats, the opening
+        # hold and the closing one, so they dodge what is drawn in those: the
+        # callouts and their leaders, both fronts, and the suggestion diamonds
+        # (which sit under the round-1 IDs in the opening frame). The travel
+        # paths are not obstacles, because no label is ever lit while one is
+        # on the panel.
         all_callouts = [c_exist, c_front1, c_sug, c_pred, c_meas, c_front2]
         anns = _label_points(
             ax, combined, "print_id", obj1_name, obj2_name,
@@ -1228,13 +1255,10 @@ def render_prediction_animation(
                     ),
                     half=9, weight=W_FRONT,
                 )
-                + _segment_boxes(
-                    list(zip(ax.transData.transform(pred_xy),
-                             ax.transData.transform(act_xy)))
-                )
+                + _marker_boxes(ax, pred_xy)
             ),
         )
-        r2_anns = anns[len(observed):]
+        r1_anns, r2_anns = anns[:len(observed)], anns[len(observed):]
         for ann in r2_anns:
             ann.set_alpha(0.0)
 
@@ -1250,6 +1274,7 @@ def render_prediction_animation(
             m = _smoothstep((f - t_hold1) / max(0.45 * fps, 1))  # name the pair
             w = _smoothstep((f - t_clean) / max(n_clean, 1))     # clean up
             v = _smoothstep((f - t_front) / max(n_front, 1))     # redraw front
+            d = _smoothstep((f - t_rest) / max(0.5 * fps, 1))    # IDs return
             keep = 1.0 - w  # everything that only existed to explain the move
             p = _smoothstep((u - starts) / span)
 
@@ -1273,9 +1298,13 @@ def render_prediction_animation(
                 head.arrow_patch.set_alpha(
                     0.55 * _smoothstep((pi - 0.85) / 0.15) * keep
                 )
-            # each round-2 ID arrives with its own article, not as a block
-            for ann, pi in zip(r2_anns, p):
-                ann.set_alpha(float(_smoothstep((pi - 0.7) / 0.3)))
+            # IDs: gone for the whole middle of the clip. The round-1 ones
+            # leave with the round-1 front and come back with every other ID
+            # once the figure has stopped moving.
+            for ann in r1_anns:
+                ann.set_alpha(float(max(1.0 - q, d)))
+            for ann in r2_anns:
+                ann.set_alpha(float(d))
 
             # beat 2: the round-1 front leaves before anything moves
             old_line.set_alpha(1.0 - q)
