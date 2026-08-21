@@ -83,6 +83,8 @@ Usage (from the repo root)::
     pip install ax-platform==0.5.0 pandas matplotlib
     python bo/t3_prism_bo_campaign.py            # writes suggestions + figure
     python bo/t3_prism_bo_campaign.py --batch-size 9 --round 1
+    python bo/t3_prism_bo_campaign.py --plot-only  # redraw the figure only
+                                                   # (pandas + matplotlib)
 """
 
 from __future__ import annotations
@@ -93,14 +95,13 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from ax.core.observation import ObservationFeatures
-from ax.modelbridge.factory import Models
-from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
-from ax.service.ax_client import AxClient, ObjectiveProperties
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+# ax is imported inside main() so that --plot-only (redraw the figure from the
+# recorded CSVs) needs only pandas + matplotlib, no model refit
 
 BO_DIR = Path(__file__).resolve().parent
 
@@ -203,6 +204,111 @@ def load_training_data(results_path: Path, design_path: Path):
     return X_train, y_train, labels, masses, pending
 
 
+# ---- figure styling (presentation-ready, per PR #102 review) -------------
+INK = "#0b0b0b"          # observed-point outlines and axis ink
+LABEL_GRAY = "#83827d"   # print IDs: present but de-emphasized
+FRONT_BLUE = "#2a78d6"   # Pareto front
+SUGGEST_ORANGE = "#eb6834"  # next-round suggestions
+
+
+def observed_frame(y_train, labels):
+    """Tidy frame of the tested articles: print ID plus both objectives."""
+    return pd.DataFrame(
+        {
+            "print_id": [label.split(" ")[0] for label in labels],
+            obj1_name: [y[obj1_name][0] for y in y_train],
+            obj2_name: [y[obj2_name][0] for y in y_train],
+        }
+    )
+
+
+def pareto_mask(xs, ys):
+    """Non-dominated mask for a two-objective minimization problem."""
+    xs, ys = np.asarray(xs, float), np.asarray(ys, float)
+    return np.array(
+        [
+            not np.any((xs <= x) & (ys <= y) & ((xs < x) | (ys < y)))
+            for x, y in zip(xs, ys)
+        ]
+    )
+
+
+def render_objective_figure(observed, suggestions, round_number):
+    """Single objective-space panel, sized and styled for slides.
+
+    The Honegumi template's second (parallel-coordinates) panel is omitted.
+    The front is the non-dominated set of the *observed* points, which for
+    round 1 is the same three articles as Ax's model-predicted Pareto set.
+    """
+    front = observed[pareto_mask(observed[obj1_name], observed[obj2_name])]
+    front = front.sort_values(obj1_name)
+
+    with plt.rc_context(
+        {
+            "font.size": 15,
+            "axes.labelsize": 17,
+            "axes.labelcolor": INK,
+            "xtick.labelsize": 15,
+            "ytick.labelsize": 15,
+            "text.color": INK,
+            "xtick.color": INK,
+            "ytick.color": INK,
+            "axes.edgecolor": "#4a4a47",
+        }
+    ):
+        fig, ax = plt.subplots(figsize=(9.0, 5.6), dpi=220)
+
+        ax.scatter(
+            observed[obj1_name], observed[obj2_name],
+            fc="none", ec=INK, s=110, lw=1.8, label="Tested (round 1)", zorder=3,
+        )
+        ax.plot(
+            front[obj1_name], front[obj2_name],
+            color=FRONT_BLUE, lw=2.6, marker="o", ms=9, zorder=2,
+            label="Pareto front",
+        )
+        ax.scatter(
+            suggestions[f"pred_{obj1_name}_mean"], suggestions[f"pred_{obj2_name}_mean"],
+            marker="D", s=95, fc=SUGGEST_ORANGE, ec="white", lw=1.2, zorder=4,
+            label=f"Suggested round {round_number + 1}",
+        )
+        for _, row in observed.iterrows():
+            ax.annotate(
+                row["print_id"], (row[obj1_name], row[obj2_name]),
+                textcoords="offset points", xytext=(9, 6),
+                fontsize=12.5, color=LABEL_GRAY,
+            )
+
+        ax.set_xlabel("Shock transmissibility t180 (lower is better)")
+        ax.set_ylabel("Rebound energy to payload,\nmJ per drop (lower is better)")
+        ax.set_xlim(0.80, 1.12)
+        ax.set_ylim(5.5, 14.8)
+        ax.set_xticks(np.arange(0.8, 1.101, 0.1))
+        ax.set_yticks(np.arange(6, 14.1, 2))
+        ax.grid(False)
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+        ax.legend(
+            loc="upper left", bbox_to_anchor=(1.02, 1.0),
+            frameon=False, fontsize=14, handletextpad=0.6, borderaxespad=0.0,
+        )
+
+        fig_dir = BO_DIR / "figures"
+        fig_dir.mkdir(exist_ok=True)
+        out_png = fig_dir / f"t3-prism-bo-round{round_number}-pareto.png"
+        fig.savefig(out_png, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+    print(
+        "Pareto-front articles: "
+        + ", ".join(
+            f"{r['print_id']} (t180 {r[obj1_name]:.3f}, {r[obj2_name]:.1f} mJ)"
+            for _, r in front.iterrows()
+        )
+    )
+    return out_png
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument(
@@ -220,9 +326,33 @@ def main(argv=None):
     ap.add_argument("--batch-size", type=int, default=9, help="prints per round (9 plates)")
     ap.add_argument("--round", type=int, default=1, help="suggestion round number, for file names")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument(
+        "--plot-only",
+        action="store_true",
+        help=(
+            "redraw the figure from the recorded results and suggestions CSVs "
+            "without refitting the model (needs only pandas + matplotlib)"
+        ),
+    )
     args = ap.parse_args(argv)
 
     X_train, y_train, labels, masses, pending = load_training_data(args.results, args.design)
+
+    if args.plot_only:
+        suggestions = pd.read_csv(
+            BO_DIR / f"t3-prism-bo-suggestions-round{args.round}.csv"
+        )
+        print(
+            f"Figure saved to "
+            f"{render_objective_figure(observed_frame(y_train, labels), suggestions, args.round)}"
+        )
+        return 0
+
+    from ax.core.observation import ObservationFeatures
+    from ax.modelbridge.factory import Models
+    from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
+    from ax.service.ax_client import AxClient, ObjectiveProperties
+
     n_train = len(X_train)
     print(f"Attaching {n_train} completed trials; {len(pending)} printed-but-untested pending.")
 
@@ -317,90 +447,9 @@ def main(argv=None):
     print(f"AxClient snapshot saved to {snapshot}")
 
     # ---- visualization (Honegumi visualize=True block, adapted) ----------
-    objectives = ax_client.objective_names
-    df = ax_client.get_trials_data_frame()
-    observed = df.dropna(subset=objectives)
-
-    # use model predictions for Pareto front (better for noisy observations)
-    pareto = ax_client.get_pareto_optimal_parameters(use_model_predictions=True)
-    pareto_data = [p[1][0] for p in pareto.values()]
-    pareto_df = pd.DataFrame(pareto_data).sort_values(objectives[0])
-
-    fig, (ax_obj, ax_par) = plt.subplots(
-        1, 2, figsize=(11.5, 4.6), dpi=200, gridspec_kw={"width_ratios": [1.15, 1]}
-    )
-
-    ax_obj.scatter(
-        observed[objectives[0]], observed[objectives[1]],
-        fc="none", ec="#0b0b0b", s=45, label="Observed (round 1)",
-    )
-    for label, mass_g, (_, orow) in zip(labels, masses, observed.iterrows()):
-        ax_obj.annotate(
-            f"{label.split(' ')[0]} ({mass_g:.1f} g)",
-            (orow[objectives[0]], orow[objectives[1]]),
-            textcoords="offset points", xytext=(5, 4), fontsize=6.5, color="#52514e",
-        )
-    ax_obj.plot(
-        pareto_df[objectives[0]], pareto_df[objectives[1]],
-        color="#2a78d6", lw=2, marker="o", ms=4, label="Model Pareto front",
-    )
-    ax_obj.scatter(
-        suggestions[f"pred_{obj1_name}_mean"], suggestions[f"pred_{obj2_name}_mean"],
-        marker="D", s=40, fc="#eb6834", ec="white", lw=0.8,
-        label=f"Suggested round {args.round + 1} (predicted)", zorder=3,
-    )
-    for _, srow in suggestions.iterrows():
-        ax_obj.annotate(
-            f"{srow[f'pred_{mass_metric}_mean']:.1f} g",
-            (srow[f"pred_{obj1_name}_mean"], srow[f"pred_{obj2_name}_mean"]),
-            textcoords="offset points", xytext=(4, -8), fontsize=6, color="#eb6834",
-        )
-    ax_obj.set_xlabel("t180 (CFC-180 transmissibility, lower is better)")
-    ax_obj.set_ylabel("e_reb_mJ (rebound energy to payload per drop, lower is better)")
-    ax_obj.set_title("Objective space")
-    ax_obj.legend(fontsize=8, loc="best")
-    ax_obj.grid(alpha=0.25, lw=0.5)
-
-    # parameter-space panel: min-max normalized parallel coordinates
-    bounds = {p["name"]: p["bounds"] for p in PARAMETERS}
-
-    def normalize(params):
-        return [
-            (params[name] - bounds[name][0]) / (bounds[name][1] - bounds[name][0])
-            for name in PARAM_NAMES
-        ]
-
-    xs = range(len(PARAM_NAMES))
-    for params in X_train:
-        ax_par.plot(xs, normalize(params), color="#0b0b0b", alpha=0.35, lw=1.2)
-    for _, params in pending:
-        ax_par.plot(xs, normalize(params), color="#52514e", alpha=0.6, lw=1.2, ls=":")
-    for _, srow in suggestions.iterrows():
-        ax_par.plot(
-            xs, normalize({name: srow[name] for name in PARAM_NAMES}),
-            color="#eb6834", alpha=0.85, lw=1.6,
-        )
-    ax_par.plot([], [], color="#0b0b0b", alpha=0.5, lw=1.2, label="Tested")
-    ax_par.plot([], [], color="#52514e", lw=1.2, ls=":", label="Pending prints")
-    ax_par.plot([], [], color="#eb6834", lw=1.6, label="Suggested")
-    ax_par.set_xticks(list(xs))
-    ax_par.set_xticklabels(["R", "H", "twist", "strut d", "cable d"], fontsize=8)
-    ax_par.set_ylabel("Normalized value in search-space bounds")
-    ax_par.set_title("Parameter space")
-    ax_par.set_ylim(-0.02, 1.02)
-    ax_par.legend(fontsize=8, loc="best")
-    ax_par.grid(alpha=0.25, lw=0.5, axis="y")
-
-    fig.suptitle(
-        f"T-3_01 SAASBO round {args.round}: {n_train} results in, "
-        f"{args.batch_size} suggested",
-        fontsize=11,
-    )
-    fig.tight_layout()
-    fig_dir = BO_DIR / "figures"
-    fig_dir.mkdir(exist_ok=True)
-    out_png = fig_dir / f"t3-prism-bo-round{args.round}-pareto.png"
-    fig.savefig(out_png, bbox_inches="tight")
+    # presentation-ready single panel; the parallel-coordinates panel that the
+    # template pairs with it was dropped on review (PR #102)
+    out_png = render_objective_figure(observed_frame(y_train, labels), suggestions, args.round)
     print(f"Figure saved to {out_png}")
 
     return 0

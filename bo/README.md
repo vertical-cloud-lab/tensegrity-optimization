@@ -40,9 +40,16 @@ suggests the next print batch.
   slicing.
 - `t3-prism-bo-ax-client-round1.json`: full AxClient state (experiment,
   data, generation strategy) for reproducibility and warm-starting round 2.
-- `figures/t3-prism-bo-round1-pareto.png`: objective-space view (observed
-  points, model Pareto front, suggested candidates) plus a parameter-space
-  panel.
+- `figures/t3-prism-bo-round1-pareto.png`: objective-space view (tested
+  articles labeled by print ID, the Pareto front through the non-dominated
+  articles, and the suggested round-2 candidates at their predicted means),
+  styled for slides. The parameter-space parallel-coordinates panel that the
+  Honegumi template pairs with it was dropped on review (PR #102). The front
+  drawn is the non-dominated set of the observed points, which for round 1 is
+  the same three articles (`6lhxfy`, `6nheas`, `bpx68c`) that Ax's
+  model-predicted Pareto set picks out. Redraw it without refitting the model
+  (pandas + matplotlib only, no Ax install needed) with
+  `python bo/t3_prism_bo_campaign.py --plot-only`.
 
 ## Print key files
 
