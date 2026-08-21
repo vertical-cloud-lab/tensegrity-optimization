@@ -1,0 +1,117 @@
+# Parallel repeat campaigns of the simulation-only T-3_01 BO (PR #33).
+#
+# STAGED, NOT ACTIVE.  The GitHub App this PR was written by cannot create or
+# edit files under .github/workflows, so this lives here.  To use it:
+#
+#     git mv simulations/workflows-staged/sim-bo-pr102-matrix.yml \
+#            .github/workflows/sim-bo-pr102-matrix.yml
+#
+# then run it from the Actions tab.  Each matrix leg is one seed of
+# simulations/pr102_sim_campaign.py, so the seeds run concurrently rather
+# than one after another; the aggregate job downloads every leg's artifact
+# and rebuilds the cross-seed mean +/- 1 sd figures.
+#
+# SAASBO (the default, matching PR #102's generation strategy) fits a fully
+# Bayesian NUTS model per round and is what makes this worth parallelizing:
+# a four-round seed takes tens of minutes, and the eight seeds below would be
+# most of a day in series.  Set model: botorch for the cheap qNEHVI surrogate.
+
+name: sim-bo-pr102-matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+      rounds:
+        description: "closed-loop rounds per seed (after the printed Sobol batch)"
+        default: "4"
+      batch_size:
+        description: "designs per round (9 = one print plate)"
+        default: "9"
+      model:
+        description: "saasbo (matches PR #102) or botorch (cheap qNEHVI)"
+        default: "saasbo"
+      seeds:
+        description: "JSON list of seeds, e.g. [0,1,2,3,4,5,6,7]"
+        default: "[0,1,2,3,4,5,6,7]"
+
+permissions:
+  contents: read
+
+jobs:
+  seeds:
+    name: seed ${{ matrix.seed }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: ${{ fromJSON(github.event.inputs.seeds) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        env:
+          PIP_TIMEOUT: "600"
+          PIP_RETRIES: "2"
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install mujoco numpy scipy pandas matplotlib "ax-platform==0.5.0"
+
+      - name: Run one seed of the simulation-only campaign
+        working-directory: simulations
+        run: |
+          python pr102_sim_campaign.py \
+            --model "${{ github.event.inputs.model }}" \
+            --seed "${{ matrix.seed }}" \
+            --rounds "${{ github.event.inputs.rounds }}" \
+            --batch-size "${{ github.event.inputs.batch_size }}" \
+            --outdir "$RUNNER_TEMP/out"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sim-bo-seed-${{ matrix.seed }}
+          path: ${{ runner.temp }}/out/
+          if-no-files-found: error
+
+  aggregate:
+    name: aggregate across seeds
+    runs-on: ubuntu-latest
+    needs: seeds
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        env:
+          PIP_TIMEOUT: "600"
+          PIP_RETRIES: "2"
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install mujoco numpy scipy pandas matplotlib "ax-platform==0.5.0"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sim-bo-seed-*
+          merge-multiple: true
+          path: aggregated
+
+      - name: Rebuild the cross-seed figures
+        working-directory: simulations
+        run: |
+          python pr102_sim_campaign.py --aggregate \
+            --model "${{ github.event.inputs.model }}" \
+            --outdir ../aggregated
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sim-bo-aggregate
+          path: aggregated/
+          if-no-files-found: error

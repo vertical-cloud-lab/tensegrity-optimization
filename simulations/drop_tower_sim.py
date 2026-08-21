@@ -1,0 +1,442 @@
+"""MuJoCo analogue of the T-3_01 drop-tower test, in the PR #102 objectives.
+
+Everything else in this directory scores a design on ``F_peak`` / ``SEA`` /
+``eta`` under one of the two application regimes (crutch, lander).  The
+campaign actually running on the bench (PR #102, data from PR #86) scores it
+on two *different* numbers, measured on a Lansmont M23 at 60 in with a 1/2 in
+PU mat:
+
+``t180``
+    CFC-180 transmissibility ``TOP / CH5``: the ratio of the filtered peak
+    acceleration at the article's free top vertex to the filtered peak at
+    the base plate it is mounted on.  Channel roles are from PR #67's
+    input-output series (CH5 = single-axis sensor on the bottom acrylic
+    plate = input; tri-axis hot-glued to the top vertex = output).
+    Minimized.
+``e_reb_mJ``
+    ``e_rebound * m_printed * g * h`` with h = 1.524 m.  ``e_rebound`` is
+    reported by the campaign pipeline as a restitution *velocity* ratio: the
+    committed summary satisfies ``t_second = 2 * e_rebound * v_in / g`` to
+    three digits on every specimen, i.e. it is the coefficient of restitution
+    read off the time to the second impact.  Minimized.
+
+This module reproduces both from a simulation, so a simulated design and a
+tested article land in the same two-number objective space.  The model:
+
+* A **carriage** (the falling base-plate assembly) on a vertical slide
+  joint, i.e. the tower's guide rails.  It carries the CH5 site.
+* A **PU mat** modeled as an explicit one-sided Hunt-Crossley contact
+  applied to the carriage, ``F = k d + lambda d (-d_dot)`` for ``d > 0``,
+  clipped at zero so the mat never pulls.  The damping term is proportional
+  to penetration, not just to velocity: a plain Kelvin-Voigt mat delivers a
+  ``c * v_impact`` force step at first touch, which at this closing speed is
+  a larger spike than the pulse it is supposed to damp, and it puts the
+  input peak under the control of the damping rather than the stiffness.
+  Both parameters are calibrated once (``--calibrate``) against the measured
+  input peak and restitution of the S0 reference article, then held fixed
+  for every design.  Modeling the mat explicitly rather than through a
+  contact pair is deliberate: the mat sets the input pulse, so it has to be
+  *the calibrated thing*, and MuJoCo's solref/solimp do not map onto
+  (peak, restitution) as directly.
+* The **article**: three rigid PLA strut capsules at the printed density
+  (``print_infill``: about 57 % of solid, so a 6 mm strut weighs what the
+  scale says, not what solid PLA would), nine TPU tendons as spatial
+  tendons with the ``printable_design`` axial stiffness, and the three
+  bottom vertices tied to the carriage by ball anchors, which is what
+  gluing a vertex to the plate does.  A 5 g accelerometer mass rides the
+  measured top vertex.
+
+What it does not model, stated so the correlation study is read correctly:
+strut flexure (Tier C treats struts as rigid, so the article's own bending
+modes are absent, and those are exactly what the 294 to 468 Hz ringdown
+fits see), the mount's own compliance, tendon hysteresis, and any
+mat-state or session drift.
+
+Usage::
+
+    python drop_tower_sim.py                 # S0 reference article
+    python drop_tower_sim.py --calibrate     # refit the mat to the bench
+    python drop_tower_sim.py --spec 1        # a Sobol batch design
+"""
+from __future__ import annotations
+
+import argparse
+import math
+import textwrap
+from dataclasses import dataclass
+from pathlib import Path
+
+import numpy as np
+
+from bo_evaluator import _cfc_filter, parameterization_to_design
+from print_infill import (PLA_SOLIDITY, TPU_SOLIDITY, effective_pla_density_kgm3,
+                          printed_mass_cad, project_constant_mass)
+from printable_design import PrintableDesign
+from tprism_geometry import CABLES, STRUTS, tprism_nodes
+
+G = 9.80665
+DROP_H_M = 1.524              # 60 in, the campaign SOP
+IMPACT_V_MPS = 5.30           # measured campaign mean in_dv (5.03 to 5.45)
+
+# --- carriage + mat -------------------------------------------------------
+# The carriage mass and the mat stiffness only enter the pulse through their
+# ratio, so the mass is fixed at a nominal value for the falling base-plate
+# assembly and the mat is calibrated against it.  Changing one without the
+# other rescales the input peak.
+CARRIAGE_MASS_KG = 2.0
+MAT_THICKNESS_M = 0.0127      # 1/2 in PU mat
+ACCEL_MASS_KG = 0.005         # tri-axis accelerometer + hot glue at the vertex
+
+# Calibrated on the S0 reference article (bpx68c) by ``--calibrate``; see
+# the module docstring.  Units: stiffness N/m, damping N s/m^2 (the
+# Hunt-Crossley coefficient multiplies penetration times velocity).
+MAT_STIFFNESS_NPM = 3.164e5
+MAT_DAMPING_NSPM = 5.405e4
+
+# Tendon prestrain.  The printed article's tendons are taut at the
+# equilibrium twist; a small prestrain is what stops the three ball-anchored
+# rigid struts from being a mechanism at t = 0.
+DEFAULT_PRESTRAIN = 0.02
+
+SIM_DT_S = 2.0e-5             # 50 kHz, well above the CFC-1000 corner
+SIM_DURATION_S = 0.040
+
+
+@dataclass(frozen=True)
+class MatModel:
+    stiffness_Npm: float = MAT_STIFFNESS_NPM
+    damping_Nspm: float = MAT_DAMPING_NSPM
+    thickness_m: float = MAT_THICKNESS_M
+
+
+def build_xml(design: PrintableDesign, *, prestrain: float = DEFAULT_PRESTRAIN,
+              carriage_mass_kg: float = CARRIAGE_MASS_KG,
+              pla_solidity: float = PLA_SOLIDITY) -> str:
+    """MJCF for one article mounted on the sliding carriage."""
+    nodes = tprism_nodes(radius=design.radius_m, height=design.height_m,
+                         twist=design.twist_rad, z0=0.0)
+    plate_half = max(design.radius_m * 1.6, 0.03)
+    plate_t = 0.006
+    # carriage top face at z = 0; the article sits on it
+    strut_density = effective_pla_density_kgm3(pla_solidity)
+
+    # the measured top vertex: the top end of strut 0
+    a0, b0 = STRUTS[0]
+    top_node = a0 if nodes[a0][2] > nodes[b0][2] else b0
+
+    bodies = []
+    for s_idx, (a, b) in enumerate(STRUTS):
+        pa, pb = nodes[a], nodes[b]
+        center = 0.5 * (pa + pb)
+        sa, sb = pa - center, pb - center
+        extra = ""
+        if s_idx == 0:
+            tip = sa if a == top_node else sb
+            extra = (f'<geom name="accel" type="sphere" size="0.004" '
+                     f'pos="{tip[0]:.6f} {tip[1]:.6f} {tip[2]:.6f}" '
+                     f'mass="{ACCEL_MASS_KG}" contype="0" conaffinity="0" '
+                     f'rgba="0.95 0.85 0.1 1"/>')
+        bodies.append(textwrap.dedent(f"""
+            <body name="strut{s_idx}" pos="{center[0]:.6f} {center[1]:.6f} {center[2]:.6f}">
+              <freejoint/>
+              <geom name="strut{s_idx}g" type="capsule"
+                    fromto="{sa[0]:.6f} {sa[1]:.6f} {sa[2]:.6f}
+                            {sb[0]:.6f} {sb[1]:.6f} {sb[2]:.6f}"
+                    size="{design.strut_diameter_m * 0.5:.6f}"
+                    density="{strut_density:.1f}" contype="0" conaffinity="0"
+                    rgba="0.2 0.4 0.9 1"/>
+              <site name="n{a}" pos="{sa[0]:.6f} {sa[1]:.6f} {sa[2]:.6f}" size="0.002"/>
+              <site name="n{b}" pos="{sb[0]:.6f} {sb[1]:.6f} {sb[2]:.6f}" size="0.002"/>
+              {extra}
+            </body>
+        """))
+
+    tendons = []
+    k_cable = design.cable_stiffness_Npm
+    # light viscous damping on the tendons; TPU 85A is strongly lossy, and
+    # without it the tendon network rings at its own numerical frequency
+    c_cable = 0.02 * 2.0 * math.sqrt(k_cable * max(ACCEL_MASS_KG, 1e-3))
+    for c_idx, (a, b) in enumerate(CABLES):
+        L0 = float(np.linalg.norm(nodes[a] - nodes[b]))
+        rest = (1.0 - prestrain) * L0
+        tendons.append(textwrap.dedent(f"""
+            <spatial name="cable{c_idx}" range="0 {rest:.6f}"
+                     stiffness="{k_cable:.3f}" damping="{c_cable:.4f}"
+                     rgba="0.9 0.2 0.2 1" width="0.0006">
+              <site site="n{a}"/>
+              <site site="n{b}"/>
+            </spatial>
+        """))
+
+    # ball anchors: each bottom vertex glued to the carriage plate
+    bottoms = []
+    for (a, b) in STRUTS:
+        bottoms.append(a if nodes[a][2] < nodes[b][2] else b)
+    equalities = []
+    for s_idx, node in enumerate(bottoms):
+        p = nodes[node]
+        equalities.append(
+            f'<connect body1="strut{s_idx}" body2="carriage" '
+            f'anchor="{p[0]:.6f} {p[1]:.6f} {p[2]:.6f}"/>'
+        )
+
+    return f"""
+    <mujoco model="drop_tower">
+      <option gravity="0 0 -{G}" timestep="{SIM_DT_S}" integrator="implicitfast"/>
+      <worldbody>
+        <body name="carriage" pos="0 0 0">
+          <joint name="slide" type="slide" axis="0 0 1"/>
+          <geom name="plate" type="box"
+                size="{plate_half:.4f} {plate_half:.4f} {plate_t * 0.5:.4f}"
+                pos="0 0 {-plate_t * 0.5:.4f}" mass="{carriage_mass_kg:.4f}"
+                contype="0" conaffinity="0" rgba="0.7 0.7 0.75 1"/>
+          <site name="ch5" pos="0 0 {-plate_t * 0.5:.4f}" size="0.003"/>
+        </body>
+        {''.join(bodies)}
+      </worldbody>
+      <tendon>
+        {''.join(tendons)}
+      </tendon>
+      <equality>
+        {''.join(equalities)}
+      </equality>
+      <sensor>
+        <framelinacc name="a_ch5" objtype="site" objname="ch5"/>
+        <framelinacc name="a_top" objtype="site" objname="n{top_node}"/>
+      </sensor>
+    </mujoco>
+    """
+
+
+def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
+             impact_v_mps: float = IMPACT_V_MPS,
+             prestrain: float = DEFAULT_PRESTRAIN,
+             carriage_mass_kg: float = CARRIAGE_MASS_KG,
+             pla_solidity: float = PLA_SOLIDITY,
+             tpu_solidity: float = TPU_SOLIDITY,
+             cfc: float = 180.0) -> dict:
+    """One drop.  Returns the PR #102 objectives plus the raw channels."""
+    import mujoco
+
+    mat = mat or MatModel()
+    model = mujoco.MjModel.from_xml_string(
+        build_xml(design, prestrain=prestrain, carriage_mass_kg=carriage_mass_kg,
+                  pla_solidity=pla_solidity))
+    data = mujoco.MjData(model)
+
+    carriage_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "carriage")
+    slide_adr = model.jnt_dofadr[mujoco.mj_name2id(
+        model, mujoco.mjtObj.mjOBJ_JOINT, "slide")]
+
+    # start with the whole assembly moving down at the impact velocity, with
+    # the carriage exactly at the top of the (uncompressed) mat
+    data.qpos[model.jnt_qposadr[mujoco.mj_name2id(
+        model, mujoco.mjtObj.mjOBJ_JOINT, "slide")]] = 0.0
+    for i in range(1, model.nbody):
+        adr = model.body_dofadr[i]
+        if i == carriage_id:
+            data.qvel[slide_adr] = -impact_v_mps
+        else:
+            data.qvel[adr + 2] = -impact_v_mps
+
+    nsteps = int(SIM_DURATION_S / SIM_DT_S)
+    t = np.zeros(nsteps)
+    a_in = np.zeros(nsteps)
+    a_out = np.zeros(nsteps)
+    v_car = np.zeros(nsteps)
+    f_mat = np.zeros(nsteps)
+
+    for k in range(nsteps):
+        # one-sided Kelvin-Voigt mat under the carriage
+        z = float(data.qpos[model.jnt_qposadr[0]])
+        vz = float(data.qvel[slide_adr])
+        pen = -z                      # carriage travel into the mat
+        if pen > 0.0:
+            f = pen * (mat.stiffness_Npm - mat.damping_Nspm * vz)
+            f = max(f, 0.0)           # the mat pushes, never pulls
+        else:
+            f = 0.0
+        data.xfrc_applied[carriage_id, 2] = f
+
+        mujoco.mj_step(model, data)
+
+        t[k] = data.time
+        a_in[k] = data.sensordata[2]      # framelinacc ch5, z
+        a_out[k] = data.sensordata[5]     # framelinacc top vertex, z
+        v_car[k] = float(data.qvel[slide_adr])
+        f_mat[k] = f
+        if not np.isfinite(a_in[k]) or not np.isfinite(a_out[k]):
+            t, a_in, a_out, v_car, f_mat = (arr[:k] for arr in
+                                            (t, a_in, a_out, v_car, f_mat))
+            break
+
+    if t.size < 50:
+        return {"t180": float("nan"), "e_rebound": float("nan"),
+                "e_reb_mJ": float("nan"), "ok": False}
+
+    fs = 1.0 / SIM_DT_S
+    in_f = _cfc_filter(a_in, fs, cfc=cfc)
+    out_f = _cfc_filter(a_out, fs, cfc=cfc)
+    in_peak_g = float(np.max(np.abs(in_f))) / G
+    out_peak_g = float(np.max(np.abs(out_f))) / G
+    t180 = out_peak_g / in_peak_g if in_peak_g > 0 else float("nan")
+
+    # restitution: carriage velocity once the mat force has released
+    contact = f_mat > 0.0
+    if contact.any():
+        last = int(np.max(np.nonzero(contact)[0]))
+        after = v_car[last + 1:]
+        v_reb = float(np.max(after)) if after.size else 0.0
+    else:
+        v_reb = 0.0
+    e_rebound = max(v_reb, 0.0) / impact_v_mps
+
+    pm = printed_mass_cad(design, pla_solidity=pla_solidity,
+                          tpu_solidity=tpu_solidity)
+    e_reb_mJ = e_rebound * pm.printed_g * G * DROP_H_M
+
+    # pulse width of the input at half peak, for the sanity table
+    above = np.abs(in_f) >= 0.5 * np.max(np.abs(in_f))
+    pulse_ms = float(above.sum()) * SIM_DT_S * 1e3
+
+    return {
+        "t180": float(t180),
+        "e_rebound": float(e_rebound),
+        "e_reb_mJ": float(e_reb_mJ),
+        "in_180_g": in_peak_g,
+        "out_180_g": out_peak_g,
+        "pulse_ms": pulse_ms,
+        "mass_printed_g": pm.printed_g,
+        "mass_solid_g": pm.solid_g,
+        "tpu_fraction": pm.tpu_fraction,
+        "v_rebound_mps": float(v_reb),
+        "ok": True,
+        "t": t, "a_in_g": in_f / G, "a_out_g": out_f / G, "v_car": v_car,
+    }
+
+
+def evaluate_pr102(parameterization, **kwargs) -> dict:
+    """Score a PR #35/#102 base parameterization on the campaign objectives.
+
+    ``parameterization`` uses the PR #102 search-space keys (``R_mm``,
+    ``H_mm``, ``twist_deg``, ``strut_d_mm``, ``cable_d_mm``), which are the
+    *base* Sobol coordinates.  PR #35 prints the uniform rescale of those
+    coordinates that hits the constant solid-CAD mass, so the base
+    parameterization is projected through
+    :func:`print_infill.project_constant_mass` first and the simulation runs
+    on the article that would actually come off the plate (the projection
+    moves every length by 0.74 to 1.08 across the T-3_01 batch, and it
+    reproduces the batch table's own scale column to about 2 %).
+    """
+    design = parameterization_to_design(parameterization)
+    printed, scale = project_constant_mass(design)
+    res = simulate(printed, **kwargs)
+    res["print_scale"] = scale
+    return {k: v for k, v in res.items() if not isinstance(v, np.ndarray)}
+
+
+# --- calibration ----------------------------------------------------------
+
+S0_BASE_PARAMS = {"R_mm": 25.0, "H_mm": 70.0, "twist_deg": 60.0,
+                  "strut_d_mm": 6.0, "cable_d_mm": 3.0}
+# bpx68c, the S0 reference article: campaign summary means.
+S0_MEASURED = {"in_180_g": 208.2, "e_rebound": 0.0204, "t180": 1.0111,
+               "in_dv_ms": 5.3017}
+
+
+def target_pulse_ms(peak_g: float = S0_MEASURED["in_180_g"],
+                    dv_mps: float = S0_MEASURED["in_dv_ms"]) -> float:
+    """Half-sine pulse width implied by the measured peak and delta-v.
+
+    ``dv = (2/pi) * a_peak * T`` for a half sine, so the campaign's own
+    numbers fix the width; nothing is assumed.
+    """
+    return 1e3 * math.pi * dv_mps / (2.0 * peak_g * G)
+
+
+def calibrate(target_in_g: float = S0_MEASURED["in_180_g"],
+              target_ms: float | None = None) -> MatModel:
+    """Fit (mat stiffness, mat damping) to the measured *input pulse*.
+
+    The two residuals are the input peak and the pulse width, both measured
+    (the width via :func:`target_pulse_ms` from the campaign's peak and
+    delta-v), against two log-parameters, by Nelder-Mead.
+
+    Note what is deliberately *not* a calibration target: the measured
+    restitution (0.020 to 0.050).  A mat that returned that little energy in
+    this model would have to be so lossy that its peak lands near 300 G,
+    well above what the tower measures -- the missing energy leaves through
+    paths this model does not carry (guide rails, anvil and frame, the mount
+    itself).  Calibrating on restitution would therefore corrupt the input
+    pulse, which is the one thing the model can get right, so the simulated
+    ``e_rebound`` is treated as a *rank* proxy for the measured one rather
+    than a prediction of its value, and the correlation study reports it
+    that way.
+    """
+    from scipy.optimize import minimize
+
+    target_ms = target_ms if target_ms is not None else target_pulse_ms()
+    design, _ = project_constant_mass(parameterization_to_design(S0_BASE_PARAMS))
+
+    def residual(logp):
+        k, c = float(np.exp(logp[0])), float(np.exp(logp[1]))
+        res = simulate(design, mat=MatModel(k, c))
+        if not res["ok"] or not np.isfinite(res["in_180_g"]):
+            return 1e3
+        return (math.log(max(res["in_180_g"], 1e-6) / target_in_g) ** 2
+                + math.log(max(res["pulse_ms"], 1e-6) / target_ms) ** 2)
+
+    x0 = np.log([MAT_STIFFNESS_NPM, MAT_DAMPING_NSPM])
+    out = minimize(residual, x0, method="Nelder-Mead",
+                   options={"xatol": 1e-3, "fatol": 1e-6, "maxiter": 200})
+    return MatModel(float(np.exp(out.x[0])), float(np.exp(out.x[1])))
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--calibrate", action="store_true",
+                    help="refit the mat model to the S0 reference article")
+    ap.add_argument("--spec", type=int, default=None,
+                    help="Sobol spec index from the PR #102 batch table")
+    ap.add_argument("--solid", action="store_true",
+                    help="ignore infill: run the article at solid PLA density")
+    args = ap.parse_args(argv)
+
+    if args.calibrate:
+        mat = calibrate()
+        print(f"calibrated mat: stiffness = {mat.stiffness_Npm:.4g} N/m, "
+              f"damping = {mat.damping_Nspm:.4g} N s/m")
+        res = simulate(parameterization_to_design(S0_BASE_PARAMS), mat=mat)
+        print(f"  S0 check: in_180 = {res['in_180_g']:.1f} G "
+              f"(measured {S0_MEASURED['in_180_g']:.1f}), "
+              f"pulse = {res['pulse_ms']:.2f} ms "
+              f"(target {target_pulse_ms():.2f}), "
+              f"e_rebound = {res['e_rebound']:.4f} "
+              f"(measured {S0_MEASURED['e_rebound']:.4f}, rank proxy only), "
+              f"t180 = {res['t180']:.4f} (measured {S0_MEASURED['t180']:.4f})")
+        return 0
+
+    if args.spec is None:
+        params = dict(S0_BASE_PARAMS)
+        label = "S0 reference"
+    else:
+        import pandas as pd
+        batch = pd.read_csv(
+            Path(__file__).resolve().parent / "data" / "pr102"
+            / "t3-prism-bo-batch.csv").set_index("specimen")
+        row = batch.loc[args.spec]
+        params = {k: float(row[k]) for k in
+                  ("R_mm", "H_mm", "twist_deg", "strut_d_mm", "cable_d_mm")}
+        label = f"Sobol spec {args.spec:02d}"
+
+    kwargs = {"pla_solidity": 1.0, "tpu_solidity": 1.0} if args.solid else {}
+    res = evaluate_pr102(params, **kwargs)
+    print(f"{label}: {params}")
+    for key in ("t180", "e_rebound", "e_reb_mJ", "in_180_g", "out_180_g",
+                "pulse_ms", "mass_printed_g", "mass_solid_g", "tpu_fraction"):
+        print(f"  {key:16s} = {res[key]:.4f}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

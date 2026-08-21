@@ -149,7 +149,39 @@ MUJOCO_GL=osmesa python simulations/pareto_render_campaign.py --n 2048
 # -> outputs/pareto_<regime>_annotated.png  (Pareto scatter w/ render callouts)
 # -> outputs/pareto_<regime>_render_<tag>.png  +  *_{best,worst}_drop.{gif,mp4}
 # -> outputs/pareto_summary.md
+
+# The PR #102 bench campaign, matched in simulation (PR comment 5365740315)
+#   Sub-100 % PLA infill -> printed mass / effective strut density + modulus,
+#   and the PR #35 constant-mass projection from base coords to the article
+#   that is actually printed.
+python simulations/print_infill.py
+# MuJoCo analogue of the 60 in / PU-mat drop, in the bench's own two
+# objectives (CFC-180 transmissibility t180, rebound energy e_reb_mJ).
+python simulations/drop_tower_sim.py --calibrate   # refit the mat to the rig
+python simulations/drop_tower_sim.py --spec 1      # one Sobol article
+# Which simulated observable actually tracks the measured objectives?
+python simulations/pr102_correlation.py
+# -> outputs/pr102_sim_vs_measured.csv, pr102_correlations.csv,
+#    pr102_correlation.png
+# Closed-loop simulation-only campaign, one run per seed (SAASBO by default,
+# matching PR #102).  Parallel seed matrix:
+#   simulations/workflows-staged/sim-bo-pr102-matrix.yml (move into
+#   .github/workflows/ to run it; this PR's app cannot write there).
+python simulations/pr102_sim_campaign.py --model botorch --seeds 0 1 2 --rounds 3
+# -> outputs/pr102_sim_bo_<model>_seed<k>.{csv,png}
+# -> outputs/pr102_sim_bo_<model>_aggregate.png + _summary.csv
 ```
+
+## Matching the PR #102 bench campaign in simulation
+
+[`pr102_sim_campaign.md`](pr102_sim_campaign.md) — the write-up: the infill
+model and its calibration against the weighed articles, the drop-tower
+analogue and what its mat is (and is not) calibrated on, the correlation
+study against the eight tested articles, and the repeat-seed campaign. The
+headline: the purpose-built `t180` analogue is *not* the best simulated
+predictor of measured `t180` (rho = +0.46, n = 7); `lander_eta` from the
+existing Tier-C regime sims is (rho = -0.96), and no simulated observable
+predicts measured `e_reb_mJ` yet.
 
 ## Fair-evaluation analysis (PR comment 4760939061)
 
