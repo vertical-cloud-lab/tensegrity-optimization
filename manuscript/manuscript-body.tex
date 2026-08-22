@@ -803,9 +803,10 @@ the campaign; all reported numbers use the corrected filter). CFC-180
 is the reporting class for peak metrics, with CFC-1000 retained as a
 higher-bandwidth diagnostic.
 
-\paragraph{Per-specimen objectives} Each 101-drop session (first two
-drops discarded as warm-up; one article's session recorded 103
-captures) yields two objectives, each reported as a stabilized mean
+\paragraph{Per-specimen objectives} Each drop session contributes 101
+valid captures to the stabilized statistics (103 for one article,
+autv5r), counted after the first two drops of each session are
+discarded as warm-up. Each session yields two objectives, each reported as a stabilized mean
 with the per-drop scatter quoted as one standard deviation; the
 standard error of the mean is what enters the surrogate's noise model
 (Section~\ref{sec:methods:bo}):
@@ -854,7 +855,7 @@ fitted natural frequency $f_n \approx$ \SIrange{300}{470}{Hz} and, where
 the exponential fit passes an $r^2 \ge 0.85$ gate, a damping ratio
 $\zeta$) are recorded per drop as print-health and prestress
 diagnostics~\citep{ashwear2014natural} but are not campaign objectives.
-Within-specimen repeatability of $t_{180}$ is 0.2 to 0.5\% (CV), and
+Within-specimen repeatability of $t_{180}$ is 0.17 to 0.48\% (CV), and
 the one article re-tested in a separate session reproduced its mean to
 0.13\%. Figure~\ref{fig:dropcurve} illustrates the mechanism-oriented
 presentation we adopt for the processed traces, linking features of the
@@ -1148,7 +1149,7 @@ measured $t_{180}$ spans 0.893 to 1.062: five of eight articles
 unity), two sit marginally below unity (0.997 and 0.980), and a single
 design (Sobol spec~01, the thick-strut, thin-cable, high-twist corner
 of the batch) attenuates it by 11\%. The design-driven range of 0.169
-in $t_{180}$ (19\% relative to the minimum) dwarfs the 0.2 to 0.5\%
+in $t_{180}$ (19\% relative to the minimum) dwarfs the 0.17 to 0.48\%
 within-specimen repeatability. Second, the objectives show an
 apparent trade-off in this sample: the best attenuator carries the
 largest rebound score (13.9~mJ per drop), so the observed front is
@@ -1174,16 +1175,21 @@ constant-mass box spans aspect ratio, member sizing, and twist.
 
 \begin{table*}[t]
   \centering
-  \caption{Seed-round drop-tower results: 101 drops per article at
-    \SI{60}{in} onto the standardized polyurethane surface, CFC-180
-    filtering, first two drops discarded. Means $\pm$ one standard
-    deviation over the stabilized drops. $E_{\mathrm{reb}}$ uses each
+  \caption{Seed-round drop-tower results: 101 valid captures per
+    article (103 for autv5r) at \SI{60}{in} onto the standardized
+    polyurethane surface, CFC-180 filtering, counted after the first
+    two warm-up drops of each session were discarded. Means $\pm$ one
+    standard deviation over the stabilized drops; rows are ordered by
+    $t_{180}$. $E_{\mathrm{reb}}$ uses each
     article's weighed mass per Eq.~\eqref{eq:objectives}. The ringdown
     frequency $f_n$ is a print-health descriptor, not an objective.
-    Article \textit{amdjwm} lacks a confirmed design mapping and is
-    excluded from the surrogate fit; spec~03 was tested but its session
-    was not yet uploaded at the time of writing; specs 06 and 07 are
-    printed and pending test.}
+    A dash denotes a quantity that cannot be computed from the
+    available record: article \textit{amdjwm} lacks a weighed mass and
+    a confirmed design mapping (it is excluded from the surrogate fit
+    and from all mass-dependent quantities), and no accepted $f_n$
+    estimate is available for \textit{bag26v}. Spec~03 was tested but
+    its session was not yet uploaded at the time of writing; specs 06
+    and 07 are printed and pending test.}
   \label{tab:seed-results}
   \small
   \begin{tabular}{@{}llS[table-format=2.2]S[table-format=1.4]@{\,$\pm$\,}S[table-format=1.4]S[table-format=2.1]S[table-format=3.0]@{}}
@@ -1192,10 +1198,10 @@ constant-mass box spans aspect ratio, member sizing, and twist.
     {$E_{\mathrm{reb}}$ (mJ)} & {$f_n$ (Hz)} \\
     \midrule
     Spec 01 & 6lhxfy & 18.50 & 0.8931 & 0.0042 & 13.9 & 368 \\
-    Spec 05 & 6nheas & 21.73 & 0.9970 & 0.0032 & 13.1 & 322 \\
     (unmapped) & amdjwm & {--} & 0.9805 & 0.0025 & {--} & 455 \\
+    Spec 05 & 6nheas & 21.73 & 0.9970 & 0.0032 & 13.1 & 322 \\
     S0 ref. & bpx68c & 20.23 & 1.0111 & 0.0024 & 6.2 & 468 \\
-    Spec 00 & 9hhbkp & 21.62 & 1.0183 & 0.0017 & 7.0 & 364 \\
+    Spec 00 & 9hhbkp & 21.62 & 1.0183 & 0.0017 & 6.9 & 364 \\
     Spec 04 & nvxsrv & 20.66 & 1.0275 & 0.0044 & 8.2 & 294 \\
     Spec 02 & autv5r & 22.04 & 1.0404 & 0.0035 & 8.8 & 386 \\
     Spec 08 & bag26v & 21.42 & 1.0616 & 0.0051 & 7.7 & {--} \\
@@ -1208,9 +1214,11 @@ constant-mass box spans aspect ratio, member sizing, and twist.
 
 Figure~\ref{fig:pareto} shows the measured objective space, the
 non-dominated set, and the model-recommended round-2 batch at its
-posterior-mean predictions. The observed Pareto set comprises three
-articles (6lhxfy, 6nheas, and the reference prism bpx68c), and the
-model-predicted Pareto set selects the same three. The nine
+posterior-mean predictions. Pareto membership is evaluated over the
+seven articles with both objectives; amdjwm is omitted because its
+missing weighed mass prevents computing $E_{\mathrm{reb}}$. The
+observed Pareto set comprises three articles (6lhxfy, 6nheas, and the
+reference prism bpx68c). The nine
 recommended designs (Ax trials 10 to 18) concentrate in the
 low-$t_{180}$ region near and beyond the current best attenuator;
 they have been sliced and sent to the printer, and their measured
@@ -1227,12 +1235,13 @@ defects).
 \begin{figure*}[t]
   \centering
   \includegraphics[width=0.85\textwidth]{../figures/bo/t3-prism-bo-round1-pareto.png}
-  \caption{Measured round-1 objective space. Open circles are tested
-    articles (labeled by print ID) at their stabilized means; the blue
+  \caption{Measured round-1 objective space. Open circles are the
+    seven tested articles with both objectives (labeled by print ID)
+    at their stabilized means; amdjwm is omitted because its weighed
+    mass, and therefore $E_{\mathrm{reb}}$, is unavailable. The blue
     markers and line are the observed Pareto front; orange diamonds are
     the nine model-recommended round-2 designs at their posterior-mean
-    predictions. Both axes improve downward. The observed front and the
-    model-predicted front select the same three articles.}
+    predictions. Both axes improve downward.}
   \label{fig:pareto}
 \end{figure*}
 
@@ -1245,12 +1254,18 @@ size is that the sparsity prior has \emph{not} identified a dominant
 subspace: no input separates decisively from the equal-share line
 (one sixth), with cell height leading for $t_{180}$ and base radius
 for the rebound energy, and most interquartile bands straddling the
-line. Cross-validation tells the same two-sided story: the model
-captures the $t_{180}$ ordering usefully (mean absolute percentage
-error 2.6\%, $r = 0.70$) but has no predictive skill yet on the
-rebound energy ($r = -0.12$), which is consistent with the
-adversarial review's finding that the rebound channel's noise was
-understated. We report these as the expected behavior of a
+line. Cross-validation tells the same two-sided story: leave-one-out
+predictions for $t_{180}$ had a mean absolute percentage error of
+2.6\% and Pearson $r = 0.70$ across seven articles, but the
+correlation is imprecise at this sample size, while rebound-energy
+predictions had MAPE 37.8\% and $r = -0.12$, providing no evidence of
+out-of-sample predictive skill on that channel; this is consistent
+with the adversarial review's finding that the rebound channel's
+noise was understated. The fold-level predictions (observed and
+predicted means with uncertainties per article and objective) are
+archived with the campaign data
+(\texttt{t3-prism-bo-round1-loocv.csv}). We report these as the
+expected behavior of a
 five-variable space observed at seven mapped articles rather than as
 evidence for or against variable relevance; the diagnostics are
 refreshed every round.
