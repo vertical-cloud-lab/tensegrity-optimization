@@ -42,7 +42,7 @@ figures/tables/supplementary materials and are listed under
 | [`stl/4bar_prism.stl`](stl/4bar_prism.stl)   | 4-bar tensegrity prism (T4)                    | 8 | 4 | 12 | Twist `θ = π/2 − π/4 = 45°`. |
 | [`stl/6bar_prism.stl`](stl/6bar_prism.stl)   | 6-bar tensegrity prism (T6)                    | 12 | 6 | 18 | Twist `θ = π/2 − π/6 = 60°`. Building block for stacked masts. |
 | [`stl/icosahedron.stl`](stl/icosahedron.stl) | 6-strut tensegrity icosahedron (Jessen's orthogonal icosahedron / "expanded octahedron") | 12 | 6 | 24 | Strut/cable length ratio `√(8/3) ≈ 1.633`. Used in NASA SUPERball lineage and most "tensegrity-ball" designs. |
-| [`stl/stacked_t3_column.stl`](stl/stacked_t3_column.stl) | Stacked 3-bay T3 column (Snelson "Needle Tower" / mast topology) | 12 | 9 | 21 | 3 stacked T3 bays with alternating chirality (Snelson 1968–69; Tibert & Pellegrino deployable masts). |
+| [`stl/stacked_t3_column.stl`](stl/stacked_t3_column.stl) | Stacked 3-bay T3 column (Snelson "Needle Tower" / mast topology) | 12 | 9 | 21 | 3 stacked T3 bays with alternating chirality (Snelson 1968 to 1969; Tibert & Pellegrino deployable masts). |
 | [`stl/truncated_octahedron.stl`](stl/truncated_octahedron.stl) | Truncated-octahedron tensegrity (Rimoli/Pajunen unit cell) | 24 | 12 | 36 | Space-tileable energy-absorbing metamaterial cell. Rank-#1 BYU recommendation for impact absorption (Pajunen et al. 2019; Bauer et al. 2021). |
 | [`stl/geiger_cable_dome.stl`](stl/geiger_cable_dome.stl) | Geiger radial cable-dome (Seoul Olympic Hall topology) | 73 | 36 | 132 | 3 concentric rings × 12 radial ribs + apex hub. Cable-dome (not pure class-1); per Fu (2005), Geiger US Pat. 4,736,553. |
 | [`stl/biotensegrity_spine.stl`](stl/biotensegrity_spine.stl) | Biotensegrity spine (4 stacked Jessen-icosahedron vertebrae) | 48 | 24 | 108 | Levin/Flemons stacked-icosahedron spinal-column model; basis for Berkeley ULTRA-Spine. |
@@ -50,7 +50,7 @@ figures/tables/supplementary materials and are listed under
 | [`stl/tibert_pellegrino_mast.stl`](stl/tibert_pellegrino_mast.stl) | Tibert/Pellegrino deployable mast (6-bay) | 21 | 18 | 39 | Slender alternating-chirality stacked-prism mast (Tibert & Pellegrino, *Int. J. Space Struct.* 2003). |
 | [`stl/patent_us6441801_antenna.stl`](stl/patent_us6441801_antenna.stl) | Knight et al. tensegrity antenna (US 6,441,801 B1) | 12 | 6 | 18 | Hexagonal upper platform / hexagonal lower base + 6 strut-tie pairs. Knight, Duffy, Crane US Pat. 6,441,801 B1 (2002). |
 | [`stl/bistable_double_prism.stl`](stl/bistable_double_prism.stl) | Bistable double-prism unit cell | 9 | 6 | 15 | Two T3 prisms joined at a shared compliant hinge ring (Intrigila et al., *Add. Manuf.* 2022). |
-| [`stl/cuboctahedron_tessellation.stl`](stl/cuboctahedron_tessellation.stl) | Cuboctahedron tessellation cell (simplified) | 13 | 6 | 36 | Single-block representation of Liu et al.'s 13-strut/96-cable bandgap-tunable tessellation (J. Mech. Phys. Solids 2019). |
+| [`stl/cuboctahedron_tessellation.stl`](stl/cuboctahedron_tessellation.stl) | Cuboctahedron tensegrity tessellation block (Liu et al. 2019) | 40 | 13 | 96 | The published Class-1 block, not a reconstruction: node coordinates, connectivity and prestress come from the article's supplementary dataset (see [`data/README.md`](data/README.md)). Tessellates on primitive vectors 2I, so the default `scale=60` gives a 120 mm cubic unit cell. Printed with thinner members than the rest (see below). |
 | [`stl/snelson_x_module.stl`](stl/snelson_x_module.stl) | Snelson planar X-module | 4 | 2 | 4 | Smallest planar tensegrity, seed of Snelson's X-piece weave / X-column compositions (Snelson US Pat. 3,169,611, 1965). Struts are z-offset so the two diagonals don't touch. |
 | [`stl/pugh_diamond_column.stl`](stl/pugh_diamond_column.stl) | Pugh "diamond" stacked column (3-bay T3) | 12 | 9 | 30 | Two saddle cables per strut → diamond-shaped side panels (Pugh 1976, ch. 3). |
 | [`stl/pugh_zigzag_column.stl`](stl/pugh_zigzag_column.stl) | Pugh "zig-zag" stacked column (3-bay T3) | 12 | 9 | 21 | Single saddle per strut with a "skip-1" jump → Z-fold side panels (Pugh 1976, ch. 3). |
@@ -58,17 +58,29 @@ figures/tables/supplementary materials and are listed under
 
 All STL files are **binary STL**, units in millimetres, with struts
 rendered as 5 mm-diameter cylinders (PLA / PETG) and cables rendered
-as **2.4 mm-diameter** cylinders (TPU — these are not literal strings;
+as **2.4 mm-diameter** cylinders (TPU). These are not literal strings:
 the eventual fabricated cables are printed in TPU and need a
 realistic finite cross-section, matching the cable diameter used in
-[`cad/t3-prism/`](../cad/t3-prism/)). Default sizes are chosen to fit
+[`cad/t3-prism/`](../cad/t3-prism/). Default sizes are chosen to fit
 within a typical 200 mm-cube print bed.
+
+The one exception is `cuboctahedron_tessellation.stl`. Its 109 members run
+close together: at the default `scale=60` the nearest pair of strut
+centrelines is 3.10 mm apart and the nearest strut-to-cable pair is 2.35 mm
+apart, so the default 5 mm and 2.4 mm diameters would fuse them into a solid
+lump. `RADIUS_OVERRIDES` in `generate_stl.py` prints that file with 2.2 mm
+struts and 1.8 mm cables instead. Printing it fatter means printing it
+bigger: the clearance scales linearly, so 5 mm struts need `scale` of at
+least 97, that is a 194 mm cell.
 
 ## Regenerating the STL files
 
 The geometry is authored from first principles in
-[`generate_stl.py`](generate_stl.py) (Python ≥ 3.7, standard library
-only — no `numpy`, no `numpy-stl`, no licence encumbrance):
+[`generate_stl.py`](generate_stl.py) (Python 3.7 or newer, standard library
+only: no `numpy`, no `numpy-stl`). The one exception is the cuboctahedron
+tessellation block, whose geometry is the published Liu et al. (2019) design
+read from [`data/`](data/); [`data/README.md`](data/README.md) records where
+those numbers came from and what was checked against them.
 
 ```bash
 python models/generate_stl.py
@@ -91,18 +103,29 @@ bay_height)`, `truncated_octahedron_tensegrity(scale)`,
 `cuboctahedron_tessellation(scale)` for direct use as design seeds in
 the Bayesian optimization loop (`(nodes, struts, cables)` tuples that
 map directly onto the BO parameterization in the proposal).
+`cuboctahedron_tessellation_prestress()` additionally returns the published
+prestress force of each member of that block, ordered `struts + cables` and
+normalised so every strut carries -1.
+
+To re-check the published block against Table A1 of the paper:
+
+```bash
+python models/verify_liu2019_cuboctahedron.py
+```
 
 ## Caveats and clarifications needed
 
-The 7 extended-preview families are emitted as **first-principles
+Six of the 7 extended-preview families are emitted as **first-principles
 parametric STLs reconstructed from the geometric specifications stated
-in the cited papers/patents**.  They are intended as topology-correct
-visual / FEM-import seeds; for fully validated geometry — especially
-prestress states and equilibrium-shape coordinates — the following
-source PDFs would be needed (and a domain expert may need to confirm):
+in the cited papers/patents**. They are intended as topology-correct
+visual / FEM-import seeds; for fully validated geometry, especially
+prestress states and equilibrium-shape coordinates, the following
+source PDFs would be needed (and a domain expert may need to confirm).
+The seventh, the cuboctahedron tessellation block, is now the published
+geometry itself rather than a reconstruction:
 
 - **Geiger cable-dome**: full prestress-state coordinates require
-  Geiger's US Pat. 4,736,553 (1988) or Fu (2005).  Best contact:
+  Geiger's US Pat. 4,736,553 (1988) or Fu (2005). Best contact:
   Feng Fu (City, Univ. of London) for cable-dome design.
 - **Biotensegrity spine / ULTRA-Spine**: detailed inter-vertebral
   cable connectivity and prestress states require Sabelhaus et al.
@@ -117,24 +140,59 @@ source PDFs would be needed (and a domain expert may need to confirm):
 - **Tibert/Pellegrino mast**: only topology is reproduced here; the
   full equilibrium-manifold deployment trajectory needs Sultan &
   Skelton (2003) or Bel Hadj Ali et al. (2010).
-- **US 6,441,801 B1 (Knight et al. antenna)**: Figs. 2–4 of the
+- **US 6,441,801 B1 (Knight et al. antenna)**: Figs. 2 to 4 of the
   patent give exact strut/tie ratios and the screw-motion deployment
   schedule; not all variables are determined by topology alone.
   Patent PDF: <https://patents.google.com/patent/US6441801B1>.
 - **Bistable double-prism**: the snapping-mechanism hinge
   cross-sections and triggering-force calibration are reported in
-  Intrigila et al. *Add. Manuf.* 57:102946 (2022), Figs. 6–9.
-- **Cuboctahedron tessellation (Liu et al.)**: the full 13-strut /
-  96-cable / 12-prestress-state form-finding requires the Liu et al.
-  *J. Mech. Phys. Solids* 131:147–166 (2019) paper and (ideally) the
-  tessellation force-density matrix; the STL committed here is a
-  **simplified single-block representation** of just the cuboctahedron
-  + central tension hub.
+  Intrigila et al. *Add. Manuf.* 57:102946 (2022), Figs. 6 to 9.
+- **Cuboctahedron tessellation (Liu et al.)**: resolved, no longer a
+  reconstruction. See "Cuboctahedron tessellation block" below.
 
 If full validated geometries (with form-found coordinates and prestress
 states) are needed for any of the above, please flag and either
 (a) point at the relevant supplementary material, or
 (b) name a contact whose published code we can integrate.
+
+### Cuboctahedron tessellation block
+
+This one is settled. The block committed here is the published design, not a
+reconstruction of it: 40 nodes, 13 struts, 96 cables and a self-balanced
+prestress state, taken from the supplementary dataset of
+
+> K. Liu, T. Zegard, P. P. Pratapa, G. H. Paulino, "Unraveling tensegrity
+> tessellations for metamaterials with tunable stiffness and bandgaps",
+> *J. Mech. Phys. Solids* **131**:147-166 (2019).
+> DOI: [10.1016/j.jmps.2019.05.006](https://doi.org/10.1016/j.jmps.2019.05.006)
+
+The supplement (`1-s2.0-S0022509619300432-mmc2.zip`, one spreadsheet) and the
+accepted manuscript are both in the green open-access CaltechAUTHORS record
+[`afqa1-33315`](https://authors.library.caltech.edu/records/afqa1-33315), so
+no paywalled access was needed. The numbers live in
+[`data/`](data/); [`data/README.md`](data/README.md) records the provenance
+and [`verify_liu2019_cuboctahedron.py`](verify_liu2019_cuboctahedron.py)
+re-runs the checks (all four Table A1 counts match, nodal equilibrium
+residual 8.9e-14, max one strut per periodic node group, restriction zone
+clear).
+
+What this replaced: an earlier `cuboctahedron_tessellation()` built its own
+"simplified" cell whose 6 struts were all body diagonals of the
+cuboctahedron. All six therefore met at the origin, and a hub node was added
+at that same origin with 12 cables running out from it, each buried inside a
+strut. That is not a tensegrity and was not printable. The left three panels
+of the figure below show the old model, its struts, and its rim cables; the
+right panel is the replacement. Regenerate with
+[`render_cuboctahedron_diagnostic.py`](render_cuboctahedron_diagnostic.py).
+
+![Old cuboctahedron model decomposed, next to the published block](../figures/cuboctahedron_tessellation_diagnostic.png)
+
+Two things the paper does not settle, because it is a continuum-mechanics
+study rather than a print. First, member clearances: 0.0516 and 0.0392 in the
+paper's units for the closest strut-to-strut and strut-to-cable approach, which
+is what forces the thinner members described above. Second, the prestress
+forces are normalised to unit strut compression, so turning them into TPU
+pre-strain still needs a member cross-section and modulus choice.
 
 ### Source materials needed for the remaining gap-followup families
 
@@ -166,7 +224,11 @@ supplementary materials before they can be emitted as faithful STLs
   182:107966, 2019.  Required: **Fig. 2 (unit-cell geometry table),
   Fig. 4 (strut/cable diameter ratios), Table 1 (prestress states)**.
   PDF: doi:[10.1016/j.matdes.2019.107966](https://doi.org/10.1016/j.matdes.2019.107966)
-  (also on arXiv as 1812.10468).
+  (also on arXiv as 1812.10468). **No longer blocked**: the publisher PDF
+  and the supplementary video are in the green open-access CaltechAUTHORS
+  record [`scb9y-ppa15`](https://authors.library.caltech.edu/records/scb9y-ppa15),
+  found while retrieving the Liu et al. supplement. Nobody has read the
+  figures out of it yet, so the STL is still to do.
 - **Rhode-Barbarigos pentagonal ring (full deployable variant)** —
   the committed STL is a 1-layer 10-node simplification.  The full
   15-node / 30-cable two-layer deployable hollow-rope module needs

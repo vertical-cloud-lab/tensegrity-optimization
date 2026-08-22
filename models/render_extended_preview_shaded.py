@@ -18,7 +18,7 @@ import sys
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO_ROOT, "models"))
 from generate_stl import (  # noqa: E402
-    _cylinder_triangles,
+    RADIUS_OVERRIDES, _cylinder_triangles,
     geiger_cable_dome, biotensegrity_spine, superball_with_payload,
     tibert_pellegrino_mast, patent_us6441801_antenna, bistable_double_prism,
     cuboctahedron_tessellation,
@@ -62,10 +62,11 @@ def shade(tris, base_rgb):
     return np.clip(brightness[:, None] * base_rgb[None, :], 0.0, 1.0)
 
 
-def draw(ax, model, elev, azim, member_scale=1.0):
+def draw(ax, model, elev, azim, member_scale=1.0, radii=None):
     nodes, struts, cables = model
-    strut_tris = member_triangles(nodes, struts, STRUT_RADIUS * member_scale)
-    cable_tris = member_triangles(nodes, cables, CABLE_RADIUS * member_scale)
+    strut_r, cable_r = radii if radii else (STRUT_RADIUS, CABLE_RADIUS)
+    strut_tris = member_triangles(nodes, struts, strut_r * member_scale)
+    cable_tris = member_triangles(nodes, cables, cable_r * member_scale)
     tris = np.concatenate([strut_tris, cable_tris])
     colors = np.concatenate([shade(strut_tris, STRUT_RGB),
                              shade(cable_tris, CABLE_RGB)])
@@ -90,6 +91,9 @@ def draw(ax, model, elev, azim, member_scale=1.0):
 # Same models and parameters as the extended preview / generate_stl.py main().
 # member_scale fattens the tubes of the small-strut-count models so line
 # weights look comparable across panels of very different physical size.
+# The cuboctahedron block instead takes the thinner radii generate_stl.py
+# prints it with, because its members run too close together for the
+# defaults; anything fatter fuses the panel into a lump.
 panels = [
     (geiger_cable_dome(n_radial=12, rings=(60.0, 40.0, 20.0),
                        strut_lengths=(20.0, 25.0, 30.0), apex_height=55.0),
@@ -105,8 +109,8 @@ panels = [
      20, -55, 1.2),
     (bistable_double_prism(radius=25.0, bay_height=45.0),
      16, -55, 1.2),
-    (cuboctahedron_tessellation(scale=18.0),
-     22, -50, 1.0),
+    (cuboctahedron_tessellation(scale=60.0),
+     22, -50, 1.0, RADIUS_OVERRIDES["cuboctahedron_tessellation.stl"]),
 ]
 
 fig = plt.figure(figsize=(20, 10), facecolor="white")
@@ -114,9 +118,11 @@ fig = plt.figure(figsize=(20, 10), facecolor="white")
 gs = fig.add_gridspec(2, 8)
 slots = [gs[0, 0:2], gs[0, 2:4], gs[0, 4:6], gs[0, 6:8],
          gs[1, 1:3], gs[1, 3:5], gs[1, 5:7]]
-for slot, (model, elev, azim, member_scale) in zip(slots, panels):
+for slot, panel in zip(slots, panels):
+    model, elev, azim, member_scale = panel[:4]
+    radii = panel[4] if len(panel) > 4 else None
     ax = fig.add_subplot(slot, projection="3d", facecolor="white")
-    draw(ax, model, elev, azim, member_scale)
+    draw(ax, model, elev, azim, member_scale, radii)
 fig.subplots_adjust(left=0.0, right=1.0, top=1.0, bottom=0.0,
                     wspace=0.0, hspace=0.0)
 out = os.path.join(REPO_ROOT, "figures",

@@ -13,9 +13,11 @@ Structures emitted (see ``models/README.md`` for references):
 * ``icosahedron.stl``  - 6-strut tensegrity icosahedron (expanded
                           octahedron); the canonical "spherical" tensegrity
 
-All geometry is authored from first principles (no third-party model
-data) using only the Python standard library, so this generator is
-fully self-contained and free of upstream licensing constraints.
+All geometry is authored from first principles using only the Python
+standard library, with one deliberate exception: the cuboctahedron
+tessellation block is the published Liu et al. (2019) design, read from
+``models/data/liu2019_cuboctahedron_*.csv``.  See ``models/data/README.md``
+for its provenance.
 
 Usage
 -----
@@ -27,6 +29,7 @@ Run from the repository root.
 from __future__ import annotations
 
 import argparse
+import csv
 import math
 import os
 import struct
@@ -873,63 +876,111 @@ def pentagonal_tensegrity_ring(
     return nodes, struts, cables
 
 
+def _load_liu2019_cuboctahedron_block(
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]],
+           List[float]]:
+    """Read the Liu et al. (2019) cuboctahedron block from ``models/data``.
+
+    Returns ``(unit_nodes, struts, cables, prestress)`` with node
+    coordinates in the paper's own units (design-domain vertices at the
+    permutations of ``(+/-1, +/-1, 0)``) and 0-based member indices.
+    ``prestress`` is parallel to ``struts + cables``.
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(here, "data")
+    index: dict = {}
+    unit_nodes: List[Vec3] = []
+    with open(os.path.join(data_dir, "liu2019_cuboctahedron_nodes.csv"),
+              newline="") as handle:
+        for row in csv.DictReader(handle):
+            index[int(row["node"])] = len(unit_nodes)
+            unit_nodes.append((float(row["x"]), float(row["y"]),
+                               float(row["z"])))
+    struts: List[Tuple[int, int]] = []
+    cables: List[Tuple[int, int]] = []
+    strut_forces: List[float] = []
+    cable_forces: List[float] = []
+    with open(os.path.join(data_dir, "liu2019_cuboctahedron_members.csv"),
+              newline="") as handle:
+        for row in csv.DictReader(handle):
+            pair = (index[int(row["node_i"])], index[int(row["node_j"])])
+            if row["kind"] == "strut":
+                struts.append(pair)
+                strut_forces.append(float(row["prestress"]))
+            else:
+                cables.append(pair)
+                cable_forces.append(float(row["prestress"]))
+    return unit_nodes, struts, cables, strut_forces + cable_forces
+
+
+# Closest approach between member centrelines in the paper's units, measured
+# over the published block (see models/data/README.md). They cap how fat the
+# printed members can be: two struts touch once ``2 * strut_radius`` reaches
+# 0.0516 * scale, and a strut swallows a cable once
+# ``strut_radius + cable_radius`` reaches 0.0392 * scale.
+LIU2019_MIN_STRUT_STRUT_CLEARANCE = 0.0516
+LIU2019_MIN_STRUT_CABLE_CLEARANCE = 0.0392
+
+
 def cuboctahedron_tessellation(
-    scale: float = 18.0,
+    scale: float = 60.0,
 ) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
-    """Return (nodes, struts, cables) for the Liu et al. cuboctahedron cell.
+    """Return (nodes, struts, cables) for the Liu et al. cuboctahedron block.
 
-    The 12 vertices of a regular cuboctahedron are the cyclic
-    permutations of ``(+/-1, +/-1, 0)`` (and their permutations); the
-    cell has 24 edges (length sqrt(2)) which we emit as cables, and
-    we add a central node connected to the 12 vertices by 12
-    additional cables (modelling the central tension hub of Liu et
-    al.'s 96-cable / 13-strut tessellation block in a simplified
-    1-block representation).  6 long struts span between opposite
-    vertex pairs (length 2*sqrt(2)) acting as the discontinuous
-    compression skeleton.
+    This is the published Class-1 tensegrity tessellation block on a
+    cuboctahedron design domain: 40 nodes, 13 struts and 96 cables, with
+    a self-balanced prestress state (nodal equilibrium residual 9e-14 as
+    committed).  It tessellates space on the primitive vectors
+    ``(2, 0, 0)``, ``(0, 2, 0)``, ``(0, 0, 2)`` in the paper's units, so
+    ``scale`` is half the edge of the resulting cubic unit cell: the
+    default 60.0 gives a 120 mm cell.
 
-    NB: This is a *simplified single-block representation* of Liu et
-    al.'s 13-strut/96-cable tessellation (which in the original paper
-    is built up by tessellating multiple cuboctahedral cells with
-    shared tendon-network connectivity and 12 prestress states); we
-    emit one cell so it is printable and comparable in scale to the
-    other unit-cell STLs in this directory.
+    The geometry is read from ``models/data/liu2019_cuboctahedron_*.csv``,
+    transcribed from the article's supplementary dataset; that directory's
+    README records the provenance and the checks run against it.  Unlike
+    every other structure in this file, it is therefore not authored from
+    first principles.
+
+    Struts run between *non-adjacent* nodes and none of them passes
+    through the centroid: the design domain carries a spherical
+    restriction zone of radius 0.75 that keeps the middle of the block
+    empty.  An earlier version of this function built its own
+    "simplified" cuboctahedron whose 6 struts were all body diagonals
+    meeting at the origin, which is not a tensegrity at all; that version
+    is what ``models/render_cuboctahedron_diagnostic.py`` renders on the
+    left of its comparison figure.
 
     Reference: Liu, K., Zegard, T., Pratapa, P. P., Paulino, G. H.
     "Unraveling tensegrity tessellations for metamaterials with
     tunable stiffness and bandgaps."  J. Mech. Phys. Solids 131:147-166,
-    2019.
+    2019.  doi:10.1016/j.jmps.2019.05.006
     """
-    raw: List[Vec3] = []
-    for sx in (1.0, -1.0):
-        for sy in (1.0, -1.0):
-            raw.append((sx * 1.0, sy * 1.0, 0.0))
-            raw.append((sx * 1.0, 0.0, sy * 1.0))
-            raw.append((0.0, sx * 1.0, sy * 1.0))
-    nodes: List[Vec3] = [_scale(v, scale) for v in raw]
-    edge_len = math.sqrt(2.0) * scale
-    diag_len = 2.0 * math.sqrt(2.0) * scale
-    tol = 1e-3 * scale
-    cables: List[Tuple[int, int]] = []
-    struts: List[Tuple[int, int]] = []
-    for i in range(len(nodes)):
-        for j in range(i + 1, len(nodes)):
-            d = _norm(_sub(nodes[i], nodes[j]))
-            if abs(d - edge_len) < tol:
-                cables.append((i, j))
-            elif abs(d - diag_len) < tol:
-                struts.append((i, j))
-    # Central tension hub
-    hub = len(nodes)
-    nodes.append((0.0, 0.0, 0.0))
-    for i in range(hub):
-        cables.append((i, hub))
-    return nodes, struts, cables
+    unit_nodes, struts, cables, _ = _load_liu2019_cuboctahedron_block()
+    return [_scale(v, scale) for v in unit_nodes], struts, cables
 
+
+def cuboctahedron_tessellation_prestress() -> List[float]:
+    """Return the published prestress force of each member of the block.
+
+    Ordered as ``struts + cables`` to match
+    :func:`cuboctahedron_tessellation`, and normalised so every strut
+    carries -1 (compression negative, tension positive).
+    """
+    return _load_liu2019_cuboctahedron_block()[3]
 
 # ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
+
+
+# Per-file (strut_radius, cable_radius) in mm, overriding the CLI defaults for
+# structures whose members run too close together to take them.  The
+# cuboctahedron block at scale 60 leaves 3.10 mm between the nearest pair of
+# strut centrelines and 2.35 mm between a strut and a non-incident cable, so
+# the 2.5/1.2 mm defaults would fuse them into a solid lump.
+RADIUS_OVERRIDES = {
+    "cuboctahedron_tessellation.stl": (1.1, 0.9),
+}
 
 
 def main() -> None:
@@ -1006,8 +1057,8 @@ def main() -> None:
             bistable_double_prism(radius=25.0, bay_height=45.0),
         ),
         "cuboctahedron_tessellation.stl": (
-            "Cuboctahedron tensegrity tessellation cell (Liu et al. 2019)",
-            cuboctahedron_tessellation(scale=18.0),
+            "Cuboctahedron tensegrity tessellation block (Liu et al. 2019)",
+            cuboctahedron_tessellation(scale=60.0),
         ),
         "snelson_x_module.stl": (
             "Snelson planar X-module (2 struts, 4 cables)",
@@ -1028,10 +1079,12 @@ def main() -> None:
     }
 
     for filename, (label, (nodes, struts, cables)) in structures.items():
+        radii = RADIUS_OVERRIDES.get(
+            filename, (args.strut_radius, args.cable_radius))
         tris = _build_triangles(
             nodes, struts, cables,
-            strut_radius=args.strut_radius,
-            cable_radius=args.cable_radius,
+            strut_radius=radii[0],
+            cable_radius=radii[1],
             segments=args.segments,
         )
         out_path = os.path.join(args.out_dir, filename)
