@@ -74,10 +74,10 @@
 % --- PDF metadata ---
 \hypersetup{%
   pdfauthor   = {Jeffrey R. Hill and Sterling G. Baird},
-  pdftitle    = {Bayesian Optimization of Multi-Material 3D-Printed Tensegrity
-                 Structures for Energy Absorption},
+  pdftitle    = {Experiment-Driven Bayesian Optimization of the Impact Response
+                 of Multi-Material 3D-Printed Tensegrity-Inspired Structures},
   pdfkeywords = {tensegrity, multi-material 3D printing, Bayesian optimization,
-                 energy absorption, design of experiments},
+                 impact mitigation, design of experiments},
   pdfsubject  = {Manuscript draft for ASME Journal of Mechanical Design},
 }
 
@@ -126,41 +126,41 @@
   email: sterling.baird@byu.edu
 }
 
-\title{Bayesian Optimization of Multi-Material 3D-Printed Tensegrity-Inspired
-       Structures for Energy Absorption}
+\title{Experiment-Driven Bayesian Optimization of the Impact Response of
+       Multi-Material 3D-Printed Tensegrity-Inspired Structures}
 
 % Keywords are printed at the end of the abstract; must precede \end{abstract}.
 \keywords{tensegrity, multi-material 3D printing, Bayesian optimization,
-          energy absorption, design of experiments}
+          impact mitigation, design of experiments}
 
 % -----------------------------------------------------------------------------
 % Abstract -- JMD requires 150--200 words, Latin characters only (no math),
 % structured as background, approach, results, conclusions.
 % -----------------------------------------------------------------------------
 \begin{abstract}
-Tensegrity-inspired architectures combine rigid compression members with a
-network of soft tension elements, yielding lightweight assemblies with
-tunable nonlinear responses that are attractive for impact mitigation in
-aerospace landing structures and related protective applications.
-Multi-material fused-deposition modeling (FDM) of polylactic acid (PLA)
-struts and thermoplastic polyurethane (TPU) tension elements makes it
-possible to fabricate pre-assembled tensegrity-inspired geometries rapidly
-enough to support an experiment-driven design search. We report a
-closed-loop Bayesian optimization (BO) framework in which a fully Bayesian
-Gaussian-process surrogate is trained directly on instrumented drop-tower
-measurements and used to recommend the next batch of designs to print and
-test. A three-strut prism family is parameterized by five continuous
-geometry variables under a constant-mass fairness constraint, and each
-printed specimen is characterized by more than one hundred repeated drops.
-The campaign minimizes two impact objectives: the filtered peak-acceleration
-ratio across the specimen and a mass-weighted score for the rebound
-motion returned to the payload.
-We report the nine-specimen quasi-random seed round, the resulting surrogate
-diagnostics and Pareto set, and the first model-recommended batch, and we
-describe a metal-analog validation protocol that tests whether learned
-design rankings transfer across material systems.
-\todo[inline]{Tighten abstract toward 150--200 words with concrete
-round-2 numerical results once the next batch is tested.}
+Tensegrity-inspired rigid--soft architectures are candidates for impact
+mitigation, but their transmitted-shock response is difficult to predict
+from simulation alone. We developed an experiment-driven Bayesian
+optimization framework for a co-printed polylactic-acid/thermoplastic-%
+polyurethane three-strut-prism family with five geometry variables.
+Candidate geometries were projected to a common solid-CAD mass budget,
+then tested in repeated instrumented drops. The round-1 surrogate used
+physical measurements of the filtered peak-acceleration ratio and a
+provisional mass-weighted rebound score; simulation served only for
+screening. Nine Sobol seed designs and a reference prism were printed.
+Eight articles have completed drop sessions, seven have mapped geometries
+and both optimization responses, and a fully Bayesian sparse-prior
+surrogate with noisy expected hypervolume improvement generated nine
+round-2 designs now in fabrication. Across the eight tested articles, the
+peak-acceleration ratio ranged from 0.893 to 1.062: five amplified peak
+shock and one clearly attenuated it. Printed mass ranged from 18.50 to
+22.04 g among the mapped tested articles, showing that constant solid-CAD
+mass did not ensure constant printed mass. The rebound interpretation
+remains pending video validation. These results establish the first
+recommendation step of the physical optimization campaign, not
+flight-hardware performance; round-2, quasi-static, baseline, and
+metal-analog outcomes remain pending.
+\todo[inline]{Refresh abstract numbers once round-2 outcomes arrive.}
 \end{abstract}
 
 \maketitle
@@ -203,12 +203,13 @@ deitrich2022titan}. Recent work has shown that \emph{tensegrity-inspired}
 unit cells can be directly 3D-printed and exhibit load-limiting plateaus
 under drop-weight impact~\citep{pajunen2019design}, opening a path
 toward additively manufactured architected absorbers. Throughout, we use
-\emph{tensegrity-inspired} to denote printable unit cells that adopt the
-characteristic tensegrity motif (rigid compression members carried by a
-network of pretensioned soft tension elements) while relaxing the strict
-classical requirement that no two compression members touch and that the
-tension members behave as ideal inextensible cables; here the tension elements
-are extruded TPU and the struts may share printed junctions.
+\emph{tensegrity-inspired} for printable cells that borrow the separated
+compression-member and tension-network geometry of tensegrity while
+relaxing defining mechanical conditions of classical tensegrity. In the
+present specimens, the TPU tension elements are extensible, the PLA struts
+may share printed junctions, and no pretension is activated or measured.
+We therefore do not claim classical tensegrity, prestress-stabilized
+behavior, or equivalence to an ideal cable--strut prism.
 
 Multi-material fused-deposition modeling (FDM) that pairs a rigid polymer
 such as polylactic acid (PLA) with a soft, rate-dependent elastomer such as
@@ -238,13 +239,20 @@ AlphaGo~\citep{silver2016mastering} to sustainable
 concrete~\citep{ament2023sustainable}, autonomous discovery of organic
 laser emitters~\citep{striethkalthoff2024delocalized}, and architected
 materials~\citep{mo2023accelerated, wang2022bayesian, lee2023bayesian,
-zhang2021bo}. The gap this paper closes is the combination: Pajunen
+zhang2021bo}. The gap this paper addresses is the combination: Pajunen
 et~al.~\cite{pajunen2019design} printed tensegrity-inspired cells under
 a single fabrication condition with no optimization loop, and Mo
 et~al.~\cite{mo2023accelerated} closed a multifidelity BO loop entirely
-in simulation; to our knowledge no prior study closes a BO loop over
-co-printed multi-material tensegrity-inspired hardware using physical
-impact measurements as the sole ground truth.
+in simulation. Among the studies reviewed here, prior work separately
+demonstrates physical impact testing of printed tensegrity-inspired
+structures, rigid--flexible additive fabrication, and Bayesian
+optimization of architected materials; we found no prior report
+combining these elements in a BO campaign over co-printed
+multi-material tensegrity-inspired hardware with physical impact
+measurements as the optimization ground truth. In the present campaign,
+the completed seed measurements have produced the first
+model-recommended batch; closure of a full
+recommend--fabricate--measure--update cycle awaits round-2 testing.
 
 We emphasize one framing point at the outset: the printed PLA/TPU
 $T_3$ prism studied here is a testbed for developing and validating
@@ -295,14 +303,16 @@ agnostic to the eventual application scale.
     (Section~\ref{sec:methods:validation}).
 \end{enumerate}
 
-The present study is deliberately scoped to single-cell, fixed-topology
-$T_3$-prism specimens under \emph{axial} quasi-static and drop-weight
-loading. Off-axis and combined loading, multi-hit and cyclic
-durability, and landing-attitude variability are outside the scope of
-this paper and are identified as future work
-(Section~\ref{sec:discussion}); the novelty and generality claims below
-are correspondingly scoped to this restricted prototype design space
-rather than to tensegrity-inspired absorbers in general.
+The completed evidence in this paper is restricted to single-cell,
+fixed-topology $T_3$-prism-inspired specimens under one \emph{axial}
+drop condition; the planned quasi-static extension is reported
+separately as pending. Off-axis and combined loading, controlled
+fatigue and damage-accumulation testing, multi-cell behavior, and
+landing-attitude variability are outside the present evidence base and
+are identified as future work (Section~\ref{sec:discussion}); the
+novelty and generality claims below are correspondingly scoped to this
+restricted prototype design space rather than to tensegrity-inspired
+absorbers in general.
 
 \begin{figure*}[t]
   \centering
@@ -364,37 +374,48 @@ metamaterials~\cite{intrigila2022fabricationandexperimental} as the closest
 published analog, confirms that this architecture class also responds favorably
 under impact and quasi-static loading, although neither study employed
 multi-material FDM or closed-loop design optimization.
-Table~\ref{tab:novelty} situates the present work against the three
-most closely related prior efforts, making explicit that the
-combination of a multi-material FDM tensegrity-inspired architecture
-with an \emph{experiment}-driven optimization loop is, to our
-knowledge, not addressed by any single prior study.
+Table~\ref{tab:novelty} situates the present work against selected
+prior efforts spanning the three elements combined here (impact-tested
+printed tensegrity-inspired structures, rigid--flexible fabrication,
+and BO of architected materials), making explicit that, among the
+studies reviewed, no single prior study combines a multi-material FDM
+tensegrity-inspired architecture with an \emph{experiment}-driven
+optimization loop.
 
 \begin{table*}[t]
   \centering
-  \caption{Positioning of this work against the most closely related
-    prior efforts. The present study is distinguished by combining a
-    multi-material (PLA/TPU) FDM tensegrity-inspired architecture with a
-    closed-loop optimizer trained directly on physical measurements
-    rather than simulations or a single fabrication condition.}
+  \caption{Positioning of this work against selected prior efforts
+    spanning the elements combined here. The present campaign uses
+    physical drop measurements of peak-shock transmission ($t_{180}$)
+    and a provisional mass-weighted rebound score ($E_{\mathrm{reb}}$)
+    as its BO responses; it does not optimize specific energy
+    absorption or crush energy.}
   \label{tab:novelty}
-  \small
-  \begin{tabular}{@{}lllll@{}}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}llllll@{}}
     \toprule
-    Study & Architecture & Fabrication & Optimization & Ground truth \\
+    Study & Architecture & Fabrication & Optimization & Response optimized & Ground truth \\
     \midrule
     Pajunen et~al.\ 2019~\cite{pajunen2019design}
-      & Truncated-tetrahedral & Single-material & None & Experiment \\
-      & tensegrity-inspired & 3D print & (single condition) & (drop impact) \\[2pt]
+      & Truncated-tetrahedral & Single-material & None & n/a & Experiment \\
+      & tensegrity-inspired & 3D print & (single condition) & & (drop impact) \\[2pt]
     Intrigila et~al.\ 2022~\cite{intrigila2022fabricationandexperimental}
-      & Bistable tensegrity-like & Single-material & None & Experiment \\
-      & lattice unit cell & 3D print & & (quasi-static/impact) \\[2pt]
+      & Bistable tensegrity-like & Single-material & None & n/a & Experiment \\
+      & lattice unit cell & 3D print & & & (quasi-static compr.) \\[2pt]
     Mo et~al.\ 2023~\cite{mo2023accelerated}
-      & Architected lattices & n/a (simulation) & Multifidelity BO & Simulation \\
-      & & & & (+ sparse high-fid.) \\[2pt]
+      & Architected lattices & n/a (simulation) & Multifidelity BO & Simulated response & Simulation \\
+      & & & & metric & (+ sparse high-fid.) \\[2pt]
+    Almeida 2025~\cite{almeida2025highstrainrate};
+      & Tensegrity-inspired & Additive & None reported & n/a & Experiment \\
+    \ \ Davami 2025~\cite{davami2025dynamicanalysis}
+      & structures & manufacturing & & & (high-rate/dynamic) \\[2pt]
+    Wang et~al.\ 2026~\cite{wang2026integrated}
+      & Tensegrity-inspired & Integrated & None reported & n/a & Physical \\
+      & rigid--flexible metamat. & dual-material & & & validation \\[2pt]
     \textbf{This work}
-      & Tensegrity-inspired & Multi-material & Experiment-driven & Physical \\
-      & $T_3$ prism (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & experiment \\
+      & Tensegrity-inspired & Multi-material & Experiment-driven & $t_{180}$; provisional & Physical \\
+      & $T_3$-prism cell (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & $E_{\mathrm{reb}}$ & experiment \\
     \bottomrule
   \end{tabular}
 \end{table*}
@@ -518,8 +539,8 @@ finalized; the connectivity-topology categorical encoding is deferred
 until that variable is activated beyond the $T_3$ prism.}
 
 \paragraph{Working prototype} The first instance of this family used
-to validate the fabrication and test pipeline is a three-strut
-($T_3$) tensegrity prism scaled to a $\sim$50\,mm bounding box. As
+to validate the fabrication and test pipeline is a three-strut,
+$T_3$-prism-inspired cell scaled to a $\sim$50\,mm bounding box. As
 implemented in the BO harness, this working prototype exposes five
 continuous design variables (base radius $R$, cell height $H$, twist
 angle $\theta$, a single strut diameter $d_s$, and a single cable
@@ -811,12 +832,13 @@ with the per-drop scatter quoted as one standard deviation; the
 standard error of the mean is what enters the surrogate's noise model
 (Section~\ref{sec:methods:bo}):
 \begin{equation}
-  t_{180} \;=\; \frac{\max_t\,\lVert \mathbf{a}_{\mathrm{top}}(t)\rVert_{\mathrm{CFC180}}}
-                     {\max_t\,\lvert a_{\mathrm{base}}(t)\rvert_{\mathrm{CFC180}}},
-  \qquad
-  E_{\mathrm{reb}} \;=\; e_{\mathrm{reb}}\, m\, g\, h,
-  \quad
-  e_{\mathrm{reb}} \;=\; \frac{g\, t_{\mathrm{second}}}{2\,\Delta v},
+  \begin{aligned}
+    t_{180} &\;=\; \frac{\max_t\,\lVert \mathbf{a}_{\mathrm{top}}(t)\rVert_{\mathrm{CFC180}}}
+                        {\max_t\,\lvert a_{\mathrm{base}}(t)\rvert_{\mathrm{CFC180}}},\\
+    E_{\mathrm{reb}} &\;=\; e_{\mathrm{reb}}\, m\, g\, h,
+    \qquad
+    e_{\mathrm{reb}} \;=\; \frac{g\, t_{\mathrm{second}}}{2\,\Delta v},
+  \end{aligned}
   \label{eq:objectives}
 \end{equation}
 where $t_{180}$ is the CFC-180 \emph{filtered peak-acceleration
@@ -897,8 +919,9 @@ of scope for the present axial-impact study.
     (SAE~J211 CFC-180 filtered~\citep{saej211}), with event-based phase shading and numbered
     markers keyed to the schematic frames (b)--(d); (a2) cumulative-impulse
     subpanel showing the two traces transfer the same mass-normalized $\Delta v$,
-    so the lower tensegrity peak reflects temporal redistribution rather than
-    inconsistent loading; (e) the internal-anchor joint load path. Curves are
+    so the lower top-vertex peak of the tensegrity-inspired specimen is
+    consistent with temporal redistribution under matched mass-normalized
+    velocity change; (e) the internal-anchor joint load path. Curves are
     synthetic and impulse-consistent (anchored to a peak from an early
     commissioning-era capture, which is why the amplitude differs from the
     campaign values in Table~\ref{tab:seed-results}); to be regenerated from
@@ -1371,11 +1394,13 @@ shrink-on-treatment routes) is an open direction we deliberately
 scope out of the present campaign.
 
 \paragraph{Practical considerations and path forward} TPU-PLA
-interface durability under repeated impact (hundred-drop sessions
-produced no joint failures, an encouraging if unquantified signal),
-sensitivity to print-process covariates (the print key logs defects,
-humidity, and the mid-batch nozzle change for exactly this purpose),
-and transfer to other material pairs remain open. The path forward
+interface durability under repeated impact remains open: no joint
+failed during the repeated-drop measurement sessions, but because
+those sessions were not designed as controlled fatigue tests, the
+observation does not establish interface durability. Sensitivity to
+print-process covariates (the print key logs defects, humidity, and
+the mid-batch nozzle change for exactly this purpose) and transfer to
+other material pairs likewise remain open. The path forward
 includes the quasi-static crush characterization
 (Section~\ref{sec:methods:testing}), pretension activation, tiled
 multi-cell absorbers and lattices~\citep{sabounizawadzka2024experimental},
@@ -1433,10 +1458,11 @@ repeatability, one design crossed into genuine attenuation, and the
 first model-recommended batch of nine designs has been generated and
 sent to fabrication. \todo{Add the round-2 headline (predicted versus
 measured, hypervolume gain over the budget-matched baseline) once the
-batch is tested.} The approach is broadly applicable to architected
-absorbers whose constitutive response is difficult to calibrate from
-first principles and where physical experiments, rather than
-simulations, are the natural ground truth.
+batch is tested.} The workflow is a candidate for other experimentally
+evaluated architected structures whose constitutive response is
+difficult to calibrate from first principles, but transfer beyond this
+printer, material pair, topology, and axial impact condition remains
+untested.
 
 % =============================================================================
 % Back matter
