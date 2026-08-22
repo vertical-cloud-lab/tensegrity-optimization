@@ -44,12 +44,12 @@
     {\footnotesize Bambu Lab H2D; TPU drying}};
   \node[stage=green, right=of print] (post) {%
     \nodephoto{printed-specimen.jpg}\\[2pt]
-    \textbf{Post-Processing \& Pretensioning}\\[1pt]
-    {\footnotesize support removal, tension tuning}};
+    \textbf{Support Removal \& Inspection}\\[1pt]
+    {\footnotesize manual support removal, defect logging, weighing}};
   \node[stage=red, right=of post] (testing) {%
     \nodephoto{drop-tower.jpg}\\[2pt]
-    \textbf{Dynamic \& Static Testing}\\[1pt]
-    {\footnotesize quasi-static compression; Lansmont M23 shock/cushion impact}};
+    \textbf{Drop-Tower Testing}\\[1pt]
+    {\footnotesize Lansmont M23 shock/cushion impact (quasi-static compression planned)}};
 
   \draw[arrow] (params) -- (cad);
   \draw[arrow] (cad) -- (slicing);

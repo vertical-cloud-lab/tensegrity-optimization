@@ -235,11 +235,11 @@ transmitted across the structure and the energy returned to the
 protected payload) are noisy and partially correlated. Bayesian
 optimization (BO) is well-matched to this regime, having driven
 breakthroughs from hyperparameter tuning of
-AlphaGo~\citep{silver2016mastering} to sustainable
+AlphaGo~\citep{chen2018bayesianoptimizationalphago} to sustainable
 concrete~\citep{ament2023sustainable}, autonomous discovery of organic
 laser emitters~\citep{striethkalthoff2024delocalized}, and architected
-materials~\citep{mo2023accelerated, wang2022bayesian, lee2023bayesian,
-zhang2021bo}. The gap this paper addresses is the combination: Pajunen
+materials~\citep{mo2023accelerated, zhang2021bo}.
+The gap this paper addresses is the combination: Pajunen
 et~al.~\cite{pajunen2019design} printed tensegrity-inspired cells under
 a single fabrication condition with no optimization loop, and Mo
 et~al.~\cite{mo2023accelerated} closed a multifidelity BO loop entirely
@@ -269,8 +269,9 @@ agnostic to the eventual application scale.
     TPU tension elements that are anchored \emph{inside} the ends of
     each PLA strut (the strut acting as a rigid cage in which the
     cables meeting at a given end join before exiting through discrete
-    outlets), a joint geometry intended to improve cyclic interface
-    durability, to be verified by pull-out and fatigue testing.
+    outlets). This study reports the resulting printable joint
+    geometry; pull-out strength, fatigue life, and any durability
+    advantage over exposed interfaces remain untested.
     Candidate designs are compared fairly through a constant-mass
     projection that rescales every geometry to a common material
     budget before printing (Section~\ref{sec:methods:parameterization}).
@@ -292,15 +293,17 @@ agnostic to the eventual application scale.
     (Sections~\ref{sec:methods:bo} and~\ref{sec:results}).
   \item A physics-based simulation ladder (rigid-body through
     finite-element tiers) used for screening and hypothesis
-    generation alongside the physical loop, with its predictive reach
-    and blind spots quantified against the measured seed round
-    (Section~\ref{sec:methods:simulation}).
-  \item A pre-registered metal-analog validation protocol
+    generation alongside the physical loop, with preliminary
+    agreement and documented blind spots assessed against the measured
+    seed round (Section~\ref{sec:methods:simulation}).
+  \item A planned exploratory metal-analog comparison
     (hollow aluminum struts with threaded stainless-steel cables)
-    that tests whether the learned design ranking transfers across
+    that probes whether the learned design ranking transfers across
     material systems, spanning predicted worst, mediocre, and best
-    designs rather than only the optimum
-    (Section~\ref{sec:methods:validation}).
+    designs rather than only the optimum; construction, mass-matching,
+    and replication details remain to be fixed before the comparison
+    can distinguish geometric rank transfer from material-system
+    confounds (Section~\ref{sec:methods:validation}).
 \end{enumerate}
 
 The completed evidence in this paper is restricted to single-cell,
@@ -453,18 +456,15 @@ additive-manufacturability, tunability, and impact relevance of the
 architecture class adopted here, none combining multi-material FDM with an
 experiment-driven optimization loop.
 Recent multi-material PLA/TPU sandwich and layered
-composites~\citep{arifvianto2022mechanicalpropertiesof,
-ruwais2025mechanicalperformanceof} report quantitative bounds on
+composites~\citep{arifvianto2022mechanicalpropertiesof} report
+quantitative bounds on
 stiffness, strength, and energy absorption for the same PLA--TPU pair
 used here, while FDM PLA fatigue
 data~\citep{ezeh2018onthefatigue, vanaei2021multiscaledamageanalysis}
 inform conservative design bounds for the rigid struts.
 Architected multi-material lattices with co-printed compliant skins
 have been explicitly designed for high specific energy
-absorption~\citep{yavas2022designandfabrication}, with FDM-specific
-multimaterial interface adhesion (notably TPU bonded to rigid
-co-printed substrates) characterized
-in~\citep{caminero2019printingparameters}; recent surveys catalogue the
+absorption~\citep{yavas2022designandfabrication}; recent surveys catalogue the
 rapidly expanding additively manufactured polymeric energy-absorption
 literature~\citep{bustihan2026recentadvancesin,
 liu2026threedimensionalprintedlattice}. \todo{Add a short paragraph on
@@ -491,8 +491,8 @@ continuous $T_3$-prism prototype studied here, have dedicated
 treatments in BOCS~\citep{baptista2018bocs} and the
 one-hot-with-rounded-kernel construction
 of~\citep{garridomerchan2020dealingwithcategorical}. BO has been
-applied to mechanical metamaterial and structural
-design~\citep{wang2022bayesian, lee2023bayesian, mo2023accelerated}
+applied to architected-material
+design~\citep{mo2023accelerated}
 and to additive manufacturing~\citep{zhang2021bo}.
 Mo et~al.~\cite{mo2023accelerated} in
 particular established a multifidelity BO framework for architected
@@ -743,32 +743,44 @@ objectives.
 
 \begin{table}[ht]
   \centering
-  \caption{Multi-material print parameters on the Bambu Lab~H2D. Cells marked
-    \emph{TBD} are pending confirmation; the reporting structure follows the
-    methods section of Ye et~al.~\cite{ye2023multimaterial}.}
+  \caption{Multi-material print parameters on the Bambu Lab~H2D,
+    transcribed from the archived as-printed Bambu Studio project
+    (\texttt{t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.as-printed.3mf},
+    Bambu Studio 2.7.1). Filaments are Bambu Lab PLA Basic (struts,
+    support material) and Bambu Lab TPU~85A (tendons); the print
+    profile is ``0.30\,mm Standard @BBL H2D 0.6 nozzle.'' The
+    reporting structure follows the methods section of Ye
+    et~al.~\cite{ye2023multimaterial}.}
   \label{tab:print-params}
   \small
-  \setlength{\tabcolsep}{4pt}
+  \setlength{\tabcolsep}{3pt}
   \begin{tabular}{@{}lcc@{}}
     \toprule
     Parameter & PLA (struts) & TPU 85A (tendons) \\
     \midrule
-    Nozzle                             & \SI{0.4}{mm} & \SI{0.6}{mm} high-flow \\
-    Nozzle temperature (\textdegree C) & \emph{TBD} & \emph{TBD} \\
-    Bed temperature (\textdegree C)    & \multicolumn{2}{c}{\emph{TBD}} \\
-    Layer height (mm)                  & \multicolumn{2}{c}{\emph{TBD}} \\
+    Nozzle                             & \SI{0.6}{mm} & 0.4 then \SI{0.6}{mm} HF\textsuperscript{a} \\
+    Nozzle temperature (\textdegree C) & 220 & 220 \\
+    Bed temperature, profile (\textdegree C) & 55 & 35 \\
+    Layer height / line width (mm)     & \multicolumn{2}{c}{0.30 / 0.62} \\
     Infill                             & 15\% grid, 2 walls & near-solid \\
+    Outer / inner wall speed (mm/s)    & \multicolumn{2}{c}{200 / 300 (profile)} \\
     Filament drying                    & n/a & dry box, $\sim$8\% RH \\
     Build-plate type                   & \multicolumn{2}{c}{Textured PEI} \\
     Build orientation                  & \multicolumn{2}{c}{Vertical} \\
-    Supports                           & \multicolumn{2}{c}{Manual painted PLA edge supports} \\
+    Supports                           & \multicolumn{2}{c}{Manual painted tree supports, PLA} \\
     \bottomrule
-  \end{tabular}
+  \end{tabular}\\[2pt]
+  {\footnotesize \textsuperscript{a}The TPU side ran a standard
+  \SI{0.4}{mm} nozzle until the mid-batch clog, then a dedicated
+  high-flow (HF) \SI{0.6}{mm} nozzle; affected articles are flagged in
+  the print key.}
 \end{table}%
-\todo{@achris0520 to confirm the exact PLA and TPU nozzle and bed
-  temperatures, layer height, and print speeds used on the Bambu Lab~H2D;
-  the infill values are the inherited slicer-profile defaults and should be
-  confirmed against the archived \texttt{.3mf} project.}
+\todo{@achris0520 to confirm the physical nozzle hardware (the
+  archived as-printed project records \SI{0.6}{mm} on both extruders,
+  consistent with the post-fix state; the TPU side ran \SI{0.4}{mm}
+  before the mid-batch nozzle change logged in the print key) and to
+  supply filament lot numbers and drying duration, which the slicer
+  archive does not record.}
 
 \begin{figure*}[t]
   \centering
@@ -884,9 +896,12 @@ dependence among drops may also make
 $s/\sqrt{n_{\mathrm{drops}}}$ optimistic. For the single article
 measured in two sessions, the two session means differed by 0.13\%;
 this isolated re-test does not estimate cross-session
-reproducibility. Figure~\ref{fig:dropcurve} illustrates the mechanism-oriented
-presentation we adopt for the processed traces, linking features of the
-measured signal to the structural events that produce them.
+reproducibility. A mechanism-oriented trace figure (processed
+deceleration response with event markers keyed to synchronized video
+frames) will be generated from archived campaign captures once the
+event labels can be supported by synchronized measurements; no such
+figure is shown here because none of the required event
+synchronization has yet been performed.
 
 \paragraph{Planned quasi-static extension} The drop test loads the
 specimens in their elastic regime (the crush lasts 1 to \SI{3}{ms} and
@@ -914,26 +929,6 @@ Slip resistance and traction at the specimen-to-floor interface,
 governed by the tip geometry rather than the internal architecture,
 follow ISO 11334-4~\citep{iso11334-4} for walking-aid tips and are out
 of scope for the present axial-impact study.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{../figures/examples/mechanistic-data-figure-example.pdf}
-  \caption{\emph{Illustrative example (synthetic data).} Template for the
-    mechanism-oriented drop-test figures planned for the Results: (a) processed
-    deceleration response of a rigid control vs.\ a tensegrity specimen
-    (SAE~J211 CFC-180 filtered~\citep{saej211}), with event-based phase shading and numbered
-    markers keyed to the schematic frames (b)--(d); (a2) cumulative-impulse
-    subpanel showing the two traces transfer the same mass-normalized $\Delta v$,
-    so the lower top-vertex peak of the tensegrity-inspired specimen is
-    consistent with temporal redistribution under matched mass-normalized
-    velocity change; (e) the internal-anchor joint load path. Curves are
-    synthetic and impulse-consistent (anchored to a peak from an early
-    commissioning-era capture, which is why the amplitude differs from the
-    campaign values in Table~\ref{tab:seed-results}); to be regenerated from
-    the campaign captures. Generated by
-    \texttt{scripts/figures/mechanistic\_data\_figure\_example.py}.}
-  \label{fig:dropcurve}
-\end{figure*}
 
 \paragraph{Complementary data streams} High-speed video
 (\SI{959}{fps}, three clips per specimen) supplements the
@@ -1072,8 +1067,9 @@ identically. Its honest scorecard against the measured seed round is
 mixed and is reported as such: an intensive volumetric
 energy-absorption score computed at Tier~C showed a strong
 exploratory in-sample rank association with the measured $t_{180}$
-(Spearman $\rho = -0.93$ across the seven mapped articles, exact
-two-sided permutation $p \approx 0.0067$; because the metric was
+(Spearman $\rho_s = -0.929$ across the seven mapped articles; for
+seven untied ranks the exact two-sided permutation $p = 0.0028$;
+because the metric was
 evaluated on the seed set and candidate-metric selection was not
 multiplicity-adjusted, this is hypothesis-generating rather than
 validated predictive performance), yet the
@@ -1081,10 +1077,13 @@ ladder's own simulated $t_{180}$ correlates only weakly with the
 measurement ($\rho \approx 0.5$), rigid-strut models cannot reproduce
 the observed amplification ($t_{180} > 1$ on five of eight measured
 articles), and simulated restitution is design-invariant where the
-measured rebound is not. We therefore use the ladder to prioritize
-candidates and probe mechanisms (for example, the mass-confound
-diagnosis in Section~\ref{sec:discussion}) while keeping every
-surrogate observation physical. Full engine benchmarks and the
+measured rebound is not. We therefore use the ladder for
+computational screening and post hoc mechanism hypotheses (for
+example, the mass-confound
+diagnosis in Section~\ref{sec:discussion}). Until the cross-metric
+association is tested prospectively, simulation does not determine
+acquisition values or candidate priority, and every surrogate
+observation remains physical. Full engine benchmarks and the
 simulation-side BO study, in which the same acquisition pipeline run
 on the Tier-C evaluator reaches 97\% of an exhaustively computed
 reference hypervolume while random and space-filling baselines reach
@@ -1105,24 +1104,31 @@ surrogate predicts to be \emph{worst}-performing, a few
 \emph{mediocre}, and a few \emph{best}-performing are each built in
 both material systems. Comparing the measured ordering of the
 PLA/TPU specimens against their hollow-aluminum/stainless-steel
-counterparts tests whether both systems preserve the same
-rank ordering of energy-absorption performance, which would indicate
-that the optimization transfers across material systems rather than
-overfitting to the printed polymers. We treat this as a
-\emph{stringent, exploratory} transfer test rather than a presumed
-one-to-one validation: the deformation modes, joint compliance,
+counterparts probes whether both systems preserve the same
+rank ordering of impact performance. We treat this as a
+\emph{planned, exploratory} comparison rather than a preregistered
+validation: the deformation modes, joint compliance,
 friction, pretension behavior, and strain-rate sensitivity all differ
 between the PLA/TPU and aluminum/steel systems, so agreement is not
-expected a priori. The rank-preservation criterion is fixed in advance
-as the Spearman rank-correlation coefficient $\rho_s$ between the two
+expected a priori, and the protocol details that would let the
+comparison distinguish geometric rank transfer from material-system
+and mass confounds (aluminum alloy and temper, tube wall thickness,
+cable construction, joint hardware and torque, article and payload
+masses, replicate count, and tie-handling rules) remain to be fixed
+and will be tabulated before any metal article is built. The intended
+rank statistic is the Spearman rank-correlation coefficient $\rho_s$
+between the two
 material systems' orderings of the primary campaign metric ($t_{180}$
-under the identical drop protocol), with the rebound energy
+under the identical drop protocol), reported with an exact permutation
+test, with the provisional rebound score
 $E_{\mathrm{reb}}$ and, once the quasi-static extension runs, SEA
-reported as secondary rankings; $\rho_s$ near unity would support
-cross-system transfer of the learned design ranking.
-Table~\ref{tab:metal-validation} reports the planned rank-ordering
-comparison and Fig.~\ref{fig:metal-validation} shows the assembled
-metal-analog and printed-polymer specimens for each performance tier.
+reported as secondary rankings. Rank agreement would be preliminary
+evidence consistent with transfer; disagreement would not isolate
+which material or joint difference caused the change.
+The planned reporting format is specified in
+Table~\ref{tab:metal-validation}; the table entries and the specimen
+photographs of Fig.~\ref{fig:metal-validation} will be added after
+fabrication and testing.
 
 \begin{table}[ht]
   \centering
@@ -1131,10 +1137,11 @@ metal-analog and printed-polymer specimens for each performance tier.
     worst-, mid-, and best-performing, each fabricated as a printed
     PLA/TPU specimen and as a hollow-aluminum-rod / stainless-steel-cable
     metal analog. Entries record the measured performance metric
-    ($t_{180}$ under the identical drop protocol, with rebound energy
-    secondary) and the resulting rank within each material system;
-    agreement of the two rankings indicates the optimization transfers
-    across material systems.}
+    ($t_{180}$ under the identical drop protocol, with the provisional
+    rebound score secondary) and the resulting rank within each
+    material system; rank agreement would be preliminary evidence
+    consistent with transfer, while disagreement would not isolate
+    which material or joint difference caused the change.}
   \label{tab:metal-validation}
   \begin{tabular}{@{}llcc@{}}
     \toprule
@@ -1254,16 +1261,26 @@ constant-mass box spans aspect ratio, member sizing, and twist.
 \subsection{Round-1 Surrogate, Pareto Set, and Recommended Batch}
 \label{sec:results:round1}
 
-Figure~\ref{fig:pareto} shows the measured objective space, the
-non-dominated set, and the model-recommended round-2 batch at its
-posterior-mean predictions. Pareto membership is evaluated over the
+Figure~\ref{fig:pareto} shows the measured objective space and the
+non-dominated set. Pareto membership is evaluated over the
 seven articles with both objectives; amdjwm is omitted because its
 missing weighed mass prevents computing $E_{\mathrm{reb}}$. The
 observed Pareto set comprises three articles (6lhxfy, 6nheas, and the
-reference prism bpx68c). The nine
-recommended designs (Ax trials 10 to 18) concentrate in the
-low-$t_{180}$ region near and beyond the current best attenuator;
-they have been sliced and sent to the printer, and their measured
+reference prism bpx68c). Two model-recommended sets exist in the
+record and must not be conflated. The batch physically sliced and
+sent to the printer (nine designs, Ax trials 10 to 18) was generated
+under the seed round's constant-solid-mass projection with the
+mass-aware objectives; a subsequently regenerated set applies the
+constant-printed-mass projection described in the Supplementary
+Information and is the round-3 candidate list. Both are archived with
+this manuscript
+(\texttt{round2-as-printed-solid-mass-projection.csv} and
+\texttt{round3-candidate-constant-printed-mass.csv});
+Fig.~\ref{fig:pareto}'s orange diamonds plot the regenerated
+constant-printed-mass set at its posterior-mean predictions. The
+recommended designs concentrate in the
+low-$t_{180}$ region near and beyond the current best attenuator, and
+the printed batch's measured
 outcomes will populate the predicted-versus-measured comparison in
 the next revision. The printability screens of
 Section~\ref{sec:methods:parameterization} are diagnostic flags
@@ -1282,8 +1299,14 @@ defects).
     at their stabilized means; amdjwm is omitted because its weighed
     mass, and therefore $E_{\mathrm{reb}}$, is unavailable. The blue
     markers and line are the observed Pareto front; orange diamonds are
-    the nine model-recommended round-2 designs at their posterior-mean
-    predictions. Both axes improve downward.}
+    the nine designs of the \emph{regenerated} constant-printed-mass
+    recommendation set (the round-3 candidate list,
+    \texttt{round3-candidate-constant-printed-mass.csv}) at their
+    posterior-mean predictions; the batch physically on the printer is
+    the earlier solid-mass-projection set archived alongside it. The
+    vertical-axis label ``rebound energy'' denotes the provisional
+    mass-weighted rebound score $E_{\mathrm{reb}}$ of
+    Eq.~\eqref{eq:objectives}. Both axes improve downward.}
   \label{fig:pareto}
 \end{figure*}
 

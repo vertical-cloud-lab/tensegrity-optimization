@@ -57,11 +57,17 @@ Full results, renders, and the Phase-3/Phase-4 design reviews are documented in
 
 \begin{figure}[ht]
   \centering
-  \fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering\itshape
-    Placeholder: joint-design variants and the selected dovetail/anchor-bulb
-    junction (import figures from PR~\#39 / PR~\#35).}}
-  \caption{Five candidate strut-to-cable joint geometries and the
-    captive-TPU-core dovetail junction selected for the working prototype.}
+  \includegraphics[width=\linewidth]{../figures/joints/all_iso_montage.png}\\[2pt]
+  \includegraphics[width=\linewidth]{../figures/joints/all_section_montage.png}
+  \caption{Five candidate strut-to-cable joint geometries from the
+    OpenSCAD joint study (left to right: A anchor-bulb, B dovetail,
+    C TPU-sleeve overmold, D eyelet-loop, E TPU-rebar; top row
+    isometric, bottom row section views). The study renders use the
+    PETG (orange) + TPU (cyan) material pair under which the joint
+    family was first developed; the working prototype adapts the
+    selected dovetail (B) with an anchor-bulb (A) backup to the
+    PLA/TPU pair of the main text, with the captive TPU core routed
+    inside the PLA shell.}
   \label{fig:si-joints}
 \end{figure}
 
@@ -191,13 +197,42 @@ peaks need not be simultaneous. The baseline is estimated from the record
 tail (at healthy tower speed the mat-contact foot begins before the
 \SI{2}{ms} pre-trigger window). $\Delta v$ is the integral of the baselined
 base channel over the impact pulse and doubles as the rig-health gate.
-Drops are discarded per the warm-up rule; remaining per-capture exclusions,
-the second-contact detector's threshold and search window, the exact
-window bounds and filter-initialization choices, and the ``stabilized
-mean'' convention are defined in the campaign analysis code, whose
-archival release with a version tag is a declared submission gate; they
-are summarized here rather than restated numerically to avoid divergence
-from the code of record.
+Drops are discarded per the warm-up rule. Table~\ref{tab:si-processing}
+collects the operational analysis parameters in one place: values known
+from the protocol are stated numerically, and the remaining thresholds
+are to be transcribed verbatim from the version-tagged campaign analysis
+code at its archival release (a declared submission gate), rather than
+paraphrased here at the risk of diverging from the code of record.
+
+\begin{table}[ht]
+  \centering
+  \caption{Operational analysis parameters for the drop-tower pipeline.
+    ``Code of record'' marks values to be transcribed from the
+    version-tagged analysis release before submission.}
+  \label{tab:si-processing}
+  \small
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Parameter & Value \\
+    \midrule
+    Drop height & \SI{60}{in} (\SI{1.524}{m}) \\
+    Sample rate / record / pre-trigger & \SI{1.25}{MHz} / \SI{100}{ms} / \SI{2}{ms} \\
+    Trigger & \SI{150}{G} on the base channel \\
+    Reporting filter class & CFC-180 (SAE J211/1), two-pass corner corrected \\
+    Diagnostic filter class & CFC-1000 \\
+    Peak-search window & $\approx$\SI{1.5}{ms} from first contact \\
+    Baseline estimate & record tail \\
+    Warm-up exclusion & first 2 drops per session \\
+    Valid captures per session & 101 (103 for autv5r) \\
+    Rig-health gate & $\Delta v$ from baselined base channel \\
+    Ringdown fit gate & $r^2 \ge 0.85$ (exponential fit) \\
+    Second-contact threshold and window & code of record \\
+    Per-capture exclusion rules & code of record \\
+    Stabilized-mean convention & code of record \\
+    Filter initialization / boundary handling & code of record \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \paragraph{Rig health and repair history.} Rig health is gated on the impact
 velocity change $\Delta v$ recovered from the base channel; over an
@@ -215,8 +250,9 @@ contributes over 800 clean captures to date.
 evolved through a measurability review
 (\href{\repo/pull/97}{PR~\#97}): per-specimen crush energy in joules is not
 recoverable from this rig (no falling-mass or displacement channel, and the
-specimens stay elastic), which is why the campaign objectives are the
-filtered peak-acceleration ratio and the rebound energy, with quasi-static
+specimens stay elastic), which is why the campaign responses are the
+filtered peak-acceleration ratio and a provisional mass-weighted
+rebound-timing score, with quasi-static
 crush metrics deferred to a load-frame campaign. A pre-registered
 adversarial review of the objective choices (Edison ANALYSIS task
 \texttt{3e398131}, archived in the repository) subsequently recommended
@@ -281,7 +317,8 @@ design-invariant where the measured rebound is not. Against the measured
 seed round ($n=7$ mapped articles), an intensive volumetric
 energy-absorption score computed at Tier~C showed a strong exploratory
 in-sample rank association with measured $t_{180}$ (Spearman
-$\rho = -0.93$, exact two-sided permutation $p \approx 0.0067$;
+$\rho_s = -0.929$; for seven untied ranks the exact two-sided
+permutation $p = 0.0028$;
 hypothesis-generating rather than validated prediction, since the metric
 was evaluated on the seed set without multiplicity adjustment), while the
 ladder's own simulated $t_{180}$ reaches only $\rho \approx 0.5$.
@@ -307,12 +344,13 @@ only confirming the optimum, the selected designs deliberately span the
 predicted performance range: representatives the surrogate predicts to be
 worst-, mid-, and best-performing are each built in both material systems
 and characterized under the identical drop protocol of
-Section~\ref{si:drop}. Agreement between the measured PLA/TPU ranking and
-the hollow-aluminum/stainless-steel ranking on the primary campaign metric
-$t_{180}$ (reported in the main-text metal-analog validation table and
-figure, with rebound energy and, later, quasi-static SEA as secondary
-rankings) indicates that the optimization generalizes beyond the as-printed
-polymers.
+Section~\ref{si:drop}. Rank agreement between the measured PLA/TPU ranking
+and the hollow-aluminum/stainless-steel ranking on the primary campaign
+metric $t_{180}$ (to be reported in the main-text metal-analog table and
+figure, with the provisional rebound score and, later, quasi-static SEA as
+secondary rankings) would be preliminary evidence consistent with transfer
+beyond the as-printed polymers; disagreement would not isolate which
+material or joint difference caused the change.
 
 \begin{figure}[ht]
   \centering
