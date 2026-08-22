@@ -69,6 +69,34 @@ python add_teaching_slides.py in.pptx out.pptx
 The insertion anchors on slide titles, not slide numbers, so it works on any
 revision of the deck.
 
+## Two-specimen comparison graphs (PR #100 follow-up, 2026-08-22)
+
+`make_comparison_figures.py` builds `fig3_compare_6lhxfy.png` and
+`fig3_compare_bag26v.png`: one clean single-panel graph per specimen for the
+slide that contrasts a strong attenuator with an amplifier from the SOBOL + S0
+campaign. Style follows the same cleanup rules as fig1 (short axis labels,
+no titles, no in-panel callouts, pure white background); the specimen ID lives
+only in the file name so the slide author labels the panels however they like.
+Both graphs share identical axis limits and tick marks, so they can sit side
+by side at the same size and be compared directly.
+
+Each graph is one representative drop: the stabilized drop whose CFC 180
+transmissibility is closest to the specimen's session mean (6lhxfy Signal 64,
+bag26v Signal 47). Unlike fig1/fig2, the traces and the printed
+transmissibility use the **campaign pipeline exactly** (`analyze_capture` with
+the tail baseline and the pipeline's CFC 180 filter, vendored from
+`scripts/analysis/drop_test_abc123_blind_analysis.py` on the
+`copilot/add-drop-test-protocol-again` branch), so the peak ratio visible in
+each graph equals the official campaign `t180` for that drop; the script
+asserts the match against `campaign_metrics.json`. Raw Signal CSVs stay on
+Box (repo convention) and are auto-fetched into the uncommitted `raw_cache/`
+using the file IDs from the committed `box-ids.json` manifests.
+
+| specimen | this drop | session mean (101 drops) |
+|---|---|---|
+| 6lhxfy | 0.893 | 0.893 (sd 0.004) |
+| bag26v | 1.062 | 1.062 (sd 0.005) |
+
 ## Data and processing
 
 Figures are built from one real capture in this repo:
