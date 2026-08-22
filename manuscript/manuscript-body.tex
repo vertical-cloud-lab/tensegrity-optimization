@@ -139,24 +139,27 @@
 % -----------------------------------------------------------------------------
 \begin{abstract}
 Tensegrity-inspired architectures combine rigid compression members with a
-continuous network of soft tension elements, yielding lightweight assemblies
-with tunable nonlinear responses that are attractive for energy-absorbing
-applications such as protective equipment, packaging, and aerospace landing
-structures. Multi-material fused-deposition modeling (FDM) of polylactic
-acid (PLA) struts and thermoplastic polyurethane (TPU) tension elements
-makes it possible to fabricate diverse tensegrity-inspired geometries
-rapidly enough to support a high-throughput experimental search, while
-the rate-dependent damping of TPU is itself an asset for impact mitigation.
-We report an experiment-driven Bayesian optimization (BO) framework in
-which a Gaussian-process surrogate is trained directly on physical
-quasi-static compression and drop-weight impact data and used to
-recommend the next batch of designs to print and test. The framework
-parameterizes a family of tensegrity-inspired unit cells over strut
-geometry, tension-element cross-section, connectivity topology, and
-unit-cell tiling, and optimizes peak transmitted force, specific energy
-absorption, and compaction efficiency.
-\todo[inline]{Tighten abstract to 150--200 words with concrete numerical
-results once the experimental campaign is complete.}
+network of soft tension elements, yielding lightweight assemblies with
+tunable nonlinear responses that are attractive for impact mitigation in
+aerospace landing structures and related protective applications.
+Multi-material fused-deposition modeling (FDM) of polylactic acid (PLA)
+struts and thermoplastic polyurethane (TPU) tension elements makes it
+possible to fabricate pre-assembled tensegrity-inspired geometries rapidly
+enough to support an experiment-driven design search. We report a
+closed-loop Bayesian optimization (BO) framework in which a fully Bayesian
+Gaussian-process surrogate is trained directly on instrumented drop-tower
+measurements and used to recommend the next batch of designs to print and
+test. A three-strut prism family is parameterized by five continuous
+geometry variables under a constant-mass fairness constraint, and each
+printed specimen is characterized by more than one hundred repeated drops.
+The campaign minimizes two impact objectives: the filtered peak-acceleration
+ratio across the specimen and the rebound energy returned to the payload.
+We report the nine-specimen quasi-random seed round, the resulting surrogate
+diagnostics and Pareto set, and the first model-recommended batch, and we
+describe a metal-analog validation protocol that tests whether learned
+design rankings transfer across material systems.
+\todo[inline]{Tighten abstract toward 150--200 words with concrete
+round-2 numerical results once the next batch is tested.}
 \end{abstract}
 
 \maketitle
@@ -176,14 +179,14 @@ results once the experimental campaign is complete.}
 \section{Introduction}
 \label{sec:introduction}
 
-\todo[inline,color=blue!20]{\textbf{Manuscript status.} At time of
-writing the project is at the \emph{planned-methods} phase: the
-parameterized unit cell, multi-material print recipe, joint geometry,
-quasi-static and drop-impact protocols, and Bayesian-optimization loop
-described in Section~\ref{sec:methods} have been scaffolded and
-prototype hardware has been printed, but the closed-loop experimental
-campaign has not yet produced reportable results. Sections~\ref{sec:results}
-and~\ref{sec:discussion} therefore remain placeholders.}
+\todo[inline,color=blue!20]{\textbf{Manuscript status (updated
+2026-08-22).} The closed-loop campaign is underway: the nine-specimen
+Sobol seed batch plus the reference prism have been printed and
+drop-tested (101 drops per specimen), the round-1 surrogate has been fit
+and audited, and the first model-recommended batch of nine designs is on
+the printer. Section~\ref{sec:results} reports the seed round;
+round-2 outcomes, the budget-matched baseline comparison, and the
+metal-analog validation remain placeholders pending data.}
 
 Tensegrity structures are assemblies of rigid compression members
 suspended within a continuous network of tension members; their defining
@@ -200,8 +203,8 @@ unit cells can be directly 3D-printed and exhibit load-limiting plateaus
 under drop-weight impact~\citep{pajunen2019design}, opening a path
 toward additively manufactured architected absorbers. Throughout, we use
 \emph{tensegrity-inspired} to denote printable unit cells that adopt the
-characteristic tensegrity motif---rigid compression members carried by a
-network of pretensioned soft tension elements---while relaxing the strict
+characteristic tensegrity motif (rigid compression members carried by a
+network of pretensioned soft tension elements) while relaxing the strict
 classical requirement that no two compression members touch and that the
 tension members behave as ideal inextensible cables; here the tension elements
 are extruded TPU and the struts may share printed junctions.
@@ -209,7 +212,7 @@ are extruded TPU and the struts may share printed junctions.
 Multi-material fused-deposition modeling (FDM) that pairs a rigid polymer
 such as polylactic acid (PLA) with a soft, rate-dependent elastomer such as
 thermoplastic polyurethane (TPU) has been used to fabricate rigid--soft
-architected energy absorbers on a single platform---for example, thick-panel
+architected energy absorbers on a single platform: thick-panel
 origami metamaterials with PLA panels and TPU hinges~\citep{ye2023multimaterial}
 and ABS/TPU honeycombs with tunable stiff/flexible
 proportions~\citep{khatri2024energy}. The same rigid--soft co-printing
@@ -225,47 +228,70 @@ Designing such architected absorbers is fundamentally a
 \emph{design-of-experiments} problem: the configuration space spanned by
 strut geometry, tension-element cross-section, connectivity, and
 unit-cell tiling is large; each candidate must be physically printed
-and tested; and the relevant performance metrics---peak transmitted
-force, specific energy absorption (SEA), and compaction
-efficiency---are noisy and partially correlated. Bayesian optimization
-(BO) is well-matched to this regime, having driven breakthroughs from
-hyperparameter tuning of AlphaGo~\citep{silver2016mastering} to
-sustainable concrete~\citep{ament2023sustainable}, autonomous
-discovery of organic laser emitters~\citep{striethkalthoff2024delocalized},
-and architected materials~\citep{mo2023accelerated, wang2022bayesian,
-lee2023bayesian, zhang2021bo}.
-\todo{Add 1--2 sentences clearly stating the gap this paper closes vs.\
-Pajunen et~al.~\cite{pajunen2019design} (single fabrication condition,
-no closed-loop optimization) and Mo et~al.~\cite{mo2023accelerated}
-(multifidelity BO, but simulation-only).}
+and tested; and the relevant impact-performance metrics (the shock
+transmitted across the structure and the energy returned to the
+protected payload) are noisy and partially correlated. Bayesian
+optimization (BO) is well-matched to this regime, having driven
+breakthroughs from hyperparameter tuning of
+AlphaGo~\citep{silver2016mastering} to sustainable
+concrete~\citep{ament2023sustainable}, autonomous discovery of organic
+laser emitters~\citep{striethkalthoff2024delocalized}, and architected
+materials~\citep{mo2023accelerated, wang2022bayesian, lee2023bayesian,
+zhang2021bo}. The gap this paper closes is the combination: Pajunen
+et~al.~\cite{pajunen2019design} printed tensegrity-inspired cells under
+a single fabrication condition with no optimization loop, and Mo
+et~al.~\cite{mo2023accelerated} closed a multifidelity BO loop entirely
+in simulation; to our knowledge no prior study closes a BO loop over
+co-printed multi-material tensegrity-inspired hardware using physical
+impact measurements as the sole ground truth.
 
-\paragraph{Contributions.} This paper makes the following contributions:
+We emphasize one framing point at the outset: the printed PLA/TPU
+$T_3$ prism studied here is a testbed for developing and validating
+the closed-loop workflow, not flight hardware. The planetary-lander
+setting motivates the objectives (limit the shock delivered to a
+payload, limit the energy returned to it) and the constant-mass
+fairness constraint, but the contribution is the loop itself, which is
+agnostic to the eventual application scale.
+
+\paragraph{Contributions} This paper makes the following contributions:
 \begin{enumerate}
   \item A parameterized family of multi-material 3D-printable
     tensegrity-inspired unit cells with PLA compression members and
     TPU tension elements that are anchored \emph{inside} the ends of
-    each PLA strut---the strut acting as a rigid cage in which the
+    each PLA strut (the strut acting as a rigid cage in which the
     cables meeting at a given end join before exiting through discrete
-    outlets---a joint geometry intended to improve cyclic interface
+    outlets), a joint geometry intended to improve cyclic interface
     durability, to be verified by pull-out and fatigue testing.
+    Candidate designs are compared fairly through a constant-mass
+    projection that rescales every geometry to a common material
+    budget before printing (Section~\ref{sec:methods:parameterization}).
+  \item A characterized drop-tower protocol and objective stack for
+    printed impact absorbers: 101 repeated instrumented drops per
+    specimen, standardized SAE~J211 filtering~\citep{saej211}, a
+    velocity-change rig-health gate, and two per-specimen objectives
+    (the filtered peak-acceleration ratio across the specimen and the
+    rebound energy returned to the payload), each validated for
+    repeatability before entering the optimizer
+    (Section~\ref{sec:methods:testing}).
   \item An experiment-driven BO loop, built on
-    BoTorch/Ax~\citep{balandat2020botorch, pmlr-v293-olson25a}, that
-    operates directly on
-    physical quasi-static compression and drop-weight impact
-    measurements, recommending the next designs to
-    fabricate.\todo[inline]{We need to decide whether or not to
-    mention/include the physics-based simulations from PR~\#33, which seem
-    quite reasonable at this point. If the goal is to get the best of the
-    best, then we would want to include those simulations. In that case we
-    would likely want to treat this as a multi-task problem, but we could run
-    into issues with scaling. If we treat it as a featurization task, then we
-    would likely need to move to a predefined search space or a genetic
-    algorithm.}
-  \item High-fidelity validation experiments using
-    \emph{pretensioned} tensegrity assemblies (true cables and
-    measured pretension) for the Pareto-optimal designs identified by the
-    single-stage loop above, reported separately rather than fused into the
-    optimization.
+    BoTorch/Ax~\citep{balandat2020botorch, pmlr-v293-olson25a} with a
+    fully Bayesian sparse-prior surrogate
+    (SAASBO)~\citep{eriksson2021saasbo}, that ingests the physical
+    drop measurements, models per-print mass explicitly, and
+    recommends the next batch of designs to fabricate; the seed round
+    and first recommended batch are reported here
+    (Sections~\ref{sec:methods:bo} and~\ref{sec:results}).
+  \item A physics-based simulation ladder (rigid-body through
+    finite-element tiers) used for screening and hypothesis
+    generation alongside the physical loop, with its predictive reach
+    and blind spots quantified against the measured seed round
+    (Section~\ref{sec:methods:simulation}).
+  \item A pre-registered metal-analog validation protocol
+    (hollow aluminum struts with threaded stainless-steel cables)
+    that tests whether the learned design ranking transfers across
+    material systems, spanning predicted worst, mediocre, and best
+    designs rather than only the optimum
+    (Section~\ref{sec:methods:validation}).
 \end{enumerate}
 
 The present study is deliberately scoped to single-cell, fixed-topology
@@ -281,8 +307,8 @@ rather than to tensegrity-inspired absorbers in general.
   \centering
   \includegraphics[width=0.7\textwidth]{../figures/overview-updated.png}
   \caption{Closed-loop, experiment-driven design framework. Parameterized
-    PLA/TPU tensegrity-inspired unit cells are printed, tested under
-    quasi-static compression and drop-weight impact, and the resulting
+    PLA/TPU tensegrity-inspired unit cells are printed, characterized by
+    repeated instrumented drop-weight impacts, and the resulting
     performance data drive a Gaussian-process surrogate that recommends the
     next batch of designs to fabricate.}
   \label{fig:overview}
@@ -296,9 +322,10 @@ Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
 3D printing for energy absorption, and Bayesian optimization with an
 emphasis on multi-objective and noise-robust acquisition functions.
 Section~\ref{sec:methods} introduces the design parameterization,
-fabrication workflow, experimental protocols, and BO loop.
-Section~\ref{sec:results} reports the results of the closed-loop
-experimental campaign, and Section~\ref{sec:discussion} discusses the
+fabrication workflow, drop-tower protocol and objectives, BO loop,
+simulation screening ladder, and metal-analog validation plan.
+Section~\ref{sec:results} reports the seed round and the round-1
+surrogate, and Section~\ref{sec:discussion} discusses the
 implications and limitations of the approach. Section~\ref{sec:conclusions}
 concludes.
 
@@ -362,7 +389,7 @@ knowledge, not addressed by any single prior study.
       & Bistable tensegrity-like & Single-material & None & Experiment \\
       & lattice unit cell & 3D print & & (quasi-static/impact) \\[2pt]
     Mo et~al.\ 2023~\cite{mo2023accelerated}
-      & Architected lattices & --- (simulation) & Multifidelity BO & Simulation \\
+      & Architected lattices & n/a (simulation) & Multifidelity BO & Simulation \\
       & & & & (+ sparse high-fid.) \\[2pt]
     \textbf{This work}
       & Tensegrity-inspired & Multi-material & Experiment-driven & Physical \\
@@ -436,9 +463,9 @@ robustness~\citep{ament2023logei}, noisy expected hypervolume
 improvement for multi-objective settings~\citep{daulton2021nehvi},
 input-noise-robust acquisitions~\citep{daulton2022robust}, and
 evolution-guided constrained multi-objective BO for self-driving
-labs~\citep{low2024evolution}. Mixed/categorical search spaces---needed
+labs~\citep{low2024evolution}. Mixed/categorical search spaces, needed
 for the planned connectivity-topology extension rather than the
-continuous $T_3$-prism prototype studied here---have dedicated
+continuous $T_3$-prism prototype studied here, have dedicated
 treatments in BOCS~\citep{baptista2018bocs} and the
 one-hot-with-rounded-kernel construction
 of~\citep{garridomerchan2020dealingwithcategorical}. BO has been
@@ -493,9 +520,9 @@ until that variable is activated beyond the $T_3$ prism.}
 to validate the fabrication and test pipeline is a three-strut
 ($T_3$) tensegrity prism scaled to a $\sim$50\,mm bounding box. As
 implemented in the BO harness, this working prototype exposes five
-continuous design variables---base radius $R$, cell height $H$, twist
+continuous design variables (base radius $R$, cell height $H$, twist
 angle $\theta$, a single strut diameter $d_s$, and a single cable
-(tendon) diameter $d_t$---over the ranges listed in
+(tendon) diameter $d_t$) over the ranges listed in
 Table~\ref{tab:design-vars}; the cable diameter $d_t$ is treated as a
 \emph{continuous} variable on $[3.0, 5.5]$\,\si{mm} rather than a
 discrete set. Under the prism's $D_3$ symmetry all struts share one
@@ -518,13 +545,38 @@ follow-on joint-design study. Figure~\ref{fig:printed-prototypes}
 shows the parametric CAD model alongside an as-printed prototype of this
 working $T_3$ prism.
 
+\paragraph{Constant-mass projection and printability screens} Because
+cell mass varies severalfold across the raw design box, an
+unconstrained search would partly reward designs for carrying more
+material rather than for their architecture. Every candidate is
+therefore projected onto a constant material budget before printing:
+the design is uniformly rescaled (all dimensions except the twist
+angle) until its solid CAD mass
+$\rho_{\mathrm{PLA}} V_{\mathrm{PLA}} + \rho_{\mathrm{TPU}}
+V_{\mathrm{TPU}}$ equals $m^{\star} = \SI{30.95}{g}$, the solid mass
+of the reference prism, converged to within \SI{0.15}{g} on rendered
+geometry. Two printability screens are evaluated on the projected
+geometry and recorded as flags rather than hard rejections: a
+cylindrical build envelope $\pi R^2 H \le \SI{250}{cm^3}$ and the
+\SI{3.0}{mm} TPU self-bridging floor on the as-projected cable
+diameter (the projection can scale a nominally feasible cable below
+the floor; the two seed designs where this occurred both exhibited
+tendon stringing defects, consistent with the screen). The choice of a
+\emph{solid-mass} budget has a documented limitation discussed in
+Section~\ref{sec:discussion}: PLA struts print at partial infill
+while thin TPU cables print near solid, so as-printed masses still
+ranged from \SIrange{18.50}{22.29}{g} across the seed batch; a
+calibrated printed-mass model that closes this gap is described in
+the Supplementary Information.
+
 \begin{table}[ht]
   \centering
-  \caption{Design variables for the $T_3$-prism Sobol initialization batch, as
-    implemented in the BO harness (single-iteration $n=9$ Sobol set). The
-    joint diameter is held fixed at the \texttt{t3-prism.scad} default; all
-    specimens are printed in the vertical orientation and packed
-    $3\times3$ on a single Bambu Lab~H2D plate.}
+  \caption{Design variables for the $T_3$-prism campaign, as implemented
+    in the BO harness. The seed round is an $n=9$ Sobol draw (fixed seed)
+    over this box, with each design then projected onto the constant
+    solid-mass budget $m^{\star}=\SI{30.95}{g}$. The joint diameter is
+    held fixed; all specimens are printed in the vertical orientation on
+    a Bambu Lab~H2D, one specimen per named build plate.}
   \label{tab:design-vars}
   \begin{tabular}{@{}llcc@{}}
     \toprule
@@ -543,7 +595,7 @@ working $T_3$ prism.
   auto-support detection floor; add the remaining
   manufacturing-feasibility constraints once finalized.}
 
-\paragraph{As-built resolution of the continuous variables.} Although
+\paragraph{As-built resolution of the continuous variables} Although
 $d_s$ and $d_t$ are treated as continuous, the as-built cross-sections
 are discretized by the nozzle diameter, the slicer line width, and
 support interaction, so the effective search granularity is coarser
@@ -552,12 +604,15 @@ changes in steps set by the line-width quantization rather than
 continuously, and the smallest CAD change that yields a reliably
 distinguishable as-built member is bounded below by these slicer
 limits; the lower TPU-tendon bound (\SI{3.0}{mm}) is itself a
-workflow-specific limit tied to the Bambu auto-support detection floor
-on this H2D platform rather than a fundamental geometric one. We
-report measured as-built diameters alongside the commanded values so
-that the surrogate is fitted on realized geometry, and we treat the
-print-to-print dimensional spread as part of the inferred observation
-noise (Section~\ref{sec:methods:bo}).
+workflow-specific limit tied to the TPU self-bridging and auto-support
+detection floor on this H2D platform rather than a fundamental
+geometric one. The as-built quantity measured for every article is its
+mass, weighed on a \SI{0.01}{g} scale; dimensional metrology of the
+printed members has not yet been performed, so the geometry attached
+to the surrogate is the commanded post-projection geometry, and the
+print-to-print spread (mass standard deviation \SI{0.457}{g} across
+the one design printed in triplicate) is carried into the observation
+noise model (Section~\ref{sec:methods:bo}).
 
 \begin{figure}[t]
   \centering
@@ -625,7 +680,7 @@ joint pull-out studies before making any cyclic-durability claim.} \todo{Documen
 settings) and validation prints used to characterize PLA--TPU interface
 strength.}
 
-\paragraph{Print platform and joint geometry.} The working platform is
+\paragraph{Print platform and joint geometry} The working platform is
 a Bambu Lab~H2D printer, which permits a single rigid--soft build
 without filament swaps. Strut endpoints are tied to cables through
 parametric joint geometries developed and ranked through a five-design
@@ -640,14 +695,29 @@ joint-design Phase-3 CAD review (Edison ANALYSIS \texttt{19e0c868}) and the
 Phase-4 vision review (\texttt{e9a1f4cc}) once both are integrated into the
 references.}
 
-\paragraph{Supports for soft members.} Because near-vertical TPU
-tendons are otherwise unsupported during printing, the slicer profile
-combines a tensegrity-specific Bambu Studio recipe (support threshold
-angle dropped from~40\textdegree{} to~10\textdegree, support material
-matched to the rigid extruder) with manually generated narrowing
-pillars that ray-cast against the printable mesh underside, producing
-TPU-safe coverage of vertical members without slicer-side painting.
-Full workflow details are provided in the Supplementary Information.
+\paragraph{Supports for soft members} Because near-vertical TPU
+tendons are otherwise unsupported during printing, automatic support
+generation is disabled and supports are painted manually in the
+slicer: PLA edge supports run along each tendon, with the
+support-to-object clearance tightened from \SI{0.35}{mm} to
+\SI{0.2}{mm} during tuning on the reference prism. Two support-removal
+artifacts recur in the seed batch (surface stringing and, on two
+articles, TPU strands pulled off bottom tendons during support
+removal) and are logged per article in the print key (Supplementary
+Information). An automated alternative (a lowered support-threshold
+angle plus mesh-ray-cast narrowing pillars) was developed in parallel
+and is documented in the Supplementary Information.
+
+\paragraph{Moisture and nozzle management} TPU is hygroscopic, so the
+soft filament is fed from a heated dry box held near \SI{8}{\percent}
+relative humidity, logged per print. Midway through the seed batch the
+TPU extruder developed a progressive flow taper (a partial clog,
+compounded by a stray PLA fragment found inside the extruder); it was
+resolved by a cold pull and by moving the TPU to a dedicated
+high-flow \SI{0.6}{mm} nozzle, after which print quality was restored.
+The affected and post-fix articles are identified in the print key so
+that any nozzle-related covariate can be checked against the measured
+objectives.
 
 \begin{table}[ht]
   \centering
@@ -655,25 +725,28 @@ Full workflow details are provided in the Supplementary Information.
     \emph{TBD} are pending confirmation; the reporting structure follows the
     methods section of Ye et~al.~\cite{ye2023multimaterial}.}
   \label{tab:print-params}
+  \small
+  \setlength{\tabcolsep}{4pt}
   \begin{tabular}{@{}lcc@{}}
     \toprule
-    Parameter & PLA (rigid struts) & TPU (soft tendons) \\
+    Parameter & PLA (struts) & TPU 85A (tendons) \\
     \midrule
+    Nozzle                             & \SI{0.4}{mm} & \SI{0.6}{mm} high-flow \\
     Nozzle temperature (\textdegree C) & \emph{TBD} & \emph{TBD} \\
     Bed temperature (\textdegree C)    & \multicolumn{2}{c}{\emph{TBD}} \\
     Layer height (mm)                  & \multicolumn{2}{c}{\emph{TBD}} \\
-    Print speed (mm/min)               & \emph{TBD} & \emph{TBD} \\
-    Infill (\%)                        & \emph{TBD} & \emph{TBD} \\
+    Infill                             & 15\% grid, 2 walls & near-solid \\
+    Filament drying                    & n/a & dry box, $\sim$8\% RH \\
     Build-plate type                   & \multicolumn{2}{c}{Textured PEI} \\
     Build orientation                  & \multicolumn{2}{c}{Vertical} \\
-    Supports                           & \multicolumn{2}{c}{Off in slicer; manual narrowing pillars} \\
+    Supports                           & \multicolumn{2}{c}{Manual painted PLA edge supports} \\
     \bottomrule
   \end{tabular}
 \end{table}%
-\todo{@achris0520 to confirm the exact PLA and TPU print parameters (nozzle and
-  bed temperatures, layer height, print speeds, infill) used on the Bambu
-  Lab~H2D; only the build-plate type, vertical orientation, and support
-  strategy are currently established.}
+\todo{@achris0520 to confirm the exact PLA and TPU nozzle and bed
+  temperatures, layer height, and print speeds used on the Bambu Lab~H2D;
+  the infill values are the inherited slicer-profile defaults and should be
+  confirmed against the archived \texttt{.3mf} project.}
 
 \begin{figure*}[t]
   \centering
@@ -694,64 +767,109 @@ Full workflow details are provided in the Supplementary Information.
 \subsection{Experimental Characterization}
 \label{sec:methods:testing}
 
-Each printed specimen is subjected to two physical tests:
+\paragraph{Drop-tower fixture} The primary characterization is
+repeated drop-weight impact on a Lansmont Model~23 shock test system.
+The printed specimen rides upright on the carriage plate, which is
+raised \SI{60}{in} (\SI{1.524}{m}) along guide rails and released; the
+plate lands on a single \SI{0.5}{in} Shore 60~OO polyurethane cushioning
+sheet, which shapes the landing into a single sharp base pulse of
+roughly \SI{1.6}{ms} duration. This impact-surface configuration was
+selected by a blinded crossover experiment over three candidate mat
+arrangements, and unlike a felt stack it does not measurably compact
+over hundred-drop sessions. Rig health is monitored continuously
+through the impact velocity change $\Delta v$ recovered from the base
+accelerometer: over an uninterrupted 100-drop characterization session
+the $\Delta v$ coefficient of variation was 0.54\% with no drift, and
+every campaign session is gated on $\Delta v$ remaining at the healthy
+tower baseline. One drop takes roughly \SI{42}{s}, so a full
+101-drop specimen characterization completes in about ninety minutes.
 
-\paragraph{Quasi-static compression.} A uniaxial load--displacement
-curve is recorded on a benchtop electromechanical load frame
-(BYU CB~123 Instron) following best-practice combinations of
-ASTM~D638, ASTM~D412, ASTM~E111, ASTM~F2971, and
-ISO/ASTM~52900/52921 adapted to architected polymer cells. Because
-expected cell stiffnesses fall in the $\sim$5--30\,g force range, the
-default 5\,kN load cell is over-ranged and is being replaced by a
-100--500\,N cell for the first campaign.\todo{Cite the Instron-stiffness
-Edison LITERATURE\_HIGH brief (\texttt{9f68e71e}) once the entry is
-added to \texttt{references.bib}.} Reported metrics are
+\paragraph{Instrumentation and signal processing} A single-axis
+piezoelectric accelerometer on the carriage plate records the base
+input and triggers the acquisition; a triaxial accelerometer (Dytran
+3133A4) seated in a printed pocket at the specimen's top vertex records
+the transmitted response. The two base-capable channels were
+cross-calibrated in place over fifteen co-located drops (ratio
+$0.953 \pm 0.001$ at matched filtering), and the transducer settings
+are archived with the data. Signals are captured at
+\SI{1.25}{MHz} over a \SI{100}{ms} record with a \SI{2}{ms}
+pre-trigger. All channels are low-pass filtered with the SAE~J211/1
+channel-frequency-class (CFC) filters~\citep{saej211}, implemented from
+the standard's published coefficients with the two-pass corner
+frequency handled explicitly (a common implementation shortcut narrows
+the passband by roughly 20\%, which we identified and corrected before
+the campaign; all reported numbers use the corrected filter). CFC-180
+is the reporting class for peak metrics, with CFC-1000 retained as a
+higher-bandwidth diagnostic.
+
+\paragraph{Per-specimen objectives} Each 101-drop session (first two
+drops discarded as warm-up) yields two objectives, each reported as a
+stabilized mean with a per-drop standard error:
+\begin{equation}
+  t_{180} \;=\; \frac{\max_t\,\lVert \mathbf{a}_{\mathrm{top}}(t)\rVert_{\mathrm{CFC180}}}
+                     {\max_t\,\lvert a_{\mathrm{base}}(t)\rvert_{\mathrm{CFC180}}},
+  \qquad
+  E_{\mathrm{reb}} \;=\; e_{\mathrm{reb}}\, m\, g\, h,
+  \quad
+  e_{\mathrm{reb}} \;=\; \frac{g\, t_{\mathrm{second}}}{2\,\Delta v},
+  \label{eq:objectives}
+\end{equation}
+where $t_{180}$ is the CFC-180 \emph{filtered peak-acceleration
+ratio}: the peak magnitude of the triaxial top-vertex response over
+the peak base input within the impact window. We deliberately do not
+call this quantity a transmissibility: the two peaks need not be
+simultaneous and a single transient drop cannot produce the averaged
+frequency-response function that the standards-defined transmissibility
+requires, so $t_{180}$ is a filter-class-specific ranking metric rather
+than a standards quantity. Values above unity indicate the structure
+amplifies the peak shock reaching its top vertex; values below unity
+indicate attenuation. $E_{\mathrm{reb}}$ is the rebound energy returned
+to a payload riding the top vertex, in millijoules per drop: the
+restitution-like fraction $e_{\mathrm{reb}}$ is recovered from the
+ballistic timing of the top vertex's post-impact
+hop~\citep{bernstein1977listening} ($t_{\mathrm{second}}$ is the time
+to the second contact event and $\Delta v$ the measured base velocity
+change), and it is converted to absolute energy using each article's
+own weighed mass $m$ and the drop height $h$. Using absolute
+millijoules rather than the bare fraction makes the objective
+mass-aware: equal fractions on articles of different printed mass
+deliver different energies to the payload. Ringdown descriptors (the
+fitted natural frequency $f_n \approx$ \SIrange{300}{470}{Hz} and, where
+the exponential fit passes an $r^2 \ge 0.85$ gate, a damping ratio
+$\zeta$) are recorded per drop as print-health and prestress
+diagnostics~\citep{ashwear2014natural} but are not campaign objectives.
+Within-specimen repeatability of $t_{180}$ is 0.2 to 0.5\% (CV), and
+the one article re-tested in a separate session reproduced its mean to
+0.13\%. Figure~\ref{fig:dropcurve} illustrates the mechanism-oriented
+presentation we adopt for the processed traces, linking features of the
+measured signal to the structural events that produce them.
+
+\paragraph{Planned quasi-static extension} The drop test loads the
+specimens in their elastic regime (the crush lasts 1 to \SI{3}{ms} and
+the article recovers), so crush-energy metrics such as specific energy
+absorption (SEA) and compaction efficiency are not recoverable from
+these captures by any reprocessing. A quasi-static compression
+campaign on a benchtop load frame (BYU CB~123 Instron, with a
+low-range load cell appropriate to the expected cell stiffness)
+is planned to supply the complementary crush metrics
 \begin{equation}
   \mathrm{SEA} \;=\; \frac{1}{m}\!\int_{0}^{\delta_d}\! F(\delta)\,
   \mathrm{d}\delta,
   \qquad
   \eta_c \;=\; \frac{\int_{0}^{\delta_d}\! F(\delta)\,\mathrm{d}\delta}{F_{\max}\,\delta_d},
 \end{equation}
-where $m$ is the specimen mass, $\delta_d$ is the densification
-displacement, $F_{\max}$ is the peak transmitted force, and $\eta_c$ is
-the compaction efficiency. To keep these metrics objective and
-reproducible, the densification displacement $\delta_d$ is taken as the
-displacement at which the energy-absorption efficiency--displacement curve
-reaches its maximum ($\mathrm{d}\eta/\mathrm{d}\delta = 0$), and $F_{\max}$
-is the maximum force recorded \emph{within} the integration window
-$[0,\delta_d]$ rather than a global or post-densification peak. These
-energy-absorption-diagram definitions of densification displacement and
-compaction (energy-absorption) efficiency follow the canonical cellular-solid
-treatments of Gibson and Ashby~\citep{gibson1997cellular}, Avalle
-et~al.~\citep{avalle2001characterization}, Tan
-et~al.~\citep{tan2005dynamic}, and Michailidis
-et~al.~\citep{michailidis2011establishment}.
-
-\paragraph{Drop-weight impact.} Following Pajunen
-et~al.~\cite{pajunen2019design},
-specimens are subjected to drop-weight impact tests with instrumented
-load cells; we report the peak transmitted force and the energy-absorption
-plateau characteristics. Figure~\ref{fig:dropcurve} illustrates the
-mechanism-oriented presentation we adopt for these processed deceleration
-traces, linking features of the measured signal to the structural events that
-produce them. The primary fixture is a bungee-assisted
-laboratory drop tower in which the base accelerates downward faster
-than~$1g$; because unconstrained specimens lift off the base during
-descent by design of the rig, the protocol constrains the specimen
-top through light tethers (capping upward travel) and registers the
-base via transfer tape or V-block features so that loading-direction
-compliance is not altered.\todo{Cite the drop-test protocol document
-(PR~\#67) and the drop-test Edison LITERATURE\_HIGH brief
-(\texttt{653d7d39}) once integrated.} A higher-fidelity replicate
-campaign on a Lansmont~M23 shock/cushion tester (per ASTM~D1596) with
-synchronized Polytec~QTec
-laser vibrometry is planned for selected Pareto-optimal designs.\todo{%
-Cite the M23~+~QTec equipment brief (Edison LITERATURE\_HIGH
-\texttt{1a0f4a70}) once integrated.} Slip resistance and traction at
-the specimen--floor interface---governed by the tip geometry rather
-than the internal lattice---follow the test methodology of ISO
-11334-4~\citep{iso11334-4} for walking-aid tips and are out of scope
-for the present axial-impact study.
+with the densification displacement $\delta_d$ taken at the maximum of
+the energy-absorption efficiency curve and $F_{\max}$ the peak force
+within $[0,\delta_d]$, following the canonical cellular-solid
+treatments~\citep{gibson1997cellular, avalle2001characterization,
+tan2005dynamic, michailidis2011establishment} and mirroring the
+quasi-static protocol of Pajunen et~al.~\citep{pajunen2019design}.
+These metrics are reported as a complementary characterization of
+selected designs rather than as objectives of the drop-tower campaign.
+Slip resistance and traction at the specimen-to-floor interface,
+governed by the tip geometry rather than the internal architecture,
+follow ISO 11334-4~\citep{iso11334-4} for walking-aid tips and are out
+of scope for the present axial-impact study.
 
 \begin{figure*}[t]
   \centering
@@ -764,144 +882,141 @@ for the present axial-impact study.
     subpanel showing the two traces transfer the same mass-normalized $\Delta v$,
     so the lower tensegrity peak reflects temporal redistribution rather than
     inconsistent loading; (e) the internal-anchor joint load path. Curves are
-    synthetic and impulse-consistent (control anchored to the documented
-    $\sim$1792\,G CFC-180 peak; tensegrity shoulder scaled to the same impulse),
-    pending real high-rate channels and camera frames. Generated by
+    synthetic and impulse-consistent (anchored to a peak from an early
+    commissioning-era capture, which is why the amplitude differs from the
+    campaign values in Table~\ref{tab:seed-results}); to be regenerated from
+    the campaign captures. Generated by
     \texttt{scripts/figures/mechanistic\_data\_figure\_example.py}.}
   \label{fig:dropcurve}
 \end{figure*}
 
-\paragraph{Per-modality objectives.} Five complementary data streams
-(triaxial accelerometer, high-speed video, shaker transfer function,
-slug-firing gas gun, and Polytec~QTec laser-Doppler vibrometer) each
-contribute a distinct raw observable; the mapping from each stream to
-BO-ready scalar objectives (SEA, VEA, $F_{\max}$, cushion-curve
-intercept, Gibson--Ashby relative density~\citep{gibson1997cellular}) is defined in five
-companion briefs and consolidated in a cross-modality synthesis.\todo{%
-Cite the per-modality objective-function briefs (Edison
-LITERATURE\_HIGH \texttt{cfd30f3e}, \texttt{7d6b43bf},
-\texttt{31126ee7}, \texttt{9d74ab2e}, \texttt{f40e41a7}) and the
-ANALYSIS synthesis (\texttt{789de8ab}) once \texttt{references.bib}
-entries are added from PR~\#60.}
-
-\todo{Specify the exact test fixtures, load-cell ranges, sampling rate,
-DAQ, drop heights, and the protocol for averaging replicate prints.}
+\paragraph{Complementary data streams} High-speed video
+(\SI{959}{fps}, three clips per specimen) supplements the
+accelerometer data. The camera cannot resolve the millisecond-scale
+impact pulse (one to two frames), so the division of labor is
+explicit: the accelerometer channels produce the objectives, and video
+documents the post-impact rebound and recovery. Synchronized
+laser-Doppler vibrometry is reserved for follow-up characterization of
+selected designs.
 
 \subsection{Experiment-Driven Bayesian Optimization Loop}
 \label{sec:methods:bo}
 
 The optimization loop maintains a Gaussian-process (GP) surrogate over
 the design space defined in
-Section~\ref{sec:methods:parameterization}. After each round of physical
-experiments, the GP is updated and an acquisition function is maximized
-to recommend the next batch of designs to fabricate. The primary
-reported campaign is posed as a \emph{constrained multi-objective}
-problem: simultaneously maximize specific energy absorption (SEA) and
-compaction efficiency $\eta_c$ subject to an upper bound on peak
-transmitted force $F_{\max} \le F^{\star}$, where $F^{\star}$ is fixed
-from the rigid-control drop response so that admissible designs must
-out-cushion the uncushioned baseline. Implementation
-uses BoTorch~\citep{balandat2020botorch} with noisy Expected
-Hypervolume Improvement
-(qNEHVI)~\citep{daulton2021nehvi} as the acquisition function; the
-hypervolume reference point is anchored at the rigid-control
-$(\mathrm{SEA},\eta_c)$ pair so that improvement is measured against the
-no-absorber baseline. A single-objective
-log-Expected-Improvement (LogEI) run~\citep{ament2023logei} on SEA
-(with the same force constraint) is retained only as a baseline for
-quantifying the benefit of the multi-objective formulation. The
-input-noise-robust acquisition of Daulton
+Section~\ref{sec:methods:parameterization}. After each round of
+physical experiments, the surrogate is refit and an acquisition
+function is maximized to recommend the next batch of designs to
+fabricate. The campaign is posed as a two-objective minimization:
+simultaneously minimize the filtered peak-acceleration ratio $t_{180}$
+and the per-drop rebound energy $E_{\mathrm{reb}}$ of
+Eq.~\eqref{eq:objectives}. Both objectives serve the same payload:
+$t_{180}$ bounds the peak shock it feels during the impact, and
+$E_{\mathrm{reb}}$ bounds the energy thrown back into it afterward,
+and the two genuinely trade off in the measured seed round (the
+strongest attenuator exhibits the largest rebound). Implementation
+uses the Ax platform~\citep{pmlr-v293-olson25a} over
+BoTorch~\citep{balandat2020botorch}, with noisy expected hypervolume
+improvement (qNEHVI)~\citep{daulton2021nehvi} as the multi-objective
+acquisition. The working $T_3$-prism search space is fully continuous
+(the five variables of Table~\ref{tab:design-vars}), so no categorical
+encoding is required; the mixed-search-space constructions
+of~\citep{garridomerchan2020dealingwithcategorical} and the BOCS
+combinatorial baseline~\citep{baptista2018bocs} remain the route for
+the future connectivity-topology categorical rather than part of the
+current loop. The input-noise-robust acquisition of Daulton
 et~al.~\cite{daulton2022robust} and the evolution-guided constrained
-variant of Low et~al.~\cite{low2024evolution} are held in reserve as a
-contingency, to be adopted only if between-print variability is found
-to dominate the objective signal; they are not part of the default
-reported loop.
-The working $T_3$-prism search space is fully continuous (the five
-variables of Table~\ref{tab:design-vars}), so no categorical encoding
-is required for the present campaign; the mixed-search-space
-constructions of~\citep{garridomerchan2020dealingwithcategorical} and
-the BOCS combinatorial baseline~\citep{baptista2018bocs} are noted as
-the route for the future connectivity-topology categorical
-(Section~\ref{sec:methods:parameterization}) rather than as part of
-the current loop.
+variant of Low et~al.~\cite{low2024evolution} are held in reserve as
+contingencies.
 
-The GP surrogate uses a Mat\'ern-5/2 kernel with automatic relevance
-determination (ARD), i.e.\ a separate length scale per input dimension,
-so that per-variable sensitivities can be read directly from the fitted
-length scales. Inputs are normalized to the unit cube and outputs are
-standardized; observation noise is \emph{inferred} by the model (a
-learned homoscedastic noise level) rather than fixed a priori. The
-campaign budget is an $n = 9$ Sobol initialization batch
-(Table~\ref{tab:design-vars}) followed by $T = 10$ sequential
-optimization batches of $q = 5$ prints each, i.e.\ $9 + 50 = 59$
-specimens in total. Random seeds for the Sobol generator and
-the acquisition optimizer are recorded per batch so that each
-recommendation is reproducible.\todo{Confirm the final budget
-($T=10$ batches of $q=5$) against printer throughput once the campaign
-is underway.}
+\paragraph{Surrogate and noise model} The surrogate is the fully
+Bayesian sparse axis-aligned subspace model
+(SAASBO)~\citep{eriksson2021saasbo}: a Mat\'ern-5/2 kernel with
+automatic relevance determination whose length scales carry strong
+sparsity-inducing priors and are marginalized by Markov-chain Monte
+Carlo rather than point-estimated. We retain SAASBO even though the
+dimensionality is modest because marginalizing the hyperparameters
+tends to improve uncertainty quantification at the very small sample
+sizes of physical campaigns; the fitted model is audited each round
+with leave-one-out cross-validation and length-scale-based sensitivity
+diagnostics against a standard single-task GP with the same kernel
+(Section~\ref{sec:results}). Inputs are normalized to the unit cube
+and outputs standardized. Observation noise is supplied per
+observation as the per-drop standard error of the 99-drop stabilized
+mean, with the print-to-print mass scatter (measured from the one
+design printed in triplicate) folded into the rebound-energy noise.
+An independent adversarial review of this noise model
+(Section~\ref{sec:discussion}) argues that per-drop standard errors
+understate the decision-relevant article-to-article variance and that
+an article-level noise floor near 0.7\% CV should replace them; the
+round-3 refit adopts that correction.
 
-\paragraph{Implementation status.} The campaign harness is built on
-the Ax platform~\citep{pmlr-v293-olson25a}. The working $T_3$-prism
-search space is the five-variable continuous box of
-Table~\ref{tab:design-vars}; Ax's \texttt{HierarchicalSearchSpace}
-machinery is reserved for the planned topology/tiling extensions
-(Section~\ref{sec:methods:parameterization}) and is not exercised by
-the current continuous-only prototype. The first physical batch
-consists of $n = 9$ specimens generated by a Sobol sequence over these
-five variables and printed in a single $3 \times 3$ plate layout.
-For this ${\sim}5$--$6$-variable space the default acquisition pairing
-is sparse axis-aligned subspace BO (SAASBO)~\citep{eriksson2021saasbo}
-with qNEHVI. We retain
-SAASBO even though the dimensionality is modest because its strong
-priors on length scales tend to improve uncertainty quantification and
-predictive accuracy at the small sample sizes typical of physical
-campaigns, not only in high-dimensional settings; to make this an
-empirical rather than asserted choice, the reported campaign benchmarks
-SAASBO against a standard single-task GP baseline with the same
-Mat\'ern-5/2 ARD kernel (retrospective leave-one-out calibration and
-predictive accuracy on the accumulated data). Escalation to
-trust-region BO (TuRBO)~\citep{eriksson2019turbo} is planned only if larger
-per-member-diameter tilings push the design space well beyond this
-regime. The campaign code and recommended batches will be archived at
-a Zenodo-minted DOI mirroring the GitHub
-repository.\todo{Insert the Zenodo DOI and release version for the
-campaign code once the repository snapshot is published; cite the BO
-scaffolding (PR~\#30), the $T_3$-prism Sobol batch (PR~\#35), and the
-heterogeneous-parameter Edison brief (\texttt{5191cf4d}) once those
-branches land in \texttt{main}.}
+\paragraph{Mass treatment} Because the constant \emph{solid}-mass
+projection does not hold printed grams constant
+(Section~\ref{sec:methods:parameterization}), printed mass correlates
+strongly with the shape variables in the seed round
+($r = 0.83$ against $t_{180}$ across the mapped articles). The loop
+therefore makes mass explicit rather than pretending it away: the
+rebound objective is expressed in absolute millijoules using each
+article's weighed mass, so added grams are re-penalized through the
+energy they deliver back to the payload, while $t_{180}$ deliberately
+stays a ratio because payload peak acceleration is a damage criterion
+that does not scale with specimen mass. Printed mass is additionally
+attached as a tracking metric, so the surrogate learns as-printed mass
+as a function of the design coordinates and every recommendation
+reports a predicted printed mass. A calibrated printed-mass model that
+would let future rounds hold \emph{printed} grams constant is described
+in the Supplementary Information.
 
-Once the campaign produces model data, the fitted surrogate is audited
-with the leave-one-out cross-validation and parameter-sensitivity
-diagnostics of Figs.~\ref{fig:loocv} and~\ref{fig:sensitivity}.
-\todo[inline]{The previous BO-loop schematic here was redundant with the
-  overview figure (Fig.~\ref{fig:overview}); per review it is replaced with
-  surrogate-diagnostic figures. Figs.~\ref{fig:loocv}--\ref{fig:pareto} are
-  currently \emph{illustrative examples} produced by a real Ax/BoTorch loop on
-  synthetic objective values
-  (\texttt{scripts/figures/ax\_placeholder\_figures\_example.py}); replace the
-  synthetic \texttt{evaluate()} with measured outcomes once the campaign runs.}
+\paragraph{Budget and seeding} The seed round is an $n = 9$ Sobol
+draw with a recorded seed over the five-variable box, printed together
+with the fixed reference prism (S0). Optimization proceeds in
+sequential batches of $q = 9$ prints, sized to one build-plate
+generation cycle; the first model-recommended batch (Ax trials 10
+to 18) is reported in Section~\ref{sec:results}. All random seeds,
+the full experiment state, and the recommendation tables are recorded
+per round so that each batch is exactly reproducible. Escalation to
+trust-region BO (TuRBO)~\citep{eriksson2019turbo} is planned only if
+per-member-diameter extensions push the design space well beyond the
+present regime; a single-objective log-Expected-Improvement
+run~\citep{ament2023logei} on $t_{180}$ is retained as a baseline for
+quantifying the benefit of the multi-objective formulation. The
+campaign code and recommended batches will be archived at a
+Zenodo-minted DOI mirroring the GitHub repository.\todo{Insert the
+Zenodo DOI and release version for the campaign code once the
+repository snapshot is published.}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-loocv-example.pdf}
-  \caption{\emph{Illustrative example (synthetic data).} Leave-one-out
-    cross-validation of the Gaussian-process surrogate---predicted vs.\ observed
-    specific energy absorption (SEA) and peak transmitted force, with model
-    error bars and $R^2_{\mathrm{LOO}}$---obtained from a real Ax/BoTorch run on
-    synthetic objective values. To be regenerated from campaign data.}
-  \label{fig:loocv}
-\end{figure}
+\subsection{Simulation Screening Ladder}
+\label{sec:methods:simulation}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-sensitivity-example.pdf}
-  \caption{\emph{Illustrative example (synthetic data).} Parameter-sensitivity
-    ranking (model length-scale--based importances per objective; cf.\ SAASBO
-    inverse length-scales or Sobol indices) of the design variables in
-    Table~\ref{tab:design-vars}, from the same Ax/BoTorch run as
-    Fig.~\ref{fig:loocv}.}
-  \label{fig:sensitivity}
-\end{figure}
+Alongside the physical loop we maintain a three-tier simulation ladder
+used for screening and hypothesis generation, never as ground truth.
+Tier~C (rigid struts with spring tendons in a rigid-body dynamics
+engine, roughly \SI{0.15}{s} per design) ranks large design sets;
+Tier~B (deformable struts with explicit tendon cross-sections,
+seconds to tens of seconds per design) restores the tendon-stiffness
+sensitivity that Tier~C is blind to; and Tier~A (hyperelastic
+finite-element contact simulation, about a minute per design after
+meshing) captures strut buckling and self-contact for a handful of
+designs. The ladder applies the same SAE~J211 CFC-180 filtering as the
+physical pipeline so simulated and measured records are processed
+identically. Its honest scorecard against the measured seed round is
+mixed and is reported as such: an intensive volumetric
+energy-absorption score computed at Tier~C is a strong
+\emph{cross-metric} predictor of the measured $t_{180}$ ranking
+(Spearman $\rho = -0.93$ across the seven mapped articles), yet the
+ladder's own simulated $t_{180}$ correlates only weakly with the
+measurement ($\rho \approx 0.5$), rigid-strut models cannot reproduce
+the observed amplification ($t_{180} > 1$ on seven of eight measured
+articles), and simulated restitution is design-invariant where the
+measured rebound is not. We therefore use the ladder to prioritize
+candidates and probe mechanisms (for example, the mass-confound
+diagnosis in Section~\ref{sec:discussion}) while keeping every
+surrogate observation physical. Full engine benchmarks and the
+simulation-side BO study, in which the same acquisition pipeline run
+on the Tier-C evaluator reaches 97\% of an exhaustively computed
+reference hypervolume while random and space-filling baselines reach
+61 to 66\%, are provided in the Supplementary Information.
 
 \subsection{Metal-Analog Validation}
 \label{sec:methods:validation}
@@ -928,9 +1043,11 @@ friction, pretension behavior, and strain-rate sensitivity all differ
 between the PLA/TPU and aluminum/steel systems, so agreement is not
 expected a priori. The rank-preservation criterion is fixed in advance
 as the Spearman rank-correlation coefficient $\rho_s$ between the two
-material systems' orderings of the primary metric (SEA), with peak
-transmitted force reported as a secondary ranking; $\rho_s$ near unity
-would support cross-system transfer of the learned design ranking.
+material systems' orderings of the primary campaign metric ($t_{180}$
+under the identical drop protocol), with the rebound energy
+$E_{\mathrm{reb}}$ and, once the quasi-static extension runs, SEA
+reported as secondary rankings; $\rho_s$ near unity would support
+cross-system transfer of the learned design ranking.
 Table~\ref{tab:metal-validation} reports the planned rank-ordering
 comparison and Fig.~\ref{fig:metal-validation} shows the assembled
 metal-analog and printed-polymer specimens for each performance tier.
@@ -941,10 +1058,11 @@ metal-analog and printed-polymer specimens for each performance tier.
     validation: representative $T_3$-prism designs predicted to be
     worst-, mid-, and best-performing, each fabricated as a printed
     PLA/TPU specimen and as a hollow-aluminum-rod / stainless-steel-cable
-    metal analog. Entries record the measured performance metric (e.g.\
-    SEA or peak transmitted force) and the resulting rank within each
-    material system; agreement of the two rankings indicates the
-    optimization transfers across material systems.}
+    metal analog. Entries record the measured performance metric
+    ($t_{180}$ under the identical drop protocol, with rebound energy
+    secondary) and the resulting rank within each material system;
+    agreement of the two rankings indicates the optimization transfers
+    across material systems.}
   \label{tab:metal-validation}
   \begin{tabular}{@{}llcc@{}}
     \toprule
@@ -977,96 +1095,257 @@ metal-analog and printed-polymer specimens for each performance tier.
 \label{sec:results}
 % =============================================================================
 
-\todo[inline,color=red!30]{Populate Results section once the
-experimental campaign produces data. Suggested subsections follow.}
+\subsection{Seed-Round Measurements}
+\label{sec:results:seed}
 
-\subsection{Convergence of the BO Loop}
-\todo{Plot best-so-far performance vs.\ number of physical experiments
-for each acquisition function, with confidence intervals over random
-seeds.}
-Figure~\ref{fig:convergence} illustrates the intended convergence
-comparison.
+All nine Sobol specimens and the reference prism were printed and
+declared acceptable to test; eight articles (six mapped Sobol designs,
+the reference prism, and one article pending a design mapping) have
+completed 101-drop characterization sessions to date, totaling over
+800 clean captures within a project-wide history of roughly 3{,}660
+instrumented drops. Table~\ref{tab:seed-results} reports the
+stabilized objectives. Three findings frame the round. First, the
+measured $t_{180}$ spans 0.893 to 1.062: seven of eight articles
+\emph{amplify} the peak shock reaching the top vertex, and a single
+design (Sobol spec~01, the thick-strut, thin-cable, high-twist corner
+of the batch) attenuates it by 11\%, a 17\% design-driven spread that
+dwarfs the 0.2 to 0.5\% within-specimen repeatability. Second, the two
+objectives trade off in this sample: the best attenuator returns the
+most rebound energy to the payload (13.9~mJ per drop), so the Pareto
+front is informative rather than degenerate, although the robustness
+of this trade-off at $n=8$ is limited (Section~\ref{sec:discussion}).
+Third, printed mass correlates strongly with $t_{180}$ ($r = 0.83$),
+which motivated the mass-aware objective formulation of
+Section~\ref{sec:methods:bo}. Figure~\ref{fig:seed-designs} renders
+the seed geometries to a common scale, showing how widely the
+constant-mass box spans aspect ratio, member sizing, and twist.
+
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-convergence-example.pdf}
-  \caption{\emph{Illustrative example (synthetic data).} Best-so-far SEA vs.\
-    number of physical experiments for the Ax/BoTorch loop against an
-    independent random-search baseline; the shaded region is the $n=9$ Sobol
-    initialization. Generated on synthetic objective values; to be replaced with
-    campaign results (with confidence intervals over random seeds, and Pareto
-    hypervolume for the multi-objective runs).}
-  \label{fig:convergence}
+  \includegraphics[width=\linewidth]{../figures/bo/fig-seed-designs.png}
+  \caption{The nine seed geometries rendered to a common millimeter
+    scale (rigid PLA struts in black, TPU tendons in orange). Every
+    rendering corresponds to a physically printed article in the seed
+    campaign.}
+  \label{fig:seed-designs}
 \end{figure}
 
-\subsection{Pareto-Optimal Designs}
-\todo{Show 3--5 representative geometries from along the Pareto front
-trading SEA against peak transmitted force.}
-Figure~\ref{fig:pareto} shows the form the Pareto-front presentation will take.
-\begin{figure}[t]
+\begin{table*}[t]
   \centering
-  \includegraphics[width=0.92\linewidth]{../figures/examples/ax-pareto-example.pdf}
-  \caption{\emph{Illustrative example (synthetic data).} Pareto front in
-    (peak transmitted force, SEA) space with all evaluated designs, from the
-    Ax/BoTorch loop on synthetic objective values; representative geometries to
-    be annotated once campaign data are available.}
+  \caption{Seed-round drop-tower results: 101 drops per article at
+    \SI{60}{in} onto the standardized polyurethane surface, CFC-180
+    filtering, first two drops discarded. Means $\pm$ one standard
+    deviation over the stabilized drops. $E_{\mathrm{reb}}$ uses each
+    article's weighed mass per Eq.~\eqref{eq:objectives}. The ringdown
+    frequency $f_n$ is a print-health descriptor, not an objective.
+    Article \textit{amdjwm} lacks a confirmed design mapping and is
+    excluded from the surrogate fit; spec~03 was tested but its session
+    was not yet uploaded at the time of writing; specs 06 and 07 are
+    printed and pending test.}
+  \label{tab:seed-results}
+  \small
+  \begin{tabular}{@{}llS[table-format=2.2]S[table-format=1.4]@{\,$\pm$\,}S[table-format=1.4]S[table-format=2.1]S[table-format=3.0]@{}}
+    \toprule
+    Design & Article & {Mass (g)} & \multicolumn{2}{c}{$t_{180}$} &
+    {$E_{\mathrm{reb}}$ (mJ)} & {$f_n$ (Hz)} \\
+    \midrule
+    Spec 01 & 6lhxfy & 18.50 & 0.8931 & 0.0042 & 13.9 & 368 \\
+    Spec 05 & 6nheas & 21.73 & 0.9970 & 0.0032 & 13.1 & 322 \\
+    (unmapped) & amdjwm & {--} & 0.9805 & 0.0025 & {--} & 455 \\
+    S0 ref. & bpx68c & 20.23 & 1.0111 & 0.0024 & 6.2 & 468 \\
+    Spec 00 & 9hhbkp & 21.62 & 1.0183 & 0.0017 & 7.0 & 364 \\
+    Spec 04 & nvxsrv & 20.66 & 1.0275 & 0.0044 & 8.2 & 294 \\
+    Spec 02 & autv5r & 22.04 & 1.0404 & 0.0035 & 8.8 & 386 \\
+    Spec 08 & bag26v & 21.42 & 1.0616 & 0.0051 & 7.7 & {--} \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\subsection{Round-1 Surrogate, Pareto Set, and Recommended Batch}
+\label{sec:results:round1}
+
+Figure~\ref{fig:pareto} shows the measured objective space, the
+non-dominated set, and the model-recommended round-2 batch at its
+posterior-mean predictions. The observed Pareto set comprises three
+articles (6lhxfy, 6nheas, and the reference prism bpx68c), and the
+model-predicted Pareto set selects the same three. The nine
+recommended designs (Ax trials 10 to 18) concentrate in the
+low-$t_{180}$ region near and beyond the current best attenuator;
+they have been sliced and sent to the printer, and their measured
+outcomes will populate the predicted-versus-measured comparison in
+the next revision.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.85\textwidth]{../figures/bo/t3-prism-bo-round1-pareto.png}
+  \caption{Measured round-1 objective space. Open circles are tested
+    articles (labeled by print ID) at their stabilized means; the blue
+    markers and line are the observed Pareto front; orange diamonds are
+    the nine model-recommended round-2 designs at their posterior-mean
+    predictions. Both axes improve downward. The observed front and the
+    model-predicted front select the same three articles.}
   \label{fig:pareto}
+\end{figure*}
+
+\paragraph{Surrogate audit} Figure~\ref{fig:sensitivity} reports the
+SAASBO feature importances (normalized inverse length scales, median
+over the Monte Carlo draws with interquartile whiskers, over the five
+design variables plus printed mass) and Fig.~\ref{fig:loocv} the
+leave-one-out cross-validation. The honest reading at this sample
+size is that the sparsity prior has \emph{not} identified a dominant
+subspace: no input separates decisively from the equal-share line
+(one sixth), with cell height leading for $t_{180}$ and base radius
+for the rebound energy, and most interquartile bands straddling the
+line. Cross-validation tells the same two-sided story: the model
+captures the $t_{180}$ ordering usefully (mean absolute percentage
+error 2.6\%, $r = 0.70$) but has no predictive skill yet on the
+rebound energy ($r = -0.12$), which is consistent with the
+adversarial review's finding that the rebound channel's noise was
+understated. We report these as the expected behavior of a
+five-variable space observed at seven mapped articles rather than as
+evidence for or against variable relevance; the diagnostics are
+refreshed every round.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{../figures/bo/t3-prism-bo-round1-feature-importance.png}
+  \caption{Round-1 SAASBO feature importances per objective
+    (normalized inverse length scales; median over MCMC draws,
+    interquartile whiskers; inputs are the five design variables plus
+    printed mass). No input separates decisively from the equal-share
+    line (dashed) at seven mapped articles.}
+  \label{fig:sensitivity}
 \end{figure}
 
-\subsection{Reproducibility Across Print Replicates}
-\todo{Report between-print variability (CV) for top-ranked designs;
-informs the choice of input-noise-robust acquisition.}
-\tabplaceholder{repeatability}{Mean and CV of SEA, peak force, and
-compaction efficiency across $n$ replicate prints for the top-$k$
-designs.}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{../figures/bo/t3-prism-bo-round1-loocv.png}
+  \caption{Round-1 leave-one-out cross-validation of the SAASBO
+    surrogate: predicted versus observed values with model error bars
+    for both objectives.}
+  \label{fig:loocv}
+\end{figure}
+
+\subsection{Later-Round Placeholders}
+Round-2 outcomes, the budget-matched baseline comparison, the
+SAASBO-versus-standard-GP calibration audit, and the replicate-article
+repeatability study are pending data and will complete this section.
+\todo[inline,color=red!30]{Populate once round-2 articles are tested:
+(1) predicted-versus-measured landing plot and updated Pareto front;
+(2) hypervolume versus experiment count against a budget-matched
+random/Sobol baseline; (3) SAASBO versus standard single-task GP
+calibration comparison on the accumulated data; (4) replicate-article
+repeatability table (the round-3 plan reserves print capacity for
+replicates per the adversarial objective review).}
 
 % =============================================================================
 \section{Discussion}
 \label{sec:discussion}
 % =============================================================================
 
-\todo[inline,color=red!30]{Populate Discussion section once Results are
-in. Anchor against the gaps identified in Section~\ref{sec:introduction}
-and the prior work cited in Section~\ref{sec:background}.}
+\paragraph{What the seed round establishes} The round-1 data settle
+three questions the planned-methods stage could only pose. The
+end-to-end loop closes: printed articles, hundred-drop
+characterizations, a fitted fully Bayesian surrogate, and a
+model-recommended batch on the printer within days of the last seed
+measurement. The objectives discriminate: a 17\% design-driven spread
+in $t_{180}$ against sub-percent repeatability is a usable signal.
+And the physics is more adversarial than the cushioning intuition
+suggests: at this scale and rate, most of the printed prisms
+\emph{amplify} the peak shock reaching their top vertex, which
+sharpens the campaign question from ``how much does the architecture
+cushion'' to ``which corner of the design space crosses into genuine
+attenuation, and at what rebound cost.''
 
-Topics to address:
-\begin{itemize}
-  \item Comparison to the simulation-driven multifidelity framework of
-    Mo et~al.~\cite{mo2023accelerated} and the single-condition
-    fabrication study of Pajunen
-    et~al.~\cite{pajunen2019design}.
-  \item Practical considerations: TPU--PLA interface durability under
-    cyclic loading; sensitivity of optimal designs to print parameters
-    (extrusion temperature, layer height); transferability to TPU/PETG
-    or other high-temperature thermoplastics.
-  \item Path forward toward integrated tread+lattice
-    structures, miniaturization to crutch-tip envelopes
-    (\todo{19--25\,mm} from the Edison crutch-tip synthesis), and
-    field testing. Long-term crutch use is associated with substantial
-    upper-extremity overuse injury and ground-reaction-force
-    impulses~\citep{requejo2005upperextremitykinetics,
-    rasouli2020walkingassistanceusing, manocha2021injuriesassociatedwith,
-    brasilbarrosdasilva2022painmappingand,
-    dozono2015peripheralneuropathiesin}; existing
-    spring-loaded~\citep{segura2007mechanicsofambulation,
-    zhang2011biomechanicalevaluationof} and
-    polymer-damped~\citep{macgillivray2016theinfluenceof} tip designs
-    reduce loading rate but not peak transmitted force, leaving an
-    open design opportunity that an architected
-    tensegrity-inspired insert is well-positioned to address. Recent
-    open-source 3D-printed crutch
-    work~\citep{mottaghi2025opensource3dprintable} and expert
-    evaluations of orthopaedic
-    caps~\citep{stasiakcieslak2025expertevaluationof} suggest a
-    plausible translation path; adjacent footwear and orthotic
-    lattice studies~\citep{wang2025porouslatticestructure,
-    zhang2024pressurereducingdesignof,
-    janarthanan2024additivemanufacturingof} provide additional
-    transferable design heuristics.
-\end{itemize}
+\paragraph{Honest accounting of the objective stack} We
+pre-registered an adversarial, data-first review of the objective
+choices with an external AI referee that was required to commit to
+its own objective set from the raw campaign files before reading
+ours. Its findings temper the round-1 formulation and set the round-3
+revision: the rebound fraction $e_{\mathrm{reb}}$ rests on a ballistic
+interpretation of the second contact event that has not yet been
+validated against synchronized video (a restrained-versus-unrestrained
+check is scheduled); the apparent $t_{180}$-versus-rebound trade-off
+is driven substantially by the single strongest attenuator (Spearman
+$\rho = -0.39$, $p = 0.38$ across the reliable articles); and
+per-drop standard errors understate article-level uncertainty by
+roughly an order of magnitude relative to the 0.72\% between-article
+CV measured in a five-print repeatability study. The round-3 plan
+therefore refits with article-level noise, treats rebound as a
+candidate constraint pending its validation, and reserves print
+capacity for replicate articles. We report this trajectory rather
+than presenting the round-1 choices as final because the loop is the
+contribution and revising objectives mid-campaign, with the revision
+criteria stated in advance, is how such loops behave in practice.
 
-\paragraph{Limitations.} \todo{Identify limitations: design space
-size relative to experimental budget; reliance on a single fabrication
-platform; metric selection (axial impact only).}
+\paragraph{Mass as a confound and as a design variable} Holding
+solid CAD mass constant did not hold printed grams constant: PLA
+prints at partial infill while thin TPU cables print near solid, so
+the seed articles span \SIrange{18.50}{22.29}{g} and printed mass
+correlates with $t_{180}$ at $r = 0.83$. Because light articles
+\emph{are} the thick-strut, thin-cable corner by construction,
+regressing mass out at $n = 8$ would delete the very signal the
+campaign seeks; the mass-aware rebound objective and the tracked mass
+metric are the round-1 compromise, and the calibrated printed-mass
+model (Supplementary Information) enables a constant-printed-mass
+projection for later rounds.
+
+\paragraph{Relation to prior art} Relative to Pajunen
+et~al.~\cite{pajunen2019design}, the present work varies the geometry
+under an optimization loop rather than characterizing a single
+fabrication condition; relative to Mo
+et~al.~\cite{mo2023accelerated}, the loop's ground truth is physical
+measurement with simulation demoted to a screening ladder whose
+predictive reach we quantify rather than assume
+(Section~\ref{sec:methods:simulation}). The measured near-unity
+transmission of most seed articles also cautions against reading the
+printed-tensegrity literature's attenuation results as generic: the
+as-printed cells here are not pretensioned, and activating genuine
+pretension in additively manufactured tensegrity (for example through
+shrink-on-treatment routes) is an open direction we deliberately
+scope out of the present campaign.
+
+\paragraph{Practical considerations and path forward} TPU-PLA
+interface durability under repeated impact (hundred-drop sessions
+produced no joint failures, an encouraging if unquantified signal),
+sensitivity to print-process covariates (the print key logs defects,
+humidity, and the mid-batch nozzle change for exactly this purpose),
+and transfer to other material pairs remain open. The path forward
+includes the quasi-static crush characterization
+(Section~\ref{sec:methods:testing}), pretension activation, tiled
+multi-cell absorbers and lattices~\citep{sabounizawadzka2024experimental},
+and miniaturization to crutch-tip envelopes: long-term crutch use is
+associated with substantial upper-extremity overuse injury and
+ground-reaction-force impulses~\citep{requejo2005upperextremitykinetics,
+rasouli2020walkingassistanceusing, manocha2021injuriesassociatedwith,
+brasilbarrosdasilva2022painmappingand,
+dozono2015peripheralneuropathiesin}; existing
+spring-loaded~\citep{segura2007mechanicsofambulation,
+zhang2011biomechanicalevaluationof} and
+polymer-damped~\citep{macgillivray2016theinfluenceof} tip designs
+reduce loading rate but not peak transmitted force, and recent
+tensegrity crutch concepts~\citep{gu2026tensegritycrutches} and
+open-source 3D-printed crutch
+work~\citep{mottaghi2025opensource3dprintable} suggest a plausible
+translation path, with adjacent footwear and orthotic lattice
+studies~\citep{wang2025porouslatticestructure,
+zhang2024pressurereducingdesignof,
+janarthanan2024additivemanufacturingof} providing transferable design
+heuristics.
+
+\paragraph{Limitations} The evidence base is a single seed round on
+single prints of each design ($n = 1$ article per geometry, with one
+triplicate); the drop protocol probes one height, one impact surface,
+and axial loading only; the specimens never leave the elastic regime,
+so crush-energy metrics await the quasi-static campaign; per-specimen
+energy absorption in joules is not recoverable from the current rig
+(the falling-mass and displacement channels required for a force
+integral are not instrumented); one tested article lacks a design
+mapping and one seed design's official article assignment carries a
+recorded discrepancy; and all results are from a single printer,
+material pair, and cell topology. The metal-analog protocol
+(Section~\ref{sec:methods:validation}) and the pre-registered
+revision plan above are the designed responses to these limits.
 
 % =============================================================================
 \section{Conclusions}
@@ -1075,19 +1354,24 @@ platform; metric selection (axial impact only).}
 
 We have presented an experiment-driven Bayesian-optimization framework
 for designing multi-material 3D-printed tensegrity-inspired energy
-absorbers using PLA struts and TPU tension elements. The framework
-parameterizes a family of unit cells, fabricates each candidate on a
-single multi-material FDM platform with TPU tendons anchored inside the
-PLA strut ends, characterizes the response under
-quasi-static compression and drop-weight impact, and updates a
-Gaussian-process surrogate~\citep{balandat2020botorch} that recommends
-the next batch of designs. \todo{Two-sentence quantitative summary of
-the headline outcome (e.g., improvement in SEA over baselines within
-$N$ rounds; identification of a Pareto-optimal geometry validated by
-replicate prints).} The approach is broadly applicable to architected
+absorbers using PLA struts and TPU tension elements, and we have
+closed its first loop on physical hardware. The framework
+parameterizes a five-variable $T_3$-prism family under a constant-mass
+fairness projection, fabricates each candidate in a single
+multi-material FDM build with TPU tendons anchored inside the PLA
+strut ends, characterizes every article with 101 instrumented drops,
+and updates a fully Bayesian Gaussian-process
+surrogate~\citep{balandat2020botorch, eriksson2021saasbo} that
+recommends the next batch. In the nine-design seed round the filtered
+peak-acceleration ratio spanned 0.89 to 1.06 against sub-percent
+repeatability, one design crossed into genuine attenuation, and the
+first model-recommended batch of nine designs has been generated and
+sent to fabrication. \todo{Add the round-2 headline (predicted versus
+measured, hypervolume gain over the budget-matched baseline) once the
+batch is tested.} The approach is broadly applicable to architected
 absorbers whose constitutive response is difficult to calibrate from
-first principles and where physical experiments---rather than
-simulations---are the natural ground truth.
+first principles and where physical experiments, rather than
+simulations, are the natural ground truth.
 
 % =============================================================================
 % Back matter
@@ -1104,10 +1388,10 @@ acknowledgment-text guidelines.}
 
 \section*{Funding Data}
 \begin{itemize}
-  \item Brigham Young University Mentored Research Grant
-        (\todo{award number}).
-  \item \todo{Add Utah NASA Space Grant Consortium award if applicable.}
+  \item Brigham Young University Mentored Research Grant.
 \end{itemize}
+\todo[inline]{Insert the MRG award number, and add the Utah NASA Space
+Grant Consortium award if applicable.}
 
 \section*{Conflict of Interest}
 The authors declare no conflict of interest.
