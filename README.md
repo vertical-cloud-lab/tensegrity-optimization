@@ -24,6 +24,11 @@ This proposal develops a multifidelity Bayesian optimization framework to design
 │   ├── coverpage.tex         # MRG cover page (abstract, budget table, external funding)
 │   ├── budget.tex            # Budget table and justification
 │   └── biosketch.tex         # PI and Co-PI biographical sketches
+├── models/                   # Reference tensegrity STL models + generator (issue #21)
+│   ├── stl/                  # Pre-generated binary STLs (3-bar, 4-bar, icosahedron)
+│   ├── generate_stl.py       # Self-contained Python generator (stdlib only)
+│   └── README.md             # Catalog, geometry, references, external links
+├── figures/
 ├── Makefile                  # Build commands
 ├── .gitignore
 └── README.md
