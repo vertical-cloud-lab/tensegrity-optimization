@@ -151,10 +151,15 @@ MUJOCO_GL=osmesa python simulations/pareto_render_campaign.py --n 2048
 # -> outputs/pareto_summary.md
 
 # The PR #102 bench campaign, matched in simulation (PR comment 5365740315)
-#   Sub-100 % PLA infill -> printed mass / effective strut density + modulus,
-#   and the PR #35 constant-mass projection from base coords to the article
-#   that is actually printed.
+#   Sub-100 % PLA infill -> printed mass / effective strut density + modulus.
 python simulations/print_infill.py
+#   The constant-*printed*-mass projection from base coords to the article
+#   that is actually printed (PR #102 commit 2f1ca2e), calibrated here from
+#   the committed batch table + print key.  Replaces the constant-*solid*-mass
+#   projection in the objective path: holding solid mass constant leaves
+#   printed mass free, and e_reb_mJ is proportional to mass, so the objective
+#   became the mass (rho = 0.9999 over the reference sweep).
+python simulations/pr102_mass_model.py
 # MuJoCo analogue of the 60 in / PU-mat drop, in the bench's own two
 # objectives (CFC-180 transmissibility t180, rebound energy e_reb_mJ).
 python simulations/drop_tower_sim.py --calibrate   # refit the mat to the rig

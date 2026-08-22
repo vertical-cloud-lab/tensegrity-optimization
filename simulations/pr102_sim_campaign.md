@@ -53,10 +53,85 @@ measured), and the constant-mass projection reproduces the batch table's own
 `scale` column to about 2 %.
 
 That projection matters on its own: the campaign's search space is the
-*base* Sobol coordinates, and PR #35 prints the uniform rescale of them that
-hits a fixed solid-CAD mass. Across the batch the scale runs 0.74 to 1.08,
+*base* Sobol coordinates, and what gets printed is the uniform rescale of
+them that hits a mass target. Across the batch the scale runs 0.74 to 1.08,
 so simulating the base coordinates would simulate an article up to a quarter
 of a size away from the one on the bench. `evaluate_pr102` projects first.
+
+### Which mass the projection holds constant, and why the first answer was wrong
+
+The first version of this study projected onto PR #35's Route-A manifold:
+uniformly rescale until the *solid* CAD mass equals 30.95 g. That is what
+round 1 was actually built to, and it is not constant printed mass. All nine
+articles sit at 30.95 g solid and weigh 18.50 to 22.29 g on the scale,
+because PLA prints sparse while thin TPU prints near solid and the PLA/TPU
+split moves with the shape.
+
+For the second objective that is fatal rather than untidy. `e_reb_mJ` is an
+*absolute* energy, `e_rebound * m * g * h`, deliberately so: a lighter
+article returning the same velocity fraction returns less energy to the
+payload. Multiply a near-constant fraction by a mass that is free to swing
+and you get the mass. Measured on the 68,944-design reference sweep that ran
+with the old projection: printed mass spanned 32 %, simulated `e_rebound`
+spanned 0.34 %, and rho(`e_reb_mJ`, `mass_g`) came out at **0.99993**. The
+objective *was* the mass, and the campaign's apparent convergence on it
+(complete by design 5, before the surrogate existed) was the optimizer
+finding the lightest corner of a box.
+
+PR #102 closed the same hole on the bench side in commit `2f1ca2e`: project
+onto constant *printed* mass instead, and carry `mass_printed_g` as a sixth
+BO parameter confined to a narrow slab, target +/- 0.457 g, the sample sd of
+the spec-08 triplicate. Competing shapes are then compared at the same mass,
+and the part of the objective spread that is mass is attributed to the mass
+parameter rather than to the shape.
+
+[`pr102_mass_model.py`](pr102_mass_model.py) is that projection, ported and
+re-calibrated here from the CSVs already committed under `data/pr102/` so
+the constants are traceable rather than copied. The model is a two-stage
+fit: analytic body volumes to rendered solid grams, then rendered solid
+grams to weighed printed grams through a wall-plus-infill law whose PLA
+solid fraction depends on the *printed* strut diameter, with the six
+absolute-size sensor housings carried as a non-scaling offset. It is worth
+porting rather than reusing the two flat solidity factors above, which are
+the same flat fit PR #102 reports as its own contrast case:
+
+| fit | residual sd over the 12 weighed articles |
+|---|--:|
+| wall + infill, strut-diameter dependent | **0.378 g** |
+| two flat densities (0.565 PLA / 0.996 TPU) | 0.927 g |
+| print-to-print scatter, spec-08 triplicate | 0.457 g |
+
+So the ported model is as accurate as the process is repeatable and the flat
+one is twice as coarse. Independent check: re-projected onto 20.23 g the S0
+reference article comes out at scale 1.1335 against the 1.1538 it was
+printed at, 1.8 % off.
+
+What the correction does to the objective, on a 256-point Sobol set over the
+box:
+
+| | constant solid mass (old) | constant printed mass (new) |
+|---|--:|--:|
+| `e_reb_mJ` relative span | 0.316 | 0.047 |
+| `mass_g` relative span | 0.316 | 0.045 |
+| `e_rebound` relative span | 0.003 | 0.005 |
+| rho(`e_reb_mJ`, `mass_g`) | 0.9999 | 0.997 |
+| rho(`e_reb_mJ`, `e_rebound`) | 0.505 | 0.026 |
+
+The leak is now bounded to the declared print scatter. It also makes a
+second problem unmissable: **with mass controlled, this simulation has only
+one live objective.** rho(`e_reb_mJ`, `e_rebound`) = 0.026 says the
+simulated restitution does not respond to the design at all, which follows
+directly from the mat calibration decision in section 2 (calibrated to the
+measured input pulse, not to the measured restitution, so simulated
+`e_rebound` sits near 0.61 against a measured 0.02 to 0.05). The bench's own
+`e_rebound` spans 2.5x across the articles, so the *measured* objective is
+real; the simulated stand-in for it is not. Read anything the simulation
+says about `e_reb_mJ` as mass bookkeeping, and read `t180` as the only
+objective the model is optimizing.
+
+`--manifold solid` still reproduces the old behaviour, kept so the round-1
+articles can be scored on the manifold they were actually printed on and so
+the earlier numbers in this file stay reproducible.
 
 ## 2. The drop-tower analogue
 
@@ -86,6 +161,12 @@ energy the rig actually loses leaves through paths the model does not carry
 comes out around 0.6 against a measured 0.02 to 0.05, and is treated as a
 rank proxy, not a prediction.
 
+Section 1 sharpens that: once mass is held constant it is not even a rank
+proxy, because simulated `e_rebound` varies by 0.5 % over the whole box and
+does not order the designs at all (rho against `e_reb_mJ` = 0.026). Fixing
+the mass normalization did not create that; it removed the mass that was
+hiding it.
+
 The same honesty applies to `t180` itself: the simulated S0 article reads
 0.707 against a measured 1.011. Rigid struts have no bending modes, so the
 model has no mechanism for the *amplification* every tested article except
@@ -106,57 +187,71 @@ the leader clears Bonferroni, the rest of the top block does not.
 
 **Measured `t180`.** `rel_span` is the observable's range over its mean
 across the seven articles, and it is not decoration: it separates a real
-design effect from a rank that rides on numerical structure.
+design effect from a rank that rides on numerical structure. Each article is
+simulated at the mass its own print weighed, by solving the
+constant-printed-mass projection for that mass, rather than at a batch
+target: these are specific prints and their masses are known, so using
+anything else would put a known quantity into the residual.
 
 | simulated observable | Spearman rho | p | rel_span |
 |---|--:|--:|--:|
-| `lander_eta` (compaction efficiency, lander regime) | **-0.96** | 0.0005 | **0.0013** |
-| `lander_SEA_J_per_cm3` | **-0.93** | 0.003 | 2.38 |
+| `lander_SEA_J_per_cm3` | **-0.93** | 0.003 | 2.31 |
+| `sim_in_180_g` | -0.89 | 0.007 | **0.0009** |
 | `crutch_SEA_J_per_cm3` | -0.89 | 0.007 | 1.86 |
-| `lander_SEA_J_per_g` | -0.89 | 0.007 | 2.93 |
-| `crutch_SEA_J_per_g` | -0.86 | 0.014 | 1.99 |
+| `lander_SEA_J_per_g` | -0.89 | 0.007 | 2.85 |
+| `crutch_SEA_J_per_g` | -0.86 | 0.014 | 2.00 |
 | `H_mm` (a design coordinate, for scale) | +0.79 | 0.036 | 0.47 |
-| `sim_t180` (the drop-tower analogue itself) | +0.46 | 0.29 | 0.33 |
-| `sim_in_180_g` | 0.00 | 1.00 | 0.001 |
+| `footprint_mm2` | -0.75 | 0.052 | 0.81 |
+| `lander_eta` (compaction efficiency, lander regime) | -0.71 | 0.071 | **0.0012** |
+| `sim_t180` (the drop-tower analogue itself) | +0.50 | 0.25 | 0.25 |
 
-**Measured `e_reb_mJ`:** nothing clears p = 0.05. The best are `R_mm`
-(+0.71, p = 0.07), `sim_e_rebound` (-0.64, p = 0.12) and `sim_t180` (-0.57,
-p = 0.18).
+**Measured `e_reb_mJ`:** the best is `lander_eta` at +0.82 (p = 0.023) on a
+0.12 percent span, then `R_mm` (+0.71, p = 0.071) and `sim_solid_e_reb_mJ`
+(+0.68, p = 0.094). Nothing clears Bonferroni over ~30 screened observables.
 
-Three readings, in order of how much they should change what we do:
+Four readings, in order of how much they should change what we do:
 
-1. **The purpose-built analogue is not the best predictor; the incidental
-   Tier-C observables are.** `sim_t180` lands at rho = +0.46 (p = 0.29)
-   while the Tier-C observables built for the crutch and lander regimes --
-   a completely different question -- rank the bench articles at -0.86 to
-   -0.96. The sign is the physical part: articles whose simulated pulse is
-   flatter and whose stored elastic energy per unit volume is higher are the
-   articles that measured *lower* transmissibility.
-   **The one worth attaching to the campaign GP is `SEA_J_per_cm3`**
-   (rho = -0.93 for the lander regime, -0.89 for the crutch), not
-   `lander_eta` despite its higher rho: eta moves 0.13 percent across the
-   seven articles (0.7326 to 0.7334) while the volumetric SEA moves 240
-   percent. A perfect ranking over a 0.1 percent span is a ranking of
-   numerical structure until a perturbation study says otherwise, and the
-   earlier Edison reviews in this thread already flagged Tier-C `eta` as a
-   pinned observable. Take `lander_eta` as a lead to test, and
-   `SEA_J_per_cm3` as the prior to use.
-2. **The rebound objective has no simulated predictor yet.** Every candidate
-   fails at n = 7. Given that the mat calibration explicitly gave up on
-   restitution, this is the expected result rather than a surprising one,
-   and it means `e_reb_mJ` should be modeled from bench data alone until a
-   tier that carries the rig's loss paths exists.
-3. **`sim_in_180_g` is rho = 0.00 by construction and that is a good sign.**
-   The input peak is the rig, not the design; a calibrated mat should give
-   the same input to every article, and it does. It is the null control for
-   the rest of the table.
+1. **The purpose-built analogue is still not the best predictor; the
+   incidental Tier-C observables are.** `sim_t180` lands at rho = +0.50
+   (p = 0.25) while the Tier-C observables built for the crutch and lander
+   regimes -- a completely different question -- rank the bench articles at
+   -0.86 to -0.93. The sign is the physical part: articles whose stored
+   elastic energy per unit volume is higher are the articles that measured
+   *lower* transmissibility. **The one worth attaching to the campaign GP is
+   `SEA_J_per_cm3`** (rho = -0.93 lander, -0.89 crutch), which moves 231
+   percent across the seven articles and is the only leader with both a
+   significant rank and a real span.
+2. **The caution attached to `lander_eta` last time was right, and it did not
+   survive.** It led the `t180` table at rho = -0.96 on a 0.13 percent span,
+   flagged then as "a ranking of numerical structure until a perturbation
+   study says otherwise". Re-projecting every article onto its own weighed
+   mass is that perturbation, and `lander_eta` fell to -0.71 (p = 0.07) and
+   changed which objective it leads. A rank that reorders when the article
+   is rescaled by a few percent was never carrying design information.
+3. **`sim_in_180_g` is the same failure mode, newly visible, and it is the
+   null control.** The input peak is the rig, not the design; a calibrated
+   mat should deliver the same input to every article, and it does, to
+   within 0.09 percent. On the old constant-solid-mass projection every
+   article had the same simulated input peak and it read rho = 0.00. Now
+   that each article carries its own weighed mass, the carriage-plus-article
+   system differs slightly between them and that 0.09 percent of numerical
+   wobble sorts the articles at rho = -0.89, p = 0.007. It is not a
+   predictor of anything. Treat any leader whose `rel_span` is a fraction of
+   a percent as noise with a good p-value, whatever the column says.
+4. **The rebound objective has no usable simulated predictor.** Section 1
+   makes the reason structural rather than statistical: with mass held
+   constant the simulated `e_rebound` does not respond to the design at all,
+   so there is nothing for a correlation to find. `e_reb_mJ` should be
+   modeled from bench data alone until a tier that carries the rig's loss
+   paths exists.
 
-The infill correction is visible but not decisive at this n: `sim_solid_t180`
-(the same model run at solid PLA density) correlates identically at rho =
-+0.46 for `t180` but moves from -0.57 to -0.43 for `e_reb_mJ`. Where it
-matters unambiguously is the mass channel, which is what `e_reb_mJ` is built
-from: solid density puts every article's mass out by a factor 1.7, so the
-objective it feeds is wrong by that factor before any physics happens.
+The infill correction now enters through the mass the article is simulated
+at rather than through a density. `sim_solid_t180` (the same geometry given
+the mass it would have printed solid, about 1.7x heavier) correlates at
+rho = +0.50 for `t180`, indistinguishable from the printed-mass model at this
+n. Where it matters unambiguously is the mass channel that `e_reb_mJ` is
+built from, where solid density puts every article out by that same 1.7x
+before any physics happens.
 
 ## 4. The closed-loop simulation-only campaign
 

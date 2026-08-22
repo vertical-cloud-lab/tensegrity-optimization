@@ -76,8 +76,23 @@ HERE = Path(__file__).resolve().parent
 DATA = HERE / "data" / "pr102"
 OUT = HERE / "outputs"
 
-PARAM_NAMES = ["R_mm", "H_mm", "twist_deg", "strut_d_mm", "cable_d_mm"]
+SHAPE_PARAMS = ["R_mm", "H_mm", "twist_deg", "strut_d_mm", "cable_d_mm"]
+MASS_PARAM = "mass_printed_g"
+PARAM_NAMES = SHAPE_PARAMS + [MASS_PARAM]
 OBJ1, OBJ2, MASS = "t180", "e_reb_mJ", "mass_g"
+
+# The sixth parameter, and why the campaign needs it.  ``e_reb_mJ`` is an
+# absolute energy, ``e_rebound * m * g * h``, so it is proportional to the
+# article's printed mass.  Round 1 was projected onto constant *solid* mass
+# (PR #35 Route A), which leaves printed mass free: over the 68,944-design
+# reference sweep that ran with the old projection, printed mass spanned 32 %
+# while simulated ``e_rebound`` spanned 0.34 %, and rho(e_reb_mJ, mass_g) came
+# out at 0.9999.  The objective *was* the mass.  PR #102 commit 2f1ca2e fixed
+# this by projecting onto constant *printed* mass and carrying mass as a
+# parameter confined to a narrow slab, so competing shapes are compared at the
+# same mass and the slab covers only the print-to-print scatter.
+MASS_TARGET_G = 20.23     # weighed mass of the S0 reference article bpx68c
+MASS_SCATTER_G = 0.457    # sd of the spec-08 triplicate (dea4ls/bag26v/ghmj4y)
 
 # identical to PARAMETERS in bo/t3_prism_bo_campaign.py (PR #102)
 PARAMETERS = [
@@ -86,6 +101,8 @@ PARAMETERS = [
     {"name": "twist_deg", "type": "range", "bounds": [40.0, 80.0], "value_type": "float"},
     {"name": "strut_d_mm", "type": "range", "bounds": [6.0, 12.0], "value_type": "float"},
     {"name": "cable_d_mm", "type": "range", "bounds": [3.0, 5.5], "value_type": "float"},
+    {"name": MASS_PARAM, "type": "range", "value_type": "float",
+     "bounds": [MASS_TARGET_G - MASS_SCATTER_G, MASS_TARGET_G + MASS_SCATTER_G]},
 ]
 
 # Hypervolume reference point.  Derived rather than typed in: the worst
@@ -100,16 +117,32 @@ _REF_CACHE: dict[bool, np.ndarray] = {}
 
 
 def evaluate(params: dict, *, solid: bool = False) -> dict:
-    kwargs = {"pla_solidity": 1.0, "tpu_solidity": 1.0} if solid else {}
-    res = drop_tower_sim.evaluate_pr102(params, **kwargs)
+    res = drop_tower_sim.evaluate_pr102(params, solid_mass=solid)
     return {OBJ1: float(res["t180"]), OBJ2: float(res["e_reb_mJ"]),
             MASS: float(res["mass_printed_g"])}
 
 
 def sobol_batch_params() -> list[dict]:
-    """The nine printed T-3_01 articles, at their base Sobol coordinates."""
+    """The nine printed T-3_01 articles, at their base Sobol coordinates.
+
+    Their mass coordinate is the weighed mass of the print, where there is
+    one, and the batch target otherwise: these articles were built to a
+    constant *solid* mass and so are scattered along the mass axis rather
+    than sitting on the campaign's constant-printed-mass slab, which is the
+    same thing PR #102 notes about its own round-1 data.
+    """
     batch = pd.read_csv(DATA / "t3-prism-bo-batch.csv").set_index("specimen")
-    return [{n: float(row[n]) for n in PARAM_NAMES} for _, row in batch.iterrows()]
+    key = pd.read_csv(DATA / "t3-prism-bo-batch-print-key.csv",
+                      dtype={"specimen": "string"})
+    weighed = (key[key["specimen"] != "S0"]
+               .assign(spec=lambda d: d["specimen"].astype(int))
+               .groupby("spec")["mass_g"].mean().to_dict())
+    out = []
+    for spec, row in batch.iterrows():
+        p = {n: float(row[n]) for n in SHAPE_PARAMS}
+        p[MASS_PARAM] = float(weighed.get(int(spec), MASS_TARGET_G))
+        out.append(p)
+    return out
 
 
 def reference_point(solid: bool = False) -> np.ndarray:
@@ -176,6 +209,18 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
         # PR #102's own round 0: the nine articles that were printed,
         # attached as completed trials.  Identical for every seed.
         for params in sobol_batch_params():
+            # PR #102 keeps two search spaces, a wide one to fit on and the
+            # narrow slab to generate in, so round-1 articles can sit off the
+            # slab along the mass axis.  ``AxClient`` carries one space, so
+            # here the attached mass coordinate is clipped into the slab
+            # instead.  That costs the model some of the round-1 mass spread
+            # and only affects ``--init printed``; the default ``--init
+            # sobol`` repeats draw their own batch on the slab and are
+            # unaffected.
+            params = dict(params)
+            params[MASS_PARAM] = float(np.clip(
+                params[MASS_PARAM], MASS_TARGET_G - MASS_SCATTER_G,
+                MASS_TARGET_G + MASS_SCATTER_G))
             _, idx = ax_client.attach_trial(params)
             res = evaluate(params, solid=solid)
             # snapshot before completing: complete_trial rewrites the dict in

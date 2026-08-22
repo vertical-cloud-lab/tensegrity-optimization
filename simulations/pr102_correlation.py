@@ -35,7 +35,7 @@ import pandas as pd
 
 import drop_tower_sim
 from bo_evaluator import evaluate_printable_design, parameterization_to_design
-from print_infill import project_constant_mass
+from print_infill import scale_design
 from regimes import CRUTCH, NASA_LANDER
 
 HERE = Path(__file__).resolve().parent
@@ -87,18 +87,29 @@ def score_all(measured: pd.DataFrame, *, base_reaction: bool = True) -> pd.DataF
     for _, row in measured.iterrows():
         params = {n: float(row[n]) for n in PARAM_NAMES}
         base_design = parameterization_to_design(params)
-        printed, scale = project_constant_mass(base_design)
+        # Each article is simulated at the mass the scale actually read for
+        # it, by solving the constant-printed-mass projection for that mass.
+        # That is strictly better than projecting to a batch target here:
+        # these are specific prints, their weighed masses are known, and
+        # ``e_reb_mJ`` is proportional to mass, so using anything else would
+        # put a known quantity into the residual.
+        weighed_g = float(row["mass_g"])
+        model = drop_tower_sim.mass_model()
+        scale = model.solve_scale_for_printed_mass(params, weighed_g)
+        printed = scale_design(base_design, scale)
 
         rec = {"print_scale": scale}
 
         # drop-tower analogue, with and without the infill correction
-        dt = drop_tower_sim.simulate(printed)
+        dt = drop_tower_sim.simulate(printed, article_mass_g=weighed_g)
         rec.update({f"sim_{k}": v for k, v in dt.items()
                     if not isinstance(v, np.ndarray) and k != "ok"})
-        dt_solid = drop_tower_sim.simulate(printed, pla_solidity=1.0,
-                                           tpu_solidity=1.0)
+        # Infill ablation: same geometry, the mass it would have printed solid.
+        solid_g = float(sum(model.solid_grams(params, scale)))
+        dt_solid = drop_tower_sim.simulate(printed, article_mass_g=solid_g)
         rec["sim_solid_t180"] = dt_solid["t180"]
         rec["sim_solid_e_reb_mJ"] = dt_solid["e_reb_mJ"]
+        rec["sim_solid_mass_g"] = solid_g
 
         # the application-regime Tier-C observables this thread has been
         # optimizing on, evaluated on the same printed article
