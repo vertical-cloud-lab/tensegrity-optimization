@@ -153,7 +153,7 @@ and both optimization responses, and a fully Bayesian sparse-prior
 surrogate with noisy expected hypervolume improvement generated nine
 round-2 designs now in fabrication. Across the eight tested articles, the
 peak-acceleration ratio ranged from 0.893 to 1.062: five amplified peak
-shock and one clearly attenuated it. Printed mass ranged from 18.50 to
+shock and one attenuated it under the tested condition. Printed mass ranged from 18.50 to
 22.04 g among the mapped tested articles, showing that constant solid-CAD
 mass did not ensure constant printed mass. The rebound interpretation
 remains pending video validation. These results establish the first
@@ -877,9 +877,14 @@ fitted natural frequency $f_n \approx$ \SIrange{300}{470}{Hz} and, where
 the exponential fit passes an $r^2 \ge 0.85$ gate, a damping ratio
 $\zeta$) are recorded per drop as print-health and prestress
 diagnostics~\citep{ashwear2014natural} but are not campaign objectives.
-Within-specimen repeatability of $t_{180}$ is 0.17 to 0.48\% (CV), and
-the one article re-tested in a separate session reproduced its mean to
-0.13\%. Figure~\ref{fig:dropcurve} illustrates the mechanism-oriented
+The within-session per-drop CV of $t_{180}$ is 0.17 to 0.48\%. These
+values describe repeated drops of the same physical article and do
+not estimate print-to-print or geometry-level repeatability; serial
+dependence among drops may also make
+$s/\sqrt{n_{\mathrm{drops}}}$ optimistic. For the single article
+measured in two sessions, the two session means differed by 0.13\%;
+this isolated re-test does not estimate cross-session
+reproducibility. Figure~\ref{fig:dropcurve} illustrates the mechanism-oriented
 presentation we adopt for the processed traces, linking features of the
 measured signal to the structural events that produce them.
 
@@ -998,8 +1003,9 @@ triplicate. The estimand this noise model implies is the response of
 the tested article, not of a freshly printed article at the same
 design: an independent adversarial review
 (Section~\ref{sec:discussion}) argues the decision-relevant target is
-the latter, for which an article-level noise floor near 0.7\% CV (14
-to 44 times the per-drop standard error) should replace the per-drop
+the latter, for which a provisional article-level noise scale of
+0.72\% CV, estimated from five prints (14
+to 44 times the per-drop standard error), should replace the per-drop
 terms; the round-3 refit adopts that correction. SAASBO is the
 prespecified round-1 surrogate; we make no claim that it outperforms
 a standard single-task GP at this dimensionality and sample size, and
@@ -1009,8 +1015,8 @@ the budget-matched calibration comparison remains a pending audit
 \paragraph{Mass treatment} Because the constant \emph{solid}-mass
 projection does not hold printed grams constant
 (Section~\ref{sec:methods:parameterization}), printed mass correlates
-strongly with the shape variables in the seed round
-($r = 0.83$ against $t_{180}$ across the mapped articles). The loop
+with the shape variables in the seed round ($r = 0.83$, $n = 7$,
+dominated by the lightest article, against $t_{180}$). The loop
 therefore makes mass explicit rather than pretending it away: the
 rebound objective is expressed in absolute millijoules using each
 article's weighed mass, so added grams are re-penalized through the
@@ -1064,9 +1070,13 @@ designs. The ladder applies the same SAE~J211 CFC-180 filtering as the
 physical pipeline so simulated and measured records are processed
 identically. Its honest scorecard against the measured seed round is
 mixed and is reported as such: an intensive volumetric
-energy-absorption score computed at Tier~C is a strong
-\emph{cross-metric} predictor of the measured $t_{180}$ ranking
-(Spearman $\rho = -0.93$ across the seven mapped articles), yet the
+energy-absorption score computed at Tier~C showed a strong
+exploratory in-sample rank association with the measured $t_{180}$
+(Spearman $\rho = -0.93$ across the seven mapped articles, exact
+two-sided permutation $p \approx 0.0067$; because the metric was
+evaluated on the seed set and candidate-metric selection was not
+multiplicity-adjusted, this is hypothesis-generating rather than
+validated predictive performance), yet the
 ladder's own simulated $t_{180}$ correlates only weakly with the
 measurement ($\rho \approx 0.5$), rigid-strut models cannot reproduce
 the observed amplification ($t_{180} > 1$ on five of eight measured
@@ -1167,21 +1177,30 @@ completed 101-drop characterization sessions to date, totaling over
 800 clean captures within a project-wide history of roughly 3{,}660
 instrumented drops. Table~\ref{tab:seed-results} reports the
 stabilized objectives. Three findings frame the round. First, the
-measured $t_{180}$ spans 0.893 to 1.062: five of eight articles
+measured $t_{180}$ spans 0.893 to 1.062: five of eight tested articles
 \emph{amplify} the peak shock reaching the top vertex (means above
-unity), two sit marginally below unity (0.997 and 0.980), and a single
-design (Sobol spec~01, the thick-strut, thin-cable, high-twist corner
-of the batch) attenuates it by 11\%. The design-driven range of 0.169
-in $t_{180}$ (19\% relative to the minimum) dwarfs the 0.17 to 0.48\%
-within-specimen repeatability. Second, the objectives show an
+unity), two sit marginally below unity (0.997 and 0.980), and one
+tested article (the print of Sobol spec~01, the thick-strut,
+thin-cable, high-twist corner of the batch) had a mean $t_{180}$ of
+0.893, indicating peak attenuation under the tested condition;
+replication is needed to establish the geometry-level response.
+Across these eight tested articles, $t_{180}$ spans 0.169 (18.9\% of
+the observed minimum). This between-article range exceeds the 0.17 to
+0.48\% within-session per-drop CV, but one mechanically tested
+article per geometry does not permit separation of geometry effects
+from print-to-print variation or other fabrication covariates.
+Second, the objectives show an
 apparent trade-off in this sample: the best attenuator carries the
 largest rebound score (13.9~mJ per drop), so the observed front is
 nondegenerate, although the trade-off is driven substantially by that
 single article and is not statistically resolved at this sample size
-(Section~\ref{sec:discussion}). Third, printed mass correlates
-strongly with $t_{180}$ ($r = 0.83$, $p = 0.02$, $n = 7$; an
-observational association confounded with the design coordinates, not
-a causal mass effect), which motivated the mass-aware objective
+(Section~\ref{sec:discussion}). Third, among the seven mapped
+articles, printed mass and $t_{180}$ showed a large sample
+correlation ($r = 0.83$, nominal two-sided $p = 0.021$, $n = 7$;
+approximate 95\% CI 0.20 to 0.97). The association is confounded with
+the design coordinates and is highly sensitive to the lightest
+article ($r = 0.19$ when 6lhxfy is omitted); it is not evidence of a
+causal mass effect. It nonetheless motivated the mass-aware objective
 formulation of Section~\ref{sec:methods:bo}. Figure~\ref{fig:seed-designs} renders
 the seed geometries to a common scale, showing how widely the
 constant-mass box spans aspect ratio, member sizing, and twist.
@@ -1272,17 +1291,19 @@ defects).
 SAASBO feature importances (normalized inverse length scales, median
 over the Monte Carlo draws with interquartile whiskers, over the five
 design variables plus printed mass) and Fig.~\ref{fig:loocv} the
-leave-one-out cross-validation. The honest reading at this sample
-size is that the sparsity prior has \emph{not} identified a dominant
-subspace: no input separates decisively from the equal-share line
-(one sixth), with cell height leading for $t_{180}$ and base radius
-for the rebound energy, and most interquartile bands straddling the
-line. Cross-validation tells the same two-sided story: leave-one-out
-predictions for $t_{180}$ had a mean absolute percentage error of
-2.6\% and Pearson $r = 0.70$ across seven articles, but the
-correlation is imprecise at this sample size, while rebound-energy
-predictions had MAPE 37.8\% and $r = -0.12$, providing no evidence of
-out-of-sample predictive skill on that channel; this is consistent
+leave-one-out cross-validation. At seven observations for six
+correlated inputs, the normalized inverse length scales are
+prior-sensitive model diagnostics only; none supports a claim of
+variable relevance or ranking. The sparsity prior has \emph{not}
+identified a dominant subspace: no input separates decisively from
+the equal-share line (one sixth), and most interquartile bands
+straddle the line. Cross-validation is likewise descriptive:
+seven-fold leave-one-out diagnostics yielded MAPE 2.6\% and Pearson
+$r = 0.70$ for $t_{180}$ and MAPE 37.8\% and $r = -0.12$ for the
+rebound score. Because the seven folds share nearly all training
+observations and no independent test set exists, these values are
+descriptive and do not establish out-of-sample skill; the rebound
+result is consistent
 with the adversarial review's finding that the rebound channel's
 noise was understated. The fold-level predictions (observed and
 predicted means with uncertainties per article and objective) are
@@ -1296,11 +1317,15 @@ refreshed every round.
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.92\linewidth]{../figures/bo/t3-prism-bo-round1-feature-importance.png}
-  \caption{Round-1 SAASBO feature importances per objective
+  \caption{Round-1 SAASBO length-scale diagnostics per objective
     (normalized inverse length scales; median over MCMC draws,
     interquartile whiskers; inputs are the five design variables plus
-    printed mass). No input separates decisively from the equal-share
-    line (dashed) at seven mapped articles.}
+    printed mass; the horizontal axis, labeled ``share of model
+    sensitivity'' in the plot, is this normalized inverse-length-scale
+    diagnostic). No input separates decisively from the equal-share
+    line (dashed) at seven mapped articles, and these are
+    prior-sensitive model diagnostics, not evidence of variable
+    relevance.}
   \label{fig:sensitivity}
 \end{figure}
 
@@ -1332,18 +1357,20 @@ replicates per the adversarial objective review).}
 
 \paragraph{What the seed round establishes} The round-1 data settle
 three questions the planned-methods stage could only pose. The
-end-to-end loop closes: printed articles, hundred-drop
+end-to-end pipeline runs: printed articles, hundred-drop
 characterizations, a fitted fully Bayesian surrogate, and a
 model-recommended batch on the printer within days of the last seed
-measurement. The objectives discriminate: a 0.169 design-driven range
-in $t_{180}$ against sub-percent repeatability is a usable signal.
+measurement. The measurement distinguishes the tested articles: their
+$t_{180}$ means span 0.169, well beyond within-session drop scatter;
+whether this separation reproduces across newly printed articles
+remains to be tested.
 And the physics is more adversarial than the cushioning intuition
 suggests: at this scale and rate, five of the eight measured prisms
 \emph{amplify} the peak shock reaching their top vertex and only one
-clearly attenuates it, which sharpens the campaign question from
-``how much does the architecture cushion'' to ``which corner of the
-design space crosses into genuine attenuation, and at what rebound
-cost.''
+tested article attenuated it, which sharpens the campaign question
+from ``how much does the architecture cushion'' to ``which corner of
+the design space crosses into attenuation, and whether attenuation
+reproducibly incurs a rebound-score cost.''
 
 \paragraph{Honest accounting of the objective stack} We
 pre-registered an adversarial, data-first review of the objective
@@ -1356,9 +1383,10 @@ validated against synchronized video (a restrained-versus-unrestrained
 check is scheduled); the apparent $t_{180}$-versus-rebound trade-off
 is driven substantially by the single strongest attenuator (Spearman
 $\rho = -0.39$, $p = 0.38$ across the reliable articles); and
-per-drop standard errors understate article-level uncertainty by
-roughly an order of magnitude relative to the 0.72\% between-article
-CV measured in a five-print repeatability study. The round-3 plan
+per-drop standard errors are substantially smaller than the
+provisional 0.72\% between-article CV estimated in a five-print
+repeatability study, and therefore understate article-level
+uncertainty. The round-3 plan
 therefore refits with article-level noise, treats rebound as a
 candidate constraint pending its validation, and reserves print
 capacity for replicate articles. We report this trajectory rather
@@ -1369,14 +1397,20 @@ criteria stated in advance, is how such loops behave in practice.
 \paragraph{Mass as a confound and as a design variable} Holding
 solid CAD mass constant did not hold printed grams constant: PLA
 prints at partial infill while thin TPU cables print near solid, so
-the seed articles span \SIrange{18.50}{22.29}{g} and printed mass
-correlates with $t_{180}$ at $r = 0.83$. Because light articles
-\emph{are} the thick-strut, thin-cable corner by construction,
-regressing mass out at $n = 8$ would delete the very signal the
-campaign seeks; the mass-aware rebound objective and the tracked mass
-metric are the round-1 compromise, and the calibrated printed-mass
-model (Supplementary Information) enables a constant-printed-mass
-projection for later rounds.
+the seed articles span \SIrange{18.50}{22.29}{g}, and among the seven
+mapped tested articles mass and $t_{180}$ are correlated
+($r = 0.83$). Printed mass is itself induced by the geometry and is
+strongly collinear with member dimensions (light articles \emph{are}
+the thick-strut, thin-cable corner by construction), so these seven
+observations cannot identify separate geometry and mass effects; a
+post hoc mass-adjusted regression would be unstable and would
+estimate a different, direct-effect quantity. We therefore report
+mass as a confounded tracking variable rather than attributing the
+association to mass or geometry. The mass-aware rebound objective and
+the tracked mass metric are the round-1 compromise, and the
+calibrated printed-mass model (Supplementary Information) enables a
+constant-printed-mass projection that compares geometries at
+approximately fixed printed mass in later rounds.
 
 \paragraph{Relation to prior art} Relative to Pajunen
 et~al.~\cite{pajunen2019design}, the present work varies the geometry
@@ -1424,8 +1458,11 @@ janarthanan2024additivemanufacturingof} providing transferable design
 heuristics.
 
 \paragraph{Limitations} The evidence base is a single seed round on
-single prints of each design ($n = 1$ article per geometry, with one
-triplicate); the drop protocol probes one height, one impact surface,
+single prints of each design ($n = 1$ article per geometry; one
+design was printed in triplicate, which provides mass replication
+only, since a single article of that design appears in the reported
+mechanical-response table); the drop protocol probes one height, one
+impact surface,
 and axial loading only; the specimens never leave the elastic regime,
 so crush-energy metrics await the quasi-static campaign; per-specimen
 energy absorption in joules is not recoverable from the current rig
@@ -1445,7 +1482,9 @@ revision plan above are the designed responses to these limits.
 We have presented an experiment-driven Bayesian-optimization framework
 for designing multi-material 3D-printed tensegrity-inspired energy
 absorbers using PLA struts and TPU tension elements, and we have
-closed its first loop on physical hardware. The framework
+completed its first measure-and-recommend step on physical hardware;
+closure of the full recommend--fabricate--measure--update cycle
+awaits the round-2 tests. The framework
 parameterizes a five-variable $T_3$-prism family under a constant-mass
 fairness projection, fabricates each candidate in a single
 multi-material FDM build with TPU tendons anchored inside the PLA
@@ -1453,8 +1492,10 @@ strut ends, characterizes every article with 101 instrumented drops,
 and updates a fully Bayesian Gaussian-process
 surrogate~\citep{balandat2020botorch, eriksson2021saasbo} that
 recommends the next batch. In the nine-design seed round the filtered
-peak-acceleration ratio spanned 0.89 to 1.06 against sub-percent
-repeatability, one design crossed into genuine attenuation, and the
+peak-acceleration ratio spanned 0.89 to 1.06 across the eight tested
+articles, while within-session per-drop CVs were below 0.5\%
+(article-level reproducibility remains under study); one tested
+article attenuated the peak shock under the tested condition; and the
 first model-recommended batch of nine designs has been generated and
 sent to fabrication. \todo{Add the round-2 headline (predicted versus
 measured, hypervolume gain over the budget-matched baseline) once the

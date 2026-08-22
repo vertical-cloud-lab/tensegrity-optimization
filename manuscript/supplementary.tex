@@ -101,7 +101,8 @@ in the archived slicer project and a contemporaneous issue comment disagree on
 which article is the official one (\textit{dea4ls} versus \textit{bag26v}),
 and pending confirmation the analysis uses \textit{bag26v}. The tri-print of
 design 08 also supplies the only print-to-print repeatability number to date:
-a mass standard deviation of \SI{0.457}{g}. Separately, one tested article
+a mass standard deviation of \SI{0.457}{g} (three prints of a single
+geometry, so not a general process repeatability estimate). Separately, one tested article
 (\textit{amdjwm}) has no confirmed design mapping and is excluded from the
 surrogate fit until identified.
 
@@ -239,9 +240,10 @@ model closes this gap (\href{\repo/pull/102}{PR~\#102},
 to rendered-solid grams (one factor per material), and rendered-solid grams
 are mapped to weighed grams through a wall-plus-infill term in the as-printed
 strut diameter (fitted infill 23.6\%, wall \SI{1.18}{mm}, TPU factor 0.744).
-The model's residual standard deviation is \SI{0.378}{g}, at or below the
-measured \SI{0.457}{g} print-to-print scatter, so it is as accurate as the
-process is repeatable. Inverting it inside the projection allows rounds to
+The model's residual standard deviation is \SI{0.378}{g}. For context, the
+three available prints of design 08 have a sample standard deviation of
+\SI{0.457}{g}; three prints of one geometry are insufficient to establish a
+general process repeatability limit. Inverting it inside the projection allows rounds to
 hold \emph{printed} grams constant with no slicer in the loop. Two round-2
 recommendation sets exist in the record and must not be conflated: the
 batch actually sliced and sent to the printer was generated before this
@@ -277,8 +279,11 @@ amplification ($t_{180}>1$ on five of eight bench articles, while simulated
 $t_{180}$ cannot exceed about 1); and simulated restitution is
 design-invariant where the measured rebound is not. Against the measured
 seed round ($n=7$ mapped articles), an intensive volumetric
-energy-absorption score computed at Tier~C is the strongest cross-metric
-predictor of measured $t_{180}$ (Spearman $\rho = -0.93$), while the
+energy-absorption score computed at Tier~C showed a strong exploratory
+in-sample rank association with measured $t_{180}$ (Spearman
+$\rho = -0.93$, exact two-sided permutation $p \approx 0.0067$;
+hypothesis-generating rather than validated prediction, since the metric
+was evaluated on the seed set without multiplicity adjustment), while the
 ladder's own simulated $t_{180}$ reaches only $\rho \approx 0.5$.
 
 A simulation-side closed-loop study using the same Ax/BoTorch pipeline on
