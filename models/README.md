@@ -55,6 +55,7 @@ figures/tables/supplementary materials and are listed under
 | [`stl/pugh_diamond_column.stl`](stl/pugh_diamond_column.stl) | Pugh "diamond" stacked column (3-bay T3) | 12 | 9 | 30 | Two saddle cables per strut → diamond-shaped side panels (Pugh 1976, ch. 3). |
 | [`stl/pugh_zigzag_column.stl`](stl/pugh_zigzag_column.stl) | Pugh "zig-zag" stacked column (3-bay T3) | 12 | 9 | 21 | Single saddle per strut with a "skip-1" jump → Z-fold side panels (Pugh 1976, ch. 3). |
 | [`stl/pentagonal_tensegrity_ring.stl`](stl/pentagonal_tensegrity_ring.stl) | Pentagonal tensegrity-ring module (Rhode-Barbarigos 2010, simplified) | 10 | 5 | 15 | Closed-ring "hollow-rope" module; basis for EPFL deployable tensegrity footbridge (Rhode-Barbarigos et al., Eng. Struct. 2010). |
+| [`stl/pajunen_spherically_jointed.stl`](stl/pajunen_spherically_jointed.stl) | Pajunen et al. (2019) spherically-jointed impact cell ("Geometry #3") | 24 | 12 | 36 | Single-material 3D-printable tensegrity-inspired impact absorber; truncated-octahedron tensegrity with 8.72 mm ball joints, 2.6 mm struts, 1.8 mm cables at the published 72.45 mm cell height. See "Pajunen spherically-jointed impact cell" below. |
 
 All STL files are **binary STL**, units in millimetres, with struts
 rendered as 5 mm-diameter cylinders (PLA / PETG) and cables rendered
@@ -99,8 +100,9 @@ bay_height)`, `truncated_octahedron_tensegrity(scale)`,
 `superball_with_payload(scale, payload_scale)`,
 `tibert_pellegrino_mast(n, bays, radius, bay_height)`,
 `patent_us6441801_antenna(n_sides, bottom_radius, top_radius, height)`,
-`bistable_double_prism(radius, bay_height)`, and
-`cuboctahedron_tessellation(scale)` for direct use as design seeds in
+`bistable_double_prism(radius, bay_height)`,
+`cuboctahedron_tessellation(scale)`, and
+`pajunen_sphere_jointed_cell(height)` for direct use as design seeds in
 the Bayesian optimization loop (`(nodes, struts, cables)` tuples that
 map directly onto the BO parameterization in the proposal).
 `cuboctahedron_tessellation_prestress()` additionally returns the published
@@ -194,6 +196,65 @@ is what forces the thinner members described above. Second, the prestress
 forces are normalised to unit strut compression, so turning them into TPU
 pre-strain still needs a member cross-section and modulus choice.
 
+### Pajunen spherically-jointed impact cell
+
+Committed as
+[`stl/pajunen_spherically_jointed.stl`](stl/pajunen_spherically_jointed.stl)
+and rendered in
+[`figures/pajunen2019_sphere_jointed_shaded.png`](../figures/pajunen2019_sphere_jointed_shaded.png)
+(regenerate with [`render_pajunen_cell.py`](render_pajunen_cell.py)).
+This is the final "Geometry #3" design of
+
+> K. Pajunen, P. Johanns, R. K. Pal, J. J. Rimoli, C. Daraio, "Design and
+> impact response of 3D-printable tensegrity-inspired structures",
+> *Mater. Design* **182**:107966 (2019).
+> DOI: [10.1016/j.matdes.2019.107966](https://doi.org/10.1016/j.matdes.2019.107966)
+
+a truncated-octahedron tensegrity (24 nodes, 12 struts, 36 cables,
+class 1) printed as one PA2200 part: pin joints replaced by 8.72 mm
+spheres, 2.6 mm struts, 1.8 mm cables, nodal coordinates scaled up 1.5x
+from the 48.3 mm pin-jointed baseline (so the committed cell is 72.45 mm
+node-plane to node-plane).  It survives 24+ impacts with under 0.2%
+remaining strain per impact and is the published, experimentally
+validated version of the truncated-octahedron family that the survey
+ranked #1 for the BYU impact-absorption use case.
+
+The paper states the design rules but not the node coordinates, so the
+coordinates were form-found here with the force-density method and are
+embedded in `generate_stl.py`; the derivation script
+[`formfind_pajunen2019.py`](formfind_pajunen2019.py) (numpy/scipy)
+regenerates and re-verifies them.  Reconstruction checks against the
+paper:
+
+- The strut set is the unique class-1 symmetric perfect matching of
+  interior chords (an orbit of the chiral tetrahedral rotation group;
+  exhaustive enumeration of the alternatives either crosses struts at a
+  point or gives struts longer than the cell, and the cell's
+  chirality matches the paper's note that tessellating it needs
+  "certain reflections").
+- All 36 cables form-find to one length and all 12 struts to one
+  length, which the paper states for the printed design.
+- Strut length / cell height = 0.946 vs the published 44.2/48.3 = 0.915
+  (a 3 percent gap, since the paper's own elastic form-finding is not
+  fully specified).
+- The sphere diameter implied by the paper's "cable lengths are
+  maintained" rule under the 1.5x scale-up comes out at 8.95 mm vs the
+  published 8.72 mm.
+- Published member masses cross-check: the pin-jointed Geometry #2
+  (3.32 mm struts, 1.8 mm cables) evaluates to 5.8 g on this geometry
+  vs the published 5.75 g.
+
+Clearances are printable at full scale (closest strut-strut approach
+10.8 mm, strut-cable 16.2 mm), so this file keeps the published member
+diameters via `RADIUS_OVERRIDES` and adds the ball joints via
+`NODE_SPHERES`.  One caveat: the earlier reconstruction
+[`stl/truncated_octahedron.stl`](stl/truncated_octahedron.stl) uses
+square-face diagonals as struts, and those two diagonals per face cross
+at the face centre in the regular polyhedron, so that file is a
+topology sketch rather than a printable class-1 cell; the Pajunen cell
+committed here is the corrected, published-geometry version of the same
+family and should be preferred for fabrication.
+
 ### Source materials needed for the remaining gap-followup families
 
 The Edison gap-followup survey (task `6226a551`) recommended 18 new
@@ -217,18 +278,17 @@ supplementary materials before they can be emitted as faithful STLs
   A three-periodic, chiral, tensegrity structure that is auxetic").
   Please confirm which
   Oster paper is intended and send the PDF + SI.
-- **Pajunen 2019 impact-absorbing tensegrity cell** — needs the full
-  prestress-state ratios from Pajunen, K., Johanns, P., Pal, R. K.,
-  Rimoli, J. J., Daraio, C., "Design and impact response of
+- **Pajunen 2019 impact-absorbing tensegrity cell**: **resolved**. The
+  publisher PDF and supplementary material of Pajunen, K., Johanns, P.,
+  Pal, R. K., Rimoli, J. J., Daraio, C., "Design and impact response of
   3D-printable tensegrity-inspired structures", *Mater. Design*
-  182:107966, 2019.  Required: **Fig. 2 (unit-cell geometry table),
-  Fig. 4 (strut/cable diameter ratios), Table 1 (prestress states)**.
-  PDF: doi:[10.1016/j.matdes.2019.107966](https://doi.org/10.1016/j.matdes.2019.107966)
-  (also on arXiv as 1812.10468). **No longer blocked**: the publisher PDF
-  and the supplementary video are in the green open-access CaltechAUTHORS
-  record [`scb9y-ppa15`](https://authors.library.caltech.edu/records/scb9y-ppa15),
-  found while retrieving the Liu et al. supplement. Nobody has read the
-  figures out of it yet, so the STL is still to do.
+  182:107966, 2019,
+  doi:[10.1016/j.matdes.2019.107966](https://doi.org/10.1016/j.matdes.2019.107966)
+  (green open-access CaltechAUTHORS record
+  [`scb9y-ppa15`](https://authors.library.caltech.edu/records/scb9y-ppa15))
+  have been read out and the final "Geometry #3" design is committed as
+  [`stl/pajunen_spherically_jointed.stl`](stl/pajunen_spherically_jointed.stl).
+  See "Pajunen spherically-jointed impact cell" below.
 - **Rhode-Barbarigos pentagonal ring (full deployable variant)** —
   the committed STL is a 1-layer 10-node simplification.  The full
   15-node / 30-cable two-layer deployable hollow-rope module needs

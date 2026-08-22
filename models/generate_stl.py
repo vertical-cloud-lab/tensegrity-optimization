@@ -126,6 +126,35 @@ def _cylinder_triangles(
     return tris
 
 
+def _sphere_triangles(
+    center: Vec3, radius: float, segments: int = 20
+) -> List[Tri]:
+    """Triangulate a UV sphere around ``center``."""
+    if radius <= 0.0:
+        return []
+    rings = max(segments // 2, 3)
+    cx, cy, cz = center
+
+    def pt(ring: int, seg: int) -> Vec3:
+        phi = math.pi * ring / rings          # 0 (north pole) .. pi
+        theta = 2.0 * math.pi * seg / segments
+        return (cx + radius * math.sin(phi) * math.cos(theta),
+                cy + radius * math.sin(phi) * math.sin(theta),
+                cz + radius * math.cos(phi))
+
+    tris: List[Tri] = []
+    for ring in range(rings):
+        for seg in range(segments):
+            s1 = (seg + 1) % segments
+            a, b = pt(ring, seg), pt(ring, s1)
+            c, d = pt(ring + 1, s1), pt(ring + 1, seg)
+            if ring != 0:
+                tris.append((a, b, c))
+            if ring != rings - 1:
+                tris.append((a, c, d))
+    return tris
+
+
 # ---------------------------------------------------------------------------
 # Binary STL writer
 # ---------------------------------------------------------------------------
@@ -969,6 +998,102 @@ def cuboctahedron_tessellation_prestress() -> List[float]:
     return _load_liu2019_cuboctahedron_block()[3]
 
 # ---------------------------------------------------------------------------
+# Pajunen et al. (2019) spherically-jointed impact cell ("Geometry #3")
+# ---------------------------------------------------------------------------
+
+# Published design constants (mm): Pajunen, K., Johanns, P., Pal, R. K.,
+# Rimoli, J. J., Daraio, C., "Design and impact response of 3D-printable
+# tensegrity-inspired structures", *Materials & Design* 182:107966 (2019),
+# doi:10.1016/j.matdes.2019.107966, section 2.2.  The pin-jointed baseline
+# cell is 48.3 mm tall; Geometry #3 scales the nodal coordinates by 1.5,
+# inserts 8.72 mm spheres at the nodes, and prints 2.6 mm struts and
+# 1.8 mm cables in one PA2200 part.
+PAJUNEN_BASELINE_HEIGHT = 48.3
+PAJUNEN_SCALE_UP = 1.5
+PAJUNEN_HEIGHT = PAJUNEN_SCALE_UP * PAJUNEN_BASELINE_HEIGHT   # 72.45 mm
+PAJUNEN_SPHERE_DIAMETER = 8.72
+PAJUNEN_STRUT_DIAMETER = 2.6
+PAJUNEN_CABLE_DIAMETER = 1.8
+
+# Form-found node coordinates (mm) at the Geometry #3 scale (face-to-face
+# height 72.45 mm), derived by force-density form-finding in
+# ``models/formfind_pajunen2019.py`` (numpy/scipy; this file stays
+# standard-library only by embedding the result).  Every node is a signed
+# permutation of (36.225, 18.409647, 4.639857).  The 36 cables all have
+# one length (26.85 mm) and the 12 struts all have one length (68.52 mm),
+# matching the published "all the cables and all the struts are the same
+# length"; struts never touch (class 1, closest approach 10.8 mm).
+PAJUNEN_GEOMETRY3_NODES: List[Vec3] = [
+    (-36.225000, -18.409647, 4.639857),
+    (-36.225000, -4.639857, -18.409647),
+    (-36.225000, 4.639857, 18.409647),
+    (-36.225000, 18.409647, -4.639857),
+    (-18.409647, -36.225000, -4.639857),
+    (-18.409647, 4.639857, -36.225000),
+    (-18.409647, -4.639857, 36.225000),
+    (-18.409647, 36.225000, 4.639857),
+    (4.639857, -36.225000, -18.409647),
+    (-4.639857, -36.225000, 18.409647),
+    (-4.639857, -18.409647, -36.225000),
+    (4.639857, -18.409647, 36.225000),
+    (4.639857, 18.409647, -36.225000),
+    (-4.639857, 18.409647, 36.225000),
+    (-4.639857, 36.225000, -18.409647),
+    (4.639857, 36.225000, 18.409647),
+    (18.409647, -36.225000, 4.639857),
+    (18.409647, -4.639857, -36.225000),
+    (18.409647, 4.639857, 36.225000),
+    (18.409647, 36.225000, -4.639857),
+    (36.225000, -18.409647, -4.639857),
+    (36.225000, 4.639857, -18.409647),
+    (36.225000, -4.639857, 18.409647),
+    (36.225000, 18.409647, 4.639857),
+]
+
+# The 12 struts: the unique class-1 orbit of interior chords under the
+# chiral tetrahedral rotation group (the cell is chiral; the paper notes
+# tessellating it needs "certain reflections").
+PAJUNEN_STRUTS: List[Tuple[int, int]] = [
+    (0, 12), (1, 15), (2, 8), (3, 11), (4, 18), (5, 16),
+    (6, 19), (7, 17), (9, 21), (10, 23), (13, 20), (14, 22),
+]
+
+
+def pajunen_sphere_jointed_cell(
+    height: float = PAJUNEN_HEIGHT,
+) -> Tuple[List[Vec3], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """Return (nodes, struts, cables) for the Pajunen et al. (2019) cell.
+
+    The final "Geometry #3" spherically-jointed, single-material
+    3D-printable tensegrity-inspired impact cell: a truncated-octahedron
+    tensegrity (24 nodes, 12 struts, 36 cables, class 1) whose joints are
+    printed as ``PAJUNEN_SPHERE_DIAMETER`` spheres.  ``height`` is the
+    top-face-to-bottom-face node distance; member and sphere diameters in
+    ``main()`` are the published values and are *not* scaled with
+    ``height``, mirroring how the paper treats them as absolute print
+    dimensions.
+
+    Provenance and validation live in ``models/formfind_pajunen2019.py``
+    and ``models/README.md``.
+    """
+    s = height / PAJUNEN_HEIGHT
+    nodes = [_scale(v, s) for v in PAJUNEN_GEOMETRY3_NODES]
+    struts = list(PAJUNEN_STRUTS)
+    # Cables: all node pairs at the single published cable length.
+    cable_len = 0.370617 * height
+    tol = 1e-3 * height
+    cables = [
+        (i, j)
+        for i in range(len(nodes)) for j in range(i + 1, len(nodes))
+        if abs(_norm(_sub(nodes[i], nodes[j])) - cable_len) < tol
+    ]
+    assert len(cables) == 36, f"expected 36 cables, got {len(cables)}"
+    strut_set = {frozenset(p) for p in struts}
+    assert all(frozenset(c) not in strut_set for c in cables)
+    return nodes, struts, cables
+
+
+# ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
 
@@ -980,6 +1105,15 @@ def cuboctahedron_tessellation_prestress() -> List[float]:
 # the 2.5/1.2 mm defaults would fuse them into a solid lump.
 RADIUS_OVERRIDES = {
     "cuboctahedron_tessellation.stl": (1.1, 0.9),
+    # Published print dimensions, not the repo defaults.
+    "pajunen_spherically_jointed.stl": (PAJUNEN_STRUT_DIAMETER / 2.0,
+                                        PAJUNEN_CABLE_DIAMETER / 2.0),
+}
+
+# Ball joints (sphere radius, mm) added at every node for designs whose
+# printed form uses spheres rather than overlapping members.
+NODE_SPHERES = {
+    "pajunen_spherically_jointed.stl": PAJUNEN_SPHERE_DIAMETER / 2.0,
 }
 
 
@@ -1076,6 +1210,10 @@ def main() -> None:
             "Pentagonal tensegrity-ring module (Rhode-Barbarigos 2010, simplified)",
             pentagonal_tensegrity_ring(n_sides=5, radius=30.0, height=20.0),
         ),
+        "pajunen_spherically_jointed.stl": (
+            "Pajunen et al. (2019) spherically-jointed impact cell (Geometry #3)",
+            pajunen_sphere_jointed_cell(),
+        ),
     }
 
     for filename, (label, (nodes, struts, cables)) in structures.items():
@@ -1087,6 +1225,10 @@ def main() -> None:
             cable_radius=radii[1],
             segments=args.segments,
         )
+        if filename in NODE_SPHERES:
+            for node in nodes:
+                tris.extend(_sphere_triangles(node, NODE_SPHERES[filename],
+                                              args.segments))
         out_path = os.path.join(args.out_dir, filename)
         _write_binary_stl(out_path, tris, header=label)
         print(f"wrote {out_path}: {len(nodes)} nodes, {len(struts)} struts, "
