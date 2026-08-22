@@ -180,6 +180,23 @@ CFC-180 was intended); the discrepancy was identified during the analysis
 audit of \href{\repo/issues/94}{issue~\#94} and corrected before the campaign
 numbers were produced.
 
+\paragraph{Processing pipeline.} For each capture, every channel is
+calibrated and CFC-filtered independently; the top-vertex magnitude
+$\lVert\mathbf{a}_{\mathrm{top}}(t)\rVert$ is formed from the three filtered
+triaxial components, and the two peaks entering $t_{180}$ are searched
+within a short window (approximately \SI{1.5}{ms}) of first contact, so the
+peaks need not be simultaneous. The baseline is estimated from the record
+tail (at healthy tower speed the mat-contact foot begins before the
+\SI{2}{ms} pre-trigger window). $\Delta v$ is the integral of the baselined
+base channel over the impact pulse and doubles as the rig-health gate.
+Drops are discarded per the warm-up rule; remaining per-capture exclusions,
+the second-contact detector's threshold and search window, the exact
+window bounds and filter-initialization choices, and the ``stabilized
+mean'' convention are defined in the campaign analysis code, whose
+archival release with a version tag is a declared submission gate; they
+are summarized here rather than restated numerically to avoid divergence
+from the code of record.
+
 \paragraph{Rig health and repair history.} Rig health is gated on the impact
 velocity change $\Delta v$ recovered from the base channel; over an
 uninterrupted 100-drop session the $\Delta v$ CV was 0.54\% with a flat
@@ -223,10 +240,16 @@ are mapped to weighed grams through a wall-plus-infill term in the as-printed
 strut diameter (fitted infill 23.6\%, wall \SI{1.18}{mm}, TPU factor 0.744).
 The model's residual standard deviation is \SI{0.378}{g}, at or below the
 measured \SI{0.457}{g} print-to-print scatter, so it is as accurate as the
-process is repeatable. Inverting it inside the projection allows future
-rounds to hold \emph{printed} grams constant with no slicer in the loop;
-round-2 was generated before this correction and still uses the solid-mass
-projection, with each recommendation's predicted printed mass reported.
+process is repeatable. Inverting it inside the projection allows rounds to
+hold \emph{printed} grams constant with no slicer in the loop. Two round-2
+recommendation sets exist in the record and must not be conflated: the
+batch actually sliced and sent to the printer was generated before this
+correction, under the seed round's solid-mass projection, with the
+mass-aware objectives and each recommendation's predicted printed mass
+reported; a subsequently regenerated set applies the constant-printed-mass
+projection (target \SI{20.23}{g}, the reference article's weight) and is
+the working proposal for round 3. The repository's suggestion CSV at the
+branch head is the regenerated (constant-printed-mass) set.
 
 % -----------------------------------------------------------------------------
 \section{Simulation Fidelity Ladder}
@@ -249,7 +272,7 @@ stiffness; the apparent strut-diameter leverage in unconstrained sweeps is
 largely a mass/contact confound (it shrinks about seventeenfold under a
 constant-mass sweep); the twist variable is not consumed by the Tier-C
 regime plumbing; rigid-strut models cannot reproduce the measured
-amplification ($t_{180}>1$ on seven of eight bench articles, while simulated
+amplification ($t_{180}>1$ on five of eight bench articles, while simulated
 $t_{180}$ cannot exceed about 1); and simulated restitution is
 design-invariant where the measured rebound is not. Against the measured
 seed round ($n=7$ mapped articles), an intensive volumetric

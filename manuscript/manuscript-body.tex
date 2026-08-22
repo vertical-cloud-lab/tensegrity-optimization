@@ -153,7 +153,8 @@ test. A three-strut prism family is parameterized by five continuous
 geometry variables under a constant-mass fairness constraint, and each
 printed specimen is characterized by more than one hundred repeated drops.
 The campaign minimizes two impact objectives: the filtered peak-acceleration
-ratio across the specimen and the rebound energy returned to the payload.
+ratio across the specimen and a mass-weighted score for the rebound
+motion returned to the payload.
 We report the nine-specimen quasi-random seed round, the resulting surrogate
 diagnostics and Pareto set, and the first model-recommended batch, and we
 describe a metal-analog validation protocol that tests whether learned
@@ -269,8 +270,8 @@ agnostic to the eventual application scale.
     printed impact absorbers: 101 repeated instrumented drops per
     specimen, standardized SAE~J211 filtering~\citep{saej211}, a
     velocity-change rig-health gate, and two per-specimen objectives
-    (the filtered peak-acceleration ratio across the specimen and the
-    rebound energy returned to the payload), each validated for
+    (the filtered peak-acceleration ratio across the specimen and a
+    mass-weighted rebound score), each characterized for
     repeatability before entering the optimizer
     (Section~\ref{sec:methods:testing}).
   \item An experiment-driven BO loop, built on
@@ -803,8 +804,11 @@ is the reporting class for peak metrics, with CFC-1000 retained as a
 higher-bandwidth diagnostic.
 
 \paragraph{Per-specimen objectives} Each 101-drop session (first two
-drops discarded as warm-up) yields two objectives, each reported as a
-stabilized mean with a per-drop standard error:
+drops discarded as warm-up; one article's session recorded 103
+captures) yields two objectives, each reported as a stabilized mean
+with the per-drop scatter quoted as one standard deviation; the
+standard error of the mean is what enters the surrogate's noise model
+(Section~\ref{sec:methods:bo}):
 \begin{equation}
   t_{180} \;=\; \frac{\max_t\,\lVert \mathbf{a}_{\mathrm{top}}(t)\rVert_{\mathrm{CFC180}}}
                      {\max_t\,\lvert a_{\mathrm{base}}(t)\rvert_{\mathrm{CFC180}}},
@@ -821,19 +825,31 @@ call this quantity a transmissibility: the two peaks need not be
 simultaneous and a single transient drop cannot produce the averaged
 frequency-response function that the standards-defined transmissibility
 requires, so $t_{180}$ is a filter-class-specific ranking metric rather
-than a standards quantity. Values above unity indicate the structure
+than a standards quantity, and SAE~J211/1 is cited here only for the
+impact-channel filtering. Values above unity indicate the structure
 amplifies the peak shock reaching its top vertex; values below unity
-indicate attenuation. $E_{\mathrm{reb}}$ is the rebound energy returned
-to a payload riding the top vertex, in millijoules per drop: the
-restitution-like fraction $e_{\mathrm{reb}}$ is recovered from the
-ballistic timing of the top vertex's post-impact
+indicate attenuation. $E_{\mathrm{reb}}$ is a \emph{provisional
+mass-weighted rebound score} with units of energy (millijoules per
+drop): the dimensionless rebound fraction $e_{\mathrm{reb}}$ is
+recovered from the ballistic timing of the top vertex's post-impact
 hop~\citep{bernstein1977listening} ($t_{\mathrm{second}}$ is the time
 to the second contact event and $\Delta v$ the measured base velocity
-change), and it is converted to absolute energy using each article's
-own weighed mass $m$ and the drop height $h$. Using absolute
-millijoules rather than the bare fraction makes the objective
-mass-aware: equal fractions on articles of different printed mass
-deliver different energies to the payload. Ringdown descriptors (the
+change), and it is scaled by each article's own weighed mass $m$ and
+the drop height $h$. Two interpretive caveats are deliberate. The
+ballistic reading of the second contact event has not yet been
+validated against synchronized video, and $\Delta v$ is the base
+plate's velocity change rather than a demonstrated incident relative
+velocity, so $e_{\mathrm{reb}}$ is a rebound-timing score rather than
+a coefficient of restitution; and because a strict restitution reading
+would scale returned kinetic energy as the \emph{square} of a velocity
+ratio, $E_{\mathrm{reb}}$ is a mass-aware ranking score that penalizes
+designs (and grams) that throw more motion back at the payload, not a
+measured rebound energy. The score is used as the round-1 second
+objective and is slated to become a constraint once validated
+(Section~\ref{sec:discussion}). Using the mass-weighted form rather
+than the bare fraction keeps the objective mass-aware: equal fractions
+on articles of different printed mass are not equivalent outcomes for
+a payload. Ringdown descriptors (the
 fitted natural frequency $f_n \approx$ \SIrange{300}{470}{Hz} and, where
 the exponential fit passes an $r^2 \ge 0.85$ gate, a damping ratio
 $\zeta$) are recorded per drop as print-health and prestress
@@ -909,12 +925,16 @@ physical experiments, the surrogate is refit and an acquisition
 function is maximized to recommend the next batch of designs to
 fabricate. The campaign is posed as a two-objective minimization:
 simultaneously minimize the filtered peak-acceleration ratio $t_{180}$
-and the per-drop rebound energy $E_{\mathrm{reb}}$ of
+and the per-drop rebound score $E_{\mathrm{reb}}$ of
 Eq.~\eqref{eq:objectives}. Both objectives serve the same payload:
 $t_{180}$ bounds the peak shock it feels during the impact, and
-$E_{\mathrm{reb}}$ bounds the energy thrown back into it afterward,
-and the two genuinely trade off in the measured seed round (the
-strongest attenuator exhibits the largest rebound). Implementation
+$E_{\mathrm{reb}}$ penalizes the motion thrown back into it afterward.
+The seed data show an apparent trade-off driven substantially by the
+single strongest attenuator; at seven mapped articles it is not
+statistically resolved (Spearman $\rho = -0.39$, $p = 0.38$;
+Section~\ref{sec:discussion}), which is why the rebound axis is slated
+to become a constraint rather than an objective once validated.
+Implementation
 uses the Ax platform~\citep{pmlr-v293-olson25a} over
 BoTorch~\citep{balandat2020botorch}, with noisy expected hypervolume
 improvement (qNEHVI)~\citep{daulton2021nehvi} as the multi-objective
@@ -942,14 +962,25 @@ with leave-one-out cross-validation and length-scale-based sensitivity
 diagnostics against a standard single-task GP with the same kernel
 (Section~\ref{sec:results}). Inputs are normalized to the unit cube
 and outputs standardized. Observation noise is supplied per
-observation as the per-drop standard error of the 99-drop stabilized
-mean, with the print-to-print mass scatter (measured from the one
-design printed in triplicate) folded into the rebound-energy noise.
-An independent adversarial review of this noise model
-(Section~\ref{sec:discussion}) argues that per-drop standard errors
-understate the decision-relevant article-to-article variance and that
-an article-level noise floor near 0.7\% CV should replace them; the
-round-3 refit adopts that correction.
+observation as a fixed variance: for $t_{180}$ the squared standard
+error of the stabilized mean,
+$\sigma_t^2 = s_{\mathrm{drop}}^2 / n_{\mathrm{drops}}$, and for the
+rebound score the drop-scatter term plus the propagated
+print-to-print mass scatter,
+$\sigma_E^2 = \sigma_{E,\mathrm{drops}}^2 +
+(\partial E_{\mathrm{reb}}/\partial m)^2 \sigma_m^2$ with
+$\sigma_m = \SI{0.457}{g}$ measured from the one design printed in
+triplicate. The estimand this noise model implies is the response of
+the tested article, not of a freshly printed article at the same
+design: an independent adversarial review
+(Section~\ref{sec:discussion}) argues the decision-relevant target is
+the latter, for which an article-level noise floor near 0.7\% CV (14
+to 44 times the per-drop standard error) should replace the per-drop
+terms; the round-3 refit adopts that correction. SAASBO is the
+prespecified round-1 surrogate; we make no claim that it outperforms
+a standard single-task GP at this dimensionality and sample size, and
+the budget-matched calibration comparison remains a pending audit
+(Section~\ref{sec:results}).
 
 \paragraph{Mass treatment} Because the constant \emph{solid}-mass
 projection does not hold printed grams constant
@@ -961,12 +992,16 @@ rebound objective is expressed in absolute millijoules using each
 article's weighed mass, so added grams are re-penalized through the
 energy they deliver back to the payload, while $t_{180}$ deliberately
 stays a ratio because payload peak acceleration is a damage criterion
-that does not scale with specimen mass. Printed mass is additionally
-attached as a tracking metric, so the surrogate learns as-printed mass
-as a function of the design coordinates and every recommendation
-reports a predicted printed mass. A calibrated printed-mass model that
-would let future rounds hold \emph{printed} grams constant is described
-in the Supplementary Information.
+that does not scale with specimen mass. The objective surrogates take
+the five design coordinates of Table~\ref{tab:design-vars} as their
+inputs; printed mass is attached as a separately modeled
+\emph{tracking metric}, so the model learns as-printed mass as a
+function of the design coordinates and every recommendation reports a
+predicted printed mass (the diagnostic refit behind
+Fig.~\ref{fig:sensitivity} additionally includes printed mass as a
+sixth input, precisely to probe this confound). A calibrated
+printed-mass model that would let future rounds hold \emph{printed}
+grams constant is described in the Supplementary Information.
 
 \paragraph{Budget and seeding} The seed round is an $n = 9$ Sobol
 draw with a recorded seed over the five-variable box, printed together
@@ -975,7 +1010,10 @@ sequential batches of $q = 9$ prints, sized to one build-plate
 generation cycle; the first model-recommended batch (Ax trials 10
 to 18) is reported in Section~\ref{sec:results}. All random seeds,
 the full experiment state, and the recommendation tables are recorded
-per round so that each batch is exactly reproducible. Escalation to
+per round; full computational reproducibility (the exact processing
+pipeline and model settings) is carried by the campaign code, whose
+archival release is a declared submission gate rather than a solved
+item. Escalation to
 trust-region BO (TuRBO)~\citep{eriksson2019turbo} is planned only if
 per-member-diameter extensions push the design space well beyond the
 present regime; a single-objective log-Expected-Improvement
@@ -1007,7 +1045,7 @@ energy-absorption score computed at Tier~C is a strong
 (Spearman $\rho = -0.93$ across the seven mapped articles), yet the
 ladder's own simulated $t_{180}$ correlates only weakly with the
 measurement ($\rho \approx 0.5$), rigid-strut models cannot reproduce
-the observed amplification ($t_{180} > 1$ on seven of eight measured
+the observed amplification ($t_{180} > 1$ on five of eight measured
 articles), and simulated restitution is design-invariant where the
 measured rebound is not. We therefore use the ladder to prioritize
 candidates and probe mechanisms (for example, the mass-confound
@@ -1105,18 +1143,22 @@ completed 101-drop characterization sessions to date, totaling over
 800 clean captures within a project-wide history of roughly 3{,}660
 instrumented drops. Table~\ref{tab:seed-results} reports the
 stabilized objectives. Three findings frame the round. First, the
-measured $t_{180}$ spans 0.893 to 1.062: seven of eight articles
-\emph{amplify} the peak shock reaching the top vertex, and a single
+measured $t_{180}$ spans 0.893 to 1.062: five of eight articles
+\emph{amplify} the peak shock reaching the top vertex (means above
+unity), two sit marginally below unity (0.997 and 0.980), and a single
 design (Sobol spec~01, the thick-strut, thin-cable, high-twist corner
-of the batch) attenuates it by 11\%, a 17\% design-driven spread that
-dwarfs the 0.2 to 0.5\% within-specimen repeatability. Second, the two
-objectives trade off in this sample: the best attenuator returns the
-most rebound energy to the payload (13.9~mJ per drop), so the Pareto
-front is informative rather than degenerate, although the robustness
-of this trade-off at $n=8$ is limited (Section~\ref{sec:discussion}).
-Third, printed mass correlates strongly with $t_{180}$ ($r = 0.83$),
-which motivated the mass-aware objective formulation of
-Section~\ref{sec:methods:bo}. Figure~\ref{fig:seed-designs} renders
+of the batch) attenuates it by 11\%. The design-driven range of 0.169
+in $t_{180}$ (19\% relative to the minimum) dwarfs the 0.2 to 0.5\%
+within-specimen repeatability. Second, the objectives show an
+apparent trade-off in this sample: the best attenuator carries the
+largest rebound score (13.9~mJ per drop), so the observed front is
+nondegenerate, although the trade-off is driven substantially by that
+single article and is not statistically resolved at this sample size
+(Section~\ref{sec:discussion}). Third, printed mass correlates
+strongly with $t_{180}$ ($r = 0.83$, $p = 0.02$, $n = 7$; an
+observational association confounded with the design coordinates, not
+a causal mass effect), which motivated the mass-aware objective
+formulation of Section~\ref{sec:methods:bo}. Figure~\ref{fig:seed-designs} renders
 the seed geometries to a common scale, showing how widely the
 constant-mass box spans aspect ratio, member sizing, and twist.
 
@@ -1173,7 +1215,14 @@ recommended designs (Ax trials 10 to 18) concentrate in the
 low-$t_{180}$ region near and beyond the current best attenuator;
 they have been sliced and sent to the printer, and their measured
 outcomes will populate the predicted-versus-measured comparison in
-the next revision.
+the next revision. The printability screens of
+Section~\ref{sec:methods:parameterization} are diagnostic flags
+rather than acquisition constraints, and two recommended designs
+violate one screen each after projection; both were retained
+deliberately, in part to test whether the conservative screens
+predict actual fabrication failure (the two seed designs below the
+cable-bridge floor were exactly the two with tendon stringing
+defects).
 
 \begin{figure*}[t]
   \centering
@@ -1248,14 +1297,15 @@ three questions the planned-methods stage could only pose. The
 end-to-end loop closes: printed articles, hundred-drop
 characterizations, a fitted fully Bayesian surrogate, and a
 model-recommended batch on the printer within days of the last seed
-measurement. The objectives discriminate: a 17\% design-driven spread
+measurement. The objectives discriminate: a 0.169 design-driven range
 in $t_{180}$ against sub-percent repeatability is a usable signal.
 And the physics is more adversarial than the cushioning intuition
-suggests: at this scale and rate, most of the printed prisms
-\emph{amplify} the peak shock reaching their top vertex, which
-sharpens the campaign question from ``how much does the architecture
-cushion'' to ``which corner of the design space crosses into genuine
-attenuation, and at what rebound cost.''
+suggests: at this scale and rate, five of the eight measured prisms
+\emph{amplify} the peak shock reaching their top vertex and only one
+clearly attenuates it, which sharpens the campaign question from
+``how much does the architecture cushion'' to ``which corner of the
+design space crosses into genuine attenuation, and at what rebound
+cost.''
 
 \paragraph{Honest accounting of the objective stack} We
 pre-registered an adversarial, data-first review of the objective
