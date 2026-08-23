@@ -16,7 +16,13 @@
 \usepackage{booktabs}
 \usepackage{siunitx}
 \usepackage{amsmath}
+\usepackage{xcolor}
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=black]{hyperref}
+
+% Synthetic-placeholder (dummy) data convention, matching the main text:
+% round-2 "measured" values are invented stand-ins typeset in violet.
+\definecolor{dummydata}{RGB}{142,68,173}
+\newcommand{\dummy}[1]{\textcolor{dummydata}{#1}}
 
 % Number SI floats/sections with an "S" prefix.
 \renewcommand{\thesection}{S\arabic{section}}
@@ -33,6 +39,15 @@
 
 \begin{document}
 \maketitle
+
+\begin{center}
+  \fcolorbox{dummydata}{dummydata!6}{\parbox{0.94\linewidth}{\small
+  \textcolor{dummydata}{\textbf{Draft note (remove before submission):}
+  as in the main text, every value printed in this violet color
+  (the round-2 entries of Table~\ref{tab:si-printkey-r2}) is synthetic
+  placeholder (dummy) data pending the physical round-2 drop sessions
+  and article logging; black type is real measurement or record.}}}
+\end{center}
 
 This Supplementary Information collects the detailed design-, fabrication-,
 test-, and analysis-development records supporting the main manuscript. Unlike
@@ -137,6 +152,39 @@ surrogate fit until identified.
     Spec 08 & bag26v & 21.42 & some stringing on tendon \\
     Spec 08 & ghmj4y & 22.10 & inconsistent tendon cross-section near top \\
     S0 ref. & bpx68c & 20.23 & none major \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Table~\ref{tab:si-printkey-r2} is the corresponding key for the round-2
+batch (Ax trials 10 to 18, sliced from the same as-printed project
+conventions). The article identifiers, weighed masses, and defect log are
+\dummy{synthetic placeholders}: the batch is printed but its per-article
+logging and sessions are pending, and the stand-ins exist so the record
+reads at its final scope.
+
+\begin{table}[ht]
+  \centering
+  \caption{\dummy{\textbf{Synthetic placeholder data (entire
+    table).}} Print key for the round-2 model-recommended batch. Entries
+    are invented stand-ins, typeset in violet, to be replaced by the
+    logged campaign record once the batch's articles are weighed,
+    inspected, and tested.}
+  \label{tab:si-printkey-r2}
+  \small\color{dummydata}
+  \begin{tabular}{@{}clS[table-format=2.2]l@{}}
+    \toprule
+    Trial & Article & {Mass (g)} & Logged defects \\
+    \midrule
+    10 & kq3w7f & 18.41 & light stringing on one diagonal tendon \\
+    11 & x8pdz2 & 19.52 & none \\
+    12 & w4jn8y & 19.88 & none \\
+    13 & e9tk2m & 19.37 & minor support scar on one bottom tendon \\
+    14 & u5rb6x & 20.68 & none \\
+    15 & r2vq9c & 20.31 & stringing near top vertex \\
+    16 & m7hs4t & 19.05 & none \\
+    17 & h3fc9q & 19.94 & none \\
+    18 & p6dm3z & 20.41 & slight seam ridge on one strut \\
     \bottomrule
   \end{tabular}
 \end{table}
