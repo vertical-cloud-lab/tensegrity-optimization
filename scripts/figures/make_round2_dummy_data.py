@@ -176,7 +176,7 @@ def fig_hypervolume():
             ms=6, lw=2, label="Budget-matched Sobol baseline, dummy")
     ax.axvline(len(seed_pts), color="black", lw=0.8, ls=":")
     ax.annotate("seed round\n(measured)", (len(seed_pts), hv_seed),
-                textcoords="offset points", xytext=(-86, 26), fontsize=11)
+                textcoords="offset points", xytext=(10, -6), fontsize=11)
     ax.set_xlabel("Tested articles with both objectives")
     ax.set_title("Dominated hypervolume (ref. point 1.10, 15.0 mJ)",
                  loc="left", fontsize=15)
