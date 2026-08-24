@@ -227,7 +227,7 @@ def evaluate(params: dict, *, solid: bool = False,
         h_print = base["H_mm"] * scale
         cable_print = base["cable_d_mm"] * scale
         envelope = math.pi * r_print ** 2 * h_print / 1000.0
-        out = {OBJ1: float(res["t180"]), OBJ2_RATIOS: float(res["e_rebound"]),
+        out = {OBJ1: float(res["t180"]), "e_rebound": float(res["e_rebound"]),
                "e_reb_mJ": float(res["e_reb_mJ"]),
                MASS: float(res["mass_printed_g"]),
                "print_scale": scale,
@@ -235,10 +235,12 @@ def evaluate(params: dict, *, solid: bool = False,
                "strut_d_print_mm": base["strut_d_mm"] * scale,
                "cable_d_print_mm": cable_print, "envelope_cm3": envelope}
         # candidate/tracking observables from the extended drop_tower_sim
+        # (the configured second objective is always among these or above)
         for extra in ("t1000", "peak_tendon_strain", "peak_tendon_energy_mJ",
                       "stroke_mm", "in_180_g", "out_180_g", "pulse_ms"):
             if extra in res:
                 out[extra] = float(res[extra])
+        out.setdefault(OBJ2_RATIOS, float("nan"))
         out["feasible"] = bool(np.isfinite(out[OBJ1])
                                and cable_print >= CABLE_PRINT_FLOOR_MM
                                and envelope <= ENVELOPE_MAX_CM3)

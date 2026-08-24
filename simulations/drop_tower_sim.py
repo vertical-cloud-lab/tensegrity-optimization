@@ -93,8 +93,8 @@ ACCEL_MASS_KG = 0.005         # tri-axis accelerometer + hot glue at the vertex
 # constant-printed-mass manifold at its weighed 20.23 g; see the module
 # docstring.  Units: stiffness N/m, damping N s/m^2 (the
 # Hunt-Crossley coefficient multiplies penetration times velocity).
-MAT_STIFFNESS_NPM = 3.184e5
-MAT_DAMPING_NSPM = 5.392e4
+MAT_STIFFNESS_NPM = 3.180e5
+MAT_DAMPING_NSPM = 5.398e4
 
 # Tendon prestrain.  The printed article's tendons are taut at the
 # equilibrium twist; a small prestrain is what stops the three ball-anchored
@@ -189,8 +189,19 @@ def build_xml(design: PrintableDesign, *, prestrain: float = DEFAULT_PRESTRAIN,
     for c_idx, (a, b) in enumerate(CABLES):
         L0 = float(np.linalg.norm(nodes[a] - nodes[b]))
         rest = (1.0 - prestrain) * L0
+        # A slack elastic cable is a *dead-band spring*: zero force below the
+        # slack length, k_cable * extension above it, never compression --
+        # springlength="0 rest".  The earlier revision instead wrote
+        # range="0 rest" with springlength unset, which in MuJoCo semantics
+        # is a solver-enforced length *limit* at the slack length plus a
+        # bidirectional spring resting at the qpos0 length, so the article's
+        # elasticity flowed partly through constraint impedance rather than
+        # the specified TPU stiffness (flagged by the Edison 9c0ab4c7
+        # objective audit).  With the dead-band spring, tendon tension is
+        # k_cable * (L - rest) exactly, and the post-processed strain
+        # (L - rest)/rest is the material tension strain of that spring.
         tendons.append(textwrap.dedent(f"""
-            <spatial name="cable{c_idx}" range="0 {rest:.6f}"
+            <spatial name="cable{c_idx}" springlength="0 {rest:.6f}"
                      stiffness="{k_cable:.3f}" damping="{c_cable:.4f}"
                      rgba="0.9 0.2 0.2 1" width="0.0006">
               <site site="n{a}"/>
@@ -360,6 +371,12 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
 
     pm = printed_mass_cad(design, pla_solidity=pla_solidity,
                           tpu_solidity=tpu_solidity)
+    # ``e_reb_mJ`` mirrors PR #102's definition verbatim, including its use of
+    # the restitution *velocity* ratio rather than its square: true rebound
+    # energy is e^2 m g h, so this quantity overstates returned energy ~20-50x
+    # at bench e values (Edison 9c0ab4c7).  Kept as-is because the sim must
+    # land in the bench pipeline's objective space, and e vs e^2 is monotone
+    # so every ranking statement is unaffected.
     # ``e_reb_mJ`` is deliberately an *absolute* energy (PR #102): a lighter
     # article returning the same velocity fraction returns less energy to the
     # payload.  That makes the mass it is multiplied by load-bearing, so it is

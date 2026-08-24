@@ -1,9 +1,9 @@
 candidate,rel_span,rho_vs_t180,p,meaning,rho_H_over_R,rho_H_over_strut_d,rho_cable_over_strut_d,rho_twist_deg
-e_rebound,0.006533,0.8184,5.787e-20,restitution velocity ratio (the objective being replaced),0.7314,-0.1726,0.3215,0.09412
-t1000,0.2898,0.9965,1.315e-83,CFC-1000 transmissibility (high-frequency transmission),0.9604,0.1093,0.1414,0.1864
-out_180_g,0.2982,1,5.151e-165,absolute filtered peak at the top vertex,0.9655,0.1269,0.119,0.1832
-pulse_ms,0.00491,0.4746,1.135e-05,input pulse width at half peak (mat-owned; null control),0.5332,0.3357,-0.2699,0.02573
-in_180_g,0.001014,-0.9756,8.888e-52,input peak (mat-owned; null control),-0.9455,-0.02019,-0.1534,-0.05123
-peak_tendon_strain,0.6312,-0.4059,0.0002273,max TPU tension strain above slack (survivability),-0.2538,0.1366,-0.7639,-0.3155
-peak_tendon_energy_mJ,1.573,-0.8749,1.231e-25,peak elastic energy in the tendon network,-0.9169,-0.1707,0.2614,-0.06526
-stroke_mm,1.217,-0.8903,1.096e-27,max top-vertex-to-plate compression (article deformation),-0.8345,0.08236,-0.1715,-0.1848
+e_rebound,0.01043,0.6114,2.758e-09,restitution velocity ratio (the objective being replaced),0.4936,-0.2006,0.4203,0.5002
+t1000,0.3164,0.9907,1.534e-67,CFC-1000 transmissibility (high-frequency transmission),-0.2188,-0.664,0.37,0.2524
+out_180_g,0.2738,0.9996,2.515e-120,absolute filtered peak at the top vertex,-0.1737,-0.6499,0.3782,0.2797
+pulse_ms,0.009825,0.3195,0.004351,input pulse width at half peak (mat-owned; null control),0.2257,-0.1955,0.007948,0.3266
+in_180_g,0.002671,-0.3094,0.00584,input peak (mat-owned; null control),-0.8048,0.0728,-0.1706,-0.3842
+peak_tendon_strain,1.618,-0.8179,6.368e-20,max TPU tension strain above slack (survivability),-0.1026,0.3669,-0.7195,-0.1018
+peak_tendon_energy_mJ,2.71,-0.5624,8.37e-08,peak elastic energy in the tendon network,-0.6004,0.256,-0.4882,-0.1472
+stroke_mm,2.72,0.6362,3.854e-10,max top-vertex-to-plate compression (article deformation),-0.5771,-0.575,0.2733,-0.1168
