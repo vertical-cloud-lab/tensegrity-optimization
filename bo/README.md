@@ -79,7 +79,7 @@ suggests the next print batch.
   callout text, the callout leaders and the front line, weighted so that a
   label would rather cross a hairline than sit on top of words; nothing here
   is hand-positioned, because the point cloud moves every round.
-- **Prototype, synthetic data.** Three stills and an animation showing the
+- **Prototype, synthetic data.** Four stills and an animation showing the
   layout the campaign will want once round 2 comes back, written by one run of
   `python bo/t3_prism_bo_campaign.py --prototype-next-round`. No round-2
   article has been printed or dropped, so the outcomes are drawn from the
@@ -89,44 +89,66 @@ suggests the next print batch.
   `synthesize_round2_outcomes` with the measured campaign summary to turn this
   into the real figure.
 
-  The three stills are the three points at which the figure is at rest, in
+  The four stills are the four points at which the figure is at rest, in
   slide order:
 
   1. `figures/t3-prism-bo-round2-start-PROTOTYPE.png`: the round-1 figure. Its
      front, its print IDs, and the orange suggested points.
-  2. `figures/t3-prism-bo-round2-predicted-vs-actual-PROTOTYPE.png`: each
+  2. `figures/t3-prism-bo-round2-uncertainty-PROTOTYPE.png`: the predicted
+     uncertainties at the suggested points, frozen before anything moves
+     (PR #102 review): a horizontal and a vertical bar spanning plus or minus
+     1 sd per objective, and a shaded oval through the same contour, both in
+     faded shades of the suggestion orange. The sd is **1 posterior standard
+     deviation of the model's noise-free objective prediction** (the square
+     root of the diagonal of the covariance `TorchModelBridge.predict`
+     returned when the batch was generated, averaged over the SAAS MCMC
+     draws). It is epistemic model uncertainty, not a standard error of any
+     sample of drops. Only the per-objective marginals were recorded to the
+     suggestions CSV, so the oval is axis-aligned; the cross-objective
+     covariance `predict` also returns was not saved. Several rebound-energy
+     sds are taller than the panel and simply crop at the axes, which is the
+     honest picture: the LOOCV diagnostic found no out-of-sample skill on
+     that objective, and these ovals are the same fact drawn in objective
+     space.
+  3. `figures/t3-prism-bo-round2-predicted-vs-actual-PROTOTYPE.png`: each
      orange diamond (predicted) joined by a straight path to the open black
      circle where that article actually landed. No front and no print IDs. The
      round-1 front has been retired and the round-2 front has not been computed
      yet; the IDs are retired with it, because seventeen of them over the
      travel paths is the crowding the beat list exists to avoid (PR #102
-     review). Identity comes back on still 3.
-  3. `figures/t3-prism-bo-round2-front-final-PROTOTYPE.png`: the prediction
+     review). The uncertainty layer stays anchored at the predictions at ghost
+     opacity, so predicted-band-versus-landing is readable. Identity comes
+     back on still 4.
+  4. `figures/t3-prism-bo-round2-front-final-PROTOTYPE.png`: the prediction
      layer gone, the print IDs back, and the front recomputed over both rounds.
      The frame to use when the point is the new front rather than how the model
      did.
 
-  All three are **frames of one figure** rather than three separate drawings,
+  All four are **frames of one figure** rather than four separate drawings,
   exported at 300 dpi (3300 x 2100 px, with that dpi written into the PNG so
   PowerPoint places them at 11 x 7 in) and with no tight bounding box. That
   makes them the same pixel size and puts every element that survives a beat
   (the axes, the ticks, the axis labels, and each print ID) at the same pixel
-  in all three, so
-  they can go on three consecutive slides and be cross-faded or morphed without
+  in all four, so
+  they can go on four consecutive slides and be cross-faded or morphed without
   anything sliding. Drawing them independently could not guarantee that, since
   each panel would solve its own label placement; labels are laid out once,
   against the final frame, for the whole set.
 - `figures/t3-prism-bo-round2-predicted-vs-actual-PROTOTYPE.gif` and
-  `.mp4`: the same three stills played out in time, which is how it is meant to
+  `.mp4`: the same four stills played out in time, which is how it is meant to
   be shown. Choreographed one idea per beat, after the PR #102 review found
   the first cut had too much moving and too much text on screen at once:
   hold on the round-1 figure (1.3 s, still 1), retire the round-1 front, its
-  callouts and every print ID with nothing else moving (0.9 s), travel the
-  diamonds to their measurements on an otherwise clean panel (2.6 s), hold on
-  predicted versus measured (1.7 s, still 2), clear the prediction layer
+  callouts and every print ID with nothing else moving (0.9 s), grow the
+  plus-or-minus-1-sd bars and ovals in and freeze so they can be read
+  (0.7 s + 1.4 s, still 2), travel the
+  diamonds to their measurements while the uncertainty layer fades to ghost
+  opacity at the predictions (2.6 s), hold on
+  predicted versus measured (1.7 s, still 3), clear the prediction layer and
+  its uncertainties
   (0.9 s), redraw the new front as its own step, wiping in along the polyline
   and filling each article as it reaches it (1.3 s), bring every ID back at
-  once now that nothing is moving, and rest (2.4 s, still 3). About 11 s. At
+  once now that nothing is moving, and rest (2.4 s, still 4). About 13 s. At
   most one callout is ever lit while anything is in motion, and nothing is
   labeled while anything is moving (eight IDs is fine on the round-1 slide,
   but carrying them through the travel while nine more arrive is not). The

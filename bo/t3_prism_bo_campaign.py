@@ -135,26 +135,40 @@ Usage (from the repo root)::
 
 Figures. ``--plot-only`` redraws the objective-space panel from the recorded
 CSVs (no model refit, ~1 s). ``--prototype-next-round`` draws the layout the
-campaign will want once the next batch comes back: three stills plus an
+campaign will want once the next batch comes back: four stills plus an
 animation that moves between them, all of them frames of one figure.
 
-The stills are the three points at which that figure is at rest, and they are
+The stills are the four points at which that figure is at rest, and they are
 written in slide order:
 
 1. ``-start-PROTOTYPE.png``: the round-1 figure, its front, its print IDs and
    the orange suggested points.
-2. ``-predicted-vs-actual-PROTOTYPE.png``: each orange diamond joined by a
+2. ``-uncertainty-PROTOTYPE.png``: the predicted uncertainties shown at the
+   suggested points: a horizontal and a vertical bar spanning +/- 1 posterior
+   sd per objective, and a shaded axis-aligned oval through the same +/- 1 sd
+   contour, both in a faded shade of the suggestion orange.
+3. ``-predicted-vs-actual-PROTOTYPE.png``: each orange diamond joined by a
    straight path to where that article actually landed, drawn as an open
    circle like any other tested article. No front and no print IDs.
-3. ``-front-final-PROTOTYPE.png``: the front recomputed over both rounds,
+4. ``-front-final-PROTOTYPE.png``: the front recomputed over both rounds,
    every article labeled, and none of the scaffolding.
 
-Because they are frames of one figure rather than three drawings, they are
+What the uncertainty is, precisely: the ``pred_*_sd`` columns of the
+suggestions CSV are one standard deviation of the model posterior for the
+noise-free objective value (the square root of the diagonal of the covariance
+returned by ``TorchModelBridge.predict``, averaged over the SAAS MCMC draws).
+They are epistemic model uncertainty about the design's true mean response,
+not a standard error of any sample of drops. Only the per-objective marginals
+were recorded, so the oval is axis-aligned; the cross-objective covariance
+that ``predict`` also returns was not saved.
+
+Because they are frames of one figure rather than four drawings, they are
 the same pixel size (``ANIM_FIGSIZE * ANIM_DPI``, 3300 x 2100) and every
-element that survives a beat sits at the same pixel in all three, so they can
-go on three consecutive slides and be cross-faded or morphed. The animation
+element that survives a beat sits at the same pixel in all four, so they can
+go on four consecutive slides and be cross-faded or morphed. The animation
 plays the same story in time: hold, retire the round-1 front and the IDs,
-travel, hold, clean up, redraw the front, bring every ID back and hold. One
+show the uncertainties and freeze, travel, hold, clean up, redraw the front,
+bring every ID back and hold. One
 idea per beat, and nothing is labeled while anything is moving (PR #102
 review). The round-2 outcomes it uses are SYNTHETIC (nothing has been printed
 or dropped yet); see ``synthesize_round2_outcomes``, which is the single
@@ -797,15 +811,15 @@ def _prototype_limits(combined, suggestions):
     return xticks, yticks
 
 
-# ---- round-2 prototype: one figure, three stills and an animation --------
+# ---- round-2 prototype: one figure, four stills and an animation --------
 # One idea per beat (PR #102 review: too many things were moving and too much
 # text was on screen at once). The round-1 front is retired BEFORE anything
 # moves, the diamonds then travel alone, and the new front is redrawn as its
 # own step after every article has landed and turned into an open black
 # circle. Still SYNTHETIC outcomes; see synthesize_round2_outcomes.
 #
-# The three stills are frames of this same figure rather than separately
-# drawn panels, which is what lets them be dropped on three consecutive
+# The four stills are frames of this same figure rather than separately
+# drawn panels, which is what lets them be dropped on four consecutive
 # slides and cross-faded: same canvas, same size, same axes, same label
 # placement, so every element that survives a beat stays exactly where it
 # was (PR #102 review). Drawing them twice could not guarantee that, since
@@ -817,7 +831,7 @@ GIF_WIDTH_PX = 1280  # the GIF is for threads and the README, not for slides
 
 # Frames exported as stills, in slide order. Keyed on the beat they rest in;
 # resolved against the frame table inside render_round2_prototype.
-STILL_STAGES = ("start", "travel", "front")
+STILL_STAGES = ("start", "uncertainty", "travel", "front")
 
 
 def _smoothstep(x):
@@ -845,20 +859,22 @@ def _callout_alpha(ann, alpha):
 def render_round2_prototype(
     observed, suggestions, actual, round_number, fps=25, animate=True
 ):
-    """The round-2 story as three registered stills plus an animation.
+    """The round-2 story as four registered stills plus an animation.
 
     Returns ``(stills, gif, mp4)``. ``stills`` is a dict keyed by
     ``STILL_STAGES``, in slide order:
 
     * ``"start"``: the round-1 figure, front and print IDs and the orange
       suggestions.
+    * ``"uncertainty"``: the predicted +/- 1 sd bars and ovals frozen at the
+      suggested points.
     * ``"travel"``: predicted joined to measured, no front and no IDs.
     * ``"front"``: the round-2 figure alone, front recomputed over both
       rounds, every article labeled.
 
-    All three are frames of one figure, exported at ``ANIM_DPI`` with no
+    All four are frames of one figure, exported at ``ANIM_DPI`` with no
     ``bbox_inches="tight"``, so they are the same pixel size as each other
-    and as the video. Put them on three consecutive slides and any transition
+    and as the video. Put them on four consecutive slides and any transition
     between them registers, because nothing that survives a beat has moved.
 
     Choreographed one idea per beat, after the PR #102 review found the first
@@ -869,26 +885,37 @@ def render_round2_prototype(
        fade out, taking the "Pareto front" and "Existing data" callouts with
        them. Nothing moves. The panel is left as unlabeled tested articles
        plus suggestions.
-    3. *Travel*: the diamonds ease to their measurements and hand off to open
-       black circles, alone on the panel, with no front to read across.
-    4. *Hold*: predicted versus measured, named by one labeled pair.
-    5. *Clean*: the prediction layer and those two callouts fade out.
-    6. *Front*: the new front is redrawn over both rounds, as its own step,
+    3. *Uncertainty*: each suggestion grows a horizontal and a vertical bar
+       spanning +/- 1 posterior sd per objective and a shaded axis-aligned
+       oval through the same contour, in a faded shade of the suggestion
+       orange, then the panel **freezes** so they can be read before anything
+       moves (PR #102 review). The sd is the model posterior for the
+       noise-free objective (see the module docstring), and the oval is
+       axis-aligned because only the marginal sds were recorded.
+    4. *Travel*: the diamonds ease to their measurements and hand off to open
+       black circles. The uncertainty layer stays anchored at the predictions
+       and fades to the same ghost level as the diamonds' origin markers, so
+       predicted-band-versus-landing stays readable in a freeze frame.
+    5. *Hold*: predicted versus measured, named by one labeled pair.
+    6. *Clean*: the prediction layer, its uncertainties and those callouts
+       fade out.
+    7. *Front*: the new front is redrawn over both rounds, as its own step,
        wiping in along the polyline and filling each article as it reaches it.
-    7. *Hold*: the print IDs come back, all of them at once and only once the
+    8. *Hold*: the print IDs come back, all of them at once and only once the
        figure is at rest, and the round-2 figure holds.
 
-    The IDs leaving in beat 2 and returning in beat 7 is the second half of
+    The IDs leaving in beat 2 and returning in beat 8 is the second half of
     the same review note that produced the beat list: eight IDs on the
     round-1 slide is fine, but carrying them through the travel while the
     round-2 IDs arrive on top of them is not (PR #102 review). Nothing is
     labeled while anything is moving.
 
-    The exported stills are beats 1, 4 and 7, the three points at which the
+    The exported stills are beats 1, 3, 5 and 8, the four points at which the
     figure is at rest.
     """
     from matplotlib.animation import FFMpegWriter, FuncAnimation, PillowWriter
     from matplotlib.collections import LineCollection
+    from matplotlib.patches import Ellipse
 
     combined = pd.concat(
         [
@@ -903,6 +930,14 @@ def render_round2_prototype(
 
     pred_xy = suggestions[
         [f"pred_{obj1_name}_mean", f"pred_{obj2_name}_mean"]
+    ].to_numpy(float)
+    # One posterior sd of the noise-free objective per suggestion, straight
+    # from the suggestions CSV (sqrt of the diagonal of the covariance that
+    # TorchModelBridge.predict returned when the batch was generated). The
+    # cross-objective covariance was not recorded, so the uncertainty oval
+    # drawn from these is axis-aligned.
+    pred_sd = suggestions[
+        [f"pred_{obj1_name}_sd", f"pred_{obj2_name}_sd"]
     ].to_numpy(float)
     act_xy = actual[[obj1_name, obj2_name]].to_numpy(float)
     n_r2 = len(pred_xy)
@@ -949,13 +984,16 @@ def render_round2_prototype(
     # phase lengths in frames, one idea each
     n_hold0 = int(round(1.3 * fps))    # the round-1 figure, as-is
     n_retire = int(round(0.9 * fps))   # drop the round-1 front, nothing moves
+    n_unc = int(round(0.7 * fps))      # the +/- 1 sd bars and ovals grow in
+    n_freeze = int(round(1.4 * fps))   # ...and freeze, to be read
     n_travel = int(round(2.6 * fps))   # predictions travel, nothing else
     n_hold1 = int(round(1.7 * fps))    # read predicted vs measured
     n_clean = int(round(0.9 * fps))    # drop the prediction layer
     n_front = int(round(1.3 * fps))    # redraw the front, its own step
     n_hold2 = int(round(2.4 * fps))    # rest on the round-2 figure
     t_retire = n_hold0
-    t_travel = t_retire + n_retire
+    t_unc = t_retire + n_retire
+    t_travel = t_unc + n_unc + n_freeze
     t_hold1 = t_travel + n_travel
     t_clean = t_hold1 + n_hold1
     t_front = t_clean + n_clean
@@ -998,6 +1036,37 @@ def render_round2_prototype(
             )
             for p, a in zip(pred_xy, act_xy)
         ]
+
+        # Predicted uncertainty, one layer per suggestion: a +/- 1 sd bar per
+        # objective and a shaded axis-aligned oval through the same +/- 1 sd
+        # contour. Both are faded shades of the suggestion orange, sit under
+        # the markers, and clip at the axes: several rebound-energy sds are
+        # taller than the panel, which is the honest picture (the LOOCV found
+        # no out-of-sample skill on that objective) and worth showing rather
+        # than shrinking.
+        unc_ovals = []
+        for (px, py), (sx, sy) in zip(pred_xy, pred_sd):
+            ell = Ellipse(
+                (px, py), width=2.0 * sx, height=2.0 * sy,
+                facecolor=SUGGEST_ORANGE, edgecolor="none",
+                alpha=0.0, zorder=1.2,
+            )
+            ax.add_patch(ell)
+            unc_ovals.append(ell)
+        unc_bars = LineCollection(
+            [
+                seg
+                for (px, py), (sx, sy) in zip(pred_xy, pred_sd)
+                for seg in (
+                    [(px - sx, py), (px + sx, py)],
+                    [(px, py - sy), (px, py + sy)],
+                )
+            ],
+            colors=mcolors.to_rgba(SUGGEST_ORANGE, 0.0),
+            linewidths=2.2,
+            zorder=1.6,
+        )
+        ax.add_collection(unc_bars)
 
         ghost = ax.scatter(
             pred_xy[:, 0], pred_xy[:, 1], marker="D", s=150,
@@ -1057,6 +1126,18 @@ def render_round2_prototype(
             ax, f"Suggested points (round {round_number})",
             tuple(pred_xy[sug_i]), (0.02, 0.09), SUGGEST_ORANGE,
         )
+        # Uncertainty callout, anchored to a horizontal bar end so the leader
+        # touches the thing the words describe. The leftmost bar end is used
+        # and the text parked in the top-left corner, the one region the
+        # ovals cannot wash over (the panel's own limits crop them there).
+        unc_i = int(np.argmin(pred_xy[:, 0] - pred_sd[:, 0]))
+        unc_anchor = (
+            pred_xy[unc_i, 0] - pred_sd[unc_i, 0], pred_xy[unc_i, 1]
+        )
+        c_unc = _callout(
+            ax, "Predicted ± 1 sd\n(model posterior)", unc_anchor,
+            (0.02, 0.90), SUGGEST_ORANGE,
+        )
         travel_i = int(
             np.hypot(
                 act_xy[:, 0] - pred_xy[:, 0], (act_xy[:, 1] - pred_xy[:, 1]) / 40.0
@@ -1075,7 +1156,7 @@ def render_round2_prototype(
             ax, f"Pareto front after round {round_number}", new_anchor,
             _axes_frac(ax, new_anchor, -0.36, -0.20), FRONT_BLUE, ha="left",
         )
-        for ann in (c_pred, c_meas, c_front2):
+        for ann in (c_unc, c_pred, c_meas, c_front2):
             _callout_alpha(ann, 0.0)
 
         ax.text(
@@ -1091,7 +1172,7 @@ def render_round2_prototype(
         # (which sit under the round-1 IDs in the opening frame). The travel
         # paths are not obstacles, because no label is ever lit while one is
         # on the panel.
-        all_callouts = [c_exist, c_front1, c_sug, c_pred, c_meas, c_front2]
+        all_callouts = [c_exist, c_front1, c_sug, c_unc, c_pred, c_meas, c_front2]
         anns = _label_points(
             ax, combined, "print_id", obj1_name, obj2_name,
             obstacles=(
@@ -1121,6 +1202,7 @@ def render_round2_prototype(
         def update(f):
             # one progress variable per beat; each is zero until its beat
             q = _smoothstep((f - t_retire) / max(n_retire, 1))   # retire front
+            e = _smoothstep((f - t_unc) / max(n_unc, 1))         # sd bars grow
             u = np.clip((f - t_travel) / max(n_travel, 1), 0.0, 1.0)
             m = _smoothstep((f - t_hold1) / max(0.45 * fps, 1))  # name the pair
             w = _smoothstep((f - t_clean) / max(n_clean, 1))     # clean up
@@ -1128,6 +1210,14 @@ def render_round2_prototype(
             d = _smoothstep((f - t_rest) / max(0.5 * fps, 1))    # IDs return
             keep = 1.0 - w  # everything that only existed to explain the move
             p = _smoothstep((u - starts) / span)
+
+            # beat 3: the uncertainty layer grows in and freezes; once the
+            # travel starts it stays anchored at the predictions and drops to
+            # the same ghost level as the diamonds' origin markers
+            ua = e * (1.0 - 0.62 * _smoothstep(u / 0.3)) * keep
+            for ell in unc_ovals:
+                ell.set_alpha(0.07 * ua)
+            unc_bars.set_color(mcolors.to_rgba(SUGGEST_ORANGE, 0.55 * ua))
 
             cur = pred_xy + p[:, None] * (act_xy - pred_xy)
             trails.set_segments([np.array([q0, c]) for q0, c in zip(pred_xy, cur)])
@@ -1179,6 +1269,7 @@ def render_round2_prototype(
             _callout_alpha(c_exist, 1.0 - q)
             _callout_alpha(c_front1, 1.0 - q)
             _callout_alpha(c_sug, 1.0 - _smoothstep(u / 0.25))
+            _callout_alpha(c_unc, e * (1.0 - _smoothstep(u / 0.25)))
             _callout_alpha(c_pred, m * keep)
             _callout_alpha(c_meas, m * keep)
             _callout_alpha(c_front2, _smoothstep((v - 0.55) / 0.45))
@@ -1188,18 +1279,20 @@ def render_round2_prototype(
         fig_dir.mkdir(exist_ok=True)
         stem = f"t3-prism-bo-round{round_number}"
 
-        # The three rest points, exported from this figure rather than
-        # redrawn: beat 1 (before anything moves), the end of beat 4 (both
-        # travel callouts fully lit) and the last frame. No bbox_inches, so
-        # every PNG is exactly ANIM_FIGSIZE * ANIM_DPI and the set lines up
-        # on consecutive slides.
+        # The four rest points, exported from this figure rather than
+        # redrawn: beat 1 (before anything moves), the end of the uncertainty
+        # freeze, the end of beat 5 (both travel callouts fully lit) and the
+        # last frame. No bbox_inches, so every PNG is exactly
+        # ANIM_FIGSIZE * ANIM_DPI and the set lines up on consecutive slides.
         still_frames = {
             "start": 0,
+            "uncertainty": t_travel - 1,
             "travel": t_clean - 1,
             "front": n_frames - 1,
         }
         still_names = {
             "start": f"{stem}-start-PROTOTYPE.png",
+            "uncertainty": f"{stem}-uncertainty-PROTOTYPE.png",
             "travel": f"{stem}-predicted-vs-actual-PROTOTYPE.png",
             "front": f"{stem}-front-final-PROTOTYPE.png",
         }
@@ -1303,7 +1396,7 @@ def main(argv=None):
         "--no-animation",
         action="store_true",
         help=(
-            "with --prototype-next-round, write only the three still PNGs "
+            "with --prototype-next-round, write only the four still PNGs "
             "and skip the animated GIF/MP4"
         ),
     )
