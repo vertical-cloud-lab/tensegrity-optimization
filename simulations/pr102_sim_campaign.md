@@ -15,7 +15,8 @@ Files:
 | [`print_infill.py`](print_infill.py) | sub-100 % PLA infill: printed mass, effective strut density and modulus, the PR #35 constant-mass projection |
 | [`drop_tower_sim.py`](drop_tower_sim.py) | MuJoCo analogue of the 60 in / PU-mat drop; returns `t180` and `e_reb_mJ` |
 | [`pr102_correlation.py`](pr102_correlation.py) | scores the tested articles with every candidate observable and rank-correlates against the measured objectives |
-| [`pr102_sim_campaign.py`](pr102_sim_campaign.py) | the closed-loop simulation-only campaign, one run per seed |
+| [`pr102_sim_campaign.py`](pr102_sim_campaign.py) | the closed-loop simulation-only campaign, one run per seed (`--space ratios` is the current constant-mass parameterization, section 6) |
+| [`pr102_baselines.py`](pr102_baselines.py) | random/Sobol/LHS/compass baselines and the dense reference sweep, in either space |
 | [`workflows-staged/sim-bo-pr102-matrix.yml`](workflows-staged/sim-bo-pr102-matrix.yml) | parallel seed matrix for Actions (staged; move it into `.github/workflows/`) |
 | `data/pr102/*.csv` | snapshots of PR #102's batch table, print key and campaign summary |
 
@@ -476,7 +477,110 @@ with its parameters, objectives, printed mass, constant-mass scale and
 feasibility flag), `outputs/pr102_baselines_summary.csv`, and the two
 figures. Nothing needs re-running to redo a plot.
 
-## 6. Caveats
+## 6. The campaign on the constant-mass shape-ratio manifold
+
+The 2026-08-22 review of the slab runs recommended re-parameterizing
+instead of carrying mass as a parameter: in a deterministic simulation mass
+is a function of shape, so a mass axis is degenerate (every point shares
+its projected article with a one-parameter family of others) and the slab
+is exploitable as a gradient, which is exactly how all ten slab repeats
+used it. `--space ratios`, now the default, implements that
+recommendation.
+
+The search space is the four dimensionless shape ratios, `H/R` in [1.5,
+4.4], `H/strut_d` in [5, 18.3], `cable_d/strut_d` in [0.25, 0.917] and
+`twist` in [40, 80] deg, the extremes the PR #35 box can express. The
+single overall scale is solved in closed form by the section 1 mass model
+so every evaluated article prints at exactly 20.23 g; mass never enters
+the search space, and the second objective becomes the dimensionless
+`e_rebound` (`e_reb_mJ` is the constant `m* g h` times it on this
+manifold). What the base box can no longer police is printability, so it
+enters honestly instead of implicitly: the projected article's cable
+diameter (3.0 mm TPU bridging floor) and envelope (250 cm^3) are Ax
+outcome constraints under constrained qNEHVI, and they bind, on about 40 %
+of the ratio box (unprintable projections are excluded from every front,
+hypervolume and running best below, but kept in the CSVs).
+
+### Ten repeats, reference, baselines
+
+The same construction as sections 4 and 5, re-run end to end on the new
+manifold: ten from-scratch repeats (`--model botorch`, `--init sobol`,
+five batches of 9 = 45 designs each), a reference sweep (16,384 scrambled
+Sobol designs plus the 21-weighting Nelder-Mead polish, 21,184 evaluations,
+about 470x the campaign budget), and the four baselines at the campaign's
+budget over the same ten seeds.
+
+![](outputs/pr102_sim_bo_botorch_ratios_sobol_aggregate.png)
+
+The repeats start far apart (round-0 hypervolume spread 24.9 % of its
+mean, best round-0 `t180` 0.651 to 0.790) and finish close (final
+hypervolume 0.00978 +/- 0.00027, 2.9 % of the mean, best `t180` 0.589 to
+0.599 for nine of ten seeds): convergent under resampling, without the
+degenerate identical-vertex collapse of the slab space. One seed (6) stalls
+at `t180` 0.619 with its twist at 63 deg, the price of a 45-design budget
+on a constrained space, and it is visible rather than averaged away.
+
+| method | final HV (mean +/- sd) | fraction of reference | best `t180` (mean) | p vs BO |
+|---|--:|--:|--:|--:|
+| BO (constrained qNEHVI) | 0.00978 +/- 0.00027 | **95.2 %** | 0.597 | - |
+| Latin hypercube | 0.00748 +/- 0.00074 | 72.7 % | 0.661 | 9.1e-5 |
+| Sobol | 0.00703 +/- 0.00119 | 68.4 % | 0.674 | 1.2e-4 |
+| compass search | 0.00685 +/- 0.00273 | 66.6 % | 0.680 | 3.6e-3 |
+| random search | 0.00669 +/- 0.00176 | 65.0 % | 0.684 | 9.1e-5 |
+
+![](outputs/pr102_baselines_comparison_ratios.png)
+
+The BO's margin survives the re-parameterization, and one baseline moved in
+an informative way: compass search, the strongest baseline on the
+unconstrained slab (80 % of reference), drops to the bottom of the pack
+here, because roughly a third of its probe moves land on unprintable
+projections that a penalty can reject but not steer around. A model that
+learns the constraint surfaces loses much less of its budget to them.
+
+### Where the optimum moved, and what binds now
+
+![](outputs/pr102_reference_front_ratios.png)
+
+* **The envelope constraint replaces the box wall.** Nine of ten repeat
+  winners and 98.7 % of the 555-point reference front press the 250 cm^3
+  envelope cap (those winners at 245 to 249 cm^3), and the front's
+  best-`t180` end sits on
+  the cable print floor at exactly 3.00 mm as well. On the slab space the
+  answer was "sit in the corner of the box"; here it is "print the widest,
+  flattest cell the build volume and the bridging floor allow at 20.23 g",
+  which is a statement about the printer and the physics rather than about
+  where someone drew the search box.
+* **`H/R` and `twist` still sit on their bounds** (1.5 and 40 deg across
+  the front and nine of ten winners). Those walls came from the PR #35 box
+  extremes, so the earlier conclusion survives re-parameterization: the
+  next plate is worth more below `twist` 40 deg and below `H/R` 1.5, in
+  other words flatter and wider than the current family allows.
+* **The winning printed article** is R about 37.5 mm, H about 56 mm, strut
+  6.3 to 10.6 mm, cable 3.4 to 4.6 mm, `t180` about 0.59 against the
+  reference's 0.5825. The strut-diameter axis stays soft: `H/strut_d`
+  from 5.2 to 8.9 all reach `t180` within 1 %, so the model is trading it
+  against cable ratio along a shallow valley, consistent with the front
+  geometry panel, where the trade-off is carried entirely by
+  `cable_d/strut_d` and `H/strut_d`.
+* **The two objectives are now largely concordant, not competing.** Over
+  the 13,937 printable reference designs `e_rebound` spans 0.71 % and
+  rank-correlates with `t180` at rho = +0.84, so the Pareto front is a
+  sliver (its `t180` extent is 0.5825 to 0.5995) and the campaign is
+  effectively single-objective in `t180`. That is the section 1 finding
+  surviving one more reformulation, now with nothing left to hide behind:
+  the simulated restitution has no design response at fixed mass, and a
+  live second objective needs either a tier that carries the rig's loss
+  paths or the bench itself.
+
+Files. `outputs/pr102_sim_bo_botorch_ratios_sobol_seed<k>.{csv,png}`,
+`..._aggregate.png`, `..._summary.csv`;
+`outputs/pr102_reference_{cloud,front,summary}_ratios.*`;
+`outputs/pr102_baseline_<strategy>_ratios_seed<k>.csv`;
+`outputs/pr102_baselines_{comparison,objective_space,summary}_ratios.*`.
+Every evaluation is on disk, printable or not, so any of this can be
+re-plotted without re-running.
+
+## 7. Caveats
 
 * Seven articles. Every correlation in section 3 is a small-n rank
   statistic screened across about 30 candidates; treat the leader as a

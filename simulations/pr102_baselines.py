@@ -498,10 +498,14 @@ def compare(outdir: Path = OUT, strategies=("botorch", "sobol", "lhs",
                      "hv_frac_of_reference": (final.mean() / ref_hv
                                               if ref_hv else np.nan)})
 
+    ref_label = "reference (dense sweep + polish)"
+    if summary_path.exists():
+        n_ref = int(s["n_sweep"] + s["n_polish"])
+        ref_label = f"reference ({n_ref:,} evals)"
     for ax, (_, _, ref_val) in zip(axes, panels):
         if ref_val is not None and np.isfinite(ref_val):
             ax.axhline(ref_val, color="#111111", ls="--", lw=1.2,
-                       label="reference (65 k + polish)")
+                       label=ref_label)
         ax.legend(fontsize=7.5)
     axes[0].set_title("Hypervolume against a fixed reference point", fontsize=10)
     axes[1].set_title("Best t180 so far", fontsize=10)
