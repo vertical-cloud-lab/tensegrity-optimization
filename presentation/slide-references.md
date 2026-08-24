@@ -2,15 +2,10 @@
 
 **Talk:** Discovering multi-material, tensegrity-inspired energy absorbers via
 closed-loop Bayesian optimization
-**Presenter:** Marcus Madsen, with Audrey Christiansen, Jinkwan Han, Jeff Hill,
-and Sterling Baird (BYU Vertical Cloud Lab)
+**Presenter:** Marcus Madsen
+**Authors:** Marcus Madsen, Audrey Christiansen, Jinkwan Han, Jeffrey R. Hill,
+and Sterling G. Baird (BYU Vertical Cloud Lab)
 **Venue:** ASME IDETC-CIE 2026, session DAC-10
-
-This page lists every borrowed video, image, and figure that appears in the
-presentation, with a link to its original source. It is the target of the QR
-code offered at the end of the talk. Slide numbers refer to the deck as
-downloaded on 2026-08-24; they may shift as the deck is edited, so each entry
-also says what the asset shows.
 
 ## Videos by others
 
