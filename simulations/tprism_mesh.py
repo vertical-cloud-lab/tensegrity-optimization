@@ -30,6 +30,7 @@ from tprism_geometry import CABLES, STRUTS, tprism_nodes
 def build_tprism_msh(out_msh: str | Path,
                      radius: float = 0.012,
                      height: float = 0.025,
+                     twist: float | None = None,
                      strut_d: float = 0.003,
                      tendon_d: float = 0.0015,
                      drop_height: float = 0.005,
@@ -48,7 +49,9 @@ def build_tprism_msh(out_msh: str | Path,
 
     # Note: tprism_nodes uses +z as up; PolyFEM/our JSON also uses +y as up.
     # We rotate (x, y, z) -> (x, z, y) so the prism height is along +y.
-    raw = tprism_nodes(radius=radius, height=height, z0=drop_height + height / 2.0)
+    twist_kw = {} if twist is None else {"twist": twist}
+    raw = tprism_nodes(radius=radius, height=height,
+                       z0=drop_height + height / 2.0, **twist_kw)
     nodes = raw[:, [0, 2, 1]]
     inset = strut_d * tendon_inset_factor
 
