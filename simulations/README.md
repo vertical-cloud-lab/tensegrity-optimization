@@ -201,6 +201,13 @@ python simulations/pr102_baselines.py \
 # -> outputs/pr102_baseline_<strategy>[_ratios]_seed<k>.csv
 # -> outputs/pr102_baselines_comparison[_ratios].png, _objective_space,
 #    _summary
+# Ringdown damping: what the measured zeta_pct correlates with, and whether
+# the drop-tower analogue can resolve it (it cannot, for structural
+# reasons; see zeta_analysis.md).
+python simulations/zeta_analysis.py --n-sobol 48
+# -> outputs/zeta_measured_correlations.csv, zeta_articles_sim.csv,
+#    zeta_damping_transfer.csv, zeta_sobol_response.csv,
+#    zeta_article_inversion.csv, zeta_cross_checks.csv, zeta_analysis.png
 ```
 
 ## Matching the PR #102 bench campaign in simulation
@@ -217,6 +224,16 @@ predicts measured `e_reb_mJ` yet. Section 5 adds the baselines: against a
 ceiling while compass search reaches 80 %, Sobol 66 %, Latin hypercube 65 %
 and random search 60 %, every one of them completely separated from the BO
 over ten seeds.
+
+[`zeta_analysis.md`](zeta_analysis.md) — the measured ringdown damping
+`zeta_pct` (proposed second objective) analyzed on both sides of the
+sim/bench divide: the measured channel is article-intrinsic and independent
+of `t180` but resolves to no design axis at n = 6, and the Tier-C drop-tower
+analogue **cannot resolve it** (wrong mode family: 22 to 96 Hz rigid-body
+modes vs the measured 294 to 468 Hz strut flexure; a parasitic damping floor
+of ~12 % above the least-damped articles; and injecting each article's
+measured ζ into the tendons moves simulated `t180` by a median 0.12 % and
+`e_rebound` by 0.009 %, because the calibrated mat owns the loss budget).
 
 ## Fair-evaluation analysis (PR comment 4760939061)
 

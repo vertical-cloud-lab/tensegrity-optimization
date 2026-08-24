@@ -101,6 +101,11 @@ MAT_DAMPING_NSPM = 5.392e4
 # rigid struts from being a mechanism at t = 0.
 DEFAULT_PRESTRAIN = 0.02
 
+# Tendon damping ratio used to size the viscous term on each cable.  This is
+# an *input dial*, not a material property: zeta_analysis.py measures how the
+# article's emergent modal damping responds to it and to the design.
+DEFAULT_CABLE_ZETA = 0.02
+
 SIM_DT_S = 2.0e-5             # 50 kHz, well above the CFC-1000 corner
 SIM_DURATION_S = 0.040
 
@@ -115,7 +120,8 @@ class MatModel:
 def build_xml(design: PrintableDesign, *, prestrain: float = DEFAULT_PRESTRAIN,
               carriage_mass_kg: float = CARRIAGE_MASS_KG,
               pla_solidity: float = PLA_SOLIDITY,
-              article_mass_g: float | None = None) -> str:
+              article_mass_g: float | None = None,
+              cable_zeta: float = DEFAULT_CABLE_ZETA) -> str:
     """MJCF for one article mounted on the sliding carriage.
 
     ``article_mass_g`` pins the total mass of the three strut capsules to a
@@ -179,7 +185,7 @@ def build_xml(design: PrintableDesign, *, prestrain: float = DEFAULT_PRESTRAIN,
     k_cable = design.cable_stiffness_Npm
     # light viscous damping on the tendons; TPU 85A is strongly lossy, and
     # without it the tendon network rings at its own numerical frequency
-    c_cable = 0.02 * 2.0 * math.sqrt(k_cable * max(ACCEL_MASS_KG, 1e-3))
+    c_cable = cable_zeta * 2.0 * math.sqrt(k_cable * max(ACCEL_MASS_KG, 1e-3))
     for c_idx, (a, b) in enumerate(CABLES):
         L0 = float(np.linalg.norm(nodes[a] - nodes[b]))
         rest = (1.0 - prestrain) * L0
@@ -239,14 +245,17 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
              pla_solidity: float = PLA_SOLIDITY,
              tpu_solidity: float = TPU_SOLIDITY,
              article_mass_g: float | None = None,
-             cfc: float = 180.0) -> dict:
+             cfc: float = 180.0,
+             cable_zeta: float = DEFAULT_CABLE_ZETA,
+             duration_s: float = SIM_DURATION_S) -> dict:
     """One drop.  Returns the PR #102 objectives plus the raw channels."""
     import mujoco
 
     mat = mat or MatModel()
     model = mujoco.MjModel.from_xml_string(
         build_xml(design, prestrain=prestrain, carriage_mass_kg=carriage_mass_kg,
-                  pla_solidity=pla_solidity, article_mass_g=article_mass_g))
+                  pla_solidity=pla_solidity, article_mass_g=article_mass_g,
+                  cable_zeta=cable_zeta))
     data = mujoco.MjData(model)
 
     carriage_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "carriage")
@@ -264,7 +273,7 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
         else:
             data.qvel[adr + 2] = -impact_v_mps
 
-    nsteps = int(SIM_DURATION_S / SIM_DT_S)
+    nsteps = int(duration_s / SIM_DT_S)
     t = np.zeros(nsteps)
     a_in = np.zeros(nsteps)
     a_out = np.zeros(nsteps)
@@ -345,6 +354,10 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
         "v_rebound_mps": float(v_reb),
         "ok": True,
         "t": t, "a_in_g": in_f / G, "a_out_g": out_f / G, "v_car": v_car,
+        # unfiltered channels for ringdown work: the CFC-180 corner sits at
+        # ~300 Hz, right on top of the measured 294-468 Hz ringdown band, so
+        # any modal fit has to run on the raw traces
+        "a_in_raw_g": a_in / G, "a_out_raw_g": a_out / G, "f_mat": f_mat,
     }
 
 
