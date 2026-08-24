@@ -123,6 +123,14 @@ around 10–12 in per sheet.
 
 ## 6. Caveats
 
+- **The "5 felt" conditions were physically 4 felt + 1 cardboard** —
+  @me-madsen later confirmed (PR #86) that the lab owns only four felt
+  sheets, so every 5-sheet stack in this sweep (50 in / 5 f, 60 in / 5 f)
+  included one cardboard sheet. The measurements stand as measured (the
+  recommended 60 in operating point *is* the mixed stack, and the 201-drop
+  validation reproduced its levels), but the per-sheet OLS coefficient in
+  §3 blends the two materials at the top of the range, and extrapolations
+  to "6 felt sheets" assume felt that would have to be purchased.
 - **n = 1 specimen** (5 repeat drops per condition); the head-room factor of 3
   is an engineering choice — tighten it once the stiffest BO design's expected
   peak is known (from the #35 search-space bounds), since that, not this
@@ -134,3 +142,8 @@ around 10–12 in per sheet.
 - The real long-term fix for head-room is a higher-range base sensor, not
   more felt — felt also changes the pulse shape (widens it), which matters if
   SEA / pulse-shape metrics are later added to the objective stack.
+- Felt itself turned out to be a consumable (it compacts measurably over
+  ~100 drops; see the 60 in validation §3). Durable non-consumable
+  alternatives (elastomer programmer pads, Sorbothane, rubber mats) are
+  surveyed in
+  [drop-test-absorber-alternatives.md](drop-test-absorber-alternatives.md).

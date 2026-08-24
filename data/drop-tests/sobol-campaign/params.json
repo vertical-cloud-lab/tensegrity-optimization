@@ -1,0 +1,9 @@
+{
+ "bpx68c": {"spec": "S0",  "mass_g": 20.23, "R_mm": 28.85, "H_mm": 80.77,  "twist_deg": 60.0, "strut_d_mm": 6.92, "cable_d_mm": 3.46},
+ "9hhbkp": {"spec": "00",  "mass_g": 21.62, "R_mm": 27.30, "H_mm": 76.16,  "twist_deg": 59.8, "strut_d_mm": 6.70, "cable_d_mm": 4.58},
+ "6lhxfy": {"spec": "01",  "mass_g": 18.50, "R_mm": 28.72, "H_mm": 68.08,  "twist_deg": 77.4, "strut_d_mm": 9.24, "cable_d_mm": 2.55},
+ "autv5r": {"spec": "02",  "mass_g": 22.04, "R_mm": 36.44, "H_mm": 93.50,  "twist_deg": 47.7, "strut_d_mm": 6.61, "cable_d_mm": 3.67},
+ "nvxsrv": {"spec": "04",  "mass_g": 20.66, "R_mm": 22.72, "H_mm": 85.68,  "twist_deg": 70.4, "strut_d_mm": 7.64, "cable_d_mm": 3.70},
+ "6nheas": {"spec": "05",  "mass_g": 21.73, "R_mm": 37.89, "H_mm": 65.99,  "twist_deg": 53.0, "strut_d_mm": 6.74, "cable_d_mm": 4.23},
+ "bag26v": {"spec": "08",  "mass_g": 21.42, "R_mm": 30.17, "H_mm": 104.86, "twist_deg": 63.8, "strut_d_mm": 6.45, "cable_d_mm": 3.32}
+}

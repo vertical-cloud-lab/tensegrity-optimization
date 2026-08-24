@@ -1,0 +1,114 @@
+{
+  "capture_fps": 960.0,
+  "drop_height_m": 1.524,
+  "free_fall_reference": {
+    "tau_s": 0.5575029163292983,
+    "v_ms": 5.467235974420713
+  },
+  "specimens": {
+    "7xadt6": {
+      "descent_window": [
+        148,
+        176
+      ],
+      "contact_frame": 176,
+      "turnaround_frame": 177,
+      "catch_frame": 262,
+      "n_velocity_dups_removed": 6,
+      "descent_flatness": {
+        "a_px_per_frame2": 0.0023229377884484686,
+        "a_err": 0.005934437506949043,
+        "expected_g_px_per_frame2": 0.036258042327358464,
+        "residual_px_per_frame": 0.14518162001971036,
+        "n_points": 20,
+        "interpretation": "free-fall velocity gain cancelled by perspective scale gradient"
+      },
+      "scale_px_per_m": 3407.423718486288,
+      "scale_basis": "arrival speed assumed = free fall from 60 in (5.47 m/s); DAQ plate dv 5.53 m/s corroborates",
+      "v_impact_px_per_frame": 19.40540576437774,
+      "v_impact_ms_assumed": 5.467235974420713,
+      "impact_pulse_frames": 1,
+      "impact_pulse_ms": 1.0416666666666667,
+      "snapback_peak_px_per_frame": 13.520416474357233,
+      "snapback_ratio": 0.696734540803908,
+      "v_rebound_px_per_frame": 6.697089942208018,
+      "v_rebound_ms": 1.8868232646381307,
+      "coeff_restitution_scalefree": 0.3451146563758941,
+      "brake_decel_g": 2.141763835677769,
+      "catch_delay_ms": 88.54166666666667,
+      "catch_rise_px": 442.90872850682445,
+      "catch_rise_mm": 129.98346114218572,
+      "specimen_compression": {
+        "valid_frames_near_impact": 22,
+        "static_height_px": 280.0,
+        "static_height_mm": 82.17351968318957,
+        "note": "deceleration pulse spans <= 3 capture frames; peak compression occurs between frames and is not resolvable with mask-based tracking at 960 fps"
+      },
+      "video": {
+        "file": "7xadt6_slomo.mp4",
+        "playback_frames": 677,
+        "unique_frames": 543,
+        "duplicate_fraction": 0.19793205317577545,
+        "real_duration_s": 0.565625
+      },
+      "daq_reference": {
+        "n_captures": 100,
+        "mean_ch5_dv_ms": 5.526180556177783,
+        "mean_top_width_ms": 1.5905600000000002,
+        "mean_ch5_width_ms": 1.5751200000000003
+      }
+    },
+    "9GMQYQ": {
+      "descent_window": [
+        106,
+        145
+      ],
+      "contact_frame": 145,
+      "turnaround_frame": 146,
+      "catch_frame": 229,
+      "n_velocity_dups_removed": 3,
+      "descent_flatness": {
+        "a_px_per_frame2": -0.007001074892616124,
+        "a_err": 0.0033117196525887576,
+        "expected_g_px_per_frame2": 0.023841693319390886,
+        "residual_px_per_frame": 0.1837929817392847,
+        "n_points": 34,
+        "interpretation": "free-fall velocity gain cancelled by perspective scale gradient"
+      },
+      "scale_px_per_m": 2240.571914277622,
+      "scale_basis": "arrival speed assumed = free fall from 60 in (5.47 m/s); DAQ plate dv 5.53 m/s corroborates",
+      "v_impact_px_per_frame": 12.760141013557602,
+      "v_impact_ms_assumed": 5.467235974420713,
+      "impact_pulse_frames": 1,
+      "impact_pulse_ms": 1.0416666666666667,
+      "snapback_peak_px_per_frame": 8.660986806104457,
+      "snapback_ratio": 0.6787532204308864,
+      "v_rebound_px_per_frame": 5.500660587352777,
+      "v_rebound_ms": 2.3568242243013136,
+      "coeff_restitution_scalefree": 0.43108148895128556,
+      "brake_decel_g": 2.399095493855609,
+      "catch_delay_ms": 86.45833333333333,
+      "catch_rise_px": 336.8585346612289,
+      "catch_rise_mm": 150.34488851469635,
+      "specimen_compression": {
+        "valid_frames_near_impact": 30,
+        "static_height_px": 174.0,
+        "static_height_mm": 77.65874368558215,
+        "note": "deceleration pulse spans <= 3 capture frames; peak compression occurs between frames and is not resolvable with mask-based tracking at 960 fps"
+      },
+      "video": {
+        "file": "9GMQYQ_slomo.mp4",
+        "playback_frames": 830,
+        "unique_frames": 713,
+        "duplicate_fraction": 0.14096385542168677,
+        "real_duration_s": 0.7427083333333333
+      },
+      "daq_reference": {
+        "n_captures": 101,
+        "mean_ch5_dv_ms": 5.69469086808066,
+        "mean_top_width_ms": 1.6057821782178217,
+        "mean_ch5_width_ms": 1.563643564356436
+      }
+    }
+  }
+}
