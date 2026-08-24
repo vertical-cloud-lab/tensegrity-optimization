@@ -297,6 +297,23 @@ round 1 as if each session had stopped after the first N drops.
 - `t3-prism-drop-count-sensitivity.csv` and
   `figures/t3-prism-drop-count-sensitivity.png`: the replay results.
 
+Where the "2 warmup drops" come from, since the phrase has caused confusion:
+it is an analysis-time convention, not a step performed at the drop tower.
+`scripts/analysis/drop_test_campaign_analysis.py` on the PR #86 branch sets
+`WARMUP_DROPS = 2` and computes every stabilized statistic over
+`valid[2:]`, so the first two trigger-valid captures of each session are
+recorded but excluded from the means (which is why `n_valid` reads 101
+while this per-drop file holds 99 rows per specimen). The number 2 comes
+from the burn-in section of `docs/drop-test-sample-size-analysis.md` on
+that branch: hot-glue mounts drift for 5 to 10 drops, the wax key-seat
+mount settles within about 2. The lab-floor practice (one test drop at the
+start of a specimen, kept unless anomalous, per Marcus Madsen on PR #102,
+2026-08-24) is a separate check and is unaffected: if that test drop is
+captured and healthy it simply becomes the first of the two
+analysis-discarded drops. For a short round-2 session, record 2 extra
+drops (22 for a 20-drop target) so the stabilized window matches round 1,
+or pass a matching `--warmup` to the analysis.
+
 What the replay shows. The t180 ranking of all 8 tested specimens is
 identical at N = 20, N = 50 and the full session; the worst first-20 t180
 deviation is +0.008 (bag26v, which softens over its session) against
