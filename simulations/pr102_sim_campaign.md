@@ -661,40 +661,59 @@ everywhere (S0 `t180` is 0.768 against 0.785 before the fix), so
 cross-era comparisons of raw numbers are not meaningful; every artifact
 regenerated after the fix carries the new tag or a fresh timestamp.
 
-### Ten repeats on the corrected physics
+### Ten repeats on the corrected physics, at full acquisition effort
 
-Ten independent repeats (per-seed Sobol round 0, constrained qNEHVI, 4
-batches of 9 = 36 designs, the baseline-comparable budget; acquisition at
-the reduced 8x128 effort), plus the four baselines at the same budget and
-seeds (`outputs/pr102_sim_bo_botorch_ratios-strain_sobol_*`,
-`outputs/pr102_baseline_*_ratios-strain_seed*.csv`):
+Ten independent repeats (per-seed Sobol round 0, constrained qNEHVI, the
+original 5 batches of 9 = 45 designs, acquisition at the Ax defaults of
+20 restarts x 1024 raw samples), plus the four baselines at the same
+budget and seeds (`outputs/pr102_sim_bo_botorch_ratios-strain_sobol_*`,
+`outputs/pr102_baseline_*_ratios-strain_seed*.csv`). An earlier pass of
+this campaign ran at a reduced 8x128 acquisition effort with only 3
+model rounds to fit a session window; those artifacts are preserved
+under `outputs/acq8x128-archive/` and the per-seed comparison against
+them is `outputs/pr102_acq_effort_paired_comparison.csv`. A model round
+of 9 costs 260 to 760 s at the defaults on this runner against ~85 s
+reduced, so the full ten-repeat campaign is ~96 min of 4-core compute.
 
 | method | final HV (mean +- sd) | best `t180` (mean) | best strain (mean) |
 |---|--:|--:|--:|
-| BO (constrained qNEHVI) | 0.0269 +- 0.0046 | 0.759 | **0.0415** |
-| Latin hypercube | **0.0293 +- 0.0022** | 0.705 | 0.0543 |
-| Sobol | 0.0284 +- 0.0022 | 0.720 | 0.0541 |
-| random search | 0.0282 +- 0.0041 | 0.726 | 0.0560 |
-| compass search | 0.0246 +- 0.0054 | 0.755 | 0.0482 |
+| BO (constrained qNEHVI) | 0.0277 +- 0.0037 | 0.755 | **0.0398** |
+| Sobol | **0.0295 +- 0.0026** | 0.713 | 0.0541 |
+| random search | 0.0295 +- 0.0027 | 0.715 | 0.0556 |
+| Latin hypercube | 0.0284 +- 0.0021 | 0.719 | 0.0523 |
+| compass search | 0.0258 +- 0.0054 | 0.743 | 0.0464 |
 
-The result worth saying plainly: **on this objective pair the BO does not
-separate from space-filling at 36 designs** (one-sided Mann-Whitney p vs
-BO is ~0.9 for all three samplers, i.e. the samplers' hypervolume is if
-anything higher). That is the flip side of having found a genuine
-trade-off: with the two objectives anti-correlated at rho = -0.82, most
-of the printable cloud lies near the front, so 36 space-filled points buy
-hypervolume almost for free, where the old concordant pair left the front
-a corner that only a model could walk to. What the BO does do is resolve
-the strain corner: six of ten seeds land on the identical best-strain
-design (0.03829, vs sampler means of 0.054), at the cost of breadth on
-the `t180` end (best 0.699 to 0.793 across seeds vs LHS's 0.705 mean).
-Two follow-ups queued rather than guessed at: a corrected-physics
-reference sweep (the e_rebound-era 21,184-evaluation ceiling does not
-apply to the new pair, so `hv_frac_of_reference` is deliberately blank in
-the summary), and a full-effort/longer-budget repeat via the staged
-Actions matrix to test whether the qNEHVI margin reappears once the
-acquisition is not being run at 8 restarts x 128 samples with only three
-model rounds.
+Two findings, and the first one removes a confound:
+
+**The reduced acquisition effort was not the reason the BO failed to
+separate.** The full-effort and reduced-effort repeats share identical
+round-0 draws (the initial Sobol batch is pinned to the seed), so the
+model rounds compare pairwise. At the matched 36-design budget the
+paired difference in final hypervolume is -1.1 % of the mean (full
+effort *lower*), 5 wins in 10, Wilcoxon p = 0.92: the 8x128 override
+was costing essentially nothing on this 4-parameter, two-constraint
+problem. The extra ninth-design batch (36 -> 45) buys the BO
+0.0266 -> 0.0277, but buys the samplers a comparable amount, and the
+ordering does not change.
+
+**So the non-separation is a property of the objective pair, not of the
+optimizer's settings.** At 45 designs and full effort the one-sided
+Mann-Whitney p vs BO is 0.86/0.89/0.76 for Sobol/random/LHS, i.e. the
+samplers' hypervolume is if anything higher. Same reading as before,
+now unconfounded: with the two objectives anti-correlated at
+rho = -0.82, most of the printable cloud lies near the front, so
+space-filled points buy hypervolume almost for free, where the old
+concordant pair left the front a corner that only a model could walk
+to. And the BO's distinctive behaviour also replicates: it resolves the
+strain corner (best strain 0.0398 +- 0.0028 across seeds, five of ten
+on the identical 0.03829 design, against sampler means of 0.052 to
+0.056) at the cost of breadth on the `t180` end (0.755 mean vs the
+samplers' 0.713 to 0.719). On this problem the optimizer is a
+corner-resolver and constraint-learner, not a front-coverer, and no
+amount of acquisition effort changes that. One follow-up stays queued:
+the corrected-physics reference sweep (the e_rebound-era
+21,184-evaluation ceiling does not apply to the new pair, so
+`hv_frac_of_reference` is deliberately blank in the summary).
 
 ## 8. Caveats
 

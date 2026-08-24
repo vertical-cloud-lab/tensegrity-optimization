@@ -184,6 +184,10 @@ python simulations/pr102_correlation.py
 # reproduces the earlier PR #102-style six-parameter space.
 python simulations/pr102_sim_campaign.py --model botorch \
     --seeds 0 1 2 3 4 5 6 7 8 9 --rounds 4 --jobs 4
+# Acquisition runs at the Ax defaults (20 restarts x 1024 raw samples,
+# ~260-760 s per model round of 9 on a 4-core runner).  --acq-restarts 8
+# --acq-raw-samples 128 reproduces the reduced-effort in-session runs
+# archived under outputs/acq8x128-archive/.
 # -> outputs/pr102_sim_bo_<model>[_ratios]_<init>_seed<k>.{csv,png}
 # -> outputs/pr102_sim_bo_<model>[_ratios]_<init>_aggregate.png + _summary.csv
 # Baselines and a reference optimum for that campaign (PR comment 5376310081).
