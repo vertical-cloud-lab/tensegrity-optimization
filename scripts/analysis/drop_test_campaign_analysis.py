@@ -34,6 +34,18 @@ print-to-print noise floor, figures, and two machine-readable outputs —
 Optionally ``--params params.json`` maps specimen ID -> design parameters;
 entries are passed through into both outputs so the BO ingests
 (parameters, objectives) pairs directly.
+
+Standing T-drift watch (PR #86, comment 5401409218, 08-24): every run
+screens each specimen's within-session T (CFC-180) series against the
+historical 1/2 in mat envelope (16 sessions, ~1,300 stabilized drops:
+|OLS slope| <= 0.051 %/drop, |first5-vs-last5| <= 2.2 % —
+``data/drop-tests/r2d2-checkin/figures/t_drift_history.json``) and prints
+a prominent warning + writes a ``t_drift_watch`` block and CSV columns
+when a session breaks it.  Reference event: ``r2d2c2`` 08-24 stepped
++3.5 % (1.023 -> ~1.059 plateau), output-side (top-vertex peak rose while
+the CH5 input fell), lead suspect wax/mount coupling re-seat.  A flagged
+specimen's T mean is drift-contaminated — do not hand it to the BO
+without resolving (plateau-only average, or re-seat + re-run).
 """
 from __future__ import annotations
 
@@ -66,6 +78,12 @@ WARMUP_DROPS = 2          # SOP: discard, settled-rig value (speed-decay §SOP)
 PAUSE_S = 120.0           # inter-drop gap that marks an interruption
 RING_R2_MIN = 0.85        # abc123 convention: below this, ζ is not a damping ratio
 
+# Standing T-drift watch thresholds — just outside the historical 1/2 in mat
+# envelope (t_drift_history.json: worst prior |slope| 0.051 %/drop, worst
+# |end-to-end| 2.18 %; the r2d2c2 event sat at +0.253 %/drop, +3.50 %).
+T_DRIFT_SLOPE_MAX = 0.06   # |%/drop| on stabilized T180, with slope_p < 0.01
+T_DRIFT_E2E_MAX = 2.5      # |first-5 vs last-5 mean| in %
+
 DROP_HEIGHT_M = 60 * 0.0254
 V_FREEFALL = float(np.sqrt(2.0 * GRAVITY * DROP_HEIGHT_M))  # 5.468 m/s
 
@@ -94,6 +112,41 @@ def agg(vals) -> dict:
             "cv_pct": float(100 * y.std(ddof=1) / y.mean()) if y.mean() else None,
             "slope_pct_per_drop": float(100 * sl / y.mean()) if y.mean() else None,
             "slope_p": float(p), "r2": float(r * r)}
+
+
+def t_drift_watch(stab: list[dict], metrics: dict) -> dict:
+    """Screen the stabilized T180 series against the historical drift envelope.
+
+    Returns slope/end-to-end numbers, a ``flagged`` bool, and — when flagged —
+    an input/output attribution (an output-side drift with a flat-or-falling
+    input is the r2d2c2 mount-coupling signature; a common-mode drift would
+    cancel in T and is rig/mat, not mount).
+    """
+    t = [r["t180"] for r in stab if np.isfinite(r.get("t180", np.nan))]
+    if len(t) < 6:
+        return {"flagged": False, "note": "too few drops to screen"}
+    e2e = float(100 * (np.mean(t[-5:]) - np.mean(t[:5])) / np.mean(t[:5]))
+    m = metrics["t180"]
+    slope, p = m.get("slope_pct_per_drop"), m.get("slope_p")
+    slope_hit = slope is not None and abs(slope) > T_DRIFT_SLOPE_MAX and p < 0.01
+    flagged = bool(slope_hit or abs(e2e) > T_DRIFT_E2E_MAX)
+    watch = {"flagged": flagged,
+             "slope_pct_per_drop": slope, "slope_p": p,
+             "end_to_end_pct": round(e2e, 2),
+             "envelope": {"slope_max": T_DRIFT_SLOPE_MAX, "e2e_max": T_DRIFT_E2E_MAX}}
+    if flagged:
+        out_e2e = 100 * (np.mean([r["out_180_g"] for r in stab[-5:]])
+                         / np.mean([r["out_180_g"] for r in stab[:5]]) - 1)
+        in_e2e = 100 * (np.mean([r["in_180_g"] for r in stab[-5:]])
+                        / np.mean([r["in_180_g"] for r in stab[:5]]) - 1)
+        side = ("output-side (mount/coupling suspect — r2d2c2 signature)"
+                if out_e2e - in_e2e > 0.5 * abs(e2e) and in_e2e < 1.0
+                else "common-mode / input-side (rig or mat)")
+        watch.update({"out_e2e_pct": round(float(out_e2e), 2),
+                      "in_e2e_pct": round(float(in_e2e), 2), "attribution": side,
+                      "note": "T mean is drift-contaminated; resolve before BO "
+                              "hand-off (plateau-only average or re-seat + re-run)"})
+    return watch
 
 
 def find_captures(folder: Path, scratch: Path) -> list[Path]:
@@ -163,6 +216,13 @@ def analyze_specimen(spec_id: str, folder: Path, scratch: Path, warmup: int,
     worst_fs = {c: float(max(r["frac_fs"][c] for r in valid))
                 for c in ("CH2", "CH3", "CH4", "CH5")} if valid else {}
 
+    drift = t_drift_watch(stab, metrics)
+    if drift["flagged"]:
+        print(f"  ** T-DRIFT WATCH: {spec_id} breaks the historical envelope — "
+              f"slope {drift['slope_pct_per_drop']:+.3f} %/drop, "
+              f"end-to-end {drift['end_to_end_pct']:+.2f} % "
+              f"[{drift.get('attribution', '')}]", flush=True)
+
     return {"folder": folder.name, "n_captures": len(rows),
             "n_valid": len(valid), "invalid_signals": invalid,
             "warmup_discarded": min(warmup, max(0, len(valid) - 3)),
@@ -174,7 +234,7 @@ def analyze_specimen(spec_id: str, folder: Path, scratch: Path, warmup: int,
                           "verdict": health,
                           "frac_freefall": float(dv / V_FREEFALL / 0.9761)
                           if dv else None},   # cal: healthy B2 = 97.6 % of ff
-            "worst_frac_fs": worst_fs,
+            "worst_frac_fs": worst_fs, "t_drift_watch": drift,
             "rows": stab, "all_rows": rows}
 
 
@@ -253,12 +313,16 @@ def main():
         pkeys = sorted({k for v in params.values() for k in v}) if params else []
         w.writerow(["specimen", "n_valid", "dv_health"]
                    + [f"{k}_{s}" for k in CSV_FIELDS for s in ("mean", "sd")]
+                   + ["t_drift_flag", "t180_slope_pct_per_drop", "t180_e2e_pct"]
                    + pkeys)
         for s, d in specs.items():
             row = [s, d["n_valid"], d["dv_health"]["verdict"]]
             for k in CSV_FIELDS:
                 m = d["metrics"][k]
                 row += [m.get("mean"), m.get("sd")]
+            dw = d["t_drift_watch"]
+            row += [dw["flagged"], dw.get("slope_pct_per_drop"),
+                    dw.get("end_to_end_pct")]
             row += [(params.get(s) or {}).get(k) for k in pkeys]
             w.writerow(row)
 
@@ -273,6 +337,15 @@ def main():
         print(f"campaign T180: spread {c['spread_pct']:.2f} % across "
               f"{len(c['means'])} specimens, ANOVA p = {c['anova_p']:.2e}, "
               f"ranking (best first) {c['ranking']}")
+    flagged = [s for s, d in specs.items() if d["t_drift_watch"]["flagged"]]
+    if flagged:
+        print(f"** T-DRIFT WATCH: {flagged} exceeded the historical "
+              f"within-session envelope (|slope| > {T_DRIFT_SLOPE_MAX} %/drop or "
+              f"|end-to-end| > {T_DRIFT_E2E_MAX} %) — report these prominently; "
+              f"their T means need resolution before BO hand-off")
+    else:
+        print("T-drift watch: no session outside the historical envelope "
+              "(r2d2c2-style drift did not recur)")
 
     make_figures(specs, camp, fig_dir)
     print(f"figures + metrics under {fig_dir}")

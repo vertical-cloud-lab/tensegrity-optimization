@@ -67,3 +67,13 @@ plateau → ramp → plateau step, output-side, unprecedented on this mat.
 The shape closest historical match is the retired hot-glue-mount creep
 and the print-defect-era rolling re-seat steps (≤ 2.3 %), not any mat or
 tower behavior.
+
+## Standing T-drift watch (comment 5401409218)
+
+Per @me-madsen, every future analysis notes T drift and notifies if the
+`r2d2c2` behavior recurs — including in the round-2 batch analyzed in a
+separate PR. The check is automated in the campaign pipeline
+(`t_drift_watch()` in `scripts/analysis/drop_test_campaign_analysis.py`:
+flag at |slope| > 0.06 %/drop or |end-to-end| > 2.5 %, with input/output
+attribution; `t_drift_flag` column in `campaign_summary.csv`) and recorded
+as a repo-level instruction in the root `CLAUDE.md`.
