@@ -580,7 +580,123 @@ Files. `outputs/pr102_sim_bo_botorch_ratios_sobol_seed<k>.{csv,png}`,
 Every evaluation is on disk, printable or not, so any of this can be
 re-plotted without re-running.
 
-## 7. Caveats
+## 7. The second objective, swapped: peak tendon strain
+
+Context (PR #33, 2026-08-24): with mass held constant the simulated
+`e_rebound` spans under 1 % of its mean across the whole ratio manifold
+(the calibrated mat owns the loss budget), and `zeta_analysis.md` closed
+the door on the bench's proposed replacement `zeta_pct` at this tier. The
+operator asked for a swap, so
+[`pr102_objective_screen.py`](pr102_objective_screen.py) measured every
+candidate the extended drop-tower analogue can produce, over 128 Sobol
+designs on the constant-mass manifold (78 printable), on the two
+properties an objective needs here: design response (relative span) and
+independence from `t180`.
+
+### The rubber-duck audit first, because it changed the physics
+
+Before trusting the screen, the whole objective-definition chain (regime
+objectives, the mass confound, the dead rebound axis, the zeta dead end,
+this swap) was submitted to Edison ANALYSIS as a rubber-duck audit
+([`edison-trajectories/objective-rubber-duck/`](../edison-trajectories/objective-rubber-duck/),
+task `9c0ab4c7`). The audit confirmed the chain's structure (no sign
+errors; the measured-restitution extraction verifies to 1.8e-5; the
+sim-concordant-vs-bench-anticorrelated restitution puzzle is correctly
+attributed to missing loss mechanisms, not to an extraction bug) and
+caught one real modeling bug and two wording problems:
+
+* **The tendon-semantics bug.** The spatial tendons wrote
+  `range="0 rest"` with `springlength` unset. In MuJoCo semantics that is
+  a solver-enforced length *limit* at the slack length plus a
+  bidirectional spring resting at the qpos0 length, so the article's
+  elasticity flowed partly through constraint impedance rather than the
+  specified TPU stiffness, and the screened "strain" was a geometric
+  over-length diagnostic. Fixed: the tendons are now dead-band springs
+  (`springlength="0 rest"`), so tension is exactly
+  `k_cable * extension` and the post-processed strain is the material
+  tension strain of that spring. The mat recalibrates on the corrected
+  model to an essentially identical fit (3.180e5 N/m, 5.398e4 N s/m; S0
+  input pulse 208.2 G / 4.08 ms, both exact), because the input pulse is
+  set by the mat and the total mass, not by the article's stiffness path.
+* `e_reb_mJ` uses the restitution velocity ratio, not its square, so it
+  overstates returned energy 20 to 50x at bench values. Kept verbatim for
+  bench-pipeline parity (it is rank-preserving), now documented at the
+  definition site.
+* "Measured `zeta_pct` is independent of `t180`" is too strong at n = 7
+  (bootstrap interval [-0.87, +0.96]); the defensible phrasing is "no
+  association detected".
+
+### The corrected screen
+
+On the corrected physics (`outputs/pr102_objective_screen*.csv`, 78
+printable designs, `t180` spanning 0.700 to 0.928):
+
+| candidate | rel. span | Spearman rho vs t180 | reading |
+|---|--:|--:|---|
+| `e_rebound` | 1.0 % | +0.61 | dead, confirmed |
+| `t1000`, `out_180_g` | 32 / 27 % | +0.99 / +1.00 | duplicates of `t180` |
+| `in_180_g`, `pulse_ms` | 0.3 / 1.0 % | - | null controls working |
+| **`peak_tendon_strain`** | **162 %** | **-0.82** | max TPU tension strain, 4.7 to 22.7 % |
+| `peak_tendon_energy_mJ` | 271 % | -0.56 | tendon elastic energy, 15 to 160 mJ |
+| `stroke_mm` | 272 % | +0.64 | top-vertex compression, 5 to 34 mm |
+
+**`peak_tendon_strain` (minimized) is the new second objective**: a real
+trade-off against `t180` (the compliant articles that shield the payload
+strain their tendons hardest, the same sign as the bench's tentative
+`t180`-vs-rebound anti-correlation), a direct physical reading (TPU
+break/fatigue margin over 100+ drops), 14 of 78 screen designs
+non-dominated, and it is driven by an axis `t180` barely uses
+(`cable_over_strut_d`, rho = -0.72). Edison's position, adopted here: run
+it as an *exploratory* second response while no measured TPU allowable
+exists, print articles spanning the attenuation-strain front, and once
+coupon/cyclic data pin an allowable, demote strain to a probabilistic
+survival constraint and optimize `t180` alone. Its longer-term
+recommendation (a solver-resolved energy ledger per drop, and per-tendon
+force/strain-amplitude recording) is queued as follow-up work.
+
+`--obj2 e_rebound` reproduces the earlier formulation; the new runs carry
+the `ratios-strain` file tag so the e_rebound-era artifacts keep their
+names. Note the corrected tendon physics shifts absolute values
+everywhere (S0 `t180` is 0.768 against 0.785 before the fix), so
+cross-era comparisons of raw numbers are not meaningful; every artifact
+regenerated after the fix carries the new tag or a fresh timestamp.
+
+### Ten repeats on the corrected physics
+
+Ten independent repeats (per-seed Sobol round 0, constrained qNEHVI, 4
+batches of 9 = 36 designs, the baseline-comparable budget; acquisition at
+the reduced 8x128 effort), plus the four baselines at the same budget and
+seeds (`outputs/pr102_sim_bo_botorch_ratios-strain_sobol_*`,
+`outputs/pr102_baseline_*_ratios-strain_seed*.csv`):
+
+| method | final HV (mean +- sd) | best `t180` (mean) | best strain (mean) |
+|---|--:|--:|--:|
+| BO (constrained qNEHVI) | 0.0269 +- 0.0046 | 0.759 | **0.0415** |
+| Latin hypercube | **0.0293 +- 0.0022** | 0.705 | 0.0543 |
+| Sobol | 0.0284 +- 0.0022 | 0.720 | 0.0541 |
+| random search | 0.0282 +- 0.0041 | 0.726 | 0.0560 |
+| compass search | 0.0246 +- 0.0054 | 0.755 | 0.0482 |
+
+The result worth saying plainly: **on this objective pair the BO does not
+separate from space-filling at 36 designs** (one-sided Mann-Whitney p vs
+BO is ~0.9 for all three samplers, i.e. the samplers' hypervolume is if
+anything higher). That is the flip side of having found a genuine
+trade-off: with the two objectives anti-correlated at rho = -0.82, most
+of the printable cloud lies near the front, so 36 space-filled points buy
+hypervolume almost for free, where the old concordant pair left the front
+a corner that only a model could walk to. What the BO does do is resolve
+the strain corner: six of ten seeds land on the identical best-strain
+design (0.03829, vs sampler means of 0.054), at the cost of breadth on
+the `t180` end (best 0.699 to 0.793 across seeds vs LHS's 0.705 mean).
+Two follow-ups queued rather than guessed at: a corrected-physics
+reference sweep (the e_rebound-era 21,184-evaluation ceiling does not
+apply to the new pair, so `hv_frac_of_reference` is deliberately blank in
+the summary), and a full-effort/longer-budget repeat via the staged
+Actions matrix to test whether the qNEHVI margin reappears once the
+acquisition is not being run at 8 restarts x 128 samples with only three
+model rounds.
+
+## 8. Caveats
 
 * Seven articles. Every correlation in section 3 is a small-n rank
   statistic screened across about 30 candidates; treat the leader as a

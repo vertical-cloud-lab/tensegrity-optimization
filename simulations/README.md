@@ -208,6 +208,16 @@ python simulations/zeta_analysis.py --n-sobol 48
 # -> outputs/zeta_measured_correlations.csv, zeta_articles_sim.csv,
 #    zeta_damping_transfer.csv, zeta_sobol_response.csv,
 #    zeta_article_inversion.csv, zeta_cross_checks.csv, zeta_analysis.png
+
+# Second-objective screening: measure every candidate the drop-tower
+# analogue can produce (tendon strain / stroke / t1000 / elastic energy /
+# the null controls) for design response and independence from t180, on the
+# constant-mass ratio manifold.  This is what chose peak_tendon_strain as
+# the replacement for the dead simulated e_rebound; the campaign runs it
+# by default (pr102_sim_campaign.py --obj2 peak_tendon_strain, file tag
+# "ratios-strain"; --obj2 e_rebound reproduces the earlier runs).
+python simulations/pr102_objective_screen.py --n 128
+# -> outputs/pr102_objective_screen.csv, _summary.csv, .png
 ```
 
 ## Matching the PR #102 bench campaign in simulation
@@ -223,7 +233,11 @@ predicts measured `e_reb_mJ` yet. Section 5 adds the baselines: against a
 68,944-evaluation reference front, the 36-design BO reaches 97 % of the
 ceiling while compass search reaches 80 %, Sobol 66 %, Latin hypercube 65 %
 and random search 60 %, every one of them completely separated from the BO
-over ten seeds.
+over ten seeds. Section 7 swaps the dead simulated `e_rebound` objective
+for `peak_tendon_strain` after an Edison rubber-duck audit of the whole
+objective-definition chain (task `9c0ab4c7`) caught a tendon-semantics bug
+(`range` vs `springlength`), and re-runs the ten-seed campaign on the
+corrected physics.
 
 [`zeta_analysis.md`](zeta_analysis.md) — the measured ringdown damping
 `zeta_pct` (proposed second objective) analyzed on both sides of the
