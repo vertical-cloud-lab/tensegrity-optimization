@@ -8,7 +8,7 @@ Combined view (Claude and Copilot lumped into one "AI" bucket):
 
 - `ai_combined_by_week.png`: weekly AI cost and weekly AI session counts as a single combined series (week 1 begins Mar 9, 2026, the repo creation date), with a calendar-month band beneath. Whiskers on the cost bars span the low-to-high range of the Copilot portion of the estimate.
 - `ai_combined_running_cost.png`: one cumulative "all AI" cost line (measured Claude run costs plus the Opus-class Copilot AI-credits estimate, with the estimate's uncertainty band) against what was actually paid (two Claude Max cycles at $200 plus 258 legacy premium requests at $0.04).
-- `make_combined_figures.py`: regenerates both combined figures and prints the combined summary stats (totals, monthly breakdown, per-user allocation) from the two CSVs. The Copilot share of the per-user allocation splits the estimate by each user's count of human trigger acts (mentions plus issue assignments), since GitHub does not log a per-session trigger actor.
+- `make_combined_figures.py`: regenerates both combined figures and prints the combined summary stats (totals, monthly breakdown, per-user allocation) from the two CSVs. The Copilot share of the per-user allocation splits the estimate by each user's count of human trigger acts (mentions plus issue assignments), since GitHub does not log a per-session trigger actor. The accounts `sgbaird-alt` and `sgbaird-yolo` are alternate accounts of `sgbaird` (confirmed on PR #104), so every per-user breakdown folds all three into `sgbaird`.
 
 Split view (per-agent, from the earlier passes on issue #103):
 

@@ -46,7 +46,16 @@ GRID = "#e1e0d9"
 # Human trigger acts for Copilot (mentions + issue assignments), from the
 # issue #103 crawl of all issue/PR timelines. Used to allocate the Copilot
 # cost estimate across users (GitHub logs no per-session trigger actor).
+# Raw per-account counts; ALIASES below folds them into one person.
 COPILOT_TRIGGERS = {"sgbaird": 168, "sgbaird-alt": 53, "sgbaird-yolo": 28, "ctrhjk": 3}
+
+# sgbaird-alt and sgbaird-yolo are alternate accounts of sgbaird (confirmed
+# on PR #104), so every per-user breakdown folds them into sgbaird.
+ALIASES = {"sgbaird-alt": "sgbaird", "sgbaird-yolo": "sgbaird"}
+
+
+def canonical(user):
+    return ALIASES.get(user, user)
 
 
 def week_of(d):
@@ -258,10 +267,13 @@ for m in sorted(monthly):
 
 per_user = defaultdict(lambda: [0, 0.0])  # sessions triggered, cost
 for _, c, actor in claude:
-    per_user[actor][0] += 1
-    per_user[actor][1] += c
+    per_user[canonical(actor)][0] += 1
+    per_user[canonical(actor)][1] += c
 n_trig = sum(COPILOT_TRIGGERS.values())
+merged_triggers = defaultdict(int)
 for u, n in COPILOT_TRIGGERS.items():
+    merged_triggers[canonical(u)] += n
+for u, n in merged_triggers.items():
     share = n / n_trig
     per_user[u][0] += round(share * len(copilot))
     per_user[u][1] += share * copilot_total["mid"]
