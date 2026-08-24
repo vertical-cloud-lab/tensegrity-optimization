@@ -50,3 +50,20 @@ full scale; ~43 s cadence, no pauses.
    Box folder "23 drops", the export holds 21 events.
 4. `r2d2c2` drop 1 shows a first-drop transient (CH4 547 G / 0.65 ms in
    the series table, short hop) — covered by the warm-up discard.
+
+## Follow-up: drift-history context (comment 5401181788)
+
+`scripts/analysis/drop_test_t_drift_history_analysis.py` places the
+`r2d2c2` anomaly against every 1/2 in mat session with committed per-drop
+metrics (08-10 → 08-24, 17 sessions, ~1,150 stabilized drops):
+
+- `figures/04_t_drift_history.png` — CH5 input history over the mat's
+  life + within-session T drift for all sessions overlaid
+- `figures/t_drift_history.json` — per-session OLS drift stats
+
+Headline: every prior 1/2 in mat session holds T within ±2.2 % end-to-end
+(|slope| ≤ 0.05 %/drop); `r2d2c2` moved +3.5 % at +0.25 %/drop — a
+plateau → ramp → plateau step, output-side, unprecedented on this mat.
+The shape closest historical match is the retired hot-glue-mount creep
+and the print-defect-era rolling re-seat steps (≤ 2.3 %), not any mat or
+tower behavior.
