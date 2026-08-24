@@ -43,7 +43,10 @@ suggests the next print batch.
   `data/drop-tests/sobol-campaign/figures/campaign_summary.csv`): one row
   per tested specimen with objectives (mean and sd) and joined as-printed
   geometry. 8 of 9 specimens as of 2026-08-21; `amdjwm` has no known spec
-  mapping and is skipped by the script until identified.
+  mapping and is skipped by the script until identified. The `ajhby6` row
+  (spec 07, the specimen missing from the PR #86 snapshot) was appended on
+  2026-08-24 from its Box upload, computed with the same PR #86 analysis
+  script; see the round-2 section below for the fetch provenance.
 - `t3-prism-bo-suggestions-round1.csv`: the recorded round-1 output of the
   script. Per suggested design: the base (shape) coordinates, the constant
   `mass_printed_g` target, posterior-mean predictions for both objectives,
@@ -284,11 +287,14 @@ Round 1 ran ~101 drops per specimen. When session time is short, fewer drops
 per specimen is an option, and this analysis quantifies the cost by replaying
 round 1 as if each session had stopped after the first N drops.
 
-- `t3-prism-per-drop-metrics.csv`: per-drop t180 and e_rebound for all 794
-  valid round-1 drops (8 specimens). Extracted from `campaign_metrics.json`
-  on the PR #86 branch `copilot/add-drop-test-protocol-again` (commit-level
-  provenance in that branch's `data/drop-tests/sobol-campaign/`); the 2
-  warmup drops per specimen are already discarded upstream.
+- `t3-prism-per-drop-metrics.csv`: per-drop t180 and e_rebound for all 893
+  valid round-1 drops (9 specimens). The first 8 specimens are extracted from
+  `campaign_metrics.json` on the PR #86 branch
+  `copilot/add-drop-test-protocol-again` (commit-level provenance in that
+  branch's `data/drop-tests/sobol-campaign/`); the `ajhby6` rows (99 drops,
+  tested 2026-08-21, uploaded to Box 2026-08-24) were computed on 2026-08-24
+  by running that branch's `drop_test_campaign_analysis.py` unchanged on the
+  Box upload. The 2 warmup drops per specimen are discarded in both cases.
 - `t3_prism_drop_count_sensitivity.py`: builds the table and figure below,
   and `--emit-truncated N` writes
   `t3-prism-bo-batch-drop-results-firstN.csv`, a campaign summary with
@@ -337,6 +343,51 @@ quantity:
 python bo/t3_prism_drop_count_sensitivity.py --emit-truncated 20
 python bo/t3_prism_bo_campaign.py --results bo/t3-prism-bo-batch-drop-results-first20.csv ...
 ```
+
+## Round-2 drop data (the r2d2c prints, first sessions 2026-08-24)
+
+Raw campaign data is uploaded manually to the shared Box folder
+[`tensegrity-optimization`](https://byu.box.com/s/kkhmvnj9ni19b57dryk3gdroqrp5uf0b)
+(public view/download link created by @sgbaird on PR #86, 2026-07-21),
+subfolder `Drop Test Data`, one folder per session. Fetch a session with the
+script copied from the PR #86 branch:
+
+```bash
+python scripts/fetch_box_shared_folder.py kkhmvnj9ni19b57dryk3gdroqrp5uf0b DEST
+```
+
+That downloads the entire share (videos included). To pull one session
+folder, resolve its folder id from the share listing first; the ids used on
+2026-08-24 were 411619211572 (`r2d2c1`), 411623696481 (`r2d2c2`),
+411630638267 (`r2d2c3`), and 410920465434 (`ajhby6`).
+
+The BO round-1 plate (the second tested batch, designs `t3-prism-bo-round1.csv`
+on the PR #35 branch) was removed and labeled `r2d2c1` through `r2d2c9` on
+2026-08-24; masses with label were posted in issue #98 the same day. Files:
+
+- `t3-prism-bo-round1-print-key.csv`: print ID to specimen/trial mapping for
+  all nine articles. The mapping is INFERRED, not confirmed: the plate is a
+  3 by 3 grid, and reading it back-left to front-right in rows reproduces the
+  posted masses against the calibrated mass model with a residual sd of
+  about 0.5 g and a uniform +0.3 g offset (the label), while every other
+  raster order fits clearly worse. The center cell (`r2d2c5`, 23.47 g,
+  Specimen 08 predicted 22.5 g, the only article predicted above 20.1 g) is
+  unambiguous. Ask whoever removed the prints to confirm the row direction
+  before treating specimen-level conclusions as final.
+- `t3-prism-bo-round1-drop-results.csv`: campaign summary for the sessions
+  run so far (r2d2c1, r2d2c2, r2d2c3; 21 valid captures each, 19 after the
+  2-drop warmup discard), produced by the PR #86 branch
+  `drop_test_campaign_analysis.py` unchanged, same schema as
+  `t3-prism-bo-batch-drop-results.csv`. The `mass_g` column is the posted
+  mass with label.
+- `t3-prism-bo-round1-per-drop-metrics.csv`: the stabilized per-drop rows
+  for those sessions, same schema as `t3-prism-per-drop-metrics.csv`.
+
+Session notes from the 2026-08-24 uploads: all 21 captures per session are
+trigger-valid, no pauses, input Δv 5.31 m/s (healthy band). The `r2d2c1`
+folder name says "23 drops" but the TP4 series table and the export both
+contain 21 events; the session ID string inside every export still reads
+"101 drops" (template reuse), which is cosmetic.
 
 ## Print key files
 
