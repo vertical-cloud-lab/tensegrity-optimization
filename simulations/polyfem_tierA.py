@@ -102,17 +102,30 @@ def tierA_one(job: tuple) -> dict:
     mesh_dir = Path(f"/tmp/polyfem_tierA_{pid}_mesh")
     mesh_dir.mkdir(parents=True, exist_ok=True)
     msh = mesh_dir / "tprism.msh"
-    info = build_tprism_msh(
-        msh,
-        radius=design.radius_m,
-        height=design.height_m,
-        twist=design.twist_rad,
-        strut_d=design.strut_diameter_m,
-        tendon_d=design.tendon_diameter_m,
-        drop_height=0.0005,
-        lc_strut=max(design.strut_diameter_m * 0.5, 0.0015),
-        lc_tendon=max(design.tendon_diameter_m * 0.6, 0.001),
-    )
+    # gmsh's OCC fragment is touchy about tendon-strut intersections at some
+    # twist/diameter combinations ("1D mesh ... closed loop"); retry across
+    # tendon inset factors before giving up
+    info = None
+    last_err = None
+    for inset in (0.6, 0.8, 0.5, 0.7, 1.0):
+        try:
+            info = build_tprism_msh(
+                msh,
+                radius=design.radius_m,
+                height=design.height_m,
+                twist=design.twist_rad,
+                strut_d=design.strut_diameter_m,
+                tendon_d=design.tendon_diameter_m,
+                drop_height=0.0005,
+                lc_strut=max(design.strut_diameter_m * 0.5, 0.0015),
+                lc_tendon=max(design.tendon_diameter_m * 0.6, 0.001),
+                tendon_inset_factor=inset,
+            )
+            break
+        except Exception as exc:               # noqa: BLE001
+            last_err = exc
+    if info is None:
+        return {"print_id": pid, "ok": False, "err": f"mesh: {last_err}"[:300]}
 
     # densities solved so the meshed article weighs what the scale said;
     # TPU at its printed density, PLA absorbs the joint/housing share
