@@ -91,7 +91,22 @@ SHAPE_PARAMS = ["R_mm", "H_mm", "twist_deg", "strut_d_mm", "cable_d_mm"]
 MASS_PARAM = "mass_printed_g"
 PARAM_NAMES = SHAPE_PARAMS + [MASS_PARAM]
 OBJ1, OBJ2, MASS = "t180", "e_reb_mJ", "mass_g"
-OBJ2_RATIOS = "e_rebound"
+# Second objective on the ratio manifold.  ``e_rebound`` (the PR #102-faithful
+# choice) is dead in this simulation: it spans under 1 % across the manifold
+# because the calibrated mat owns the loss budget (see zeta_analysis.md, and
+# outputs/pr102_objective_screen*.csv for the full candidate table), and the
+# bench's proposed replacement ``zeta_pct`` is structurally unresolvable at
+# Tier C.  ``peak_tendon_strain`` (max TPU tension strain above slack,
+# minimized) is the screening winner: 63 % design span, Spearman -0.41
+# against ``t180`` (a genuine trade-off: the compliant articles that shield
+# the payload strain their tendons hardest), a direct physical reading (TPU
+# break/fatigue margin), and it is the one candidate that consumes the
+# twist axis.  ``--obj2 e_rebound`` reproduces the earlier campaign.
+OBJ2_RATIOS = "peak_tendon_strain"
+OBJ2_RATIOS_LEGACY = "e_rebound"
+# short file-tag aliases, so the earlier e_rebound-era artifacts keep their
+# names and the new runs get their own
+OBJ2_TAG = {OBJ2_RATIOS: "strain", OBJ2_RATIOS_LEGACY: ""}
 
 # The sixth parameter, and why the campaign needs it.  ``e_reb_mJ`` is an
 # absolute energy, ``e_rebound * m * g * h``, so it is proportional to the
@@ -173,14 +188,18 @@ def base_to_ratios(params: dict) -> dict:
             "twist_deg": float(params["twist_deg"])}
 
 
-def space_config(space: str) -> dict:
-    """Everything that differs between the two search spaces, in one place."""
+def space_config(space: str, obj2: str | None = None) -> dict:
+    """Everything that differs between the two search spaces, in one place.
+
+    ``obj2`` selects the ratio manifold's second objective
+    (default ``OBJ2_RATIOS``); the slab space always minimizes ``e_reb_mJ``.
+    """
     if space == "slab6":
         return {"parameters": PARAMETERS, "param_names": PARAM_NAMES,
                 "obj2": OBJ2, "outcome_constraints": None}
     if space == "ratios":
         return {"parameters": RATIO_PARAMETERS, "param_names": RATIO_PARAMS,
-                "obj2": OBJ2_RATIOS,
+                "obj2": obj2 or OBJ2_RATIOS,
                 "outcome_constraints": [
                     f"cable_d_print_mm >= {CABLE_PRINT_FLOOR_MM}",
                     f"envelope_cm3 <= {ENVELOPE_MAX_CM3}"]}
@@ -209,11 +228,17 @@ def evaluate(params: dict, *, solid: bool = False,
         cable_print = base["cable_d_mm"] * scale
         envelope = math.pi * r_print ** 2 * h_print / 1000.0
         out = {OBJ1: float(res["t180"]), OBJ2_RATIOS: float(res["e_rebound"]),
-               OBJ2: float(res["e_reb_mJ"]), MASS: float(res["mass_printed_g"]),
+               "e_reb_mJ": float(res["e_reb_mJ"]),
+               MASS: float(res["mass_printed_g"]),
                "print_scale": scale,
                "R_print_mm": r_print, "H_print_mm": h_print,
                "strut_d_print_mm": base["strut_d_mm"] * scale,
                "cable_d_print_mm": cable_print, "envelope_cm3": envelope}
+        # candidate/tracking observables from the extended drop_tower_sim
+        for extra in ("t1000", "peak_tendon_strain", "peak_tendon_energy_mJ",
+                      "stroke_mm", "in_180_g", "out_180_g", "pulse_ms"):
+            if extra in res:
+                out[extra] = float(res[extra])
         out["feasible"] = bool(np.isfinite(out[OBJ1])
                                and cable_print >= CABLE_PRINT_FLOOR_MM
                                and envelope <= ENVELOPE_MAX_CM3)
@@ -246,16 +271,17 @@ def sobol_batch_params() -> list[dict]:
     return out
 
 
-def reference_point(solid: bool = False, space: str = "slab6") -> np.ndarray:
+def reference_point(solid: bool = False, space: str = "slab6",
+                    obj2: str | None = None) -> np.ndarray:
     """Seed-independent hypervolume reference, from the printed articles.
 
     In the ratio space the nine articles enter as their (scale-invariant)
     shape ratios and are all projected onto the single ``MASS_TARGET_G``
-    manifold, and the second axis is the dimensionless ``e_rebound``.
+    manifold, and the second axis is the configured ratio objective.
     """
-    key = (solid, space)
+    key = (solid, space, obj2)
     if key not in _REF_CACHE:
-        obj2 = space_config(space)["obj2"]
+        obj2 = space_config(space, obj2)["obj2"]
         if space == "ratios":
             seeds = [base_to_ratios(p) for p in sobol_batch_params()]
         else:
@@ -281,20 +307,32 @@ def hypervolume_2d(points: np.ndarray, ref: np.ndarray) -> float:
     return float(hv)
 
 
+def run_prefix(model: str, init: str, space: str = "slab6",
+               obj2: str | None = None) -> str:
+    """File-name prefix; the ratio space's objective choice is part of it so
+    e_rebound-era and peak_tendon_strain-era artifacts never collide."""
+    if space == "slab6":
+        return f"{model}_{init}"
+    alias = OBJ2_TAG.get(obj2 or OBJ2_RATIOS, obj2 or OBJ2_RATIOS)
+    space_part = f"{space}-{alias}" if alias else space
+    return f"{model}_{space_part}_{init}"
+
+
 def seed_tag(model: str, init: str, seed: int, solid: bool = False,
-             space: str = "slab6") -> str:
-    prefix = f"{model}_{init}" if space == "slab6" else f"{model}_{space}_{init}"
+             space: str = "slab6", obj2: str | None = None) -> str:
+    prefix = run_prefix(model, init, space, obj2)
     return f"{prefix}_seed{seed}" + ("_solid" if solid else "")
 
 
 def run_seed(seed: int, rounds: int, batch_size: int, model: str,
              outdir: Path, solid: bool = False,
-             init: str = "sobol", space: str = "slab6") -> pd.DataFrame:
+             init: str = "sobol", space: str = "slab6",
+             obj2_choice: str | None = None) -> pd.DataFrame:
     from ax.modelbridge.factory import Models
     from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
     from ax.service.ax_client import AxClient, ObjectiveProperties
 
-    cfg = space_config(space)
+    cfg = space_config(space, obj2_choice)
     obj2 = cfg["obj2"]
     step_model = Models.SAASBO if model == "saasbo" else Models.BOTORCH_MODULAR
     steps = []
@@ -385,7 +423,7 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
               f"{time.time() - t0:.1f} s", flush=True)
 
     df = pd.DataFrame(rows)
-    ref = reference_point(solid, space)
+    ref = reference_point(solid, space, obj2_choice)
     obj = df[[OBJ1, obj2]].to_numpy(dtype=float)
     # only printable designs count toward the front and the running bests;
     # in the slab space every design is feasible and the mask is all-true
@@ -396,34 +434,34 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
     df["best_t180"] = pd.Series(np.where(feas, df[OBJ1], np.inf)).cummin()
     df["best_e_reb_mJ"] = pd.Series(np.where(feas, df[OBJ2], np.inf)).cummin()
     if space == "ratios":
-        df["best_e_rebound"] = pd.Series(
-            np.where(feas, df[OBJ2_RATIOS], np.inf)).cummin()
+        df[f"best_{obj2}"] = pd.Series(
+            np.where(feas, df[obj2], np.inf)).cummin()
 
     outdir.mkdir(parents=True, exist_ok=True)
-    tag = seed_tag(model, init, seed, solid, space)
+    tag = seed_tag(model, init, seed, solid, space, obj2_choice)
     df.to_csv(outdir / f"pr102_sim_bo_{tag}.csv", index=False, float_format="%.6g")
     plot_seed(df, outdir / f"pr102_sim_bo_{tag}.png", seed, model, init=init,
-              space=space)
+              space=space, obj2_choice=obj2_choice)
     return df
 
 
 def _run_seed_worker(job: tuple) -> str:
     """multiprocessing entry point; returns the tag it wrote."""
-    seed, rounds, batch_size, model, outdir, solid, init, space = job
+    seed, rounds, batch_size, model, outdir, solid, init, space, obj2 = job
     t0 = time.time()
     run_seed(seed, rounds, batch_size, model, Path(outdir), solid=solid,
-             init=init, space=space)
-    tag = seed_tag(model, init, seed, solid, space)
+             init=init, space=space, obj2_choice=obj2)
+    tag = seed_tag(model, init, seed, solid, space, obj2)
     print(f"seed {seed} done in {time.time() - t0:.1f} s", flush=True)
     return tag
 
 
 def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
-              init: str = "sobol", space: str = "slab6") -> None:
-    obj2 = space_config(space)["obj2"]
-    obj2_best = "best_e_rebound" if space == "ratios" else "best_e_reb_mJ"
-    obj2_label = ("e_rebound (simulated, minimize)" if space == "ratios"
-                  else "e_reb_mJ (simulated, minimize)")
+              init: str = "sobol", space: str = "slab6",
+              obj2_choice: str | None = None) -> None:
+    obj2 = space_config(space, obj2_choice)["obj2"]
+    obj2_best = f"best_{obj2}" if space == "ratios" else "best_e_reb_mJ"
+    obj2_label = f"{obj2} (simulated, minimize)"
     fig, (ax_c, ax_b, ax_p) = plt.subplots(1, 3, figsize=(16, 4.2), dpi=200)
     ax_c.plot(df.index + 1, df["hv"], color="#2a78d6", lw=1.8)
     ax_c.set_xlabel("simulated design")
@@ -473,11 +511,10 @@ def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
 
 
 def aggregate(outdir: Path, model: str, init: str = "sobol",
-              space: str = "slab6") -> None:
-    obj2 = space_config(space)["obj2"]
-    obj2_best = "best_e_rebound" if space == "ratios" else "best_e_reb_mJ"
-    prefix = (f"pr102_sim_bo_{model}_{init}" if space == "slab6"
-              else f"pr102_sim_bo_{model}_{space}_{init}")
+              space: str = "slab6", obj2_choice: str | None = None) -> None:
+    obj2 = space_config(space, obj2_choice)["obj2"]
+    obj2_best = f"best_{obj2}" if space == "ratios" else "best_e_reb_mJ"
+    prefix = f"pr102_sim_bo_{run_prefix(model, init, space, obj2_choice)}"
     files = sorted(outdir.glob(f"{prefix}_seed*.csv"),
                    key=lambda f: int(f.stem.split("seed")[-1].split("_")[0]))
     files = [f for f in files if "_solid" not in f.name]
@@ -537,7 +574,7 @@ def aggregate(outdir: Path, model: str, init: str = "sobol",
             "best_e_reb_mJ": ("best_e_reb_mJ", "min"),
             "n": ("trial", "count")}
     if space == "ratios":
-        aggs["best_e_rebound"] = ("best_e_rebound", "min")
+        aggs[f"best_{obj2}"] = (f"best_{obj2}", "min")
         aggs["n_feasible"] = ("feasible", "sum")
     summary = all_rows.groupby("seed").agg(**aggs)
     summary.to_csv(outdir / f"{prefix}_summary.csv", float_format="%.6g")
@@ -567,6 +604,13 @@ def main(argv=None):
                          "t180 + e_rebound, printability as outcome "
                          "constraints.  slab6: the earlier PR #102-style six "
                          "parameters incl. the mass slab, kept for comparison")
+    ap.add_argument("--obj2", choices=(OBJ2_RATIOS, OBJ2_RATIOS_LEGACY),
+                    default=OBJ2_RATIOS,
+                    help="second objective on the ratio manifold.  "
+                         "peak_tendon_strain (default): max TPU tension "
+                         "strain, the screening winner after e_rebound was "
+                         "shown to be mat-owned.  e_rebound: the earlier "
+                         "PR #102-faithful choice, kept for reproduction")
     ap.add_argument("--jobs", type=int, default=1,
                     help="repeats to run concurrently (one process per seed)")
     ap.add_argument("--solid", action="store_true",
@@ -576,16 +620,17 @@ def main(argv=None):
     ap.add_argument("--outdir", type=Path, default=OUT)
     args = ap.parse_args(argv)
 
+    obj2 = args.obj2 if args.space == "ratios" else None
     if args.aggregate:
-        aggregate(args.outdir, args.model, args.init, args.space)
+        aggregate(args.outdir, args.model, args.init, args.space, obj2)
         return 0
 
     seeds = args.seeds if args.seeds else [args.seed]
     jobs = [(seed, args.rounds, args.batch_size, args.model, str(args.outdir),
-             args.solid, args.init, args.space) for seed in seeds]
+             args.solid, args.init, args.space, obj2) for seed in seeds]
     print(f"{len(seeds)} repeat(s): {args.rounds} rounds x {args.batch_size} "
           f"designs, {args.model}, init={args.init}, space={args.space}, "
-          f"jobs={args.jobs}")
+          f"obj2={obj2}, jobs={args.jobs}")
 
     t0 = time.time()
     if args.jobs > 1 and len(jobs) > 1:
@@ -604,7 +649,7 @@ def main(argv=None):
     print(f"{len(seeds)} repeat(s) in {time.time() - t0:.1f} s")
 
     if len(seeds) > 1:
-        aggregate(args.outdir, args.model, args.init, args.space)
+        aggregate(args.outdir, args.model, args.init, args.space, obj2)
     return 0
 
 

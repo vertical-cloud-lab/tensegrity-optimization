@@ -262,6 +262,22 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
     slide_adr = model.jnt_dofadr[mujoco.mj_name2id(
         model, mujoco.mjtObj.mjOBJ_JOINT, "slide")]
 
+    # Geometry the article-deformation observables need, recomputed exactly as
+    # build_xml computed it.  Tendon rest lengths are the slack lengths the
+    # prestrain leaves, so "strain" below means tension strain above slack, and
+    # the tendon force/energy figures are the k_cable * extension proxies (the
+    # tendon also carries a limit constraint at the same rest length, so these
+    # are nominal-stiffness proxies, not the constraint-solver force).
+    nodes = tprism_nodes(radius=design.radius_m, height=design.height_m,
+                         twist=design.twist_rad, z0=0.0)
+    rest_len = np.array([(1.0 - prestrain) * np.linalg.norm(nodes[a] - nodes[b])
+                         for a, b in CABLES])
+    k_cable = design.cable_stiffness_Npm
+    a0, b0 = STRUTS[0]
+    top_node = a0 if nodes[a0][2] > nodes[b0][2] else b0
+    top_site = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, f"n{top_node}")
+    ch5_site = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, "ch5")
+
     # start with the whole assembly moving down at the impact velocity, with
     # the carriage exactly at the top of the (uncompressed) mat
     data.qpos[model.jnt_qposadr[mujoco.mj_name2id(
@@ -279,6 +295,10 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
     a_out = np.zeros(nsteps)
     v_car = np.zeros(nsteps)
     f_mat = np.zeros(nsteps)
+    peak_strain = 0.0
+    peak_energy_J = 0.0
+    rel_z0 = None
+    stroke_m = 0.0
 
     for k in range(nsteps):
         # one-sided Kelvin-Voigt mat under the carriage
@@ -299,6 +319,19 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
         a_out[k] = data.sensordata[5]     # framelinacc top vertex, z
         v_car[k] = float(data.qvel[slide_adr])
         f_mat[k] = f
+        # article-deformation observables (candidate objectives)
+        ext = np.maximum(data.ten_length - rest_len, 0.0)
+        s = float(np.max(ext / rest_len))
+        if s > peak_strain:
+            peak_strain = s
+        e = 0.5 * k_cable * float(np.sum(ext * ext))
+        if e > peak_energy_J:
+            peak_energy_J = e
+        rel_z = float(data.site_xpos[top_site][2] - data.site_xpos[ch5_site][2])
+        if rel_z0 is None:
+            rel_z0 = rel_z
+        elif rel_z0 - rel_z > stroke_m:
+            stroke_m = rel_z0 - rel_z
         if not np.isfinite(a_in[k]) or not np.isfinite(a_out[k]):
             t, a_in, a_out, v_car, f_mat = (arr[:k] for arr in
                                             (t, a_in, a_out, v_car, f_mat))
@@ -340,6 +373,13 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
     above = np.abs(in_f) >= 0.5 * np.max(np.abs(in_f))
     pulse_ms = float(above.sum()) * SIM_DT_S * 1e3
 
+    # CFC-1000 transmissibility, the campaign's other measured ratio
+    in_1k = _cfc_filter(a_in, fs, cfc=1000.0)
+    out_1k = _cfc_filter(a_out, fs, cfc=1000.0)
+    in_1k_pk = float(np.max(np.abs(in_1k)))
+    t1000 = (float(np.max(np.abs(out_1k))) / in_1k_pk
+             if in_1k_pk > 0 else float("nan"))
+
     return {
         "t180": float(t180),
         "e_rebound": float(e_rebound),
@@ -347,6 +387,10 @@ def simulate(design: PrintableDesign, *, mat: MatModel | None = None,
         "in_180_g": in_peak_g,
         "out_180_g": out_peak_g,
         "pulse_ms": pulse_ms,
+        "t1000": float(t1000),
+        "peak_tendon_strain": float(peak_strain),
+        "peak_tendon_energy_mJ": float(peak_energy_J * 1e3),
+        "stroke_mm": float(stroke_m * 1e3),
         "mass_printed_g": mass_g,
         "mass_flat_model_g": pm.printed_g,
         "mass_solid_g": pm.solid_g,

@@ -78,8 +78,8 @@ import matplotlib.pyplot as plt  # noqa: E402
 import drop_tower_sim  # noqa: E402
 import pr102_sim_campaign as campaign  # noqa: E402
 from pr102_sim_campaign import (  # noqa: E402
-    MASS, OBJ1, OBJ2, OUT, PARAMETERS, PARAM_NAMES,
-    hypervolume_2d, reference_point, space_config,
+    MASS, OBJ1, OBJ2, OBJ2_TAG, OUT, PARAMETERS, PARAM_NAMES,
+    hypervolume_2d, reference_point, run_prefix, space_config,
 )
 
 # Which search space the module is currently configured for.  ``slab6`` is
@@ -93,18 +93,25 @@ ACTIVE_PARAMS = list(PARAM_NAMES)
 BOUNDS_LO = np.array([p["bounds"][0] for p in PARAMETERS], dtype=float)
 BOUNDS_HI = np.array([p["bounds"][1] for p in PARAMETERS], dtype=float)
 OBJ2_ACT = OBJ2
+OBJ2_CHOICE = None
 FILE_SUFFIX = ""
 
 
-def set_space(space: str) -> None:
+def set_space(space: str, obj2: str | None = None) -> None:
     global SPACE, ACTIVE_PARAMS, BOUNDS_LO, BOUNDS_HI, OBJ2_ACT, FILE_SUFFIX
-    cfg = space_config(space)
+    global OBJ2_CHOICE
+    cfg = space_config(space, obj2)
     SPACE = space
+    OBJ2_CHOICE = obj2
     ACTIVE_PARAMS = list(cfg["param_names"])
     BOUNDS_LO = np.array([p["bounds"][0] for p in cfg["parameters"]], dtype=float)
     BOUNDS_HI = np.array([p["bounds"][1] for p in cfg["parameters"]], dtype=float)
     OBJ2_ACT = cfg["obj2"]
-    FILE_SUFFIX = "" if space == "slab6" else f"_{space}"
+    if space == "slab6":
+        FILE_SUFFIX = ""
+    else:
+        alias = OBJ2_TAG.get(OBJ2_ACT, OBJ2_ACT)
+        FILE_SUFFIX = f"_{space}-{alias}" if alias else f"_{space}"
 
 
 def evaluate(params: dict) -> dict:
@@ -245,7 +252,7 @@ def _run_heuristic(seed: int, budget: int, ref: np.ndarray) -> list[dict]:
 
 def run_strategy(strategy: str, seed: int, budget: int = BUDGET,
                  batch: int = BATCH, outdir: Path = OUT) -> pd.DataFrame:
-    ref = reference_point(space=SPACE)
+    ref = reference_point(space=SPACE, obj2=OBJ2_CHOICE)
     if strategy == "heuristic":
         rows = _run_heuristic(seed, budget, ref)
     else:
@@ -265,7 +272,7 @@ def run_strategy(strategy: str, seed: int, budget: int = BUDGET,
     df["best_t180"] = pd.Series(np.where(feas, df[OBJ1], np.inf)).cummin()
     df["best_e_reb_mJ"] = pd.Series(np.where(feas, df[OBJ2], np.inf)).cummin()
     if SPACE == "ratios":
-        df["best_e_rebound"] = pd.Series(
+        df[f"best_{OBJ2_ACT}"] = pd.Series(
             np.where(feas, df[OBJ2_ACT], np.inf)).cummin()
 
     outdir.mkdir(parents=True, exist_ok=True)
@@ -275,8 +282,8 @@ def run_strategy(strategy: str, seed: int, budget: int = BUDGET,
 
 
 def _strategy_worker(job: tuple) -> str:
-    strategy, seed, budget, batch, outdir, space = job
-    set_space(space)
+    strategy, seed, budget, batch, outdir, space, obj2 = job
+    set_space(space, obj2)
     t0 = time.time()
     run_strategy(strategy, seed, budget, batch, Path(outdir))
     print(f"  {strategy} seed {seed}: {budget} designs, "
@@ -287,8 +294,8 @@ def _strategy_worker(job: tuple) -> str:
 # --- the reference optimum ------------------------------------------------
 
 def _reference_chunk(job: tuple) -> pd.DataFrame:
-    lo, hi, pts, space = job
-    set_space(space)
+    lo, hi, pts, space, obj2 = job
+    set_space(space, obj2)
     rows = []
     for i in range(lo, hi):
         p = _as_params(pts[i])
@@ -313,13 +320,14 @@ def pareto_mask(obj: np.ndarray) -> np.ndarray:
 def run_reference(n: int = REFERENCE_N, jobs: int = 4,
                   outdir: Path = OUT) -> pd.DataFrame:
     """Dense Sobol sweep plus a Nelder-Mead polish, as the front's ceiling."""
-    ref = reference_point(space=SPACE)
+    ref = reference_point(space=SPACE, obj2=OBJ2_CHOICE)
     pts = _points_sobol(REFERENCE_SEED, n)
     print(f"reference sweep: {n} designs over {jobs} process(es)", flush=True)
 
     t0 = time.time()
     edges = np.linspace(0, n, jobs + 1).astype(int)
-    chunks = [(int(a), int(b), pts, SPACE) for a, b in zip(edges[:-1], edges[1:])]
+    chunks = [(int(a), int(b), pts, SPACE, OBJ2_CHOICE)
+              for a, b in zip(edges[:-1], edges[1:])]
     if jobs > 1:
         import multiprocessing as mp
         with mp.get_context("spawn").Pool(jobs) as pool:
@@ -387,7 +395,7 @@ def run_reference(n: int = REFERENCE_N, jobs: int = 4,
                    "best_t180": float(feas[OBJ1].min()),
                    "best_e_reb_mJ": float(feas[OBJ2].min())}
     if SPACE == "ratios":
-        summary_row["best_e_rebound"] = float(feas[OBJ2_ACT].min())
+        summary_row[f"best_{OBJ2_ACT}"] = float(feas[OBJ2_ACT].min())
     pd.DataFrame([summary_row]).to_csv(
         outdir / f"pr102_reference_summary{FILE_SUFFIX}.csv", index=False,
         float_format="%.6g")
@@ -442,8 +450,8 @@ def plot_reference(allr: pd.DataFrame, front: pd.DataFrame,
 
 def _load_traces(outdir: Path, strategy: str) -> list[pd.DataFrame]:
     if strategy == "botorch":
-        prefix = ("pr102_sim_bo_botorch_sobol" if SPACE == "slab6"
-                  else f"pr102_sim_bo_botorch_{SPACE}_sobol")
+        prefix = ("pr102_sim_bo_"
+                  + run_prefix("botorch", "sobol", SPACE, OBJ2_CHOICE))
         files = sorted(outdir.glob(f"{prefix}_seed*.csv"),
                        key=lambda f: int(f.stem.split("seed")[-1]))
         files = [f for f in files if "_solid" not in f.name]
@@ -456,7 +464,8 @@ def _load_traces(outdir: Path, strategy: str) -> list[pd.DataFrame]:
 
 def compare(outdir: Path = OUT, strategies=("botorch", "sobol", "lhs",
                                             "random", "heuristic")) -> None:
-    obj2_best = "best_e_rebound" if SPACE == "ratios" else "best_e_reb_mJ"
+    obj2_best = (f"best_{OBJ2_ACT}" if SPACE == "ratios"
+                 else "best_e_reb_mJ")
     ref_hv = ref_t180 = ref_ereb = None
     summary_path = outdir / f"pr102_reference_summary{FILE_SUFFIX}.csv"
     if summary_path.exists():
@@ -592,9 +601,13 @@ def main(argv=None):
                     help="only rebuild the comparison figures from CSVs")
     ap.add_argument("--space", choices=("slab6", "ratios"), default="ratios",
                     help="search space, matching pr102_sim_campaign --space")
+    ap.add_argument("--obj2", default=None,
+                    help="ratio-manifold second objective, matching "
+                         "pr102_sim_campaign --obj2 (default: its default)")
     ap.add_argument("--outdir", type=Path, default=OUT)
     args = ap.parse_args(argv)
-    set_space(args.space)
+    obj2 = args.obj2 if args.space == "ratios" else None
+    set_space(args.space, obj2)
 
     if args.reference:
         run_reference(args.reference_n, args.jobs, args.outdir)
@@ -604,7 +617,7 @@ def main(argv=None):
         return 0
 
     jobs = [(s, seed, args.budget, args.batch_size, str(args.outdir),
-             args.space) for s in args.strategies for seed in args.seeds]
+             args.space, obj2) for s in args.strategies for seed in args.seeds]
     print(f"{len(jobs)} baseline run(s): {args.budget} designs each")
     t0 = time.time()
     if args.jobs > 1 and len(jobs) > 1:
