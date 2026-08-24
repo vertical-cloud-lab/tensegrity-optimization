@@ -7,12 +7,14 @@ lattice is future work, per the review discussion on the presentation
 template), so the geometry is a plausible extension of the printed T3
 prism rather than a design that exists in the campaign:
 
-- Each column stacks two T3 prisms with alternating chirality (twist +60
-  then -60 degrees), the classic tensegrity-mast construction, so the
-  upper prism's bottom triangle shares the lower prism's top vertices.
-- Columns tile a 3 x 3 grid. Neighboring columns are joined by short TPU
-  cables at each vertex plane (the nearest vertex pairs), which is what
-  makes it read as a lattice of connected modules rather than an array.
+- A single level of T3 prisms (revised per me-madsen's follow-up: the
+  two-layer mast version read as a mess), each shorter than the printed
+  mid-range specimen so the prism proportions look roughly equilateral
+  (height close to the base triangle's side length).
+- Modules tile a 2 x 2 grid (also down from 3 x 2 in that revision).
+  Neighbors are joined by one short TPU cable at the bottom and top
+  vertex planes (the single nearest vertex pair), which is what makes it
+  read as a lattice of connected modules rather than an array.
 - Member proportions, colors, camera, and the occlusion-safe depth
   sorting all come from build_search_space_figure.py, so this image
   cannot drift from the T3 assets in style.
@@ -39,22 +41,24 @@ from build_search_space_figure import C_CABLE, C_STRUT, JOINT_D
 
 OUT = HERE / "media" / "fig-lattice-concept.png"
 
-# One mid-range module, sized like the printed T3 specimens.
+# One module. Shorter than the printed mid-range specimen so the prism
+# reads roughly equilateral: base triangle side = R * sqrt(3) ~ 52 mm,
+# so H ~ 55 mm keeps height and width visually comparable.
 R = 30.0          # mm, triangle radius
-H = 75.0          # mm, height per layer
-TWIST = 60.0      # deg; layer 2 uses -TWIST (alternating chirality)
+H = 55.0          # mm, height per layer
+TWIST = 60.0      # deg
 STRUT_D = 8.0     # mm, rigid PLA
 CABLE_D = 3.5     # mm, flexible TPU
-GRID_X = 3        # columns across
+GRID_X = 2        # columns across
 GRID_Y = 2        # columns deep
-LAYERS = 2
-SPACING = 78.0    # mm, column center-to-center
+LAYERS = 1
+SPACING = 84.0    # mm, column center-to-center
 
 # Same azimuth as the T3 assets, but a higher elevation: from the T3
 # camera the six columns stack up visually and the lattice reads as a
 # tangle, so the lattice view looks down a little more steeply.
 AZ = math.radians(27.0)
-EL = math.radians(26.0)
+EL = math.radians(32.0)
 
 
 def project(p):
@@ -123,14 +127,12 @@ def lattice_members():
                 pairs = [(math.dist(a, b), a, b)
                          for a in verts[(i, j)][k]
                          for b in verts[(ni, nj)][k]]
-                dmin = min(p[0] for p in pairs)
-                for d, a, b in pairs:
-                    if d <= dmin + 1.0:  # keep symmetric ties
-                        out.append((a, b, CABLE_D, C_CABLE))
+                d, a, b = min(pairs)  # single closest pair only
+                out.append((a, b, CABLE_D, C_CABLE))
     return out
 
 
-FADE = 0.45  # how much the farthest members blend toward white
+FADE = 0.35  # how much the farthest members blend toward white
 
 
 def draw_members(ax, members, ppmm):
