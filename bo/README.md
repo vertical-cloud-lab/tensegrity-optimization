@@ -366,14 +366,16 @@ on the PR #35 branch) was removed and labeled `r2d2c1` through `r2d2c9` on
 2026-08-24; masses with label were posted in issue #98 the same day. Files:
 
 - `t3-prism-bo-round1-print-key.csv`: print ID to specimen/trial mapping for
-  all nine articles. The mapping is INFERRED, not confirmed: the plate is a
-  3 by 3 grid, and reading it back-left to front-right in rows reproduces the
-  posted masses against the calibrated mass model with a residual sd of
-  about 0.5 g and a uniform +0.3 g offset (the label), while every other
-  raster order fits clearly worse. The center cell (`r2d2c5`, 23.47 g,
-  Specimen 08 predicted 22.5 g, the only article predicted above 20.1 g) is
-  unambiguous. Ask whoever removed the prints to confirm the row direction
-  before treating specimen-level conclusions as final.
+  all nine articles, plus RH% and defect notes from the issue #98 print log
+  as they are posted. The mapping is CONFIRMED as of 2026-08-24: @sgbaird
+  posted photos of the removed prints on a numbered tabletop grid
+  (positions 1 to 9 = `r2d2c1` to `r2d2c9`, laid out in the plate
+  arrangement) together with a Bambu Studio screenshot anchoring the
+  back-left plate object as Specimen 03, which pins the raster direction.
+  That is the same back-left to front-right mapping the mass fit had
+  inferred (residual sd about 0.5 g, uniform +0.3 g label offset, center
+  cell `r2d2c5` = Specimen 08 unambiguous), so the photographic and
+  mass-model evidence agree independently.
 - `t3-prism-bo-round1-drop-results.csv`: campaign summary for the sessions
   run so far (r2d2c1, r2d2c2, r2d2c3; 21 valid captures each, 19 after the
   2-drop warmup discard), produced by the PR #86 branch
@@ -388,6 +390,29 @@ trigger-valid, no pauses, input Δv 5.31 m/s (healthy band). The `r2d2c1`
 folder name says "23 drops" but the TP4 series table and the export both
 contain 21 events; the session ID string inside every export still reads
 "101 drops" (template reuse), which is cosmetic.
+
+### Rebound energy divided by mass (the intensive objective)
+
+`t3-prism-bo-objectives-mass-normalized.csv` tabulates both forms of the
+rebound objective for every tested article (11 so far), with per-form
+Pareto flags against `t180`. Definitions: `e_reb_mJ = e_rebound * m * g * h`
+(absolute energy returned to the payload per drop, the current BO
+objective), and `e_reb_mJ_per_g = e_reb_mJ / m` (specific rebound energy,
+the SEA-style intensive framing from PR #33). Because the absolute form is
+built by multiplying the measured restitution fraction by the article's own
+measured mass, dividing by that same mass recovers `e_rebound * g * h`
+exactly: the per-gram objective is the raw restitution fraction rescaled by
+the constant `g * h` = 14.95 mJ/g.
+
+Findings from the measured data (unlike the simulated campaign on PR #33,
+where the absolute form was 99.99% mass): the measured restitution fraction
+spans 2.5x (CV 37%) while mass spans only CV 7%, so design signal dominates
+either form; Pearson r between `e_reb_mJ` and mass is +0.18, dropping to
+-0.03 after normalization; the two rankings agree at Spearman 0.89 with the
+extremes identical. The Pareto front is where the choice matters: the
+absolute form's front is `6lhxfy`, `r2d2c1`, `r2d2c2`, `r2d2c3` (the last
+two earn their spot partly by printing light), the per-gram front is
+`6lhxfy`, `ajhby6`, `bpx68c`, `r2d2c1`. `r2d2c1` and `6lhxfy` survive both.
 
 ## Print key files
 

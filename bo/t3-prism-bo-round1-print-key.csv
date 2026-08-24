@@ -1,10 +1,10 @@
-print_id,spec,source_trial,plate_row,plate_col,mass_g_with_label,pred_printed_mass_g,n_drops_recorded,mapping_basis
-r2d2c1,03,13,back,left,19.38,19.9,21,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c2,02,12,back,center,17.96,17.3,21,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c3,06,16,back,right,18.63,18.7,21,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c4,01,11,middle,left,19.33,19.3,0,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c5,08,18,middle,center,23.47,22.5,0,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c6,04,14,middle,right,19.11,18.7,0,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c7,05,15,front,left,18.51,17.6,0,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c8,07,17,front,center,19.98,20.0,0,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
-r2d2c9,00,10,front,right,17.91,17.4,0,INFERRED: plate raster back-left to front-right + mass fit; confirm with lab
+print_id,spec,source_trial,plate_row,plate_col,mass_g_with_label,pred_printed_mass_g,n_drops_recorded,rh_pct_at_print,defects,mapping_basis
+r2d2c1,03,13,back,left,19.38,19.9,21,11,one TPU string detached on two top tendons except at support edges; odd foot support print,CONFIRMED: sgbaird 2026-08-24 photos (tabletop grid 1-9 = r2d2c1-c9) + slicer screenshot (back-left object = Specimen 03); agrees with mass-fit inference
+r2d2c2,02,12,back,center,17.96,17.3,21,11,none,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
+r2d2c3,06,16,back,right,18.63,18.7,21,11,none,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
+r2d2c4,01,11,middle,left,19.33,19.3,0,,,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
+r2d2c5,08,18,middle,center,23.47,22.5,0,,,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
+r2d2c6,04,14,middle,right,19.11,18.7,0,,,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
+r2d2c7,05,15,front,left,18.51,17.6,0,,,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
+r2d2c8,07,17,front,center,19.98,20.0,0,,,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
+r2d2c9,00,10,front,right,17.91,17.4,0,,,CONFIRMED: sgbaird 2026-08-24 photos + slicer anchor; agrees with mass-fit inference
