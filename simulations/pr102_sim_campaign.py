@@ -329,7 +329,9 @@ def seed_tag(model: str, init: str, seed: int, solid: bool = False,
 def run_seed(seed: int, rounds: int, batch_size: int, model: str,
              outdir: Path, solid: bool = False,
              init: str = "sobol", space: str = "slab6",
-             obj2_choice: str | None = None) -> pd.DataFrame:
+             obj2_choice: str | None = None,
+             acq_restarts: int | None = None,
+             acq_raw_samples: int | None = None) -> pd.DataFrame:
     from ax.modelbridge.factory import Models
     from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
     from ax.service.ax_client import AxClient, ObjectiveProperties
@@ -351,13 +353,22 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
     # generates the batch one q=1 gen call at a time, each a full multi-start
     # optimization; with the ratio space's two outcome constraints a round of
     # 9 costs about 300 s at the Ax defaults of 20 restarts x 1024 raw
-    # samples).  The surface is 4-6 dimensional and smooth, so a lighter
-    # multi-start loses little; this cuts a model round to tens of seconds.
-    gen_options = {"model_gen_options": {"optimizer_kwargs": {
-        "num_restarts": 8, "raw_samples": 128}}}
+    # samples).  By default the Ax defaults are used.  Passing
+    # --acq-restarts/--acq-raw-samples (e.g. 8 x 128) reproduces the
+    # reduced-effort setting some earlier in-session runs used to fit their
+    # window; those runs are labelled as such in pr102_sim_campaign.md.
+    gen_kwargs = {}
+    if acq_restarts is not None or acq_raw_samples is not None:
+        opt_kwargs = {}
+        if acq_restarts is not None:
+            opt_kwargs["num_restarts"] = int(acq_restarts)
+        if acq_raw_samples is not None:
+            opt_kwargs["raw_samples"] = int(acq_raw_samples)
+        gen_kwargs["model_gen_kwargs"] = {
+            "model_gen_options": {"optimizer_kwargs": opt_kwargs}}
     steps.append(GenerationStep(model=step_model, num_trials=-1,
                                 max_parallelism=batch_size,
-                                model_gen_kwargs=gen_options))
+                                **gen_kwargs))
     gs = GenerationStrategy(steps=steps)
     ax_client = AxClient(generation_strategy=gs, random_seed=seed,
                          verbose_logging=False)
@@ -449,10 +460,12 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
 
 def _run_seed_worker(job: tuple) -> str:
     """multiprocessing entry point; returns the tag it wrote."""
-    seed, rounds, batch_size, model, outdir, solid, init, space, obj2 = job
+    (seed, rounds, batch_size, model, outdir, solid, init, space, obj2,
+     acq_restarts, acq_raw_samples) = job
     t0 = time.time()
     run_seed(seed, rounds, batch_size, model, Path(outdir), solid=solid,
-             init=init, space=space, obj2_choice=obj2)
+             init=init, space=space, obj2_choice=obj2,
+             acq_restarts=acq_restarts, acq_raw_samples=acq_raw_samples)
     tag = seed_tag(model, init, seed, solid, space, obj2)
     print(f"seed {seed} done in {time.time() - t0:.1f} s", flush=True)
     return tag
@@ -615,6 +628,14 @@ def main(argv=None):
                          "PR #102-faithful choice, kept for reproduction")
     ap.add_argument("--jobs", type=int, default=1,
                     help="repeats to run concurrently (one process per seed)")
+    ap.add_argument("--acq-restarts", type=int, default=None,
+                    help="acquisition multi-start restarts; default: Ax's "
+                         "own default (20).  Set 8 to reproduce the "
+                         "reduced-effort in-session runs")
+    ap.add_argument("--acq-raw-samples", type=int, default=None,
+                    help="acquisition raw samples; default: Ax's own "
+                         "default (1024).  Set 128 to reproduce the "
+                         "reduced-effort in-session runs")
     ap.add_argument("--solid", action="store_true",
                     help="ablation: ignore infill, run at solid PLA density")
     ap.add_argument("--aggregate", action="store_true",
@@ -629,10 +650,14 @@ def main(argv=None):
 
     seeds = args.seeds if args.seeds else [args.seed]
     jobs = [(seed, args.rounds, args.batch_size, args.model, str(args.outdir),
-             args.solid, args.init, args.space, obj2) for seed in seeds]
+             args.solid, args.init, args.space, obj2,
+             args.acq_restarts, args.acq_raw_samples) for seed in seeds]
+    acq = ("Ax defaults" if args.acq_restarts is None
+           and args.acq_raw_samples is None
+           else f"{args.acq_restarts} x {args.acq_raw_samples}")
     print(f"{len(seeds)} repeat(s): {args.rounds} rounds x {args.batch_size} "
           f"designs, {args.model}, init={args.init}, space={args.space}, "
-          f"obj2={obj2}, jobs={args.jobs}")
+          f"obj2={obj2}, acq={acq}, jobs={args.jobs}")
 
     t0 = time.time()
     if args.jobs > 1 and len(jobs) > 1:
