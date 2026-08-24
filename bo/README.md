@@ -256,6 +256,49 @@ own: printed mass and geometry are confounded by construction in round 1
 (the light articles *are* the PLA-heavy thick-strut corner), so the sign of
 the mass effect is the least trustworthy number on either figure.
 
+## Drop-count sensitivity (shorter round-2 sessions)
+
+Round 1 ran ~101 drops per specimen. When session time is short, fewer drops
+per specimen is an option, and this analysis quantifies the cost by replaying
+round 1 as if each session had stopped after the first N drops.
+
+- `t3-prism-per-drop-metrics.csv`: per-drop t180 and e_rebound for all 794
+  valid round-1 drops (8 specimens). Extracted from `campaign_metrics.json`
+  on the PR #86 branch `copilot/add-drop-test-protocol-again` (commit-level
+  provenance in that branch's `data/drop-tests/sobol-campaign/`); the 2
+  warmup drops per specimen are already discarded upstream.
+- `t3_prism_drop_count_sensitivity.py`: builds the table and figure below,
+  and `--emit-truncated N` writes
+  `t3-prism-bo-batch-drop-results-firstN.csv`, a campaign summary with
+  round-1 statistics recomputed over the first N drops in the exact schema
+  `t3_prism_bo_campaign.py --results` expects.
+- `t3-prism-drop-count-sensitivity.csv` and
+  `figures/t3-prism-drop-count-sensitivity.png`: the replay results.
+
+What the replay shows. The t180 ranking of all 8 tested specimens is
+identical at N = 20, N = 50 and the full session; the worst first-20 t180
+deviation is +0.008 (bag26v, which softens over its session) against
+design-to-design gaps of 0.007 to 0.087, and the per-drop SEM at N = 20 is
+still an order of magnitude below those gaps. The e_rebound fraction is the
+fragile one: 7 of 8 specimens sit within 2.5 percent of their full-session
+value at N = 20, but amdjwm lands 21 percent low because a burst of harder
+rebounds arrives around drops 26 to 40, and the mid-pack e_rebound ordering
+(four specimens within 0.003 of each other) shuffles under truncation.
+
+How a short round 2 is accounted for in the pipeline. The BO ingestion
+already computes noise as sd/sqrt(n_valid) from the results CSV, so a
+20-drop session simply enters the model with about 2.2x the standard error
+and the GP downweights it accordingly; nothing needs changing there. The one
+thing that should change: because most specimens drift slightly over a
+session, ingest round 1 through the matching `-firstN` truncated summary so
+both rounds average the same early-session window and estimate the same
+quantity:
+
+```bash
+python bo/t3_prism_drop_count_sensitivity.py --emit-truncated 20
+python bo/t3_prism_bo_campaign.py --results bo/t3-prism-bo-batch-drop-results-first20.csv ...
+```
+
 ## Print key files
 
 - `t3-prism-bo-batch-print-key.csv`: one row per physical print. Maps the
