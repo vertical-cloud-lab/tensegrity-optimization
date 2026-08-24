@@ -359,7 +359,16 @@ python scripts/fetch_box_shared_folder.py kkhmvnj9ni19b57dryk3gdroqrp5uf0b DEST
 That downloads the entire share (videos included). To pull one session
 folder, resolve its folder id from the share listing first; the ids used on
 2026-08-24 were 411619211572 (`r2d2c1`), 411623696481 (`r2d2c2`),
-411630638267 (`r2d2c3`), and 410920465434 (`ajhby6`).
+411630638267 (`r2d2c3`), 411633263159 (`r2d2c4`), 411638730821 (`r2d2c5`),
+411638799623 (`r2d2c6`), 411634427962 (`r2d2c7`), 411654362191 (`r2d2c8`),
+411659610187 (`r2d2c9`), and 410920465434 (`ajhby6`).
+
+Upload quirk worth knowing before re-analyzing: the `r2d2c8` session was
+exported under a name ending in `_Signal9`, so on Box its TP4 series table
+is `..._Signal9.csv` (which parses as a capture and crashes the pipeline)
+and its 22 real captures are `..._Signal9_SignalN.csv` (which the pipeline
+skips). Rename the table to something without `Signal` and strip the first
+`_Signal9` from the capture names before running the analysis.
 
 The BO round-1 plate (the second tested batch, designs `t3-prism-bo-round1.csv`
 on the PR #35 branch) was removed and labeled `r2d2c1` through `r2d2c9` on
@@ -376,26 +385,63 @@ on the PR #35 branch) was removed and labeled `r2d2c1` through `r2d2c9` on
   inferred (residual sd about 0.5 g, uniform +0.3 g label offset, center
   cell `r2d2c5` = Specimen 08 unambiguous), so the photographic and
   mass-model evidence agree independently.
-- `t3-prism-bo-round1-drop-results.csv`: campaign summary for the sessions
-  run so far (r2d2c1, r2d2c2, r2d2c3; 21 valid captures each, 19 after the
-  2-drop warmup discard), produced by the PR #86 branch
-  `drop_test_campaign_analysis.py` unchanged, same schema as
-  `t3-prism-bo-batch-drop-results.csv`. The `mass_g` column is the posted
-  mass with label.
+- `t3-prism-bo-round1-drop-results.csv`: campaign summary for all nine
+  sessions (r2d2c1 to r2d2c9, uploaded 2026-08-24; 21 valid captures each,
+  22 for r2d2c8; 19 to 20 scored after the 2-drop warmup discard), produced
+  by the PR #86 branch `drop_test_campaign_analysis.py` unchanged. Same
+  schema as `t3-prism-bo-batch-drop-results.csv` plus the three T-drift
+  watch columns that script now emits (`t_drift_flag`,
+  `t180_slope_pct_per_drop`, `t180_e2e_pct`). The `mass_g` column is the
+  posted mass with label.
 - `t3-prism-bo-round1-per-drop-metrics.csv`: the stabilized per-drop rows
-  for those sessions, same schema as `t3-prism-per-drop-metrics.csv`.
+  for those sessions (172 rows), same schema as
+  `t3-prism-per-drop-metrics.csv`.
+- `t3-prism-bo-round1-designs.csv`: the plate that was actually printed
+  (`bo/t3-prism-bo-round1.csv` on the PR #35 branch, commit 8809b25).
+  `R_mm`..`cable_d_mm` are the base coordinates of Ax trials 10 to 18; the
+  `*_print_*` columns are the constant-solid-mass projection that went to
+  the printer.
+- `t3-prism-bo-round1-predictions.csv`: the suggestions CSV as it stood
+  when that plate was generated (commit `7a048ee`), kept frozen so
+  predicted-vs-measured is drawn against what the model actually claimed.
 
-Session notes from the 2026-08-24 uploads: all 21 captures per session are
-trigger-valid, no pauses, input Δv 5.31 m/s (healthy band). The `r2d2c1`
-folder name says "23 drops" but the TP4 series table and the export both
-contain 21 events; the session ID string inside every export still reads
-"101 drops" (template reuse), which is cosmetic.
+Session notes from the 2026-08-24 uploads: all captures in all nine
+sessions are trigger-valid, no pauses, input Δv 5.29 to 5.41 m/s (healthy
+band). One session, `r2d2c2`, breaks the historical within-session T-drift
+envelope (+0.25 %/drop, +3.5 % end to end, output-side signature: mount or
+coupling suspect); its t180 mean is drift-contaminated and its inflated sd
+is what the BO ingestion sees. The `r2d2c1` folder name says "23 drops" but
+the TP4 series table and the export both contain 21 events; the session ID
+string inside every export still reads "101 drops" (template reuse), which
+is cosmetic.
+
+### Round-2 outcomes and the round-3 batch
+
+With all nine round-2 sessions in, the ingestion in
+`t3_prism_bo_campaign.py` attaches both batches (18 tested articles: 9
+round-1 including `bpx68c`, minus the unmapped `amdjwm`, plus 9 r2d2c) and
+the two still-untested round-1 prints (specs 03 and 06) as pending. Run:
+
+```bash
+python bo/t3_prism_bo_campaign.py --round 2       # refit + round-3 batch
+python bo/t3_prism_bo_campaign.py --measured-round2  # predicted-vs-measured
+                                                     # figure set + animation
+```
+
+The first command writes `t3-prism-bo-suggestions-round2.csv` (the round-3
+candidate batch at constant printed mass), the AxClient snapshot
+`t3-prism-bo-ax-client-round2.json`, and
+`figures/t3-prism-bo-round2-pareto.png`. The second renders the measured
+predicted-vs-actual figure set (`figures/t3-prism-bo-round2-start.png`,
+`-uncertainty.png`, `-predicted-vs-actual.png`, `-front-final.png`, plus
+the MP4/GIF), the real-data version of the `-PROTOTYPE` set, which is kept
+for provenance.
 
 ### Rebound energy divided by mass (the intensive objective)
 
 `t3-prism-bo-objectives-mass-normalized.csv` tabulates both forms of the
-rebound objective for every tested article (11 so far), with per-form
-Pareto flags against `t180`. Definitions: `e_reb_mJ = e_rebound * m * g * h`
+rebound objective for every tested article (18 as of the full round-2
+upload on 2026-08-24), with per-form Pareto flags against `t180`. Definitions: `e_reb_mJ = e_rebound * m * g * h`
 (absolute energy returned to the payload per drop, the current BO
 objective), and `e_reb_mJ_per_g = e_reb_mJ / m` (specific rebound energy,
 the SEA-style intensive framing from PR #33). Because the absolute form is
@@ -409,10 +455,12 @@ where the absolute form was 99.99% mass): the measured restitution fraction
 spans 2.5x (CV 37%) while mass spans only CV 7%, so design signal dominates
 either form; Pearson r between `e_reb_mJ` and mass is +0.18, dropping to
 -0.03 after normalization; the two rankings agree at Spearman 0.89 with the
-extremes identical. The Pareto front is where the choice matters: the
-absolute form's front is `6lhxfy`, `r2d2c1`, `r2d2c2`, `r2d2c3` (the last
-two earn their spot partly by printing light), the per-gram front is
-`6lhxfy`, `ajhby6`, `bpx68c`, `r2d2c1`. `r2d2c1` and `6lhxfy` survive both.
+extremes identical. The Pareto front is where the choice matters. Over all
+18 tested articles the absolute-form front is `6lhxfy`, `r2d2c7`, `r2d2c1`,
+`r2d2c2`, `r2d2c6` and the per-gram front is `6lhxfy`, `r2d2c7`, `r2d2c1`,
+`ajhby6`/`bpx68c`, `r2d2c6`; `6lhxfy`, `r2d2c7`, `r2d2c1` and `r2d2c6`
+survive both framings (`r2d2c2` earns its absolute-form spot partly by
+printing light, at 17.96 g).
 
 ## Print key files
 

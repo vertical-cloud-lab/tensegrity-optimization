@@ -235,9 +235,10 @@ SHAPE_PARAMETERS = [
     {"name": "strut_d_mm", "type": "range", "bounds": [6.0, 12.0], "value_type": "float"},
     {"name": "cable_d_mm", "type": "range", "bounds": [3.0, 5.5], "value_type": "float"},
 ]
-# Mass axis of the FIT space: wide enough to hold every weighed round-1
-# article (18.50 to 22.29 g) so attach_trial accepts them.
-MASS_FIT_BOUNDS = [18.0, 23.0]
+# Mass axis of the FIT space: wide enough to hold every weighed article from
+# both tested batches (round 1: 18.50 to 22.29 g; round 2 r2d2c: 17.91 to
+# 23.47 g) so attach_trial accepts them.
+MASS_FIT_BOUNDS = [17.5, 24.0]
 
 
 def fit_parameters():
@@ -379,6 +380,104 @@ def load_training_data(results_path: Path, design_path: Path,
         params[mass_param] = float(mass_g)
         pending.append((f"spec {spec_idx:02d}", params))
     return X_train, y_train, labels, masses, pending
+
+
+# Round-2 (r2d2c) batch files. The designs table is the plate that was
+# actually printed (bo/t3-prism-bo-round1.csv on the PR #35 branch, commit
+# 8809b25): its R_mm..cable_d_mm columns are the BASE coordinates of Ax
+# trials 10-18 (the 7a048ee mass-aware suggestions), which is the space the
+# model fits in, and its *_print_* columns are the constant-SOLID-mass
+# projection that went to the printer. The predictions table is the
+# suggestions CSV as it stood when the plate was generated (commit 7a048ee),
+# kept so predicted-vs-measured is drawn against what the model actually
+# claimed, not against a later re-run.
+ROUND2_RESULTS = BO_DIR / "t3-prism-bo-round1-drop-results.csv"
+ROUND2_DESIGNS = BO_DIR / "t3-prism-bo-round1-designs.csv"
+ROUND2_KEY = BO_DIR / "t3-prism-bo-round1-print-key.csv"
+ROUND2_PREDICTIONS = BO_DIR / "t3-prism-bo-round1-predictions.csv"
+
+
+def load_round2_training_data(results_path=ROUND2_RESULTS,
+                              designs_path=ROUND2_DESIGNS,
+                              key_path=ROUND2_KEY):
+    """Measured r2d2c articles as (X, y) in the same 6-parameter fit space.
+
+    Base coordinates come from the printed plate's design table via the
+    print key's trial mapping; the sixth parameter is the article's weighed
+    mass (with label, the same convention as the round-1 ingestion).
+    Returns (X, y, labels, masses, trial_of_label). Sessions whose t180 is
+    drift-flagged by the campaign analysis are ingested at their stabilized
+    mean with a prominent warning: the drift inflates the recorded sd, so
+    the SEM the GP receives already carries the contamination.
+    """
+    if not results_path.exists():
+        print(f"WARNING: no round-2 results at {results_path}; skipping.")
+        return [], [], [], [], {}
+    results = pd.read_csv(results_path)
+    designs = pd.read_csv(designs_path).set_index("source_trial")
+    key = pd.read_csv(key_path).set_index("print_id")
+
+    X, y, labels, masses, trial_of = [], [], [], [], {}
+    for _, row in results.iterrows():
+        pid = str(row["specimen"]).strip()
+        if pid not in key.index:
+            print(f"WARNING: skipping {pid!r}: not in the round-2 print key.")
+            continue
+        trial = int(key.loc[pid, "source_trial"])
+        base = designs.loc[trial]
+        params = {name: float(base[name]) for name in PARAM_NAMES}
+        mass_g = float(row["mass_g"])
+        n = float(row["n_valid"])
+        e_mean = float(row["e_rebound_mean"])
+        e_sem = float(row["e_rebound_sd"]) / np.sqrt(n)
+        e_reb_mJ = e_mean * mass_g * G_M_S2 * DROP_H_M
+        e_reb_sem = e_reb_mJ * float(
+            np.hypot(e_sem / e_mean, MASS_PRINT_SD_G / mass_g)
+        )
+        if bool(row.get("t_drift_flag", False)):
+            print(
+                f"WARNING: {pid} (trial {trial}) is T-DRIFT flagged "
+                f"(slope {row.get('t180_slope_pct_per_drop')}, "
+                f"end-to-end {row.get('t180_e2e_pct')} %): its t180 mean is "
+                "drift-contaminated; ingested with the inflated sd, but "
+                "resolve per the campaign-analysis watch before trusting it."
+            )
+        y.append(
+            {
+                obj1_name: (float(row["t180_mean"]),
+                            float(row["t180_sd"]) / np.sqrt(n)),
+                obj2_name: (e_reb_mJ, e_reb_sem),
+            }
+        )
+        params[mass_param] = mass_g
+        X.append(params)
+        label = f"{pid} (trial {trial})"
+        labels.append(label)
+        masses.append(mass_g)
+        trial_of[label] = trial
+    return X, y, labels, masses, trial_of
+
+
+def measured_round2_frame(y_round2, labels_round2, trial_of, predictions):
+    """Measured round-2 outcomes row-aligned to the predictions table.
+
+    This is the real-data replacement for ``synthesize_round2_outcomes``:
+    same columns, but the objectives are the drop-tested values and the
+    ordering matches ``predictions`` (one row per suggested trial) so the
+    travel animation joins each prediction to its own article's landing.
+    Trials whose article has no session yet get NaN rows and are dropped
+    with a note.
+    """
+    frame = observed_frame(y_round2, labels_round2)
+    frame["trial_index"] = [trial_of[label] for label in labels_round2]
+    merged = predictions[["trial_index"]].merge(frame, on="trial_index", how="left")
+    missing = merged["print_id"].isna()
+    if missing.any():
+        miss = predictions.loc[missing.to_numpy(), "trial_index"].tolist()
+        print(f"NOTE: trials with no drop session yet: {miss} (dropped from "
+              "the predicted-vs-measured figure)")
+    kept = ~missing.to_numpy()
+    return merged[~missing].reset_index(drop=True), kept
 
 
 # ---- figure styling (presentation-ready, per PR #102 review) -------------
@@ -706,12 +805,15 @@ def render_objective_figure(observed, suggestions, round_number):
             suggestions[f"pred_{obj1_name}_mean"], suggestions[f"pred_{obj2_name}_mean"],
             marker="D", s=150, fc=SUGGEST_ORANGE, ec="none", zorder=4,
         )
+        # Limits follow the data (round 2 brought a 1.33 t180 that the round-1
+        # panel's hard-coded 1.13 ceiling would have cropped).
+        xticks, yticks = _prototype_limits(observed, suggestions)
         _style_axes(
             ax,
-            xlim=(0.79, 1.13),
-            ylim=(5.4, 15.0),
-            xticks=np.arange(0.8, 1.101, 0.1),
-            yticks=np.arange(6, 14.1, 2),
+            xlim=(xticks[0] - 0.015, xticks[-1] + 0.02),
+            ylim=(yticks[0] - 0.5, yticks[-1] + 0.6),
+            xticks=xticks,
+            yticks=yticks,
         )
 
         # Series names as leader-line callouts instead of a legend box.
@@ -857,7 +959,8 @@ def _callout_alpha(ann, alpha):
 
 
 def render_round2_prototype(
-    observed, suggestions, actual, round_number, fps=25, animate=True
+    observed, suggestions, actual, round_number, fps=25, animate=True,
+    synthetic=True,
 ):
     """The round-2 story as four registered stills plus an animation.
 
@@ -1147,9 +1250,16 @@ def render_round2_prototype(
             ax, f"Predicted (round {round_number})", tuple(pred_xy[travel_i]),
             _axes_frac(ax, pred_xy[travel_i], -0.05, -0.13), SUGGEST_ORANGE, ha="right",
         )
+        # The labeled landing can sit anywhere, including the panel's right
+        # edge (r2d2c3 measured at t180 1.33), so the text goes on whichever
+        # side of the point has room.
+        meas_right = ax.transLimits.transform(act_xy[travel_i])[0] > 0.6
         c_meas = _callout(
             ax, "Measured", tuple(act_xy[travel_i]),
-            _axes_frac(ax, act_xy[travel_i], 0.06, 0.09), INK, leader=LEADER_GRAY,
+            _axes_frac(
+                ax, act_xy[travel_i], -0.06 if meas_right else 0.06, 0.09
+            ),
+            INK, leader=LEADER_GRAY, ha="right" if meas_right else "left",
         )
         new_anchor = _front_anchor(new_front, 0.55)
         c_front2 = _callout(
@@ -1159,11 +1269,12 @@ def render_round2_prototype(
         for ann in (c_unc, c_pred, c_meas, c_front2):
             _callout_alpha(ann, 0.0)
 
-        ax.text(
-            1.0, 1.06, "PROTOTYPE: round-2 outcomes are synthetic",
-            transform=ax.transAxes, ha="right", va="bottom",
-            fontsize=15, color=SUGGEST_ORANGE,
-        )
+        if synthetic:
+            ax.text(
+                1.0, 1.06, "PROTOTYPE: round-2 outcomes are synthetic",
+                transform=ax.transAxes, ha="right", va="bottom",
+                fontsize=15, color=SUGGEST_ORANGE,
+            )
 
         # Labels are laid out once, for the final frame, so nothing shuffles
         # mid-animation. They are on screen in exactly two beats, the opening
@@ -1278,6 +1389,7 @@ def render_round2_prototype(
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
         stem = f"t3-prism-bo-round{round_number}"
+        tag = "-PROTOTYPE" if synthetic else ""
 
         # The four rest points, exported from this figure rather than
         # redrawn: beat 1 (before anything moves), the end of the uncertainty
@@ -1291,10 +1403,10 @@ def render_round2_prototype(
             "front": n_frames - 1,
         }
         still_names = {
-            "start": f"{stem}-start-PROTOTYPE.png",
-            "uncertainty": f"{stem}-uncertainty-PROTOTYPE.png",
-            "travel": f"{stem}-predicted-vs-actual-PROTOTYPE.png",
-            "front": f"{stem}-front-final-PROTOTYPE.png",
+            "start": f"{stem}-start{tag}.png",
+            "uncertainty": f"{stem}-uncertainty{tag}.png",
+            "travel": f"{stem}-predicted-vs-actual{tag}.png",
+            "front": f"{stem}-front-final{tag}.png",
         }
         stills = {}
         for stage in STILL_STAGES:
@@ -1309,8 +1421,8 @@ def render_round2_prototype(
             anim = FuncAnimation(
                 fig, update, frames=n_frames, interval=1000 / fps
             )
-            out_mp4 = fig_dir / f"{stem}-predicted-vs-actual-PROTOTYPE.mp4"
-            out_gif = fig_dir / f"{stem}-predicted-vs-actual-PROTOTYPE.gif"
+            out_mp4 = fig_dir / f"{stem}-predicted-vs-actual{tag}.mp4"
+            out_gif = fig_dir / f"{stem}-predicted-vs-actual{tag}.gif"
             if have_ffmpeg:
                 anim.save(
                     out_mp4,
@@ -1341,8 +1453,9 @@ def render_round2_prototype(
         )
 
     gained = set(new_front_ids) - set(old_front["print_id"])
+    prefix = "[prototype, synthetic data]" if synthetic else "[measured]"
     print(
-        f"[prototype, synthetic data] round-{round_number} front: "
+        f"{prefix} round-{round_number} front: "
         + ", ".join(new_front["print_id"])
         + (f"; new entrants: {', '.join(sorted(gained))}" if gained else "")
     )
@@ -1393,6 +1506,17 @@ def main(argv=None):
         ),
     )
     ap.add_argument(
+        "--measured-round2",
+        action="store_true",
+        help=(
+            "draw the predicted-vs-measured figure set and animation for the "
+            "round-2 batch from the MEASURED campaign summary "
+            "(t3-prism-bo-round1-drop-results.csv) against the predictions "
+            "the printed plate was generated from "
+            "(t3-prism-bo-round1-predictions.csv); no model refit"
+        ),
+    )
+    ap.add_argument(
         "--no-animation",
         action="store_true",
         help=(
@@ -1402,7 +1526,31 @@ def main(argv=None):
     )
     args = ap.parse_args(argv)
 
-    X_train, y_train, labels, masses, pending = load_training_data(args.results, args.design)
+    X1, y1, labels1, masses1, pending = load_training_data(args.results, args.design)
+    X2, y2, labels2, masses2, trial_of = load_round2_training_data()
+    X_train = X1 + X2
+    y_train = y1 + y2
+    labels = labels1 + labels2
+    masses = masses1 + masses2
+
+    if args.measured_round2:
+        # The real-data version of the prototype: predictions frozen at the
+        # plate that was printed (7a048ee), landings from the measured
+        # round-2 campaign summary. No Ax import needed.
+        predictions = pd.read_csv(ROUND2_PREDICTIONS)
+        actual, kept = measured_round2_frame(y2, labels2, trial_of, predictions)
+        stills, gif, mp4 = render_round2_prototype(
+            observed_frame(y1, labels1),
+            predictions.loc[kept].reset_index(drop=True),
+            actual, 2, animate=not args.no_animation, synthetic=False,
+        )
+        print("Measured round-2 stills (slide order):")
+        for i, stage in enumerate(STILL_STAGES, start=1):
+            print(f"  slide {i} ({stage}): {stills[stage]}")
+        if gif or mp4:
+            print("Animation saved to "
+                  + ", ".join(str(x) for x in (mp4, gif) if x))
+        return 0
 
     if args.plot_only or args.prototype_next_round:
         observed = observed_frame(y_train, labels)
