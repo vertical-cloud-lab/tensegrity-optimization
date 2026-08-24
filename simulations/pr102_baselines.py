@@ -42,9 +42,17 @@ Every evaluation any of these performs is written to CSV, including the
 full 65 536-row reference cloud, so plots and analyses can be redone later
 without re-running anything.
 
+Both halves run in either of the campaign's search spaces (``--space``,
+matching ``pr102_sim_campaign.py``): the original six-parameter box
+(``slab6``) or the Route 1 constant-printed-mass shape-ratio manifold
+(``ratios``, the default), where unprintable projections (cable below the
+3.0 mm bridging floor, envelope above 250 cm^3) are excluded from fronts,
+hypervolumes and running bests but kept in every CSV.  Ratio-space output
+files carry a ``_ratios`` suffix so the two studies coexist.
+
 Run::
 
-    python pr102_baselines.py --reference --jobs 4      # the ceiling, ~11 min
+    python pr102_baselines.py --reference --jobs 4      # the ceiling
     python pr102_baselines.py --strategies random sobol lhs heuristic --jobs 4
     python pr102_baselines.py --compare                 # figures only
 """
@@ -68,10 +76,35 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 import drop_tower_sim  # noqa: E402
+import pr102_sim_campaign as campaign  # noqa: E402
 from pr102_sim_campaign import (  # noqa: E402
     MASS, OBJ1, OBJ2, OUT, PARAMETERS, PARAM_NAMES,
-    hypervolume_2d, reference_point,
+    hypervolume_2d, reference_point, space_config,
 )
+
+# Which search space the module is currently configured for.  ``slab6`` is
+# the original six-parameter box; ``ratios`` is the Route 1 constant-mass
+# shape-ratio manifold (see pr102_sim_campaign).  Baselines, reference and
+# comparison all have to live in the same space as the campaign they are
+# judged against, so this is process-global and set once per process (the
+# multiprocessing workers re-apply it from their job tuples).
+SPACE = "slab6"
+ACTIVE_PARAMS = list(PARAM_NAMES)
+BOUNDS_LO = np.array([p["bounds"][0] for p in PARAMETERS], dtype=float)
+BOUNDS_HI = np.array([p["bounds"][1] for p in PARAMETERS], dtype=float)
+OBJ2_ACT = OBJ2
+FILE_SUFFIX = ""
+
+
+def set_space(space: str) -> None:
+    global SPACE, ACTIVE_PARAMS, BOUNDS_LO, BOUNDS_HI, OBJ2_ACT, FILE_SUFFIX
+    cfg = space_config(space)
+    SPACE = space
+    ACTIVE_PARAMS = list(cfg["param_names"])
+    BOUNDS_LO = np.array([p["bounds"][0] for p in cfg["parameters"]], dtype=float)
+    BOUNDS_HI = np.array([p["bounds"][1] for p in cfg["parameters"]], dtype=float)
+    OBJ2_ACT = cfg["obj2"]
+    FILE_SUFFIX = "" if space == "slab6" else f"_{space}"
 
 
 def evaluate(params: dict) -> dict:
@@ -81,14 +114,15 @@ def evaluate(params: dict) -> dict:
     and the mass because Ax wants exactly those; here the ``ok`` flag and
     the constant-mass print scale are worth keeping in the saved CSV.
     """
+    if SPACE == "ratios":
+        res = campaign.evaluate(params, space="ratios")
+        res["ok"] = bool(np.isfinite(res[OBJ1]))
+        return res
     res = drop_tower_sim.evaluate_pr102(params)
     return {OBJ1: float(res["t180"]), OBJ2: float(res["e_reb_mJ"]),
             MASS: float(res["mass_printed_g"]),
             "print_scale": float(res.get("print_scale", float("nan"))),
-            "ok": bool(res.get("ok", True))}
-
-BOUNDS_LO = np.array([p["bounds"][0] for p in PARAMETERS], dtype=float)
-BOUNDS_HI = np.array([p["bounds"][1] for p in PARAMETERS], dtype=float)
+            "ok": bool(res.get("ok", True)), "feasible": True}
 
 BUDGET = 36          # 4 batches of 9, the campaign's own budget
 BATCH = 9
@@ -108,7 +142,7 @@ STRATEGY_STYLE = {
 
 
 def _as_params(x: np.ndarray) -> dict:
-    return {n: float(v) for n, v in zip(PARAM_NAMES, x)}
+    return {n: float(v) for n, v in zip(ACTIVE_PARAMS, x)}
 
 
 def _clip(x: np.ndarray) -> np.ndarray:
@@ -122,16 +156,16 @@ def _scale(unit: np.ndarray) -> np.ndarray:
 # --- the sampling baselines ----------------------------------------------
 
 def _points_random(seed: int, n: int) -> np.ndarray:
-    return _scale(np.random.default_rng(seed).random((n, len(PARAM_NAMES))))
+    return _scale(np.random.default_rng(seed).random((n, len(ACTIVE_PARAMS))))
 
 
 def _points_sobol(seed: int, n: int) -> np.ndarray:
-    return _scale(qmc.Sobol(len(PARAM_NAMES), scramble=True,
+    return _scale(qmc.Sobol(len(ACTIVE_PARAMS), scramble=True,
                             seed=seed).random(n))
 
 
 def _points_lhs(seed: int, n: int) -> np.ndarray:
-    return _scale(qmc.LatinHypercube(len(PARAM_NAMES), seed=seed).random(n))
+    return _scale(qmc.LatinHypercube(len(ACTIVE_PARAMS), seed=seed).random(n))
 
 
 # --- the heuristic --------------------------------------------------------
@@ -144,9 +178,12 @@ def _scalarize(res: dict, w: float, ref: np.ndarray) -> float:
 
     Normalizing matters: ``t180`` is order 0.5 and ``e_reb_mJ`` is order
     200, so an un-normalized sum is a single-objective search on
-    ``e_reb_mJ``.
+    ``e_reb_mJ``.  An unprintable design scores a large constant, which is
+    what it costs on the bench too.
     """
-    return w * res[OBJ1] / ref[0] + (1.0 - w) * res[OBJ2] / ref[1]
+    if not res.get("feasible", True):
+        return 10.0
+    return w * res[OBJ1] / ref[0] + (1.0 - w) * res[OBJ2_ACT] / ref[1]
 
 
 def _run_heuristic(seed: int, budget: int, ref: np.ndarray) -> list[dict]:
@@ -166,18 +203,18 @@ def _run_heuristic(seed: int, budget: int, ref: np.ndarray) -> list[dict]:
         left = per_weight if wi < len(HEURISTIC_WEIGHTS) - 1 else budget - spent
         if left <= 0:
             break
-        x = _scale(rng.random(len(PARAM_NAMES)))
+        x = _scale(rng.random(len(ACTIVE_PARAMS)))
         res = evaluate(_as_params(x))
         rows.append({**_as_params(x), **res})
         spent += 1
         left -= 1
         best = _scalarize(res, w, ref)
-        step = 0.35 * np.ones(len(PARAM_NAMES))     # fraction of each range
+        step = 0.35 * np.ones(len(ACTIVE_PARAMS))   # fraction of each range
         span = BOUNDS_HI - BOUNDS_LO
 
         while left > 0:
             improved = False
-            for ax in rng.permutation(len(PARAM_NAMES)):
+            for ax in rng.permutation(len(ACTIVE_PARAMS)):
                 for sign in (+1.0, -1.0):
                     if left <= 0:
                         break
@@ -200,7 +237,7 @@ def _run_heuristic(seed: int, budget: int, ref: np.ndarray) -> list[dict]:
             if not improved:
                 step *= 0.5
                 if step.max() < 1e-3:
-                    step = 0.35 * np.ones(len(PARAM_NAMES))
+                    step = 0.35 * np.ones(len(ACTIVE_PARAMS))
     return rows
 
 
@@ -208,7 +245,7 @@ def _run_heuristic(seed: int, budget: int, ref: np.ndarray) -> list[dict]:
 
 def run_strategy(strategy: str, seed: int, budget: int = BUDGET,
                  batch: int = BATCH, outdir: Path = OUT) -> pd.DataFrame:
-    ref = reference_point()
+    ref = reference_point(space=SPACE)
     if strategy == "heuristic":
         rows = _run_heuristic(seed, budget, ref)
     else:
@@ -221,19 +258,25 @@ def run_strategy(strategy: str, seed: int, budget: int = BUDGET,
     df.insert(0, "round", df["trial"] // batch)
     df.insert(0, "seed", seed)
     df.insert(0, "strategy", strategy)
-    obj = df[[OBJ1, OBJ2]].to_numpy(dtype=float)
-    df["hv"] = [hypervolume_2d(obj[: i + 1], ref) for i in range(len(obj))]
-    df["best_t180"] = df[OBJ1].cummin()
-    df["best_e_reb_mJ"] = df[OBJ2].cummin()
+    obj = df[[OBJ1, OBJ2_ACT]].to_numpy(dtype=float)
+    feas = df["feasible"].to_numpy(dtype=bool)
+    masked = np.where(feas[:, None], obj, np.inf)
+    df["hv"] = [hypervolume_2d(masked[: i + 1], ref) for i in range(len(obj))]
+    df["best_t180"] = pd.Series(np.where(feas, df[OBJ1], np.inf)).cummin()
+    df["best_e_reb_mJ"] = pd.Series(np.where(feas, df[OBJ2], np.inf)).cummin()
+    if SPACE == "ratios":
+        df["best_e_rebound"] = pd.Series(
+            np.where(feas, df[OBJ2_ACT], np.inf)).cummin()
 
     outdir.mkdir(parents=True, exist_ok=True)
-    df.to_csv(outdir / f"pr102_baseline_{strategy}_seed{seed}.csv",
+    df.to_csv(outdir / f"pr102_baseline_{strategy}{FILE_SUFFIX}_seed{seed}.csv",
               index=False, float_format="%.6g")
     return df
 
 
 def _strategy_worker(job: tuple) -> str:
-    strategy, seed, budget, batch, outdir = job
+    strategy, seed, budget, batch, outdir, space = job
+    set_space(space)
     t0 = time.time()
     run_strategy(strategy, seed, budget, batch, Path(outdir))
     print(f"  {strategy} seed {seed}: {budget} designs, "
@@ -244,7 +287,8 @@ def _strategy_worker(job: tuple) -> str:
 # --- the reference optimum ------------------------------------------------
 
 def _reference_chunk(job: tuple) -> pd.DataFrame:
-    lo, hi, pts = job
+    lo, hi, pts, space = job
+    set_space(space)
     rows = []
     for i in range(lo, hi):
         p = _as_params(pts[i])
@@ -269,13 +313,13 @@ def pareto_mask(obj: np.ndarray) -> np.ndarray:
 def run_reference(n: int = REFERENCE_N, jobs: int = 4,
                   outdir: Path = OUT) -> pd.DataFrame:
     """Dense Sobol sweep plus a Nelder-Mead polish, as the front's ceiling."""
-    ref = reference_point()
+    ref = reference_point(space=SPACE)
     pts = _points_sobol(REFERENCE_SEED, n)
     print(f"reference sweep: {n} designs over {jobs} process(es)", flush=True)
 
     t0 = time.time()
     edges = np.linspace(0, n, jobs + 1).astype(int)
-    chunks = [(int(a), int(b), pts) for a, b in zip(edges[:-1], edges[1:])]
+    chunks = [(int(a), int(b), pts, SPACE) for a, b in zip(edges[:-1], edges[1:])]
     if jobs > 1:
         import multiprocessing as mp
         with mp.get_context("spawn").Pool(jobs) as pool:
@@ -291,13 +335,13 @@ def run_reference(n: int = REFERENCE_N, jobs: int = 4,
     # on that same weighted sum.  The sweep resolves the front's shape; the
     # polish stops the reported ceiling from being limited by sample spacing.
     from scipy.optimize import minimize
-    ok = sweep[sweep["ok"].astype(bool)]
+    ok = sweep[sweep["ok"].astype(bool) & sweep["feasible"].astype(bool)]
     polish_rows = []
     t0 = time.time()
     for w in np.linspace(0.0, 1.0, N_POLISH_WEIGHTS):
         s = (w * ok[OBJ1].to_numpy() / ref[0]
-             + (1.0 - w) * ok[OBJ2].to_numpy() / ref[1])
-        x0 = ok.iloc[int(np.argmin(s))][PARAM_NAMES].to_numpy(dtype=float)
+             + (1.0 - w) * ok[OBJ2_ACT].to_numpy() / ref[1])
+        x0 = ok.iloc[int(np.argmin(s))][ACTIVE_PARAMS].to_numpy(dtype=float)
         trace = []
 
         def f(x, _w=w, _trace=trace):
@@ -319,26 +363,38 @@ def run_reference(n: int = REFERENCE_N, jobs: int = 4,
 
     allr = pd.concat([sweep, polish], ignore_index=True)
     allr = allr[allr["ok"].astype(bool)].reset_index(drop=True)
-    obj = allr[[OBJ1, OBJ2]].to_numpy(dtype=float)
-    allr["pareto"] = pareto_mask(obj)
-    hv = hypervolume_2d(obj, ref)
+    # the cloud CSV keeps every evaluation, printable or not; the front, the
+    # hypervolume ceiling and the summary are over printable designs only
+    feas_mask = allr["feasible"].astype(bool).to_numpy()
+    obj = allr[[OBJ1, OBJ2_ACT]].to_numpy(dtype=float)
+    pareto = np.zeros(len(allr), dtype=bool)
+    pareto[feas_mask] = pareto_mask(obj[feas_mask])
+    allr["pareto"] = pareto
+    hv = hypervolume_2d(obj[feas_mask], ref)
 
     outdir.mkdir(parents=True, exist_ok=True)
     # gzipped because it is 65 k rows; pandas reads it with no extra step.
-    allr.to_csv(outdir / "pr102_reference_cloud.csv.gz", index=False,
-                float_format="%.6g", compression="gzip")
+    allr.to_csv(outdir / f"pr102_reference_cloud{FILE_SUFFIX}.csv.gz",
+                index=False, float_format="%.6g", compression="gzip")
     front = allr[allr["pareto"]].sort_values(OBJ1)
-    front.to_csv(outdir / "pr102_reference_front.csv", index=False,
-                 float_format="%.6g")
-    pd.DataFrame([{"n_sweep": len(sweep), "n_polish": len(polish),
-                   "n_feasible": len(allr), "n_pareto": int(allr["pareto"].sum()),
-                   "hv": hv, "ref_t180": ref[0], "ref_e_reb_mJ": ref[1],
-                   "best_t180": float(allr[OBJ1].min()),
-                   "best_e_reb_mJ": float(allr[OBJ2].min())}]).to_csv(
-        outdir / "pr102_reference_summary.csv", index=False, float_format="%.6g")
+    front.to_csv(outdir / f"pr102_reference_front{FILE_SUFFIX}.csv",
+                 index=False, float_format="%.6g")
+    feas = allr[feas_mask]
+    summary_row = {"n_sweep": len(sweep), "n_polish": len(polish),
+                   "n_ok": len(allr), "n_feasible": int(feas_mask.sum()),
+                   "n_pareto": int(allr["pareto"].sum()),
+                   "hv": hv, "ref_t180": ref[0], "ref_obj2": ref[1],
+                   "best_t180": float(feas[OBJ1].min()),
+                   "best_e_reb_mJ": float(feas[OBJ2].min())}
+    if SPACE == "ratios":
+        summary_row["best_e_rebound"] = float(feas[OBJ2_ACT].min())
+    pd.DataFrame([summary_row]).to_csv(
+        outdir / f"pr102_reference_summary{FILE_SUFFIX}.csv", index=False,
+        float_format="%.6g")
     print(f"reference hypervolume {hv:.4f}, front {int(allr['pareto'].sum())} "
-          f"points, best t180 {allr[OBJ1].min():.4f}, "
-          f"best e_reb_mJ {allr[OBJ2].min():.3f}")
+          f"points, best t180 {feas[OBJ1].min():.4f}, "
+          f"best {OBJ2_ACT} {feas[OBJ2_ACT].min():.4g}, "
+          f"feasible {int(feas_mask.sum())}/{len(allr)}")
     plot_reference(allr, front, outdir)
     return allr
 
@@ -346,21 +402,29 @@ def run_reference(n: int = REFERENCE_N, jobs: int = 4,
 def plot_reference(allr: pd.DataFrame, front: pd.DataFrame,
                    outdir: Path) -> None:
     fig, (ax, ax2) = plt.subplots(1, 2, figsize=(12, 4.6), dpi=200)
-    ax.scatter(allr[OBJ1], allr[OBJ2], s=2, alpha=0.15, color="#9aa0a6",
-               rasterized=True, label=f"{len(allr)} designs")
-    ax.plot(front[OBJ1], front[OBJ2], color="#c0392b", lw=2, marker="o", ms=3,
-            label=f"reference front ({len(front)})")
+    feas = allr["feasible"].astype(bool)
+    ax.scatter(allr.loc[feas, OBJ1], allr.loc[feas, OBJ2_ACT], s=2,
+               alpha=0.15, color="#9aa0a6", rasterized=True,
+               label=f"{int(feas.sum())} printable designs")
+    if (~feas).any():
+        ax.scatter(allr.loc[~feas, OBJ1], allr.loc[~feas, OBJ2_ACT], s=2,
+                   alpha=0.10, color="#e5b8b3", rasterized=True,
+                   label=f"{int((~feas).sum())} unprintable")
+    ax.plot(front[OBJ1], front[OBJ2_ACT], color="#c0392b", lw=2, marker="o",
+            ms=3, label=f"reference front ({len(front)})")
     ax.set_xlabel("t180 (simulated, minimize)")
-    ax.set_ylabel("e_reb_mJ (simulated, minimize)")
-    ax.set_title("Reference sweep over the PR #102 box", fontsize=10)
+    ax.set_ylabel(f"{OBJ2_ACT} (simulated, minimize)")
+    space_label = ("constant-mass shape-ratio space" if SPACE == "ratios"
+                   else "PR #102 box")
+    ax.set_title(f"Reference sweep over the {space_label}", fontsize=10)
     ax.grid(alpha=0.25, lw=0.5)
     ax.legend(fontsize=8)
 
     # Where on the box the front lives, per parameter, as a normalized
     # position: this is the actionable read of the front.
     lo, hi = BOUNDS_LO, BOUNDS_HI
-    unit = (front[PARAM_NAMES].to_numpy(dtype=float) - lo) / (hi - lo)
-    for j, name in enumerate(PARAM_NAMES):
+    unit = (front[ACTIVE_PARAMS].to_numpy(dtype=float) - lo) / (hi - lo)
+    for j, name in enumerate(ACTIVE_PARAMS):
         ax2.plot(front[OBJ1], unit[:, j], lw=1.5, label=name)
     ax2.set_xlabel("t180 along the reference front")
     ax2.set_ylabel("position in the box (0 = low bound, 1 = high)")
@@ -369,7 +433,8 @@ def plot_reference(allr: pd.DataFrame, front: pd.DataFrame,
     ax2.grid(alpha=0.25, lw=0.5)
     ax2.legend(fontsize=7, ncol=2)
     fig.tight_layout()
-    fig.savefig(outdir / "pr102_reference_front.png", bbox_inches="tight")
+    fig.savefig(outdir / f"pr102_reference_front{FILE_SUFFIX}.png",
+                bbox_inches="tight")
     plt.close(fig)
 
 
@@ -377,26 +442,32 @@ def plot_reference(allr: pd.DataFrame, front: pd.DataFrame,
 
 def _load_traces(outdir: Path, strategy: str) -> list[pd.DataFrame]:
     if strategy == "botorch":
-        files = sorted(outdir.glob("pr102_sim_bo_botorch_sobol_seed*.csv"),
+        prefix = ("pr102_sim_bo_botorch_sobol" if SPACE == "slab6"
+                  else f"pr102_sim_bo_botorch_{SPACE}_sobol")
+        files = sorted(outdir.glob(f"{prefix}_seed*.csv"),
                        key=lambda f: int(f.stem.split("seed")[-1]))
         files = [f for f in files if "_solid" not in f.name]
     else:
-        files = sorted(outdir.glob(f"pr102_baseline_{strategy}_seed*.csv"),
-                       key=lambda f: int(f.stem.split("seed")[-1]))
+        files = sorted(
+            outdir.glob(f"pr102_baseline_{strategy}{FILE_SUFFIX}_seed*.csv"),
+            key=lambda f: int(f.stem.split("seed")[-1]))
     return [pd.read_csv(f) for f in files]
 
 
 def compare(outdir: Path = OUT, strategies=("botorch", "sobol", "lhs",
                                             "random", "heuristic")) -> None:
+    obj2_best = "best_e_rebound" if SPACE == "ratios" else "best_e_reb_mJ"
     ref_hv = ref_t180 = ref_ereb = None
-    summary_path = outdir / "pr102_reference_summary.csv"
+    summary_path = outdir / f"pr102_reference_summary{FILE_SUFFIX}.csv"
     if summary_path.exists():
         s = pd.read_csv(summary_path).iloc[0]
-        ref_hv, ref_t180, ref_ereb = s["hv"], s["best_t180"], s["best_e_reb_mJ"]
+        ref_hv, ref_t180 = s["hv"], s["best_t180"]
+        ref_ereb = float(s[obj2_best]) if obj2_best in s else float(
+            s["best_e_reb_mJ"])
 
     panels = [("hv", "dominated hypervolume", ref_hv),
               ("best_t180", "running-best t180", ref_t180),
-              ("best_e_reb_mJ", "running-best e_reb_mJ (mJ)", ref_ereb)]
+              (obj2_best, f"running-best {OBJ2_ACT}", ref_ereb)]
     fig, axes = plt.subplots(1, 3, figsize=(16, 4.4), dpi=200)
 
     rows = []
@@ -418,12 +489,12 @@ def compare(outdir: Path = OUT, strategies=("botorch", "sobol", "lhs",
             ax.grid(alpha=0.25, lw=0.5)
         final = np.array([f[panels[0][0]].to_numpy()[n - 1] for f in frames])
         bt = np.array([f["best_t180"].to_numpy()[n - 1] for f in frames])
-        be = np.array([f["best_e_reb_mJ"].to_numpy()[n - 1] for f in frames])
+        be = np.array([f[obj2_best].to_numpy()[n - 1] for f in frames])
         rows.append({"strategy": strategy, "n_seeds": len(frames), "budget": n,
                      "final_hv_mean": final.mean(), "final_hv_sd": final.std(),
                      "best_t180_mean": bt.mean(), "best_t180_sd": bt.std(),
-                     "best_e_reb_mJ_mean": be.mean(),
-                     "best_e_reb_mJ_sd": be.std(),
+                     f"{obj2_best}_mean": be.mean(),
+                     f"{obj2_best}_sd": be.std(),
                      "hv_frac_of_reference": (final.mean() / ref_hv
                                               if ref_hv else np.nan)})
 
@@ -434,11 +505,14 @@ def compare(outdir: Path = OUT, strategies=("botorch", "sobol", "lhs",
         ax.legend(fontsize=7.5)
     axes[0].set_title("Hypervolume against a fixed reference point", fontsize=10)
     axes[1].set_title("Best t180 so far", fontsize=10)
-    axes[2].set_title("Best e_reb_mJ so far", fontsize=10)
-    fig.suptitle("Simulation-only T-3_01 campaign against baselines, "
-                 "mean +/- 1 sd over 10 seeds", fontsize=11)
+    axes[2].set_title(f"Best {OBJ2_ACT} so far", fontsize=10)
+    space_label = (" (constant-mass shape-ratio space)" if SPACE == "ratios"
+                   else "")
+    fig.suptitle("Simulation-only T-3_01 campaign against baselines"
+                 f"{space_label}, mean +/- 1 sd over 10 seeds", fontsize=11)
     fig.tight_layout()
-    fig.savefig(outdir / "pr102_baselines_comparison.png", bbox_inches="tight")
+    fig.savefig(outdir / f"pr102_baselines_comparison{FILE_SUFFIX}.png",
+                bbox_inches="tight")
     plt.close(fig)
 
     summary = pd.DataFrame(rows)
@@ -464,36 +538,39 @@ def compare(outdir: Path = OUT, strategies=("botorch", "sobol", "lhs",
         if len(pvals) == len(summary):
             summary["mannwhitney_p_vs_bo"] = pvals
 
-    summary.to_csv(outdir / "pr102_baselines_summary.csv", index=False,
-                   float_format="%.6g")
+    summary.to_csv(outdir / f"pr102_baselines_summary{FILE_SUFFIX}.csv",
+                   index=False, float_format="%.6g")
     print(summary.to_string(index=False))
 
     # Objective-space panel: every method's evaluations against the front.
-    front_path = outdir / "pr102_reference_front.csv"
+    front_path = outdir / f"pr102_reference_front{FILE_SUFFIX}.csv"
     if front_path.exists():
         front = pd.read_csv(front_path)
         fig, ax = plt.subplots(figsize=(6.8, 5.2), dpi=200)
-        ax.plot(front[OBJ1], front[OBJ2], color="#111111", lw=1.8, zorder=5,
-                label="reference front")
+        ax.plot(front[OBJ1], front[OBJ2_ACT], color="#111111", lw=1.8,
+                zorder=5, label="reference front")
         for strategy in strategies:
             frames = _load_traces(outdir, strategy)
             if not frames:
                 continue
             colour, label = STRATEGY_STYLE[strategy]
             allpts = pd.concat(frames)
-            ax.scatter(allpts[OBJ1], allpts[OBJ2], s=7, alpha=0.35,
+            if "feasible" in allpts:
+                allpts = allpts[allpts["feasible"].astype(bool)]
+            ax.scatter(allpts[OBJ1], allpts[OBJ2_ACT], s=7, alpha=0.35,
                        color=colour, label=label)
         ax.set_xlabel("t180 (simulated, minimize)")
-        ax.set_ylabel("e_reb_mJ (simulated, minimize)")
-        ax.set_title("Where each method spent its 36 designs "
+        ax.set_ylabel(f"{OBJ2_ACT} (simulated, minimize)")
+        ax.set_title("Where each method spent its budget, printable designs "
                      "(10 seeds pooled)", fontsize=10)
         ax.grid(alpha=0.25, lw=0.5)
         ax.legend(fontsize=8)
         fig.tight_layout()
-        fig.savefig(outdir / "pr102_baselines_objective_space.png",
+        fig.savefig(outdir / f"pr102_baselines_objective_space{FILE_SUFFIX}.png",
                     bbox_inches="tight")
         plt.close(fig)
-    print(f"Wrote {outdir}/pr102_baselines_comparison.png and _summary.csv")
+    print(f"Wrote {outdir}/pr102_baselines_comparison{FILE_SUFFIX}.png "
+          f"and _summary{FILE_SUFFIX}.csv")
 
 
 def main(argv=None):
@@ -509,8 +586,11 @@ def main(argv=None):
     ap.add_argument("--reference-n", type=int, default=REFERENCE_N)
     ap.add_argument("--compare", action="store_true",
                     help="only rebuild the comparison figures from CSVs")
+    ap.add_argument("--space", choices=("slab6", "ratios"), default="ratios",
+                    help="search space, matching pr102_sim_campaign --space")
     ap.add_argument("--outdir", type=Path, default=OUT)
     args = ap.parse_args(argv)
+    set_space(args.space)
 
     if args.reference:
         run_reference(args.reference_n, args.jobs, args.outdir)
@@ -519,8 +599,8 @@ def main(argv=None):
         compare(args.outdir)
         return 0
 
-    jobs = [(s, seed, args.budget, args.batch_size, str(args.outdir))
-            for s in args.strategies for seed in args.seeds]
+    jobs = [(s, seed, args.budget, args.batch_size, str(args.outdir),
+             args.space) for s in args.strategies for seed in args.seeds]
     print(f"{len(jobs)} baseline run(s): {args.budget} designs each")
     t0 = time.time()
     if args.jobs > 1 and len(jobs) > 1:

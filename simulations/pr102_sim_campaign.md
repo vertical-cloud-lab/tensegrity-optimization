@@ -290,47 +290,25 @@ objective space. Under `--init sobol` those are ten different clouds; under
 `--init printed` they collapse onto one set of nine markers. That panel is
 there so the failure mode above is visible rather than inferred.
 
-### Ten repeats
+### Ten repeats on the constant-printed-mass manifold
 
-Ten repeats were run in-session (`--model botorch`, `--init sobol`,
-`--jobs 4`, four batches of 9 = 36 simulated designs each, so the same
-per-seed budget as the earlier three-seed run):
+Ten repeats (`--model botorch`, `--init sobol`, `--jobs 4`, five batches
+of 9 = 45 simulated designs each) were re-run after the section 1 mass fix,
+on the six-parameter space that mirrors PR #102 (`--space slab6`: the five
+base axes plus `mass_printed_g` in its narrow slab). All ten land on the
+identical box vertex: `R` 40 mm, `H` 60 mm, `twist` 40 deg, `strut_d`
+6.0 mm, `cable_d` 3.0 mm, mass at the slab's light edge, `t180` = 0.5686
+every time, final hypervolume 10.058 +/- 0.0002 (a 0.002 % spread against
+1.5 % on the pre-fix manifold). Round 0 still starts the seeds 5.59 to
+6.81 apart, so the loop is converging rather than degenerate at the start.
 
-| seed | final hypervolume | best `t180` | best `e_reb_mJ` |
-|---|--:|--:|--:|
-| 0 | 17.83 | 0.4848 | 170.20 |
-| 1 | 17.36 | 0.4992 | 170.17 |
-| 2 | 17.43 | 0.4996 | 169.89 |
-| 3 | 17.39 | 0.5025 | 169.59 |
-| 4 | 17.75 | 0.4880 | 170.20 |
-| 5 | 17.57 | 0.4979 | 169.57 |
-| 6 | 17.26 | 0.5015 | 170.18 |
-| 7 | 17.31 | 0.5035 | 169.73 |
-| 8 | 17.96 | 0.4877 | 169.00 |
-| 9 | 17.18 | 0.5072 | 169.59 |
-
-Ten independent draws start much further apart than they finish. After
-round 0 alone the hypervolume spans 7.71 to 11.07, a spread of 13.8 % of
-its mean, and the best `t180` in the initial batch spans 0.584 to 0.646.
-Four batches later the hypervolume is 17.50 +/- 0.26, a spread of 1.51 %,
-and the best `t180` spans 0.485 to 0.507. So the loop is convergent under
-resampling of its own initial design, which is the claim the earlier
-three-seed run could not make: those seeds shared round 0, so their
-agreement was arithmetic rather than evidence. The three shared-round-0
-seeds finished at 17.59 to 17.79 against the same reference point, inside
-the spread of the ten independent ones and near its top, which is what a
-hand-picked initial batch should do.
-
-All ten walk to the same corner: `R` at its maximum 40 mm, `H` at its
-minimum 60 mm, `twist` at its minimum 40 deg, `cable_d` at its minimum
-3.0 mm. Short, wide, thin-cabled. `strut_d` is the one loose axis and it is
-loose across the whole box (6.35 to 12.0 mm over the ten best-`t180`
-designs, with no trend in the objective), so the model is genuinely
-indifferent to it once the other four are cornered rather than merely
-under-resolved on it.
+That collapse is the honest consequence of the fix, not a better result.
+With mass held constant the problem is effectively single-objective in
+`t180` plus "sit at the light edge of the slab", and the optimum is a
+corner. `strut_d`, the one loose axis before the fix, is now pinned at its
+minimum, because with mass fixed the strut diameter sets the overall scale.
 
 ![](outputs/pr102_sim_bo_botorch_sobol_aggregate.png)
-
 
 Two things to notice before reading that as a recommendation. It agrees with
 the measured campaign on thin cables -- `6lhxfy`, the one article that
@@ -341,6 +319,15 @@ at the supplied twist), so a twist result here is a physical claim rather
 than the un-consumed plumbing `sobol_t3_diagnostics.md` documents for
 `run_regimes`. Given that the model cannot amplify at all (section 2), the
 disagreement is more likely the model's than the bench's.
+
+The slab space itself did not survive review (2026-08-22): carrying mass as
+a sixth parameter is right for PR #102, where the print scale is a genuinely
+free axis with measured scatter, and wrong for a deterministic simulation,
+where mass is a function of shape and the slab is exploitable as a gradient
+(all ten repeats duly sat on its light edge). Section 6 is the campaign
+re-run on the re-parameterization that removes the mass axis entirely, and
+is the version to read for current numbers; `--space slab6` keeps this one
+reproducible.
 
 One SAASBO seed was also run to check that path (the default, matching
 PR #102): one round of 3 designs took 570 s on a contended runner core
@@ -369,6 +356,18 @@ A hypervolume trace that climbs proves nothing on its own: the question is
 whether it climbs faster than something with no model in it, and whether it
 finishes anywhere near what the box contains. `pr102_baselines.py` supplies
 both.
+
+**Manifold note.** Everything in this section was run before the section 1
+mass fix, on the constant-*solid*-mass projection, where `e_reb_mJ` was
+rank-identical to printed mass. The optimizer comparison it makes (BO
+against space-filling and pattern search, same budget, same seeds) is still
+informative about search efficiency on a smooth deterministic surface, but
+the front geometry and the absolute numbers describe the superseded
+objective. Section 6 repeats the whole construction (reference sweep,
+baselines, comparison) on the corrected, re-parameterized campaign; the
+files here are kept unsuffixed (`pr102_reference_*.csv`,
+`pr102_baseline_<strategy>_seed<k>.csv`) and the corrected ones carry a
+`_ratios` suffix.
 
 ### The reference optimum
 

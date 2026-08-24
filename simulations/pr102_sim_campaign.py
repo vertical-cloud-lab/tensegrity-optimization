@@ -44,6 +44,16 @@ wall-clock here (the simulation itself is about 0.3 s per design).  Use
 ``--model botorch`` for the cheap qNEHVI surrogate when the question is
 about the loop rather than about the model.
 
+Two search spaces (``--space``).  ``slab6`` is the PR #102-faithful one:
+the five base millimetre axes plus ``mass_printed_g`` in a narrow slab.
+``ratios`` (the default, per the 2026-08-22 review of the slab runs) drops
+the mass parameter entirely: the campaign searches the four scale-free
+shape ratios, the overall scale is solved so printed mass equals the
+20.23 g target exactly, the second objective is the dimensionless
+``e_rebound`` (``e_reb_mJ`` is a constant multiple of it on this
+manifold), and the projected article's printability (cable diameter,
+envelope) enters as Ax outcome constraints.  See ``space_config``.
+
 Run::
 
     python pr102_sim_campaign.py --seed 0 --rounds 4
@@ -53,6 +63,7 @@ Run::
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import time
 from pathlib import Path
@@ -80,6 +91,7 @@ SHAPE_PARAMS = ["R_mm", "H_mm", "twist_deg", "strut_d_mm", "cable_d_mm"]
 MASS_PARAM = "mass_printed_g"
 PARAM_NAMES = SHAPE_PARAMS + [MASS_PARAM]
 OBJ1, OBJ2, MASS = "t180", "e_reb_mJ", "mass_g"
+OBJ2_RATIOS = "e_rebound"
 
 # The sixth parameter, and why the campaign needs it.  ``e_reb_mJ`` is an
 # absolute energy, ``e_rebound * m * g * h``, so it is proportional to the
@@ -105,6 +117,75 @@ PARAMETERS = [
      "bounds": [MASS_TARGET_G - MASS_SCATTER_G, MASS_TARGET_G + MASS_SCATTER_G]},
 ]
 
+# --- ``--space ratios``: the Route 1 scale-free re-parameterization -------
+# The slab space above carries mass as a sixth parameter, which is right for
+# PR #102 (mass there is a genuinely free print-scale axis with measured
+# scatter) and wrong here: the sim is deterministic and the constant-mass
+# projection makes mass a function of shape, so the six coordinates are
+# degenerate (every point shares its projected article with a one-parameter
+# family of others) and the slab is exploitable as a gradient.  The fix
+# recommended in the 2026-08-22 review comment is to search *shape* directly:
+# the four dimensionless ratios below, with the single overall scale solved
+# in closed form by ``pr102_mass_model`` so the printed mass equals
+# ``MASS_TARGET_G`` exactly on every evaluation.  Mass never enters the
+# search space, ``e_reb_mJ`` and ``e_rebound`` then differ by the constant
+# ``m* g h``, and the second objective is the dimensionless ``e_rebound``.
+#
+# Ratio bounds are the extremes the PR #35 box can express (60/40 to 110/25
+# for H/R, and so on).  The image of that box in ratio space is not a box,
+# so this search space contains shape combinations the base box could only
+# reach at a different overall size; on the constant-mass manifold overall
+# size is not a design choice, so those are legitimate candidates rather
+# than extrapolations.  What the base box cannot police any more is
+# printability, so the projected article's cable diameter (TPU
+# self-bridging floor, 3.0 mm) and envelope (250 cm^3) become explicit Ax
+# outcome constraints instead of silent box implications.
+RATIO_PARAMS = ["H_over_R", "H_over_strut_d", "cable_over_strut_d", "twist_deg"]
+RATIO_NOMINAL_H_MM = 85.0     # arbitrary pre-projection size; the scale solve removes it
+RATIO_PARAMETERS = [
+    {"name": "H_over_R", "type": "range", "bounds": [1.5, 4.4],
+     "value_type": "float"},
+    {"name": "H_over_strut_d", "type": "range", "bounds": [5.0, 110.0 / 6.0],
+     "value_type": "float"},
+    {"name": "cable_over_strut_d", "type": "range", "bounds": [0.25, 5.5 / 6.0],
+     "value_type": "float"},
+    {"name": "twist_deg", "type": "range", "bounds": [40.0, 80.0],
+     "value_type": "float"},
+]
+CABLE_PRINT_FLOOR_MM = 3.0    # Edison 25c1c897 TPU self-bridging threshold
+ENVELOPE_MAX_CM3 = 250.0      # PR #35 build-volume cap
+
+
+def ratios_to_base(params: dict) -> dict:
+    """Shape ratios -> base coordinates at the nominal pre-projection size."""
+    H = RATIO_NOMINAL_H_MM
+    sd = H / float(params["H_over_strut_d"])
+    return {"R_mm": H / float(params["H_over_R"]), "H_mm": H,
+            "twist_deg": float(params["twist_deg"]), "strut_d_mm": sd,
+            "cable_d_mm": float(params["cable_over_strut_d"]) * sd}
+
+
+def base_to_ratios(params: dict) -> dict:
+    return {"H_over_R": float(params["H_mm"]) / float(params["R_mm"]),
+            "H_over_strut_d": float(params["H_mm"]) / float(params["strut_d_mm"]),
+            "cable_over_strut_d": (float(params["cable_d_mm"])
+                                   / float(params["strut_d_mm"])),
+            "twist_deg": float(params["twist_deg"])}
+
+
+def space_config(space: str) -> dict:
+    """Everything that differs between the two search spaces, in one place."""
+    if space == "slab6":
+        return {"parameters": PARAMETERS, "param_names": PARAM_NAMES,
+                "obj2": OBJ2, "outcome_constraints": None}
+    if space == "ratios":
+        return {"parameters": RATIO_PARAMETERS, "param_names": RATIO_PARAMS,
+                "obj2": OBJ2_RATIOS,
+                "outcome_constraints": [
+                    f"cable_d_print_mm >= {CABLE_PRINT_FLOOR_MM}",
+                    f"envelope_cm3 <= {ENVELOPE_MAX_CM3}"]}
+    raise ValueError(f"unknown space {space!r}")
+
 # Hypervolume reference point.  Derived rather than typed in: the worst
 # value each objective takes over the nine printed articles, scored in
 # simulation and inflated 5 %, so every subsequent design contributes.  It
@@ -113,10 +194,30 @@ PARAMETERS = [
 # score a larger hypervolume for it, which is exactly the comparison the
 # repeats exist to make.
 REF_INFLATION = 1.05
-_REF_CACHE: dict[bool, np.ndarray] = {}
+_REF_CACHE: dict[tuple, np.ndarray] = {}
 
 
-def evaluate(params: dict, *, solid: bool = False) -> dict:
+def evaluate(params: dict, *, solid: bool = False,
+             space: str = "slab6") -> dict:
+    if space == "ratios":
+        base = ratios_to_base(params)
+        res = drop_tower_sim.evaluate_pr102(base, target_mass_g=MASS_TARGET_G,
+                                            solid_mass=solid)
+        scale = float(res.get("print_scale", float("nan")))
+        r_print = base["R_mm"] * scale
+        h_print = base["H_mm"] * scale
+        cable_print = base["cable_d_mm"] * scale
+        envelope = math.pi * r_print ** 2 * h_print / 1000.0
+        out = {OBJ1: float(res["t180"]), OBJ2_RATIOS: float(res["e_rebound"]),
+               OBJ2: float(res["e_reb_mJ"]), MASS: float(res["mass_printed_g"]),
+               "print_scale": scale,
+               "R_print_mm": r_print, "H_print_mm": h_print,
+               "strut_d_print_mm": base["strut_d_mm"] * scale,
+               "cable_d_print_mm": cable_print, "envelope_cm3": envelope}
+        out["feasible"] = bool(np.isfinite(out[OBJ1])
+                               and cable_print >= CABLE_PRINT_FLOOR_MM
+                               and envelope <= ENVELOPE_MAX_CM3)
+        return out
     res = drop_tower_sim.evaluate_pr102(params, solid_mass=solid)
     return {OBJ1: float(res["t180"]), OBJ2: float(res["e_reb_mJ"]),
             MASS: float(res["mass_printed_g"])}
@@ -145,14 +246,25 @@ def sobol_batch_params() -> list[dict]:
     return out
 
 
-def reference_point(solid: bool = False) -> np.ndarray:
-    """Seed-independent hypervolume reference, from the printed articles."""
-    if solid not in _REF_CACHE:
-        scored = [evaluate(p, solid=solid) for p in sobol_batch_params()]
+def reference_point(solid: bool = False, space: str = "slab6") -> np.ndarray:
+    """Seed-independent hypervolume reference, from the printed articles.
+
+    In the ratio space the nine articles enter as their (scale-invariant)
+    shape ratios and are all projected onto the single ``MASS_TARGET_G``
+    manifold, and the second axis is the dimensionless ``e_rebound``.
+    """
+    key = (solid, space)
+    if key not in _REF_CACHE:
+        obj2 = space_config(space)["obj2"]
+        if space == "ratios":
+            seeds = [base_to_ratios(p) for p in sobol_batch_params()]
+        else:
+            seeds = sobol_batch_params()
+        scored = [evaluate(p, solid=solid, space=space) for p in seeds]
         worst = np.array([max(r[OBJ1] for r in scored),
-                          max(r[OBJ2] for r in scored)], dtype=float)
-        _REF_CACHE[solid] = REF_INFLATION * worst
-    return _REF_CACHE[solid]
+                          max(r[obj2] for r in scored)], dtype=float)
+        _REF_CACHE[key] = REF_INFLATION * worst
+    return _REF_CACHE[key]
 
 
 def hypervolume_2d(points: np.ndarray, ref: np.ndarray) -> float:
@@ -169,17 +281,21 @@ def hypervolume_2d(points: np.ndarray, ref: np.ndarray) -> float:
     return float(hv)
 
 
-def seed_tag(model: str, init: str, seed: int, solid: bool = False) -> str:
-    return f"{model}_{init}_seed{seed}" + ("_solid" if solid else "")
+def seed_tag(model: str, init: str, seed: int, solid: bool = False,
+             space: str = "slab6") -> str:
+    prefix = f"{model}_{init}" if space == "slab6" else f"{model}_{space}_{init}"
+    return f"{prefix}_seed{seed}" + ("_solid" if solid else "")
 
 
 def run_seed(seed: int, rounds: int, batch_size: int, model: str,
              outdir: Path, solid: bool = False,
-             init: str = "sobol") -> pd.DataFrame:
+             init: str = "sobol", space: str = "slab6") -> pd.DataFrame:
     from ax.modelbridge.factory import Models
     from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
     from ax.service.ax_client import AxClient, ObjectiveProperties
 
+    cfg = space_config(space)
+    obj2 = cfg["obj2"]
     step_model = Models.SAASBO if model == "saasbo" else Models.BOTORCH_MODULAR
     steps = []
     if init == "sobol":
@@ -191,21 +307,43 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
             model=Models.SOBOL, num_trials=batch_size,
             min_trials_observed=batch_size, max_parallelism=batch_size,
             model_kwargs={"seed": seed}))
+    # The acquisition optimization dominates the wall-clock (AxClient
+    # generates the batch one q=1 gen call at a time, each a full multi-start
+    # optimization; with the ratio space's two outcome constraints a round of
+    # 9 costs about 300 s at the Ax defaults of 20 restarts x 1024 raw
+    # samples).  The surface is 4-6 dimensional and smooth, so a lighter
+    # multi-start loses little; this cuts a model round to tens of seconds.
+    gen_options = {"model_gen_options": {"optimizer_kwargs": {
+        "num_restarts": 8, "raw_samples": 128}}}
     steps.append(GenerationStep(model=step_model, num_trials=-1,
-                                max_parallelism=batch_size))
+                                max_parallelism=batch_size,
+                                model_gen_kwargs=gen_options))
     gs = GenerationStrategy(steps=steps)
     ax_client = AxClient(generation_strategy=gs, random_seed=seed,
                          verbose_logging=False)
+    # keep the Ax metric list lean: every metric named here gets its own GP
+    # fit per round, and the CSV keeps all of evaluate()'s columns regardless
+    tracking = [MASS] if space == "slab6" else []
     ax_client.create_experiment(
-        name=f"t3_prism_sim_campaign_{init}_seed{seed}",
-        parameters=PARAMETERS,
+        name=f"t3_prism_sim_campaign_{space}_{init}_seed{seed}",
+        parameters=cfg["parameters"],
         objectives={OBJ1: ObjectiveProperties(minimize=True),
-                    OBJ2: ObjectiveProperties(minimize=True)},
-        tracking_metric_names=[MASS],
+                    obj2: ObjectiveProperties(minimize=True)},
+        tracking_metric_names=tracking,
+        outcome_constraints=cfg["outcome_constraints"],
     )
+
+    # keys Ax gets back on complete_trial: objectives, constraint metrics,
+    # tracking metrics; the rest of evaluate()'s columns are CSV-only
+    ax_keys = {OBJ1, obj2, *tracking}
+    if cfg["outcome_constraints"]:
+        ax_keys |= {"cable_d_print_mm", "envelope_cm3"}
 
     rows = []
     if init == "printed":
+        if space == "ratios":
+            raise ValueError("--init printed reproduces PR #102's slab-space "
+                             "round 0 and is not defined on the ratio manifold")
         # PR #102's own round 0: the nine articles that were printed,
         # attached as completed trials.  Identical for every seed.
         for params in sobol_batch_params():
@@ -236,41 +374,56 @@ def run_seed(seed: int, rounds: int, batch_size: int, model: str,
         t0 = time.time()
         parameterizations, _ = ax_client.get_next_trials(batch_size)
         for idx, params in parameterizations.items():
-            res = evaluate(dict(params), solid=solid)
+            res = evaluate(dict(params), solid=solid, space=space)
             rows.append({"seed": seed, "round": rnd, "trial": idx,
                          **{k: float(v) for k, v in params.items()},
                          **dict(res)})
-            ax_client.complete_trial(trial_index=idx, raw_data=res)
+            ax_client.complete_trial(
+                trial_index=idx,
+                raw_data={k: v for k, v in res.items() if k in ax_keys})
         print(f"  seed {seed} round {rnd}: {batch_size} designs, "
               f"{time.time() - t0:.1f} s", flush=True)
 
     df = pd.DataFrame(rows)
-    ref = reference_point(solid)
-    obj = df[[OBJ1, OBJ2]].to_numpy(dtype=float)
-    df["hv"] = [hypervolume_2d(obj[: i + 1], ref) for i in range(len(obj))]
-    df["best_t180"] = df[OBJ1].cummin()
-    df["best_e_reb_mJ"] = df[OBJ2].cummin()
+    ref = reference_point(solid, space)
+    obj = df[[OBJ1, obj2]].to_numpy(dtype=float)
+    # only printable designs count toward the front and the running bests;
+    # in the slab space every design is feasible and the mask is all-true
+    feas = (df["feasible"].to_numpy(dtype=bool) if "feasible" in df
+            else np.ones(len(df), dtype=bool))
+    masked = np.where(feas[:, None], obj, np.inf)
+    df["hv"] = [hypervolume_2d(masked[: i + 1], ref) for i in range(len(obj))]
+    df["best_t180"] = pd.Series(np.where(feas, df[OBJ1], np.inf)).cummin()
+    df["best_e_reb_mJ"] = pd.Series(np.where(feas, df[OBJ2], np.inf)).cummin()
+    if space == "ratios":
+        df["best_e_rebound"] = pd.Series(
+            np.where(feas, df[OBJ2_RATIOS], np.inf)).cummin()
 
     outdir.mkdir(parents=True, exist_ok=True)
-    tag = seed_tag(model, init, seed, solid)
+    tag = seed_tag(model, init, seed, solid, space)
     df.to_csv(outdir / f"pr102_sim_bo_{tag}.csv", index=False, float_format="%.6g")
-    plot_seed(df, outdir / f"pr102_sim_bo_{tag}.png", seed, model, init=init)
+    plot_seed(df, outdir / f"pr102_sim_bo_{tag}.png", seed, model, init=init,
+              space=space)
     return df
 
 
 def _run_seed_worker(job: tuple) -> str:
     """multiprocessing entry point; returns the tag it wrote."""
-    seed, rounds, batch_size, model, outdir, solid, init = job
+    seed, rounds, batch_size, model, outdir, solid, init, space = job
     t0 = time.time()
     run_seed(seed, rounds, batch_size, model, Path(outdir), solid=solid,
-             init=init)
-    tag = seed_tag(model, init, seed, solid)
+             init=init, space=space)
+    tag = seed_tag(model, init, seed, solid, space)
     print(f"seed {seed} done in {time.time() - t0:.1f} s", flush=True)
     return tag
 
 
 def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
-              init: str = "sobol") -> None:
+              init: str = "sobol", space: str = "slab6") -> None:
+    obj2 = space_config(space)["obj2"]
+    obj2_best = "best_e_rebound" if space == "ratios" else "best_e_reb_mJ"
+    obj2_label = ("e_rebound (simulated, minimize)" if space == "ratios"
+                  else "e_reb_mJ (simulated, minimize)")
     fig, (ax_c, ax_b, ax_p) = plt.subplots(1, 3, figsize=(16, 4.2), dpi=200)
     ax_c.plot(df.index + 1, df["hv"], color="#2a78d6", lw=1.8)
     ax_c.set_xlabel("simulated design")
@@ -295,15 +448,22 @@ def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
     ax_b.tick_params(axis="y", labelcolor="#2a78d6")
     ax_b.grid(alpha=0.25, lw=0.5)
     ax_e = ax_b.twinx()
-    ax_e.plot(x, df["best_e_reb_mJ"], color="#c0392b", lw=1.8, ls="--",
-              label="best e_reb_mJ")
-    ax_e.set_ylabel("running-best e_reb_mJ (mJ)", color="#c0392b")
+    ax_e.plot(x, df[obj2_best], color="#c0392b", lw=1.8, ls="--",
+              label=f"best {obj2}")
+    ax_e.set_ylabel(f"running-best {obj2}", color="#c0392b")
     ax_e.tick_params(axis="y", labelcolor="#c0392b")
     ax_b.set_title("running best, per objective", fontsize=10)
 
-    sc = ax_p.scatter(df[OBJ1], df[OBJ2], c=df["round"], cmap="viridis", s=32)
+    sc = ax_p.scatter(df[OBJ1], df[obj2], c=df["round"], cmap="viridis", s=32)
+    if "feasible" in df:
+        bad = ~df["feasible"].astype(bool)
+        if bad.any():
+            ax_p.scatter(df.loc[bad, OBJ1], df.loc[bad, obj2], s=70,
+                         facecolors="none", edgecolors="#c0392b", lw=1.0,
+                         label="unprintable")
+            ax_p.legend(fontsize=7)
     ax_p.set_xlabel("t180 (simulated, minimize)")
-    ax_p.set_ylabel("e_reb_mJ (simulated, minimize)")
+    ax_p.set_ylabel(obj2_label)
     ax_p.set_title("objective space, coloured by round", fontsize=10)
     ax_p.grid(alpha=0.25, lw=0.5)
     fig.colorbar(sc, ax=ax_p, label="round")
@@ -312,25 +472,30 @@ def plot_seed(df: pd.DataFrame, path: Path, seed: int, model: str,
     plt.close(fig)
 
 
-def aggregate(outdir: Path, model: str, init: str = "sobol") -> None:
-    files = sorted(outdir.glob(f"pr102_sim_bo_{model}_{init}_seed*.csv"),
+def aggregate(outdir: Path, model: str, init: str = "sobol",
+              space: str = "slab6") -> None:
+    obj2 = space_config(space)["obj2"]
+    obj2_best = "best_e_rebound" if space == "ratios" else "best_e_reb_mJ"
+    prefix = (f"pr102_sim_bo_{model}_{init}" if space == "slab6"
+              else f"pr102_sim_bo_{model}_{space}_{init}")
+    files = sorted(outdir.glob(f"{prefix}_seed*.csv"),
                    key=lambda f: int(f.stem.split("seed")[-1].split("_")[0]))
     files = [f for f in files if "_solid" not in f.name]
     if not files:
-        print(f"no per-seed CSVs for {model}/{init} in {outdir}")
+        print(f"no per-seed CSVs for {model}/{space}/{init} in {outdir}")
         return
     frames = [pd.read_csv(f) for f in files]
     n = min(len(f) for f in frames)
     hv = np.vstack([f["hv"].to_numpy()[:n] for f in frames])
     t180 = np.vstack([f["best_t180"].to_numpy()[:n] for f in frames])
-    ereb = np.vstack([f["best_e_reb_mJ"].to_numpy()[:n] for f in frames])
+    ereb = np.vstack([f[obj2_best].to_numpy()[:n] for f in frames])
 
     fig, (ax_h, ax_t, ax_e, ax_0) = plt.subplots(1, 4, figsize=(20.5, 4.2),
                                                  dpi=200)
     x = np.arange(1, n + 1)
     for ax, arr, label in ((ax_h, hv, "dominated hypervolume"),
                            (ax_t, t180, "running-best t180"),
-                           (ax_e, ereb, "running-best e_reb_mJ (mJ)")):
+                           (ax_e, ereb, f"running-best {obj2}")):
         for row in arr:
             ax.plot(x, row, color="#9aa0a6", lw=0.8, alpha=0.7)
         mean, sd = arr.mean(axis=0), arr.std(axis=0)
@@ -349,33 +514,38 @@ def aggregate(outdir: Path, model: str, init: str = "sobol") -> None:
     cmap = plt.get_cmap("tab10")
     for i, f in enumerate(frames):
         r0 = f[f["round"] == 0]
-        ax_0.scatter(r0[OBJ1], r0[OBJ2], s=26, alpha=0.8,
+        ax_0.scatter(r0[OBJ1], r0[obj2], s=26, alpha=0.8,
                      color=cmap(i % 10), label=f"seed {int(f['seed'].iloc[0])}")
     ax_0.set_xlabel("t180 (simulated)")
-    ax_0.set_ylabel("e_reb_mJ (simulated)")
+    ax_0.set_ylabel(f"{obj2} (simulated)")
     ax_0.set_title("round 0, per seed", fontsize=10)
     ax_0.grid(alpha=0.25, lw=0.5)
     ax_0.legend(fontsize=6, ncol=2)
 
     init_label = ("printed Sobol batch, shared" if init == "printed"
                   else "from scratch, per-seed Sobol")
+    space_label = ("constant-mass shape ratios" if space == "ratios"
+                   else "base box + mass slab")
     fig.suptitle(f"Simulation-only T-3_01 campaign, {len(frames)} seeds "
-                 f"({model}, {init_label})", fontsize=11)
+                 f"({model}, {init_label}, {space_label})", fontsize=11)
     fig.tight_layout()
-    fig.savefig(outdir / f"pr102_sim_bo_{model}_{init}_aggregate.png",
-                bbox_inches="tight")
+    fig.savefig(outdir / f"{prefix}_aggregate.png", bbox_inches="tight")
     plt.close(fig)
 
-    summary = pd.concat(frames).groupby("seed").agg(
-        final_hv=("hv", "max"), best_t180=(OBJ1, "min"),
-        best_e_reb_mJ=(OBJ2, "min"), n=("trial", "count"))
-    summary.to_csv(outdir / f"pr102_sim_bo_{model}_{init}_summary.csv",
-                   float_format="%.6g")
+    all_rows = pd.concat(frames)
+    aggs = {"final_hv": ("hv", "max"), "best_t180": ("best_t180", "min"),
+            "best_e_reb_mJ": ("best_e_reb_mJ", "min"),
+            "n": ("trial", "count")}
+    if space == "ratios":
+        aggs["best_e_rebound"] = ("best_e_rebound", "min")
+        aggs["n_feasible"] = ("feasible", "sum")
+    summary = all_rows.groupby("seed").agg(**aggs)
+    summary.to_csv(outdir / f"{prefix}_summary.csv", float_format="%.6g")
     print(summary.to_string())
     cv = summary["final_hv"].std() / summary["final_hv"].mean()
     print(f"final hypervolume across seeds: mean {summary['final_hv'].mean():.4g}, "
           f"sd {summary['final_hv'].std():.4g} ({100 * cv:.2f} % of the mean)")
-    print(f"Wrote {outdir}/pr102_sim_bo_{model}_{init}_aggregate.png and _summary.csv")
+    print(f"Wrote {outdir}/{prefix}_aggregate.png and _summary.csv")
 
 
 def main(argv=None):
@@ -391,6 +561,12 @@ def main(argv=None):
                     help="sobol: each repeat draws its own seeded round 0 "
                          "(from scratch).  printed: every repeat starts from "
                          "the nine physically printed articles, as PR #102 did")
+    ap.add_argument("--space", choices=("slab6", "ratios"), default="ratios",
+                    help="ratios (default): the Route 1 scale-free shape "
+                         "ratios at exactly constant printed mass, objectives "
+                         "t180 + e_rebound, printability as outcome "
+                         "constraints.  slab6: the earlier PR #102-style six "
+                         "parameters incl. the mass slab, kept for comparison")
     ap.add_argument("--jobs", type=int, default=1,
                     help="repeats to run concurrently (one process per seed)")
     ap.add_argument("--solid", action="store_true",
@@ -401,14 +577,15 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     if args.aggregate:
-        aggregate(args.outdir, args.model, args.init)
+        aggregate(args.outdir, args.model, args.init, args.space)
         return 0
 
     seeds = args.seeds if args.seeds else [args.seed]
     jobs = [(seed, args.rounds, args.batch_size, args.model, str(args.outdir),
-             args.solid, args.init) for seed in seeds]
+             args.solid, args.init, args.space) for seed in seeds]
     print(f"{len(seeds)} repeat(s): {args.rounds} rounds x {args.batch_size} "
-          f"designs, {args.model}, init={args.init}, jobs={args.jobs}")
+          f"designs, {args.model}, init={args.init}, space={args.space}, "
+          f"jobs={args.jobs}")
 
     t0 = time.time()
     if args.jobs > 1 and len(jobs) > 1:
@@ -427,7 +604,7 @@ def main(argv=None):
     print(f"{len(seeds)} repeat(s) in {time.time() - t0:.1f} s")
 
     if len(seeds) > 1:
-        aggregate(args.outdir, args.model, args.init)
+        aggregate(args.outdir, args.model, args.init, args.space)
     return 0
 
 

@@ -39,6 +39,9 @@ on:
       init:
         description: "sobol (each leg draws its own round 0) or printed (PR #102's shared round 0)"
         default: "sobol"
+      space:
+        description: "ratios (constant-printed-mass shape ratios, no mass parameter) or slab6 (PR #102's six parameters)"
+        default: "ratios"
       seeds:
         description: "JSON list of seeds, e.g. [0,1,2,3,4,5,6,7,8,9]"
         default: "[0,1,2,3,4,5,6,7,8,9]"
@@ -76,6 +79,7 @@ jobs:
           python pr102_sim_campaign.py \
             --model "${{ github.event.inputs.model }}" \
             --init "${{ github.event.inputs.init }}" \
+            --space "${{ github.event.inputs.space }}" \
             --seed "${{ matrix.seed }}" \
             --rounds "${{ github.event.inputs.rounds }}" \
             --batch-size "${{ github.event.inputs.batch_size }}" \
@@ -119,6 +123,7 @@ jobs:
           python pr102_sim_campaign.py --aggregate \
             --model "${{ github.event.inputs.model }}" \
             --init "${{ github.event.inputs.init }}" \
+            --space "${{ github.event.inputs.space }}" \
             --outdir ../aggregated
 
       - uses: actions/upload-artifact@v4

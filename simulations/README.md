@@ -176,21 +176,31 @@ python simulations/pr102_correlation.py
 # Parallel seed matrix for Actions:
 #   simulations/workflows-staged/sim-bo-pr102-matrix.yml (move into
 #   .github/workflows/ to run it; this PR's app cannot write there).
+# --space ratios (the default) is the 2026-08-22 re-parameterization: no
+# mass parameter; the four scale-free shape ratios are searched, the overall
+# scale is solved so printed mass is exactly 20.23 g, the second objective is
+# the dimensionless e_rebound, and printability (printed cable >= 3.0 mm,
+# envelope <= 250 cm^3) enters as Ax outcome constraints.  --space slab6
+# reproduces the earlier PR #102-style six-parameter space.
 python simulations/pr102_sim_campaign.py --model botorch \
-    --seeds 0 1 2 3 4 5 6 7 8 9 --rounds 3 --jobs 4
-# -> outputs/pr102_sim_bo_<model>_<init>_seed<k>.{csv,png}
-# -> outputs/pr102_sim_bo_<model>_<init>_aggregate.png + _summary.csv
+    --seeds 0 1 2 3 4 5 6 7 8 9 --rounds 4 --jobs 4
+# -> outputs/pr102_sim_bo_<model>[_ratios]_<init>_seed<k>.{csv,png}
+# -> outputs/pr102_sim_bo_<model>[_ratios]_<init>_aggregate.png + _summary.csv
 # Baselines and a reference optimum for that campaign (PR comment 5376310081).
 #   The reference is a 65,536-design Sobol sweep plus a Nelder-Mead polish of
 #   21 weightings: the ceiling every trace is drawn against.  The baselines
 #   run at the campaign's own 36-design budget over the same ten seeds.
-python simulations/pr102_baselines.py --reference --jobs 4      # ~21 min
+# Baselines take the same --space flag; ratio-space files carry a _ratios
+# suffix, and unprintable projections are excluded from fronts/hypervolumes
+# but kept in the CSVs.
+python simulations/pr102_baselines.py --reference --jobs 4
 python simulations/pr102_baselines.py \
     --strategies random sobol lhs heuristic --seeds 0 1 2 3 4 5 6 7 8 9 --jobs 4
-# -> outputs/pr102_reference_cloud.csv.gz  (all 68,944 evaluations)
-# -> outputs/pr102_reference_front.csv + _summary.csv + _front.png
-# -> outputs/pr102_baseline_<strategy>_seed<k>.csv  (every evaluation)
-# -> outputs/pr102_baselines_comparison.png, _objective_space.png, _summary.csv
+# -> outputs/pr102_reference_cloud[_ratios].csv.gz  (every evaluation)
+# -> outputs/pr102_reference_front[_ratios].csv + _summary + _front.png
+# -> outputs/pr102_baseline_<strategy>[_ratios]_seed<k>.csv
+# -> outputs/pr102_baselines_comparison[_ratios].png, _objective_space,
+#    _summary
 ```
 
 ## Matching the PR #102 bench campaign in simulation
