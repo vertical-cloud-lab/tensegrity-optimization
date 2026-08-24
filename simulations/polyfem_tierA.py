@@ -69,6 +69,21 @@ def _viscosities() -> tuple[float, float]:
     return ETA_PLA * g_pla / omega, TAN_DELTA_TPU * g_tpu / omega
 
 
+def _analytic_volumes_m3(design) -> tuple[float, float]:
+    """(V_pla, V_tpu) of the meshed cylinder primitives, analytically."""
+    from tprism_geometry import CABLES, STRUTS, tprism_nodes
+    nodes = tprism_nodes(radius=design.radius_m, height=design.height_m,
+                         twist=design.twist_rad)
+    v_pla = sum(math.pi * (design.strut_diameter_m / 2) ** 2
+                * float(np.linalg.norm(nodes[a] - nodes[b]))
+                for a, b in STRUTS)
+    inset = design.strut_diameter_m * 0.6
+    v_tpu = sum(math.pi * (design.tendon_diameter_m / 2) ** 2
+                * max(float(np.linalg.norm(nodes[a] - nodes[b])) - 2 * inset, 1e-4)
+                for a, b in CABLES)
+    return v_pla, v_tpu
+
+
 def _mesh_masses_m3(msh: Path) -> tuple[float, float]:
     """(V_pla, V_tpu) in m^3 from the physical-volume tags of the mesh."""
     import meshio
@@ -128,8 +143,11 @@ def tierA_one(job: tuple) -> dict:
         return {"print_id": pid, "ok": False, "err": f"mesh: {last_err}"[:300]}
 
     # densities solved so the meshed article weighs what the scale said;
-    # TPU at its printed density, PLA absorbs the joint/housing share
-    v_pla, v_tpu = _mesh_masses_m3(msh)
+    # TPU at its printed density, PLA absorbs the joint/housing share.
+    # Volumes are the analytic cylinder volumes of the meshed primitives
+    # (meshio chokes on some gmsh-4.1 fragment output, and the welded
+    # overlaps are a few percent of the totals).
+    v_pla, v_tpu = _analytic_volumes_m3(design)
     rho_tpu = 1200.0 * 0.986
     rho_pla = max((float(row["mass_g"]) * 1e-3 - rho_tpu * v_tpu), 1e-4) / v_pla
     psi_pla, psi_tpu = _viscosities()
@@ -144,6 +162,9 @@ def tierA_one(job: tuple) -> dict:
     for mat in cfg["materials"]:
         mat["psi"] = psi_tpu if mat["id"] == 2 else psi_pla
         mat["phi"] = 0.0
+    # the 5.3 m/s impact steps are much harder than the settle-under-gravity
+    # runs this JSON was written for
+    cfg["solver"]["nonlinear"]["max_iterations"] = 200
     cfg["initial_conditions"] = {
         "velocity": [{"id": 1, "value": [0.0, -IMPACT_V_MPS, 0.0]},
                      {"id": 2, "value": [0.0, -IMPACT_V_MPS, 0.0]}]}
