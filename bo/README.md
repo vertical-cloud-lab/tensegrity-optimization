@@ -387,6 +387,80 @@ Files, same registered-still grammar as every other figure set here (all
 - `t3-prism-bo-round2-parity-evolution.csv`: the full table (measured,
   before, after, 1 sd each, provenance flags per article and objective).
 
+### LOOCV evolution (held-out skill, initialization data vs all data)
+
+The corrected form of the parity-evolution request (sgbaird, PR #102): both
+states are leave-one-out predictions, so the pair of plots is an
+out-of-sample report card before and after the round-2 data rather than an
+in-sample refit. The start state runs LOOCV over the initialization dataset
+alone: the eight tested round-1 articles (seven mapped Sobol specs plus the
+S0 reference `bpx68c`; `amdjwm` stays out, unmapped), each predicted by a
+model refit without it on the other seven. The end state is LOOCV over all
+collected data: 17 articles, each predicted by a model refit on the other
+16. The model class, 6-parameter space, per-fold NUTS refit
+(`refit_on_cv=True`) and MCMC settings are identical in the two states, so
+a change in held-out skill is attributable to the added data.
+
+    python bo/t3_prism_bo_diagnostics.py --loocv-evolution              # 8 init folds, ~5 min
+    python bo/t3_prism_bo_diagnostics.py --loocv-evolution --plot-only  # redraw from the CSV
+
+Two provenance rules keep the comparison clean:
+
+- The end state is reused verbatim from the committed 17-fold LOOCV
+  (`t3-prism-bo-round2-loocv.csv`, commit `83e137a`), so this figure and
+  the LOOCV animation set quote identical numbers. Re-run
+  `t3_prism_bo_diagnostics.py --round 2` first if the ingested data ever
+  changes; the compute step raises if the two states' observed values
+  disagree.
+- The start state is not the old committed round-1 LOOCV
+  (`t3-prism-bo-round1-loocv.csv`): that run predates `ajhby6` and used
+  the 5-D space with mass as a tracking metric. Holding the model class
+  fixed matters more here than matching the historical artifact, so the
+  start state refits the current 6-D formulation on the eight round-1
+  articles.
+
+What the committed run says, per objective (LOOCV rank correlation and
+MAPE; the left side of each arrow is the initialization state, n = 8, the
+right side is all data, n = 17):
+
+- **Rebound energy: the model learned.** Rank corr +0.24 to +0.70, MAPE
+  29.3% to 23.6%. The improvement is not just the wider round-2 spread
+  being easier to rank: restricted to the same eight round-1 articles, the
+  all-data folds cut the median held-out residual from 2.37 to 1.78 mJ and
+  raise the within-round-1 rank corr from +0.24 to +0.55.
+- **t180: the added batch did not transfer.** Rank corr +0.76 to +0.60
+  over the growing pool, and on the same eight round-1 articles the
+  held-out median residual worsens from 0.015 to 0.036 while their
+  internal ranking collapses (+0.76 to -0.10; seven of the eight measured
+  values sit within 0.07 of one another, so that ordering is fragile).
+  This is the base-coordinate representation shift the Edison round-2
+  review flagged: the r2d2c batch measured systematically stiffer at
+  comparable coordinates, so folds that include it pull the round-1
+  backfits upward. Rank correlations at n = 8 swing by several tenths
+  between NUTS realizations, so read directions, not decimals.
+
+Files (registered stills, 3300 x 2100 at 300 dpi, frames of one figure, no
+tight bounding box):
+
+- `figures/t3-prism-bo-loocv-evolution-start.png`: the initialization-only
+  LOOCV parity, the eight articles as orange diamonds with +/- 1 sd bars.
+- `figures/t3-prism-bo-loocv-evolution-shift.png`: the same eight articles
+  re-predicted under the all-data folds, ghost diamonds and dashed risers
+  marking the initialization values; the round-2 articles are not on the
+  panel yet.
+- `figures/t3-prism-bo-loocv-evolution-final.png`: the all-data LOOCV
+  parity, all 17 articles as open circles, print IDs in.
+- `figures/t3-prism-bo-loocv-evolution.mp4` (+ `.gif`): the animated
+  version. Beats: hold on the initialization LOOCV, staggered vertical
+  travel with diamond-to-circle handoff, the nine round-2 articles fading
+  in as their own beat, hold, clean, rest with IDs.
+- `t3-prism-bo-loocv-evolution.csv`: the merged table (measured +/- SEM,
+  initialization prediction +/- 1 sd where that state exists, all-data
+  prediction +/- 1 sd, per article and objective).
+- `t3-prism-bo-loocv-evolution-init.csv` + `-diagnostics.json`: the raw
+  initialization-only folds, and both states' Ax cross-validation
+  diagnostics.
+
 ## Drop-count sensitivity (shorter round-2 sessions)
 
 Round 1 ran ~101 drops per specimen. When session time is short, fewer drops

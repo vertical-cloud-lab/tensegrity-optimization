@@ -51,6 +51,19 @@ pinned version (ax-platform 0.5.0) rather than on the template:
    the provenance of each prediction. Output is three registered stills plus
    a GIF/MP4, same grammar and pixel geometry as the campaign figure sets.
 
+5. **LOOCV evolution (held-out skill before vs after the round-2 data).**
+   ``--loocv-evolution`` is the out-of-sample counterpart of section 4: two
+   parity panels (one per objective, +/- 1 sd bars) where both states are
+   leave-one-out predictions and only the training pool changes. The start
+   state is LOOCV over the initialization articles alone (the eight tested
+   round-1 articles, each predicted by a model refit on the other seven);
+   the end state is LOOCV over all collected data (17 articles, each
+   predicted by a model refit on the other 16, reused verbatim from the
+   committed 17-fold run so this figure and the LOOCV set quote the same
+   numbers). The model class, parameterization and MCMC settings are held
+   fixed across the two states, so any change in held-out skill is
+   attributable to the added data. See the section-5 comment below.
+
 Usage (from the repo root)::
 
     pip install ax-platform==0.5.0 pandas matplotlib
@@ -60,6 +73,8 @@ Usage (from the repo root)::
     python bo/t3_prism_bo_diagnostics.py --plot-only      # restyle, no refit
     python bo/t3_prism_bo_diagnostics.py --parity-evolution            # figure 4
     python bo/t3_prism_bo_diagnostics.py --parity-evolution --plot-only
+    python bo/t3_prism_bo_diagnostics.py --loocv-evolution             # figure 5
+    python bo/t3_prism_bo_diagnostics.py --loocv-evolution --plot-only
 
 By default the model is refit from the committed AxClient snapshot
 (``t3-prism-bo-ax-client-round1.json``), so the diagnostics describe the same
@@ -293,7 +308,7 @@ def render_feature_importance(table, out_path, n_articles=None):
 
 
 # ---- 2. leave-one-out cross-validation ----------------------------------
-def run_loocv(model, labels_by_arm, diagnostics_path):
+def run_loocv(model, labels_by_arm, diagnostics_path=None):
     from ax.modelbridge.cross_validation import compute_diagnostics, cross_validate
 
     t0 = time.time()
@@ -325,7 +340,8 @@ def run_loocv(model, labels_by_arm, diagnostics_path):
         name: {k: float(v) for k, v in per_metric.items()}
         for name, per_metric in diagnostics.items()
     }
-    diagnostics_path.write_text(json.dumps(diag_out, indent=2, sort_keys=True) + "\n")
+    if diagnostics_path is not None:
+        diagnostics_path.write_text(json.dumps(diag_out, indent=2, sort_keys=True) + "\n")
     return table, diagnostics
 
 
@@ -1122,6 +1138,548 @@ def render_parity_evolution(table, animate=True, fps=25):
     return stills, out_gif, out_mp4
 
 
+# ---- 5. LOOCV evolution: held-out skill before vs after the round-2 data --
+# The corrected form of the section-4 request (sgbaird on PR #102): both
+# states are LEAVE-ONE-OUT predictions, so the figure is a pair of honest
+# out-of-sample report cards rather than an in-sample refit. Start state:
+# LOOCV over the initialization dataset alone, the eight tested round-1
+# articles (seven mapped Sobol specs + the S0 reference bpx68c; amdjwm
+# stays out, unmapped), each predicted by a model refit without it on the
+# other seven. End state: LOOCV over all collected data, each of the 17
+# articles predicted by a model refit without it on the other 16.
+#
+# Two provenance rules keep the comparison clean:
+#
+# * The model class does not change between states. Both use the round-2
+#   snapshot's 6-parameter formulation (five shape coordinates + weighed
+#   printed mass), the same SAASBO surrogate, the same per-fold NUTS refit
+#   (refit_on_cv=True) and the same MCMC settings. Only the training pool
+#   changes, so a skill difference is attributable to the added data. This
+#   is why the start-state numbers differ from the old committed round-1
+#   LOOCV (t3-prism-bo-round1-loocv.csv): that run predates ajhby6 and used
+#   the 5-D space with mass as a tracking metric.
+# * The end state is reused verbatim from the committed 17-fold LOOCV
+#   (t3-prism-bo-round2-loocv.csv), so this figure and the delivered LOOCV
+#   set quote identical numbers. Re-run the round-2 LOOCV first if the
+#   ingested data ever changes.
+LOOCV_EVO_STEM = "t3-prism-bo-loocv-evolution"
+LOOCV_EVOLUTION_CSV = BO_DIR / f"{LOOCV_EVO_STEM}.csv"
+LOOCV_EVOLUTION_DIAG = BO_DIR / f"{LOOCV_EVO_STEM}-diagnostics.json"
+LOOCV_INIT_CSV = BO_DIR / f"{LOOCV_EVO_STEM}-init.csv"
+LOOCV_ALL_CSV = BO_DIR / "t3-prism-bo-round2-loocv.csv"
+LOOCV_ALL_DIAG = BO_DIR / "t3-prism-bo-round2-loocv-diagnostics.json"
+
+
+def _rank_corr(a, b):
+    """Spearman rank correlation (ties are not a concern on continuous data)."""
+    a, b = np.asarray(a, float), np.asarray(b, float)
+    if len(a) < 3:
+        return float("nan")
+    ra = np.empty(len(a))
+    ra[np.argsort(a)] = np.arange(len(a))
+    rb = np.empty(len(b))
+    rb[np.argsort(b)] = np.arange(len(b))
+    return float(np.corrcoef(ra, rb)[0, 1])
+
+
+def compute_loocv_evolution(args):
+    """LOOCV twice with the model class held fixed, changing only the data.
+
+    Returns ``(table, diag)``: one row per (article, objective) holding the
+    measured value, the initialization-only held-out prediction (NaN for
+    round-2 articles, which do not exist in that state) and the all-data
+    held-out prediction; and the per-state Ax cross-validation diagnostics.
+    """
+    import torch
+    from ax.core.data import Data
+    from ax.service.ax_client import AxClient
+
+    X1, _, labels1, _, _ = load_training_data(args.results, args.design)
+    X2, _, labels2, _, _ = load_round2_training_data()
+    X_all, labels_all = X1 + X2, labels1 + labels2
+    r1_pids = [label.split(" ")[0] for label in labels1]
+    r2_pids = [label.split(" ")[0] for label in labels2]
+
+    exp = AxClient.load_from_json_file(str(ROUND2_SNAPSHOT)).experiment
+    # widen back from the constant-mass generation slab, same as every other
+    # diagnostic here, so the out-of-slab articles stay in the fit
+    exp.search_space = fit_search_space()
+    data_all = exp.fetch_data()
+
+    labels_by_arm = {}
+    for trial in exp.trials.values():
+        arm = trial.arm
+        for x, label in zip(X_all, labels_all):
+            if all(
+                abs(float(arm.parameters[k]) - float(v)) < 1e-6
+                for k, v in x.items()
+            ):
+                labels_by_arm[arm.name] = label.split(" ")[0]
+                break
+    r1_arms = {a for a, p in labels_by_arm.items() if p in set(r1_pids)}
+
+    df = data_all.df
+    data_init = Data(df=df[df["arm_name"].isin(r1_arms)].reset_index(drop=True))
+    print(f"Initialization-only LOOCV: {len(r1_arms)} articles, "
+          f"{len(DESIGN_PARAMS)}-D space, one NUTS refit per fold...")
+    torch.manual_seed(0)
+    np.random.seed(0)
+    model_init = fit_saasbo(
+        exp, data_init, args.cv_mcmc_samples, args.cv_warmup_steps,
+        refit_on_cv=True,
+    )
+    init_table, init_diag_raw = run_loocv(model_init, labels_by_arm)
+    init_table.to_csv(LOOCV_INIT_CSV, index=False, float_format="%.5f")
+    init_diag = {
+        name: {m: float(v) for m, v in per_metric.items()}
+        for name, per_metric in init_diag_raw.items()
+    }
+
+    all_table = pd.read_csv(LOOCV_ALL_CSV)
+    all_diag = json.loads(LOOCV_ALL_DIAG.read_text())
+    print(f"All-data LOOCV: reused from {LOOCV_ALL_CSV.name} "
+          f"({all_table['print_id'].nunique()} articles, committed run)")
+
+    # both states must describe the same ingested measurements
+    merged = init_table.merge(
+        all_table, on=["print_id", "metric"], suffixes=("_i", "_a")
+    )
+    gap = float((merged["observed_i"] - merged["observed_a"]).abs().max())
+    if gap > 1e-4:
+        raise RuntimeError(
+            f"observed values differ between the two LOOCV states by up to "
+            f"{gap}; re-run the round-2 LOOCV before the evolution figure"
+        )
+
+    ii = init_table.set_index(["print_id", "metric"])
+    ai = all_table.set_index(["print_id", "metric"])
+    rows = []
+    for pid in r1_pids + r2_pids:
+        for metric in METRIC_ORDER:
+            after = ai.loc[(pid, metric)]
+            row = {
+                "print_id": pid,
+                "round": 1 if pid in set(r1_pids) else 2,
+                "metric": metric,
+                "measured": float(after["observed"]),
+                "measured_sem": float(after["observed_sem"]),
+                "pred_init": np.nan,
+                "pred_init_sd": np.nan,
+                "pred_all": float(after["predicted"]),
+                "pred_all_sd": float(after["predicted_sem"]),
+            }
+            if (pid, metric) in ii.index:
+                before = ii.loc[(pid, metric)]
+                row["pred_init"] = float(before["predicted"])
+                row["pred_init_sd"] = float(before["predicted_sem"])
+            rows.append(row)
+    table = pd.DataFrame(rows)
+    table.to_csv(LOOCV_EVOLUTION_CSV, index=False, float_format="%.5f")
+    print(f"  evolution table -> {LOOCV_EVOLUTION_CSV}")
+
+    diag = {
+        "init": {
+            "n_articles": int(init_table["print_id"].nunique()),
+            "training_pool": "round 1 only (initialization dataset)",
+            "diagnostics": init_diag,
+        },
+        "all_data": {
+            "n_articles": int(all_table["print_id"].nunique()),
+            "training_pool": "rounds 1 + 2 (all collected data)",
+            "source": LOOCV_ALL_CSV.name,
+            "diagnostics": all_diag,
+        },
+    }
+    LOOCV_EVOLUTION_DIAG.write_text(json.dumps(diag, indent=2, sort_keys=True) + "\n")
+
+    for metric in METRIC_ORDER:
+        sub = table[table.metric == metric]
+        shared = sub[sub["round"] == 1]
+        res_i = (shared.measured - shared.pred_init).abs().median()
+        res_a = (shared.measured - shared.pred_all).abs().median()
+        print(
+            f"  {metric}: rank corr "
+            f"{init_diag['Rank correlation'][metric]:+.2f} (init, n = "
+            f"{diag['init']['n_articles']}) -> "
+            f"{all_diag['Rank correlation'][metric]:+.2f} (all data, n = "
+            f"{diag['all_data']['n_articles']}); same {len(shared)} articles: "
+            f"median |resid| {res_i:.3f} -> {res_a:.3f}, "
+            f"rank corr {_rank_corr(shared.measured, shared.pred_init):+.2f}"
+            f" -> {_rank_corr(shared.measured, shared.pred_all):+.2f}"
+        )
+    return table, diag
+
+
+def render_loocv_evolution(table, diag, animate=True, fps=25):
+    """Two animated parity panels: LOOCV before vs after the round-2 data.
+
+    Same grammar, registration and encoding as the parity-evolution set, but
+    with held-out predictions at both ends. Beats, one idea each: (1) hold on
+    the initialization-only LOOCV, the eight round-1 articles as orange
+    diamonds with +/- 1 sd bars; (2) travel, each held-out prediction eases
+    vertically to its all-data LOOCV value while its bar moves and resizes
+    with it and the diamonds hand off to open circles, a ghost diamond and a
+    dashed riser marking where the initialization fit had put it; (3) join,
+    the nine round-2 articles fade in at their own held-out predictions;
+    (4) hold; (5) clean, the ghost layer fades; (6) rest, the print IDs fade
+    in. Measured values do not move: x is pinned to the drop sessions, so all
+    motion is held-out skill changing with the training pool. Stills are the
+    start (the initialization-only LOOCV plot), the end of the travel (the
+    same eight articles re-predicted with all data) and the final frame (the
+    all-data LOOCV plot), same pixel size as the video, no tight bbox.
+    """
+    from matplotlib.collections import LineCollection
+
+    order = table["print_id"].drop_duplicates().tolist()
+    n_art = len(order)
+    piv = table.set_index(["print_id", "metric"])
+    P = {}
+    for metric in METRIC_ORDER:
+        sub = piv.xs(metric, level="metric").loc[order]
+        P[metric] = {
+            "x": sub["measured"].to_numpy(float),
+            "xerr": sub["measured_sem"].to_numpy(float),
+            "yb": sub["pred_init"].to_numpy(float),
+            "sb": sub["pred_init_sd"].to_numpy(float),
+            "ya": sub["pred_all"].to_numpy(float),
+            "sa": sub["pred_all_sd"].to_numpy(float),
+        }
+    is1 = (
+        piv.xs(METRIC_ORDER[0], level="metric").loc[order]["round"].to_numpy(int)
+        == 1
+    )
+    n1 = int(is1.sum())
+    n2 = n_art - n1
+    # joiners have no initialization state; pinning their before values to the
+    # after ones keeps every interpolation NaN-free while their alpha does the
+    # appearing
+    for metric in METRIC_ORDER:
+        d = P[metric]
+        d["yb"] = np.where(is1, d["yb"], d["ya"])
+        d["sb"] = np.where(is1, d["sb"], d["sa"])
+
+    d1 = diag["init"]["diagnostics"]
+    d2 = diag["all_data"]["diagnostics"]
+    n1_lab = diag["init"]["n_articles"]
+    n2_lab = diag["all_data"]["n_articles"]
+
+    def skill_text(dd, n, metric):
+        return (
+            f"held-out skill, n = {n}\n"
+            f"rank corr {dd['Rank correlation'][metric]:+.2f}   "
+            f"MAPE {100 * dd['MAPE'][metric]:.1f}%"
+        )
+
+    TICK_STEP = {obj1_name: 0.1, obj2_name: 2.0}
+    ticks, lims = {}, {}
+    for metric in METRIC_ORDER:
+        d = P[metric]
+        vals = np.concatenate([d["x"], d["yb"], d["ya"]])
+        t = _nice_ticks(float(vals.min()), float(vals.max()), TICK_STEP[metric])
+        ticks[metric] = t
+        pad = 0.22 * TICK_STEP[metric]
+        lims[metric] = (float(t[0]) - pad, float(t[-1]) + pad)
+
+    # beat boundaries in seconds
+    T0, D_TR, D_JN, D_H1, D_CL, D_RS = 1.6, 2.6, 1.0, 1.7, 0.9, 2.4
+    T1 = T0 + D_TR   # travel done, join begins
+    T2 = T1 + D_JN   # join done
+    T3 = T2 + D_H1   # clean begins
+    T4 = T3 + D_CL   # rest begins
+    n_frames = int(round((T4 + D_RS) * fps))
+    starts = 0.55 * np.arange(n1) / max(n1 - 1, 1)  # staggered travel
+
+    ink_rgba = np.array(mcolors.to_rgba(INK))
+    orange_rgba = np.array(mcolors.to_rgba(SUGGEST_ORANGE))
+    gray_rgba = np.array(mcolors.to_rgba(LABEL_GRAY))
+
+    with plt.rc_context(FIG_RC):
+        fig, axes = plt.subplots(1, 2, figsize=ANIM_FIGSIZE, dpi=ANIM_DPI)
+        fig.subplots_adjust(left=0.075, right=0.975, top=0.80, bottom=0.145,
+                            wspace=0.30)
+        fig.patch.set_facecolor("white")
+
+        art = {}
+        diag_name = {}
+        for ax, metric in zip(axes, METRIC_ORDER):
+            d, t, lim = P[metric], ticks[metric], lims[metric]
+            ax.set_anchor("S")
+            ax.set_xlim(*lim)
+            ax.set_ylim(*lim)
+            ax.set_xticks(t)
+            ax.set_yticks(t)
+            ax.set_aspect("equal", adjustable="box")
+            ax.grid(False)
+            for side in ("top", "right"):
+                ax.spines[side].set_visible(False)
+            for side in ("left", "bottom"):
+                ax.spines[side].set_position(("outward", 14))
+            ax.spines["bottom"].set_bounds(t[0], t[-1])
+            ax.spines["left"].set_bounds(t[0], t[-1])
+            ax.tick_params(labelsize=19)
+            ax.set_title(METRIC_TITLE[metric], fontsize=21, pad=40)
+            ax.set_xlabel("Measured", labelpad=10, fontsize=20)
+
+            ax.plot(lim, lim, color=LABEL_GRAY, lw=1.6, ls=(0, (5, 5)), zorder=1)
+            pts = ax.transData.transform(
+                np.column_stack([
+                    np.concatenate([d["x"], d["x"]]),
+                    np.concatenate([d["yb"], d["ya"]]),
+                ])
+            )
+            best = None
+            for f in np.linspace(0.12, 0.88, 25):
+                v = lim[0] + f * (lim[1] - lim[0])
+                px, py = ax.transData.transform((v, v))
+                dmin = float(np.hypot(pts[:, 0] - px, pts[:, 1] - py).min())
+                if best is None or dmin > best[0]:
+                    best = (dmin, v)
+            dpos = best[1]
+            diag_name[ax] = ax.annotate(
+                "measured = predicted", (dpos, dpos),
+                textcoords="offset points", xytext=(-5, 5),
+                rotation=45, rotation_mode="anchor", ha="center", va="bottom",
+                fontsize=13.5, color=LABEL_GRAY, zorder=1,
+            )
+
+            vbars = LineCollection(
+                [[(x, y - s), (x, y + s)]
+                 for x, y, s in zip(d["x"], d["yb"], d["sb"])],
+                linewidths=2.2, zorder=1.6,
+            )
+            ax.add_collection(vbars)
+            hbars = LineCollection(
+                [[(x - e, y), (x + e, y)]
+                 for x, y, e in zip(d["x"], d["yb"], d["xerr"])],
+                linewidths=2.0, zorder=1.5,
+            )
+            ax.add_collection(hbars)
+            conn = LineCollection(
+                [[(x, y), (x, y)] for x, y in zip(d["x"][is1], d["yb"][is1])],
+                linewidths=1.8, linestyles=(0, (4, 3)), zorder=1.4,
+            )
+            ax.add_collection(conn)
+            ghost = ax.scatter(
+                d["x"][is1], d["yb"][is1], marker="D", s=150,
+                fc=_rgba(SUGGEST_ORANGE, np.zeros(n1)), ec="none", zorder=2,
+            )
+            mover = ax.scatter(
+                d["x"][is1], d["yb"][is1], marker="D", s=150,
+                fc=_rgba(SUGGEST_ORANGE, np.ones(n1)), ec="none", zorder=6,
+            )
+            landed = ax.scatter(
+                d["x"][is1], d["ya"][is1], fc="none",
+                ec=_rgba(INK, np.zeros(n1)), s=190, lw=2.4, zorder=4,
+            )
+            joined = ax.scatter(
+                d["x"][~is1], d["ya"][~is1], fc="none",
+                ec=_rgba(INK, np.zeros(n2)), s=190, lw=2.4, zorder=4,
+            )
+            art[metric] = dict(vbars=vbars, hbars=hbars, conn=conn,
+                               ghost=ghost, mover=mover, landed=landed,
+                               joined=joined)
+
+        axL, axR = axes
+        axL.set_ylabel("Predicted\n(article held out)", rotation=0, ha="left",
+                       va="bottom", fontsize=20, linespacing=1.3)
+        axL.yaxis.set_label_coords(-0.12, 1.02)
+
+        # one figure-level state line, crossfading with the training pool; the
+        # per-panel titles stay metric names, so this is the only place the
+        # state is written and the two never disagree
+        txt_state1 = fig.text(
+            0.5, 0.945,
+            f"Leave-one-out CV, model fit on the initialization data only "
+            f"(round 1, {n1_lab} articles)",
+            ha="center", va="center", fontsize=19, color=INK, zorder=6,
+        )
+        txt_state2 = fig.text(
+            0.5, 0.945,
+            f"Leave-one-out CV, model fit on all collected data "
+            f"(rounds 1 + 2, {n2_lab} articles)",
+            ha="center", va="center", fontsize=19, color=INK, alpha=0.0,
+            zorder=6,
+        )
+
+        # what the bars are: static, because bars exist in every beat; wrapped
+        # short so it cannot reach the diagonal's name in the panel corner
+        txt_unc = axR.text(
+            0.02, 0.97,
+            "bars: held-out prediction ± 1 sd\n(model posterior)\n"
+            "gray: measured ± 1 SEM",
+            transform=axR.transAxes, fontsize=15, color=LABEL_GRAY,
+            ha="left", va="top", zorder=6,
+        )
+
+        # per-panel skill, crossfading with the state line
+        skills = {}
+        for ax, metric in zip(axes, METRIC_ORDER):
+            s1 = ax.text(
+                0.98, 0.015, skill_text(d1, n1_lab, metric),
+                transform=ax.transAxes, fontsize=15.5, color=INK,
+                ha="right", va="bottom", zorder=6,
+            )
+            s2 = ax.text(
+                0.98, 0.015, skill_text(d2, n2_lab, metric),
+                transform=ax.transAxes, fontsize=15.5, color=INK,
+                ha="right", va="bottom", alpha=0.0, zorder=6,
+            )
+            skills[metric] = (s1, s2)
+
+        # No callout on the join beat: nine circles fading in while nothing
+        # else moves is self-explanatory, and the state line plus the n = 17
+        # skill text already narrate it. (A callout was tried and only added
+        # text to a beat this thread has asked to keep quiet.)
+
+        # print IDs, laid out once against the final frame; lit only at rest
+        def diag_boxes(ax, lim):
+            p = ax.transData.transform([[lim[0], lim[0]], [lim[1], lim[1]]])
+            return _segment_boxes([(tuple(p[0]), tuple(p[1]))], n=24, half=7,
+                                  weight=W_LINE)
+
+        def outside_boxes(ax):
+            bb = ax.get_window_extent()
+            big = 1e6
+            return [
+                (-big, -big, bb.x0, big, W_TEXT),
+                (bb.x1, -big, big, big, W_TEXT),
+                (-big, -big, big, bb.y0, W_TEXT),
+                (-big, bb.y1, big, big, W_TEXT),
+            ]
+
+        fig.canvas.draw()
+        ids = []
+        for ax, metric in zip(axes, METRIC_ORDER):
+            d = P[metric]
+            frame_df = pd.DataFrame(
+                {"print_id": order, "x": d["x"], "y": d["ya"]}
+            )
+            obstacles = (
+                diag_boxes(ax, lims[metric])
+                + outside_boxes(ax)
+                + _text_boxes(fig, [diag_name[ax], skills[metric][1]], pad=26)
+            )
+            if ax is axR:
+                obstacles = obstacles + _text_boxes(fig, [txt_unc], pad=26)
+            anns = _label_points(ax, frame_df, "print_id", "x", "y",
+                                 fontsize=13.5, obstacles=obstacles)
+            for ann in anns:
+                ann.set_alpha(0.0)
+            ids.extend(anns)
+
+        def update(frame):
+            t = frame / fps
+            u = float(np.clip((t - T0) / D_TR, 0.0, 1.0))
+            p = np.full(n_art, _smoothstep(u))
+            p[is1] = _smoothstep((u - starts) / 0.45)
+            w = _smoothstep((p[is1] - 0.55) / 0.45)   # diamond -> circle
+            g = _smoothstep(p[is1] / 0.25)            # ghost layer in
+            jn = _smoothstep((t - T1) / D_JN)         # round-2 articles in
+            c = _smoothstep((t - T3) / D_CL)          # clean
+            r = _smoothstep((t - T4) / 0.6)           # ids at rest
+
+            for metric in METRIC_ORDER:
+                d, a = P[metric], art[metric]
+                y = d["yb"] + (d["ya"] - d["yb"]) * p
+                s = d["sb"] + (d["sa"] - d["sb"]) * p
+                a["vbars"].set_segments(
+                    [[(x, yy - ss), (x, yy + ss)]
+                     for x, yy, ss in zip(d["x"], y, s)]
+                )
+                colors = np.tile(ink_rgba, (n_art, 1))
+                colors[~is1, 3] = 0.35 * jn
+                mix = ((1.0 - w[:, None]) * orange_rgba
+                       + w[:, None] * ink_rgba)
+                colors[is1, :3] = mix[:, :3]
+                colors[is1, 3] = 0.62 - 0.27 * w
+                a["vbars"].set_color(colors)
+                a["hbars"].set_segments(
+                    [[(x - e, yy), (x + e, yy)]
+                     for x, e, yy in zip(d["x"], d["xerr"], y)]
+                )
+                hcol = np.tile(gray_rgba, (n_art, 1))
+                hcol[:, 3] = 0.65
+                hcol[~is1, 3] = 0.65 * jn
+                a["hbars"].set_color(hcol)
+                a["conn"].set_segments(
+                    [[(x, y0), (x, yy)] for x, y0, yy
+                     in zip(d["x"][is1], d["yb"][is1], y[is1])]
+                )
+                a["conn"].set_color(_rgba(SUGGEST_ORANGE, 0.45 * g * (1 - c)))
+                a["ghost"].set_facecolor(
+                    _rgba(SUGGEST_ORANGE, 0.38 * g * (1 - c))
+                )
+                a["mover"].set_offsets(np.column_stack([d["x"][is1], y[is1]]))
+                a["mover"].set_facecolor(_rgba(SUGGEST_ORANGE, 1.0 - w))
+                a["landed"].set_edgecolor(_rgba(INK, w))
+                a["joined"].set_edgecolor(_rgba(INK, np.full(n2, jn)))
+
+            fade0 = 1.0 - _smoothstep(u / 0.22)
+            txt_state1.set_alpha(fade0)
+            txt_state2.set_alpha(_smoothstep((u - 0.15) / 0.35))
+            for metric in METRIC_ORDER:
+                s1, s2 = skills[metric]
+                s1.set_alpha(fade0)
+                s2.set_alpha(jn)
+            for ann in ids:
+                ann.set_alpha(r)
+            return ()
+
+        fig_dir = BO_DIR / "figures"
+        fig_dir.mkdir(exist_ok=True)
+        still_frames = {
+            "start": 0,
+            "shift": int(round(T1 * fps)) - 1,
+            "final": n_frames - 1,
+        }
+        stills = {}
+        for stage, frame in still_frames.items():
+            update(frame)
+            out = fig_dir / f"{LOOCV_EVO_STEM}-{stage}.png"
+            fig.savefig(out, dpi=ANIM_DPI, facecolor="white")
+            stills[stage] = out
+
+        out_mp4 = out_gif = None
+        have_ffmpeg = shutil.which("ffmpeg") is not None
+        if animate:
+            from matplotlib.animation import (
+                FFMpegWriter, FuncAnimation, PillowWriter,
+            )
+
+            anim = FuncAnimation(fig, update, frames=n_frames,
+                                 interval=1000 / fps)
+            out_mp4 = fig_dir / f"{LOOCV_EVO_STEM}.mp4"
+            out_gif = fig_dir / f"{LOOCV_EVO_STEM}.gif"
+            if have_ffmpeg:
+                anim.save(
+                    out_mp4,
+                    writer=FFMpegWriter(
+                        fps=fps, codec="libx264", bitrate=-1,
+                        extra_args=["-pix_fmt", "yuv420p", "-crf", "18"],
+                    ),
+                    savefig_kwargs={"facecolor": "white"},
+                )
+            else:
+                out_mp4 = None
+                print("ffmpeg not found: skipping the MP4, writing the GIF only")
+                anim.save(out_gif, writer=PillowWriter(fps=12))
+        plt.close(fig)
+
+    if animate and have_ffmpeg:
+        subprocess.run(
+            [
+                "ffmpeg", "-y", "-loglevel", "error", "-i", str(out_mp4),
+                "-vf",
+                f"fps=12,scale={GIF_WIDTH_PX}:-2:flags=lanczos,split[a][b];"
+                "[a]palettegen=max_colors=128[p];"
+                "[b][p]paletteuse=dither=bayer:bayer_scale=3",
+                "-loop", "0", str(out_gif),
+            ],
+            check=True,
+        )
+    return stills, out_gif, out_mp4
+
+
 # ---- driver --------------------------------------------------------------
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -1179,6 +1737,20 @@ def main(argv=None):
             "with --plot-only it redraws from the committed parity CSV"
         ),
     )
+    ap.add_argument(
+        "--loocv-evolution",
+        action="store_true",
+        help=(
+            "render the held-out counterpart of --parity-evolution: two "
+            "parity panels (one per objective, ± 1 sd bars) where both "
+            "states are LOOCV predictions and only the training pool "
+            "changes, from the initialization dataset alone (8 round-1 "
+            "articles) to all collected data (17 articles, reusing the "
+            "committed 17-fold run). Runs the 8 initialization folds, "
+            "a few minutes; with --plot-only it redraws from the "
+            "committed evolution CSV"
+        ),
+    )
     args = ap.parse_args(argv)
 
     fig_dir = BO_DIR / "figures"
@@ -1192,6 +1764,21 @@ def main(argv=None):
             table = compute_parity_evolution(args)
         stills, gif, mp4 = render_parity_evolution(
             table, animate=not args.no_animation
+        )
+        for i, stage in enumerate(("start", "shift", "final"), start=1):
+            print(f"  slide {i} ({stage}): {stills[stage]}")
+        if gif or mp4:
+            print("  animation: " + ", ".join(str(x) for x in (mp4, gif) if x))
+        return 0
+
+    if args.loocv_evolution:
+        if args.plot_only:
+            table = pd.read_csv(LOOCV_EVOLUTION_CSV)
+            diag = json.loads(LOOCV_EVOLUTION_DIAG.read_text())
+        else:
+            table, diag = compute_loocv_evolution(args)
+        stills, gif, mp4 = render_loocv_evolution(
+            table, diag, animate=not args.no_animation
         )
         for i, stage in enumerate(("start", "shift", "final"), start=1):
             print(f"  slide {i} ({stage}): {stills[stage]}")
