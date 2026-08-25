@@ -72,12 +72,69 @@ CSV.
 ## Tier-A results (PolyFEM + IPC, viscoelastic)
 
 `outputs/tierA_articles.csv` plus one `outputs/tierA_<print_id>.npz`
-time-series per article. Scope: the article alone impacting a rigid floor
-at the measured 5.30 m/s, so its observables are article-intrinsic
-(no mat to hide behind): peak top-vertex acceleration, article-side
-restitution, and the free-flight ringdown after the bounce. See the PR
-comment for the run-status table; runs are incremental, so re-running
-`python polyfem_tierA.py` resumes where the last session stopped.
+time-series per article; comparison panel
+`outputs/tier_promotion_tierA.png`, correlation rows (`tA_*`) appended to
+`outputs/tier_promotion_stats.csv`. Scope: the article alone impacting a
+rigid floor at the measured 5.30 m/s, so its observables are
+article-intrinsic (no mat to hide behind): peak top-vertex acceleration,
+article-side restitution, and the free-flight ringdown after the bounce.
+Runs are incremental: re-running `python polyfem_tierA.py` resumes with
+whatever is not yet ok in the CSV.
+
+What the promotion delivers, stated against the reason it was run: the
+observables that were dead at Tiers B and C are design-responsive here.
+
+* **Peak top-vertex acceleration spans 264 to 3667 g** (14x) across the
+  completed articles, where Tier C was support-load-flat.
+* **Article-side restitution spans 0.00 to 0.29**, where Tier B sat at
+  0.61 within 1 percent for every article because the calibrated mat
+  owned the loss budget. The compliant articles genuinely bounce
+  (e_rebound 0.06 to 0.29) while the ones that land and stay read
+  0.00 to 0.01.
+* **The flexural ringdown lands at 77 to 450 Hz**, overlapping the
+  measured 294 to 468 Hz band for the stiffer articles (Tier C sat at
+  22 to 96 Hz rigid-body swing); damping fits span 0.8 to 67 percent,
+  though several fits are multi-modal with low R^2 (kept in
+  `ringdown_r2` rather than hidden).
+
+Rank agreement with the bench at this sample size: none detectable.
+fn rho = -0.37 (p = 0.47, n = 6), zeta rho = +0.09 (n = 6), article
+restitution vs rig restitution rho = -0.38 (n = 8). The derived, untuned
+material inputs make the channels move; they do not yet order the
+articles the way the bench does, and n = 6 to 8 cannot separate a weak
+signal from none. One single-article observation worth carrying:
+`6lhxfy`, the bench's only genuine attenuator and its highest-rebound
+article, is also Tier A's highest batch-1 peak-g and zeta article.
+
+Two articles resist the current pipeline (both left as honest failures
+in the CSV):
+
+* `9hhbkp` meshes only at the finer lc fallback and then fails the solve
+  (GradientDescent line-search failure at an impact step) even with the
+  rescue settings; it likely needs a smaller dt.
+* `r2d2c2` meshes at every inset but IPC rejects the initial state
+  ("initial solution has intersections"): the welded gmsh mesh
+  self-intersects at that geometry (twist 40 deg, strut 8.3 mm), so it
+  needs a mesh-level fix rather than a solver knob.
+
+Engine-version notes (June-era script vs today's PolyFEM/polysolve HEAD),
+all fixed in `polyfem_tierA.py` in the 2026-08-25 session:
+
+* vtu `points` now hold rest positions; displacement, velocity and
+  acceleration arrive as point_data. The old parse therefore read a
+  motionless article (peak 0.0 g and byte-identical ringdown "fits"
+  across different articles). `extract_observables` applies the
+  displacement field and prefers the solver's own velocity and
+  acceleration fields over finite differences.
+* polysolve renamed `grad_norm` to `grad_norm_tol` and tightened the
+  default to 1e-10, which is what killed a third of the roster at Newton
+  iteration limits. The config now sets `grad_norm_tol = 1e-7` with
+  `allow_out_of_iterations = true` for the contact-impact steps, which
+  also made the stepping roughly 4x faster.
+* a failed gmsh inset retry can leave a truncated .msh ($Entities but no
+  $Elements, PolyFEM "Invalid dimension"); the ladder now validates the
+  written file, finalizes gmsh between attempts, and falls back to a
+  0.75x lc scale on PLC intersection errors.
 
 ## Data-integrity note found on the way (round 2)
 
