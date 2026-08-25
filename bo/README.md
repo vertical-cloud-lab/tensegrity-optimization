@@ -392,7 +392,13 @@ on the PR #35 branch) was removed and labeled `r2d2c1` through `r2d2c9` on
   schema as `t3-prism-bo-batch-drop-results.csv` plus the three T-drift
   watch columns that script now emits (`t_drift_flag`,
   `t180_slope_pct_per_drop`, `t180_e2e_pct`). The `mass_g` column is the
-  posted mass with label.
+  posted mass with label. The geometry columns (`R_mm`, `H_mm`,
+  `twist_deg`, `strut_d_mm`, `cable_d_mm`) are **as-printed** dimensions,
+  matching the `*_print_*` columns of `t3-prism-bo-round1-designs.csv` for
+  the specimen's spec, not the Ax base coordinates. Reading them as base
+  coordinates makes the spec mapping look wrong (one downstream analysis
+  did exactly that); the print key is the authoritative specimen-to-spec
+  map.
 - `t3-prism-bo-round1-per-drop-metrics.csv`: the stabilized per-drop rows
   for those sessions (172 rows), same schema as
   `t3-prism-per-drop-metrics.csv`.
@@ -410,10 +416,19 @@ sessions are trigger-valid, no pauses, input Δv 5.29 to 5.41 m/s (healthy
 band). One session, `r2d2c2`, breaks the historical within-session T-drift
 envelope (+0.25 %/drop, +3.5 % end to end, output-side signature: mount or
 coupling suspect); its t180 mean is drift-contaminated and its inflated sd
-is what the BO ingestion sees. The `r2d2c1` folder name says "23 drops" but
-the TP4 series table and the export both contain 21 events; the session ID
-string inside every export still reads "101 drops" (template reuse), which
-is cosmetic.
+is what the BO ingestion sees. The `r2d2c1` folder name originally said
+"23 drops" against 21 events in the TP4 series table and export; the folder
+has since been renamed to "21 drops" on Box, so the name and contents now
+agree. The session ID string inside every export still reads "101 drops"
+(template reuse), which is cosmetic.
+
+Print-log entries for all nine r2d2c articles were posted to issue #98 on
+2026-08-24 (ronnie-guymon) and are folded into
+`t3-prism-bo-round1-print-key.csv`: every article printed at ~11 % RH;
+defects were limited to detached or "spaghetti" TPU tendon strings on
+`r2d2c1` (two top tendons, plus an odd foot support), `r2d2c4` (one top
+tendon, one piece about 1/4 detached), and `r2d2c8` (two bottom tendons,
+full span); the other six printed clean.
 
 ### Round-2 outcomes and the round-3 batch
 
