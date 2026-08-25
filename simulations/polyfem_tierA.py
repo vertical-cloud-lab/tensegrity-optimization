@@ -200,34 +200,40 @@ def tierA_one(job: tuple) -> dict:
     # tendon inset factors before giving up
     info = None
     last_err = None
-    for inset in (0.6, 0.8, 0.5, 0.7, 1.0):
-        try:
-            info = build_tprism_msh(
-                msh,
-                radius=design.radius_m,
-                height=design.height_m,
-                twist=design.twist_rad,
-                strut_d=design.strut_diameter_m,
-                tendon_d=design.tendon_diameter_m,
-                drop_height=0.0005,
-                lc_strut=max(design.strut_diameter_m * 0.5, 0.0015),
-                lc_tendon=max(design.tendon_diameter_m * 0.6, 0.001),
-                tendon_inset_factor=inset,
-            )
-            # a failed earlier inset leaves gmsh initialized with a stale
-            # model, and the "successful" retry can then write a truncated
-            # file ($Entities but no $Nodes/$Elements); validate the write
-            if "$Elements" not in msh.read_text(errors="ignore"):
-                raise RuntimeError("gmsh wrote a truncated mesh")
-            break
-        except Exception as exc:               # noqa: BLE001
-            info = None
-            last_err = exc
+    for lc_scale in (1.0, 0.75):
+        for inset in (0.6, 0.8, 0.5, 0.7, 1.0):
             try:
-                import gmsh
-                gmsh.finalize()
-            except Exception:                  # noqa: BLE001
-                pass
+                info = build_tprism_msh(
+                    msh,
+                    radius=design.radius_m,
+                    height=design.height_m,
+                    twist=design.twist_rad,
+                    strut_d=design.strut_diameter_m,
+                    tendon_d=design.tendon_diameter_m,
+                    drop_height=0.0005,
+                    lc_strut=max(design.strut_diameter_m * 0.5,
+                                 0.0015) * lc_scale,
+                    lc_tendon=max(design.tendon_diameter_m * 0.6,
+                                  0.001) * lc_scale,
+                    tendon_inset_factor=inset,
+                )
+                # a failed earlier inset leaves gmsh initialized with a
+                # stale model, and the "successful" retry can then write a
+                # truncated file ($Entities but no $Nodes/$Elements);
+                # validate the write
+                if "$Elements" not in msh.read_text(errors="ignore"):
+                    raise RuntimeError("gmsh wrote a truncated mesh")
+                break
+            except Exception as exc:           # noqa: BLE001
+                info = None
+                last_err = exc
+                try:
+                    import gmsh
+                    gmsh.finalize()
+                except Exception:              # noqa: BLE001
+                    pass
+        if info is not None:
+            break
     if info is None:
         return {"print_id": pid, "ok": False, "err": f"mesh: {last_err}"[:300]}
 
@@ -252,10 +258,14 @@ def tierA_one(job: tuple) -> dict:
         mat["psi"] = psi_tpu if mat["id"] == 2 else psi_pla
         mat["phi"] = 0.0
     # the 5.3 m/s impact steps are much harder than the settle-under-gravity
-    # runs this JSON was written for; a third of the roster hit the 200-cap
-    # (or fell all the way to GradientDescent) at the first impact step
+    # runs this JSON was written for.  polysolve HEAD renamed grad_norm ->
+    # grad_norm_tol and tightened its default to 1e-10, which is why a third
+    # of the roster died at iteration limits; loosen the tolerance for the
+    # contact-impact steps and let a stubborn step run out of iterations
+    # rather than killing the whole article
     cfg["solver"]["nonlinear"]["max_iterations"] = 500
-    cfg["solver"]["nonlinear"]["grad_norm"] = 1e-7
+    cfg["solver"]["nonlinear"]["grad_norm_tol"] = 1e-7
+    cfg["solver"]["nonlinear"]["allow_out_of_iterations"] = True
     cfg["initial_conditions"] = {
         "velocity": [{"id": 1, "value": [0.0, -IMPACT_V_MPS, 0.0]},
                      {"id": 2, "value": [0.0, -IMPACT_V_MPS, 0.0]}]}

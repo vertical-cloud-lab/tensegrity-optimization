@@ -24,7 +24,7 @@ r2d2c2,False,"terminate called after throwing an instance of 'std::runtime_error
 r2d2c3,False,"terminate called after throwing an instance of 'std::runtime_error'
   what():  [SparseRegularizedNewton (reg_weight=0.1)][Backtracking] Reached iteration limit (limit=200)
 ",,,,,,,
-r2d2c1,True,,7189.0,1554.593262795033,0.265132238583655,233.83350729916597,0.7749437359488882,0.5528126238214298,1796.881809111455
+r2d2c1,True,,7189.0,1554.593262795033,0.265132238583655,233.833507299166,0.7749437359488882,0.5528126238214298,1796.881809111455
 r2d2c6,False,"terminate called after throwing an instance of 'std::runtime_error'
   what():  [GradientDescent][Backtracking] Line search failed on last strategy; stopping
 ",,,,,,,
@@ -32,7 +32,156 @@ r2d2c4,True,,6485.0,2322.95111859102,0.178291557663467,141.37243983269445,4.1086
 r2d2c7,False,"terminate called after throwing an instance of 'std::runtime_error'
   what():  [SparseNewton][Backtracking] Reached iteration limit (limit=200)
 ",,,,,,,
-r2d2c5,True,,7479.0,675.6680502764257,0.29185565465998364,237.18243040117932,1.6179548571813982e-28,0.5348375012850793,2679.335232033589
+r2d2c5,True,,7479.0,675.6680502764257,0.2918556546599836,237.1824304011793,1.6179548571813982e-28,0.5348375012850793,2679.335232033589
 ebdna8,False,"terminate called after throwing an instance of 'std::runtime_error'
   what():  Invalid dimension
 ",,,,,,,
+6lhxfy,False,"    ""iterations_per_strategy"",
+        ""line_search"",
+        ""allow_out_of_iterations"",
+        ""allow_non_grad_convergence"",
+        ""L-BFGS"",
+        ""L-BFGS-B"",
+        ""Newton"",
+        ""ADAM"",
+        ""StochasticADAM"",
+        ""StochasticGradientDescent"",
+        ""box_constraints"",
+        ""advanced""
+    ],
+    ""pointer"": ""/solver/augmented_lagrangian/nonlinear"",
+    ""type"": ""object""
+}
+
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Invalid input json file
+",,,,,,,
+bpx68c,False,"    ""iterations_per_strategy"",
+        ""line_search"",
+        ""allow_out_of_iterations"",
+        ""allow_non_grad_convergence"",
+        ""L-BFGS"",
+        ""L-BFGS-B"",
+        ""Newton"",
+        ""ADAM"",
+        ""StochasticADAM"",
+        ""StochasticGradientDescent"",
+        ""box_constraints"",
+        ""advanced""
+    ],
+    ""pointer"": ""/solver/augmented_lagrangian/nonlinear"",
+    ""type"": ""object""
+}
+
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Invalid input json file
+",,,,,,,
+nvxsrv,False,"    ""iterations_per_strategy"",
+        ""line_search"",
+        ""allow_out_of_iterations"",
+        ""allow_non_grad_convergence"",
+        ""L-BFGS"",
+        ""L-BFGS-B"",
+        ""Newton"",
+        ""ADAM"",
+        ""StochasticADAM"",
+        ""StochasticGradientDescent"",
+        ""box_constraints"",
+        ""advanced""
+    ],
+    ""pointer"": ""/solver/augmented_lagrangian/nonlinear"",
+    ""type"": ""object""
+}
+
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Invalid input json file
+",,,,,,,
+9hhbkp,False,mesh: PLC Error:  A segment and a facet intersect at point,,,,,,,
+6nheas,False,"    ""iterations_per_strategy"",
+        ""line_search"",
+        ""allow_out_of_iterations"",
+        ""allow_non_grad_convergence"",
+        ""L-BFGS"",
+        ""L-BFGS-B"",
+        ""Newton"",
+        ""ADAM"",
+        ""StochasticADAM"",
+        ""StochasticGradientDescent"",
+        ""box_constraints"",
+        ""advanced""
+    ],
+    ""pointer"": ""/solver/augmented_lagrangian/nonlinear"",
+    ""type"": ""object""
+}
+
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Invalid input json file
+",,,,,,,
+r2d2c2,False,"    ""iterations_per_strategy"",
+        ""line_search"",
+        ""allow_out_of_iterations"",
+        ""allow_non_grad_convergence"",
+        ""L-BFGS"",
+        ""L-BFGS-B"",
+        ""Newton"",
+        ""ADAM"",
+        ""StochasticADAM"",
+        ""StochasticGradientDescent"",
+        ""box_constraints"",
+        ""advanced""
+    ],
+    ""pointer"": ""/solver/augmented_lagrangian/nonlinear"",
+    ""type"": ""object""
+}
+
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Invalid input json file
+",,,,,,,
+bag26v,False,"    ""iterations_per_strategy"",
+        ""line_search"",
+        ""allow_out_of_iterations"",
+        ""allow_non_grad_convergence"",
+        ""L-BFGS"",
+        ""L-BFGS-B"",
+        ""Newton"",
+        ""ADAM"",
+        ""StochasticADAM"",
+        ""StochasticGradientDescent"",
+        ""box_constraints"",
+        ""advanced""
+    ],
+    ""pointer"": ""/solver/augmented_lagrangian/nonlinear"",
+    ""type"": ""object""
+}
+
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Invalid input json file
+",,,,,,,
+r2d2c3,False,"    ""iterations_per_strategy"",
+        ""line_search"",
+        ""allow_out_of_iterations"",
+        ""allow_non_grad_convergence"",
+        ""L-BFGS"",
+        ""L-BFGS-B"",
+        ""Newton"",
+        ""ADAM"",
+        ""StochasticADAM"",
+        ""StochasticGradientDescent"",
+        ""box_constraints"",
+        ""advanced""
+    ],
+    ""pointer"": ""/solver/augmented_lagrangian/nonlinear"",
+    ""type"": ""object""
+}
+
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Invalid input json file
+",,,,,,,
+r2d2c8,True,,10963.0,750.1494051755826,0.14659561524276485,449.9970325808705,1.1482525038633613,0.30771907739433324,1958.4393689320686
