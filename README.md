@@ -1,66 +1,64 @@
-# BYU Mentored Research Grant Proposal: Multi-Material 3D-Printed Tensegrity Structures
+# Bayesian optimization of 3D-printed tensegrity structures for energy absorption
 
-**Bayesian Optimization of Multi-Material 3D-Printed Tensegrity Structures for Energy Absorption**
+We print tensegrity-inspired structures on a dual-nozzle 3D printer (rigid PLA struts and flexible TPU tendons, printed together as one piece), drop-test them on an instrumented drop tower, and use Bayesian optimization to choose the next batch of designs. The goal is lightweight structures that absorb impact energy well. The project is mentored undergraduate research in Mechanical Engineering at Brigham Young University (BYU).
 
-BYU Ira A. Fulton College of Engineering — Mentored Research Grant Proposal
+This repository is the companion to Marcus Madsen's talk at ASME IDETC-CIE 2026, "Closed-Loop Bayesian Optimization of Multi-Material 3D-Printed Tensegrity-Inspired Energy Absorbers" (track DAC-10: Design of Engineering Materials and Structures).
 
-## Overview
+If you arrived from the talk's QR code: most of the current work sits on open pull requests, not on this main branch, so this page points to where things actually live. File links go to the latest version on the file's branch, and each has a pinned permalink beside it in case that branch later changes or goes away.
 
-- **PI:** Jeffrey R. Hill, Mechanical Engineering
-- **Co-PI:** Sterling G. Baird, Mechanical Engineering
-- **Duration:** 2 years
-- **Budget:** $25,000
-- **Students:** 2–3 undergraduates + 1 graduate co-mentor
-- **Focus:** Undergraduate mentored research
+![Closed-loop campaign diagram: initialize campaign, design experiments with Bayesian optimization, print multi-material structures, test performance, conclude campaign](figures/overview-updated.png)
 
-This proposal develops a multifidelity Bayesian optimization framework to design multi-material 3D-printed tensegrity structures (PLA struts + TPU tension elements) optimized for energy absorption. Undergraduate students fabricate and experimentally validate optimized designs through compaction tests, drop tests, and wave propagation measurements.
+## Start here
 
-## Repository Structure
+- **Extended abstract** (2 pages): [idetc-abstract.pdf](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/main/idetc-abstract.pdf) ([permalink](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/592b5a6/idetc-abstract.pdf)). The IDETC-CIE 2026 submission the talk is based on.
+- **Journal manuscript draft**: [manuscript.pdf](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/copilot/vertical-cloud-labtensegrity-optimization/manuscript/manuscript.pdf) ([permalink](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/827301d/manuscript/manuscript.pdf)), with [supplementary material](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/copilot/vertical-cloud-labtensegrity-optimization/manuscript/supplementary.pdf) ([permalink](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/827301d/manuscript/supplementary.pdf)). "Experiment-Driven Bayesian Optimization of the Impact Response of Multi-Material 3D-Printed Tensegrity-Inspired Structures", aimed at the ASME Journal of Mechanical Design. Methods and background are drafted; results are placeholders until the experimental campaign finishes. The draft evolves on [PR #76](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/76) (tracked in [issue #75](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/75)) and has been through five rounds of mock peer review.
+- **The talk itself**: slides, figures, and video clips are assembled on [PR #84](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/84) (tracked in [issue #83](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/83)). An early snapshot of the deck is in the repo: [IDETC Tensegrity Slides Draft 1.pptx](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/claude/issue-83-20260715-2018/presentation/Slide%20Decks/IDETC%20Tensegrity%20Slides%20Draft%201.pptx) ([permalink](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/e6b536f/presentation/Slide%20Decks/IDETC%20Tensegrity%20Slides%20Draft%201.pptx)).
+- **Original proposal**: [proposal.pdf](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/main/proposal.pdf) ([permalink](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/592b5a6/proposal.pdf)). The BYU Mentored Research Grant proposal this project grew out of.
 
-```
-├── proposal.tex              # Main LaTeX document
-├── references.bib            # BibTeX bibliography
-├── sections/
-│   ├── coverpage.tex         # MRG cover page (abstract, budget table, external funding)
-│   ├── budget.tex            # Budget table and justification
-│   └── biosketch.tex         # PI and Co-PI biographical sketches
-├── Makefile                  # Build commands
-├── .gitignore
-└── README.md
-```
+<img src="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/e6b536f/presentation/media/poster-our-drop.jpg?raw=true" width="420" alt="A printed T3 prism specimen mounted on the drop tower, with a checkerboard scale reference behind it">
 
-## Building the Proposal
+*One of the printed test articles, a T3 prism (three rigid struts suspended in a tendon network), on the drop tower. Frame from our drop-test footage; more clips are on [PR #84](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/84).*
 
-Requires a LaTeX distribution (e.g., TeX Live, MiKTeX) with `pdflatex` and `bibtex`.
+## Where the project stands
 
-```bash
-# Using Make
-make
+- [Issue #99](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/99): status review across the whole project.
+- [Issue #85](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/85): defining the search space for the T3 optimization campaign.
+- [Issue #98](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98) and [PR #102](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102): the first Sobol print batch (T-3_01), with the ID-to-design key and as-printed files.
+- [Issue #101](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/101): tally of every drop recorded so far.
 
-# Or manually
-pdflatex proposal
-bibtex proposal
-pdflatex proposal
-pdflatex proposal
-```
+## Design, printing, and drop testing
 
-## Proposal Structure (≤5 pages + cover page, references, bio sketches)
+- [PR #35](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35): parametric T3 prism CAD with sliced, print-ready multi-material files for the Bambu Lab H2D.
+- [PR #39](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/39): joint designs that anchor a TPU tendon inside a PLA strut, with validation prints.
+- [PR #66](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/66): support strategies that keep printed TPU tendons clean.
+- [PR #86](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86): drop-test protocol and analysis of the first recorded drops.
+- [PR #28](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/28): the Lansmont M23 drop tower and Polytec laser vibrometer we test on.
+- [PR #97](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/97) and [PR #100](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/100), from [issue #94](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/94): primers on drop-tower energy-absorption metrics and what we can actually measure.
+- [PR #74](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/74), from [issue #71](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/71): checking the drop-tower accelerometers against each other.
 
-- **Cover Page** — Title, PI/Co-PI, abstract, student counts, budget summary, relationship to external funding
-- **Research Motivation & Overview** — Multi-material 3D-printed tensegrity + multifidelity BO
-- **Background** — Tensegrity structures, Bayesian optimization, Mo et al. (2023) multifidelity framework
-- **Student Research Project 1** — Simulation & Bayesian optimization
-- **Student Research Project 2** — Fabrication, CAD, & experimental testing
-- **Mentoring Environment** — Weekly meetings, graduate co-mentor, peer mentoring, progressive responsibility
-- **Expected Research Outcomes** — UCUR, ASME IDETC, journal submission, NSF proposal
-- **Potential Impact** — Protective equipment, packaging, aerospace applications
-- **Timeline** — 4-semester project plan
-- **Budget** — $25k (undergraduate wages, graduate wages, supplies, travel, other)
-- **References** — (does not count toward page limit)
-- **Bio Sketches** — Hill & Baird (does not count toward page limit)
+## Optimization and simulation
 
-## TODO
+- [PR #30](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/30): Bayesian-optimization campaign scaffold built with honegumi and Ax.
+- [PR #33](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/33): tensegrity drop simulations (MuJoCo, PyBullet, PyChrono, and others) wired into a Bayesian-optimization loop.
+- [PR #24](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/24): choosing the design variables for the PLA + TPU structures.
 
-- [ ] Add figures (tensegrity schematic, BO loop diagram, test setup)
-- [ ] Finalize PI/Co-PI bio sketch details (specific publications, appointments)
-- [ ] Get feedback from co-PI / collaborators
+## Background and literature
+
+- [PR #22](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/22): reference models of canonical tensegrity structures, plus literature surveys.
+- [PR #58](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/58): close read of Davami et al. 2025 on the dynamic response of additively manufactured tensegrity.
+- [Issue #87](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/87): options for activating pre-tension in printed structures.
+- [literature/](https://github.com/vertical-cloud-lab/tensegrity-optimization/tree/main/literature): collected papers. LaTeX sources for the abstract and proposal are at the repository root.
+
+## Proposals and next venues
+
+- [PR #14](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/14): NASA Space Grant fellowship proposal.
+- [Issue #78](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/78) and [PR #73](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/73): abstract for TMS 2027.
+- [PR #43](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/43): survey of funding venues for a larger follow-on project.
+
+These lists are curated; the full set of threads is in the [issues](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues) and [pull requests](https://github.com/vertical-cloud-lab/tensegrity-optimization/pulls) tabs.
+
+## People
+
+Jeffrey R. Hill (PI) and Sterling G. Baird (co-PI), Department of Mechanical Engineering, Brigham Young University, with undergraduate researchers including Marcus Madsen.
+
+Much of the exploratory work in the pull requests above was drafted by AI coding agents (GitHub Copilot and Claude Code) steered through the issue threads here; [issue #103](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/103) estimates what that usage would have cost.
