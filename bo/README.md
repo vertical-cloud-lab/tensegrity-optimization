@@ -524,6 +524,54 @@ python bo/t3_prism_drop_count_sensitivity.py --emit-truncated 20
 python bo/t3_prism_bo_campaign.py --results bo/t3-prism-bo-batch-drop-results-first20.csv ...
 ```
 
+### Window extrapolation (round 2 projected to a full session)
+
+The replay above asks what round 1 would have looked like short; this
+analysis asks the reverse as well: what the round-2 short sessions (19 to 20
+scored drops) would likely read at round-1 length, and whether any headline
+claim depends on the choice of window. `t3_prism_drop_window_extrapolation.py`
+computes, from the committed per-drop files only:
+
+- `t3-prism-drop-window-ratios.csv`: per round-1 specimen, the ratio of the
+  full-session mean to the first-19 mean, per objective ingredient. Pooled:
+  t180 ratio 0.9985 (sd 0.0033, range -0.7 to +0.4 percent), e_rebound
+  ratio 1.041 (sd 0.086), where the rebound spread is dominated by amdjwm's
+  late burst (+26.7 percent; without it, 1.013 with sd 0.015). The round-1
+  t180 ranking at 19 drops is preserved (Spearman +0.98; the one swap is
+  ajhby6 vs bpx68c, first-19 means 0.00003 apart).
+- `t3-prism-drop-window-extrapolation.csv`: each round-2 article's measured
+  window mean times the pooled ratio, with a 1 sd band (ratio spread
+  combined with the article's own SEM) and a min/max envelope. This is an
+  estimate that assumes round-2 articles drift like round-1 articles did;
+  it is analysis, not measurement, so it is not an ingestion file.
+- `t3-prism-drop-window-front-robustness.csv`: Pareto membership for the 17
+  mapped articles under three conventions: mixed (as committed), matched
+  first-19 in both rounds, and full-equivalent (round 2 extrapolated). The
+  round-2 core of the front (6lhxfy, r2d2c7, r2d2c1, r2d2c2, r2d2c6) is
+  identical under all three; the window choice only decides whether the
+  low-rebound round-1 anchors also sit on it (ajhby6 joins under matched
+  first-19; ajhby6 and bpx68c both join under full-equivalent).
+- `t3-prism-bo-batch-drop-results-first19.csv`: the matched-window round-1
+  summary in the ingestion schema (19 is the modal scored count of the
+  round-2 sessions; the guidance above used 20 before the sessions ran).
+  This, not the extrapolation, is the file to feed a refit.
+- `figures/t3-prism-drop-window-extrapolation.png`: both halves on one
+  canvas.
+
+Two conclusions worth carrying. The round-2 calibration verdicts do not
+depend on the window: extrapolated to a full session, all nine articles
+stay above their frozen t180 predictions and below their frozen rebound
+predictions (6 of 9 stay below even at the +27 percent worst-case burst
+envelope). And one claim does need a qualifier: "r2d2c1 strictly dominates
+bpx68c" holds as committed and under matched windows, but r2d2c1's
+extrapolated full-session rebound (6.21 mJ, sd 0.51) edges 0.03 mJ above
+bpx68c's measured 6.18, so state that dominance as a short-window result.
+
+```bash
+python bo/t3_prism_drop_window_extrapolation.py            # all outputs
+python bo/t3_prism_drop_window_extrapolation.py --no-figure
+```
+
 ## Round-2 drop data (the r2d2c prints, first sessions 2026-08-24)
 
 Raw campaign data is uploaded manually to the shared Box folder
