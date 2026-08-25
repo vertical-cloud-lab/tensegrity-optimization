@@ -249,8 +249,11 @@ def _domination_depth(z: np.ndarray, zf: np.ndarray) -> np.ndarray:
     band-vs-needle diagnostic: on a band geometry most of the cloud has
     depth near zero and DOE cannot lose.
     """
-    diff = z[:, None, :] - zf[None, :, :]          # (n, front, 2)
-    return np.maximum(diff.max(axis=2), 0.0).min(axis=1)
+    out = np.empty(len(z))
+    for a in range(0, len(z), 2048):               # chunked: (n, front, 2)
+        diff = z[a:a + 2048, None, :] - zf[None, :, :]
+        out[a:a + 2048] = np.maximum(diff.max(axis=2), 0.0).min(axis=1)
+    return out
 
 
 def mc_free_hv(obj: np.ndarray, geom_feas: np.ndarray, feas: np.ndarray,
@@ -839,6 +842,7 @@ def strain_era_contrast(outdir: Path) -> None:
              ("lhs", "pr102_baseline_lhs_ratios-strain_seed*.csv"),
              ("random", "pr102_baseline_random_ratios-strain_seed*.csv"),
              ("heuristic", "pr102_baseline_heuristic_ratios-strain_seed*.csv")]
+    seed_rows = []
     for strategy, pat in specs:
         finals = []
         for f in sorted(era_dir.glob(pat)):
@@ -846,7 +850,11 @@ def strain_era_contrast(outdir: Path) -> None:
             feas = df["feasible"].to_numpy(dtype=bool)
             obj = df[["t180", "peak_tendon_strain"]].to_numpy(dtype=float)
             masked = np.where(feas[:, None], obj, np.inf)
-            finals.append(hypervolume_2d(masked, ref))
+            hv = hypervolume_2d(masked, ref)
+            finals.append(hv)
+            seed_rows.append({"strategy": strategy, "file": f.name,
+                              "final_hv": hv,
+                              "hv_frac_of_ceiling": hv / ceiling})
         if finals:
             finals = np.array(finals)
             rows.append({"strategy": strategy, "n_seeds": len(finals),
@@ -856,8 +864,65 @@ def strain_era_contrast(outdir: Path) -> None:
     out = pd.DataFrame(rows)
     out.to_csv(outdir / "bo_contrast_strain_era_rescored.csv", index=False,
                float_format="%.6g")
+    pd.DataFrame(seed_rows).to_csv(
+        outdir / "bo_contrast_strain_era_rescored_seeds.csv", index=False,
+        float_format="%.6g")
     print("strain-era runs, re-scored under the study convention:")
     print(out.to_string(index=False))
+
+
+def headline(pair: str, outdir: Path, mode: str = "printable") -> None:
+    """The two-panel money plot: the same protocol on both objective pairs.
+
+    Left: the committed strain-era runs (the no-separation geometry).
+    Right: this study's chosen pair.  Both axes are the fraction of that
+    pair's own polished ceiling, so the panels are directly comparable.
+    """
+    era = pd.read_csv(outdir / "bo_contrast_strain_era_rescored_seeds.csv")
+    order = ["botorch", "sobol", "lhs", "random", "heuristic"]
+    ceiling = ceiling_for(pair, outdir)
+    new_rows = []
+    for s in order:
+        frames = (_load_bo(pair, outdir) if s == "botorch"
+                  else _load_base(pair, s, mode, outdir))
+        for f in frames:
+            new_rows.append({"strategy": s,
+                             "hv_frac_of_ceiling":
+                                 f["hv"].to_numpy()[-1] / ceiling})
+    new = pd.DataFrame(new_rows)
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.6, 4.9), dpi=200, sharey=True)
+    rng = np.random.default_rng(7)
+    for ax, df, title in (
+            (axes[0], era, "(t180, peak tendon strain): the anti-correlated "
+             "band\nno separation, committed era runs"),
+            (axes[1], new, f"(t180, envelope volume): the efficient ridge\n"
+             f"this study, mode = {mode}")):
+        for i, s in enumerate(order):
+            v = 100 * df.loc[df["strategy"] == s,
+                             "hv_frac_of_ceiling"].to_numpy()
+            if not len(v):
+                continue
+            colour, label = STRATEGY_STYLE[s]
+            x = i + rng.uniform(-0.13, 0.13, len(v))
+            ax.scatter(x, v, s=26, alpha=0.8, color=colour, zorder=4)
+            ax.hlines(v.mean(), i - 0.28, i + 0.28, color=colour, lw=2.5,
+                      zorder=5)
+        ax.axhline(100, color="#111111", ls="--", lw=1.1)
+        ax.set_xticks(range(len(order)))
+        ax.set_xticklabels([STRATEGY_STYLE[s][1] for s in order], fontsize=8,
+                           rotation=12)
+        ax.set_title(title, fontsize=10)
+        ax.grid(alpha=0.25, lw=0.5, axis="y")
+    axes[0].set_ylabel("final hypervolume, % of the pair's own ceiling\n"
+                       "(45 designs, 10 independent seeds)")
+    fig.suptitle("Same optimizer, same protocol, same simulator: the "
+                 "BO-vs-DOE contrast is a property of the objective pair",
+                 fontsize=11.5)
+    fig.tight_layout()
+    fig.savefig(outdir / "bo_contrast_headline.png", bbox_inches="tight")
+    plt.close(fig)
+    print(f"wrote {outdir}/bo_contrast_headline.png")
 
 
 def main(argv=None):
@@ -873,6 +938,8 @@ def main(argv=None):
     ap.add_argument("--era-contrast", action="store_true",
                     help="re-score the committed strain-era runs under this "
                          "study's reference convention")
+    ap.add_argument("--headline", metavar="PAIR", default=None,
+                    help="the two-panel strain-era vs chosen-pair figure")
     ap.add_argument("--strategies", nargs="*",
                     default=["random", "sobol", "lhs", "heuristic"])
     ap.add_argument("--mode", choices=("printable", "plain", "both"),
@@ -931,6 +998,8 @@ def main(argv=None):
         compare(args.compare, args.outdir)
     if args.era_contrast:
         strain_era_contrast(args.outdir)
+    if args.headline:
+        headline(args.headline, args.outdir)
     return 0
 
 
