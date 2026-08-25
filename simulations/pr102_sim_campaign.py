@@ -63,6 +63,7 @@ Run::
 from __future__ import annotations
 
 import argparse
+import itertools
 import math
 import os
 import time
@@ -537,6 +538,28 @@ def aggregate(outdir: Path, model: str, init: str = "sobol",
         print(f"no per-seed CSVs for {model}/{space}/{init} in {outdir}")
         return
     frames = [pd.read_csv(f) for f in files]
+
+    # Round-0 distinctness audit.  A 2026-08-21 session shipped "repeats"
+    # that silently shared one round 0, voiding the cross-seed spread, so
+    # the property is now checked on every aggregate rather than trusted:
+    # under --init sobol no two seeds may have drawn the same initial
+    # batch.  (The same seed re-run under different acquisition settings
+    # *should* reproduce its own round 0; the failure mode is two
+    # different seeds sharing one.)
+    pnames = [p for p in space_config(space, obj2_choice)["param_names"]
+              if p in frames[0].columns]
+    r0 = {int(f["seed"].iloc[0]): f[f["round"] == 0][pnames]
+          .round(9).reset_index(drop=True) for f in frames}
+    clashes = [(a, b) for a, b in itertools.combinations(sorted(r0), 2)
+               if r0[a].shape == r0[b].shape and r0[a].equals(r0[b])]
+    if init == "sobol":
+        if clashes:
+            print(f"WARNING: seed pairs {clashes} share an identical "
+                  f"round-0 Sobol batch; these are not independent repeats")
+        else:
+            print(f"round-0 audit: {len(r0)} seeds, all pairwise-distinct "
+                  f"initial Sobol batches (checked over {pnames})")
+
     n = min(len(f) for f in frames)
     hv = np.vstack([f["hv"].to_numpy()[:n] for f in frames])
     t180 = np.vstack([f["best_t180"].to_numpy()[:n] for f in frames])

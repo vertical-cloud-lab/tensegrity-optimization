@@ -274,8 +274,12 @@ plumbing rather than the reproducibility of the optimizer.
 `--init sobol`, now the default, starts each repeat from scratch: round 0 is
 the campaign's own nine-point Sobol draw, scrambled with that repeat's seed
 (passed to Ax's Sobol generator explicitly as well as through
-`AxClient(random_seed=...)`, so the draw is pinned to the seed rather than
-to process state). `--init printed` keeps the PR #102-exact behaviour for
+`AxClient(random_seed=...)`, so the draw is pinned to that repeat's own
+seed rather than to process state, and every seed value yields a different
+batch). `--aggregate` audits the property instead of trusting it: it
+compares every pair of per-seed CSVs and warns if any two seeds share an
+identical round-0 batch, so a regression to a shared round 0 cannot pass
+silently again. `--init printed` keeps the PR #102-exact behaviour for
 when the question is specifically what the measured batch implies.
 
 One thing had to move with it. The hypervolume reference point used to be
@@ -686,10 +690,12 @@ reduced, so the full ten-repeat campaign is ~96 min of 4-core compute.
 Two findings, and the first one removes a confound:
 
 **The reduced acquisition effort was not the reason the BO failed to
-separate.** The full-effort and reduced-effort repeats share identical
-round-0 draws (the initial Sobol batch is pinned to the seed), so the
-model rounds compare pairwise. At the matched 36-design budget the
-paired difference in final hypervolume is -1.1 % of the mean (full
+separate.** Each repeat's initial Sobol batch is a deterministic
+function of its own seed, so the ten seeds draw ten distinct round-0
+batches (no design appears in two of them), while seed k of the
+full-effort run reproduces the round 0 of seed k of the reduced-effort
+run exactly; the model rounds therefore compare pairwise. At the
+matched 36-design budget the paired difference in final hypervolume is -1.1 % of the mean (full
 effort *lower*), 5 wins in 10, Wilcoxon p = 0.92: the 8x128 override
 was costing essentially nothing on this 4-parameter, two-constraint
 problem. The extra ninth-design batch (36 -> 45) buys the BO
