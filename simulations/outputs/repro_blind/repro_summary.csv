@@ -1,0 +1,2 @@
+strategy,n_seeds,budget,final_hv_mean,final_hv_sd,best_t180_mean,best_t180_sd,best_e_reb_mJ_mean,best_e_reb_mJ_sd,hv_frac_of_reference,mannwhitney_p_vs_bo
+botorch,1,36,17.715998531595144,,0.4935259345760527,,169.3874747324711,,0.9829115918550345,
