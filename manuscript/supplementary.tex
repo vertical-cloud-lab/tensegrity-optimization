@@ -1,0 +1,415 @@
+% =============================================================================
+% supplementary.tex -- Supplementary Information (SI) for the JMD manuscript.
+%
+% Detailed development records that do not belong in the main manuscript are
+% collected here per the PR #20 review (@sgbaird): the main text stays
+% high-level and free of GitHub/PR-specific references, while the SI may cite
+% specific pull requests and link to them directly.
+%
+% Build:  cd manuscript && pdflatex supplementary  (twice)
+%         or  make manuscript-si
+% =============================================================================
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black]{hyperref}
+
+% Synthetic-placeholder (dummy) data convention, matching the main text:
+% round-2 "measured" values are invented stand-ins typeset in violet.
+\definecolor{dummydata}{RGB}{142,68,173}
+\newcommand{\dummy}[1]{\textcolor{dummydata}{#1}}
+
+% Number SI floats/sections with an "S" prefix.
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+
+\newcommand{\repo}{https://github.com/vertical-cloud-lab/tensegrity-optimization}
+
+\title{Supplementary Information:\\
+  Experiment-Driven Bayesian Optimization of the Impact Response of\\
+  Multi-Material 3D-Printed Tensegrity-Inspired Structures}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+  \fcolorbox{dummydata}{dummydata!6}{\parbox{0.94\linewidth}{\small
+  \textcolor{dummydata}{\textbf{Draft note (remove before submission):}
+  as in the main text, every value printed in this violet color
+  (the round-2 entries of Table~\ref{tab:si-printkey-r2}) is synthetic
+  placeholder (dummy) data pending the physical round-2 drop sessions
+  and article logging; black type is real measurement or record.}}}
+\end{center}
+
+This Supplementary Information collects the detailed design-, fabrication-,
+test-, and analysis-development records supporting the main manuscript. Unlike
+the main text, the SI references the project's development history directly,
+including specific pull requests (PRs) and issues in the project repository
+(\href{\repo}{\repo}).
+
+% -----------------------------------------------------------------------------
+\section{Joint-Design Study}
+\label{si:joints}
+% -----------------------------------------------------------------------------
+The strut-to-cable junction was developed and ranked through a five-design
+OpenSCAD study (anchor-bulb, dovetail, TPU-sleeve overmold, eyelet-loop, and
+TPU-rebar variants). The working prototype uses a dovetail joint (Design~B)
+with an anchor-bulb backup (Design~A) for sensitivity studies; a captive TPU
+core is routed inside the PLA shell so that the soft tendon is protected from
+layer-line failure at the transition.
+
+Full results, renders, and the Phase-3/Phase-4 design reviews are documented in
+\href{\repo/pull/39}{PR~\#39} (joint design) and
+\href{\repo/pull/35}{PR~\#35} (CAD parameterization and print history).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/joints/all_iso_montage.png}\\[2pt]
+  \includegraphics[width=\linewidth]{../figures/joints/all_section_montage.png}
+  \caption{Five candidate strut-to-cable joint geometries from the
+    OpenSCAD joint study (left to right: A anchor-bulb, B dovetail,
+    C TPU-sleeve overmold, D eyelet-loop, E TPU-rebar; top row
+    isometric, bottom row section views). The study renders use the
+    PETG (orange) + TPU (cyan) material pair under which the joint
+    family was first developed; the working prototype adapts the
+    selected dovetail (B) with an anchor-bulb (A) backup to the
+    PLA/TPU pair of the main text, with the captive TPU core routed
+    inside the PLA shell.}
+  \label{fig:si-joints}
+\end{figure}
+
+% -----------------------------------------------------------------------------
+\section{Support Strategy for Soft Members}
+\label{si:supports}
+% -----------------------------------------------------------------------------
+Near-vertical TPU tendons are otherwise unsupported during printing. For the
+printed campaign batches, automatic support generation was disabled and PLA
+edge supports were painted manually in Bambu Studio along each tendon, with
+the support-to-object XY clearance tightened from \SI{0.35}{mm} to
+\SI{0.2}{mm} during tuning on the S0 reference prism
+(\href{\repo/issues/98}{issue~\#98}). Support removal is the leading source of
+the logged cosmetic defects (surface stringing; on two seed articles, TPU
+strands pulled off bottom tendons), so defects are recorded per article in the
+print key (Section~\ref{si:printkey}).
+
+An automated alternative was developed in parallel: a tensegrity-specific
+Bambu Studio recipe (support threshold angle lowered from \SI{40}{\degree} to
+\SI{10}{\degree}, support material matched to the rigid extruder) combined
+with manually generated narrowing pillars that ray-cast against the printable
+mesh underside. The narrowing-pillar workflow is documented in
+\href{\repo/pull/66}{PR~\#66}; the H2D multi-part material assignment fix is
+in \href{\repo/pull/64}{PR~\#64}.
+
+% -----------------------------------------------------------------------------
+\section{As-Printed Campaign Record (Print Key)}
+\label{si:printkey}
+% -----------------------------------------------------------------------------
+Table~\ref{tab:si-printkey} is the print key for the seed campaign: every
+article's print identifier, its design, its weighed mass, and its logged
+defects. The authoritative machine-readable key, together with the as-printed
+slicer project (one specimen per named build plate), lives at
+\href{\repo/pull/102}{PR~\#102} (\texttt{bo/t3-prism-bo-batch-print-key.csv}).
+Two entries deserve care. Design 08 was printed three times; the plate label
+in the archived slicer project and a contemporaneous issue comment disagree on
+which article is the official one (\textit{dea4ls} versus \textit{bag26v}),
+and pending confirmation the analysis uses \textit{bag26v}. The tri-print of
+design 08 also supplies the only print-to-print repeatability number to date:
+a mass standard deviation of \SI{0.457}{g} (three prints of a single
+geometry, so not a general process repeatability estimate). Separately, one tested article
+(\textit{amdjwm}) has no confirmed design mapping and is excluded from the
+surrogate fit until identified.
+
+\begin{table}[ht]
+  \centering
+  \caption{Print key for the seed campaign (nine Sobol designs plus the S0
+    reference). Masses weighed on a \SI{0.01}{g} scale. TPU fed from a heated
+    dry box near 8\% relative humidity where logged. The first five articles
+    (printed before the TPU nozzle fix) used the standard \SI{0.4}{mm} TPU
+    nozzle; the rest used the high-flow \SI{0.6}{mm} nozzle.}
+  \label{tab:si-printkey}
+  \small
+  \begin{tabular}{@{}llS[table-format=2.2]l@{}}
+    \toprule
+    Design & Article & {Mass (g)} & Logged defects \\
+    \midrule
+    Spec 00 & 9hhbkp & 21.62 & none \\
+    Spec 01 & 6lhxfy & 18.50 & slight strut misprint; divot on one top tendon \\
+    Spec 02 & autv5r & 22.04 & minor tendon misalignment near top \\
+    Spec 03 & ebdna8 & 19.61 & two strands off bottom tendons (support removal) \\
+    Spec 04 & nvxsrv & 20.66 & misalignment ring after printer pause \\
+    Spec 05 & 6nheas & 21.73 & two strands off bottom tendons (support-related) \\
+    Spec 06 & 1zm8rv & 18.50 & stringing along diagonal tendons \\
+    Spec 07 & ajhby6 & 20.53 & filament line pulled from bottom struts \\
+    Spec 08 & dea4ls & 22.29 & stringing; residual PLA on tendon \\
+    Spec 08 & bag26v & 21.42 & some stringing on tendon \\
+    Spec 08 & ghmj4y & 22.10 & inconsistent tendon cross-section near top \\
+    S0 ref. & bpx68c & 20.23 & none major \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Table~\ref{tab:si-printkey-r2} is the corresponding key for the round-2
+batch (Ax trials 10 to 18, sliced from the same as-printed project
+conventions). The article identifiers, weighed masses, and defect log are
+\dummy{synthetic placeholders}: the batch is printed but its per-article
+logging and sessions are pending, and the stand-ins exist so the record
+reads at its final scope.
+
+\begin{table}[ht]
+  \centering
+  \caption{\dummy{\textbf{Synthetic placeholder data (entire
+    table).}} Print key for the round-2 model-recommended batch. Entries
+    are invented stand-ins, typeset in violet, to be replaced by the
+    logged campaign record once the batch's articles are weighed,
+    inspected, and tested.}
+  \label{tab:si-printkey-r2}
+  \small\color{dummydata}
+  \begin{tabular}{@{}clS[table-format=2.2]l@{}}
+    \toprule
+    Trial & Article & {Mass (g)} & Logged defects \\
+    \midrule
+    10 & kq3w7f & 18.41 & light stringing on one diagonal tendon \\
+    11 & x8pdz2 & 19.52 & none \\
+    12 & w4jn8y & 19.88 & none \\
+    13 & e9tk2m & 19.37 & minor support scar on one bottom tendon \\
+    14 & u5rb6x & 20.68 & none \\
+    15 & r2vq9c & 20.31 & stringing near top vertex \\
+    16 & m7hs4t & 19.05 & none \\
+    17 & h3fc9q & 19.94 & none \\
+    18 & p6dm3z & 20.41 & slight seam ridge on one strut \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Drop-Tower Protocol and Rig Characterization}
+\label{si:drop}
+% -----------------------------------------------------------------------------
+The campaign fixture is a Lansmont Model~23 shock test system with a Test
+Partner~4 data-acquisition console. The development history behind the
+protocol in the main text is summarized here.
+
+\paragraph{Protocol.} \SI{60}{in} drop height; specimen upright on the
+carriage plate; 101 valid captures per specimen (103 for one article,
+autv5r), counted after the first two drops of each session are discarded as
+warm-up; three slow-motion video clips (\SI{959}{fps}) per specimen; roughly
+\SI{42}{s} per drop and about ninety minutes per specimen. Capture settings:
+\SI{1.25}{MHz} sample rate, \SI{100}{ms} record, \SI{2}{ms} pre-trigger,
+\SI{150}{G} trigger on the base channel, AC-coupled ICP conditioning. The
+console settings were re-verified digit-for-digit against an archived
+screenshot after a settings-loss event, with data continuity confirmed to
+within about 1\%.
+
+\paragraph{Impact surface.} A blinded $3\times3$ crossover experiment over
+three candidate polyurethane mat arrangements (single \SI{0.25}{in} Shore
+70~OO; single \SI{0.5}{in} Shore 60~OO; stacked) selected the single
+\SI{0.5}{in} Shore 60~OO sheet (\href{\repo/issues/88}{issue~\#88},
+\href{\repo/pull/86}{PR~\#86}). Unlike the earlier felt stack, the mat does
+not measurably compact over hundred-drop sessions. Historical note: sessions
+recorded as ``5 felts'' in early protocol documents were physically four felt
+sheets plus one cardboard layer.
+
+\paragraph{Sensors and calibration.} Base input: single-axis piezoelectric
+accelerometer on the carriage plate (\SI{1.059}{mV/G}, full scale
+\SI{9443}{G}); top response: Dytran 3133A4 triaxial accelerometer
+(X/Y/Z 0.690/0.667/\SI{0.734}{mV/G}) seated in a printed pocket at the top
+vertex, mounted per ISO~5348. An earlier single-axis channel was retired
+after range clipping. The two base-capable channels were cross-calibrated in
+place over fifteen co-located drops: ratio $0.953 \pm 0.001$ at CFC-180
+(per-drop $0.952 \pm 0.004$), stable across drop heights
+(\href{\repo/pull/74}{PR~\#74}).
+
+\paragraph{Filtering correction.} The SAE~J211/1 channel-frequency-class
+filter used for all reported numbers is implemented from the standard's
+published coefficients. An earlier in-house implementation passed the
+two-pass (forward-backward) corner frequency to a single-pass design, which
+narrows every channel class by roughly 20\% (an effective CFC-144 where
+CFC-180 was intended); the discrepancy was identified during the analysis
+audit of \href{\repo/issues/94}{issue~\#94} and corrected before the campaign
+numbers were produced.
+
+\paragraph{Processing pipeline.} For each capture, every channel is
+calibrated and CFC-filtered independently; the top-vertex magnitude
+$\lVert\mathbf{a}_{\mathrm{top}}(t)\rVert$ is formed from the three filtered
+triaxial components, and the two peaks entering $t_{180}$ are searched
+within a short window (approximately \SI{1.5}{ms}) of first contact, so the
+peaks need not be simultaneous. The baseline is estimated from the record
+tail (at healthy tower speed the mat-contact foot begins before the
+\SI{2}{ms} pre-trigger window). $\Delta v$ is the integral of the baselined
+base channel over the impact pulse and doubles as the rig-health gate.
+Drops are discarded per the warm-up rule. Table~\ref{tab:si-processing}
+collects the operational analysis parameters in one place: values known
+from the protocol are stated numerically, and the remaining thresholds
+are to be transcribed verbatim from the version-tagged campaign analysis
+code at its archival release (a declared submission gate), rather than
+paraphrased here at the risk of diverging from the code of record.
+
+\begin{table}[ht]
+  \centering
+  \caption{Operational analysis parameters for the drop-tower pipeline.
+    ``Code of record'' marks values to be transcribed from the
+    version-tagged analysis release before submission.}
+  \label{tab:si-processing}
+  \small
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Parameter & Value \\
+    \midrule
+    Drop height & \SI{60}{in} (\SI{1.524}{m}) \\
+    Sample rate / record / pre-trigger & \SI{1.25}{MHz} / \SI{100}{ms} / \SI{2}{ms} \\
+    Trigger & \SI{150}{G} on the base channel \\
+    Reporting filter class & CFC-180 (SAE J211/1), two-pass corner corrected \\
+    Diagnostic filter class & CFC-1000 \\
+    Peak-search window & $\approx$\SI{1.5}{ms} from first contact \\
+    Baseline estimate & record tail \\
+    Warm-up exclusion & first 2 drops per session \\
+    Valid captures per session & 101 (103 for autv5r) \\
+    Rig-health gate & $\Delta v$ from baselined base channel \\
+    Ringdown fit gate & $r^2 \ge 0.85$ (exponential fit) \\
+    Second-contact threshold and window & code of record \\
+    Per-capture exclusion rules & code of record \\
+    Stabilized-mean convention & code of record \\
+    Filter initialization / boundary handling & code of record \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Rig health and repair history.} Rig health is gated on the impact
+velocity change $\Delta v$ recovered from the base channel; over an
+uninterrupted 100-drop session the $\Delta v$ CV was 0.54\% with a flat
+drift slope. During commissioning, two guide-rod locking pins failed and a
+defeated pin-park safety interlock was discovered and recommissioned; the
+pin-related friction produced a measurable $\Delta v$ deficit that resolved
+after repair (\href{\repo/issues/92}{issue~\#92}). Approximately 3{,}660
+instrumented drops across roughly 50 printed specimens were performed over
+three months of commissioning and characterization before the campaign
+sessions (\href{\repo/issues/101}{issue~\#101}); the campaign itself
+contributes over 800 clean captures to date.
+
+\paragraph{Objective provenance and adversarial review.} The objective stack
+evolved through a measurability review
+(\href{\repo/pull/97}{PR~\#97}): per-specimen crush energy in joules is not
+recoverable from this rig (no falling-mass or displacement channel, and the
+specimens stay elastic), which is why the campaign responses are the
+filtered peak-acceleration ratio and a provisional mass-weighted
+rebound-timing score, with quasi-static
+crush metrics deferred to a load-frame campaign. A pre-registered
+adversarial review of the objective choices (Edison ANALYSIS task
+\texttt{3e398131}, archived in the repository) subsequently recommended
+refitting with article-level noise (0.72\% CV rather than per-drop standard
+errors), treating the rebound fraction as a candidate constraint pending a
+restrained-versus-unrestrained validation with synchronized video, and
+reserving print capacity for replicate articles; these corrections define
+the round-3 plan described in the main-text Discussion.
+
+% -----------------------------------------------------------------------------
+\section{Printed-Mass Model}
+\label{si:mass}
+% -----------------------------------------------------------------------------
+The seed batch was projected onto constant \emph{solid} CAD mass
+($m^{\star} = \SI{30.95}{g}$), yet the articles weigh
+\SIrange{18.50}{22.29}{g}, because PLA struts print at partial infill (15\%
+grid, two walls) while thin TPU cables print near solid, and the PLA-to-TPU
+volume split swings widely across the design box. A two-stage calibrated
+model closes this gap (\href{\repo/pull/102}{PR~\#102},
+\texttt{bo/t3\_prism\_mass\_model.py}): analytic member volumes are corrected
+to rendered-solid grams (one factor per material), and rendered-solid grams
+are mapped to weighed grams through a wall-plus-infill term in the as-printed
+strut diameter (fitted infill 23.6\%, wall \SI{1.18}{mm}, TPU factor 0.744).
+The model's residual standard deviation is \SI{0.378}{g}. For context, the
+three available prints of design 08 have a sample standard deviation of
+\SI{0.457}{g}; three prints of one geometry are insufficient to establish a
+general process repeatability limit. Inverting it inside the projection allows rounds to
+hold \emph{printed} grams constant with no slicer in the loop. Two round-2
+recommendation sets exist in the record and must not be conflated: the
+batch actually sliced and sent to the printer was generated before this
+correction, under the seed round's solid-mass projection, with the
+mass-aware objectives and each recommendation's predicted printed mass
+reported; a subsequently regenerated set applies the constant-printed-mass
+projection (target \SI{20.23}{g}, the reference article's weight) and is
+the working proposal for round 3. The repository's suggestion CSV at the
+branch head is the regenerated (constant-printed-mass) set.
+
+% -----------------------------------------------------------------------------
+\section{Simulation Fidelity Ladder}
+\label{si:simulation}
+% -----------------------------------------------------------------------------
+The screening ladder of the main text was assembled and benchmarked in
+\href{\repo/pull/33}{PR~\#33}. Tier~C is a MuJoCo rigid-strut, spring-tendon
+model (about \SI{0.15}{s} per design with CFC-180 filtering); PyBullet and
+PyChrono equivalents were benchmarked and demoted (the PyBullet bare-prism
+peak is contact-dominated and design-invariant). Tier~B is a Newton/Warp
+XPBD model with deformable struts and explicit tendon cross-sections
+(seconds to tens of seconds per design), which restores the
+tendon-stiffness sensitivity Tier~C lacks. Tier~A is a PolyFEM
+incremental-potential-contact hyperelastic model of the welded PLA/TPU prism
+(about a minute per run), which captures strut buckling and self-contact.
+
+Documented blind spots carried into any use of the ladder: Tier-C peak
+acceleration is floor-contact dominated and nearly flat across cable
+stiffness; the apparent strut-diameter leverage in unconstrained sweeps is
+largely a mass/contact confound (it shrinks about seventeenfold under a
+constant-mass sweep); the twist variable is not consumed by the Tier-C
+regime plumbing; rigid-strut models cannot reproduce the measured
+amplification ($t_{180}>1$ on five of eight bench articles, while simulated
+$t_{180}$ cannot exceed about 1); and simulated restitution is
+design-invariant where the measured rebound is not. Against the measured
+seed round ($n=7$ mapped articles), an intensive volumetric
+energy-absorption score computed at Tier~C showed a strong exploratory
+in-sample rank association with measured $t_{180}$ (Spearman
+$\rho_s = -0.929$; for seven untied ranks the exact two-sided
+permutation $p = 0.0028$;
+hypothesis-generating rather than validated prediction, since the metric
+was evaluated on the seed set without multiplicity adjustment), while the
+ladder's own simulated $t_{180}$ reaches only $\rho \approx 0.5$.
+
+A simulation-side closed-loop study using the same Ax/BoTorch pipeline on
+the Tier-C evaluator (ten independent Sobol-seeded repeats of 36 designs
+each) reached 97.1\% of an exhaustively computed reference-front
+hypervolume, versus 80.4\% for compass search and 60 to 66\% for random,
+Latin-hypercube, and Sobol baselines, with the smallest seed-to-seed spread;
+this motivates the budget-matched baseline comparison planned for the
+physical campaign but is not evidence about the physical loop itself.
+
+% -----------------------------------------------------------------------------
+\section{Metal-Analog Validation Plan}
+\label{si:metal-validation}
+% -----------------------------------------------------------------------------
+A final validation campaign rebuilds a subset of the $T_3$-prism designs as
+metal analogs (hollow aluminum rods for the compression members and
+stainless-steel threaded cables for the tension members) using the same
+$R$, $H$, $\theta$, and member-diameter parameterization as the printed
+PLA/TPU specimens. To probe transfer across material systems rather than
+only confirming the optimum, the selected designs deliberately span the
+predicted performance range: representatives the surrogate predicts to be
+worst-, mid-, and best-performing are each built in both material systems
+and characterized under the identical drop protocol of
+Section~\ref{si:drop}. Rank agreement between the measured PLA/TPU ranking
+and the hollow-aluminum/stainless-steel ranking on the primary campaign
+metric $t_{180}$ (to be reported in the main-text metal-analog table and
+figure, with the provisional rebound score and, later, quasi-static SEA as
+secondary rankings) would be preliminary evidence consistent with transfer
+beyond the as-printed polymers; disagreement would not isolate which
+material or joint difference caused the change.
+
+\begin{figure}[ht]
+  \centering
+  \fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering\itshape
+    Placeholder: assembled metal-analog specimens (hollow aluminum rods +
+    stainless-steel threaded cables) beside their printed PLA/TPU
+    equivalents for the worst/mid/best predicted tiers (photographs pending
+    fabrication).}}
+  \caption{Metal-analog validation specimens alongside their printed
+    PLA/TPU equivalents for each predicted performance tier.}
+  \label{fig:si-metal-validation}
+\end{figure}
+
+\end{document}

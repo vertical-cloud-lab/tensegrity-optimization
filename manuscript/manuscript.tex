@@ -1,0 +1,9 @@
+% =============================================================================
+% manuscript.tex -- "clean" build of the JMD draft.
+% Loads manuscript-body.tex with the todonotes package disabled, so all
+% \todo{}, \listoftodos, and figure-/table-placeholder annotations vanish
+% from the PDF. Use this for sharing a reader-friendly draft.
+% Build with `make manuscript` (top-level Makefile).
+% =============================================================================
+\def\TODOOPTS{disable}
+\input{manuscript-body}

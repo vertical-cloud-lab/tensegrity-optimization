@@ -1,0 +1,6 @@
+{
+  "slug": "t4-citation-classification",
+  "task_id": "4ba95a0f-2263-40a5-8c8c-b5da2c550dcb",
+  "job": "job-futurehouse-paperqa3-high",
+  "note": "non-blocking; fetch next session via client.get_task(task_id)"
+}

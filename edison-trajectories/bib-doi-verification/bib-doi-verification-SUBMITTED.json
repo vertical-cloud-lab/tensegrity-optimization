@@ -1,0 +1,9 @@
+{
+  "task_id": "dbd490f6-edbc-4b8e-8778-b41e166b42ca",
+  "job": "job-futurehouse-paperqa3-high",
+  "uploaded_files": [
+    "data_entry:4d09a434-1cc6-440e-b6ab-8d17b2c47397"
+  ],
+  "needs_list": "edison-trajectories/bib-doi-verification/needs-list.md",
+  "note": "non-blocking; fetch next session via client.get_task(task_id)"
+}
