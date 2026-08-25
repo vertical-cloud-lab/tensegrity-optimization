@@ -461,6 +461,27 @@ tight bounding box):
   initialization-only folds, and both states' Ax cross-validation
   diagnostics.
 
+Per-gram companion (`--per-gram`, display only, use with `--plot-only`):
+the same set with every rebound-energy quantity (measured value and SEM,
+both states' held-out prediction means and sds) divided by the article's
+weighed mass, written as `-per-gram` tagged files next to the absolute
+ones. As with the campaign figures, the measured quotient is exactly
+e_rebound * g * h, the intensive form from the PR #33 notes, so no article
+scores well by printing light; predictions divide by the same weighed mass
+they were conditioned on. MAPE is invariant under the per-article division
+(each article's relative error is unchanged), but the ranking is not, so
+the rebound skill numbers on the panels are recomputed from the
+transformed values with the same definitions as the committed absolute
+diagnostics (verified to reproduce them exactly before transforming):
+rank corr +0.02 (initialization only) to +0.68 (all data), against +0.24
+to +0.70 in absolute mJ. The learning verdict is the same in both forms;
+the initialization state merely starts even closer to no skill once the
+printed-mass dividend is stripped out. The committed CSVs stay in absolute
+mJ; the transform lives in `loocv_evolution_per_gram` and runs at render
+time.
+
+    python bo/t3_prism_bo_diagnostics.py --loocv-evolution --plot-only --per-gram
+
 ## Drop-count sensitivity (shorter round-2 sessions)
 
 Round 1 ran ~101 drops per specimen. When session time is short, fewer drops

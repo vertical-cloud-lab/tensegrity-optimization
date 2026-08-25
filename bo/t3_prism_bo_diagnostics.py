@@ -75,6 +75,7 @@ Usage (from the repo root)::
     python bo/t3_prism_bo_diagnostics.py --parity-evolution --plot-only
     python bo/t3_prism_bo_diagnostics.py --loocv-evolution             # figure 5
     python bo/t3_prism_bo_diagnostics.py --loocv-evolution --plot-only
+    python bo/t3_prism_bo_diagnostics.py --loocv-evolution --plot-only --per-gram
 
 By default the model is refit from the committed AxClient snapshot
 (``t3-prism-bo-ax-client-round1.json``), so the diagnostics describe the same
@@ -1168,6 +1169,56 @@ LOOCV_EVOLUTION_DIAG = BO_DIR / f"{LOOCV_EVO_STEM}-diagnostics.json"
 LOOCV_INIT_CSV = BO_DIR / f"{LOOCV_EVO_STEM}-init.csv"
 LOOCV_ALL_CSV = BO_DIR / "t3-prism-bo-round2-loocv.csv"
 LOOCV_ALL_DIAG = BO_DIR / "t3-prism-bo-round2-loocv-diagnostics.json"
+MASS_TABLE_CSV = BO_DIR / "t3-prism-bo-objectives-mass-normalized.csv"
+
+
+def loocv_evolution_per_gram(table, diag):
+    """The per-gram display transform of the LOOCV-evolution table.
+
+    Divides every rebound-energy quantity (measured value and SEM, both
+    states' held-out prediction means and sds) by the article's weighed
+    mass, per the intensive-form notes on PR #33: the quotient of the
+    measured value is exactly e_rebound * g * h, so the axis becomes the
+    restitution fraction in disguise and no article scores well by printing
+    light. The prediction is of the absolute e_reb_mJ at the article's own
+    coordinates (which include its weighed mass as the sixth parameter), so
+    dividing it by that same mass is the consistent transform. Display
+    only: the committed CSVs and the fit stay in absolute mJ.
+
+    The skill numbers are recomputed from the transformed table because the
+    per-article division reshuffles both rankings; MAPE is invariant (each
+    article's relative error is unchanged) and stays equal to the committed
+    value by construction. The recomputation uses the same definitions as
+    the committed diagnostics (verified to reproduce the absolute rank corr
+    and MAPE exactly before transforming).
+    """
+    mass = pd.read_csv(MASS_TABLE_CSV).set_index("specimen")["mass_g"]
+    t = table.copy()
+    rows = t["metric"] == obj2_name
+    div = t.loc[rows, "print_id"].map(mass)
+    if div.isna().any():
+        missing = sorted(t.loc[rows, "print_id"][div.isna()].unique())
+        raise RuntimeError(f"no weighed mass for {missing} in {MASS_TABLE_CSV.name}")
+    for col in ("measured", "measured_sem", "pred_init", "pred_init_sd",
+                "pred_all", "pred_all_sd"):
+        t.loc[rows, col] = t.loc[rows, col] / div
+
+    d = json.loads(json.dumps(diag))  # deep copy; diag is plain JSON
+    sub = t[rows]
+    init = sub[sub["round"] == 1]
+    for state, frame, pred in (
+        ("init", init, "pred_init"),
+        ("all_data", sub, "pred_all"),
+    ):
+        dd = d[state]["diagnostics"]
+        dd["Rank correlation"][obj2_name] = _rank_corr(
+            frame["measured"], frame[pred]
+        )
+        dd["MAPE"][obj2_name] = float(
+            ((frame[pred] - frame["measured"]).abs()
+             / frame["measured"].abs()).mean()
+        )
+    return t, d
 
 
 def _rank_corr(a, b):
@@ -1310,8 +1361,13 @@ def compute_loocv_evolution(args):
     return table, diag
 
 
-def render_loocv_evolution(table, diag, animate=True, fps=25):
+def render_loocv_evolution(table, diag, animate=True, fps=25, per_gram=False):
     """Two animated parity panels: LOOCV before vs after the round-2 data.
+
+    With ``per_gram=True`` the table and diagnostics are expected to be
+    pre-transformed by :func:`loocv_evolution_per_gram`; this switch only
+    retitles the rebound panel, rescales its ticks and adds the ``-per-gram``
+    tag to every output file name, so the absolute set is never overwritten.
 
     Same grammar, registration and encoding as the parity-evolution set, but
     with held-out predictions at both ends. Beats, one idea each: (1) hold on
@@ -1370,7 +1426,12 @@ def render_loocv_evolution(table, diag, animate=True, fps=25):
             f"MAPE {100 * dd['MAPE'][metric]:.1f}%"
         )
 
-    TICK_STEP = {obj1_name: 0.1, obj2_name: 2.0}
+    stem = LOOCV_EVO_STEM + ("-per-gram" if per_gram else "")
+    metric_title = dict(METRIC_TITLE)
+    if per_gram:
+        # two lines: the one-line form runs off the canvas edge
+        metric_title[obj2_name] = "Rebound energy per gram\n(mJ/g per drop)"
+    TICK_STEP = {obj1_name: 0.1, obj2_name: 0.1 if per_gram else 2.0}
     ticks, lims = {}, {}
     for metric in METRIC_ORDER:
         d = P[metric]
@@ -1417,7 +1478,7 @@ def render_loocv_evolution(table, diag, animate=True, fps=25):
             ax.spines["bottom"].set_bounds(t[0], t[-1])
             ax.spines["left"].set_bounds(t[0], t[-1])
             ax.tick_params(labelsize=19)
-            ax.set_title(METRIC_TITLE[metric], fontsize=21, pad=40)
+            ax.set_title(metric_title[metric], fontsize=21, pad=40)
             ax.set_xlabel("Measured", labelpad=10, fontsize=20)
 
             ax.plot(lim, lim, color=LABEL_GRAY, lw=1.6, ls=(0, (5, 5)), zorder=1)
@@ -1635,7 +1696,7 @@ def render_loocv_evolution(table, diag, animate=True, fps=25):
         stills = {}
         for stage, frame in still_frames.items():
             update(frame)
-            out = fig_dir / f"{LOOCV_EVO_STEM}-{stage}.png"
+            out = fig_dir / f"{stem}-{stage}.png"
             fig.savefig(out, dpi=ANIM_DPI, facecolor="white")
             stills[stage] = out
 
@@ -1648,8 +1709,8 @@ def render_loocv_evolution(table, diag, animate=True, fps=25):
 
             anim = FuncAnimation(fig, update, frames=n_frames,
                                  interval=1000 / fps)
-            out_mp4 = fig_dir / f"{LOOCV_EVO_STEM}.mp4"
-            out_gif = fig_dir / f"{LOOCV_EVO_STEM}.gif"
+            out_mp4 = fig_dir / f"{stem}.mp4"
+            out_gif = fig_dir / f"{stem}.gif"
             if have_ffmpeg:
                 anim.save(
                     out_mp4,
@@ -1751,7 +1812,21 @@ def main(argv=None):
             "committed evolution CSV"
         ),
     )
+    ap.add_argument(
+        "--per-gram",
+        action="store_true",
+        help=(
+            "with --loocv-evolution: render the per-gram companion set "
+            "(every rebound quantity divided by the article's weighed "
+            "mass, mJ/g per drop, rebound skill numbers recomputed on the "
+            "transformed values). Display only; writes -per-gram tagged "
+            "files next to the absolute set"
+        ),
+    )
     args = ap.parse_args(argv)
+    if args.per_gram and not args.loocv_evolution:
+        ap.error("--per-gram is only wired for --loocv-evolution here; the "
+                 "campaign script owns the per-gram Pareto/measured sets")
 
     fig_dir = BO_DIR / "figures"
     fig_dir.mkdir(exist_ok=True)
@@ -1777,8 +1852,20 @@ def main(argv=None):
             diag = json.loads(LOOCV_EVOLUTION_DIAG.read_text())
         else:
             table, diag = compute_loocv_evolution(args)
+        if args.per_gram:
+            table, diag = loocv_evolution_per_gram(table, diag)
+            d1, d2 = (diag[k]["diagnostics"] for k in ("init", "all_data"))
+            print(
+                "per-gram rebound skill: rank corr "
+                f"{d1['Rank correlation'][obj2_name]:+.2f} (init) -> "
+                f"{d2['Rank correlation'][obj2_name]:+.2f} (all data); "
+                f"MAPE {100 * d1['MAPE'][obj2_name]:.1f}% -> "
+                f"{100 * d2['MAPE'][obj2_name]:.1f}% (unchanged by the "
+                "division, by construction)"
+            )
         stills, gif, mp4 = render_loocv_evolution(
-            table, diag, animate=not args.no_animation
+            table, diag, animate=not args.no_animation,
+            per_gram=args.per_gram,
         )
         for i, stage in enumerate(("start", "shift", "final"), start=1):
             print(f"  slide {i} ({stage}): {stills[stage]}")
