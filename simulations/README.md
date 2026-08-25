@@ -205,6 +205,17 @@ python simulations/pr102_baselines.py \
 # -> outputs/pr102_baseline_<strategy>[_ratios]_seed<k>.csv
 # -> outputs/pr102_baselines_comparison[_ratios].png, _objective_space,
 #    _summary
+# Blind reproduction of the 72f1989 BO-vs-baselines separation (PR #33,
+#   2026-08-25): an independent reimplementation written from the PR comment
+#   record without reading pr102_sim_campaign.py/pr102_baselines.py, run
+#   against the era instrument extracted at 72f1989, then audited against the
+#   originals.  Reproduces the BO to 0.05% and the samplers to 4 decimals;
+#   full audit in pr102_repro_blind.md.
+git archive 72f1989 simulations | tar -x -C /tmp/era   # era instrument
+python simulations/pr102_repro_blind.py --era-dir /tmp/era/simulations
+# -> outputs/repro_blind/repro_bo_seed<k>.csv,
+#    repro_baseline_<strategy>_seed<k>.csv, repro_summary.csv,
+#    unblind_compass_ablation.csv, repro_comparison.png
 # Ringdown damping: what the measured zeta_pct correlates with, and whether
 # the drop-tower analogue can resolve it (it cannot, for structural
 # reasons; see zeta_analysis.md).
