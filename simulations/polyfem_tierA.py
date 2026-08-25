@@ -136,9 +136,20 @@ def tierA_one(job: tuple) -> dict:
                 lc_tendon=max(design.tendon_diameter_m * 0.6, 0.001),
                 tendon_inset_factor=inset,
             )
+            # a failed earlier inset leaves gmsh initialized with a stale
+            # model, and the "successful" retry can then write a truncated
+            # file ($Entities but no $Nodes/$Elements); validate the write
+            if "$Elements" not in msh.read_text(errors="ignore"):
+                raise RuntimeError("gmsh wrote a truncated mesh")
             break
         except Exception as exc:               # noqa: BLE001
+            info = None
             last_err = exc
+            try:
+                import gmsh
+                gmsh.finalize()
+            except Exception:                  # noqa: BLE001
+                pass
     if info is None:
         return {"print_id": pid, "ok": False, "err": f"mesh: {last_err}"[:300]}
 
