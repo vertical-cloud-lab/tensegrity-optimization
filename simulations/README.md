@@ -233,6 +233,34 @@ python simulations/zeta_analysis.py --n-sobol 48
 # "ratios-strain"; --obj2 e_rebound reproduces the earlier runs).
 python simulations/pr102_objective_screen.py --n 128
 # -> outputs/pr102_objective_screen.csv, _summary.csv, .png
+
+# BO-vs-DOE contrast study (PR #33, 2026-08-25): choose an objective pair
+#   on which the modeling advantage of the BO over uninformed DOE is
+#   genuinely testable, then demonstrate it.  A 16,384-design corrected-
+#   physics cloud prices six candidate pairs at once; a Monte-Carlo
+#   resampler measures how much of each pair's hypervolume ceiling an
+#   uninformed 45-design batch collects for free; the chosen pair
+#   (minimize t180 + minimize envelope volume at constant printed mass)
+#   then runs the 10-seed constrained-qNEHVI protocol against
+#   printability-filtered random/Sobol/LHS/compass baselines.  Result:
+#   BO 94.2 % of the polished ceiling, every baseline 77.5-80.2 %,
+#   Mann-Whitney p = 9.1e-5 against each.  Full write-up in
+#   bo_contrast_study.md.
+python simulations/bo_contrast_study.py --cloud 16384 --jobs 4
+python simulations/bo_contrast_study.py --screen
+python simulations/bo_contrast_study.py --reference envelope --jobs 4
+python simulations/bo_contrast_study.py --reference strain --jobs 4
+python simulations/bo_contrast_study.py --campaign envelope \
+    --seeds 0 1 2 3 4 5 6 7 8 9 --jobs 4
+python simulations/bo_contrast_study.py --baselines envelope --jobs 4
+python simulations/bo_contrast_study.py --compare envelope --era-contrast \
+    --headline envelope
+# -> outputs/bo_contrast/contrast_cloud_ratios.csv.gz, contrast_screen.csv,
+#    contrast_refs.csv, contrast_front_<pair>.csv, contrast_bo_envelope_
+#    seed<k>.csv, contrast_baseline_<strategy>_<mode>_envelope_seed<k>.csv,
+#    bo_contrast_screen.png, bo_contrast_envelope_{comparison,objective_
+#    space}.png, bo_contrast_headline.png, bo_contrast_strain_era_
+#    rescored.csv
 ```
 
 ## Matching the PR #102 bench campaign in simulation
