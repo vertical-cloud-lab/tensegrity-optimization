@@ -668,6 +668,62 @@ recorded CSVs and the BO fit stay in absolute mJ. The round-2 Pareto
 figures (both forms) also draw the round-1 front as a faded gray line with
 no markers, so the hypervolume gained by the newest batch reads visually.
 
+## Round-1 vs round-2 session QC (operator comparison)
+
+Round 2 was run on 2026-08-24 by a substitute crew (Ronnie, Sam, Andrew,
+Tim) while the usual operators were away. `t3_prism_round_qc_comparison.py`
+compares the two rounds on every channel the committed data supports that
+is about the rig, the schedule, and session conduct rather than the
+specimen designs. Outputs: `t3-prism-round-qc-comparison.csv` (one row per
+session: schedule, cadence, pauses, input state, matched-window t180
+stability) and `figures/t3-prism-round-qc-comparison.png` (4 panels).
+Timestamps come from the per-drop `event_time` columns (UTC; the schedule
+panel converts to Mountain time). Regenerate with
+`python bo/t3_prism_round_qc_comparison.py` (seconds; pandas + matplotlib
+only).
+
+Headline findings, all from committed CSVs:
+
+- The substitute crew reproduced the protocol faithfully. Same TP4
+  configuration and export format, same auto-drop cadence (median
+  inter-drop interval 41 to 45 s in both rounds), and a rig input state
+  (delta-v 5.29 to 5.41 m/s, input peak 226.7 to 229.3 G) inside the
+  healthy band of round 1's post-Aug-19 sessions. The round-2 rig state
+  does not explain the systematic round-2 prediction misses.
+- Round 2 is the most internally uniform session block in the project.
+  Across-session input-peak spread is 2.6 G (round 1: 29.2 G) and delta-v
+  spread is 0.12 m/s (round 1: 0.42). No session today was dv-health
+  "settled" (round 1 had 4 of 9), and there is no settling trend across
+  the nine back-to-back sessions, likely because short sessions put only
+  ~190 captures on the mat in one afternoon versus 404 on Aug 20 alone,
+  after which the mat visibly settled (session-mean delta-v fell from 5.45
+  to 5.26 over that day and both next sessions flagged settled).
+- Round 1 was itself heterogeneous: it spans five test days and two rig
+  input eras. The Aug 13 and Aug 17 sessions (`bag26v`, `amdjwm`,
+  `bpx68c`) ran ~20 G softer input than every session since Aug 19; the
+  cause is not recorded in the data. `bag26v`, the spec-08 official
+  article in the BO fit, is therefore the one round-1 result measured
+  under a materially different input state.
+- Session conduct today was cleaner: only 1 of 9 sessions contains a
+  mid-session pause over 2 minutes (round 1: 4 of 9, up to 13 minutes),
+  and turnaround between specimens was 9 to 35 minutes (the 35 was the
+  deliberate stop after `r2d2c1` to upload and check with the usual crew
+  remotely before continuing).
+- The three least stable 19-drop windows ever recorded are all in round 2:
+  `r2d2c2` (t180 CV 1.44%, monotonic drift, T-drift flagged), `r2d2c8`
+  (CV 1.06%, downward drift, also the session with the pause, the extra
+  capture, and the `_Signal9` export quirk), and `r2d2c3` (CV 0.85%, pure
+  scatter, no drift). Round 1's matched-window maximum is 0.50%. The other
+  six round-2 sessions are as stable as round 1's best (`r2d2c7` at CV
+  0.085% is the most stable window in the dataset), so the anomalies
+  cluster on specific sessions rather than affecting the batch uniformly.
+  The re-test recommendations for `r2d2c2` and `r2d2c3` stand.
+- What the timestamps cannot rule out: no round-1 article was re-run on
+  Aug 24, so an output-side shift common to all of today's sessions
+  (sensor mounting habits, mat restitution state at fixed input) is not
+  excluded by data alone. A short re-run of `bpx68c` under current
+  conditions remains the direct control.
+
 ## Print key files
 
 - `t3-prism-bo-batch-print-key.csv`: one row per physical print. Maps the
