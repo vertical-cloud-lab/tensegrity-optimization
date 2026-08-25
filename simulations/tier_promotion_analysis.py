@@ -104,6 +104,70 @@ def main() -> int:
     fig.tight_layout()
     fig.savefig(OUT / "tier_promotion_comparison.png", dpi=130)
 
+    # Tier-A panel: article-intrinsic observables (rigid floor, no mat), so
+    # fn/zeta compare like-for-like while restitution and peak-g are
+    # span/rank checks against rig-mediated measurements, not identities.
+    if tierA is not None and len(tierA):
+        tA_channels = [
+            ("tA_fn_hz", "fn_hz_mean", "flexural ringdown fn (Hz)", True),
+            ("tA_zeta_pct", "zeta_pct_mean", "ringdown damping zeta (%)", True),
+            ("tA_e_rebound_article", "e_rebound_mean",
+             "restitution (article-only vs rig)", False),
+            ("tA_peak_top_g", None, "peak top-vertex accel (g)", False),
+        ]
+        figA, axesA = plt.subplots(2, 4, figsize=(17, 8))
+        for j, (sim_col, meas_col, label, identity) in enumerate(tA_channels):
+            ax = axesA[0, j]
+            if meas_col is not None:
+                ok = np.isfinite(df[sim_col]) & np.isfinite(df[meas_col])
+                x, y = df.loc[ok, meas_col], df.loc[ok, sim_col]
+                ax.scatter(x, y, c=["tab:blue" if b == 1 else "tab:orange"
+                                    for b in df.loc[ok, "batch"]], zorder=3)
+                for _, r in df[ok].iterrows():
+                    ax.annotate(r["print_id"], (r[meas_col], r[sim_col]),
+                                fontsize=6, alpha=0.7)
+                if identity and len(x):
+                    lo = min(x.min(), y.min())
+                    hi = max(x.max(), y.max())
+                    ax.plot([lo, hi], [lo, hi], "k--", lw=0.8, alpha=0.5)
+                rho, p = (stats.spearmanr(x, y) if ok.sum() >= 4
+                          else (float("nan"), float("nan")))
+                stats_rows.append({"channel": sim_col, "n": int(ok.sum()),
+                                   "spearman_rho": rho, "spearman_p": p,
+                                   "n_batch1": int((ok & (df["batch"] == 1)).sum()),
+                                   "rho_batch1": float("nan"),
+                                   "p_batch1": float("nan")})
+                ax.set_title(f"{label}\nTier-A vs measured: "
+                             f"rho={rho:+.2f} (p={p:.2f}, n={ok.sum()})")
+                ax.set_xlabel("measured")
+                ax.set_ylabel("Tier-A simulated")
+            else:
+                ok = np.isfinite(df[sim_col])
+                ax.hist(df.loc[ok, sim_col], bins=12, color="tab:green",
+                        alpha=0.8)
+                ax.set_title(f"{label}\nTier-A distribution (n={ok.sum()})")
+                ax.set_xlabel("Tier-A simulated")
+
+            ax2 = axesA[1, j]
+            okb = np.isfinite(df[sim_col])
+            sub = df[okb]
+            order = np.argsort(sub[sim_col].to_numpy())
+            vals = sub[sim_col].to_numpy()[order]
+            ax2.bar(range(len(vals)), vals,
+                    color=["tab:blue" if b == 1 else "tab:orange"
+                           for b in sub["batch"].to_numpy()[order]])
+            ax2.set_xticks(range(len(vals)))
+            ax2.set_xticklabels(sub["print_id"].to_numpy()[order],
+                                rotation=90, fontsize=6)
+            ax2.set_title(f"Tier-A {sim_col} across articles")
+        figA.suptitle("Tier-A (PolyFEM+IPC, viscoelastic PLA+TPU, rigid "
+                      "floor at 5.30 m/s): article-intrinsic observables\n"
+                      "blue = batch 1, orange = round 2; restitution and "
+                      "peak-g have no mat in the loop, so identity lines "
+                      "apply to fn/zeta only")
+        figA.tight_layout()
+        figA.savefig(OUT / "tier_promotion_tierA.png", dpi=130)
+
     st = pd.DataFrame(stats_rows)
     st.to_csv(OUT / "tier_promotion_stats.csv", index=False)
     print(st.to_string(index=False))
