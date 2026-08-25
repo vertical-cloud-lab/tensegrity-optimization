@@ -477,6 +477,17 @@ extremes identical. The Pareto front is where the choice matters. Over all
 survive both framings (`r2d2c2` earns its absolute-form spot partly by
 printing light, at 17.96 g).
 
+Every figure has a per-gram rendering: pass `--per-gram` with `--plot-only`
+or `--measured-round2` and the outputs gain a `-per-gram` suffix
+(`figures/t3-prism-bo-round2-pareto-per-gram.png` and the four-still
+`-per-gram` set with its MP4/GIF). Measured values divide by the article's
+weighed mass; predicted means and sds divide by the mass the model
+predicted for the design when the plate was generated (round-3 suggestions
+divide by their constant 20.23 g target). It is a display mode only: the
+recorded CSVs and the BO fit stay in absolute mJ. The round-2 Pareto
+figures (both forms) also draw the round-1 front as a faded gray line with
+no markers, so the hypervolume gained by the newest batch reads visually.
+
 ## Print key files
 
 - `t3-prism-bo-batch-print-key.csv`: one row per physical print. Maps the

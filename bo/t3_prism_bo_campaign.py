@@ -527,6 +527,28 @@ ARROW_DOWN = "\u2193"
 Y_LABEL = f"Rebound energy to payload\n(mJ per drop, {ARROW_DOWN} is better)"
 X_LABEL = f"Shock transmissibility t180 ({ARROW_DOWN} is better)"
 
+# Objective-2 display mode. The default is the absolute rebound energy in mJ
+# per drop, the quantity the committed suggestions optimized. --per-gram
+# divides every rebound-energy quantity (measured value, predicted mean and
+# sd) by the article's mass, per the intensive-form notes on PR #33: for a
+# measured article that quotient is exactly e_rebound * g * h, so the
+# per-gram axis is the restitution fraction in disguise and strips the
+# printed-mass dividend out of the comparison. Display only: the recorded
+# CSVs and the BO fit stay in absolute mJ.
+Y_TICK_STEP = 2.0
+OBJ2_UNIT = "mJ"
+FILE_TAG = ""
+PRIOR_FRONT_GRAY = "#b9b8b4"
+
+
+def set_per_gram_mode():
+    """Switch every figure this module draws to mJ/g per drop."""
+    global Y_LABEL, Y_TICK_STEP, OBJ2_UNIT, FILE_TAG
+    Y_LABEL = f"Rebound energy per gram\n(mJ/g per drop, {ARROW_DOWN} is better)"
+    Y_TICK_STEP = 0.1
+    OBJ2_UNIT = "mJ/g"
+    FILE_TAG = "-per-gram"
+
 # Candidate label placements, in points relative to the marker, tried in
 # order until one lands clear of the other labels and markers. Hand-tuned
 # offsets would break the moment the data moves, which it will every round.
@@ -535,6 +557,10 @@ LABEL_CANDIDATES = [
     (12, 20), (-12, 20), (0, 24), (0, -30),
     (28, -6), (-28, -6), (26, 16), (-26, 16),
     (26, -28), (-26, -28), (0, 38), (0, -44),
+    # a farther ring, reached only when every near candidate collides
+    # (dense clusters like the per-gram low-rebound corner need it)
+    (44, -6), (-44, -6), (40, 26), (-40, 26),
+    (40, -38), (-40, -38), (0, 52), (0, -58),
 ]
 
 
@@ -605,7 +631,9 @@ def _axes_frac(ax, xy, dx, dy):
 # hairline travel path, and covering another label's words is worse still, so
 # the placement search minimizes weighted overlap rather than raw area.
 W_TEXT = 4.0
-W_MARKER = 1.5
+# a label across an open marker circle is nearly as illegible as one across
+# text, so markers cost close to what text does
+W_MARKER = 3.0
 W_LEADER = 2.5
 W_FRONT = 2.2   # the front is a bold 3.4 pt line, not a hairline
 W_LINE = 1.0
@@ -776,12 +804,16 @@ def pareto_front(frame):
     return frame[mask].sort_values(obj1_name)
 
 
-def render_objective_figure(observed, suggestions, round_number):
+def render_objective_figure(observed, suggestions, round_number,
+                            prior_front=None):
     """Single objective-space panel, sized and styled for slides.
 
     The Honegumi template's second (parallel-coordinates) panel is omitted.
     The front is the non-dominated set of the *observed* points, which for
     round 1 is the same three articles as Ax's model-predicted Pareto set.
+    `prior_front`, when given, is the previous round's front drawn as a faded
+    gray line with no markers, so the hypervolume gained by the newest batch
+    reads visually (PR #102 review).
     """
     front = pareto_front(observed)
     on_front = observed["print_id"].isin(front["print_id"])
@@ -789,6 +821,11 @@ def render_objective_figure(observed, suggestions, round_number):
     with plt.rc_context(FIG_RC):
         fig, ax = plt.subplots(figsize=(11.0, 7.0), dpi=FIGURE_DPI)
 
+        if prior_front is not None:
+            ax.plot(
+                prior_front[obj1_name], prior_front[obj2_name],
+                color=PRIOR_FRONT_GRAY, lw=2.6, zorder=1.5,
+            )
         ax.scatter(
             observed.loc[~on_front, obj1_name], observed.loc[~on_front, obj2_name],
             fc="none", ec=INK, s=190, lw=2.4, zorder=3,
@@ -811,7 +848,9 @@ def render_objective_figure(observed, suggestions, round_number):
         _style_axes(
             ax,
             xlim=(xticks[0] - 0.015, xticks[-1] + 0.02),
-            ylim=(yticks[0] - 0.5, yticks[-1] + 0.6),
+            # padding in fractions of the tick step so the absolute (mJ) and
+            # per-gram (mJ/g) renderings breathe the same amount
+            ylim=(yticks[0] - 0.25 * Y_TICK_STEP, yticks[-1] + 0.3 * Y_TICK_STEP),
             xticks=xticks,
             yticks=yticks,
         )
@@ -831,7 +870,9 @@ def render_objective_figure(observed, suggestions, round_number):
                     sug_anchor[f"pred_{obj1_name}_mean"],
                     sug_anchor[f"pred_{obj2_name}_mean"],
                 ),
-                (0.02, 0.10), SUGGEST_ORANGE,
+                # parked below the anchor's height so the leader rises off
+                # the text instead of striking through it
+                (0.02, 0.045), SUGGEST_ORANGE,
             ),
             _callout(
                 ax, "Existing data",
@@ -839,6 +880,21 @@ def render_objective_figure(observed, suggestions, round_number):
                 (0.99, 0.13), INK, leader=LEADER_GRAY, ha="right",
             ),
         ]
+        prior_obstacles = []
+        if prior_front is not None:
+            callouts.append(
+                _callout(
+                    ax, f"Round-{round_number - 1} front",
+                    _front_anchor(prior_front, 0.42),
+                    (0.02, 0.68), PRIOR_FRONT_GRAY, leader=PRIOR_FRONT_GRAY,
+                )
+            )
+            prior_obstacles = _segment_boxes(
+                _polyline_ends(
+                    ax, prior_front[obj1_name], prior_front[obj2_name]
+                ),
+                half=9, weight=W_FRONT,
+            )
         _label_points(
             ax, observed, "print_id", obj1_name, obj2_name,
             obstacles=(
@@ -848,19 +904,22 @@ def render_objective_figure(observed, suggestions, round_number):
                     _polyline_ends(ax, front[obj1_name], front[obj2_name]),
                     half=9, weight=W_FRONT,
                 )
+                + prior_obstacles
             ),
         )
 
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
-        out_png = fig_dir / f"t3-prism-bo-round{round_number}-pareto.png"
+        out_png = fig_dir / f"t3-prism-bo-round{round_number}-pareto{FILE_TAG}.png"
         fig.savefig(out_png, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
+    obj2_fmt = ".2f" if Y_TICK_STEP < 1 else ".1f"
     print(
         "Pareto-front articles: "
         + ", ".join(
-            f"{r['print_id']} (t180 {r[obj1_name]:.3f}, {r[obj2_name]:.1f} mJ)"
+            f"{r['print_id']} (t180 {r[obj1_name]:.3f}, "
+            f"{r[obj2_name]:{obj2_fmt}} {OBJ2_UNIT})"
             for _, r in front.iterrows()
         )
     )
@@ -909,7 +968,7 @@ def _prototype_limits(combined, suggestions):
         [combined[obj2_name].to_numpy(float), suggestions[f"pred_{obj2_name}_mean"]]
     )
     xticks = _nice_ticks(xs.min(), xs.max(), 0.1)
-    yticks = _nice_ticks(ys.min(), ys.max(), 2)
+    yticks = _nice_ticks(ys.min(), ys.max(), Y_TICK_STEP)
     return xticks, yticks
 
 
@@ -1113,7 +1172,9 @@ def render_round2_prototype(
         _style_axes(
             ax,
             xlim=(xticks[0] - 0.015, xticks[-1] + 0.02),
-            ylim=(yticks[0] - 0.5, yticks[-1] + 0.6),
+            # padding in fractions of the tick step so the absolute (mJ) and
+            # per-gram (mJ/g) renderings breathe the same amount
+            ylim=(yticks[0] - 0.25 * Y_TICK_STEP, yticks[-1] + 0.3 * Y_TICK_STEP),
             xticks=xticks,
             yticks=yticks,
         )
@@ -1241,9 +1302,13 @@ def render_round2_prototype(
             ax, "Predicted ± 1 sd\n(model posterior)", unc_anchor,
             (0.02, 0.90), SUGGEST_ORANGE,
         )
+        # longest travel in axis-normalized units (y down-weighted so t180
+        # misses dominate the pick), so the labeled pair is chosen the same
+        # way whether the y-axis is in mJ or mJ/g
         travel_i = int(
             np.hypot(
-                act_xy[:, 0] - pred_xy[:, 0], (act_xy[:, 1] - pred_xy[:, 1]) / 40.0
+                (act_xy[:, 0] - pred_xy[:, 0]) / (xticks[-1] - xticks[0]),
+                0.5 * (act_xy[:, 1] - pred_xy[:, 1]) / (yticks[-1] - yticks[0]),
             ).argmax()
         )
         c_pred = _callout(
@@ -1367,14 +1432,18 @@ def render_round2_prototype(
                 _rgba(INK, np.full(int(obs_on_old.sum()), 1.0 - q))
             )
 
-            # beat 6: the new front wipes in and fills each article it reaches
+            # beat 6: the new front wipes in and fills each article it reaches.
+            # The fill variable overshoots (v * 1.18) so the article at the
+            # very end of the polyline (arc position 1.0) still completes its
+            # fill by v = 1; without it the last front point stayed unfilled
+            # in the final frame.
             new_line.set_data(*front_upto(v))
-            r1_new_fill.set_facecolor(
-                _rgba(FRONT_BLUE, _smoothstep((v - obs_s) / 0.18))
-            )
-            r1_new_fill.set_edgecolor(_rgba(INK, _smoothstep((v - obs_s) / 0.18)))
-            r2_fill.set_facecolor(_rgba(FRONT_BLUE, _smoothstep((v - act_s) / 0.18)))
-            r2_fill.set_edgecolor(_rgba(INK, _smoothstep((v - act_s) / 0.18)))
+            fill_obs = _smoothstep((v * 1.18 - obs_s) / 0.18)
+            fill_act = _smoothstep((v * 1.18 - act_s) / 0.18)
+            r1_new_fill.set_facecolor(_rgba(FRONT_BLUE, fill_obs))
+            r1_new_fill.set_edgecolor(_rgba(INK, fill_obs))
+            r2_fill.set_facecolor(_rgba(FRONT_BLUE, fill_act))
+            r2_fill.set_edgecolor(_rgba(INK, fill_act))
 
             # callouts: never more than one live while anything is in motion
             _callout_alpha(c_exist, 1.0 - q)
@@ -1389,7 +1458,7 @@ def render_round2_prototype(
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
         stem = f"t3-prism-bo-round{round_number}"
-        tag = "-PROTOTYPE" if synthetic else ""
+        tag = ("-PROTOTYPE" if synthetic else "") + FILE_TAG
 
         # The four rest points, exported from this figure rather than
         # redrawn: beat 1 (before anything moves), the end of the uncertainty
@@ -1517,6 +1586,17 @@ def main(argv=None):
         ),
     )
     ap.add_argument(
+        "--per-gram",
+        action="store_true",
+        help=(
+            "plot rebound energy divided by each article's mass (mJ/g per "
+            "drop; predictions divided by their predicted or target mass), "
+            "per the PR #33 intensive-form notes; display only, the BO fit "
+            "and the recorded CSVs stay in absolute mJ; use with "
+            "--plot-only or --measured-round2"
+        ),
+    )
+    ap.add_argument(
         "--no-animation",
         action="store_true",
         help=(
@@ -1533,14 +1613,30 @@ def main(argv=None):
     labels = labels1 + labels2
     masses = masses1 + masses2
 
+    if args.per_gram and not (args.plot_only or args.measured_round2):
+        ap.error("--per-gram is a display mode: use it with --plot-only "
+                 "or --measured-round2 (the BO fit stays in absolute mJ)")
+    # weighed mass per tested article, for the per-gram display division
+    mass_of = {lab.split(" ")[0]: m for lab, m in zip(labels, masses)}
+    if args.per_gram:
+        set_per_gram_mode()
+
     if args.measured_round2:
         # The real-data version of the prototype: predictions frozen at the
         # plate that was printed (7a048ee), landings from the measured
         # round-2 campaign summary. No Ax import needed.
         predictions = pd.read_csv(ROUND2_PREDICTIONS)
         actual, kept = measured_round2_frame(y2, labels2, trial_of, predictions)
+        obs1 = observed_frame(y1, labels1)
+        if args.per_gram:
+            # measured values by weighed mass; predictions by the mass the
+            # model predicted for the design when the plate was generated
+            obs1[obj2_name] /= obs1["print_id"].map(mass_of)
+            actual[obj2_name] /= actual["print_id"].map(mass_of)
+            predictions[f"pred_{obj2_name}_mean"] /= predictions["pred_mass_g_mean"]
+            predictions[f"pred_{obj2_name}_sd"] /= predictions["pred_mass_g_mean"]
         stills, gif, mp4 = render_round2_prototype(
-            observed_frame(y1, labels1),
+            obs1,
             predictions.loc[kept].reset_index(drop=True),
             actual, 2, animate=not args.no_animation, synthetic=False,
         )
@@ -1557,10 +1653,27 @@ def main(argv=None):
         suggestions = pd.read_csv(
             BO_DIR / f"t3-prism-bo-suggestions-round{args.round}.csv"
         )
+        if args.per_gram:
+            observed[obj2_name] /= observed["print_id"].map(mass_of)
+            # round-2+ suggestions are pinned at the constant printed-mass
+            # target; the mass-blind round-1 file carries a predicted mass
+            div = suggestions.get(
+                "mass_printed_g", suggestions.get("pred_mass_g_mean")
+            )
+            suggestions[f"pred_{obj2_name}_mean"] /= div
+            suggestions[f"pred_{obj2_name}_sd"] /= div
         if args.plot_only:
+            prior = None
+            if args.round >= 2 and y1:
+                # the front as it stood before the newest measured batch,
+                # drawn as a faded gray line for the hypervolume comparison
+                r1_frame = observed_frame(y1, labels1)
+                if args.per_gram:
+                    r1_frame[obj2_name] /= r1_frame["print_id"].map(mass_of)
+                prior = pareto_front(r1_frame)
             print(
                 "Figure saved to "
-                f"{render_objective_figure(observed, suggestions, args.round)}"
+                f"{render_objective_figure(observed, suggestions, args.round, prior_front=prior)}"
             )
         if args.prototype_next_round:
             actual = synthesize_round2_outcomes(suggestions, seed=args.seed)
