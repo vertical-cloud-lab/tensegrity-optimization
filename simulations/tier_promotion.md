@@ -79,7 +79,10 @@ rigid floor at the measured 5.30 m/s, so its observables are
 article-intrinsic (no mat to hide behind): peak top-vertex acceleration,
 article-side restitution, and the free-flight ringdown after the bounce.
 Runs are incremental: re-running `python polyfem_tierA.py` resumes with
-whatever is not yet ok in the CSV.
+whatever is not yet ok in the CSV. Status after the 2026-08-25 session:
+19 of 21 articles completed (8 of the 10 measured articles and all 11
+not-yet-measured ones); `9hhbkp` and `r2d2c2` are the two holdouts
+described below.
 
 What the promotion delivers, stated against the reason it was run: the
 observables that were dead at Tiers B and C are design-responsive here.
@@ -91,9 +94,9 @@ observables that were dead at Tiers B and C are design-responsive here.
   owned the loss budget. The compliant articles genuinely bounce
   (e_rebound 0.06 to 0.29) while the ones that land and stay read
   0.00 to 0.01.
-* **The flexural ringdown lands at 77 to 450 Hz**, overlapping the
+* **The flexural ringdown lands at 60 to 450 Hz**, overlapping the
   measured 294 to 468 Hz band for the stiffer articles (Tier C sat at
-  22 to 96 Hz rigid-body swing); damping fits span 0.8 to 67 percent,
+  22 to 96 Hz rigid-body swing); damping fits span 0 to 67 percent,
   though several fits are multi-modal with low R^2 (kept in
   `ringdown_r2` rather than hidden).
 
