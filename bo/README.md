@@ -324,6 +324,69 @@ largest, r2d2c3 high and r2d2c6 low, are the two stiffest short-prism
 designs, so that corner of the space is where the surrogate remains
 weakest).
 
+### Parity evolution (predictions before vs after the round-2 data)
+
+The corrected form of the cross-validation figure request on PR #102: two
+parity panels, one per objective, predicted on the vertical axis against
+measured on the horizontal, showing where every tested article's prediction
+stood before the round-2 sessions and where the refit trained on all
+collected data puts it. Measured values never move, so all motion in the
+animation is the model changing its mind.
+
+    python bo/t3_prism_bo_diagnostics.py --parity-evolution              # ~4 min, 2 refits
+    python bo/t3_prism_bo_diagnostics.py --parity-evolution --plot-only  # redraw from the CSV
+
+Provenance of the two prediction sets, per article:
+
+- **Before** is the model state that actually chose the printed plate:
+  commit `7a048ee`'s AxClient (5 shape parameters, 7 articles in the fit),
+  restored from git history as `t3-prism-bo-ax-client-plate-7a048ee.json`
+  (`git show 7a048ee:bo/t3-prism-bo-ax-client-round1.json`). For the nine
+  r2d2c articles the before values are `t3-prism-bo-round1-predictions.csv`
+  verbatim, the frozen numbers the plate was generated from and the numbers
+  every table on the PR #102 thread quotes. For the round-1 articles they
+  come from a seeded refit of that snapshot, in sample for the seven
+  articles that model had seen and out of sample for `ajhby6` (spec 07 was
+  still a pending trial then). A fidelity check predicts the nine plate
+  designs with the refit and compares against the frozen CSV; the run that
+  produced the committed table agreed to within 0.024 on t180 and 1.4 mJ on
+  rebound energy, 0.3 of the frozen sd on both, so the reconstructed and
+  frozen numbers describe the same model.
+- **After** is the round-2 snapshot's refit (6 parameters, 17 articles)
+  predicting in sample at each article's own coordinates and weighed mass.
+  In-sample parity is the point of this figure (the request was the refit
+  trained on all collected data); the honest out-of-sample companion is the
+  LOOCV set above, which shares the grammar.
+
+Uncertainties, stated on the figure: vertical bars are 1 posterior sd of
+the noise-free objective from whichever model owns the frame (before or
+after), horizontal gray bars are the measured value's 1 SEM as ingested
+(for rebound energy that includes the 0.457 g print-to-print mass scatter
+in quadrature, which is why those are visible while the t180 SEMs are not).
+
+Files, same registered-still grammar as every other figure set here (all
+3300 x 2100 at 300 dpi, frames of one figure, no tight bounding box):
+
+- `figures/t3-prism-bo-round2-parity-start.png`: the before state. Round-1
+  articles are open black circles hugging the diagonal (in sample); the
+  nine forecasts are orange diamonds, all below the diagonal on t180
+  (measured landed 0.04 to 0.42 above forecast, the systematic optimism)
+  and all above it on rebound energy (measured landed 0.9 to 5.8 mJ below).
+- `figures/t3-prism-bo-round2-parity-shift.png`: every prediction has
+  traveled vertically to the refit's value, ghost diamonds and dashed
+  risers marking where each forecast stood; one before/after pair is named.
+- `figures/t3-prism-bo-round2-parity-final.png`: the ghosts cleaned up,
+  print IDs in. The refit describes all 17 articles to within 0.0002 on
+  t180 and 0.03 mJ on rebound (in sample, as expected for a GP with
+  per-drop SEMs this small; r2d2c3's forecast 0.910 +/- 0.073 now sits at
+  1.333 against its measured 1.334).
+- `figures/t3-prism-bo-round2-parity.mp4` (+ `.gif`): the animated version.
+  Beats: hold on the before state, staggered vertical travel with the
+  diamonds handing off to open circles, a named before/after hold, clean,
+  rest with IDs.
+- `t3-prism-bo-round2-parity-evolution.csv`: the full table (measured,
+  before, after, 1 sd each, provenance flags per article and objective).
+
 ## Drop-count sensitivity (shorter round-2 sessions)
 
 Round 1 ran ~101 drops per specimen. When session time is short, fewer drops
