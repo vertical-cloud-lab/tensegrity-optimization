@@ -100,6 +100,85 @@ def _mesh_masses_m3(msh: Path) -> tuple[float, float]:
     return v[1], v[2]
 
 
+def extract_observables(work: Path, pid: str) -> dict:
+    """Parse the step_*.vtm/.vtu sequence into article observables.
+
+    PolyFEM HEAD writes rest positions in ``points`` with displacement /
+    velocity / acceleration as point_data (older builds wrote deformed
+    points); handle both, and prefer the solver's own velocity and
+    acceleration fields over finite differences when they are present.
+    """
+    import meshio
+    import xml.etree.ElementTree as ET
+    from zeta_analysis import ringdown_fit
+
+    tops, coms, vcoms, atops, acoms = [], [], [], [], []
+    top_idx = None
+    for k in range(N_STEPS + 1):
+        vtm = work / f"step_{k}.vtm"
+        if not vtm.exists():
+            continue
+        vtu = None
+        for da in ET.parse(vtm).getroot().iter("DataSet"):
+            f = da.attrib.get("file", "")
+            if f.endswith(".vtu"):
+                vtu = work / f
+                break
+        if vtu is None or not vtu.exists():
+            continue
+        m = meshio.read(vtu)
+        pts = m.points
+        disp = m.point_data.get("displacement")
+        if disp is not None:
+            pts = pts + disp
+        if top_idx is None:
+            top_idx = int(np.argmax(pts[:, 1]))
+        tops.append(pts[top_idx].copy())
+        coms.append(pts.mean(axis=0))
+        vel = m.point_data.get("velocity")
+        acc = m.point_data.get("acceleration")
+        vcoms.append(float(vel[:, 1].mean()) if vel is not None else np.nan)
+        atops.append(float(acc[top_idx, 1]) if acc is not None else np.nan)
+        acoms.append(float(acc[:, 1].mean()) if acc is not None else np.nan)
+    tops = np.asarray(tops)
+    coms = np.asarray(coms)
+    if tops.shape[0] < 50:
+        return {"ok": False, "err": "too few steps"}
+
+    t = np.arange(tops.shape[0]) * DT_S
+    atops = np.asarray(atops)
+    acoms = np.asarray(acoms)
+    vcoms = np.asarray(vcoms)
+    if np.isfinite(atops).all() and np.isfinite(acoms).all():
+        a_top = atops / G
+        a_com = acoms / G
+    else:
+        a_top = np.gradient(np.gradient(tops[:, 1], DT_S), DT_S) / G
+        a_com = np.gradient(np.gradient(coms[:, 1], DT_S), DT_S) / G
+    v_com = (vcoms if np.isfinite(vcoms).all()
+             else np.gradient(coms[:, 1], DT_S))
+    peak_g = float(np.nanmax(np.abs(a_top)))
+    # restitution: max upward COM velocity after the impact
+    e_reb = float(np.max(v_com[np.argmin(v_com):])) / IMPACT_V_MPS
+    # ringdown on the free-flight relative accel: top vertex minus COM
+    # (COM is ballistic after the bounce, so the difference is the
+    # article's own vibration)
+    rel = a_top - a_com
+    i0 = int(np.argmin(v_com)) + int(0.004 / DT_S)
+    fit = (ringdown_fit(t[i0:], rel[i0:], fmin=50.0)
+           if tops.shape[0] - i0 > 60 else {})
+    np.savez(OUT / f"tierA_{pid}.npz", t=t, top=tops, com=coms,
+             a_top_g=a_top, a_com_g=a_com, v_com=v_com)
+    return {
+        "ok": True,
+        "peak_top_g": peak_g,
+        "e_rebound_article": max(e_reb, 0.0),
+        "fn_hz": fit.get("fn_hz", float("nan")),
+        "zeta_pct": fit.get("zeta_pct", float("nan")),
+        "ringdown_r2": fit.get("r2", float("nan")),
+    }
+
+
 def tierA_one(job: tuple) -> dict:
     """Mesh + run one article.  Top-level for pickling."""
     row, workers_tag = job
@@ -107,7 +186,6 @@ def tierA_one(job: tuple) -> dict:
     from bo_evaluator import parameterization_to_design
     from drop_tower_tierB import bending_modulus_MPa
     from tprism_mesh import build_tprism_msh
-    from zeta_analysis import ringdown_fit
 
     pid = row["print_id"]
     design = parameterization_to_design(
@@ -174,8 +252,10 @@ def tierA_one(job: tuple) -> dict:
         mat["psi"] = psi_tpu if mat["id"] == 2 else psi_pla
         mat["phi"] = 0.0
     # the 5.3 m/s impact steps are much harder than the settle-under-gravity
-    # runs this JSON was written for
-    cfg["solver"]["nonlinear"]["max_iterations"] = 200
+    # runs this JSON was written for; a third of the roster hit the 200-cap
+    # (or fell all the way to GradientDescent) at the first impact step
+    cfg["solver"]["nonlinear"]["max_iterations"] = 500
+    cfg["solver"]["nonlinear"]["grad_norm"] = 1e-7
     cfg["initial_conditions"] = {
         "velocity": [{"id": 1, "value": [0.0, -IMPACT_V_MPS, 0.0]},
                      {"id": 2, "value": [0.0, -IMPACT_V_MPS, 0.0]}]}
@@ -194,58 +274,12 @@ def tierA_one(job: tuple) -> dict:
         return {"print_id": pid, "ok": False,
                 "err": (proc.stdout + proc.stderr)[-500:]}
 
-    # per-step top-vertex + COM tracks from the .vtu sequence
-    import meshio
-    import xml.etree.ElementTree as ET
-    tops, coms = [], []
-    top_idx = None
-    for k in range(N_STEPS + 1):
-        vtm = work / f"step_{k}.vtm"
-        if not vtm.exists():
-            continue
-        vtu = None
-        for da in ET.parse(vtm).getroot().iter("DataSet"):
-            f = da.attrib.get("file", "")
-            if f.endswith(".vtu"):
-                vtu = work / f
-                break
-        if vtu is None or not vtu.exists():
-            continue
-        m = meshio.read(vtu)
-        pts = m.points
-        if top_idx is None:
-            top_idx = int(np.argmax(pts[:, 1]))
-        tops.append(pts[top_idx].copy())
-        coms.append(pts.mean(axis=0))
-    tops = np.asarray(tops)
-    coms = np.asarray(coms)
-    if tops.shape[0] < 50:
-        return {"print_id": pid, "ok": False, "err": "too few steps"}
-
-    t = np.arange(tops.shape[0]) * DT_S
-    a_top = np.gradient(np.gradient(tops[:, 1], DT_S), DT_S) / G
-    v_com = np.gradient(coms[:, 1], DT_S)
-    peak_g = float(np.nanmax(np.abs(a_top)))
-    # restitution: max upward COM velocity after the impact
-    e_reb = float(np.max(v_com[np.argmin(v_com):])) / IMPACT_V_MPS
-    # ringdown on the free-flight relative accel: top vertex minus COM
-    # (COM is ballistic after the bounce, so the difference is the article's
-    # own vibration)
-    rel = a_top - np.gradient(np.gradient(coms[:, 1], DT_S), DT_S) / G
-    i0 = int(np.argmin(v_com)) + int(0.004 / DT_S)
-    fit = (ringdown_fit(t[i0:], rel[i0:], fmin=50.0)
-           if tops.shape[0] - i0 > 60 else {})
-
-    np.savez(OUT / f"tierA_{pid}.npz", t=t, top=tops, com=coms, a_top_g=a_top)
-    return {
-        "print_id": pid, "ok": True, "tets": int(info["tets"]),
-        "peak_top_g": peak_g,
-        "e_rebound_article": max(e_reb, 0.0),
-        "fn_hz": fit.get("fn_hz", float("nan")),
-        "zeta_pct": fit.get("zeta_pct", float("nan")),
-        "ringdown_r2": fit.get("r2", float("nan")),
-        "rho_pla_eff": rho_pla,
-    }
+    obs = extract_observables(work, pid)
+    if not obs.pop("ok", False):
+        return {"print_id": pid, "ok": False,
+                "err": obs.get("err", "parse failed")}
+    return {"print_id": pid, "ok": True, "tets": int(info["tets"]),
+            "rho_pla_eff": rho_pla, **obs}
 
 
 PRIORITY = ["bpx68c", "6lhxfy", "9hhbkp", "autv5r", "nvxsrv", "6nheas",
