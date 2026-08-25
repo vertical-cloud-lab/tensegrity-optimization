@@ -81,12 +81,15 @@ from t3_prism_bo_campaign import (  # noqa: E402  (same directory)
     INK,
     LABEL_GRAY,
     DESIGN_PARAMS,
+    STILL_STAGES,
     fit_parameters,
     fit_search_space,
     obj1_name,
     obj2_name,
     mass_param,
     load_training_data,
+    load_round2_training_data,
+    render_round2_prototype,
     _label_points,
 )
 
@@ -207,7 +210,7 @@ def compute_feature_importance(model):
     return pd.DataFrame(rows)
 
 
-def render_feature_importance(table, out_path):
+def render_feature_importance(table, out_path, n_articles=None):
     params = [p for p in PARAM_NAMES if p in set(table["parameter"])]
 
     with plt.rc_context(FIG_RC):
@@ -246,10 +249,11 @@ def render_feature_importance(table, out_path):
         )
         for ax in axes:
             ax.set_xlabel("Share of model sensitivity", labelpad=10, fontsize=19)
+        n_note = f" n = {n_articles} tested articles." if n_articles else ""
         fig.text(
             0.5, -0.03,
             "Bars: Ax feature_importances (median SAAS lengthscale, inverted, normalized).\n"
-            "Whiskers: interquartile range across MCMC draws. n = 7 tested articles.",
+            f"Whiskers: interquartile range across MCMC draws.{n_note}",
             ha="center", fontsize=15, color=LABEL_GRAY,
         )
         fig.tight_layout()
@@ -294,7 +298,7 @@ def run_loocv(model, labels_by_arm, diagnostics_path):
     return table, diagnostics
 
 
-def render_loocv(table, diagnostics, out_path):
+def render_loocv(table, diagnostics, out_path, n_articles=None):
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.6),
                                  dpi=FIGURE_DPI, squeeze=False)
@@ -343,10 +347,13 @@ def render_loocv(table, diagnostics, out_path):
             "Predicted", rotation=0, ha="left", va="bottom", fontsize=19,
         )
         axes[0].yaxis.set_label_coords(-0.02, 1.02)
+        if n_articles is None:
+            n_articles = int(table["print_id"].nunique())
         fig.text(
             0.5, -0.04,
             "Leave-one-out: each article predicted by a model that refit NUTS without it.\n"
-            "Dashed line is perfect prediction. n = 7, so read the direction, not the decimals.",
+            f"Dashed line is perfect prediction. n = {n_articles}, so read the "
+            "direction, not the decimals.",
             ha="center", fontsize=15, color=LABEL_GRAY,
         )
         fig.tight_layout()
@@ -358,6 +365,47 @@ def _safe_corr(a, b):
     if len(a) < 3 or np.std(a) == 0 or np.std(b) == 0:
         return None
     return float(np.corrcoef(a, b)[0, 1])
+
+
+def render_cv_travel_set(cv_table, round_number, animate=True):
+    """The LOOCV story in the round-2 figure/animation grammar (PR #102).
+
+    Same beat engine, stills and registration as the measured
+    predicted-vs-actual set, driven by the held-out predictions instead of a
+    suggestion batch: every tested article's LOOCV prediction opens as an
+    orange diamond, grows its +/- 1 sd bars and oval and freezes, then
+    travels to where that article actually measured, landing as the same
+    open black circle it is on every other figure. The measured Pareto front
+    then wipes in and the print IDs return. There is no prior-round layer
+    here (the predictions ARE the tested articles), so the retire beat drops
+    out and the clip opens directly on the predictions.
+
+    Returns ``(stills, gif, mp4)`` exactly like the campaign renderer; the
+    file stem is ``t3-prism-bo-round{N}-loocv-*`` so the two sets sit side
+    by side in ``bo/figures/``.
+    """
+    order = cv_table["print_id"].drop_duplicates().tolist()
+    piv = cv_table.set_index(["print_id", "metric"])
+    sugg_rows, act_rows = [], []
+    for pid in order:
+        row_s, row_a = {"print_id": pid}, {"print_id": pid}
+        for metric in METRIC_ORDER:
+            row_s[f"pred_{metric}_mean"] = float(piv.loc[(pid, metric), "predicted"])
+            row_s[f"pred_{metric}_sd"] = float(piv.loc[(pid, metric), "predicted_sem"])
+            row_a[metric] = float(piv.loc[(pid, metric), "observed"])
+        sugg_rows.append(row_s)
+        act_rows.append(row_a)
+    suggestions = pd.DataFrame(sugg_rows)
+    actual = pd.DataFrame(act_rows)
+    return render_round2_prototype(
+        actual.iloc[0:0], suggestions, actual, round_number,
+        animate=animate, synthetic=False,
+        stem=f"t3-prism-bo-round{round_number}-loocv",
+        series_label="Held-out predictions (LOOCV),\none model per article",
+        pred_label="Predicted\n(article held out)",
+        front_label="Measured Pareto front",
+        unc_label="Held-out prediction ± 1 sd\n(model posterior)",
+    )
 
 
 # ---- 3. signed parameter effects ----------------------------------------
@@ -556,6 +604,21 @@ def main(argv=None):
     )
     ap.add_argument("--n-grid", type=int, default=9)
     ap.add_argument("--n-background", type=int, default=64)
+    ap.add_argument(
+        "--cv-animation",
+        action="store_true",
+        help=(
+            "also render the LOOCV predicted-vs-measured figure set and "
+            "animation (four registered stills + GIF + MP4, same grammar as "
+            "the round-2 measured set); with --plot-only it redraws from the "
+            "committed LOOCV CSV"
+        ),
+    )
+    ap.add_argument(
+        "--no-animation",
+        action="store_true",
+        help="with --cv-animation, write only the still PNGs (no GIF/MP4)",
+    )
     args = ap.parse_args(argv)
 
     fig_dir = BO_DIR / "figures"
@@ -577,6 +640,10 @@ def main(argv=None):
             cv_table = pd.read_csv(cv_path)
             diagnostics = json.loads((BO_DIR / f"{stem}-loocv-diagnostics.json").read_text())
             render_loocv(cv_table, diagnostics, fig_dir / f"{stem}-loocv.png")
+            if args.cv_animation:
+                render_cv_travel_set(
+                    cv_table, args.round, animate=not args.no_animation
+                )
         print(f"Redrew diagnostics figures in {fig_dir}")
         return 0
 
@@ -591,25 +658,34 @@ def main(argv=None):
     experiment.search_space = fit_search_space()
     data = experiment.fetch_data()
 
-    # Trial 0..n-1 were attached in the order load_training_data returns, so
-    # the arm names map back onto print IDs; verify against the parameters
-    # rather than trusting the order.
-    _, _, labels, _, _ = load_training_data(args.results, args.design)
+    # Map arm names back onto print IDs by matching the attached parameters,
+    # not the attachment order: the round-2 snapshot holds both rounds'
+    # completed articles plus pending and generated trials, so order is not a
+    # reliable key. Every completed trial's 6-vector is unique across the
+    # tested articles, which is what makes this exact.
+    X1, _, labels1, _, _ = load_training_data(args.results, args.design)
+    X2, _, labels2, _, _ = load_round2_training_data()
+    X_all, labels_all = X1 + X2, labels1 + labels2
     labels_by_arm = {}
-    for trial_index, trial in experiment.trials.items():
-        if trial_index >= len(labels):
-            continue
+    for trial in experiment.trials.values():
         arm = trial.arm
-        labels_by_arm[arm.name] = labels[trial_index].split(" ")[0]
+        for x, label in zip(X_all, labels_all):
+            if all(
+                abs(float(arm.parameters[k]) - float(v)) < 1e-6
+                for k, v in x.items()
+            ):
+                labels_by_arm[arm.name] = label.split(" ")[0]
+                break
+    n_articles = int(data.df["arm_name"].nunique())
     print(f"Loaded {args.snapshot.name}: {len(data.df)} observations, "
-          f"{len(labels_by_arm)} labeled articles")
+          f"{n_articles} tested articles, {len(labels_by_arm)} labeled")
 
     print("Fitting SAASBO for diagnostics...")
     model = fit_saasbo(experiment, data, args.mcmc_samples, args.warmup_steps)
 
     imp_png = fig_dir / f"{stem}-feature-importance.png"
     importance = compute_feature_importance(model)
-    render_feature_importance(importance, imp_png)
+    render_feature_importance(importance, imp_png, n_articles=n_articles)
     importance.to_csv(BO_DIR / f"{stem}-feature-importance.csv", index=False,
                       float_format="%.4f")
     print(f"\nFeature importance (share of model sensitivity) -> {imp_png}")
@@ -650,13 +726,23 @@ def main(argv=None):
     cv_table, diagnostics = run_loocv(
         cv_model, labels_by_arm, BO_DIR / f"{stem}-loocv-diagnostics.json"
     )
-    render_loocv(cv_table, diagnostics, cv_png)
+    render_loocv(cv_table, diagnostics, cv_png, n_articles=n_articles)
     cv_table.to_csv(BO_DIR / f"{stem}-loocv.csv", index=False, float_format="%.5f")
     print(f"  figure -> {cv_png}")
     for name in ("MAPE", "Total raw effect", "Fisher exact test p"):
         if name in diagnostics:
             values = {m: round(float(v), 4) for m, v in diagnostics[name].items()}
             print(f"  {name}: {values}")
+
+    if args.cv_animation:
+        print("\nLOOCV figure set + animation (round-2 grammar)...")
+        stills, gif, mp4 = render_cv_travel_set(
+            cv_table, args.round, animate=not args.no_animation
+        )
+        for i, stage in enumerate(STILL_STAGES, start=1):
+            print(f"  slide {i} ({stage}): {stills[stage]}")
+        if gif or mp4:
+            print("  animation: " + ", ".join(str(x) for x in (mp4, gif) if x))
     return 0
 
 

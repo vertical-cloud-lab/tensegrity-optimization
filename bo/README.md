@@ -281,6 +281,49 @@ own: printed mass and geometry are confounded by construction in round 1
 (the light articles *are* the PLA-heavy thick-strut corner), so the sign of
 the mass effect is the least trustworthy number on either figure.
 
+### Round-2 diagnostics and the LOOCV animation set
+
+The same diagnostics re-run on the 17-article two-round fit (the
+`t3-prism-bo-ax-client-round2.json` snapshot; `amdjwm` is still unmapped and
+stays out):
+
+    python bo/t3_prism_bo_diagnostics.py \
+        --snapshot bo/t3-prism-bo-ax-client-round2.json --round 2 --cv-animation
+
+writes the `*-round2-*` versions of every figure and table above, plus a
+LOOCV figure set and animation in the same registered-still grammar as the
+measured round-2 predicted-vs-actual set (`--cv-animation`; add
+`--no-animation` for the stills alone, or re-render from the committed CSV
+with `--plot-only --cv-animation --round 2`):
+
+- `figures/t3-prism-bo-round2-loocv-start.png`,
+  `-uncertainty.png`, `-predicted-vs-actual.png`, `-front-final.png`: four
+  3300 x 2100 stills at 300 dpi, frames of one figure, so they register
+  pixel-for-pixel on consecutive slides. Each article's held-out prediction
+  (a model refit without that article) opens as an orange diamond, grows its
+  +/- 1 sd bars and axis-aligned oval, freezes, then travels to the measured
+  outcome and lands as the standard open black circle; the measured Pareto
+  front then wipes in and the print IDs return. There is no prior-round
+  layer (the predictions are the tested articles themselves), so the
+  round-2 set's retire beat drops out.
+- `figures/t3-prism-bo-round2-loocv-predicted-vs-actual.mp4` (+ `.gif`): the
+  animated version, same beats. The uncertainty here is the same quantity as
+  in the measured set (1 posterior sd of the noise-free objective), but from
+  the held-out refit, so it is an honest out-of-sample bar rather than a
+  training-point one.
+
+Headline movement against the round-1 diagnostics: with 17 articles the
+LOOCV rank correlation on rebound energy went from -0.14 (no skill) to 0.70,
+and t180 sits at 0.60 with MAPE 5.4 percent, so the model now has genuine
+out-of-sample ordering skill on both objectives. The round-2 batch that
+landed systematically right of its t180 predictions is in the fit now, and
+it shows: r2d2c3, which the pre-round-2 model missed by 5.8 sd, is a 2.7-sd
+held-out miss for a refit that has seen the other round-2 articles, still
+the worst t180 residual but no longer in a class of its own (the two
+largest, r2d2c3 high and r2d2c6 low, are the two stiffest short-prism
+designs, so that corner of the space is where the surrogate remains
+weakest).
+
 ## Drop-count sensitivity (shorter round-2 sessions)
 
 Round 1 ran ~101 drops per specimen. When session time is short, fewer drops

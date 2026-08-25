@@ -1019,9 +1019,20 @@ def _callout_alpha(ann, alpha):
 
 def render_round2_prototype(
     observed, suggestions, actual, round_number, fps=25, animate=True,
-    synthetic=True,
+    synthetic=True, stem=None, series_label=None, pred_label=None,
+    front_label=None, unc_label=None,
 ):
     """The round-2 story as four registered stills plus an animation.
+
+    Also the engine for the LOOCV version of the same story (PR #102
+    request): pass an **empty** ``observed`` frame and every article's
+    held-out prediction as ``suggestions`` (with the measured outcomes as
+    ``actual``), and the round-1 layer plus its retire beat simply drop out.
+    ``stem`` overrides the output file stem, and the four ``*_label``
+    arguments re-word the callouts, so the cross-validation set reads
+    "held out" where the campaign set reads "suggested". Everything else,
+    beats, registration, label placement, is shared, so the two sets cannot
+    drift apart stylistically.
 
     Returns ``(stills, gif, mp4)``. ``stills`` is a dict keyed by
     ``STILL_STAGES``, in slide order:
@@ -1079,6 +1090,18 @@ def render_round2_prototype(
     from matplotlib.collections import LineCollection
     from matplotlib.patches import Ellipse
 
+    if stem is None:
+        stem = f"t3-prism-bo-round{round_number}"
+    if series_label is None:
+        series_label = f"Suggested points (round {round_number})"
+    if pred_label is None:
+        pred_label = f"Predicted (round {round_number})"
+    if front_label is None:
+        front_label = f"Pareto front after round {round_number}"
+    if unc_label is None:
+        unc_label = "Predicted ± 1 sd\n(model posterior)"
+
+    has_prior = len(observed) > 0
     combined = pd.concat(
         [
             observed[["print_id", obj1_name, obj2_name]],
@@ -1086,7 +1109,7 @@ def render_round2_prototype(
         ],
         ignore_index=True,
     )
-    old_front = pareto_front(observed)
+    old_front = pareto_front(observed) if has_prior else observed.iloc[0:0]
     new_front = pareto_front(combined)
     new_front_ids = set(new_front["print_id"])
 
@@ -1145,7 +1168,8 @@ def render_round2_prototype(
 
     # phase lengths in frames, one idea each
     n_hold0 = int(round(1.3 * fps))    # the round-1 figure, as-is
-    n_retire = int(round(0.9 * fps))   # drop the round-1 front, nothing moves
+    # nothing to retire when there is no prior-round layer (the LOOCV set)
+    n_retire = int(round(0.9 * fps)) if has_prior else 0
     n_unc = int(round(0.7 * fps))      # the +/- 1 sd bars and ovals grow in
     n_freeze = int(round(1.4 * fps))   # ...and freeze, to be read
     n_travel = int(round(2.6 * fps))   # predictions travel, nothing else
@@ -1275,19 +1299,22 @@ def render_round2_prototype(
         # Callouts, laid out before the point labels so the IDs dodge them.
         # At most three are ever lit at once (the opening frame, which is the
         # round-1 slide), and at most one while anything is moving.
-        obs_anchor = observed.loc[observed[obj1_name].idxmax()]
-        c_exist = _callout(
-            ax, "Existing data (round 1)",
-            (obs_anchor[obj1_name], obs_anchor[obj2_name]),
-            (0.995, 0.72), INK, leader=LEADER_GRAY, ha="right",
-        )
-        c_front1 = _callout(
-            ax, "Pareto front", _front_anchor(old_front, 0.30),
-            (0.56, 0.98), FRONT_BLUE,
-        )
+        if has_prior:
+            obs_anchor = observed.loc[observed[obj1_name].idxmax()]
+            c_exist = _callout(
+                ax, "Existing data (round 1)",
+                (obs_anchor[obj1_name], obs_anchor[obj2_name]),
+                (0.995, 0.72), INK, leader=LEADER_GRAY, ha="right",
+            )
+            c_front1 = _callout(
+                ax, "Pareto front", _front_anchor(old_front, 0.30),
+                (0.56, 0.98), FRONT_BLUE,
+            )
+        else:
+            c_exist = c_front1 = None
         sug_i = int(np.argmin(pred_xy[:, 1]))
         c_sug = _callout(
-            ax, f"Suggested points (round {round_number})",
+            ax, series_label,
             tuple(pred_xy[sug_i]), (0.02, 0.09), SUGGEST_ORANGE,
         )
         # Uncertainty callout, anchored to a horizontal bar end so the leader
@@ -1299,7 +1326,7 @@ def render_round2_prototype(
             pred_xy[unc_i, 0] - pred_sd[unc_i, 0], pred_xy[unc_i, 1]
         )
         c_unc = _callout(
-            ax, "Predicted ± 1 sd\n(model posterior)", unc_anchor,
+            ax, unc_label, unc_anchor,
             (0.02, 0.90), SUGGEST_ORANGE,
         )
         # longest travel in axis-normalized units (y down-weighted so t180
@@ -1312,7 +1339,7 @@ def render_round2_prototype(
             ).argmax()
         )
         c_pred = _callout(
-            ax, f"Predicted (round {round_number})", tuple(pred_xy[travel_i]),
+            ax, pred_label, tuple(pred_xy[travel_i]),
             _axes_frac(ax, pred_xy[travel_i], -0.05, -0.13), SUGGEST_ORANGE, ha="right",
         )
         # The labeled landing can sit anywhere, including the panel's right
@@ -1328,7 +1355,7 @@ def render_round2_prototype(
         )
         new_anchor = _front_anchor(new_front, 0.55)
         c_front2 = _callout(
-            ax, f"Pareto front after round {round_number}", new_anchor,
+            ax, front_label, new_anchor,
             _axes_frac(ax, new_anchor, -0.36, -0.20), FRONT_BLUE, ha="left",
         )
         for ann in (c_unc, c_pred, c_meas, c_front2):
@@ -1348,7 +1375,10 @@ def render_round2_prototype(
         # (which sit under the round-1 IDs in the opening frame). The travel
         # paths are not obstacles, because no label is ever lit while one is
         # on the panel.
-        all_callouts = [c_exist, c_front1, c_sug, c_unc, c_pred, c_meas, c_front2]
+        all_callouts = [
+            c for c in (c_exist, c_front1, c_sug, c_unc, c_pred, c_meas, c_front2)
+            if c is not None
+        ]
         anns = _label_points(
             ax, combined, "print_id", obj1_name, obj2_name,
             obstacles=(
@@ -1446,8 +1476,9 @@ def render_round2_prototype(
             r2_fill.set_edgecolor(_rgba(INK, fill_act))
 
             # callouts: never more than one live while anything is in motion
-            _callout_alpha(c_exist, 1.0 - q)
-            _callout_alpha(c_front1, 1.0 - q)
+            if c_exist is not None:
+                _callout_alpha(c_exist, 1.0 - q)
+                _callout_alpha(c_front1, 1.0 - q)
             _callout_alpha(c_sug, 1.0 - _smoothstep(u / 0.25))
             _callout_alpha(c_unc, e * (1.0 - _smoothstep(u / 0.25)))
             _callout_alpha(c_pred, m * keep)
@@ -1457,7 +1488,6 @@ def render_round2_prototype(
 
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
-        stem = f"t3-prism-bo-round{round_number}"
         tag = ("-PROTOTYPE" if synthetic else "") + FILE_TAG
 
         # The four rest points, exported from this figure rather than
@@ -1521,10 +1551,10 @@ def render_round2_prototype(
             check=True,
         )
 
-    gained = set(new_front_ids) - set(old_front["print_id"])
+    gained = (set(new_front_ids) - set(old_front["print_id"])) if has_prior else set()
     prefix = "[prototype, synthetic data]" if synthetic else "[measured]"
     print(
-        f"{prefix} round-{round_number} front: "
+        f"{prefix} {stem} front: "
         + ", ".join(new_front["print_id"])
         + (f"; new entrants: {', '.join(sorted(gained))}" if gained else "")
     )
