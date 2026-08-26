@@ -38,3 +38,8 @@ Thumbs.db
 # IDE
 .vscode/
 *.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+MUJOCO_LOG.TXT
