@@ -104,6 +104,11 @@ import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+# Everything here is about the 17 tested articles, and every one of them was
+# printed at the same six print-process settings, so these diagnostics stay
+# in the six-parameter space of rounds 1 and 2: the loaders are called with
+# process=None and the search space with include_process=False. The round-1
+# and round-2 AxClient snapshots loaded below were written in that space too.
 from t3_prism_bo_campaign import (  # noqa: E402  (same directory)
     ANIM_DPI,
     ANIM_FIGSIZE,
@@ -176,7 +181,8 @@ PARAM_LABEL = {
 # Fit-space bounds, not the constant-mass generation slab: the diagnostics
 # describe the model that was fitted, and it was fitted on articles spanning
 # 18.50 to 22.29 g.
-BOUNDS = {p["name"]: tuple(p["bounds"]) for p in fit_parameters()}
+BOUNDS = {p["name"]: tuple(p["bounds"])
+          for p in fit_parameters(include_process=False)}
 
 
 # ---- model ---------------------------------------------------------------
@@ -675,8 +681,8 @@ def compute_parity_evolution(args):
     from ax.service.ax_client import AxClient
 
     shape_names = [p for p in DESIGN_PARAMS if p != mass_param]
-    X1, y1, labels1, _, _ = load_training_data(args.results, args.design)
-    X2, y2, labels2, _, trial_of = load_round2_training_data()
+    X1, y1, labels1, _, _ = load_training_data(args.results, args.design, process=None)
+    X2, y2, labels2, _, trial_of = load_round2_training_data(process=None)
     frozen = pd.read_csv(FROZEN_PREDICTIONS).set_index("trial_index")
 
     # -- before: the plate-generating model (7a048ee, 5-D, 7 articles)
@@ -720,7 +726,7 @@ def compute_parity_evolution(args):
     exp_a = AxClient.load_from_json_file(str(ROUND2_SNAPSHOT)).experiment
     # widen back from the constant-mass generation slab, same as the other
     # diagnostics, so the out-of-slab articles stay in the fit
-    exp_a.search_space = fit_search_space()
+    exp_a.search_space = fit_search_space(include_process=False)
     data_a = exp_a.fetch_data()
     print(f"Round-2 snapshot: {data_a.df['arm_name'].nunique()} articles in fit "
           f"({len(DESIGN_PARAMS)}-D space)")
@@ -1245,8 +1251,8 @@ def compute_loocv_evolution(args):
     from ax.core.data import Data
     from ax.service.ax_client import AxClient
 
-    X1, _, labels1, _, _ = load_training_data(args.results, args.design)
-    X2, _, labels2, _, _ = load_round2_training_data()
+    X1, _, labels1, _, _ = load_training_data(args.results, args.design, process=None)
+    X2, _, labels2, _, _ = load_round2_training_data(process=None)
     X_all, labels_all = X1 + X2, labels1 + labels2
     r1_pids = [label.split(" ")[0] for label in labels1]
     r2_pids = [label.split(" ")[0] for label in labels2]
@@ -1254,7 +1260,7 @@ def compute_loocv_evolution(args):
     exp = AxClient.load_from_json_file(str(ROUND2_SNAPSHOT)).experiment
     # widen back from the constant-mass generation slab, same as every other
     # diagnostic here, so the out-of-slab articles stay in the fit
-    exp.search_space = fit_search_space()
+    exp.search_space = fit_search_space(include_process=False)
     data_all = exp.fetch_data()
 
     labels_by_arm = {}
@@ -1903,7 +1909,7 @@ def main(argv=None):
     # generation slab, which would make 9 of 10 articles out of design and drop
     # them from the fit. Diagnostics describe the fitted model, not the next
     # batch, so widen back to the fit space before refitting.
-    experiment.search_space = fit_search_space()
+    experiment.search_space = fit_search_space(include_process=False)
     data = experiment.fetch_data()
 
     # Map arm names back onto print IDs by matching the attached parameters,
@@ -1911,8 +1917,8 @@ def main(argv=None):
     # completed articles plus pending and generated trials, so order is not a
     # reliable key. Every completed trial's 6-vector is unique across the
     # tested articles, which is what makes this exact.
-    X1, _, labels1, _, _ = load_training_data(args.results, args.design)
-    X2, _, labels2, _, _ = load_round2_training_data()
+    X1, _, labels1, _, _ = load_training_data(args.results, args.design, process=None)
+    X2, _, labels2, _, _ = load_round2_training_data(process=None)
     X_all, labels_all = X1 + X2, labels1 + labels2
     labels_by_arm = {}
     for trial in experiment.trials.values():

@@ -17,8 +17,10 @@ suggests the next print batch.
   from each article's own weighed mass, and its noise folds in the
   print-to-print mass scatter measured from the spec-08 triplicate. See the
   docstring for the objective rationale (why `t180` stays a ratio) and the
-  five documented deviations from the rendered template. Run from the repo
-  root: `python bo/t3_prism_bo_campaign.py`.
+  seven documented deviations from the rendered template. From round 3 the
+  search space also carries six print-process parameters and the batch is
+  split across plates; see the print-process section below. Run from the repo
+  root: `python bo/t3_prism_bo_campaign.py --round 3`.
 - `t3_prism_mass_model.py`: the as-printed mass model, and the
   constant-printed-mass projection built on it. **What round 1 actually held
   constant was solid mass, not volume and not printed grams**: PR #35's
@@ -32,10 +34,22 @@ suggests the next print batch.
   designs, then rendered solid grams against the 12 weighed articles using a
   wall-plus-infill term in the as-printed strut diameter) and inverts it, so
   a design can be projected onto a constant *printed* mass with a closed
-  bisection and no slicer in the loop. Residual sd 0.378 g, at or below the
+  bisection and no slicer in the loop. Since 2026-08-26 the two infill
+  percentages are inputs to that solve rather than fitted constants, because
+  a sparser article has to be larger to weigh the same. Residual sd 0.378 g, at or below the
   0.457 g print-to-print scatter, versus 0.927 g for a flat pair of density
   factors. `python bo/t3_prism_mass_model.py` prints the calibration report
   and re-projects the 9 round-1 articles.
+
+- `t3_prism_slicer_settings.py`: reads the print-process settings back out of
+  a Bambu Studio `.3mf` project (process profile, layer height, line width,
+  sparse infill, wall loops, and per-filament nozzle temperature and max
+  volumetric speed, plus any per-object or per-part overrides). It is what
+  makes `AS_PRINTED_PROCESS` in the campaign script auditable rather than a
+  hard-coded constant, and it is what round 4 should run on the round-3 plates
+  to record what they were actually sliced at rather than what they were asked
+  for. `python bo/t3_prism_slicer_settings.py bo/slices/*.3mf [--csv out.csv]
+  [--raw]`.
 
 - `t3-prism-bo-batch-drop-results.csv`: snapshot of the BO-ready
   `campaign_summary.csv` produced on PR #86 (branch
@@ -213,7 +227,193 @@ unimplemented upstream).
 Still to do before the suggested designs can be printed: PR #35's
 `t3_prism_sobol_batch.py` Route A solve has to be re-pointed at printed grams
 (target `t3_prism_mass_model`'s model instead of solid mass) so its STLs
-match the geometry the suggestions CSV reports.
+match the geometry the suggestions CSV reports. The suggestions CSV already
+carries the solved uniform `scale` per article, so the shorter path is to
+render each design's SCAD at its own base coordinates and that scale and skip
+the solve entirely; from round 3 the scale also depends on the article's strut
+infill, so it cannot be recomputed from the shape alone.
+
+### Print-process parameters, and why the batch is split across plates
+
+Six slicer settings became design variables on 2026-08-26 (PR #102). They had
+been stock defaults nobody chose: both tested plates were sliced from Bambu's
+`0.30mm Standard @BBL H2D 0.6 nozzle` process at 15 percent grid sparse infill,
+2 wall loops, 0.30 mm layers and 0.62 mm line width, with PLA Basic at 220 C
+and 30 mm^3/s and TPU 85A at 240 C and 2.5 mm^3/s. Those numbers are read
+straight out of `Metadata/project_settings.config` in the two committed slicer
+projects, and they are identical in both, so **all 17 tested articles sit at
+one point of this six-dimensional space** and the round-3 batch is its
+initialization rather than an optimization of it.
+
+| Parameter | Bounds | Set at | Slicer field | Why these bounds |
+|---|---|---|---|---|
+| `strut_infill_pct` | 10 to 60 % | 15 | sparse infill density, `-struts` part | 10 is below stock, 60 is a structural infill; past that the printed-mass model is extrapolating a long way from its one calibration point and print time climbs |
+| `tpu_infill_pct` | 10 to 60 % | 15 | sparse infill density, `-cables` part | same range; this is the knob that decides whether the captive core is the hollow lock ball photographed on issue #85 |
+| `pla_nozzle_temp_C` | 200 to 235 C | 220 | PLA filament nozzle temperature | Bambu PLA Basic's preset window is 190 to 240, held in from both ends: 30 mm^3/s through a 0.6 nozzle needs heat at the bottom, and stringing across the tendons gets worse at the top |
+| `pla_flow_mm3_s` | 15 to 30 mm^3/s | 30 | PLA filament max volumetric speed | 30 is the vendor value both plates ran at and is the ceiling; 15 halves it, which is as slow as a nine-article plate can afford |
+| `tpu_nozzle_temp_C` | 230 to 250 C | 240 | TPU filament nozzle temperature | the generic Bambu TPU 85A @BBL H2D preset allows 200 to 250, centered on the 240 both plates ran at |
+| `tpu_flow_mm3_s` | 2.0 to 4.8 mm^3/s | 2.5 | TPU filament max volumetric speed | 4.8 is what the TPU high-flow hotend installed on 2026-08-17 is rated for (issue #96), which the lab has wanted to try and has not; 2.0 is just under what both plates ran at |
+
+Where those "set at" numbers come from, so they can be checked rather than
+believed: `python bo/t3_prism_slicer_settings.py bo/slices/*.3mf` reads them
+back out of the two committed slicer projects and writes
+`t3-prism-slicer-process-settings.csv`. Both projects report the same process
+profile and the same values on the two slots any object prints with (PLA on
+extruder 1 at 220 C and 30 mm^3/s, TPU on extruder 2 at 240 C and
+2.5 mm^3/s), and neither carries a single per-object or per-part override.
+`slices/t3-prism-bo-round1.H2D-MM-PLAstruts-TPUcables_manual-supports.3mf` is
+the r2d2c plate, posted to issue #98 on 2026-08-24 and byte-identical
+(sha256 `4a7bc1a0…`) to the copy committed at `8809b25` on the
+`copilot/get-bambu-sliced-print-t3-prism` branch; it is copied here so this
+branch can be checked without fetching that one.
+
+Two things the extractor turns up that are worth acting on independently of
+the BO. The TPU slot still uses the `Bambu TPU 85A @BBL H2D 0.4 nozzle`
+preset, left over from before the high-flow hotend went in on 2026-08-17, and
+that preset caps the temperature window at 240 C; the generic
+`@BBL H2D` preset allows 200 to 250, so the round-3 plates that ask for 247 C
+and 233 C need the preset swapped, not just the number typed. And the TPU is
+running at 2.5 mm^3/s on a hotend rated for 4.8, which is the headroom
+@me-madsen noted on 2026-08-18 and nobody has spent yet.
+
+Watch the top of the TPU temperature range in particular. Issue #96 traced a
+multi-week printer outage to processing lubricant carbonizing in the hotend on
+long hot TPU prints, so a plate at 250 C is the one to check mid-print for a
+flow taper.
+
+**Speed is parameterized as max volumetric speed, not mm/s, because that is
+the setting that binds.** The process profile asks for 200 mm/s on the outer
+wall and 350 mm/s on sparse infill, which at 0.62 x 0.30 mm of extrusion is 37
+and 65 mm^3/s: both materials already run flow-capped everywhere, so the mm/s
+fields do nothing. Bambu Studio also has no per-material mm/s at all (speeds
+belong to the process and are shared by both filaments), while the volumetric
+cap is per filament. Every table reports the equivalent mm/s next to it
+(`pla_speed_mm_s`, `tpu_speed_mm_s`), which is `flow / (0.62 * 0.30)`.
+
+#### The split-plot structure
+
+Two of the six can vary between articles on one plate and four cannot.
+
+- **Article-level.** Sparse infill density is a per-object and per-part
+  setting. Each specimen is one Bambu object holding a `<spec>-struts.stl`
+  part on extruder 1 and a `<spec>-cables.stl` part on extruder 2 (confirmed
+  in `Metadata/model_settings.config` of the committed project), so a per-part
+  override addresses PLA and TPU separately. Without the override both parts
+  inherit one global value, which is why neither had ever been chosen.
+- **Plate-level.** Nozzle temperature and max volumetric speed are filament
+  settings, and every object on a plate is built layer by layer through the
+  same two nozzles. One plate carries one value of each.
+
+So the batch is a split plot: `--plates` whole plots carrying the four
+filament settings, `--batch-size` articles carrying the two infill settings
+and the shape. The default is 9 articles over 3 plates, which buys three
+levels of each filament parameter for three print jobs. `--plates 9` gives a
+level per article for nine print jobs; `--plates 1` is one print job and no
+information on those four at all. `--freeze-process` pins all six at the
+as-printed point and gives back the shape-plus-mass batch of rounds 1 and 2.
+
+Articles are dealt to plates so that **each plate spans both infill axes**,
+which is the one confound worth spending effort on. The four filament settings
+are confounded with the plate by construction and nothing can be done about
+that inside one round. The two infill settings need not be, and the obvious
+dealing rule would confound them anyway: at a fixed printed mass a sparse
+article is a large one, so dealing by footprint sorts by infill and hands each
+plate its own infill band. The rule used instead is a round-robin deal over
+the strut-infill rank followed by improving pairwise swaps, scored on the
+variance of the per-plate means of both infill axes. Plate packing is then
+reported rather than optimized: three articles use about 130 x 130 mm of the
+usable 290 x 310 mm, so it is nowhere near binding, and a plate that does not
+fit is called out to be split rather than quietly repacked.
+
+#### Why a Latin hypercube instead of the acquisition function
+
+qNEHVI also returns values for these six parameters, and they are worth
+nothing. With every observation at one process point the posterior is flat
+along those axes, so the acquisition surface is flat too and whatever the
+optimizer returns there is an artifact of its starting points. The run prints
+the spread it produced before replacing it. The replacement is a Latin
+hypercube, which stratifies each axis into as many bins as there are points,
+and each coordinate is rounded onto the slicer field's own resolution (1 C,
+1 percent, 0.1 mm^3/s) so the number in the table is the number typed into
+Bambu Studio, with no planned-versus-executed gap.
+
+The run then re-queries the model at the delivered points and prints how much
+the substitution moved its predictions, against the model's own posterior sd,
+so the cost is measured rather than assumed. On the round-3 batch it moved
+`t180` by at most 0.037 (19 percent of one posterior sd) and `e_reb_mJ` by at
+most 0.64 mJ (15 percent). That is not zero, and it is worth being clear about
+why it is not: a GP cannot learn a response from an input that never varied,
+so what is left along those six axes is the SAAS prior's residual sensitivity,
+not evidence. Substituting a stratified design trades a fifth of one posterior
+sd of prior noise for six axes round 4 can actually estimate.
+
+If a later round prints this number and it has grown a lot, that is the signal
+that the model has begun to learn the process axes from data, and the
+substitution should be dropped in favor of letting the acquisition choose.
+
+#### Infill feeds back into the printed-mass projection
+
+Strut infill is not only a material property, it is a size lever. At a fixed
+printed mass a sparser article has to be larger, so the projection in
+`t3_prism_mass_model.py` now solves the scale given the infill: over the
+round-3 bounds the strut density moves the solved scale by about -9 to
++1 percent and the TPU density by about -1 percent (run `python
+bo/t3_prism_mass_model.py` for the sweep). Both terms are differentials around
+the 15 percent nominal, so at that setting the calibrated model is reproduced
+exactly and every number it produced before is unchanged. Neither term has
+been validated: no article has ever been printed at any other infill. **The
+round-3 weighings are the first data that can check them, and they should be
+fed back into the calibration before round 4.**
+
+### Round-3 batch (the first with print-process parameters)
+
+This is run 3 of the script, and it supersedes run 2. Both ingest exactly the
+same 17 tested articles; run 2 produced a candidate batch on the six-parameter
+space that was never printed, and run 3 produces the batch that is, on the
+twelve-parameter space. That is why the physical batch number and the run
+number are the same here and `--batch-number` exists: it names the batch in
+the figure callout and the recipe title, and defaults to `--round` plus one,
+which is only right when every previous run's batch went to a printer.
+
+```bash
+python bo/t3_prism_bo_campaign.py --round 3 --batch-number 3
+python bo/t3_prism_bo_campaign.py --round 3 --batch-number 3 --plot-only \
+    # redraws the Pareto panel, the process-space panel and the recipe from
+    # the recorded CSV, no Ax install and no refit
+```
+
+Options worth knowing about: `--plates N` sets how many levels of the four
+filament parameters the round buys (default 3, for 9 articles), `--freeze-process`
+gives back the shape-plus-mass batch of rounds 1 and 2, and `--control-plate`
+holds plate 1 at the as-printed process point on all six axes so a round-level
+batch effect can be told apart from a filament-setting effect. The default is
+without the control plate, because the point of this round is to spread the
+six new axes as widely as three plates allow; the flag is there because
+rounds 1 and 2 already produced one unexplained batch shift, and a control
+plate is the cheapest way to not repeat that argument.
+
+- `t3-prism-bo-suggestions-round3.csv`: the batch to print. One row per
+  article: plate, base shape coordinates, the constant `mass_printed_g`
+  target, the six process coordinates plus the two derived mm/s speeds,
+  posterior-mean predictions for both objectives, and the as-printed geometry
+  the constant-printed-mass projection produces at that article's own infill
+  (`scale`, `*_print_mm`, `footprint_d_mm`, `solid_mass_g`) with PR #35's two
+  printability checks evaluated on it. Violations are flagged, not dropped,
+  the same as in rounds 1 and 2.
+- `t3-prism-bo-round3-plate-recipe.md`: the same batch written as a print
+  recipe. Filament settings and a packing check per plate, per-part infill
+  overrides and as-printed geometry per article. This is the file to work from
+  at the slicer.
+- `t3-prism-bo-ax-client-round3.json`: full AxClient state. The nine delivered
+  articles are attached as pending trials, so round 4 warm-starts from the
+  batch that is actually going to the printer rather than from the raw
+  acquisition output.
+- `figures/t3-prism-bo-round3-pareto.png`: the objective-space view in the
+  usual grammar, 17 tested articles and the 9 suggestions at their predicted
+  means.
+- `figures/t3-prism-bo-round3-process-space.png`: one strip per process
+  parameter, showing the single black circle where all 17 tested articles sit
+  and the nine colored diamonds where round 3 goes, colored by plate.
 
 ## Model interpretability (diagnostics)
 
