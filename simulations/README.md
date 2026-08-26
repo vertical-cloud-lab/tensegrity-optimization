@@ -261,6 +261,30 @@ python simulations/bo_contrast_study.py --compare envelope --era-contrast \
 #    bo_contrast_screen.png, bo_contrast_envelope_{comparison,objective_
 #    space}.png, bo_contrast_headline.png, bo_contrast_strain_era_
 #    rescored.csv
+
+# Synthetic control for that harness (PR #33, 2026-08-26): the identical
+#   benchmark harness (same generation strategy, budget, seeds, baselines,
+#   hypervolume routine, reference rule and tests) re-run on Branin-family
+#   analytic problems whose answers are known in advance, so the physics
+#   contrast rests on a harness that has been checked against ground truth.
+#   Headline: on plain Branin the BO's median simple regret is 0.0014
+#   against 0.62-1.31 for the samplers, so the optimizer works; the
+#   deliberately degenerate (Branin, -Branin) pair does NOT behave as a
+#   negative control, because hypervolume on an anti-diagonal front is set
+#   by the extremes and finding those is a single-objective search; and the
+#   free-hypervolume screen predicts the DOE level but not the BO-minus-DOE
+#   gap.  --audit cross-checks the hypervolume against BoTorch's exact
+#   implementation on both this control and the committed physics CSVs.
+#   Full write-up in synthetic_bo_benchmark.md.
+python simulations/synthetic_bo_benchmark.py --cloud --screen
+python simulations/synthetic_bo_benchmark.py --campaign --baselines --jobs 4
+python simulations/synthetic_bo_benchmark.py --compare --audit
+# -> outputs/synthetic_bo/synthetic_cloud_<problem>.csv.gz,
+#    synthetic_reference_<problem>.json, synthetic_front_<problem>.csv,
+#    synthetic_screen.csv, synthetic_bo_<problem>_seed<k>.csv,
+#    synthetic_baseline_<strategy>_<mode>_<problem>_seed<k>.csv,
+#    synthetic_summary_{<problem>,all}.csv, synthetic_audit{,_physics}.csv,
+#    synthetic_<problem>.png, synthetic_overview.png
 ```
 
 ## Matching the PR #102 bench campaign in simulation
