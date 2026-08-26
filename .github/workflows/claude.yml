@@ -183,6 +183,14 @@ jobs:
           # The exact tag found in the trigger text (@claude, @claude+opus-5:max, ...)
           trigger_phrase: ${{ steps.select.outputs.phrase }}
 
+          # Without this line, the prompt below switches the action into
+          # automation ("agent") mode: no tracking comment, no thread context,
+          # and the note below becomes the entire task. track_progress forces
+          # tag mode, which posts the tracking comment, reads the task from
+          # the comment that triggered the run, and delivers the note below
+          # as <custom_instructions>.
+          track_progress: true
+
           # Optional (riskier): Print the full turn-by-turn JSON execution log in the step output
           show_full_output: true
 
