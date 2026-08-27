@@ -1,0 +1,67 @@
+{
+  "drop1": {
+    "base": 1.528239202657807,
+    "impact": 251,
+    "start": 158,
+    "descent_frames": 93,
+    "descent_s": 3.1,
+    "vel_px_fr": 2.312,
+    "acc_px_fr2": 0.0232,
+    "rebound_px": 117.4,
+    "rebound_frac": 0.5,
+    "apex": 383,
+    "total": 793
+  },
+  "drop2": {
+    "base": 1.222222222222222,
+    "impact": 277,
+    "start": 185,
+    "descent_frames": 92,
+    "descent_s": 3.07,
+    "vel_px_fr": 2.302,
+    "acc_px_fr2": 0.0217,
+    "rebound_px": 116.9,
+    "rebound_frac": 0.5,
+    "apex": 415,
+    "total": 863
+  },
+  "drop4": {
+    "base": 2.2417582417582413,
+    "impact": 340,
+    "start": 248,
+    "descent_frames": 92,
+    "descent_s": 3.07,
+    "vel_px_fr": 2.3,
+    "acc_px_fr2": 0.0221,
+    "rebound_px": 119.3,
+    "rebound_frac": 0.51,
+    "apex": 474,
+    "total": 867
+  },
+  "drop5": {
+    "base": 1.564625850340136,
+    "impact": 271,
+    "start": 178,
+    "descent_frames": 93,
+    "descent_s": 3.1,
+    "vel_px_fr": 2.299,
+    "acc_px_fr2": 0.0223,
+    "rebound_px": 121.1,
+    "rebound_frac": 0.51,
+    "apex": 404,
+    "total": 847
+  },
+  "falloff": {
+    "base": 58.9073441725284,
+    "impact": 56,
+    "start": 1,
+    "descent_frames": 55,
+    "descent_s": 1.83,
+    "vel_px_fr": 2.855,
+    "acc_px_fr2": 0.0348,
+    "rebound_px": 117.8,
+    "rebound_frac": 0.66,
+    "apex": 198,
+    "total": 660
+  }
+}
