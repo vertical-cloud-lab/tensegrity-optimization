@@ -38,3 +38,4 @@ Thumbs.db
 # IDE
 .vscode/
 *.code-workspace
+__pycache__/
