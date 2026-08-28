@@ -1,0 +1,10 @@
+{
+  "task_id": "1d71a27e-08b4-4382-8c10-d276cdf82dd9",
+  "job_name": "LITERATURE_HIGH",
+  "endpoint": "https://api.platform.edisonscientific.com",
+  "submitted_at": "2026-07-01T22:05Z",
+  "purpose": "Mock reviews of TMS 2027 abstract as symposium 105 organizer personas (Zachary Cordero, MIT; Douglas Hofmann, NASA JPL)",
+  "status_at_submission": "submitted",
+  "fetch_instructions": "Next session: client.get_task(task_id, verbose=True); commit answer + all artifacts to reviews/edison-symp105-personas/",
+  "issue": 78
+}
