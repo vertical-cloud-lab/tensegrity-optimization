@@ -1,0 +1,142 @@
+{
+    "error_string": "Success.",
+    "export_time": 0,
+    "layer_height": 0.30000001192092896,
+    "plate_index": 0,
+    "prepare_time": 66,
+    "return_code": 0,
+    "sliced_plates": [
+        {
+            "feature_type_times": {
+                "Bridge": 209.8877410888672,
+                "Brim": 23.79548454284668,
+                "Custom": 292.1420593261719,
+                "Flush": 1784.794921875,
+                "Gap infill": 705.1868286132813,
+                "Inner wall": 5403.22216796875,
+                "Internal solid infill": 2788.1708984375,
+                "Outer wall": 8821.0244140625,
+                "Overhang wall": 417.58782958984375,
+                "Prime tower": 14815.7138671875,
+                "Sparse infill": 1219.2777099609375,
+                "Support": 6052.61181640625,
+                "Support interface": 934.779052734375,
+                "Top surface": 112.4478530883789,
+                "Travel": 16479.498046875,
+                "Undefined": 16474.841796875
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 187.54026794433594,
+                    "total_used_g": 213.36865234375
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 41.74578857421875,
+                    "total_used_g": 59.781005859375
+                }
+            ],
+            "generate_support_material_time": 5470,
+            "id": 1,
+            "infill_time": 618,
+            "layer_filament_change": 0,
+            "main_predication": 43092.078125,
+            "make_perimeters_time": 870,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 140.87994384765625,
+                        "height": 106.30355072021484,
+                        "width": 248.4620361328125,
+                        "x": 35.76898193359375,
+                        "y": 16.060028076171875,
+                        "z": 3.989257635339527e-08
+                    },
+                    "id": 5,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                },
+                {
+                    "bbox": {
+                        "depth": 140.87994384765625,
+                        "height": 106.30355072021484,
+                        "width": 248.4620361328125,
+                        "x": 35.76898193359375,
+                        "y": 16.060028076171875,
+                        "z": 3.989257635339527e-08
+                    },
+                    "id": 5,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                },
+                {
+                    "bbox": {
+                        "depth": 140.87994384765625,
+                        "height": 106.30355072021484,
+                        "width": 248.4620361328125,
+                        "x": 35.76898193359375,
+                        "y": 16.060028076171875,
+                        "z": 3.989257635339527e-08
+                    },
+                    "id": 5,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                },
+                {
+                    "bbox": {
+                        "depth": 140.87994384765625,
+                        "height": 106.30355072021484,
+                        "width": 248.4620361328125,
+                        "x": 35.76898193359375,
+                        "y": 16.060028076171875,
+                        "z": 3.989257635339527e-08
+                    },
+                    "id": 5,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                },
+                {
+                    "bbox": {
+                        "depth": 140.87994384765625,
+                        "height": 106.30355072021484,
+                        "width": 248.4620361328125,
+                        "x": 35.76898193359375,
+                        "y": 16.060028076171875,
+                        "z": 3.989257635339527e-08
+                    },
+                    "id": 5,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                },
+                {
+                    "bbox": {
+                        "depth": 140.87994384765625,
+                        "height": 106.30355072021484,
+                        "width": 248.4620361328125,
+                        "x": 35.76898193359375,
+                        "y": 16.060028076171875,
+                        "z": 3.989257635339527e-08
+                    },
+                    "id": 5,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                }
+            ],
+            "sliced_time": 13304,
+            "sliced_time_with_cache": 5998,
+            "total_predication": 60010.046875,
+            "triangle_count": 196896,
+            "warning_message": ""
+        }
+    ],
+    "sparse_infill_density": 15.0,
+    "upward_compatible_machine": [
+        "Bambu Lab H2D Pro 0.6 nozzle"
+    ],
+    "wall_loops": 2
+}

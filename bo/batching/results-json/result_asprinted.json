@@ -1,0 +1,700 @@
+{
+    "error_string": "Success.",
+    "export_time": 0,
+    "layer_height": 0.30000001192092896,
+    "plate_index": 0,
+    "prepare_time": 561,
+    "return_code": 0,
+    "sliced_plates": [
+        {
+            "feature_type_times": {
+                "Bridge": 35.672977447509766,
+                "Brim": 4.845239639282227,
+                "Custom": 291.0770263671875,
+                "Flush": 2154.3955078125,
+                "Gap infill": 200.1546630859375,
+                "Inner wall": 999.89013671875,
+                "Internal solid infill": 365.36004638671875,
+                "Outer wall": 1735.7452392578125,
+                "Overhang wall": 67.85445404052734,
+                "Prime tower": 17980.130859375,
+                "Sparse infill": 189.3737335205078,
+                "Support": 1137.2293701171875,
+                "Support interface": 294.6540832519531,
+                "Top surface": 15.51447582244873,
+                "Travel": 9662.8828125,
+                "Undefined": 9659.26171875
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 35.925506591796875,
+                    "total_used_g": 67.28861236572266
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 7.444558143615723,
+                    "total_used_g": 29.339277267456055
+                }
+            ],
+            "generate_support_material_time": 6962,
+            "id": 1,
+            "infill_time": 765,
+            "layer_filament_change": 0,
+            "main_predication": 14678.8564453125,
+            "make_perimeters_time": 1120,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 80.06988525390625,
+                        "height": 126.76863098144531,
+                        "width": 82.47615814208984,
+                        "x": 160.80506896972656,
+                        "y": 95.29264831542969,
+                        "z": -2.0011004486372586e-18
+                    },
+                    "id": 37,
+                    "name": "Specimen 08",
+                    "triangle_count": 61238
+                }
+            ],
+            "sliced_time": 12046,
+            "sliced_time_with_cache": 2787,
+            "total_predication": 35130.80859375,
+            "triangle_count": 61238,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 36.15205383300781,
+                "Brim": 3.186589479446411,
+                "Custom": 292.6427917480469,
+                "Flush": 1560.7958984375,
+                "Gap infill": 152.0968475341797,
+                "Inner wall": 622.2105102539063,
+                "Internal solid infill": 131.7005157470703,
+                "Outer wall": 1249.2286376953125,
+                "Overhang wall": 59.557228088378906,
+                "Prime tower": 12907.787109375,
+                "Sparse infill": 147.85916137695313,
+                "Support": 879.7747192382813,
+                "Support interface": 282.97296142578125,
+                "Top surface": 17.467721939086914,
+                "Travel": 7018.634765625,
+                "Undefined": 7013.3935546875
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 31.35103416442871,
+                    "total_used_g": 54.161685943603516
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 4.205136775970459,
+                    "total_used_g": 19.901262283325195
+                }
+            ],
+            "generate_support_material_time": 4835,
+            "id": 2,
+            "infill_time": 347,
+            "layer_filament_change": 0,
+            "main_predication": 10571.4912109375,
+            "make_perimeters_time": 1123,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 73.54055786132813,
+                        "height": 94.62922668457031,
+                        "width": 76.40950775146484,
+                        "x": 550.0473022460938,
+                        "y": 113.21508026123047,
+                        "z": 3.761025140028351e-17
+                    },
+                    "id": 29,
+                    "name": "Specimen 06",
+                    "triangle_count": 32222
+                }
+            ],
+            "sliced_time": 9021,
+            "sliced_time_with_cache": 2416,
+            "total_predication": 25357.4453125,
+            "triangle_count": 32222,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 34.780513763427734,
+                "Brim": 3.900407075881958,
+                "Custom": 293.19390869140625,
+                "Flush": 1347.996826171875,
+                "Gap infill": 137.0784912109375,
+                "Inner wall": 854.9214477539063,
+                "Internal solid infill": 456.6714172363281,
+                "Outer wall": 1394.977783203125,
+                "Overhang wall": 54.10032272338867,
+                "Prime tower": 11082.474609375,
+                "Sparse infill": 218.9027862548828,
+                "Support": 642.5158081054688,
+                "Support interface": 234.95120239257813,
+                "Top surface": 11.619402885437012,
+                "Travel": 6105.49267578125,
+                "Undefined": 6099.6962890625
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 25.601669311523438,
+                    "total_used_g": 45.21784973144531
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 6.64907693862915,
+                    "total_used_g": 20.117042541503906
+                }
+            ],
+            "generate_support_material_time": 3522,
+            "id": 3,
+            "infill_time": 492,
+            "layer_filament_change": 0,
+            "main_predication": 10120.5146484375,
+            "make_perimeters_time": 699,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 62.30291748046875,
+                        "height": 83.3449935913086,
+                        "width": 67.10748291015625,
+                        "x": 977.2056884765625,
+                        "y": 121.11079406738281,
+                        "z": -1.8091548418555536e-18
+                    },
+                    "id": 17,
+                    "name": "Specimen 03",
+                    "triangle_count": 32462
+                }
+            ],
+            "sliced_time": 7461,
+            "sliced_time_with_cache": 2470,
+            "total_predication": 22868.353515625,
+            "triangle_count": 32462,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 34.22455978393555,
+                "Brim": 4.572495460510254,
+                "Custom": 291.643798828125,
+                "Flush": 1930.394287109375,
+                "Gap infill": 192.7017822265625,
+                "Inner wall": 1136.5552978515625,
+                "Internal solid infill": 555.4017944335938,
+                "Outer wall": 1835.438720703125,
+                "Overhang wall": 76.6591796875,
+                "Prime tower": 16070.5244140625,
+                "Sparse infill": 224.69277954101563,
+                "Support": 1168.3402099609375,
+                "Support interface": 403.5693359375,
+                "Top surface": 11.92213249206543,
+                "Travel": 8919.3046875,
+                "Undefined": 8915.0693359375
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 35.89998245239258,
+                    "total_used_g": 63.985313415527344
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 9.291523933410645,
+                    "total_used_g": 28.841129302978516
+                }
+            ],
+            "generate_support_material_time": 6388,
+            "id": 4,
+            "infill_time": 738,
+            "layer_filament_change": 0,
+            "main_predication": 14533.24609375,
+            "make_perimeters_time": 977,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 91.15898132324219,
+                        "height": 114.46382904052734,
+                        "width": 92.5116958618164,
+                        "x": 1383.921630859375,
+                        "y": 102.94068908691406,
+                        "z": 4.6806723027917416e-17
+                    },
+                    "id": 13,
+                    "name": "Specimen 02",
+                    "triangle_count": 56908
+                }
+            ],
+            "sliced_time": 10728,
+            "sliced_time_with_cache": 2236,
+            "total_predication": 32851.54296875,
+            "triangle_count": 56908,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 36.28369903564453,
+                "Brim": 4.300709247589111,
+                "Custom": 292.4686584472656,
+                "Flush": 1627.99560546875,
+                "Gap infill": 114.58119201660156,
+                "Inner wall": 1175.2734375,
+                "Internal solid infill": 764.1257934570313,
+                "Outer wall": 1760.275390625,
+                "Overhang wall": 94.76039123535156,
+                "Prime tower": 13479.80078125,
+                "Sparse infill": 280.2369079589844,
+                "Support": 978.0498046875,
+                "Support interface": 255.71900939941406,
+                "Top surface": 15.161252975463867,
+                "Travel": 7435.2685546875,
+                "Undefined": 7430.1923828125
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 30.47992706298828,
+                    "total_used_g": 54.168678283691406
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 10.330827713012695,
+                    "total_used_g": 26.722658157348633
+                }
+            ],
+            "generate_support_material_time": 5135,
+            "id": 5,
+            "infill_time": 729,
+            "layer_filament_change": 0,
+            "main_predication": 12884.505859375,
+            "make_perimeters_time": 811,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 74.08548736572266,
+                        "height": 97.7567367553711,
+                        "width": 77.23707580566406,
+                        "x": 115.93107604980469,
+                        "y": -266.07879638671875,
+                        "z": 7.998793509995925e-18
+                    },
+                    "id": 5,
+                    "name": "Specimen 00",
+                    "triangle_count": 57904
+                }
+            ],
+            "sliced_time": 9314,
+            "sliced_time_with_cache": 2309,
+            "total_predication": 28309.6640625,
+            "triangle_count": 57904,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 34.982444763183594,
+                "Brim": 3.902034044265747,
+                "Custom": 292.0596618652344,
+                "Flush": 1784.794921875,
+                "Gap infill": 123.93072509765625,
+                "Inner wall": 908.3792724609375,
+                "Internal solid infill": 468.73052978515625,
+                "Outer wall": 1542.6689453125,
+                "Overhang wall": 69.59859466552734,
+                "Prime tower": 14815.6923828125,
+                "Sparse infill": 204.552734375,
+                "Support": 1008.897216796875,
+                "Support interface": 156.47877502441406,
+                "Top surface": 18.941314697265625,
+                "Travel": 8083.9912109375,
+                "Undefined": 8079.3349609375
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 31.28188705444336,
+                    "total_used_g": 57.11025619506836
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 6.957858085632324,
+                    "total_used_g": 24.99307632446289
+                }
+            ],
+            "generate_support_material_time": 5182,
+            "id": 6,
+            "infill_time": 621,
+            "layer_filament_change": 0,
+            "main_predication": 12595.9912109375,
+            "make_perimeters_time": 864,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 63.87995910644531,
+                        "height": 106.30355072021484,
+                        "width": 68.4620361328125,
+                        "x": 548.8989868164063,
+                        "y": -263.520263671875,
+                        "z": -4.660473213977687e-17
+                    },
+                    "id": 21,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                }
+            ],
+            "sliced_time": 9886,
+            "sliced_time_with_cache": 2871,
+            "total_predication": 29513.8515625,
+            "triangle_count": 32816,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 36.621543884277344,
+                "Brim": 5.253211498260498,
+                "Custom": 292.98046875,
+                "Flush": 1426.396484375,
+                "Gap infill": 180.30755615234375,
+                "Inner wall": 1221.41796875,
+                "Internal solid infill": 619.8075561523438,
+                "Outer wall": 1786.4599609375,
+                "Overhang wall": 79.07872009277344,
+                "Prime tower": 11757.6142578125,
+                "Sparse infill": 306.9720153808594,
+                "Support": 1069.20654296875,
+                "Support interface": 333.77593994140625,
+                "Top surface": 15.341011047363281,
+                "Travel": 6637.3232421875,
+                "Undefined": 6631.751953125
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 31.739322662353516,
+                    "total_used_g": 52.59316635131836
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 10.490715980529785,
+                    "total_used_g": 24.78338623046875
+                }
+            ],
+            "generate_support_material_time": 4871,
+            "id": 7,
+            "infill_time": 708,
+            "layer_filament_change": 0,
+            "main_predication": 12263.1044921875,
+            "make_perimeters_time": 734,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 95.32050323486328,
+                        "height": 87.93519592285156,
+                        "width": 95.87226867675781,
+                        "x": 961.2775268554688,
+                        "y": -280.9366149902344,
+                        "z": -4.938873753149964e-17
+                    },
+                    "id": 25,
+                    "name": "Specimen 05",
+                    "triangle_count": 58222
+                }
+            ],
+            "sliced_time": 8551,
+            "sliced_time_with_cache": 1900,
+            "total_predication": 25764.494140625,
+            "triangle_count": 58222,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 34.95960235595703,
+                "Brim": 2.7582292556762695,
+                "Custom": 292.96075439453125,
+                "Flush": 1437.596435546875,
+                "Gap infill": 140.79922485351563,
+                "Inner wall": 561.9066772460938,
+                "Internal solid infill": 151.08041381835938,
+                "Outer wall": 1211.6036376953125,
+                "Overhang wall": 62.712921142578125,
+                "Prime tower": 11852.880859375,
+                "Sparse infill": 148.98321533203125,
+                "Support": 849.3998413085938,
+                "Support interface": 224.9034881591797,
+                "Top surface": 12.23816204071045,
+                "Travel": 6509.734375,
+                "Undefined": 6504.17822265625
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 30.078506469726563,
+                    "total_used_g": 51.09221649169922
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 3.873922824859619,
+                    "total_used_g": 18.283546447753906
+                }
+            ],
+            "generate_support_material_time": 3742,
+            "id": 8,
+            "infill_time": 363,
+            "layer_filament_change": 0,
+            "main_predication": 9882.0380859375,
+            "make_perimeters_time": 935,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 75.1025161743164,
+                        "height": 88.33963775634766,
+                        "width": 78.29283142089844,
+                        "x": 1381.5216064453125,
+                        "y": -275.9952697753906,
+                        "z": 1.3011590740128528e-17
+                    },
+                    "id": 9,
+                    "name": "Specimen 01",
+                    "triangle_count": 33140
+                }
+            ],
+            "sliced_time": 7431,
+            "sliced_time_with_cache": 2104,
+            "total_predication": 23489.890625,
+            "triangle_count": 33140,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 34.552486419677734,
+                "Brim": 4.673244476318359,
+                "Custom": 292.9482421875,
+                "Flush": 1437.596435546875,
+                "Gap infill": 139.14236450195313,
+                "Inner wall": 1042.7786865234375,
+                "Internal solid infill": 632.6092529296875,
+                "Outer wall": 1610.203125,
+                "Overhang wall": 78.29402923583984,
+                "Prime tower": 11849.8427734375,
+                "Sparse infill": 256.0579528808594,
+                "Support": 807.9331665039063,
+                "Support interface": 278.6357727050781,
+                "Top surface": 38.679443359375,
+                "Travel": 6585.72021484375,
+                "Undefined": 6580.1640625
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 27.600322723388672,
+                    "total_used_g": 48.532901763916016
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 8.997488021850586,
+                    "total_used_g": 23.401090621948242
+                }
+            ],
+            "generate_support_material_time": 4282,
+            "id": 9,
+            "infill_time": 650,
+            "layer_filament_change": 0,
+            "main_predication": 11480.328125,
+            "make_perimeters_time": 721,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 72.19789123535156,
+                        "height": 88.06673431396484,
+                        "width": 76.26849365234375,
+                        "x": 125.14310455322266,
+                        "y": -645.6930541992188,
+                        "z": 3.240497916777717e-17
+                    },
+                    "id": 33,
+                    "name": "Specimen 07",
+                    "triangle_count": 34434
+                }
+            ],
+            "sliced_time": 8265,
+            "sliced_time_with_cache": 2314,
+            "total_predication": 25085.12890625,
+            "triangle_count": 34434,
+            "warning_message": ""
+        },
+        {
+            "feature_type_times": {
+                "Bridge": 211.6221160888672,
+                "Brim": 25.412750244140625,
+                "Custom": 291.7358093261719,
+                "Flush": 1941.59423828125,
+                "Gap infill": 828.7664794921875,
+                "Inner wall": 6001.2421875,
+                "Internal solid infill": 3162.404052734375,
+                "Outer wall": 9361.361328125,
+                "Overhang wall": 461.1057434082031,
+                "Prime tower": 16157.6201171875,
+                "Sparse infill": 1412.0240478515625,
+                "Support": 5898.6962890625,
+                "Support interface": 1654.5306396484375,
+                "Top surface": 111.38638305664063,
+                "Travel": 16486.208984375,
+                "Undefined": 16481.97265625
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFA00",
+                    "id": 1,
+                    "main_used_g": 186.92837524414063,
+                    "total_used_g": 215.035400390625
+                },
+                {
+                    "filament_id": "GFU04",
+                    "id": 2,
+                    "main_used_g": 49.94344711303711,
+                    "total_used_g": 69.61602783203125
+                }
+            ],
+            "generate_support_material_time": 24578,
+            "id": 10,
+            "infill_time": 3784,
+            "layer_filament_change": 0,
+            "main_predication": 45547.4140625,
+            "make_perimeters_time": 5215,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 91.15899658203125,
+                        "height": 114.46382904052734,
+                        "width": 92.51168823242188,
+                        "x": 640.0927734375,
+                        "y": -552.8707275390625,
+                        "z": 4.6806723027917416e-17
+                    },
+                    "id": 41,
+                    "name": "Specimen 02",
+                    "triangle_count": 56908
+                },
+                {
+                    "bbox": {
+                        "depth": 75.10252380371094,
+                        "height": 88.33963775634766,
+                        "width": 78.29290771484375,
+                        "x": 655.86279296875,
+                        "y": -632.3280029296875,
+                        "z": 1.3011590740128528e-17
+                    },
+                    "id": 45,
+                    "name": "Specimen 01",
+                    "triangle_count": 33140
+                },
+                {
+                    "bbox": {
+                        "depth": 95.32047271728516,
+                        "height": 87.93519592285156,
+                        "width": 95.87223815917969,
+                        "x": 551.8796997070313,
+                        "y": -629.267578125,
+                        "z": -4.938873753149964e-17
+                    },
+                    "id": 49,
+                    "name": "Specimen 05",
+                    "triangle_count": 58222
+                },
+                {
+                    "bbox": {
+                        "depth": 63.87997055053711,
+                        "height": 106.30355072021484,
+                        "width": 68.46205139160156,
+                        "x": 476.650634765625,
+                        "y": -592.653564453125,
+                        "z": -4.660473213977687e-17
+                    },
+                    "id": 53,
+                    "name": "Specimen 04",
+                    "triangle_count": 32816
+                },
+                {
+                    "bbox": {
+                        "depth": 74.08545684814453,
+                        "height": 97.7567367553711,
+                        "width": 77.23709106445313,
+                        "x": 623.399169921875,
+                        "y": -716.3723754882813,
+                        "z": 7.998793509995925e-18
+                    },
+                    "id": 57,
+                    "name": "Specimen 00",
+                    "triangle_count": 57904
+                },
+                {
+                    "bbox": {
+                        "depth": 72.19790649414063,
+                        "height": 88.06673431396484,
+                        "width": 76.26849365234375,
+                        "x": 485.9670715332031,
+                        "y": -706.4096069335938,
+                        "z": 3.240497916777717e-17
+                    },
+                    "id": 61,
+                    "name": "Specimen 07",
+                    "triangle_count": 34434
+                }
+            ],
+            "sliced_time": 47671,
+            "sliced_time_with_cache": 12355,
+            "total_predication": 63964.09765625,
+            "triangle_count": 273424,
+            "warning_message": ""
+        }
+    ],
+    "sparse_infill_density": 15.0,
+    "upward_compatible_machine": [
+        "Bambu Lab H2D Pro 0.6 nozzle"
+    ],
+    "wall_loops": 2
+}
