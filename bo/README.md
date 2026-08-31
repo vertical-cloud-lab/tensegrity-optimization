@@ -42,6 +42,13 @@ suggests the next print batch.
   factors. `python bo/t3_prism_mass_model.py` prints the calibration report
   and re-projects the 9 round-1 articles.
 
+- `t3_prism_printed_mass_plate.py`: renders the actual print files (per-trial
+  STL pairs, plate previews and the Bambu H2D multi-material project) for a
+  solved constant-printed-mass suggestions CSV, at the CSV's own solved scale
+  with no mass re-solve. See "Round-3 print files" below for what it produced
+  and how the output was verified. `python bo/t3_prism_printed_mass_plate.py`
+  (needs `openscad` and `xvfb`; about 25 minutes, mostly OpenSCAD).
+
 - `t3_prism_slicer_settings.py`: reads the print-process settings back out of
   a Bambu Studio `.3mf` project (process profile, layer height, line width,
   sparse infill, wall loops, and per-filament nozzle temperature and max
@@ -225,14 +232,14 @@ of silently averaging over it, but it is not the same as re-fitting on
 as-printed geometry (facebook/Ax#3577, planned-vs-executed parameters, still
 unimplemented upstream).
 
-Still to do before the suggested designs can be printed: PR #35's
-`t3_prism_sobol_batch.py` Route A solve has to be re-pointed at printed grams
-(target `t3_prism_mass_model`'s model instead of solid mass) so its STLs
-match the geometry the suggestions CSV reports. The suggestions CSV already
-carries the solved uniform `scale` per article, so the shorter path is to
-render each design's SCAD at its own base coordinates and that scale and skip
-the solve entirely; from round 3 the scale also depends on the article's strut
-infill, so it cannot be recomputed from the shape alone.
+Resolved 2026-08-31: `bo/t3_prism_printed_mass_plate.py` takes exactly that
+shorter path (this paragraph used to be the standing "re-point Route A at
+printed grams" blocker). It renders each design's SCAD at its own base
+coordinates and the CSV's solved `scale`, so the constant-printed-mass
+projection the campaign computed is honored as-is and nothing re-solves onto
+solid mass at render time. From round 3 the scale also depends on the
+article's strut infill, which is why the CSV's solved value, not the shape,
+is the input of record. See "Round-3 print files" below.
 
 ### Print-process parameters, and why the filament settings are one value per batch
 
@@ -451,6 +458,68 @@ reference article, which is independent of how the batch is sliced.
   parameter, showing the single black circle where all 17 tested articles
   sit, nine orange diamonds on each infill axis, and a single orange diamond
   on each filament axis (one value for the batch).
+
+### Round-3 print files (STLs and the H2D project)
+
+Generated 2026-08-31 by `t3_prism_printed_mass_plate.py` from
+`t3-prism-bo-suggestions-round3.csv`. The script renders each article from
+the canonical `cad/t3-prism/t3-prism.scad` at its base coordinates and the
+CSV's solved constant-printed-mass scale, so these files are the suggestions
+CSV made physical: no Route A re-solve onto solid mass happens anywhere,
+which is the mechanism that made round 2's printed masses spread 17.3 to
+22.5 g predicted while the model thought mass was held. The SCAD is a
+byte-identical copy of `copilot/get-bambu-sliced-print-t3-prism` commit
+`dbb5011`, verified unchanged since the commit that rendered the printed
+round-1 BO plate, so the geometry conventions match both tested plates and
+the mass calibration. The STL helpers, plate layout and 3mf assembly are
+adapted from PR #35's `t3_prism_sobol_batch.py` on that branch;
+`cad/t3-prism/flatten_bambu_profile.py` and `patch_mm_extruder.py` are
+byte-identical copies of its helpers.
+
+The files:
+
+- `per-specimen-stls/t3-prism-bo-round3-tNN-{struts,cables}.stl`: 18
+  plate-positioned STLs, one PLA/TPU pair per article, named by Ax trial
+  number (t28 to t36) rather than plate position so no raster-order
+  inference is ever needed to map an article back to its design (the
+  round-2 print key needed a photo shoot to settle exactly that).
+- `slices/t3-prism-bo-round3.H2D-MM-PLAstruts-TPUcables.3mf`: the Bambu
+  Studio project, one object per trial (named "Trial 28" ... "Trial 36" in
+  the object list), struts part on extruder 1 and cables part on extruder 2.
+  Profiles are the ones the lab actually prints with (H2D 0.6 nozzle
+  machine, `0.30mm Standard @BBL H2D 0.6 nozzle` process, PLA Basic 0.6
+  nozzle filament), and the TPU filament is already the recipe's required
+  `Bambu TPU 85A @BBL H2D` preset (not the 0.4 nozzle variant), so no
+  preset swap is needed when opening this file. The batch filament settings
+  are baked into the project (PLA 217 C at 20.5 mm^3/s, TPU 244 C at
+  3.6 mm^3/s, initial-layer temperatures set to the same values) and every
+  part carries its article's sparse infill density as a per-part override.
+  Two things still to do in Bambu Studio: **verify the overrides survived
+  the import** (select a part; its settings list should show "Sparse infill
+  density" with the per-article value; if not, set the 18 values by hand
+  per the plate recipe) and **paint the supports on manually** (supports
+  are off in the project, as in every round).
+- `t3-prism-bo-round3-designs.csv`: the manifest. One row per article with
+  the design coordinates, solved scale, as-printed geometry, rendered solid
+  grams per material, the printed-mass verification below, measured
+  footprint and plate position, and the STL file names.
+- `t3-prism-bo-round3-plate.json`, `t3-prism-bo-round3.scad`,
+  `t3-prism-bo-round3-{plate,iso}.png`: layout metadata, the preview
+  wrapper, and the two preview renders.
+
+Verification, from rendered STL volumes pushed back through the calibrated
+printed-mass model at each article's own infill: predicted printed mass runs
+19.89 to 20.50 g against the 20.23 g target, worst deviation 0.34 g, inside
+the model's own 0.38 g calibration residual and the 0.457 g print-to-print
+scatter. That is the accuracy limit of the mass model, not of the render.
+The rendered-volume check also cross-checks stage 1 of the calibration:
+rendered solid masses agree with the analytic model to within 0.5 g on all
+nine articles. The infill terms of the model remain unvalidated until this
+batch is weighed; feed the weighings back into the calibration before round
+4 (the manifest's `printed_g_est` column is the prediction to score them
+against). Measured footprints (69 to 88 mm, key-seat overhang included) pack
+as a 3x3 grid of 254.5 x 263.5 mm inside the 290 x 310 mm usable area, so
+the plate is one print job as intended.
 
 ## Model interpretability (diagnostics)
 
