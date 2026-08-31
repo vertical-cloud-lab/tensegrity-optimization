@@ -246,14 +246,24 @@ projects, and they are identical in both, so **all 17 tested articles sit at
 one point of this six-dimensional space** and the round-3 batch is its
 initialization rather than an optimization of it.
 
+The bounds were tightened on 2026-08-31 (PR #102 review): the first draw of
+the batch-wide filament settings landed at 247 C TPU at the high-flow
+hotend's full 4.8 mm^3/s rating, which risked the #96 carbonization failure
+and the untested flow ceiling in the same print. Every range now brackets
+the proven operating point instead of reaching for the preset or hardware
+limits. The original ranges (infill 10 to 60 %, PLA 200 to 235 C and 15 to
+30 mm^3/s, TPU 230 to 250 C and 2.0 to 4.8 mm^3/s) are recorded here and in
+the `PROCESS_SPECS` block so a later round can widen deliberately once one
+round of process data exists.
+
 | Parameter | Bounds | Set at | Slicer field | Why these bounds |
 |---|---|---|---|---|
-| `strut_infill_pct` | 10 to 60 % | 15 | sparse infill density, `-struts` part | 10 is below stock, 60 is a structural infill; past that the printed-mass model is extrapolating a long way from its one calibration point and print time climbs |
-| `tpu_infill_pct` | 10 to 60 % | 15 | sparse infill density, `-cables` part | same range; this is the knob that decides whether the captive core is the hollow lock ball photographed on issue #85 |
-| `pla_nozzle_temp_C` | 200 to 235 C | 220 | PLA filament nozzle temperature | Bambu PLA Basic's preset window is 190 to 240, held in from both ends: 30 mm^3/s through a 0.6 nozzle needs heat at the bottom, and stringing across the tendons gets worse at the top |
-| `pla_flow_mm3_s` | 15 to 30 mm^3/s | 30 | PLA filament max volumetric speed | 30 is the vendor value both plates ran at and is the ceiling; 15 halves it, which is as slow as a nine-article plate can afford |
-| `tpu_nozzle_temp_C` | 230 to 250 C | 240 | TPU filament nozzle temperature | the generic Bambu TPU 85A @BBL H2D preset allows 200 to 250, centered on the 240 both plates ran at |
-| `tpu_flow_mm3_s` | 2.0 to 4.8 mm^3/s | 2.5 | TPU filament max volumetric speed | 4.8 is what the TPU high-flow hotend installed on 2026-08-17 is rated for (issue #96), which the lab has wanted to try and has not; 2.0 is just under what both plates ran at |
+| `strut_infill_pct` | 12 to 35 % | 15 | sparse infill density, `-struts` part | brackets the stock 15; 35 keeps the printed-mass model near its one calibration point (its infill term is unvalidated differential physics) and keeps the constant-mass projection from shrinking dense articles onto the fixed-size sensor housings |
+| `tpu_infill_pct` | 12 to 35 % | 15 | sparse infill density, `-cables` part | same range; still spans a soft to a firm captive core (the hollow lock ball photographed on issue #85) without leaving the mass model's comfort zone |
+| `pla_nozzle_temp_C` | 212 to 228 C | 220 | PLA filament nozzle temperature | plus or minus 8 around the proven 220 (Bambu PLA Basic's own preset window is 190 to 240); cold plus fast risks underextrusion through the 0.6 nozzle, hot strings across the tendons, and neither failure needs to be found in a batch of test articles |
+| `pla_flow_mm3_s` | 20 to 30 mm^3/s | 30 | PLA filament max volumetric speed | 30 is the vendor value both plates ran at and stays the ceiling; the floor is two thirds of it rather than the old half, so the batch cannot pair its coldest nozzle with a flow far from anything ever printed here |
+| `tpu_nozzle_temp_C` | 235 to 245 C | 240 | TPU filament nozzle temperature | plus or minus 5 around the 240 both plates ran at (the generic Bambu TPU 85A @BBL H2D preset allows 200 to 250); the old 250 top was backed off because of the #96 hotend-carbonization history |
+| `tpu_flow_mm3_s` | 2.2 to 3.6 mm^3/s | 2.5 | TPU filament max volumetric speed | 2.2 sits just below the 2.5 both plates ran at; 3.6 is 75 percent of the high-flow hotend's 4.8 mm^3/s rating (issue #96), so the round probes the new hotend's headroom without spending all of it in one go at an untested temperature |
 
 Where those "set at" numbers come from, so they can be checked rather than
 believed: `python bo/t3_prism_slicer_settings.py bo/slices/*.3mf` reads them
@@ -273,15 +283,17 @@ the BO. The TPU slot still uses the `Bambu TPU 85A @BBL H2D 0.4 nozzle`
 preset, left over from before the high-flow hotend went in on 2026-08-17, and
 that preset caps the temperature window at 240 C; the generic
 `@BBL H2D` preset allows 200 to 250, so the round-3 batch, which asks for
-247 C, needs the preset swapped, not just the number typed. And the TPU had
+244 C, needs the preset swapped, not just the number typed. And the TPU had
 been running at 2.5 mm^3/s on a hotend rated for 4.8, the headroom
-@me-madsen noted on 2026-08-18; the round-3 draw lands on 4.8 exactly, so
-this batch is the one that spends it.
+@me-madsen noted on 2026-08-18; the round-3 draw lands on 3.6, so this batch
+spends most of that headroom (75 percent of the rating) while holding some
+back for a round that has seen 3.6 work.
 
 Watch the top of the TPU temperature range in particular. Issue #96 traced a
 multi-week printer outage to processing lubricant carbonizing in the hotend on
-long hot TPU prints, so a plate at 250 C is the one to check mid-print for a
-flow taper.
+long hot TPU prints; that history is why the range now tops out at 245 C
+rather than the preset's 250, and a plate near that top is still the one to
+check mid-print for a flow taper.
 
 **Speed is parameterized as max volumetric speed, not mm/s, because that is
 the setting that binds.** The process profile asks for 200 mm/s on the outer
@@ -334,7 +346,7 @@ a sequence (below) rather than an independent random point each time.
 Plates are now nothing but floor space. Articles go onto as few plates as
 they pack onto, chunked largest-first (with identical settings everywhere
 there is no confound left for the deal to protect); the nine round-3 articles
-fit one plate at about 208 x 208 mm of the usable 290 x 310 mm, so the batch
+fit one plate at about 218 x 218 mm of the usable 290 x 310 mm, so the batch
 is one print job. A plate that does not fit is called out to be split rather
 than quietly repacked. `--freeze-process` still pins all six parameters at
 the as-printed point and gives back the shape-plus-mass batch of rounds 1
@@ -377,9 +389,10 @@ acquisition choose.
 Strut infill is not only a material property, it is a size lever. At a fixed
 printed mass a sparser article has to be larger, so the projection in
 `t3_prism_mass_model.py` now solves the scale given the infill: over the
-round-3 bounds the strut density moves the solved scale by about -9 to
-+1 percent and the TPU density by about -1 percent (run `python
-bo/t3_prism_mass_model.py` for the sweep). Both terms are differentials around
+tightened round-3 bounds (12 to 35 percent) the strut density moves the
+solved scale by about -5 to +1 percent and the TPU density by under
+1 percent (run `python bo/t3_prism_mass_model.py` for the sweep). Both terms
+are differentials around
 the 15 percent nominal, so at that setting the calibrated model is reproduced
 exactly and every number it produced before is unchanged. Neither term has
 been validated: no article has ever been printed at any other infill. **The

@@ -40,7 +40,9 @@ real campaign rather than preference:
    nozzle temperature and max volumetric speed of each filament. Both tested
    plates were sliced identically, so all 17 tested articles sit at one point
    of that subspace and the round-3 batch is its initialization; see the
-   PROCESS_SPECS block for the bounds and the reason for each one.
+   PROCESS_SPECS block for the bounds and the reason for each one. The
+   bounds were tightened on 2026-08-31 (PR #102 review) to bracket the
+   proven settings rather than reach for preset or hardware limits.
 7. Global filament settings (PR #102, 2026-08-26; reworked 2026-08-31 on
    review). Nozzle temperature and max volumetric speed are filament
    settings, so a print job carries one value of each, while sparse infill
@@ -70,8 +72,8 @@ mass. (Shape, mass) together determine the article exactly, with no degeneracy
 and no redundancy, which is what makes "hold the mass constant" expressible at
 all. The remaining six are how it is printed, and one of them, the
 strut infill, feeds back into the projection: a sparser article has to be
-larger to weigh the same, so the solved scale moves by about -9 to +1 percent
-across the infill bounds.
+larger to weigh the same, so the solved scale moves by about -5 to +1 percent
+across the (2026-08-31 tightened) infill bounds.
 
 The two spaces this implies, and the Ax kwarg that joins them:
 
@@ -314,37 +316,51 @@ EXTRUSION_AREA_MM2 = 0.62 * 0.30  # line width x layer height, both plates
 # step:  the slicer's own resolution for that field; suggestions are rounded to
 #        it and the model is re-queried at the rounded point, so the delivered
 #        coordinate and the printed setting are the same number.
+# Bounds tightened on 2026-08-31 (PR #102 review: the first draw landed at
+# 247 C TPU at the hotend's full 4.8 mm^3/s rating, judged too spicy for a
+# first process round). Every range now brackets the proven operating point
+# (220 C / 30 mm^3/s PLA, 240 C / 2.5 mm^3/s TPU, 15 percent infill) instead
+# of reaching for the preset or hardware limits; the limits are recorded in
+# each "why" so a later round can widen deliberately once one round of
+# process data exists. The original ranges were 10-60 percent infill,
+# PLA 200-235 C and 15-30 mm^3/s, TPU 230-250 C and 2.0-4.8 mm^3/s.
 PROCESS_SPECS = [
-    {"name": "strut_infill_pct", "bounds": [10.0, 60.0], "level": "article",
+    {"name": "strut_infill_pct", "bounds": [12.0, 35.0], "level": "article",
      "step": 1.0, "unit": "%", "slicer": "sparse infill density, struts part",
-     "why": "10 is below the stock 15 and 60 is a structural infill; past 60 "
-            "the printed-mass model is extrapolating a long way from the one "
-            "setting it was calibrated at, and print time climbs"},
-    {"name": "tpu_infill_pct", "bounds": [10.0, 60.0], "level": "article",
+     "why": "brackets the stock 15 both plates ran at; 35 keeps the "
+            "printed-mass model near its one calibration point (its infill "
+            "term is unvalidated differential physics) and keeps the "
+            "constant-mass projection from shrinking dense articles onto the "
+            "fixed-size sensor housings, both of which the old 60 did not"},
+    {"name": "tpu_infill_pct", "bounds": [12.0, 35.0], "level": "article",
      "step": 1.0, "unit": "%", "slicer": "sparse infill density, cables part",
-     "why": "same bounds as the struts; this is the knob that decides whether "
-            "the captive core is the hollow lock ball photographed on #85"},
-    {"name": "pla_nozzle_temp_C", "bounds": [200.0, 235.0], "level": "filament",
+     "why": "same bounds as the struts; still spans a soft to a firm captive "
+            "core (the hollow lock ball photographed on #85) without leaving "
+            "the mass model's comfort zone"},
+    {"name": "pla_nozzle_temp_C", "bounds": [212.0, 228.0], "level": "filament",
      "step": 1.0, "unit": "C", "slicer": "PLA filament nozzle temperature",
-     "why": "Bambu PLA Basic's own preset window is 190 to 240; held in from "
-            "both ends because 30 mm^3/s through a 0.6 nozzle needs heat at "
-            "the bottom and stringing across the tendons gets worse at the top"},
-    {"name": "pla_flow_mm3_s", "bounds": [15.0, 30.0], "level": "filament",
+     "why": "+/-8 around the proven 220 (Bambu PLA Basic's own preset window "
+            "is 190 to 240); cold plus fast risks underextrusion through the "
+            "0.6 nozzle and hot strings across the tendons, and neither "
+            "failure needs to be found in a batch of test articles"},
+    {"name": "pla_flow_mm3_s", "bounds": [20.0, 30.0], "level": "filament",
      "step": 0.1, "unit": "mm^3/s", "slicer": "PLA filament max volumetric speed",
-     "why": "30 is the vendor value the two tested plates ran at and is the "
-            "ceiling; 15 halves it, which is as slow as a nine-article plate "
-            "can afford"},
-    {"name": "tpu_nozzle_temp_C", "bounds": [230.0, 250.0], "level": "filament",
+     "why": "30 is the vendor value the two tested plates ran at and stays "
+            "the ceiling; the floor is two thirds of it rather than the old "
+            "half, so the batch cannot pair its coldest nozzle with a flow "
+            "far from anything ever printed here"},
+    {"name": "tpu_nozzle_temp_C", "bounds": [235.0, 245.0], "level": "filament",
      "step": 1.0, "unit": "C", "slicer": "TPU filament nozzle temperature",
-     "why": "the generic Bambu TPU 85A @BBL H2D preset allows 200 to 250; "
-            "centered on the 240 both plates ran at. Watch the top of this "
-            "range: issue #96 traced a multi-week outage to lubricant "
-            "carbonizing in the hotend on long hot TPU prints"},
-    {"name": "tpu_flow_mm3_s", "bounds": [2.0, 4.8], "level": "filament",
+     "why": "+/-5 around the 240 both plates ran at (the generic Bambu TPU "
+            "85A @BBL H2D preset allows 200 to 250); the old 250 top was "
+            "backed off because issue #96 traced a multi-week outage to "
+            "lubricant carbonizing in the hotend on long hot TPU prints"},
+    {"name": "tpu_flow_mm3_s", "bounds": [2.2, 3.6], "level": "filament",
      "step": 0.1, "unit": "mm^3/s", "slicer": "TPU filament max volumetric speed",
-     "why": "4.8 is what the TPU high-flow hotend installed on 2026-08-17 is "
-            "rated for (#96), which the lab has wanted to try and has not; "
-            "2.0 is just below the 2.5 both plates ran at"},
+     "why": "2.2 sits just below the 2.5 both plates ran at; 3.6 is 75 "
+            "percent of the high-flow hotend's 4.8 mm^3/s rating (#96), so "
+            "the round can probe the new hotend's headroom without spending "
+            "all of it in one go at an untested temperature"},
 ]
 PROCESS_PARAM_NAMES = [spec["name"] for spec in PROCESS_SPECS]
 ARTICLE_PROCESS_PARAMS = [s["name"] for s in PROCESS_SPECS if s["level"] == "article"]

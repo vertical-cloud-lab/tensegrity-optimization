@@ -464,8 +464,11 @@ def calibration_report(model: MassModel, target_g: float = DEFAULT_PRINTED_MASS_
         f"{'core Ø':>7} {'env cm3':>8} {'vs 15/15':>9}",
     ]
     ref = model.project(s0, target_g, NOMINAL_INFILL_PCT, NOMINAL_INFILL_PCT)
-    for si, ti in ((10, 15), (NOMINAL_INFILL_PCT, NOMINAL_INFILL_PCT),
-                   (30, 15), (60, 15), (15, 60), (60, 60)):
+    # corners of the round-3 process bounds (12 to 35 percent since the
+    # 2026-08-31 tightening; the old 10 to 60 corners are extrapolations no
+    # batch will print)
+    for si, ti in ((12, 15), (NOMINAL_INFILL_PCT, NOMINAL_INFILL_PCT),
+                   (25, 15), (35, 15), (15, 35), (35, 35)):
         pr = model.project(s0, target_g, si, ti)
         lines.append(
             f"  {si:>7.0f} {ti:>6.0f} {pr['scale']:>7.4f} "
