@@ -41,21 +41,27 @@ real campaign rather than preference:
    plates were sliced identically, so all 17 tested articles sit at one point
    of that subspace and the round-3 batch is its initialization; see the
    PROCESS_SPECS block for the bounds and the reason for each one.
-7. Plate structure (PR #102, 2026-08-26). Nozzle temperature and volumetric
-   speed are filament settings, so one plate can only carry one value of each,
-   while sparse infill density is a per-object setting and can vary between
-   articles on a plate. The batch is therefore a split plot: ``--plates``
-   whole plots carrying the four filament settings, ``--batch-size`` articles
-   carrying the two infill settings and the shape. The four filament
-   coordinates and the two infill coordinates come from a Latin hypercube
-   rather than from the acquisition function, because the posterior is flat
-   along axes with no data and whatever the acquisition optimizer returns
-   there is an artifact of its starting points. The run prints how much
-   substituting the stratified design moved the model's predictions, as a
-   fraction of the model's own posterior sd, so the cost of the substitution
-   is measured rather than assumed.
+7. Global filament settings (PR #102, 2026-08-26; reworked 2026-08-31 on
+   review). Nozzle temperature and max volumetric speed are filament
+   settings, so a print job carries one value of each, while sparse infill
+   density is a per-object setting and can vary between articles on a plate.
+   An earlier version of this script bought within-round variation on the
+   four filament axes by splitting the batch across plates sliced at
+   different settings (commit 265bfe5); that split-plot design was replaced
+   by ONE value of each for the whole batch: formally, the optimal predicted
+   print parameters of the batch's best-predicted specimen, applied
+   everywhere. With all 17 tested articles at a single point of the process
+   space the model cannot rank process settings, so an "optimal predicted"
+   setting does not exist yet and the point is drawn from a seeded scrambled
+   Sobol sequence over the bounds instead; a later batch that still lacks
+   process variation continues the same sequence, so the batch-level points
+   accumulate as a low-discrepancy design across rounds. The two infill
+   densities are still stratified per article by a Latin hypercube. The run
+   prints how much replacing the acquisition's process coordinates moved the
+   model's predictions, as a fraction of the model's own posterior sd, so
+   the cost of the substitution is measured rather than assumed.
 
-Search space (11 parameters). The first five are PR #35's base Sobol
+Search space (12 parameters). The first five are PR #35's base Sobol
 coordinates (R, H, twist, strut d, cable d) with the joint diameter frozen at
 7 mm; because the projection re-scales every dimension including the joint,
 those five fix the article's *shape*. The sixth, ``mass_printed_g``, fixes its
@@ -287,9 +293,11 @@ MASS_FIT_BOUNDS = [17.5, 24.0]
 #   had chosen either of them before.
 # * Nozzle temperature and max volumetric speed are FILAMENT settings. Every
 #   object on a plate is built layer by layer through the same two nozzles, so
-#   a plate can carry only one value of each. They are whole-plot factors, and
-#   the batch is split into plates to get more than one level of them per
-#   round (--plates).
+#   a print job carries only one value of each. Since 2026-08-31 the whole
+#   batch carries ONE value of each (the best-predicted specimen's settings
+#   applied everywhere, Sobol-drawn until data exists to rank them), so
+#   variation on these four axes accrues across rounds rather than within
+#   one, and plates are nothing but floor space.
 #
 # Speed is parameterized as the filament's max volumetric speed, not as mm/s,
 # because that is the setting that actually binds. The process profile asks for
@@ -301,8 +309,8 @@ MASS_FIT_BOUNDS = [17.5, 24.0]
 # mm/s next to it.
 EXTRUSION_AREA_MM2 = 0.62 * 0.30  # line width x layer height, both plates
 
-# level: "article" -> per-object/per-part override, free to vary within a plate
-#        "plate"   -> filament setting, one value per plate
+# level: "article"  -> per-object/per-part override, free to vary per article
+#        "filament" -> filament setting, one value for the whole batch
 # step:  the slicer's own resolution for that field; suggestions are rounded to
 #        it and the model is re-queried at the rounded point, so the delivered
 #        coordinate and the printed setting are the same number.
@@ -316,23 +324,23 @@ PROCESS_SPECS = [
      "step": 1.0, "unit": "%", "slicer": "sparse infill density, cables part",
      "why": "same bounds as the struts; this is the knob that decides whether "
             "the captive core is the hollow lock ball photographed on #85"},
-    {"name": "pla_nozzle_temp_C", "bounds": [200.0, 235.0], "level": "plate",
+    {"name": "pla_nozzle_temp_C", "bounds": [200.0, 235.0], "level": "filament",
      "step": 1.0, "unit": "C", "slicer": "PLA filament nozzle temperature",
      "why": "Bambu PLA Basic's own preset window is 190 to 240; held in from "
             "both ends because 30 mm^3/s through a 0.6 nozzle needs heat at "
             "the bottom and stringing across the tendons gets worse at the top"},
-    {"name": "pla_flow_mm3_s", "bounds": [15.0, 30.0], "level": "plate",
+    {"name": "pla_flow_mm3_s", "bounds": [15.0, 30.0], "level": "filament",
      "step": 0.1, "unit": "mm^3/s", "slicer": "PLA filament max volumetric speed",
      "why": "30 is the vendor value the two tested plates ran at and is the "
             "ceiling; 15 halves it, which is as slow as a nine-article plate "
             "can afford"},
-    {"name": "tpu_nozzle_temp_C", "bounds": [230.0, 250.0], "level": "plate",
+    {"name": "tpu_nozzle_temp_C", "bounds": [230.0, 250.0], "level": "filament",
      "step": 1.0, "unit": "C", "slicer": "TPU filament nozzle temperature",
      "why": "the generic Bambu TPU 85A @BBL H2D preset allows 200 to 250; "
             "centered on the 240 both plates ran at. Watch the top of this "
             "range: issue #96 traced a multi-week outage to lubricant "
             "carbonizing in the hotend on long hot TPU prints"},
-    {"name": "tpu_flow_mm3_s", "bounds": [2.0, 4.8], "level": "plate",
+    {"name": "tpu_flow_mm3_s", "bounds": [2.0, 4.8], "level": "filament",
      "step": 0.1, "unit": "mm^3/s", "slicer": "TPU filament max volumetric speed",
      "why": "4.8 is what the TPU high-flow hotend installed on 2026-08-17 is "
             "rated for (#96), which the lab has wanted to try and has not; "
@@ -340,7 +348,7 @@ PROCESS_SPECS = [
 ]
 PROCESS_PARAM_NAMES = [spec["name"] for spec in PROCESS_SPECS]
 ARTICLE_PROCESS_PARAMS = [s["name"] for s in PROCESS_SPECS if s["level"] == "article"]
-PLATE_PROCESS_PARAMS = [s["name"] for s in PROCESS_SPECS if s["level"] == "plate"]
+FILAMENT_PROCESS_PARAMS = [s["name"] for s in PROCESS_SPECS if s["level"] == "filament"]
 PROCESS_BOUNDS = {s["name"]: tuple(s["bounds"]) for s in PROCESS_SPECS}
 PROCESS_STEP = {s["name"]: s["step"] for s in PROCESS_SPECS}
 
@@ -1740,10 +1748,7 @@ def render_process_space_figure(suggestions, round_number, path=None,
     fig_dir.mkdir(exist_ok=True)
     path = path or (
         fig_dir / f"t3-prism-bo-round{round_number}-process-space.png")
-    plate_colors = [SUGGEST_ORANGE, "#8c4bd6", "#1f9d8f", "#d6a51f",
-                    "#b03060", "#3060b0"]
     batch_number = round_number if batch_number is None else batch_number
-    plates = sorted(suggestions["plate"].unique())
     n = len(PROCESS_SPECS)
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(
@@ -1766,19 +1771,21 @@ def render_process_space_figure(suggestions, round_number, path=None,
             ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:g}"))
             ax.plot([lo, hi], [0, 0], color="#d8d7d3", lw=3.4,
                     solid_capstyle="butt", zorder=1)
-            for plate, group in suggestions.groupby("plate", sort=True):
-                color = plate_colors[(int(plate) - 1) % len(plate_colors)]
-                vals = group[name].to_numpy()
-                if spec["level"] == "plate":
-                    vals = vals[:1]
-                ax.scatter(vals, np.zeros_like(vals), s=190, marker="D",
-                           color=color, alpha=0.92, zorder=3, clip_on=False)
+            vals = suggestions[name].to_numpy()
+            if spec["level"] == "filament":
+                # one value for the whole batch, so one marker
+                vals = vals[:1]
+            ax.scatter(vals, np.zeros_like(vals), s=190, marker="D",
+                       color=SUGGEST_ORANGE, alpha=0.92, zorder=3,
+                       clip_on=False)
             ax.scatter([held], [0], s=400, facecolor="none", edgecolor=INK,
                        linewidths=2.6, zorder=5, clip_on=False)
             unit = spec["unit"].replace("^", "")
             ax.text(0.0, 1.06, f"{name}   ({unit})", transform=ax.transAxes,
                     ha="left", va="bottom", fontsize=20, color=INK)
-            ax.text(1.0, 1.06, spec["level"] + "-level", transform=ax.transAxes,
+            level_text = ("article-level" if spec["level"] == "article"
+                          else "filament-level, one value for the batch")
+            ax.text(1.0, 1.06, level_text, transform=ax.transAxes,
                     ha="right", va="bottom", fontsize=18, color=LABEL_GRAY)
 
         # key strip: no axis, just the marker vocabulary spelled out
@@ -1790,14 +1797,11 @@ def render_process_space_figure(suggestions, round_number, path=None,
                     linewidths=2.6, clip_on=False)
         key.text(0.035, 0.55, "all 17 tested articles", va="center",
                  fontsize=19, color=INK)
-        x = 0.36
-        for j, plate in enumerate(plates):
-            color = plate_colors[j % len(plate_colors)]
-            key.scatter([x], [0.55], s=190, marker="D", color=color,
-                        clip_on=False)
-            key.text(x + 0.022, 0.55, f"round {batch_number}, plate "
-                     f"{int(plate)}", va="center", fontsize=19, color=color)
-            x += 0.215
+        key.scatter([0.36], [0.55], s=190, marker="D", color=SUGGEST_ORANGE,
+                    clip_on=False)
+        key.text(0.382, 0.55, f"round {batch_number} batch (one filament "
+                 "setting everywhere)", va="center", fontsize=19,
+                 color=SUGGEST_ORANGE)
         fig.tight_layout(h_pad=2.0)
         fig.savefig(path, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
         plt.close(fig)
@@ -1816,17 +1820,16 @@ PLATE_GAP_MM = 6.0
 def space_filling_process(n, names, seed):
     """``n`` process points over ``names``, stratified per axis and on-grid.
 
-    A Latin hypercube rather than the acquisition function, because all 17
-    tested articles sit at one point of the process space: there is no data
-    from which a GP could learn to prefer one process coordinate over
-    another, and a design that stratifies each axis into ``n`` bins is what
-    makes round 4 able to tell them apart. Centered (``scramble=False``)
-    rather than randomized inside each bin: with only three plates, three
-    levels sitting at 1/6, 1/2 and 5/6 of a range are cleaner to reason about
-    and further apart than three randomly placed ones. Each coordinate is
-    rounded onto the slicer field's own resolution (1 C, 1 percent,
-    0.1 mm^3/s) so the number in the table is the number typed into Bambu
-    Studio.
+    Used for the two per-article infill axes. A Latin hypercube rather than
+    the acquisition function, because all 17 tested articles sit at one point
+    of the process space: there is no data from which a GP could learn to
+    prefer one process coordinate over another, and a design that stratifies
+    each axis into ``n`` bins is what makes round 4 able to tell them apart.
+    Centered (``scramble=False``) rather than randomized inside each bin:
+    levels sitting at the bin centers are evenly spaced and cleaner to reason
+    about than randomly placed ones. Each coordinate is rounded onto the
+    slicer field's own resolution (1 C, 1 percent, 0.1 mm^3/s) so the number
+    in the table is the number typed into Bambu Studio.
     """
     from scipy.stats import qmc
 
@@ -1842,52 +1845,97 @@ def space_filling_process(n, names, seed):
     return points
 
 
-def _plate_imbalance(groups, axes):
-    """How unevenly the plates split each axis, summed over axes.
+def sobol_process_point(names, seed, index=0):
+    """The ``index``-th point of a seeded scrambled Sobol sequence, on-grid.
 
-    Per axis: the variance of the per-plate means, divided by the axis range
-    squared so the axes are comparable. Zero means every plate's articles
-    average the same value of every axis, which is the goal.
+    One point per BATCH, not per article: nozzle temperature and volumetric
+    speed are filament settings, so a batch printed as one job carries exactly
+    one value of each, and the only way to vary them is across rounds. For a
+    single point a scrambled Sobol draw is a uniform random draw with a
+    reproducible seed, which is all "optimal" can mean while no data varies
+    these axes; Sobol rather than a plain RNG so that a later batch that
+    still lacks process data can continue the same sequence (its
+    ``batch_number`` picks the index) and the accumulated batch-level points
+    stay spread out instead of clumping the way independent draws can.
+    Coordinates are rounded onto the slicer field's own resolution, same as
+    ``space_filling_process``.
     """
-    total = 0.0
-    for values in axes:
-        spread = float(values.max() - values.min()) or 1.0
-        means = [float(values[g].mean()) for g in groups]
-        total += float(np.var(means)) / spread ** 2
-    return total
+    from scipy.stats import qmc
+
+    sampler = qmc.Sobol(d=len(names), scramble=True, seed=seed)
+    if index:
+        sampler.fast_forward(index)
+    row = sampler.random(1)[0]
+    point = {}
+    for name, u in zip(names, row):
+        lo, hi = PROCESS_BOUNDS[name]
+        value = round_to_step(lo + u * (hi - lo), PROCESS_STEP[name])
+        point[name] = float(min(max(value, lo), hi))
+    return point
 
 
-def assign_plates(axes, n_plates):
-    """Deal articles into equal plates that each span every article-level axis.
+# Reference point for hypervolume bookkeeping, the same (t180, e_reb_mJ)
+# corner used for the round-2 front-expansion numbers on PR #102: slightly
+# worse than the worst article measured so far on each axis.
+HV_REF = (1.35, 15.0)
 
-    The four filament settings are confounded with the plate by construction,
-    so the one thing worth protecting is that the two *article-level* settings
-    are not confounded with it as well. Dealing by size would do exactly that:
-    at a fixed printed mass a sparse article is a large one, so sorting by
-    footprint sorts by infill and hands each plate its own infill band.
 
-    Starts from a round-robin deal over the first axis, which already
-    guarantees each plate spans it, then takes improving pairwise swaps until
-    none is left. Deterministic, and small enough to read.
+def hypervolume_2d(xs, ys, ref=HV_REF):
+    """Dominated hypervolume of 2-D minimization points against ``ref``."""
+    mask = pareto_mask(xs, ys)
+    pts = sorted(zip(np.asarray(xs, float)[mask], np.asarray(ys, float)[mask]))
+    hv, ceiling = 0.0, ref[1]
+    for x, y in pts:
+        if x >= ref[0] or y >= ceiling:
+            continue
+        hv += (ref[0] - x) * (ceiling - y)
+        ceiling = y
+    return hv
+
+
+def best_predicted_position(front, suggestions):
+    """Frame index of the batch's best-predicted specimen.
+
+    Best = the candidate whose predicted means add the most dominated
+    hypervolume to the measured front at ``HV_REF``. When no candidate's
+    predicted means improve the front (a humble model predicts inside it),
+    the tie-break is the lowest predicted t180, the campaign's primary
+    endpoint per the Edison round-2 review.
     """
-    n = len(axes[0])
-    order = list(np.argsort(axes[0], kind="stable"))
-    groups = [np.array(order[i::n_plates]) for i in range(n_plates)]
-    best = _plate_imbalance(groups, axes)
-    improved = True
-    while improved:
-        improved = False
-        for a in range(n_plates):
-            for b in range(a + 1, n_plates):
-                for i in range(len(groups[a])):
-                    for j in range(len(groups[b])):
-                        trial = [g.copy() for g in groups]
-                        trial[a][i], trial[b][j] = groups[b][j], groups[a][i]
-                        score = _plate_imbalance(trial, axes)
-                        if score < best - 1e-12:
-                            groups, best, improved = trial, score, True
-    assert sum(len(g) for g in groups) == n
-    return [sorted(int(i) for i in g) for g in groups]
+    fx = front[obj1_name].to_numpy(float)
+    fy = front[obj2_name].to_numpy(float)
+    base = hypervolume_2d(fx, fy)
+    px = suggestions[f"pred_{obj1_name}_mean"].to_numpy(float)
+    py = suggestions[f"pred_{obj2_name}_mean"].to_numpy(float)
+    hvi = np.array([
+        hypervolume_2d(np.append(fx, x), np.append(fy, y)) - base
+        for x, y in zip(px, py)
+    ])
+    if hvi.max() > 1e-9:
+        return suggestions.index[int(np.argmax(hvi))], float(hvi.max())
+    return suggestions.index[int(np.argmin(px))], 0.0
+
+
+def plates_for_packing(footprint_mm):
+    """Plate number per article: as few plates as the batch packs onto.
+
+    The filament settings are one value for the whole batch, so a plate
+    carries no treatment and is nothing but floor space. Plate counts are
+    tried smallest first; articles are chunked largest-first so an oversized
+    article inflates one plate's uniform grid cell rather than every plate's.
+    """
+    n = len(footprint_mm)
+    order = sorted(range(n), key=lambda i: -footprint_mm[i])
+    for n_plates in range(1, n + 1):
+        bounds = [round(k * n / n_plates) for k in range(n_plates + 1)]
+        chunks = [order[bounds[k]:bounds[k + 1]] for k in range(n_plates)]
+        if all(plate_packing([footprint_mm[i] for i in c])[2] for c in chunks):
+            plate_of = [0] * n
+            for plate, chunk in enumerate(chunks, start=1):
+                for i in chunk:
+                    plate_of[i] = plate
+            return plate_of
+    raise ValueError("an article is too large to pack even on its own plate")
 
 
 def smallest_printed_r_mm():
@@ -1913,35 +1961,65 @@ def plate_packing(footprint_mm):
 
 def write_plate_recipe(suggestions, round_number, target_g, path=None,
                        batch_number=None):
-    """Emit the slicer recipe: filament settings per plate, overrides per part."""
+    """Emit the slicer recipe: one filament block for the batch, overrides per part."""
     batch_number = round_number if batch_number is None else batch_number
     floor = smallest_printed_r_mm()
     path = path or BO_DIR / f"t3-prism-bo-round{round_number}-plate-recipe.md"
+    first = suggestions.iloc[0]
+    best_trial = None
+    if "best_predicted" in suggestions.columns:
+        marked = suggestions[suggestions["best_predicted"].astype(bool)]
+        if len(marked):
+            best_trial = int(marked["trial_index"].iloc[0])
+    n_plates = suggestions["plate"].nunique()
     lines = [
         f"# Round-{batch_number} print recipe",
         "",
         "Generated by `python bo/t3_prism_bo_campaign.py --round "
-        f"{round_number} --batch-number {batch_number}`. Every article on "
-        "every plate is specified at "
+        f"{round_number} --batch-number {batch_number}`. Every article is "
+        "specified at "
         f"{target_g:.2f} g as printed; the scale column is what gets that mass "
         "at that article's own strut infill, so a sparse article is a larger "
         "one.",
         "",
-        "The four filament settings are per plate because a nozzle holds one "
-        "temperature and one flow cap for everything printing through it. The "
-        "two infill densities are per part, set by right-clicking the part in "
-        "the object list and adding a sparse infill density override: the "
-        "`-struts` part runs on extruder 1 (PLA), the `-cables` part on "
-        "extruder 2 (TPU). Without those overrides both parts inherit the one "
-        "global value and the batch loses two of its six process axes.",
+        "## Filament settings, one value for the whole batch",
         "",
-        "One thing that will bite if it is not done first: both tested plates "
-        "carry the `Bambu TPU 85A @BBL H2D 0.4 nozzle` filament preset, left "
-        "over from before the high-flow hotend went in, and it caps the "
-        "temperature window at 240 C. A plate below that asks for more than "
-        "240 C needs the preset switched to `Bambu TPU 85A @BBL H2D`, whose "
-        "window is 200 to 250 C. Typing the number into the old preset is not "
-        "the same thing.",
+        f"- PLA at {first['pla_nozzle_temp_C']:.0f} C and "
+        f"{first['pla_flow_mm3_s']:.1f} mm^3/s "
+        f"({flow_to_mm_s(first['pla_flow_mm3_s']):.0f} mm/s at the profile's "
+        "0.62 x 0.30 mm bead)",
+        f"- TPU at {first['tpu_nozzle_temp_C']:.0f} C and "
+        f"{first['tpu_flow_mm3_s']:.1f} mm^3/s "
+        f"({flow_to_mm_s(first['tpu_flow_mm3_s']):.0f} mm/s)",
+        "",
+        "These four are filament settings, so a print job carries exactly one "
+        "value of each. Set them once and print every plate of this batch "
+        "with them"
+        + (": formally they are the print parameters of trial "
+           f"{best_trial}, the batch's best-predicted specimen, applied "
+           "everywhere. " if best_trial is not None else ". ")
+        + "With all 17 tested articles at a single point of the process "
+        "space there is no data to prefer one setting over another, so the "
+        "values were drawn by Sobol sampling within the bounds (see the "
+        "README) rather than asked of the model.",
+        "",
+    ]
+    if first["tpu_nozzle_temp_C"] > 240:
+        lines += [
+            "**Before slicing, switch the TPU filament preset.** Both tested "
+            "plates carry `Bambu TPU 85A @BBL H2D 0.4 nozzle`, left over from "
+            "before the high-flow hotend went in, and it caps the temperature "
+            "window at 240 C, below what this batch asks for. Switch to "
+            "`Bambu TPU 85A @BBL H2D`, whose window is 200 to 250 C. Typing "
+            "the number into the old preset is not the same thing.",
+            "",
+        ]
+    lines += [
+        "The two infill densities are per part, set by right-clicking the "
+        "part in the object list and adding a sparse infill density override: "
+        "the `-struts` part runs on extruder 1 (PLA), the `-cables` part on "
+        "extruder 2 (TPU). Without those overrides both parts inherit the one "
+        "global value and the batch loses its two per-article process axes.",
         "",
         f"Articles whose end-cap radius comes out below {floor:.1f} mm are "
         "flagged `end cap`. That is the smallest article printed so far, and "
@@ -1950,24 +2028,11 @@ def write_plate_recipe(suggestions, round_number, target_g, path=None,
         "",
     ]
     for plate, group in suggestions.groupby("plate", sort=True):
-        first = group.iloc[0]
-        settings = (
-            f"PLA at {first['pla_nozzle_temp_C']:.0f} C and "
-            f"{first['pla_flow_mm3_s']:.1f} mm^3/s; "
-            f"TPU at {first['tpu_nozzle_temp_C']:.0f} C and "
-            f"{first['tpu_flow_mm3_s']:.1f} mm^3/s"
-        )
         w, h, fits = plate_packing(group["footprint_d_mm"].tolist())
         lines += [
-            f"## Plate {int(plate)} ({len(group)} articles)",
+            f"## Plate {int(plate)} ({len(group)} articles"
+            + (", the whole batch)" if n_plates == 1 else ")"),
             "",
-            f"- Filament settings: {settings}",
-            f"- PLA runs at {flow_to_mm_s(first['pla_flow_mm3_s']):.0f} mm/s "
-            f"and TPU at {flow_to_mm_s(first['tpu_flow_mm3_s']):.0f} mm/s at "
-            "the profile's 0.62 x 0.30 mm bead."
-            + ("  **Switch the TPU filament preset to `Bambu TPU 85A @BBL "
-               "H2D` first: the old preset will not accept this temperature.**"
-               if first["tpu_nozzle_temp_C"] > 240 else ""),
             f"- Packing: {w:.0f} x {h:.0f} mm of the usable "
             f"{PLATE_USABLE_X_MM:.0f} x {PLATE_USABLE_Y_MM:.0f} mm"
             + ("." if fits else ", WHICH DOES NOT FIT: split this plate."),
@@ -1984,6 +2049,8 @@ def write_plate_recipe(suggestions, round_number, target_g, path=None,
                 flags.append("cable < 3.0 mm")
             if row["R_print_mm"] < floor:
                 flags.append("end cap")
+            if best_trial is not None and int(row["trial_index"]) == best_trial:
+                flags.append("best predicted")
             lines.append(
                 f"| {int(row['trial_index'])} | {row['strut_infill_pct']:.0f} % "
                 f"| {row['tpu_infill_pct']:.0f} % | {row['scale']:.4f} "
@@ -2012,28 +2079,6 @@ def main(argv=None):
     )
     ap.add_argument("--batch-size", type=int, default=9,
                     help="articles per round (9, one 3x3 grid's worth)")
-    ap.add_argument(
-        "--plates",
-        type=int,
-        default=3,
-        help=(
-            "how many plates the batch is split across. Nozzle temperature "
-            "and max volumetric speed are filament settings, so a plate can "
-            "carry only one value of each: this is how many levels of those "
-            "four parameters the round gets. 1 plate is one print job and no "
-            "information on them; 9 is nine print jobs and a level per article"
-        ),
-    )
-    ap.add_argument(
-        "--control-plate",
-        action="store_true",
-        help=(
-            "pin plate 1 at the as-printed process point (all six parameters, "
-            "including both infills) so it is a control against rounds 1 and "
-            "2 and a round-level batch effect can be told apart from a "
-            "filament-setting effect. Costs one of the --plates levels"
-        ),
-    )
     ap.add_argument(
         "--freeze-process",
         action="store_true",
@@ -2127,9 +2172,6 @@ def main(argv=None):
     if args.per_gram and not (args.plot_only or args.measured_round2):
         ap.error("--per-gram is a display mode: use it with --plot-only "
                  "or --measured-round2 (the BO fit stays in absolute mJ)")
-    if not 1 <= args.plates <= args.batch_size:
-        ap.error(f"--plates must be between 1 and --batch-size "
-                 f"({args.batch_size}); got {args.plates}")
     # weighed mass per tested article, for the per-gram display division
     mass_of = {lab.split(" ")[0]: m for lab, m in zip(labels, masses)}
     if args.per_gram:
@@ -2356,51 +2398,32 @@ def main(argv=None):
               "percent of its range)")
 
     if args.freeze_process:
-        delivered = [dict(p, **AS_PRINTED_PROCESS) for p in proposed]
-        plate_of = [1] * len(delivered)
-        n_plates = 1
-        print("\n--freeze-process: every article pinned at the as-printed "
-              "process point, so this batch varies shape only and goes on one "
-              "plate whatever --plates says.")
-    else:
-        n_plates = args.plates
-        if args.batch_size % n_plates:
-            print(f"NOTE: {args.batch_size} articles do not divide evenly into "
-                  f"{n_plates} plates; plates will differ in size by one.")
-        n_free = n_plates - 1 if args.control_plate else n_plates
-        plate_pts = ([{k: AS_PRINTED_PROCESS[k] for k in PLATE_PROCESS_PARAMS}]
-                     if args.control_plate else [])
-        plate_pts += space_filling_process(
-            n_free, PLATE_PROCESS_PARAMS, args.seed + 1) if n_free else []
-        # the control plate's articles are held at the as-printed infill too,
-        # so it is a control on all six axes rather than only on the four
-        n_control = math.ceil(args.batch_size / n_plates) if args.control_plate else 0
-        article_pts = space_filling_process(
-            args.batch_size - n_control, ARTICLE_PROCESS_PARAMS, args.seed)
+        filament_pt = {k: AS_PRINTED_PROCESS[k] for k in FILAMENT_PROCESS_PARAMS}
         article_pts = [{k: AS_PRINTED_PROCESS[k] for k in ARTICLE_PROCESS_PARAMS}
-                       ] * n_control + article_pts
-        if args.control_plate:
-            print(f"\n--control-plate: plate 1 ({n_control} articles) is held "
-                  "at the as-printed process point; the other "
-                  f"{n_plates - 1} plates carry the stratified design.")
-        delivered = [dict(p, **a) for p, a in zip(proposed, article_pts)]
-        plate_of = [0] * len(delivered)
-        if args.control_plate:
-            groups = [list(range(n_control))]
-            rest = list(range(n_control, len(delivered)))
-            if rest:
-                axes = [np.array([delivered[i][k] for i in rest])
-                        for k in ARTICLE_PROCESS_PARAMS]
-                groups += [[rest[i] for i in g]
-                           for g in assign_plates(axes, n_plates - 1)]
-        else:
-            axes = [np.array([d[k] for d in delivered])
-                    for k in ARTICLE_PROCESS_PARAMS]
-            groups = assign_plates(axes, n_plates)
-        for plate, members in enumerate(groups, start=1):
-            for k in members:
-                delivered[k].update(plate_pts[plate - 1])
-                plate_of[k] = plate
+                       for _ in proposed]
+        print("\n--freeze-process: every article pinned at the as-printed "
+              "process point, so this batch varies shape only.")
+    else:
+        # One set of filament settings for the whole batch: formally the
+        # optimal predicted print parameters of the batch's best-predicted
+        # specimen (named below), applied everywhere. No data varies these
+        # axes yet, so "optimal predicted" cannot be computed and the point
+        # is Sobol-drawn instead; batch N of the campaign takes point N-3 of
+        # the same seeded sequence, so if later batches are still drawn this
+        # way the accumulated points stay spread out.
+        sobol_index = max(batch_number - 3, 0)
+        filament_pt = sobol_process_point(
+            FILAMENT_PROCESS_PARAMS, args.seed + 1, index=sobol_index)
+        article_pts = space_filling_process(
+            len(proposed), ARTICLE_PROCESS_PARAMS, args.seed)
+        print("\nFilament settings, one value for the whole batch (point "
+              f"{sobol_index} of the seeded Sobol sequence over the bounds; "
+              "no tested article varies these axes, so a model-preferred "
+              "setting does not exist yet):")
+        for k in FILAMENT_PROCESS_PARAMS:
+            print(f"  {k:<20} {filament_pt[k]:g}")
+    delivered = [dict(p, **a, **filament_pt)
+                 for p, a in zip(proposed, article_pts)]
 
     # How much did moving the process coordinates change what the model
     # claims? If the answer is "much less than the prediction's own sd", the
@@ -2438,8 +2461,8 @@ def main(argv=None):
     rows = []
     for j, (trial_index, parameterization) in enumerate(
             zip(trial_indices, delivered)):
-        row = {"round": args.round, "plate": plate_of[j],
-               "trial_index": trial_index}
+        row = {"round": args.round, "plate": 0,
+               "trial_index": trial_index, "best_predicted": False}
         row.update({name: parameterization[name] for name in PARAM_NAMES})
         row[mass_param] = float(parameterization[mass_param])
         row.update({name: float(parameterization[name])
@@ -2471,8 +2494,33 @@ def main(argv=None):
             "printed_mass_g", "envelope_cm3", "envelope_ok", "cable_bridge_ok",
         )})
         rows.append(row)
-    suggestions = pd.DataFrame(rows).sort_values(
+    suggestions = pd.DataFrame(rows)
+    # plates are floor space only now that the filament settings are one
+    # value everywhere; use as few as the footprints pack onto
+    suggestions["plate"] = plates_for_packing(
+        suggestions["footprint_d_mm"].tolist())
+    suggestions = suggestions.sort_values(
         ["plate", "trial_index"]).reset_index(drop=True)
+
+    # The specimen the global filament settings formally belong to.
+    front = pareto_front(observed_frame(y_train, labels))
+    best_pos, best_hvi = best_predicted_position(front, suggestions)
+    suggestions.loc[best_pos, "best_predicted"] = True
+    best = suggestions.loc[best_pos]
+    print(
+        f"\nBest-predicted specimen of the batch: trial "
+        f"{int(best['trial_index'])} (predicted {obj1_name} "
+        f"{best[f'pred_{obj1_name}_mean']:.3f}, {obj2_name} "
+        f"{best[f'pred_{obj2_name}_mean']:.2f} mJ), "
+        + (f"adding {best_hvi:.3f} of predicted hypervolume over the "
+           f"measured front at reference {HV_REF}."
+           if best_hvi > 0 else
+           "by lowest predicted t180: no candidate's predicted means improve "
+           "the measured front, so predicted hypervolume gain cannot rank "
+           "them.")
+        + " The batch-wide filament settings are formally this specimen's "
+        "print parameters, applied everywhere."
+    )
 
     n_env = int((~suggestions["envelope_ok"]).sum())
     n_cab = int((~suggestions["cable_bridge_ok"]).sum())

@@ -18,8 +18,9 @@ suggests the next print batch.
   print-to-print mass scatter measured from the spec-08 triplicate. See the
   docstring for the objective rationale (why `t180` stays a ratio) and the
   seven documented deviations from the rendered template. From round 3 the
-  search space also carries six print-process parameters and the batch is
-  split across plates; see the print-process section below. Run from the repo
+  search space also carries six print-process parameters, with the four
+  filament-level ones taking one Sobol-drawn value for the whole batch; see
+  the print-process section below. Run from the repo
   root: `python bo/t3_prism_bo_campaign.py --round 3`.
 - `t3_prism_mass_model.py`: the as-printed mass model, and the
   constant-printed-mass projection built on it. **What round 1 actually held
@@ -233,7 +234,7 @@ render each design's SCAD at its own base coordinates and that scale and skip
 the solve entirely; from round 3 the scale also depends on the article's strut
 infill, so it cannot be recomputed from the shape alone.
 
-### Print-process parameters, and why the batch is split across plates
+### Print-process parameters, and why the filament settings are one value per batch
 
 Six slicer settings became design variables on 2026-08-26 (PR #102). They had
 been stock defaults nobody chose: both tested plates were sliced from Bambu's
@@ -271,10 +272,11 @@ Two things the extractor turns up that are worth acting on independently of
 the BO. The TPU slot still uses the `Bambu TPU 85A @BBL H2D 0.4 nozzle`
 preset, left over from before the high-flow hotend went in on 2026-08-17, and
 that preset caps the temperature window at 240 C; the generic
-`@BBL H2D` preset allows 200 to 250, so the round-3 plates that ask for 247 C
-and 233 C need the preset swapped, not just the number typed. And the TPU is
-running at 2.5 mm^3/s on a hotend rated for 4.8, which is the headroom
-@me-madsen noted on 2026-08-18 and nobody has spent yet.
+`@BBL H2D` preset allows 200 to 250, so the round-3 batch, which asks for
+247 C, needs the preset swapped, not just the number typed. And the TPU had
+been running at 2.5 mm^3/s on a hotend rated for 4.8, the headroom
+@me-madsen noted on 2026-08-18; the round-3 draw lands on 4.8 exactly, so
+this batch is the one that spends it.
 
 Watch the top of the TPU temperature range in particular. Issue #96 traced a
 multi-week printer outage to processing lubricant carbonizing in the hotend on
@@ -290,7 +292,7 @@ belong to the process and are shared by both filaments), while the volumetric
 cap is per filament. Every table reports the equivalent mm/s next to it
 (`pla_speed_mm_s`, `tpu_speed_mm_s`), which is `flow / (0.62 * 0.30)`.
 
-#### The split-plot structure
+#### One filament setting for the whole batch
 
 Two of the six can vary between articles on one plate and four cannot.
 
@@ -300,56 +302,75 @@ Two of the six can vary between articles on one plate and four cannot.
   in `Metadata/model_settings.config` of the committed project), so a per-part
   override addresses PLA and TPU separately. Without the override both parts
   inherit one global value, which is why neither had ever been chosen.
-- **Plate-level.** Nozzle temperature and max volumetric speed are filament
+- **Filament-level.** Nozzle temperature and max volumetric speed are filament
   settings, and every object on a plate is built layer by layer through the
-  same two nozzles. One plate carries one value of each.
+  same two nozzles. One print job carries one value of each.
 
-So the batch is a split plot: `--plates` whole plots carrying the four
-filament settings, `--batch-size` articles carrying the two infill settings
-and the shape. The default is 9 articles over 3 plates, which buys three
-levels of each filament parameter for three print jobs. `--plates 9` gives a
-level per article for nine print jobs; `--plates 1` is one print job and no
-information on those four at all. `--freeze-process` pins all six at the
-as-printed point and gives back the shape-plus-mass batch of rounds 1 and 2.
+The first version of this batch (commit `265bfe5`) bought within-round
+variation on the four filament axes by splitting the batch across three
+plates sliced at three different settings. On review (PR #102, 2026-08-31)
+that split plot was replaced with the simpler design the batch now uses:
+**one value of each filament setting for the whole batch.** Formally they are
+the optimal predicted print parameters of the batch's best-predicted
+specimen, applied everywhere; because all 17 tested articles sit at a single
+point of the process space, an "optimal predicted" setting does not exist yet
+and the values are drawn by Sobol sampling within the bounds instead (next
+section). The best-predicted specimen is the candidate whose predicted means
+add the most dominated hypervolume to the measured front at the reference
+point (1.35, 15 mJ) used for the round-2 front-expansion numbers; when no
+candidate's predicted means improve the front, which is the humble-model
+case, the tie-break is the lowest predicted `t180`, the campaign's primary
+endpoint per the Edison round-2 review. The `best_predicted` column in the
+suggestions CSV and the recipe name it.
 
-Articles are dealt to plates so that **each plate spans both infill axes**,
-which is the one confound worth spending effort on. The four filament settings
-are confounded with the plate by construction and nothing can be done about
-that inside one round. The two infill settings need not be, and the obvious
-dealing rule would confound them anyway: at a fixed printed mass a sparse
-article is a large one, so dealing by footprint sorts by infill and hands each
-plate its own infill band. The rule used instead is a round-robin deal over
-the strut-infill rank followed by improving pairwise swaps, scored on the
-variance of the per-plate means of both infill axes. Plate packing is then
-reported rather than optimized: three articles use about 130 x 130 mm of the
-usable 290 x 310 mm, so it is nowhere near binding, and a plate that does not
-fit is called out to be split rather than quietly repacked.
+What this trades away, knowingly: the round learns nothing about the four
+filament axes (one level of each), where the split-plot version bought three
+confounded-with-plate levels. What it buys: one print job instead of three,
+no plate-level confound inside the round, and a batch whose nine articles are
+strictly comparable on shape and infill. Variation on the filament axes now
+accrues across rounds instead of within one, which is why the draw comes from
+a sequence (below) rather than an independent random point each time.
 
-#### Why a Latin hypercube instead of the acquisition function
+Plates are now nothing but floor space. Articles go onto as few plates as
+they pack onto, chunked largest-first (with identical settings everywhere
+there is no confound left for the deal to protect); the nine round-3 articles
+fit one plate at about 208 x 208 mm of the usable 290 x 310 mm, so the batch
+is one print job. A plate that does not fit is called out to be split rather
+than quietly repacked. `--freeze-process` still pins all six parameters at
+the as-printed point and gives back the shape-plus-mass batch of rounds 1
+and 2.
+
+#### Why Sobol and a Latin hypercube instead of the acquisition function
 
 qNEHVI also returns values for these six parameters, and they are worth
 nothing. With every observation at one process point the posterior is flat
 along those axes, so the acquisition surface is flat too and whatever the
 optimizer returns there is an artifact of its starting points. The run prints
-the spread it produced before replacing it. The replacement is a Latin
-hypercube, which stratifies each axis into as many bins as there are points,
-and each coordinate is rounded onto the slicer field's own resolution (1 C,
-1 percent, 0.1 mm^3/s) so the number in the table is the number typed into
+the spread it produced before replacing it.
+
+The replacement differs by level. The four filament settings are one point
+drawn from a seeded scrambled Sobol sequence over their bounds: for a single
+point that is a uniform random draw with a reproducible seed, which is all
+"chosen" can honestly mean with no data to prefer one setting over another,
+and Sobol rather than a plain RNG so that a later batch still lacking process
+data continues the same sequence (batch N takes point N minus 3), keeping the
+accumulated batch-level points spread out instead of clumping the way
+independent draws can. The two infill densities are a centered Latin
+hypercube across the nine articles, stratifying each axis into nine bins.
+Every coordinate is rounded onto the slicer field's own resolution (1 C, 1
+percent, 0.1 mm^3/s) so the number in the table is the number typed into
 Bambu Studio, with no planned-versus-executed gap.
 
 The run then re-queries the model at the delivered points and prints how much
 the substitution moved its predictions, against the model's own posterior sd,
-so the cost is measured rather than assumed. On the round-3 batch it moved
-`t180` by at most 0.037 (19 percent of one posterior sd) and `e_reb_mJ` by at
-most 0.64 mJ (15 percent). That is not zero, and it is worth being clear about
-why it is not: a GP cannot learn a response from an input that never varied,
-so what is left along those six axes is the SAAS prior's residual sensitivity,
-not evidence. Substituting a stratified design trades a fifth of one posterior
-sd of prior noise for six axes round 4 can actually estimate.
-
-If a later round prints this number and it has grown a lot, that is the signal
-that the model has begun to learn the process axes from data, and the
-substitution should be dropped in favor of letting the acquisition choose.
+so the cost is measured rather than assumed. A GP cannot learn a response
+from an input that never varied, so what is left along those six axes is the
+SAAS prior's residual sensitivity, not evidence, and the substitution trades
+a fraction of one posterior sd of prior noise for process coordinates the lab
+can actually type. If a later round prints this number and it has grown a
+lot, that is the signal that the model has begun to learn the process axes
+from data, and the substitution should be dropped in favor of letting the
+acquisition choose.
 
 #### Infill feeds back into the printed-mass projection
 
@@ -382,28 +403,30 @@ python bo/t3_prism_bo_campaign.py --round 3 --batch-number 3 --plot-only \
     # the recorded CSV, no Ax install and no refit
 ```
 
-Options worth knowing about: `--plates N` sets how many levels of the four
-filament parameters the round buys (default 3, for 9 articles), `--freeze-process`
-gives back the shape-plus-mass batch of rounds 1 and 2, and `--control-plate`
-holds plate 1 at the as-printed process point on all six axes so a round-level
-batch effect can be told apart from a filament-setting effect. The default is
-without the control plate, because the point of this round is to spread the
-six new axes as widely as three plates allow; the flag is there because
-rounds 1 and 2 already produced one unexplained batch shift, and a control
-plate is the cheapest way to not repeat that argument.
+The one option worth knowing about: `--freeze-process` gives back the
+shape-plus-mass batch of rounds 1 and 2. The earlier `--plates` and
+`--control-plate` options went away with the split plot (they set how many
+filament levels the round bought, and there is now exactly one). One thing
+that leaves uncovered, worth saying out loud: with a single filament level, a
+round-level batch effect and the filament-setting effect are fully confounded
+in this round's data. The control that remains is the one the Edison round-2
+review recommended anyway, bracketing the drop sessions with a re-tested
+reference article, which is independent of how the batch is sliced.
 
 - `t3-prism-bo-suggestions-round3.csv`: the batch to print. One row per
-  article: plate, base shape coordinates, the constant `mass_printed_g`
-  target, the six process coordinates plus the two derived mm/s speeds,
-  posterior-mean predictions for both objectives, and the as-printed geometry
-  the constant-printed-mass projection produces at that article's own infill
-  (`scale`, `*_print_mm`, `footprint_d_mm`, `solid_mass_g`) with PR #35's two
-  printability checks evaluated on it. Violations are flagged, not dropped,
-  the same as in rounds 1 and 2.
+  article: plate (floor space only), a `best_predicted` flag naming the
+  specimen the batch-wide filament settings formally belong to, base shape
+  coordinates, the constant `mass_printed_g` target, the six process
+  coordinates (four of them identical on every row by construction) plus the
+  two derived mm/s speeds, posterior-mean predictions for both objectives,
+  and the as-printed geometry the constant-printed-mass projection produces
+  at that article's own infill (`scale`, `*_print_mm`, `footprint_d_mm`,
+  `solid_mass_g`) with PR #35's two printability checks evaluated on it.
+  Violations are flagged, not dropped, the same as in rounds 1 and 2.
 - `t3-prism-bo-round3-plate-recipe.md`: the same batch written as a print
-  recipe. Filament settings and a packing check per plate, per-part infill
-  overrides and as-printed geometry per article. This is the file to work from
-  at the slicer.
+  recipe. The filament settings stated once for the whole batch, per-part
+  infill overrides and as-printed geometry per article, and a packing check
+  per plate. This is the file to work from at the slicer.
 - `t3-prism-bo-ax-client-round3.json`: full AxClient state. The nine delivered
   articles are attached as pending trials, so round 4 warm-starts from the
   batch that is actually going to the printer rather than from the raw
@@ -412,8 +435,9 @@ plate is the cheapest way to not repeat that argument.
   usual grammar, 17 tested articles and the 9 suggestions at their predicted
   means.
 - `figures/t3-prism-bo-round3-process-space.png`: one strip per process
-  parameter, showing the single black circle where all 17 tested articles sit
-  and the nine colored diamonds where round 3 goes, colored by plate.
+  parameter, showing the single black circle where all 17 tested articles
+  sit, nine orange diamonds on each infill axis, and a single orange diamond
+  on each filament axis (one value for the batch).
 
 ## Model interpretability (diagnostics)
 
