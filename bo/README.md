@@ -521,6 +521,81 @@ against). Measured footprints (69 to 88 mm, key-seat overhang included) pack
 as a 3x3 grid of 254.5 x 263.5 mm inside the 290 x 310 mm usable area, so
 the plate is one print job as intended.
 
+## Round-3 drop data (the drran prints, sessions 2026-09-02/03)
+
+The round-3 plate was printed twice by Jinkwan (ctrhjk): print 1 is the
+nine `drran1`-`drran9` articles (print log with masses, RH and photos on
+issue #98, 2026-09-02), print 2 is `2dran1`-`2dran9` (same log format,
+2026-09-05). The drop sessions for print 1 are on Box under
+`Drop Test Data/9-03-2026 - drran` (20 drops per article, 60 in,
+arrangement B); print 2 has no sessions yet. The per-drop numbers here are
+a snapshot of the PR #86 branch's `data/drop-tests/drran-checkin/` output
+(commit `308554e`, the standing campaign pipeline: validity filter, 2-drop
+warm-up discard, T-drift watch), not a re-analysis.
+
+Files:
+
+- `t3-prism-bo-round3-drop-results.csv`: campaign summary, one row per
+  drran article, plus as-printed geometry, weighed mass, specimen index and
+  trial. Same schema as the round-2 results file with a trailing `trial`
+  column.
+- `t3-prism-bo-round3-per-drop-metrics.csv`: stabilized per-drop t180 and
+  e_rebound (18 rows per article: 20 valid captures minus the 2-drop
+  warm-up).
+- `t3-prism-bo-round3-print-key.csv`: both prints, all 18 articles, with
+  masses, plate positions, defects and the trial mapping.
+- `t3-prism-bo-round3-predictions.csv`: byte copy of the suggestions CSV
+  the plate was rendered from (commit `d119a54`), so predicted-vs-measured
+  is always drawn against what the model claimed at generation time.
+
+The ID-to-trial mapping is photo-confirmed. The plate's designs are
+visually distinct (trial 35 is the only high-twist article, 29 the
+tallest, 32 the widest, 31 narrow-tall, 34 short with thick cables, 36
+thin-cabled, and 28/30/33 a deliberately identical thin-strut/fat-cable
+trio differing only in infill), and the #98 print-log photos match every
+cell under the same back-left-to-front-right raster the r2d2c batch used.
+The trio's internal order rests on the raster plus the trial-28 mass match
+(19.88 g weighed vs 19.89 predicted); their shapes are identical, so a
+within-trio swap would only relabel infill values.
+
+What the weighings say about the mass model (its first data at non-15%
+infill and off-nominal filament settings): the constant-printed-mass
+projection collapsed the batch's mass spread to CV 1.7 percent (19.24 to
+20.06 g), against 5.9 percent in round 1 and 8.6 percent predicted for the
+round-2 plate, with a systematic -0.52 g bias against the 20.23 g target
+(print 2 ran +0.27 g heavier, mean 19.86 g, same 1.8 percent CV). The
+residual sd around the bias is 0.25 g, inside the model's 0.38 g
+calibration residual, so the shape of the model held and the offset is a
+flow-rate effect of the new filament point (PLA 217 C at 20.5 mm3/s vs the
+220 C / 30 mm3/s calibration plates) plus infill-term error. Feed both
+prints' weighings into the calibration before round 4.
+
+Two measurement caveats carried from the drran check-in (PR #86 comment,
+2026-09-05): `drran8` is T-drift flagged (+0.092 percent per drop, a mat
+warm-up signature, not the r2d2c2 mount signature; its 0.980 mean is
+provisional and its e_rebound mixes a double bounce at +39 and +70 ms),
+and `drran7` shows no clear ballistic landing, so its e_rebound is an
+envelope reading rather than hop physics. Both enter the ingestion as
+recorded, with the inflated sds; the loader prints the drift warning.
+
+Figure set (same registered four-still grammar as the round-2 delivery,
+plus GIF/MP4; predictions from the frozen table, landings from the
+measured summary, existing layer = all 17 round-1/2 articles):
+
+```bash
+python bo/t3_prism_bo_campaign.py --measured-round3             # absolute mJ
+python bo/t3_prism_bo_campaign.py --measured-round3 --per-gram  # mJ/g display
+```
+
+Front over all 26 tested articles: `6lhxfy`, `r2d2c7`, `drran8`,
+`r2d2c1`, `drran5`, `drran3`, `r2d2c6` (per gram, `bpx68c` and `ajhby6`
+rejoin and `drran3` displaces `r2d2c6`). Round 3 added three front
+members and knocked the drift-contaminated `r2d2c2` off. Note that
+`--plot-only --round 3` now draws the round-3 measured articles among the
+observed points as well as the batch's orange diamonds, so the committed
+pre-measurement `t3-prism-bo-round3-pareto.png` is a generation-time
+artifact; the measured story is this figure set.
+
 ## Model interpretability (diagnostics)
 
 - `t3_prism_bo_diagnostics.py`: refits the round-1 SAASBO model from the

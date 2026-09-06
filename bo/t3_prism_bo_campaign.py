@@ -669,6 +669,87 @@ def measured_round2_frame(y_round2, labels_round2, trial_of, predictions):
     return merged[~missing].reset_index(drop=True), kept
 
 
+# Round-3 (drran) batch files. The predictions table is the suggestions CSV
+# as it stood when the plate was rendered (commit d119a54: the tightened
+# bounds run whose STLs f2d82c8 committed), snapshotted so a later
+# regeneration cannot rewrite what the printed batch was predicted to do.
+# Base and process coordinates both live in that table, so no separate
+# designs join is needed: round 3 is the first batch whose articles differ
+# in process space (per-article strut/TPU infill; the four filament
+# settings are one batch-wide point, PLA 217 C / 20.5 mm3/s + TPU 244 C /
+# 3.6 mm3/s).
+ROUND3_RESULTS = BO_DIR / "t3-prism-bo-round3-drop-results.csv"
+ROUND3_KEY = BO_DIR / "t3-prism-bo-round3-print-key.csv"
+ROUND3_PREDICTIONS = BO_DIR / "t3-prism-bo-round3-predictions.csv"
+
+
+def load_round3_training_data(results_path=ROUND3_RESULTS,
+                              key_path=ROUND3_KEY,
+                              predictions_path=ROUND3_PREDICTIONS,
+                              include_process=True):
+    """Measured drran articles as (X, y) in the fit space.
+
+    Same contract as ``load_round2_training_data`` (returns X, y, labels,
+    masses, trial_of_label), with two round-3 differences: the process
+    coordinates are per-article (the infill pair varies within the batch,
+    so they come from the predictions table rather than a batch constant),
+    and the base coordinates come from the same table because the plate was
+    generated directly from it. ``include_process=False`` drops the process
+    coordinates for consumers that fit the six-parameter shape+mass space
+    only.
+    """
+    if not results_path.exists():
+        print(f"WARNING: no round-3 results at {results_path}; skipping.")
+        return [], [], [], [], {}
+    results = pd.read_csv(results_path)
+    table = pd.read_csv(predictions_path).set_index("trial_index")
+    key = pd.read_csv(key_path).set_index("print_id")
+
+    X, y, labels, masses, trial_of = [], [], [], [], {}
+    for _, row in results.iterrows():
+        pid = str(row["specimen"]).strip()
+        if pid not in key.index:
+            print(f"WARNING: skipping {pid!r}: not in the round-3 print key.")
+            continue
+        trial = int(key.loc[pid, "source_trial"])
+        base = table.loc[trial]
+        params = {name: float(base[name]) for name in PARAM_NAMES}
+        mass_g = float(row["mass_g"])
+        n = float(row["n_valid"])
+        e_mean = float(row["e_rebound_mean"])
+        e_sem = float(row["e_rebound_sd"]) / np.sqrt(n)
+        e_reb_mJ = e_mean * mass_g * G_M_S2 * DROP_H_M
+        e_reb_sem = e_reb_mJ * float(
+            np.hypot(e_sem / e_mean, MASS_PRINT_SD_G / mass_g)
+        )
+        if bool(row.get("t_drift_flag", False)):
+            print(
+                f"WARNING: {pid} (trial {trial}) is T-DRIFT flagged "
+                f"(slope {row.get('t180_slope_pct_per_drop')}, "
+                f"end-to-end {row.get('t180_e2e_pct')} %): its t180 mean is "
+                "drift-contaminated; ingested with the inflated sd, but "
+                "resolve per the campaign-analysis watch before trusting it."
+            )
+        y.append(
+            {
+                obj1_name: (float(row["t180_mean"]),
+                            float(row["t180_sd"]) / np.sqrt(n)),
+                obj2_name: (e_reb_mJ, e_reb_sem),
+            }
+        )
+        params[mass_param] = mass_g
+        if include_process:
+            params.update(
+                {name: float(base[name]) for name in PROCESS_PARAM_NAMES}
+            )
+        X.append(params)
+        label = f"{pid} (trial {trial})"
+        labels.append(label)
+        masses.append(mass_g)
+        trial_of[label] = trial
+    return X, y, labels, masses, trial_of
+
+
 # ---- figure styling (presentation-ready, per PR #102 review) -------------
 # Matches the hand-made reference posted on PR #102 (comment 5373145690):
 # no legend box (series are named by leader-line callouts in the plot area),
@@ -1210,7 +1291,7 @@ def _callout_alpha(ann, alpha):
 def render_round2_prototype(
     observed, suggestions, actual, round_number, fps=25, animate=True,
     synthetic=True, stem=None, series_label=None, pred_label=None,
-    front_label=None, unc_label=None,
+    front_label=None, unc_label=None, existing_label=None,
 ):
     """The round-2 story as four registered stills plus an animation.
 
@@ -1290,6 +1371,8 @@ def render_round2_prototype(
         front_label = f"Pareto front after round {round_number}"
     if unc_label is None:
         unc_label = "Predicted ± 1 sd\n(model posterior)"
+    if existing_label is None:
+        existing_label = "Existing data (round 1)"
 
     has_prior = len(observed) > 0
     combined = pd.concat(
@@ -1492,7 +1575,7 @@ def render_round2_prototype(
         if has_prior:
             obs_anchor = observed.loc[observed[obj1_name].idxmax()]
             c_exist = _callout(
-                ax, "Existing data (round 1)",
+                ax, existing_label,
                 (obs_anchor[obj1_name], obs_anchor[obj2_name]),
                 (0.995, 0.72), INK, leader=LEADER_GRAY, ha="right",
             )
@@ -2157,6 +2240,17 @@ def main(argv=None):
         ),
     )
     ap.add_argument(
+        "--measured-round3",
+        action="store_true",
+        help=(
+            "draw the predicted-vs-measured figure set and animation for the "
+            "round-3 batch from the MEASURED campaign summary "
+            "(t3-prism-bo-round3-drop-results.csv) against the predictions "
+            "the printed plate was rendered from "
+            "(t3-prism-bo-round3-predictions.csv); no model refit"
+        ),
+    )
+    ap.add_argument(
         "--per-gram",
         action="store_true",
         help=(
@@ -2164,7 +2258,7 @@ def main(argv=None):
             "drop; predictions divided by their predicted or target mass), "
             "per the PR #33 intensive-form notes; display only, the BO fit "
             "and the recorded CSVs stay in absolute mJ; use with "
-            "--plot-only or --measured-round2"
+            "--plot-only, --measured-round2 or --measured-round3"
         ),
     )
     ap.add_argument(
@@ -2180,14 +2274,17 @@ def main(argv=None):
 
     X1, y1, labels1, masses1, pending = load_training_data(args.results, args.design)
     X2, y2, labels2, masses2, trial_of = load_round2_training_data()
-    X_train = X1 + X2
-    y_train = y1 + y2
-    labels = labels1 + labels2
-    masses = masses1 + masses2
+    X3, y3, labels3, masses3, trial_of3 = load_round3_training_data()
+    X_train = X1 + X2 + X3
+    y_train = y1 + y2 + y3
+    labels = labels1 + labels2 + labels3
+    masses = masses1 + masses2 + masses3
 
-    if args.per_gram and not (args.plot_only or args.measured_round2):
-        ap.error("--per-gram is a display mode: use it with --plot-only "
-                 "or --measured-round2 (the BO fit stays in absolute mJ)")
+    if args.per_gram and not (args.plot_only or args.measured_round2
+                              or args.measured_round3):
+        ap.error("--per-gram is a display mode: use it with --plot-only, "
+                 "--measured-round2 or --measured-round3 (the BO fit stays "
+                 "in absolute mJ)")
     # weighed mass per tested article, for the per-gram display division
     mass_of = {lab.split(" ")[0]: m for lab, m in zip(labels, masses)}
     if args.per_gram:
@@ -2213,6 +2310,35 @@ def main(argv=None):
             actual, 2, animate=not args.no_animation, synthetic=False,
         )
         print("Measured round-2 stills (slide order):")
+        for i, stage in enumerate(STILL_STAGES, start=1):
+            print(f"  slide {i} ({stage}): {stills[stage]}")
+        if gif or mp4:
+            print("Animation saved to "
+                  + ", ".join(str(x) for x in (mp4, gif) if x))
+        return 0
+
+    if args.measured_round3:
+        # Same grammar as --measured-round2, one round later: predictions
+        # frozen at the plate that was printed (d119a54), landings from the
+        # measured drran campaign summary, and the existing layer is every
+        # article tested in rounds 1 and 2. No Ax import needed.
+        predictions = pd.read_csv(ROUND3_PREDICTIONS)
+        actual, kept = measured_round2_frame(y3, labels3, trial_of3, predictions)
+        obs12 = observed_frame(y1 + y2, labels1 + labels2)
+        if args.per_gram:
+            # measured values by weighed mass; predictions by the constant
+            # printed-mass target every round-3 design was projected onto
+            obs12[obj2_name] /= obs12["print_id"].map(mass_of)
+            actual[obj2_name] /= actual["print_id"].map(mass_of)
+            predictions[f"pred_{obj2_name}_mean"] /= predictions["mass_printed_g"]
+            predictions[f"pred_{obj2_name}_sd"] /= predictions["mass_printed_g"]
+        stills, gif, mp4 = render_round2_prototype(
+            obs12,
+            predictions.loc[kept].reset_index(drop=True),
+            actual, 3, animate=not args.no_animation, synthetic=False,
+            existing_label="Existing data (rounds 1-2)",
+        )
+        print("Measured round-3 stills (slide order):")
         for i, stage in enumerate(STILL_STAGES, start=1):
             print(f"  slide {i} ({stage}): {stills[stage]}")
         if gif or mp4:
@@ -2293,13 +2419,30 @@ def main(argv=None):
 
     n_train = len(X_train)
     print(f"Attaching {n_train} completed trials; {len(pending)} printed-but-untested pending.")
-    print(
-        "Every one of them carries the same print-process coordinates ("
-        + ", ".join(f"{k} {v:g}" for k, v in AS_PRINTED_PROCESS.items())
-        + "), read out of the two committed .3mf projects. The six process "
-        "parameters are therefore unidentified from existing data, and this "
-        "batch is their initialization."
-    )
+    proc_points = {
+        tuple(x.get(name) for name in PROCESS_PARAM_NAMES) for x in X_train
+    }
+    varying = [
+        name for name in PROCESS_PARAM_NAMES
+        if len({x.get(name) for x in X_train}) > 1
+    ]
+    if varying:
+        print(
+            f"Process coordinates: {len(proc_points)} distinct points in the "
+            f"training data; axes with real variation so far: "
+            + ", ".join(varying)
+            + ". The remaining process axes are still a single point "
+            "(rounds 1-2 at the as-printed settings, round 3 at its one "
+            "Sobol-drawn filament point) and stay unidentified."
+        )
+    else:
+        print(
+            "Every trial carries the same print-process coordinates ("
+            + ", ".join(f"{k} {v:g}" for k, v in AS_PRINTED_PROCESS.items())
+            + "), read out of the two committed .3mf projects. The six process "
+            "parameters are therefore unidentified from existing data, and this "
+            "batch is their initialization."
+        )
 
     # mass diagnostic: printed mass is set by the geometry (constant solid
     # volume + design-dependent PLA/TPU split), so any correlation with the
