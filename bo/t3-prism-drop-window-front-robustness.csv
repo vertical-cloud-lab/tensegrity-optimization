@@ -1,0 +1,52 @@
+specimen,round,t180,e_reb_mJ,convention,on_front
+6lhxfy,1,0.89308,13.92846,mixed (committed),True
+6nheas,1,0.99701,13.07036,mixed (committed),False
+9hhbkp,1,1.01834,6.94742,mixed (committed),False
+autv5r,1,1.04043,8.83094,mixed (committed),False
+bag26v,1,1.06162,7.71451,mixed (committed),False
+bpx68c,1,1.01107,6.18044,mixed (committed),False
+nvxsrv,1,1.02755,8.20205,mixed (committed),False
+ajhby6,1,1.01266,6.09974,mixed (committed),False
+r2d2c1,2,0.99415,5.96517,mixed (committed),True
+r2d2c2,2,1.04107,5.62455,mixed (committed),True
+r2d2c3,2,1.33365,5.59153,mixed (committed),False
+r2d2c4,2,1.18468,6.44300,mixed (committed),False
+r2d2c5,2,1.15155,6.70613,mixed (committed),False
+r2d2c6,2,1.05485,4.06643,mixed (committed),True
+r2d2c7,2,0.94838,12.16638,mixed (committed),True
+r2d2c8,2,1.07043,7.89260,mixed (committed),False
+r2d2c9,2,1.05299,5.84132,mixed (committed),False
+6lhxfy,1,0.88945,13.67971,matched first-19,True
+6nheas,1,0.99480,12.96276,matched first-19,False
+9hhbkp,1,1.02115,6.97427,matched first-19,False
+autv5r,1,1.04431,8.71203,matched first-19,False
+bag26v,1,1.06955,7.68020,matched first-19,False
+bpx68c,1,1.01369,6.02136,matched first-19,False
+nvxsrv,1,1.02942,8.21701,matched first-19,False
+ajhby6,1,1.01366,5.86144,matched first-19,True
+r2d2c1,2,0.99415,5.96517,matched first-19,True
+r2d2c2,2,1.04107,5.62455,matched first-19,True
+r2d2c3,2,1.33365,5.59153,matched first-19,False
+r2d2c4,2,1.18468,6.44300,matched first-19,False
+r2d2c5,2,1.15155,6.70613,matched first-19,False
+r2d2c6,2,1.05485,4.06643,matched first-19,True
+r2d2c7,2,0.94838,12.16638,matched first-19,True
+r2d2c8,2,1.07043,7.89260,matched first-19,False
+r2d2c9,2,1.05299,5.84132,matched first-19,False
+6lhxfy,1,0.89308,13.92846,full-equivalent,True
+6nheas,1,0.99701,13.07036,full-equivalent,False
+9hhbkp,1,1.01834,6.94742,full-equivalent,False
+autv5r,1,1.04043,8.83094,full-equivalent,False
+bag26v,1,1.06162,7.71451,full-equivalent,False
+bpx68c,1,1.01107,6.18044,full-equivalent,True
+nvxsrv,1,1.02755,8.20205,full-equivalent,False
+ajhby6,1,1.01266,6.09974,full-equivalent,True
+r2d2c1,2,0.99269,6.21241,full-equivalent,True
+r2d2c2,2,1.03954,5.85767,full-equivalent,True
+r2d2c3,2,1.33169,5.82329,full-equivalent,False
+r2d2c4,2,1.18294,6.71005,full-equivalent,False
+r2d2c5,2,1.14986,6.98409,full-equivalent,False
+r2d2c6,2,1.05330,4.23498,full-equivalent,True
+r2d2c7,2,0.94698,12.67065,full-equivalent,True
+r2d2c8,2,1.06885,8.21973,full-equivalent,False
+r2d2c9,2,1.05144,6.08343,full-equivalent,False
