@@ -738,7 +738,45 @@ own: printed mass and geometry are confounded by construction in round 1
 (the light articles *are* the PLA-heavy thick-strut corner), so the sign of
 the mass effect is the least trustworthy number on either figure.
 
-### Round-2 diagnostics and the LOOCV animation set
+### Round-4 LOOCV (all 26 articles, the 12-parameter model)
+
+```bash
+python bo/t3_prism_bo_diagnostics.py --snapshot bo/t3-prism-bo-ax-client-round4.json \
+    --round 4 --cv-only          # ~25 min: 26 held-out NUTS refits
+python bo/t3_prism_bo_diagnostics.py --round 4 --cv-only --plot-only  # redraw
+```
+
+Files: `figures/t3-prism-bo-round4-loocv.png` (two parity panels, one per
+objective, +/-1 sd bars), `t3-prism-bo-round4-loocv.csv`,
+`t3-prism-bo-round4-loocv-diagnostics.json`. `--cv-only` exists because
+the importance/PDP renderers still assume the six-parameter shape+mass
+space; the LOOCV machinery itself is generic, and the script now widens
+a 12-parameter snapshot to the matching fit space and labels round-3
+arms.
+
+Held-out skill across the campaign's three states (each state is the
+model the campaign actually used then, so the first two are 6-parameter
+fits and this one is 12-parameter; a controlled same-space comparison
+would re-run the earlier pools in the 12-parameter space):
+
+| state | n | t180 MAPE / rank corr | rebound MAPE / rank corr |
+|---|--:|---|---|
+| initialization only | 8 | 2.9 % / +0.76 | 29.3 % / +0.24 |
+| + round 2 | 17 | 5.4 % / +0.60 | 23.6 % / +0.70 |
+| + round 3, process axes in | 26 | 6.2 % / +0.19 | 32.2 % / +0.30 |
+
+The drop is real and worth stating plainly: with six process axes added
+(four of them carrying only two batch-confounded values) and round 3
+contributing the campaign's extremes (`drran7` at t180 1.251, `drran1`
+at 18.1 mJ), the held-out posterior shrinks toward the pooled mean and
+misses exactly the articles that define the front and its failures.
+Fisher's exact test keeps rebound marginal (p = 0.058) and t180 at
+chance (p = 0.5). Consistent with that humility, the round-4 batch is
+best read as exploration with a defensible best guess (trial 37), not
+as a model that can call its shots; the round-3 within-batch
+calibration told the same story from the other side (8 of 9 t180
+misses within 0.3 sd because the bands were wide, not because the
+means were sharp).
 
 The same diagnostics re-run on the 17-article two-round fit (the
 `t3-prism-bo-ax-client-round2.json` snapshot; `amdjwm` is still unmapped and
