@@ -52,16 +52,19 @@ real campaign rather than preference:
    different settings (commit 265bfe5); that split-plot design was replaced
    by ONE value of each for the whole batch: formally, the optimal predicted
    print parameters of the batch's best-predicted specimen, applied
-   everywhere. With all 17 tested articles at a single point of the process
-   space the model cannot rank process settings, so an "optimal predicted"
-   setting does not exist yet and the point is drawn from a seeded scrambled
-   Sobol sequence over the bounds instead; a later batch that still lacks
-   process variation continues the same sequence, so the batch-level points
-   accumulate as a low-discrepancy design across rounds. The two infill
-   densities are still stratified per article by a Latin hypercube. The run
-   prints how much replacing the acquisition's process coordinates moved the
-   model's predictions, as a fraction of the model's own posterior sd, so
-   the cost of the substitution is measured rather than assumed.
+   everywhere. Each batch prints at exactly one filament point, so the
+   batch-level points measured so far are confounded with round and with one
+   another, a model-preferred setting is not identified, and the point is
+   drawn from a seeded scrambled Sobol sequence over the bounds instead;
+   each batch continues the same sequence (batch N takes point N-3), so the
+   batch-level points accumulate as a low-discrepancy design across rounds.
+   The two per-article infill densities were stratified by a Latin hypercube
+   while no data varied them; from round 4 on (round-3 results spread both
+   axes 13 to 34 percent) they are kept as the acquisition chose them,
+   rounded onto the slicer grid. The run prints how much replacing the
+   acquisition's filament coordinates moved the model's predictions, as a
+   fraction of the model's own posterior sd, so the cost of the substitution
+   is measured rather than assumed.
 
 Search space (12 parameters). The first five are PR #35's base Sobol
 coordinates (R, H, twist, strut d, cable d) with the joint diameter frozen at
@@ -1075,15 +1078,18 @@ def pareto_front(frame):
 
 
 def render_objective_figure(observed, suggestions, round_number,
-                            prior_front=None, batch_number=None):
+                            prior_front=None, batch_number=None,
+                            prior_label=None):
     """Single objective-space panel, sized and styled for slides.
 
     The Honegumi template's second (parallel-coordinates) panel is omitted.
     The front is the non-dominated set of the *observed* points, which for
     round 1 is the same three articles as Ax's model-predicted Pareto set.
-    `prior_front`, when given, is the previous round's front drawn as a faded
-    gray line with no markers, so the hypervolume gained by the newest batch
-    reads visually (PR #102 review).
+    `prior_front`, when given, is an earlier front drawn as a faded gray
+    line with no markers, so the hypervolume gained by the newest batch
+    reads visually (PR #102 review); `prior_label` names it (pass the label
+    that matches the data actually handed in, the default is only right
+    when the prior is the previous round's front).
     """
     front = pareto_front(observed)
     on_front = observed["print_id"].isin(front["print_id"])
@@ -1155,7 +1161,7 @@ def render_objective_figure(observed, suggestions, round_number,
         if prior_front is not None:
             callouts.append(
                 _callout(
-                    ax, f"Round-{round_number - 1} front",
+                    ax, prior_label or f"Round-{round_number - 1} front",
                     _front_anchor(prior_front, 0.42),
                     (0.02, 0.68), PRIOR_FRONT_GRAY, leader=PRIOR_FRONT_GRAY,
                 )
@@ -1835,19 +1841,25 @@ def render_round2_prototype(
 
 
 def render_process_space_figure(suggestions, round_number, path=None,
-                                batch_number=None):
+                                batch_number=None, tested=None):
     """One strip per print-process parameter: where the data is, where round N goes.
 
-    The point of the panel is the row of black circles. All 17 tested articles
-    were printed at one setting of every one of these six parameters, so the
-    campaign's whole knowledge of them is a single point, and the batch drawn
-    in color is the first time any of them moves.
+    The point of the panel is the black circles: the process coordinates of
+    every tested article (pass them as ``tested``, a list of parameter
+    dicts). Rounds 1 and 2 sat at a single point of all six axes; round 3
+    spread the two infill axes per article and moved the filament point once,
+    so from round 4 on the campaign's knowledge of this space is a set of
+    points, not one. Falls back to the rounds-1/2 as-printed point when
+    ``tested`` is not given.
     """
     fig_dir = BO_DIR / "figures"
     fig_dir.mkdir(exist_ok=True)
     path = path or (
         fig_dir / f"t3-prism-bo-round{round_number}-process-space.png")
     batch_number = round_number if batch_number is None else batch_number
+    tested_label = (f"all {len(tested)} tested articles"
+                    if tested else "as-printed point (rounds 1-2)")
+    tested = tested or [AS_PRINTED_PROCESS]
     n = len(PROCESS_SPECS)
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(
@@ -1877,8 +1889,10 @@ def render_process_space_figure(suggestions, round_number, path=None,
             ax.scatter(vals, np.zeros_like(vals), s=190, marker="D",
                        color=SUGGEST_ORANGE, alpha=0.92, zorder=3,
                        clip_on=False)
-            ax.scatter([held], [0], s=400, facecolor="none", edgecolor=INK,
-                       linewidths=2.6, zorder=5, clip_on=False)
+            tvals = sorted({round(float(t[name]), 6)
+                            for t in tested if name in t})
+            ax.scatter(tvals, np.zeros(len(tvals)), s=400, facecolor="none",
+                       edgecolor=INK, linewidths=2.6, zorder=5, clip_on=False)
             unit = spec["unit"].replace("^", "")
             ax.text(0.0, 1.06, f"{name}   ({unit})", transform=ax.transAxes,
                     ha="left", va="bottom", fontsize=20, color=INK)
@@ -1894,7 +1908,7 @@ def render_process_space_figure(suggestions, round_number, path=None,
         key.set_ylim(0, 1)
         key.scatter([0.012], [0.55], s=400, facecolor="none", edgecolor=INK,
                     linewidths=2.6, clip_on=False)
-        key.text(0.035, 0.55, "all 17 tested articles", va="center",
+        key.text(0.035, 0.55, tested_label, va="center",
                  fontsize=19, color=INK)
         key.scatter([0.36], [0.55], s=190, marker="D", color=SUGGEST_ORANGE,
                     clip_on=False)
@@ -2097,10 +2111,11 @@ def write_plate_recipe(suggestions, round_number, target_g, path=None,
         + (": formally they are the print parameters of trial "
            f"{best_trial}, the batch's best-predicted specimen, applied "
            "everywhere. " if best_trial is not None else ". ")
-        + "With all 17 tested articles at a single point of the process "
-        "space there is no data to prefer one setting over another, so the "
-        "values were drawn by Sobol sampling within the bounds (see the "
-        "README) rather than asked of the model.",
+        + "Every batch prints at one filament point, so the batch-level "
+        "points measured so far are confounded with everything else that "
+        "changed between rounds; a model-preferred setting is therefore not "
+        "identified, and the values continue the seeded Sobol sequence over "
+        "the bounds (see the README) rather than being asked of the model.",
         "",
     ]
     if first["tpu_nozzle_temp_C"] > 240:
@@ -2361,17 +2376,26 @@ def main(argv=None):
             suggestions[f"pred_{obj2_name}_mean"] /= div
             suggestions[f"pred_{obj2_name}_sd"] /= div
         if args.plot_only:
-            prior = None
-            if args.round >= 2 and y1:
-                # the front as it stood before the newest measured batch,
-                # drawn as a faded gray line for the hypervolume comparison
-                r1_frame = observed_frame(y1, labels1)
+            # the front as it stood before the newest measured batch, drawn
+            # as a faded gray line for the hypervolume comparison: the front
+            # over every measured round except the latest one that has
+            # results, labeled by that provenance (the batch counter of the
+            # newest measured round, not args.round, which may be a
+            # suggestions-only run number)
+            prior, prior_label = None, None
+            measured = [(y, l) for y, l in
+                        ((y1, labels1), (y2, labels2), (y3, labels3)) if y]
+            if args.round >= 2 and len(measured) >= 2:
+                prev_y = [row for y, _ in measured[:-1] for row in y]
+                prev_l = [lab for _, l in measured[:-1] for lab in l]
+                prev_frame = observed_frame(prev_y, prev_l)
                 if args.per_gram:
-                    r1_frame[obj2_name] /= r1_frame["print_id"].map(mass_of)
-                prior = pareto_front(r1_frame)
+                    prev_frame[obj2_name] /= prev_frame["print_id"].map(mass_of)
+                prior = pareto_front(prev_frame)
+                prior_label = f"Front before round {len(measured)}"
             print(
                 "Figure saved to "
-                f"{render_objective_figure(observed, suggestions, args.round, prior_front=prior, batch_number=batch_number)}"
+                f"{render_objective_figure(observed, suggestions, args.round, prior_front=prior, batch_number=batch_number, prior_label=prior_label)}"
             )
             # a batch carrying print-process columns can have its recipe and
             # its process-space panel rebuilt here too, with no Ax install
@@ -2382,7 +2406,8 @@ def main(argv=None):
                     batch_number=batch_number)))
                 print("Process-space figure saved to "
                       + str(render_process_space_figure(
-                          suggestions, args.round, batch_number=batch_number)))
+                          suggestions, args.round, batch_number=batch_number,
+                          tested=X_train)))
         if args.prototype_next_round:
             actual = synthesize_round2_outcomes(suggestions, seed=args.seed)
             dummy_csv = (
@@ -2427,13 +2452,19 @@ def main(argv=None):
         if len({x.get(name) for x in X_train}) > 1
     ]
     if varying:
+        non_varying = [n for n in PROCESS_PARAM_NAMES if n not in varying]
         print(
             f"Process coordinates: {len(proc_points)} distinct points in the "
             f"training data; axes with real variation so far: "
             + ", ".join(varying)
-            + ". The remaining process axes are still a single point "
-            "(rounds 1-2 at the as-printed settings, round 3 at its one "
-            "Sobol-drawn filament point) and stay unidentified."
+            + (". The remaining process axes (" + ", ".join(non_varying)
+               + ") are still a single point and stay unidentified."
+               if non_varying else
+               ". The four filament axes vary only between batches (one "
+               "point per print job), so their variation is confounded "
+               "with round and they stay unidentified despite appearing "
+               "here; only the per-article infill axes vary within a "
+               "round.")
         )
     else:
         print(
@@ -2541,20 +2572,31 @@ def main(argv=None):
 
     # ---- process coordinates --------------------------------------------
     # The acquisition function chose values for the six process parameters
-    # too, and they are worth nothing. A GP cannot learn a response from an
-    # input that never varied, and every tested article sits at one point of
-    # this subspace, so what little sensitivity the model shows along it is
-    # the SAAS prior rather than evidence, and where the optimizer landed
-    # inside it is an artifact of its starting points. Report the spread it
-    # produced, then replace it with a stratified design.
-    print("\nProcess axes as the acquisition left them (all 17 observations "
-          "sit at one point of this subspace, so this is prior, not signal):")
+    # too. Whether those choices are worth anything depends on which axes the
+    # training data actually varies: an axis every tested article shares one
+    # value of contributes prior, not signal, and the optimizer's position
+    # along it is an artifact of its starting points. Report the spread it
+    # produced, then hand each axis to whichever source has standing:
+    #
+    # * infill (per-article): acquisition once the data varies it (round 3
+    #   spread both axes 13 to 34 percent across nine articles, including the
+    #   t28/t30/t33 clone trio), a centered Latin hypercube before that;
+    # * the four filament axes: always the continued seeded Sobol sequence.
+    #   They are per-print-job settings, so a one-plate batch carries exactly
+    #   one value of each and only rounds can vary them, and the batch-level
+    #   points measured so far (rounds 1-2 at one point, each later batch at
+    #   its own draw) moved together, so any effect along one of these axes
+    #   is confounded with the others and with everything else that changed
+    #   between rounds. A model-preferred filament point is therefore still
+    #   not identified, whatever the GP's posterior claims.
+    print("\nProcess axes as the acquisition left them:")
     for name in PROCESS_PARAM_NAMES:
         vals = np.array([p[name] for p in proposed])
         lo, hi = PROCESS_BOUNDS[name]
         print(f"  {name:<20} {vals.min():8.2f} to {vals.max():8.2f} "
               f"(covers {100 * (vals.max() - vals.min()) / (hi - lo):5.1f} "
-              "percent of its range)")
+              "percent of its range)"
+              + ("" if name in varying else "  [single point in data: prior]"))
 
     if args.freeze_process:
         filament_pt = {k: AS_PRINTED_PROCESS[k] for k in FILAMENT_PROCESS_PARAMS}
@@ -2565,20 +2607,37 @@ def main(argv=None):
     else:
         # One set of filament settings for the whole batch: formally the
         # optimal predicted print parameters of the batch's best-predicted
-        # specimen (named below), applied everywhere. No data varies these
-        # axes yet, so "optimal predicted" cannot be computed and the point
-        # is Sobol-drawn instead; batch N of the campaign takes point N-3 of
-        # the same seeded sequence, so if later batches are still drawn this
-        # way the accumulated points stay spread out.
+        # specimen (named below), applied everywhere. Batch N of the campaign
+        # takes point N-3 of the same seeded sequence (batch 3 took point 0),
+        # so the accumulated batch-level points stay spread out.
         sobol_index = max(batch_number - 3, 0)
         filament_pt = sobol_process_point(
             FILAMENT_PROCESS_PARAMS, args.seed + 1, index=sobol_index)
-        article_pts = space_filling_process(
-            len(proposed), ARTICLE_PROCESS_PARAMS, args.seed)
-        print("\nFilament settings, one value for the whole batch (point "
+        infill_identified = [k for k in ARTICLE_PROCESS_PARAMS if k in varying]
+        if len(infill_identified) == len(ARTICLE_PROCESS_PARAMS):
+            # round-3 data varies both infill axes, so the acquisition's
+            # per-article choices are informed by measurement and are kept,
+            # rounded onto the slicer field's own resolution
+            article_pts = [
+                {k: round_to_step(p[k], PROCESS_STEP[k])
+                 for k in ARTICLE_PROCESS_PARAMS}
+                for p in proposed
+            ]
+            print("\nPer-article infill: kept as the acquisition chose it "
+                  "(both axes vary in the training data since round 3), "
+                  "rounded to the slicer's 1 percent resolution.")
+        else:
+            article_pts = space_filling_process(
+                len(proposed), ARTICLE_PROCESS_PARAMS, args.seed)
+            print("\nPer-article infill: centered Latin hypercube (no "
+                  "training variation on "
+                  + ", ".join(k for k in ARTICLE_PROCESS_PARAMS
+                              if k not in varying)
+                  + " yet, so the acquisition has nothing to prefer with).")
+        print("Filament settings, one value for the whole batch (point "
               f"{sobol_index} of the seeded Sobol sequence over the bounds; "
-              "no tested article varies these axes, so a model-preferred "
-              "setting does not exist yet):")
+              "batch-level points so far are confounded with round, so a "
+              "model-preferred setting is still not identified):")
         for k in FILAMENT_PROCESS_PARAMS:
             print(f"  {k:<20} {filament_pt[k]:g}")
     delivered = [dict(p, **a, **filament_pt)
@@ -2608,7 +2667,8 @@ def main(argv=None):
         for idx in proposed_indices:
             ax_client.abandon_trial(
                 trial_index=idx,
-                reason="process coordinates replaced by the stratified design",
+                reason="filament coordinates replaced by the batch-wide Sobol "
+                       "point; infill rounded onto the slicer grid",
             )
         trial_indices = [ax_client.attach_trial(x)[1] for x in delivered]
     except Exception as exc:  # pragma: no cover - Ax API drift
@@ -2732,7 +2792,8 @@ def main(argv=None):
                                       args.round, batch_number=batch_number)
     print(f"Figure saved to {out_png}")
     proc_png = render_process_space_figure(suggestions, args.round,
-                                           batch_number=batch_number)
+                                           batch_number=batch_number,
+                                           tested=X_train)
     print(f"Process-space figure saved to {proc_png}")
 
     return 0

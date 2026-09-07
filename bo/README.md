@@ -567,8 +567,22 @@ round-2 plate, with a systematic -0.52 g bias against the 20.23 g target
 residual sd around the bias is 0.25 g, inside the model's 0.38 g
 calibration residual, so the shape of the model held and the offset is a
 flow-rate effect of the new filament point (PLA 217 C at 20.5 mm3/s vs the
-220 C / 30 mm3/s calibration plates) plus infill-term error. Feed both
-prints' weighings into the calibration before round 4.
+220 C / 30 mm3/s calibration plates) plus infill-term error.
+
+Splitting those two candidates with both prints' weighings (2026-09-07,
+round-4 run): regressing the print-averaged residual on the two slicer
+infill settings gives slopes of -2.1 +/- 1.6 g (struts) and -1.5 +/- 1.6 g
+(TPU) per 100 percentage points, |t| < 1.4, so over the actual 13 to 34
+percent spread there is no detectable residual-vs-infill trend and the
+model's differential infill terms pass their first test. The level offset
+is therefore a print-session effect, and it wobbles between sessions:
+-0.52 g (drran) vs -0.25 g (2dran) at byte-identical settings, a 0.27 g
+swing between two prints of the same plate. The round-4 projection keeps
+the round-1/2 calibration unchanged (its job is within-batch consistency,
+which held at CV 1.7 to 1.8 percent); a recalibration that absorbs the
+level needs a per-session or per-filament-point term, not a re-fit of the
+infill/wall parameters the new data just validated, and is carried to
+before batch 5.
 
 Two measurement caveats carried from the drran check-in (PR #86 comment,
 2026-09-05): `drran8` is T-drift flagged (+0.092 percent per drop, a mat
@@ -595,6 +609,68 @@ members and knocked the drift-contaminated `r2d2c2` off. Note that
 observed points as well as the batch's orange diamonds, so the committed
 pre-measurement `t3-prism-bo-round3-pareto.png` is a generation-time
 artifact; the measured story is this figure set.
+
+## Round-4 batch (first refit on all 26 articles, 2026-09-07)
+
+Generated with `python bo/t3_prism_bo_campaign.py --round 4
+--batch-number 4`: SAASBO refit on all 26 tested articles (8 round-1 +
+9 r2d2c + 9 drran; `amdjwm` still unmapped, specs 03/06 attached as
+pending), qNEHVI batch of 9, every article projected onto 20.23 g
+printed. Files: `t3-prism-bo-suggestions-round4.csv` (the batch),
+`t3-prism-bo-round4-plate-recipe.md` (slicer walkthrough),
+`t3-prism-bo-ax-client-round4.json` (snapshot carrying the delivered
+batch as pending trials), figures
+`t3-prism-bo-round4-{pareto,process-space}.png`. No STLs yet: when the
+batch is approved, `python bo/t3_prism_printed_mass_plate.py
+--designs-csv bo/t3-prism-bo-suggestions-round4.csv --out-prefix
+t3-prism-bo-round4` renders them the same way round 3's were.
+
+Two process-handling changes relative to round 3, both in the campaign
+script:
+
+- **Infill is now acquisition-chosen per article** (rounded to the
+  slicer's 1 percent grid), because round 3 gave the model its first
+  real variation on both infill axes (13 to 34 percent, including the
+  t28/t30/t33 clone trio). The Latin-hypercube fallback remains for any
+  future axis with no training variation.
+- **The filament point is Sobol point 1 of the same seeded sequence**
+  (batch N takes point N-3): PLA 226 C at 29.5 mm3/s, TPU 236 C at
+  2.6 mm3/s. Roughly the opposite corner from round 3 (PLA hotter and
+  near the proven flow, TPU cooler and slower), which is what a
+  low-discrepancy sequence is for. The two batch-level filament points
+  measured so far moved together and with everything else that changed
+  between rounds, so they stay confounded and the model is still not
+  asked to rank them; replacing the acquisition's filament coordinates
+  moved its predictions by at most 21 percent (t180) and 9 percent
+  (rebound) of one posterior sd, printed by the run.
+
+The batch itself splits into two families. Trials 37, 39, 41, 43 are
+wide, high-twist, thin-cable attackers (R 40, twist 79 to 80 degrees,
+base cable 3.0 mm, predicted t180 0.93 to 0.95): the model chasing the
+`6lhxfy` corner, now backed by `drran8` (the round-3 twist article and
+its only attenuator). Trials 38, 40, 42, 44, 45 are tall, low-twist,
+thick-cable rebound designs (R 25, H 110, cable 5.5 mm, predicted
+rebound 6.4 to 7.6 mJ). Trials 40 and 44 differ by one percentage point
+of strut infill and are otherwise the same article, i.e. the
+acquisition spent a slot on a deliberate replicate, and 38/42 differ
+mainly in strut diameter. Best-predicted is trial 37, and for the first
+time in the campaign the best candidate's predicted means improve the
+measured front (predicted hypervolume gain +0.232 at the (1.35, 15 mJ)
+reference); every earlier round's batch was generated under a model
+that predicted no front improvement at all.
+
+Printability flags, carried not dropped as always: 4 of 9 under the
+3.0 mm cable self-bridging floor (37, 39, 41, 43, printed cables 2.51
+to 2.78 mm; round 1's two sub-floor articles both showed tendon string
+defects, so expect the same), 2 over the 250 cm3 envelope (39, 43), and
+3 end caps below the 20.1 mm smallest-printed floor (38, 42, 45; check
+the sensor housings fit in the slicer). The whole batch packs one plate
+(263 x 263 mm of 290 x 310 usable).
+
+One number worth keeping: across all 26 tested articles corr(mass,
+t180) is now 0.07, against 0.83 over round 1 alone. The constant-mass
+rounds did their job; printed mass no longer explains transmissibility,
+shape and process do.
 
 ## Model interpretability (diagnostics)
 

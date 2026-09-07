@@ -132,6 +132,7 @@ from t3_prism_bo_campaign import (  # noqa: E402  (same directory)
     mass_param,
     load_training_data,
     load_round2_training_data,
+    load_round3_training_data,
     render_round2_prototype,
     _axes_frac,
     _callout,
@@ -1768,6 +1769,17 @@ def main(argv=None):
     ap.add_argument("--cv-warmup-steps", type=int, default=256)
     ap.add_argument("--skip-cv", action="store_true", help="skip the leave-one-out refits")
     ap.add_argument(
+        "--cv-only",
+        action="store_true",
+        help=(
+            "run only the leave-one-out cross-validation (the two parity "
+            "panels, one per objective) and skip feature importance and the "
+            "partial-dependence sweep. Required for the 12-parameter "
+            "round-4+ snapshots for now: the importance/PDP renderers still "
+            "assume the six-parameter shape+mass space"
+        ),
+    )
+    ap.add_argument(
         "--plot-only",
         action="store_true",
         help=(
@@ -1880,15 +1892,17 @@ def main(argv=None):
         return 0
 
     if args.plot_only:
-        importance = pd.read_csv(BO_DIR / f"{stem}-feature-importance.csv")
-        render_feature_importance(importance, fig_dir / f"{stem}-feature-importance.png")
-        pdp = pd.read_csv(BO_DIR / f"{stem}-partial-dependence.csv")
-        net = pd.read_csv(BO_DIR / f"{stem}-parameter-net-effects.csv")
-        render_parameter_effects(
-            pdp, net,
-            fig_dir / f"{stem}-parameter-effects.png",
-            fig_dir / f"{stem}-parameter-net-effects.png",
-        )
+        if not args.cv_only:
+            importance = pd.read_csv(BO_DIR / f"{stem}-feature-importance.csv")
+            render_feature_importance(
+                importance, fig_dir / f"{stem}-feature-importance.png")
+            pdp = pd.read_csv(BO_DIR / f"{stem}-partial-dependence.csv")
+            net = pd.read_csv(BO_DIR / f"{stem}-parameter-net-effects.csv")
+            render_parameter_effects(
+                pdp, net,
+                fig_dir / f"{stem}-parameter-effects.png",
+                fig_dir / f"{stem}-parameter-net-effects.png",
+            )
         cv_path = BO_DIR / f"{stem}-loocv.csv"
         if cv_path.exists():
             cv_table = pd.read_csv(cv_path)
@@ -1908,18 +1922,25 @@ def main(argv=None):
     # The snapshot was saved with the search space narrowed to the constant-mass
     # generation slab, which would make 9 of 10 articles out of design and drop
     # them from the fit. Diagnostics describe the fitted model, not the next
-    # batch, so widen back to the fit space before refitting.
-    experiment.search_space = fit_search_space(include_process=False)
+    # batch, so widen back to the fit space before refitting. Round-3+
+    # snapshots were written in the 12-parameter space (shape + mass + the six
+    # print-process axes), earlier ones in the six-parameter space; match
+    # whichever the snapshot's arms actually carry.
+    has_process = "pla_nozzle_temp_C" in experiment.search_space.parameters
+    experiment.search_space = fit_search_space(include_process=has_process)
     data = experiment.fetch_data()
 
     # Map arm names back onto print IDs by matching the attached parameters,
     # not the attachment order: the round-2 snapshot holds both rounds'
     # completed articles plus pending and generated trials, so order is not a
-    # reliable key. Every completed trial's 6-vector is unique across the
-    # tested articles, which is what makes this exact.
+    # reliable key. Matching on the six shape+mass keys is exact whatever the
+    # snapshot's dimensionality: every completed trial's 6-vector is unique
+    # across the tested articles (the round-3 clone trio shares its shape but
+    # not its weighed mass).
     X1, _, labels1, _, _ = load_training_data(args.results, args.design, process=None)
     X2, _, labels2, _, _ = load_round2_training_data(process=None)
-    X_all, labels_all = X1 + X2, labels1 + labels2
+    X3, _, labels3, _, _ = load_round3_training_data(include_process=False)
+    X_all, labels_all = X1 + X2 + X3, labels1 + labels2 + labels3
     labels_by_arm = {}
     for trial in experiment.trials.values():
         arm = trial.arm
@@ -1933,6 +1954,38 @@ def main(argv=None):
     n_articles = int(data.df["arm_name"].nunique())
     print(f"Loaded {args.snapshot.name}: {len(data.df)} observations, "
           f"{n_articles} tested articles, {len(labels_by_arm)} labeled")
+
+    if args.cv_only:
+        print("\nLeave-one-out cross-validation (one refit per article)...")
+        cv_model = fit_saasbo(
+            experiment, data, args.cv_mcmc_samples, args.cv_warmup_steps,
+            refit_on_cv=True,
+        )
+        cv_png = fig_dir / f"{stem}-loocv.png"
+        cv_table, diagnostics = run_loocv(
+            cv_model, labels_by_arm, BO_DIR / f"{stem}-loocv-diagnostics.json"
+        )
+        render_loocv(cv_table, diagnostics, cv_png, n_articles=n_articles)
+        cv_table.to_csv(BO_DIR / f"{stem}-loocv.csv", index=False,
+                        float_format="%.5f")
+        print(f"  figure -> {cv_png}")
+        for name in ("MAPE", "Correlation coefficient", "Rank correlation",
+                     "Fisher exact test p"):
+            if name in diagnostics:
+                values = {m: round(float(v), 4)
+                          for m, v in diagnostics[name].items()}
+                print(f"  {name}: {values}")
+        if args.cv_animation:
+            print("\nLOOCV figure set + animation (round-2 grammar)...")
+            stills, gif, mp4 = render_cv_travel_set(
+                cv_table, args.round, animate=not args.no_animation
+            )
+            for i, stage in enumerate(STILL_STAGES, start=1):
+                print(f"  slide {i} ({stage}): {stills[stage]}")
+            if gif or mp4:
+                print("  animation: "
+                      + ", ".join(str(x) for x in (mp4, gif) if x))
+        return 0
 
     print("Fitting SAASBO for diagnostics...")
     model = fit_saasbo(experiment, data, args.mcmc_samples, args.warmup_steps)
