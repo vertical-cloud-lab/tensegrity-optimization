@@ -620,10 +620,9 @@ printed. Files: `t3-prism-bo-suggestions-round4.csv` (the batch),
 `t3-prism-bo-round4-plate-recipe.md` (slicer walkthrough),
 `t3-prism-bo-ax-client-round4.json` (snapshot carrying the delivered
 batch as pending trials), figures
-`t3-prism-bo-round4-{pareto,process-space}.png`. No STLs yet: when the
-batch is approved, `python bo/t3_prism_printed_mass_plate.py
---designs-csv bo/t3-prism-bo-suggestions-round4.csv --out-prefix
-t3-prism-bo-round4` renders them the same way round 3's were.
+`t3-prism-bo-round4-{pareto,process-space}.png`. The print files
+(18 per-trial STLs and the H2D project) were rendered 2026-09-08 the
+same way round 3's were; see "Round-4 print files" below.
 
 Two process-handling changes relative to round 3, both in the campaign
 script:
@@ -671,6 +670,56 @@ One number worth keeping: across all 26 tested articles corr(mass,
 t180) is now 0.07, against 0.83 over round 1 alone. The constant-mass
 rounds did their job; printed mass no longer explains transmissibility,
 shape and process do.
+
+### Round-4 print files (STLs and the H2D project)
+
+Generated 2026-09-08 by `t3_prism_printed_mass_plate.py --designs-csv
+t3-prism-bo-suggestions-round4.csv --out-prefix t3-prism-bo-round4`,
+the same path that produced the round-3 print files (see that section
+for the provenance of the SCAD, the projection, and the 3mf assembly;
+nothing about the mechanism changed). The files:
+
+- `per-specimen-stls/t3-prism-bo-round4-tNN-{struts,cables}.stl`: 18
+  plate-positioned STLs, one PLA/TPU pair per article, named by Ax
+  trial (t37 to t45).
+- `slices/t3-prism-bo-round4.H2D-MM-PLAstruts-TPUcables.3mf`: the
+  Bambu Studio project, one object per trial ("Trial 37" ...
+  "Trial 45"), struts on extruder 1 and cables on extruder 2, with the
+  round-4 filament settings baked in (PLA 226 C at 29.5 mm^3/s, TPU
+  236 C at 2.6 mm^3/s, initial layers the same) and all 18 per-part
+  sparse-infill overrides (verified by unzipping the committed file).
+  This batch's TPU temperature is inside the old 0.4-nozzle preset's
+  window, so no preset swap is strictly needed, but the project
+  carries `Bambu TPU 85A @BBL H2D` anyway for consistency with round
+  3. Same two manual steps as always: verify the overrides survived
+  the import, and paint the supports on (supports are off in the
+  project).
+- `t3-prism-bo-round4-designs.csv` (manifest),
+  `t3-prism-bo-round4-plate.json`, `t3-prism-bo-round4.scad`, and the
+  `-{plate,iso}.png` previews.
+
+Verification, rendered STL volumes pushed back through the calibrated
+printed-mass model at each article's own infill: printed_g_est runs
+19.92 to 20.64 g against the 20.23 g target, worst deviation +0.41 g
+(trial 45), marginally above the model's 0.38 g calibration residual
+and below the 0.457 g print-to-print scatter. Note the calibration is
+still the round-1 weighings by construction (`calibrate()` reads the
+round-1 print key only), which is the same model that solved the
+suggestions CSV; the drran/2dran session offsets (-0.52 and -0.25 g
+per article at byte-identical settings) sit on top of these estimates,
+so expect the actual weighings to come in a few tenths of a gram below
+printed_g_est if that flow effect persists at the round-4 filament
+point. Feeding all three rounds' weighings into a session-aware
+recalibration is still the standing to-do before round 5.
+
+Two things to check at the slicer, sharper than in round 3: the
+measured footprints (63 to 102 mm, key-seat overhang included) pack as
+a 3x3 grid of 275.4 x 306.5 mm inside the 290 x 310 mm usable area,
+about 3.5 mm of Y slack against round 3's 46 mm, so there is little
+room to nudge articles once supports are painted; and the three
+end-cap-flagged articles (38, 42, 45) plus the four sub-3.0 mm cable
+articles (37, 39, 41, 43) carry the printability warnings from the
+batch section above.
 
 ## Model interpretability (diagnostics)
 
