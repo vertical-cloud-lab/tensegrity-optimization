@@ -33,6 +33,7 @@
   "notes": [
     "totals include wipe tower, toolchange pads and brims; supports are painted on in the GUI afterwards, so production gcode will run longer and heavier",
     "model-estimated printed article mass sums to 182.3 g (9 x ~20.23 g); the slicer's main_used total of 195.9 g additionally carries brims and per-object auxiliaries",
-    "the committed round-3 project predates the H2D machine-state fixes and would fail this same headless check (it printed fine twice through the GUI)"
+    "the committed round-3 project predates the H2D machine-state fixes and would fail this same headless check (it printed fine twice through the GUI)",
+    "re-verified 2026-09-08 on the exact committed file at 9fba359 (regenerated from the recovered diff after the original push failed): v02.07.01.62, exit 0, all 9 trial objects sliced and none skipped, outside=false, prediction 60981 s, filament totals identical (168.86 g PLA / 73.65 g TPU); one non-fatal level-3 advisory from the vendor profile combination, bed_temperature_too_high_than_filament (textured PEI bed temp vs the TPU preset), same profiles the lab already prints with"
   ]
 }
