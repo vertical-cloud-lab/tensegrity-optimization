@@ -1,0 +1,782 @@
+[
+ {
+  "start": 0.0,
+  "end": 6.71,
+  "text": "This is a first run through of a draft for a manuscript as it's currently written."
+ },
+ {
+  "start": 7.75,
+  "end": 15.57,
+  "text": "I'll be giving verbal feedback and just noting things that should be changed for feedback for Claude."
+ },
+ {
+  "start": 18.67,
+  "end": 22.83,
+  "text": "Okay, I'm just going to start reading through and I'll make notes as I do."
+ },
+ {
+  "start": 44.43,
+  "end": 45.75,
+  "text": "We should probably double check."
+ },
+ {
+  "start": 47.28,
+  "end": 50.38,
+  "text": "I believe we're still at five continuous geometry variables."
+ },
+ {
+  "start": 53.28,
+  "end": 60.48,
+  "text": "I know that we've now added in a couple other things like I believe infill percent is now added."
+ },
+ {
+  "start": 60.78,
+  "end": 64.92,
+  "text": "We should just double check to make sure that this is correct in what we're doing."
+ },
+ {
+  "start": 79.52,
+  "end": 83.88,
+  "text": "I'm going to assume that this is just a way of saying we're using a fixed mess,"
+ },
+ {
+  "start": 83.88,
+  "end": 85.26,
+  "text": "which is mostly true."
+ },
+ {
+  "start": 101.14,
+  "end": 104.58,
+  "text": "Currently, we were at 101 drops."
+ },
+ {
+  "start": 105.55,
+  "end": 114.27,
+  "text": "However, we are adjusting that right now to 20 to do this."
+ },
+ {
+  "start": 116.18,
+  "end": 120.26,
+  "text": "So maybe we should adjust the wording for this so that it's 21 drops each."
+ },
+ {
+  "start": 121.92,
+  "end": 127.45,
+  "text": "As long as that doesn't sound too bad for the manuscript, that is what we're currently doing."
+ },
+ {
+  "start": 128.73,
+  "end": 132.89,
+  "text": "Maybe we should make a note to just double check that that data is accurate."
+ },
+ {
+  "start": 132.89,
+  "end": 137.77,
+  "text": "We should probably go through that more thoroughly than just having Claude do it."
+ },
+ {
+  "start": 162.25,
+  "end": 168.71,
+  "text": "We could probably put in parentheses transmissibility right here and use transmissibility in the future."
+ },
+ {
+  "start": 184.44,
+  "end": 187.44,
+  "text": "I'm going to guess this is what we're calling our proxy variable."
+ },
+ {
+  "start": 194.22,
+  "end": 199.46,
+  "text": "Again, still need to double check and ensure we're actually doing any simulation data."
+ },
+ {
+  "start": 199.66,
+  "end": 201.5,
+  "text": "It seems we've done a little bit."
+ },
+ {
+  "start": 202.16,
+  "end": 204.18,
+  "text": "A report on that would probably be good to pull up."
+ },
+ {
+  "start": 204.78,
+  "end": 206.2,
+  "text": "Maybe I'll do that really quick."
+ },
+ {
+  "start": 206.2,
+  "end": 208.82,
+  "text": "All right, I'm pulling that up now."
+ },
+ {
+  "start": 215.8,
+  "end": 220.2,
+  "text": "Yeah, just a note, probably replace this with transmissibility after putting that in earlier."
+ },
+ {
+  "start": 228.02,
+  "end": 233.81,
+  "text": "This will, of course, be updated as our data gets updated or as we add in more batches"
+ },
+ {
+  "start": 233.81,
+  "end": 235.85,
+  "text": "of Bayesian information data."
+ },
+ {
+  "start": 245.58,
+  "end": 247.2,
+  "text": "Never mind, I see how it's doing this."
+ },
+ {
+  "start": 247.3,
+  "end": 249.18,
+  "text": "It's running through exactly what we're doing."
+ },
+ {
+  "start": 251.04,
+  "end": 256.48,
+  "text": "So I'm going to guess we may run through or probably run through at least five batches of this,"
+ },
+ {
+  "start": 257.47,
+  "end": 260.59,
+  "text": "depending on if each batch continues to improve."
+ },
+ {
+  "start": 262.68,
+  "end": 266.08,
+  "text": "Maybe more, maybe we'll kind of hit a peak relatively quickly."
+ },
+ {
+  "start": 266.7,
+  "end": 273.03,
+  "text": "But if we do run through so many batches, we may not be able to discuss all five in"
+ },
+ {
+  "start": 273.03,
+  "end": 275.93,
+  "text": "order through here as this is going through the first two."
+ },
+ {
+  "start": 299.68,
+  "end": 300.68,
+  "text": "I like that last line."
+ },
+ {
+  "start": 301.36,
+  "end": 303.06,
+  "text": "That's very important."
+ },
+ {
+  "start": 306.14,
+  "end": 308.14,
+  "text": "Dominated hypervolume allowed."
+ },
+ {
+  "start": 343.31,
+  "end": 367.05,
+  "text": "Okay, let's skip over hypervolume for now."
+ },
+ {
+  "start": 367.86,
+  "end": 371.58,
+  "text": "I'm going to look into that a little bit more."
+ },
+ {
+  "start": 373.79,
+  "end": 375.93,
+  "text": "Professor order all looks good."
+ },
+ {
+  "start": 378.55,
+  "end": 383.31,
+  "text": "And I think these contributions there are good."
+ },
+ {
+  "start": 384.21,
+  "end": 385.29,
+  "text": "I see no typos."
+ },
+ {
+  "start": 386.13,
+  "end": 389.89,
+  "text": "I don't know if we want to put in our school emails right here."
+ },
+ {
+  "start": 389.99,
+  "end": 392.11,
+  "text": "Should probably double check that with Dr. Baird."
+ },
+ {
+  "start": 392.25,
+  "end": 393.07,
+  "text": "Make note of that."
+ },
+ {
+  "start": 423.37,
+  "end": 425.47,
+  "text": "So we've got all these wonderful"
+ },
+ {
+  "start": 426.91,
+  "end": 432.95,
+  "text": "way to go through probably at the end to make sure that all of these sources are good."
+ },
+ {
+  "start": 433.25,
+  "end": 437.71,
+  "text": "I'm going to skip over those for right now in this run through specifically and"
+ },
+ {
+  "start": 437.71,
+  "end": 439.03,
+  "text": "just focus on the text."
+ },
+ {
+  "start": 440.71,
+  "end": 443.53,
+  "text": "But that is something I tend to do in a future run through."
+ },
+ {
+  "start": 491.18,
+  "end": 492.22,
+  "text": "This is all true."
+ },
+ {
+  "start": 493.28,
+  "end": 493.9,
+  "text": "That's good."
+ },
+ {
+  "start": 502.93,
+  "end": 503.09,
+  "text": "Right."
+ },
+ {
+  "start": 503.35,
+  "end": 504.17,
+  "text": "That's all wonderful."
+ },
+ {
+  "start": 504.73,
+  "end": 552.07,
+  "text": "Yeah, I just want to make sure to in the future make note for me to check over these"
+ },
+ {
+  "start": 552.65,
+  "end": 553.95,
+  "text": "sources and examples."
+ },
+ {
+  "start": 580.04,
+  "end": 582.0,
+  "text": "This is also true."
+ },
+ {
+  "start": 582.4,
+  "end": 582.76,
+  "text": "That's good."
+ },
+ {
+  "start": 601.62,
+  "end": 606.1,
+  "text": "Something about the way that this part here is worded is"
+ },
+ {
+  "start": 607.41,
+  "end": 608.77,
+  "text": "awkward to me."
+ },
+ {
+  "start": 610.18,
+  "end": 613.4,
+  "text": "The gap this paper addresses is the combination."
+ },
+ {
+  "start": 614.95,
+  "end": 616.51,
+  "text": "And then Pajunet et al."
+ },
+ {
+  "start": 618.08,
+  "end": 622.36,
+  "text": "It listed print-intensegrity-inspired cells under seeing a fabrication condition with"
+ },
+ {
+  "start": 622.36,
+  "end": 623.5,
+  "text": "no optimization loop."
+ },
+ {
+  "start": 624.54,
+  "end": 626.34,
+  "text": "And Mo et al."
+ },
+ {
+  "start": 626.72,
+  "end": 627.24,
+  "text": "Close fillet."
+ },
+ {
+  "start": 628.51,
+  "end": 632.15,
+  "text": "So I see the point that this is getting across."
+ },
+ {
+  "start": 635.0,
+  "end": 637.4,
+  "text": "I feel like there's probably a better way to word this."
+ },
+ {
+  "start": 643.36,
+  "end": 647.78,
+  "text": "It might even just be adding in the gap this paper addresses is the combination"
+ },
+ {
+  "start": 649.88,
+  "end": 651.74,
+  "text": "of these two ideas."
+ },
+ {
+  "start": 653.01,
+  "end": 656.23,
+  "text": "Just to hit it a little more on the head."
+ },
+ {
+  "start": 660.94,
+  "end": 663.0,
+  "text": "Yeah, maybe we'll revisit that."
+ },
+ {
+  "start": 664.68,
+  "end": 671.22,
+  "text": "To be perfectly honest, I'm not really sure what this sentence is saying."
+ },
+ {
+  "start": 672.57,
+  "end": 680.37,
+  "text": "I don't know if this is saying that they're just placeholders for future data."
+ },
+ {
+  "start": 682.11,
+  "end": 685.09,
+  "text": "Assuming that this is talking about future data we're going to put into this,"
+ },
+ {
+  "start": 685.49,
+  "end": 687.76,
+  "text": "let's just remove this sentence here."
+ },
+ {
+  "start": 692.04,
+  "end": 694.16,
+  "text": "Yeah, we don't need it."
+ },
+ {
+  "start": 696.89,
+  "end": 702.09,
+  "text": "Flat hardware is an interesting use case for this."
+ },
+ {
+  "start": 704.09,
+  "end": 706.05,
+  "text": "I think that that fits."
+ },
+ {
+  "start": 706.05,
+  "end": 715.84,
+  "text": "I mean, the point of this intended statement is our emphasis that T3 prisms aren't the"
+ },
+ {
+  "start": 715.84,
+  "end": 716.6,
+  "text": "end of our testing."
+ },
+ {
+  "start": 716.76,
+  "end": 725.86,
+  "text": "This is just a stepping stone for future research in tensegrity-inspired objects optimizing"
+ },
+ {
+  "start": 725.86,
+  "end": 726.94,
+  "text": "and creating them."
+ },
+ {
+  "start": 728.27,
+  "end": 733.94,
+  "text": "So not the worst statement, but interesting."
+ },
+ {
+  "start": 735.23,
+  "end": 738.47,
+  "text": "I think we should be careful in this wording."
+ },
+ {
+  "start": 739.33,
+  "end": 751.26,
+  "text": "As when it says PLA compression members and TPU tension members, they can act as such"
+ },
+ {
+  "start": 751.26,
+  "end": 753.48,
+  "text": "under certain loading conditions."
+ },
+ {
+  "start": 754.86,
+  "end": 763.47,
+  "text": "However, the TPU does provide back some compressive value, and I find it unlikely."
+ },
+ {
+  "start": 765.51,
+  "end": 767.73,
+  "text": "I mean, when the object's in equilibrium, it's not pretty stressed."
+ },
+ {
+  "start": 768.25,
+  "end": 771.93,
+  "text": "So the TPU cables aren't in pure tension."
+ },
+ {
+  "start": 773.7,
+  "end": 779.32,
+  "text": "In fact, I'd say during a load, from the impacts I've seen most of the time, some cables will"
+ },
+ {
+  "start": 779.32,
+  "end": 780.86,
+  "text": "be stretching while others are buckling."
+ },
+ {
+  "start": 781.78,
+  "end": 786.03,
+  "text": "So they're really not pure tension elements."
+ },
+ {
+  "start": 786.85,
+  "end": 795.04,
+  "text": "We just want to be careful about the way we word this, just so it's not confusing"
+ },
+ {
+  "start": 795.04,
+  "end": 795.94,
+  "text": "in that matter."
+ },
+ {
+  "start": 798.42,
+  "end": 806.64,
+  "text": "We use TPU in place of tension elements on the traditional tensegrity topology."
+ },
+ {
+  "start": 806.82,
+  "end": 813.02,
+  "text": "And PLA, which is probably most of the time in compression, is probably a pretty fair"
+ },
+ {
+  "start": 813.02,
+  "end": 814.24,
+  "text": "statement for this."
+ },
+ {
+  "start": 815.38,
+  "end": 816.86,
+  "text": "Maybe for this part right here."
+ },
+ {
+  "start": 817.58,
+  "end": 826.78,
+  "text": "These parts do remain untested, but as an area of interest in future continued research."
+ },
+ {
+  "start": 828.02,
+  "end": 829.66,
+  "text": "We'll probably make note of that elsewhere, too."
+ },
+ {
+  "start": 829.82,
+  "end": 833.12,
+  "text": "But making a small note there probably wouldn't be too bad."
+ },
+ {
+  "start": 835.04,
+  "end": 836.65,
+  "text": "Couple notes here."
+ },
+ {
+  "start": 840.69,
+  "end": 841.95,
+  "text": "101 repeated drops."
+ },
+ {
+  "start": 844.1,
+  "end": 846.66,
+  "text": "Right now we're looking at doing 21 drops per specimen."
+ },
+ {
+  "start": 847.96,
+  "end": 851.06,
+  "text": "And again, we need to validate that and justify it."
+ },
+ {
+  "start": 851.24,
+  "end": 853.52,
+  "text": "But that's incorrect here."
+ },
+ {
+  "start": 854.38,
+  "end": 855.68,
+  "text": "Filter looks fine."
+ },
+ {
+  "start": 856.97,
+  "end": 865.86,
+  "text": "I'm skeptical as to whether or not we need to include that we are ensuring the"
+ },
+ {
+  "start": 866.58,
+  "end": 872.54,
+  "text": "basically this velocity change rate health gate, where we're just measuring the arrest"
+ },
+ {
+  "start": 872.54,
+  "end": 877.32,
+  "text": "velocity of the drop tar block to ensure that it's consistent."
+ },
+ {
+  "start": 882.46,
+  "end": 883.34,
+  "text": "It has changed."
+ },
+ {
+  "start": 886.51,
+  "end": 888.49,
+  "text": "Stabilizing more as we do more drops."
+ },
+ {
+  "start": 891.4,
+  "end": 898.75,
+  "text": "Let's make a note to discuss with Audrey and Jing Kuan if that is really necessary."
+ },
+ {
+  "start": 899.19,
+  "end": 902.91,
+  "text": "I'm leaning more towards omitting that, maybe adding that in as supplemental information."
+ },
+ {
+  "start": 904.61,
+  "end": 904.87,
+  "text": "But yeah."
+ },
+ {
+  "start": 906.62,
+  "end": 915.32,
+  "text": "Again, this filtered peak acceleration ratio, I'm pretty sure we can just call this transmissibility."
+ },
+ {
+  "start": 918.41,
+  "end": 922.07,
+  "text": "We could mention, explain what it is somewhere in the beginning of the paper,"
+ },
+ {
+  "start": 922.07,
+  "end": 924.15,
+  "text": "that it's a filtered peak acceleration ratio."
+ },
+ {
+  "start": 925.67,
+  "end": 927.67,
+  "text": "And then label it transmissibility."
+ },
+ {
+  "start": 928.23,
+  "end": 931.13,
+  "text": "And then call it transmissibility thereafter, I think would be good."
+ },
+ {
+  "start": 931.35,
+  "end": 936.17,
+  "text": "As long as that's not an improper, maybe Claude can give feedback on whether or not"
+ },
+ {
+  "start": 936.17,
+  "end": 939.43,
+  "text": "for some reason it's better to just keep calling it this."
+ },
+ {
+  "start": 939.69,
+  "end": 943.45,
+  "text": "But to me, that's just extra words in the bag that don't need to be there."
+ },
+ {
+  "start": 944.74,
+  "end": 945.74,
+  "text": "Gonna echo again."
+ },
+ {
+  "start": 948.02,
+  "end": 949.0,
+  "text": "I'm pretty sure."
+ },
+ {
+  "start": 950.44,
+  "end": 957.65,
+  "text": "So from what I've generated from, this is on issue 99 on tensor optimization,"
+ },
+ {
+  "start": 960.06,
+  "end": 965.41,
+  "text": "a comment made near the bottom reporting on the simulation data."
+ },
+ {
+  "start": 966.75,
+  "end": 973.01,
+  "text": "And to me, it looks like we've basically nixed it from the conversation we recently had"
+ },
+ {
+  "start": 974.7,
+  "end": 983.66,
+  "text": "in our recent meeting on Tuesday, September 1st, I believe it was."
+ },
+ {
+  "start": 984.93,
+  "end": 990.4,
+  "text": "And it seems like we've mainly nixed the simulation data for this."
+ },
+ {
+  "start": 991.29,
+  "end": 992.43,
+  "text": "And we may need to justify it."
+ },
+ {
+  "start": 992.69,
+  "end": 999.04,
+  "text": "But as of that, I think that means that this, again, we should double check this,"
+ },
+ {
+  "start": 999.04,
+  "end": 1001.46,
+  "text": "but I think that means this section here should be nixed."
+ },
+ {
+  "start": 1006.36,
+  "end": 1007.8,
+  "text": "Okay, this says it's planned."
+ },
+ {
+  "start": 1011.53,
+  "end": 1015.91,
+  "text": "If this is our contributions, I'm going to guess these are things we should have already done."
+ },
+ {
+  "start": 1018.28,
+  "end": 1023.56,
+  "text": "And stating something we plan to do as a contribution that we're giving"
+ },
+ {
+  "start": 1024.97,
+  "end": 1030.17,
+  "text": "seems to be presumptuous at best."
+ },
+ {
+  "start": 1032.63,
+  "end": 1037.17,
+  "text": "I'm going to guess that this is a placeholder for when we do intend to do this over the next"
+ },
+ {
+  "start": 1037.17,
+  "end": 1037.97,
+  "text": "couple weeks."
+ },
+ {
+  "start": 1038.25,
+  "end": 1044.24,
+  "text": "Let's just make note that anything in the paper, this is for Claude,"
+ },
+ {
+  "start": 1044.36,
+  "end": 1048.98,
+  "text": "anything in the paper should either be something that we've done and we have data to do."
+ },
+ {
+  "start": 1051.94,
+  "end": 1058.58,
+  "text": "And if it's a placeholder, it should probably just be highlighted and maybe highlight it in"
+ },
+ {
+  "start": 1058.58,
+  "end": 1063.78,
+  "text": "a different color so that it's clear to us that's a placeholder that we need to replace later."
+ },
+ {
+  "start": 1064.62,
+  "end": 1075.58,
+  "text": "Um, by the final draft of this paper, there should be nothing that makes a claim as to,"
+ },
+ {
+  "start": 1075.94,
+  "end": 1078.94,
+  "text": "like, our contribution is that we're going to do this."
+ },
+ {
+  "start": 1079.76,
+  "end": 1084.58,
+  "text": "That should just be saved for in the future, we plan to do this, if that makes sense."
+ },
+ {
+  "start": 1085.45,
+  "end": 1092.11,
+  "text": "And we should theoretically have explored this over the next two or three weeks"
+ },
+ {
+  "start": 1092.77,
+  "end": 1095.93,
+  "text": "and figured out whether or not this is something we want to include in the paper."
+ },
+ {
+  "start": 1096.53,
+  "end": 1104.24,
+  "text": "I already have a feeling that there's going to be some discrepancies in the way a true"
+ },
+ {
+  "start": 1104.24,
+  "end": 1109.79,
+  "text": "tensegrity structure would behave versus our tensegrity inspired structures even with"
+ },
+ {
+  "start": 1109.79,
+  "end": 1110.59,
+  "text": "the same topology."
+ },
+ {
+  "start": 1111.6,
+  "end": 1120.26,
+  "text": "Again, this part here, the planned quasi-static extension is reported separately as pending."
+ },
+ {
+  "start": 1121.64,
+  "end": 1129.33,
+  "text": "Maybe we just change that to quasi-static testing is planned as an extension for future"
+ },
+ {
+  "start": 1129.33,
+  "end": 1138.21,
+  "text": "work. Maybe we just save, yeah, it just to me sounds like this is AI reporting on"
+ },
+ {
+  "start": 1140.81,
+  "end": 1147.64,
+  "text": "what we've said we intend to do rather than us reporting it here, if that makes sense."
+ },
+ {
+  "start": 1149.27,
+  "end": 1152.63,
+  "text": "Yeah, see, it feels like it should be more intended for this,"
+ },
+ {
+  "start": 1152.97,
+  "end": 1156.63,
+  "text": "the rest of this sentence and paragraph going on right there."
+ }
+]

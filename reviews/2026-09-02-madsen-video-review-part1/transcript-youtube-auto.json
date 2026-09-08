@@ -1,0 +1,1206 @@
+[
+ {
+  "t": 0.0,
+  "text": "This is a first run through of a draft"
+ },
+ {
+  "t": 4.56,
+  "text": "for a manuscript as it's currently"
+ },
+ {
+  "t": 6.4,
+  "text": "written. Um, I'll be giving verbal"
+ },
+ {
+  "t": 8.72,
+  "text": "feedback and just noting things that"
+ },
+ {
+  "t": 12.96,
+  "text": "should be changed for feedback for"
+ },
+ {
+  "t": 15.2,
+  "text": "Claude."
+ },
+ {
+  "t": 17.36,
+  "text": "Um,"
+ },
+ {
+  "t": 18.96,
+  "text": "okay. I'm just going to start reading"
+ },
+ {
+  "t": 20.4,
+  "text": "through and I'll make notes as I do."
+ },
+ {
+  "t": 44.32,
+  "text": "We should probably double check."
+ },
+ {
+  "t": 47.6,
+  "text": "I believe we're still at five continuous"
+ },
+ {
+  "t": 49.44,
+  "text": "geometry variables."
+ },
+ {
+  "t": 51.44,
+  "text": "Um"
+ },
+ {
+  "t": 53.6,
+  "text": "I know that we've now added in A couple"
+ },
+ {
+  "t": 56.64,
+  "text": "other things like I believe infill"
+ },
+ {
+  "t": 59.44,
+  "text": "percent is now added. We should just"
+ },
+ {
+  "t": 61.28,
+  "text": "double check to make sure that this is"
+ },
+ {
+  "t": 63.52,
+  "text": "correct in what we're doing."
+ },
+ {
+  "t": 79.44,
+  "text": "I'm going to assume that this is just a"
+ },
+ {
+  "t": 81.2,
+  "text": "way of saying we're using a fixed mass,"
+ },
+ {
+  "t": 84.16,
+  "text": "which is mostly true."
+ },
+ {
+  "t": 100.88,
+  "text": "Currently we we were at 101 drops."
+ },
+ {
+  "t": 105.76,
+  "text": "However, we are"
+ },
+ {
+  "t": 109.44,
+  "text": "adjusting that right now to 20 to"
+ },
+ {
+  "t": 113.44,
+  "text": "do this. Um,"
+ },
+ {
+  "t": 116.4,
+  "text": "so maybe we should adjust the wording"
+ },
+ {
+  "t": 117.68,
+  "text": "for this so that it's it's 21 drops"
+ },
+ {
+  "t": 119.92,
+  "text": "each."
+ },
+ {
+  "t": 122.0,
+  "text": "As long as that doesn't sound too bad"
+ },
+ {
+  "t": 123.84,
+  "text": "for uh the manuscript, that is what"
+ },
+ {
+  "t": 126.72,
+  "text": "we're currently doing."
+ },
+ {
+  "t": 128.64,
+  "text": "Maybe we should make a note to uh just"
+ },
+ {
+  "t": 130.72,
+  "text": "double check that that data is accurate."
+ },
+ {
+  "t": 132.96,
+  "text": "We should probably go through that more"
+ },
+ {
+  "t": 135.12,
+  "text": "thoroughly than just having Claude do"
+ },
+ {
+  "t": 137.04,
+  "text": "it."
+ },
+ {
+  "t": 162.64,
+  "text": "We could probably put in parentheses"
+ },
+ {
+  "t": 165.68,
+  "text": "uh transmissibility right here and use"
+ },
+ {
+  "t": 167.44,
+  "text": "transmissibility in the future."
+ },
+ {
+  "t": 184.4,
+  "text": "I'm going to guess this is what we're"
+ },
+ {
+  "t": 185.84,
+  "text": "calling our proxy variable"
+ },
+ {
+  "t": 192.32,
+  "text": "screen."
+ },
+ {
+  "t": 194.16,
+  "text": "Again, still need to doublech check and"
+ },
+ {
+  "t": 196.72,
+  "text": "ensure we're actually doing any"
+ },
+ {
+  "t": 198.64,
+  "text": "simulation data. It seems we've done a"
+ },
+ {
+  "t": 201.04,
+  "text": "little bit. Uh a report on that would"
+ },
+ {
+  "t": 203.12,
+  "text": "probably be good to pull up. Maybe I'll"
+ },
+ {
+  "t": 205.44,
+  "text": "do that really quick. All right, I'm"
+ },
+ {
+  "t": 207.76,
+  "text": "pulling that up now."
+ },
+ {
+  "t": 216.0,
+  "text": "Yeah, just a note probably replace this"
+ },
+ {
+  "t": 217.68,
+  "text": "with transmissibility after putting that"
+ },
+ {
+  "t": 219.6,
+  "text": "in earlier."
+ },
+ {
+  "t": 221.76,
+  "text": "Um,"
+ },
+ {
+  "t": 228.24,
+  "text": "this will of course be updated as our"
+ },
+ {
+  "t": 229.92,
+  "text": "data gets updated or as we add in more"
+ },
+ {
+  "t": 233.52,
+  "text": "batches of Asian optimization data."
+ },
+ {
+  "t": 245.2,
+  "text": "Okay, never mind. I see how it's doing"
+ },
+ {
+  "t": 246.96,
+  "text": "this. It's running through exactly what"
+ },
+ {
+  "t": 248.64,
+  "text": "we're doing."
+ },
+ {
+  "t": 250.96,
+  "text": "So, I'm going to guess we may run"
+ },
+ {
+  "t": 253.12,
+  "text": "through we'll probably run through at"
+ },
+ {
+  "t": 254.88,
+  "text": "least five batches of this"
+ },
+ {
+  "t": 257.52,
+  "text": "um depending on if each batch continues"
+ },
+ {
+  "t": 260.0,
+  "text": "to improve."
+ },
+ {
+  "t": 262.0,
+  "text": "Um maybe more. Maybe we'll kind of hit a"
+ },
+ {
+  "t": 265.04,
+  "text": "peak relatively quickly. But if we do"
+ },
+ {
+  "t": 268.16,
+  "text": "run through so many batches, we may not"
+ },
+ {
+  "t": 269.76,
+  "text": "be able to"
+ },
+ {
+  "t": 271.76,
+  "text": "discuss all five in order through here"
+ },
+ {
+  "t": 274.32,
+  "text": "as this is going through the first two."
+ },
+ {
+  "t": 299.6,
+  "text": "I like that last line. That's very"
+ },
+ {
+  "t": 302.48,
+  "text": "important."
+ },
+ {
+  "t": 304.32,
+  "text": "Um,"
+ },
+ {
+  "t": 305.92,
+  "text": "dominated hyperv volume."
+ },
+ {
+  "t": 310.4,
+  "text": "Let's go up."
+ },
+ {
+  "t": 343.52,
+  "text": "Okay."
+ },
+ {
+  "t": 364.64,
+  "text": "Well, going to skip over hypervol for"
+ },
+ {
+  "t": 366.8,
+  "text": "now. I'm gonna"
+ },
+ {
+  "t": 369.68,
+  "text": "look that into that a little bit more."
+ },
+ {
+  "t": 373.92,
+  "text": "Professor order all looks good."
+ },
+ {
+  "t": 378.24,
+  "text": "Um I think these"
+ },
+ {
+  "t": 380.8,
+  "text": "contributions"
+ },
+ {
+  "t": 382.32,
+  "text": "there are good. I see no typos. I don't"
+ },
+ {
+  "t": 386.4,
+  "text": "know if we want to put in our school"
+ },
+ {
+  "t": 388.24,
+  "text": "emails right here. Should probably"
+ },
+ {
+  "t": 390.64,
+  "text": "double check that with Dr. Bear to make"
+ },
+ {
+  "t": 392.48,
+  "text": "note of that."
+ },
+ {
+  "t": 423.44,
+  "text": "So, we've got all these wonderful"
+ },
+ {
+  "t": 426.96,
+  "text": "We're going to go through probably at"
+ },
+ {
+  "t": 428.08,
+  "text": "the end to make sure that"
+ },
+ {
+  "t": 431.04,
+  "text": "all of these sources are good. I'm going"
+ },
+ {
+  "t": 433.44,
+  "text": "to skip over those for right now in this"
+ },
+ {
+  "t": 436.24,
+  "text": "run through specifically and just focus"
+ },
+ {
+  "t": 438.24,
+  "text": "on the text,"
+ },
+ {
+  "t": 440.96,
+  "text": "but that is something I tend to do in a"
+ },
+ {
+  "t": 442.88,
+  "text": "future run through."
+ },
+ {
+  "t": 491.2,
+  "text": "This is all true. That's good."
+ },
+ {
+  "t": 502.8,
+  "text": "Great. That's all wonderful. Okay."
+ },
+ {
+  "t": 510.56,
+  "text": "Almost."
+ },
+ {
+  "t": 546.56,
+  "text": "Yeah, I just want to make sure to in the"
+ },
+ {
+  "t": 548.72,
+  "text": "future make a note for me to check over"
+ },
+ {
+  "t": 551.76,
+  "text": "these sources and examples."
+ },
+ {
+  "t": 580.32,
+  "text": "is also true. It's good."
+ },
+ {
+  "t": 601.68,
+  "text": "Something about the way that this part"
+ },
+ {
+  "t": 603.36,
+  "text": "here is worded is"
+ },
+ {
+  "t": 607.76,
+  "text": "awkward to me."
+ },
+ {
+  "t": 610.08,
+  "text": "The gap this paper addresses is the"
+ },
+ {
+  "t": 612.8,
+  "text": "combination."
+ },
+ {
+  "t": 614.8,
+  "text": "And then pun at all."
+ },
+ {
+  "t": 618.0,
+  "text": "It listed printed segity inspired cells"
+ },
+ {
+  "t": 620.72,
+  "text": "under seeing a fabrication condition"
+ },
+ {
+  "t": 622.08,
+  "text": "with no optimization loop and mo at all"
+ },
+ {
+  "t": 626.64,
+  "text": "close fillet."
+ },
+ {
+  "t": 628.56,
+  "text": "So I see the point that this is getting"
+ },
+ {
+  "t": 631.52,
+  "text": "across. Um"
+ },
+ {
+  "t": 635.36,
+  "text": "I feel like there's probably a better"
+ },
+ {
+  "t": 636.56,
+  "text": "way to word this."
+ },
+ {
+  "t": 643.28,
+  "text": "It might even just be adding in the gap"
+ },
+ {
+  "t": 645.84,
+  "text": "this paper addresses is the combination"
+ },
+ {
+  "t": 650.0,
+  "text": "of these two ideas"
+ },
+ {
+  "t": 653.28,
+  "text": "just to hit it a little more on the the"
+ },
+ {
+  "t": 656.0,
+  "text": "head."
+ },
+ {
+  "t": 657.84,
+  "text": "Um"
+ },
+ {
+  "t": 660.88,
+  "text": "yeah, maybe we'll revisit that."
+ },
+ {
+  "t": 664.56,
+  "text": "To be perfectly honest, I'm"
+ },
+ {
+  "t": 669.44,
+  "text": "Not really sure what this sentence is"
+ },
+ {
+  "t": 671.04,
+  "text": "saying."
+ },
+ {
+  "t": 672.8,
+  "text": "I don't know if this is"
+ },
+ {
+  "t": 675.52,
+  "text": "saying that. Okay, they're just"
+ },
+ {
+  "t": 678.4,
+  "text": "placeholders for future data. Um,"
+ },
+ {
+  "t": 682.16,
+  "text": "assuming that this is talking about"
+ },
+ {
+  "t": 683.44,
+  "text": "future data we're going to put into"
+ },
+ {
+  "t": 684.88,
+  "text": "this. Let's just remove this sentence"
+ },
+ {
+  "t": 687.44,
+  "text": "here. Um,"
+ },
+ {
+  "t": 692.08,
+  "text": "it's Yeah, we don't we don't need it."
+ },
+ {
+  "t": 696.8,
+  "text": "flight hardware is"
+ },
+ {
+  "t": 699.52,
+  "text": "an interesting uh use case for this. Um"
+ },
+ {
+  "t": 704.08,
+  "text": "I think that that that fits. I mean the"
+ },
+ {
+  "t": 706.64,
+  "text": "the intended"
+ },
+ {
+  "t": 709.44,
+  "text": "the point of this intended statement is"
+ },
+ {
+  "t": 711.44,
+  "text": "our our emphasis that uh"
+ },
+ {
+  "t": 714.8,
+  "text": "T3 prisms aren't the end of our testing"
+ },
+ {
+  "t": 716.72,
+  "text": "that this is just a stepping stone for"
+ },
+ {
+  "t": 719.12,
+  "text": "future"
+ },
+ {
+  "t": 721.6,
+  "text": "research in tenseity inspired objects"
+ },
+ {
+  "t": 725.6,
+  "text": "optimizing and creating them. So"
+ },
+ {
+  "t": 730.48,
+  "text": "not the worst statement but interesting."
+ },
+ {
+  "t": 735.2,
+  "text": "I think we should be careful in this"
+ },
+ {
+  "t": 738.08,
+  "text": "wording as when it says PLA compression"
+ },
+ {
+  "t": 741.44,
+  "text": "members and TPU tension members"
+ },
+ {
+  "t": 745.28,
+  "text": "um"
+ },
+ {
+  "t": 747.84,
+  "text": "they can act as [snorts] such under"
+ },
+ {
+  "t": 752.08,
+  "text": "certain loading conditions."
+ },
+ {
+  "t": 754.96,
+  "text": "However, the TPU does provide back"
+ },
+ {
+  "t": 760.88,
+  "text": "some compressive value and I find it"
+ },
+ {
+  "t": 763.04,
+  "text": "unlikely"
+ },
+ {
+  "t": 765.28,
+  "text": "I mean, when the object's in"
+ },
+ {
+  "t": 766.4,
+  "text": "equilibrium, it's not pre-stressed. So,"
+ },
+ {
+  "t": 768.96,
+  "text": "the TPU cables are never aren't in pure"
+ },
+ {
+  "t": 771.6,
+  "text": "tension."
+ },
+ {
+  "t": 774.16,
+  "text": "In fact, I'd say during a load, um, from"
+ },
+ {
+  "t": 776.88,
+  "text": "the impacts I've seen, most of the time,"
+ },
+ {
+  "t": 778.64,
+  "text": "some cables will be stretching while"
+ },
+ {
+  "t": 780.08,
+  "text": "others are buckling."
+ },
+ {
+  "t": 781.92,
+  "text": "So, they're really not pure"
+ },
+ {
+  "t": 785.04,
+  "text": "tension elements. Um, we just want to"
+ },
+ {
+  "t": 787.76,
+  "text": "just want to be careful about the way we"
+ },
+ {
+  "t": 789.6,
+  "text": "word this. Um"
+ },
+ {
+  "t": 793.52,
+  "text": "just so it's not confusing in that"
+ },
+ {
+  "t": 795.6,
+  "text": "matter."
+ },
+ {
+  "t": 797.28,
+  "text": "Um we use TPU in place of"
+ },
+ {
+  "t": 802.32,
+  "text": "tension elements on the tensity on on"
+ },
+ {
+  "t": 805.04,
+  "text": "the traditional tensity topology and PLA"
+ },
+ {
+  "t": 809.2,
+  "text": "which is probably most of the time in in"
+ },
+ {
+  "t": 811.36,
+  "text": "compression is probably a pretty fair"
+ },
+ {
+  "t": 813.12,
+  "text": "statement for this maybe for this part"
+ },
+ {
+  "t": 816.24,
+  "text": "right here. These parts do remain"
+ },
+ {
+  "t": 818.48,
+  "text": "untested."
+ },
+ {
+  "t": 820.48,
+  "text": "But as an area of interest in in future"
+ },
+ {
+  "t": 825.76,
+  "text": "continued research,"
+ },
+ {
+  "t": 827.92,
+  "text": "we'll probably make note of that"
+ },
+ {
+  "t": 829.04,
+  "text": "elsewhere, too. But making a small note"
+ },
+ {
+  "t": 831.6,
+  "text": "there probably wouldn't be too bad."
+ },
+ {
+  "t": 835.68,
+  "text": "Couple notes here."
+ },
+ {
+  "t": 838.0,
+  "text": "Um"
+ },
+ {
+  "t": 840.32,
+  "text": "101 repeated drops."
+ },
+ {
+  "t": 844.08,
+  "text": "Right now, we're looking at doing 21"
+ },
+ {
+  "t": 845.84,
+  "text": "drops per specimen. And again, we need"
+ },
+ {
+  "t": 848.56,
+  "text": "to validate that and justify it, but"
+ },
+ {
+  "t": 852.4,
+  "text": "that's incorrect here. Filter looks"
+ },
+ {
+  "t": 855.28,
+  "text": "fine."
+ },
+ {
+  "t": 857.04,
+  "text": "I'm skeptical as to whether or not we"
+ },
+ {
+  "t": 859.28,
+  "text": "need to"
+ },
+ {
+  "t": 861.76,
+  "text": "include that we are ensuring the"
+ },
+ {
+  "t": 866.8,
+  "text": "basically this velocity change rate"
+ },
+ {
+  "t": 868.48,
+  "text": "health gate where we're just measuring"
+ },
+ {
+  "t": 871.36,
+  "text": "the arrest velocity of the drop block to"
+ },
+ {
+  "t": 876.08,
+  "text": "ensure that it's consistent."
+ },
+ {
+  "t": 879.68,
+  "text": "Um,"
+ },
+ {
+  "t": 882.32,
+  "text": "it has changed"
+ },
+ {
+  "t": 886.48,
+  "text": "stabilizing more as we do more drops."
+ },
+ {
+  "t": 891.36,
+  "text": "Let's make a note to discuss with"
+ },
+ {
+  "t": 894.72,
+  "text": "Audrey and Jen Kuan if that is really"
+ },
+ {
+  "t": 898.32,
+  "text": "necessary. I'm leaning more towards"
+ },
+ {
+  "t": 900.56,
+  "text": "omitting that, maybe adding that in as"
+ },
+ {
+  "t": 902.0,
+  "text": "supplemental information."
+ },
+ {
+  "t": 904.56,
+  "text": "But yeah,"
+ },
+ {
+  "t": 906.8,
+  "text": "again this filtered peak acceleration"
+ },
+ {
+  "t": 909.2,
+  "text": "ratio,"
+ },
+ {
+  "t": 912.72,
+  "text": "I'm pretty sure we can just call this"
+ },
+ {
+  "t": 914.64,
+  "text": "transmissibility."
+ },
+ {
+  "t": 917.12,
+  "text": "Um,"
+ },
+ {
+  "t": 918.64,
+  "text": "we could we could mention explain what"
+ },
+ {
+  "t": 920.4,
+  "text": "it is somewhere in the beginning of the"
+ },
+ {
+  "t": 921.92,
+  "text": "paper that it's a filtered peak"
+ },
+ {
+  "t": 923.28,
+  "text": "acceleration ratio"
+ },
+ {
+  "t": 925.6,
+  "text": "and then label it transmissibility and"
+ },
+ {
+  "t": 928.32,
+  "text": "then call it transmissibility"
+ },
+ {
+  "t": 929.44,
+  "text": "thereafter. I think would be good as"
+ },
+ {
+  "t": 931.6,
+  "text": "long as that's not an improper. Maybe"
+ },
+ {
+  "t": 934.08,
+  "text": "Claude can give feedback on whether or"
+ },
+ {
+  "t": 935.68,
+  "text": "not for some reason it it's better to"
+ },
+ {
+  "t": 938.48,
+  "text": "just keep calling it this, but to me"
+ },
+ {
+  "t": 940.08,
+  "text": "that's just extra words in the bag that"
+ },
+ {
+  "t": 942.72,
+  "text": "don't need to be there. Going to echo"
+ },
+ {
+  "t": 945.28,
+  "text": "again."
+ },
+ {
+  "t": 948.0,
+  "text": "I'm pretty sure"
+ },
+ {
+  "t": 950.32,
+  "text": "so from what I've generated from"
+ },
+ {
+  "t": 954.08,
+  "text": "this is on issue 99 on tens optimization"
+ },
+ {
+  "t": 958.88,
+  "text": "on"
+ },
+ {
+  "t": 960.4,
+  "text": "a comment made near the bottom uh"
+ },
+ {
+  "t": 963.12,
+  "text": "reporting on the simulation data"
+ },
+ {
+  "t": 966.88,
+  "text": "and to me it looks like we've we've"
+ },
+ {
+  "t": 969.68,
+  "text": "basically nixed it and from the"
+ },
+ {
+  "t": 971.52,
+  "text": "conversation we recently had"
+ },
+ {
+  "t": 974.32,
+  "text": "in"
+ },
+ {
+  "t": 976.24,
+  "text": "our recent meeting on"
+ },
+ {
+  "t": 979.44,
+  "text": "Tuesday, September 1st,"
+ },
+ {
+  "t": 982.8,
+  "text": "I believe it was. And it seems like"
+ },
+ {
+  "t": 985.44,
+  "text": "we've mainly nixed the simulation data"
+ },
+ {
+  "t": 989.92,
+  "text": "for this. We may need to justify it, but"
+ },
+ {
+  "t": 993.04,
+  "text": "as of that, I think that means that this"
+ },
+ {
+  "t": 997.84,
+  "text": "again, we should double check this, but"
+ },
+ {
+  "t": 999.2,
+  "text": "I think that means this section here"
+ },
+ {
+  "t": 1000.64,
+  "text": "should be next."
+ },
+ {
+  "t": 1006.16,
+  "text": "Okay, this says it's planned."
+ },
+ {
+  "t": 1011.52,
+  "text": "If this is our contributions, I'm going"
+ },
+ {
+  "t": 1013.36,
+  "text": "to guess these are things we should have"
+ },
+ {
+  "t": 1015.36,
+  "text": "already done."
+ },
+ {
+  "t": 1017.36,
+  "text": "And"
+ },
+ {
+  "t": 1019.2,
+  "text": "stating something we plan to do as a"
+ },
+ {
+  "t": 1022.08,
+  "text": "contribution that we're giving"
+ },
+ {
+  "t": 1025.12,
+  "text": "seems to be"
+ },
+ {
+  "t": 1028.32,
+  "text": "presumptuous at best."
+ },
+ {
+  "t": 1032.64,
+  "text": "I'm going to guess that this is a"
+ },
+ {
+  "t": 1034.64,
+  "text": "placeholder for when we do intend to do"
+ },
+ {
+  "t": 1036.48,
+  "text": "this over the next couple weeks. Let's"
+ },
+ {
+  "t": 1038.48,
+  "text": "just make note that um"
+ },
+ {
+  "t": 1042.32,
+  "text": "anything in the paper, this is for"
+ },
+ {
+  "t": 1044.0,
+  "text": "Claude, anything in the paper should"
+ },
+ {
+  "t": 1045.52,
+  "text": "either be something that we've done and"
+ },
+ {
+  "t": 1047.44,
+  "text": "we have data to do."
+ },
+ {
+  "t": 1050.16,
+  "text": "Um,"
+ },
+ {
+  "t": 1052.08,
+  "text": "and if it's a placeholder,"
+ },
+ {
+  "t": 1054.96,
+  "text": "it should probably just be highlighted"
+ },
+ {
+  "t": 1056.4,
+  "text": "in maybe highlight it in a different"
+ },
+ {
+  "t": 1059.04,
+  "text": "color so that it's clear to us that's a"
+ },
+ {
+  "t": 1061.6,
+  "text": "placeholder that we need to replace"
+ },
+ {
+  "t": 1063.44,
+  "text": "later. Um,"
+ },
+ {
+  "t": 1066.56,
+  "text": "by the final draft of this paper, there"
+ },
+ {
+  "t": 1068.48,
+  "text": "should be nothing"
+ },
+ {
+  "t": 1071.2,
+  "text": "that"
+ },
+ {
+  "t": 1074.08,
+  "text": "makes a claim as to like our"
+ },
+ {
+  "t": 1076.4,
+  "text": "contribution is that we're going to do"
+ },
+ {
+  "t": 1078.56,
+  "text": "this. [gasps]"
+ },
+ {
+  "t": 1080.08,
+  "text": "That should just be safe for in the"
+ },
+ {
+  "t": 1081.76,
+  "text": "future we plan to do this, if that makes"
+ },
+ {
+  "t": 1084.32,
+  "text": "sense. And we should theoretically have"
+ },
+ {
+  "t": 1089.12,
+  "text": "explored this over the next two or three"
+ },
+ {
+  "t": 1091.76,
+  "text": "weeks and figured out whether or not"
+ },
+ {
+  "t": 1094.08,
+  "text": "this is something we won't include in"
+ },
+ {
+  "t": 1095.52,
+  "text": "the paper. I already have a feeling that"
+ },
+ {
+  "t": 1097.6,
+  "text": "the there's going to be some"
+ },
+ {
+  "t": 1102.72,
+  "text": "discrepancies in the way a true tenseity"
+ },
+ {
+  "t": 1104.88,
+  "text": "structure would behave versus our"
+ },
+ {
+  "t": 1107.52,
+  "text": "tensity inspired structures even with"
+ },
+ {
+  "t": 1109.84,
+  "text": "the same topology. Again, this part here"
+ },
+ {
+  "t": 1115.68,
+  "text": "The planned quasi static extension is"
+ },
+ {
+  "t": 1118.88,
+  "text": "reported separately as pending."
+ },
+ {
+  "t": 1121.6,
+  "text": "Maybe we just change that to"
+ },
+ {
+  "t": 1124.72,
+  "text": "quasi static testing is planned as an"
+ },
+ {
+  "t": 1128.24,
+  "text": "extension for future work. Maybe we just"
+ },
+ {
+  "t": 1131.28,
+  "text": "save. Yeah, it it just to me sounds like"
+ },
+ {
+  "t": 1134.0,
+  "text": "this is AI reporting on"
+ },
+ {
+  "t": 1141.04,
+  "text": "what we've said we intend to do rather"
+ },
+ {
+  "t": 1143.36,
+  "text": "than us"
+ },
+ {
+  "t": 1145.84,
+  "text": "reporting it here. If that makes sense."
+ },
+ {
+  "t": 1149.2,
+  "text": "Yeah. See, it feels like it should be"
+ },
+ {
+  "t": 1150.72,
+  "text": "more intended for this the rest of this"
+ },
+ {
+  "t": 1154.16,
+  "text": "sentence and paragraph going on right"
+ },
+ {
+  "t": 1156.48,
+  "text": "there."
+ }
+]
