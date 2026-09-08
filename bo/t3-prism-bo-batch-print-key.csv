@@ -1,0 +1,13 @@
+print_id,specimen,plate,role,mass_g,rh_pct_at_print,defects,R_print_mm,H_print_mm,twist_deg,strut_d_print_mm,cable_d_print_mm,joint_d_print_mm
+9hhbkp,0,5,official,21.62,8,none,27.299,76.157,59.7792,6.698,4.580,5.948
+6lhxfy,1,8,official,18.50,8,slight misprint near top of one PLA strut; slight indent on one top TPU tendon,28.722,68.084,77.4080,9.243,2.551,5.951
+autv5r,2,4,official,22.04,8,minor misalignment of TPU tendons near top,36.436,93.502,47.6915,6.614,3.669,6.545
+ebdna8,3,3,official,19.61,unknown,two strings peeled off two bottom TPU tendons during support removal,21.703,62.251,65.1213,8.794,4.029,6.047
+nvxsrv,4,6,official,20.66,8,ring of misalignment near top of each diagonal tendon (post-pause artifact),22.718,85.675,70.4432,7.637,3.696,5.759
+6nheas,5,7,official,21.73,8,two TPU strings came off two bottom tendons (support-related),37.885,65.990,52.9940,6.739,4.232,7.306
+1zm8rv,6,2,official,18.50,8,stringing along diagonal tendons,27.877,74.722,62.1055,9.035,2.708,5.423
+ajhby6,7,9,official,20.53,8,single line of filament pulled from bottom struts,26.771,66.531,44.4573,7.630,4.391,6.224
+dea4ls,8,1,official (per 3mf plate label; issue #98 comment says bag26v),22.29,unknown,stringing on tendons; residual PLA on tendon,30.171,104.864,63.7624,6.445,3.324,7.277
+bag26v,8,1,good (per 3mf plate label; issue #98 comment says official),21.42,unknown,some stringing on tendon,30.171,104.864,63.7624,6.445,3.324,7.277
+ghmj4y,8,1,bad-cables,22.10,unknown,inconsistent tendon cross section near top,30.171,104.864,63.7624,6.445,3.324,7.277
+bpx68c,S0,,official (S0 reference; not in Sobol batch),20.23,unknown,none major (20.15 g during 2026-08-18 testing),28.846,80.769,60.0000,6.923,3.462,8.077
