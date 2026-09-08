@@ -712,14 +712,42 @@ printed_g_est if that flow effect persists at the round-4 filament
 point. Feeding all three rounds' weighings into a session-aware
 recalibration is still the standing to-do before round 5.
 
-Two things to check at the slicer, sharper than in round 3: the
-measured footprints (63 to 102 mm, key-seat overhang included) pack as
-a 3x3 grid of 275.4 x 306.5 mm inside the 290 x 310 mm usable area,
-about 3.5 mm of Y slack against round 3's 46 mm, so there is little
-room to nudge articles once supports are painted; and the three
-end-cap-flagged articles (38, 42, 45) plus the four sub-3.0 mm cable
-articles (37, 39, 41, 43) carry the printability warnings from the
-batch section above.
+The plate packs by measured per-axis mesh extents (a change made this
+round; square bounding-circle cells wasted ~20 mm of x): a 3x3 grid of
+255.4 x 275.9 mm inside the 290 x 310 mm usable area, the whole grid
+kept inside both nozzles' reach (the H2D's right/TPU nozzle cannot
+print left of x = 25 and the left/PLA nozzle cannot print right of
+x = 325, per the machine profile's `extruder_printable_area`), and the
+wipe tower pinned at (287, 110), width 10 mm, in the strip right of
+the grid. The printability warnings from the batch section stand: end
+caps below 20.1 mm on trials 38/42/45, cables below the 3.0 mm TPU
+bridging floor on 37/39/41/43.
+
+New verification this round: the committed project slices headlessly
+to completion with the lab's own slicer version (Bambu Studio
+v02.07.01.62 CLI, the setup validated on the issue #108 batching
+branch): exit 0, one plate, estimated 16 h 57 m, 168.9 g PLA + 73.6 g
+TPU including tower, purge and brims
+(`t3-prism-bo-round4-slice-check.json` is the record). That is the
+gcode-level check flagged as "worth doing" since round 3, and it
+caught four real problems on the way in, each now fixed in the
+generator: the assembler's auto-arrange had rotated the whole plate
+~90 degrees so every article sat outside the frame the layout was
+computed in (fixed by forcing the identity build-item transform); 1.4
+mm of the leftmost article's TPU was beyond the right nozzle's reach
+(fixed by the measured reach shift); the wipe tower defaulted to
+x = 15, deep inside the TPU-unreachable zone (fixed by the explicit
+tower placement, sized so the ~19 mm toolchange wipe pad right of the
+tower body also stays inside the left nozzle's reach); and the
+assembled project carried single-extruder flush metadata plus a
+Manual filament-to-nozzle map that the H2D CLI rejects (fixed by
+`_patch_h2d_state`, which writes the dual-nozzle machine state and the
+`Auto For Flush` grouping every file the lab has actually printed
+uses). Two caveats: the lab's production gcode will differ because
+supports still get painted on (re-slicing in the GUI as always), and
+the committed round-3 project predates these fixes, so it would fail
+the same headless check even though it printed fine twice through the
+GUI; it stays byte-stable as the record of what was printed.
 
 ## Model interpretability (diagnostics)
 

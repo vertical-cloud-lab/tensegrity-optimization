@@ -94,6 +94,23 @@ PLATE_Y = 320.0  # mm
 PLATE_MARGIN = 5.0
 PRIME_TOWER_RESERVE_X = 50.0  # +X strip kept clear for the IDEX prime tower
 
+# Per-extruder reach on the H2D (machine profile `extruder_printable_area`:
+# left/PLA nozzle x 0..325, right/TPU nozzle x 25..350). The first headless
+# slice of the round-4 plate failed its printability check because 1.4 mm of
+# the leftmost article's TPU cables sat below x = 25 and the wipe tower had
+# defaulted to x = 15; both constraints are enforced here since then.
+EXTRUDER2_MIN_X = 25.0   # right (TPU) nozzle cannot reach left of this
+EXTRUDER1_MAX_X = 325.0  # left (PLA) nozzle cannot reach right of this
+REACH_CLEARANCE = 5.0    # margin kept beyond the reach boundary
+# Narrow 2-filament tower, parked right of the grid. Two measured facts
+# shape this: the slicer's conflict check inflates the tower footprint ("we
+# use more conservative parameters for it during upload"; a 5 mm gap to the
+# nearest article failed it), and every toolchange draws a CP_TOOLCHANGE_WIPE
+# pad ~14 mm right of the tower body, which must also stay inside the left
+# nozzle's reach.
+WIPE_TOWER_WIDTH = 10.0
+TOOLCHANGE_PAD_X = 23.0  # pad reaches body_right + 18.7 mm measured in gcode, plus margin
+
 DEFAULT_DESIGNS = BO_DIR / "t3-prism-bo-suggestions-round3.csv"
 DEFAULT_PREFIX = "t3-prism-bo-round3"
 
@@ -270,24 +287,29 @@ def printed_grams_from_rendered(model, params: dict, scale: float,
 
 
 # ---- Plate layout (adapted from bo/t3_prism_sobol_batch.py) -----------------
-def plan_plate_layout(footprints: list[float]) -> dict:
-    """Variable-cell rows x cols layout: sort footprints descending, fill the
-    grid column-major so the largest specimens share a column and a row, size
-    each column/row to its largest occupant, 6 mm air gap, pack centred in
-    the usable (non-prime-tower) area."""
+def plan_plate_layout(extents: list[tuple[float, float]]) -> dict:
+    """Variable-cell rows x cols layout: sort by largest extent descending,
+    fill the grid column-major so the largest specimens share a column and a
+    row, size each column to its widest occupant and each row to its tallest,
+    6 mm air gap, pack centred in the usable (non-prime-tower) area.
+
+    ``extents`` are measured per-axis mesh sizes (width_x, height_y), not
+    bounding-circle diameters: on the round-4 plate the square cells wasted
+    ~20 mm of x that the wipe tower and the per-nozzle reach margins needed.
+    """
     air_gap = 6.0
-    n = len(footprints)
+    n = len(extents)
     rows = math.ceil(math.sqrt(n))
     cols = math.ceil(n / rows)
-    order = sorted(range(n), key=lambda i: -footprints[i])
+    order = sorted(range(n), key=lambda i: -max(extents[i]))
     cell_of: dict[int, tuple[int, int]] = {}
     for rank, i in enumerate(order):
         cell_of[i] = (rank % rows, rank // rows)
     col_w = [0.0] * cols
     row_h = [0.0] * rows
     for i, (r, c) in cell_of.items():
-        col_w[c] = max(col_w[c], footprints[i])
-        row_h[r] = max(row_h[r], footprints[i])
+        col_w[c] = max(col_w[c], extents[i][0])
+        row_h[r] = max(row_h[r], extents[i][1])
     total_w = sum(col_w) + air_gap * (cols - 1)
     total_h = sum(row_h) + air_gap * (rows - 1)
     usable_x = PLATE_X - 2 * PLATE_MARGIN - PRIME_TOWER_RESERVE_X
@@ -579,10 +601,15 @@ def _split_assembled_into_objects(
     if existing_item_match is None:
         raise RuntimeError(f"{proj_3mf}: no <item> in <build>")
     existing_item = existing_item_match.group(0)
-    transform_match = re.search(r'transform="([^"]*)"', existing_item)
     printable_match = re.search(r'printable="([^"]*)"', existing_item)
-    transform_attr = (f' transform="{transform_match.group(1)}"'
-                      if transform_match else "")
+    # Identity, NOT the transform --assemble emitted: the assembler auto-
+    # arranges the composite (the round-4 plate came back rotated ~90 deg and
+    # translated), which silently moves the articles out of the frame every
+    # plate coordinate in this script (reach zones, wipe tower, manifest
+    # plate_x/y, previews) is computed in. The component transforms already
+    # restore each part to its laid-out plate position, so identity here
+    # means plate coordinates == layout coordinates.
+    transform_attr = ' transform="1 0 0 0 1 0 0 0 1 0 0 0"'
     printable_attr = (f' printable="{printable_match.group(1)}"'
                       if printable_match else ' printable="1"')
     new_items: list[str] = []
@@ -600,9 +627,52 @@ def _split_assembled_into_objects(
             zout.writestr(info, contents[info.filename])
 
 
+def _patch_h2d_state(proj_3mf: Path, wipe_tower_x: float,
+                     wipe_tower_y: float) -> None:
+    """Write the H2D dual-nozzle machine state and a legal wipe-tower position
+    into the assembled project's ``project_settings.config``.
+
+    The CLI ``--assemble`` path leaves these at single-extruder defaults
+    (empty ``extruder_nozzle_stats``, a 4-filament one-extruder flush matrix,
+    tower at x = 15), which the GUI reconciles from the connected printer but
+    a headless slice rejects in sequence: "No valid nozzle found", "Flush
+    volumes matrix do not match to the correct size", then the
+    unprintable-area check on the tower. Values describe the lab's machine
+    (right nozzle is the TPU High Flow unit from issue #96); the flush matrix
+    is the trivial 2-filament per-extruder one, which never fires anyway
+    because each nozzle carries exactly one filament."""
+    import zipfile
+    CFG = "Metadata/project_settings.config"
+    with zipfile.ZipFile(proj_3mf, "r") as zin:
+        infos = zin.infolist()
+        contents = {info.filename: zin.read(info.filename) for info in infos}
+    cfg = json.loads(contents[CFG].decode())
+    cfg["extruder_ams_count"] = ["1#0|4#1", "1#1|4#0"]
+    cfg["extruder_nozzle_stats"] = ["Standard#1", "TPU High Flow#1"]
+    cfg["nozzle_volume_type"] = ["Standard", "TPU High Flow"]
+    # The filament-to-physical-nozzle grouping every file the lab has printed
+    # uses (and the only one the headless printability check passes): let the
+    # slicer group for flush; the physical PLA-left / TPU-right assignment
+    # happens at the printer. "Manual" + ['1', '2'] trips the multi-extruder
+    # area check even with every toolpath measured inside both zones.
+    cfg["filament_map_mode"] = "Auto For Flush"
+    cfg["filament_map"] = ["1", "1"]
+    cfg["flush_volumes_matrix"] = ["0", "280", "280", "0"] * 2
+    cfg["flush_volumes_vector"] = ["140", "140"] * 2
+    cfg["flush_multiplier"] = ["1", "1"]
+    cfg["wipe_tower_x"] = [f"{wipe_tower_x:.1f}"]
+    cfg["wipe_tower_y"] = [f"{wipe_tower_y:.1f}"]
+    cfg["prime_tower_width"] = f"{WIPE_TOWER_WIDTH:g}"
+    contents[CFG] = json.dumps(cfg, indent=4).encode()
+    with zipfile.ZipFile(proj_3mf, "w", zipfile.ZIP_DEFLATED) as zout:
+        for info in infos:
+            zout.writestr(info, contents[info.filename])
+
+
 def build_mm_3mf(pairs: list[tuple[Path, Path]], object_names: list[str],
                  out_3mf: Path, filament_settings: dict,
-                 part_settings: dict[str, dict[str, str]]) -> None:
+                 part_settings: dict[str, dict[str, str]],
+                 wipe_tower_xy: tuple[float, float]) -> None:
     """Assemble per-specimen (struts, cables) STL pairs into a Bambu H2D MM
     project with the batch's filament settings and per-part infill overrides.
 
@@ -679,6 +749,9 @@ def build_mm_3mf(pairs: list[tuple[Path, Path]], object_names: list[str],
     _split_assembled_into_objects(proj_outdir / proj_3mf, pairs_names,
                                   object_names, part_settings)
 
+    print("==> Patch H2D dual-nozzle state + wipe tower position")
+    _patch_h2d_state(proj_outdir / proj_3mf, *wipe_tower_xy)
+
     out_3mf.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(proj_outdir / proj_3mf, out_3mf)
 
@@ -696,6 +769,10 @@ def main(argv: list[str] | None = None) -> int:
                         help="parallel OpenSCAD render workers (default 4)")
     parser.add_argument("--skip-mm-3mf", action="store_true",
                         help="skip the BambuStudio CLI MM project assembly")
+    parser.add_argument("--reuse-renders", action="store_true",
+                        help="reuse per-part solids already in the scratch dir "
+                             "instead of re-rendering (layout/assembly-only "
+                             "reruns; the solids are still re-measured)")
     args = parser.parse_args(argv)
 
     prefix = args.out_prefix
@@ -724,16 +801,20 @@ def main(argv: list[str] | None = None) -> int:
         i, d = i_design
         struts = solve_dir / f"{prefix}-t{d['label']}-struts.stl"
         cables = solve_dir / f"{prefix}-t{d['label']}-cables.stl"
-        print(f"==> trial {d['label']}: render at scale {d['scale']:.6f}")
-        render_specimen("struts", struts, d["params"], d["scale"])
-        render_specimen("cables", cables, d["params"], d["scale"])
+        if args.reuse_renders and struts.exists() and cables.exists():
+            print(f"==> trial {d['label']}: reusing rendered solids")
+        else:
+            print(f"==> trial {d['label']}: render at scale {d['scale']:.6f}")
+            render_specimen("struts", struts, d["params"], d["scale"])
+            render_specimen("cables", cables, d["params"], d["scale"])
         vs, smin, smax = stl_volume_bbox(struts)
         vc, cmin, cmax = stl_volume_bbox(cables)
         bb = ([min(a, b) for a, b in zip(smin, cmin)],
               [max(a, b) for a, b in zip(smax, cmax)])
         return {"struts_stl": struts, "cables_stl": cables,
                 "pla_g": RHO_PLA * vs, "tpu_g": RHO_TPU * vc,
-                "bbox_min": bb[0], "bbox_max": bb[1]}
+                "bbox_min": bb[0], "bbox_max": bb[1],
+                "cables_bbox_min": cmin, "struts_bbox_max": smax}
 
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
         results = list(pool.map(render_one, enumerate(designs)))
@@ -760,23 +841,64 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     # ---- Plate layout from measured footprints -------------------------------
-    footprints = [
-        2.0 * max(abs(v) for v in (res["bbox_min"][0], res["bbox_max"][0],
-                                   res["bbox_min"][1], res["bbox_max"][1]))
-        for res in results]
-    layout = plan_plate_layout(footprints)
+    extents = [(res["bbox_max"][0] - res["bbox_min"][0],
+                res["bbox_max"][1] - res["bbox_min"][1]) for res in results]
+    layout = plan_plate_layout(extents)
+
+    # Translation that centres each mesh's measured bbox in its cell (the
+    # meshes are not symmetric about their local origin).
+    mesh_c = [((res["bbox_min"][0] + res["bbox_max"][0]) / 2.0,
+               (res["bbox_min"][1] + res["bbox_max"][1]) / 2.0)
+              for res in results]
+    trans = [(cx - mcx, cy - mcy)
+             for (cx, cy), (mcx, mcy) in zip(layout["centres"], mesh_c)]
+
+    # ---- Per-nozzle reach (H2D IDEX) -----------------------------------------
+    # Shift the whole grid right until every TPU mesh is reachable by the
+    # right nozzle, then refuse to continue if PLA thereby leaves the left
+    # nozzle's reach. Uses measured mesh extents, so the shift is the minimum
+    # that actually helps.
+    tpu_min_x = min(tx + res["cables_bbox_min"][0]
+                    for res, (tx, _) in zip(results, trans))
+    dx = max(0.0, EXTRUDER2_MIN_X + REACH_CLEARANCE - tpu_min_x)
+    if dx:
+        trans = [(tx + dx, ty) for tx, ty in trans]
+        print(f"==> Reach shift: grid moved +{dx:.1f} mm in x so all TPU sits "
+              f">= {EXTRUDER2_MIN_X + REACH_CLEARANCE:.1f} mm "
+              f"(right-nozzle reach starts at {EXTRUDER2_MIN_X:.0f})")
+    pla_max_x = max(tx + res["struts_bbox_max"][0]
+                    for res, (tx, _) in zip(results, trans))
+    if pla_max_x > EXTRUDER1_MAX_X - REACH_CLEARANCE:
+        print(f"ERROR: PLA reaches x = {pla_max_x:.1f} mm, beyond the left "
+              f"nozzle's {EXTRUDER1_MAX_X:.0f} mm reach; not writing outputs.",
+              file=sys.stderr)
+        return 1
+    # Wipe tower: far right of the grid, inside both nozzles' reach with the
+    # toolchange wipe pad included.
+    wipe_tower_x = (EXTRUDER1_MAX_X - REACH_CLEARANCE - TOOLCHANGE_PAD_X
+                    - WIPE_TOWER_WIDTH)
+    wipe_tower_y = 110.0
+    if wipe_tower_x < pla_max_x + 10.0:
+        print(f"WARNING: wipe tower at x = {wipe_tower_x:.1f} mm is only "
+              f"{wipe_tower_x - pla_max_x:.1f} mm from the nearest PLA; the "
+              f"slicer's conservative conflict check may refuse it",
+              file=sys.stderr)
+    print(f"==> Wipe tower at ({wipe_tower_x:.1f}, {wipe_tower_y:.1f}), "
+          f"width {WIPE_TOWER_WIDTH:.0f} mm (grid PLA ends at "
+          f"{pla_max_x:.1f} mm; left-nozzle reach ends at "
+          f"{EXTRUDER1_MAX_X:.0f})")
 
     per_spec_dir = BO_DIR / "per-specimen-stls"
     per_spec_dir.mkdir(exist_ok=True)
     pairs: list[tuple[Path, Path]] = []
-    for d, res, (cx, cy) in zip(designs, results, layout["centres"]):
+    for d, res, (tx, ty), (mcx, mcy) in zip(designs, results, trans, mesh_c):
         cz = -res["bbox_min"][2]  # lowest feature (key-seat underside) -> bed
         spec_struts = per_spec_dir / res["struts_stl"].name
         spec_cables = per_spec_dir / res["cables_stl"].name
-        stl_translate(res["struts_stl"], spec_struts, cx, cy, cz)
-        stl_translate(res["cables_stl"], spec_cables, cx, cy, cz)
+        stl_translate(res["struts_stl"], spec_struts, tx, ty, cz)
+        stl_translate(res["cables_stl"], spec_cables, tx, ty, cz)
         pairs.append((spec_struts, spec_cables))
-        res["plate_x_mm"], res["plate_y_mm"] = cx, cy
+        res["plate_x_mm"], res["plate_y_mm"] = tx + mcx, ty + mcy
         res["footprint_meas_mm"] = 2.0 * max(
             abs(v) for v in (res["bbox_min"][0], res["bbox_max"][0],
                              res["bbox_min"][1], res["bbox_max"][1]))
@@ -833,7 +955,13 @@ def main(argv: list[str] | None = None) -> int:
                  "total_w_mm": layout["total_w"],
                  "total_h_mm": layout["total_h"]},
         "plate": {"x_mm": PLATE_X, "y_mm": PLATE_Y, "margin_mm": PLATE_MARGIN,
-                  "prime_tower_reserve_x_mm": PRIME_TOWER_RESERVE_X},
+                  "prime_tower_reserve_x_mm": PRIME_TOWER_RESERVE_X,
+                  "reach_shift_x_mm": dx,
+                  "extruder_reach_x_mm": [0.0, EXTRUDER1_MAX_X,
+                                          EXTRUDER2_MIN_X, PLATE_X],
+                  "wipe_tower_x_mm": wipe_tower_x,
+                  "wipe_tower_y_mm": wipe_tower_y,
+                  "wipe_tower_width_mm": WIPE_TOWER_WIDTH},
         "profiles": {"machine": MACHINE_LEAF, "process": PROCESS_LEAF,
                      "filament_1_pla": PLA_LEAF, "filament_2_tpu": TPU_LEAF},
         "specimens": [
@@ -885,7 +1013,7 @@ def main(argv: list[str] | None = None) -> int:
                 "sparse_infill_density": f"{d['tpu_infill_pct']:.0f}%"}
         object_names = [f"Trial {d['label']}" for d in designs]
         build_mm_3mf(pairs, object_names, mm_3mf_path, filament_settings,
-                     part_settings)
+                     part_settings, (wipe_tower_x, wipe_tower_y))
 
     print("Done.")
     print(f"  Manifest      : {manifest_path}")

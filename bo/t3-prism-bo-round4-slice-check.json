@@ -1,0 +1,38 @@
+{
+  "checked": "2026-09-08",
+  "slicer": "BambuStudio v02.07.01.62 AppImage CLI (headless, --slice 0 --debug 1), the version that produced the as-printed Sobol batch; recipe from the issue #108 batching branch",
+  "project": "bo/slices/t3-prism-bo-round4.H2D-MM-PLAstruts-TPUcables.3mf",
+  "exit_code": 0,
+  "plates": 1,
+  "model_time": "16h 56m 16s",
+  "total_time": "16h 56m 35s",
+  "total_filament_g": {
+    "pla": 168.86,
+    "tpu": 73.65
+  },
+  "main_used_g": {
+    "pla": 141.07,
+    "tpu": 54.85
+  },
+  "feature_type_times_s": {
+    "Bridge": 311,
+    "Brim": 48,
+    "Custom": 35,
+    "Flush": 1914,
+    "Gap infill": 1184,
+    "Inner wall": 7294,
+    "Internal solid infill": 4059,
+    "Outer wall": 12355,
+    "Overhang wall": 532,
+    "Prime tower": 17294,
+    "Sparse infill": 2029,
+    "Top surface": 123,
+    "Travel": 13853,
+    "Undefined": 13838
+  },
+  "notes": [
+    "totals include wipe tower, toolchange pads and brims; supports are painted on in the GUI afterwards, so production gcode will run longer and heavier",
+    "model-estimated printed article mass sums to 182.3 g (9 x ~20.23 g); the slicer's main_used total of 195.9 g additionally carries brims and per-object auxiliaries",
+    "the committed round-3 project predates the H2D machine-state fixes and would fail this same headless check (it printed fine twice through the GUI)"
+  ]
+}
