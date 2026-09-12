@@ -13,6 +13,17 @@ round-2 batch (cf. the r2d2 naming and the 1–9 model numbers in
 @timothy-commins's video note); **the drran → design-parameter key is
 not in the repo yet** and is needed before any BO hand-off.
 
+**Re-test update (09-12):** @ctrhjk confirms the `2dran1`–`2dran9`
+batch (09-05/08/09, `../2dran-checkin/`) re-tested **these same nine
+structures** under re-randomized labels — and neither extreme survived
+the re-seat. Under *any* label pairing, the 1.2513 article (`drran7`)
+re-measured ≤ 1.0900 (best-fit 1.0791, broadband collapsed T1000
+2.94 → 1.47) and the 0.9804 article (`drran8`) re-measured ≥ 1.0109.
+Treat both extremes as seat-contaminated single-seat values, not
+article properties. Full quantification and the standing between-seat
+replication rule: `../2dran-checkin/README.md` ("What the same-articles
+confirmation settles") and the repo `CLAUDE.md`.
+
 - Box share `kkhmvnj9ni19b57dryk3gdroqrp5uf0b`, one subfolder per
   session (ids in each `raw/drran<n>/box-ids.json` manifest). Raw
   captures (~1.7 GB, 180 CSVs) stay on Box; the manifests re-fetch them
@@ -60,14 +71,20 @@ not in the repo yet** and is needed before any BO hand-off.
    because the cancellation was imperfect. Its mean is provisional;
    last-10 mean = 0.9838. It is the batch's only attenuator either way
    (next best 1.033). The other eight sessions are clean —
-   r2d2c2-style drift did not recur.
+   r2d2c2-style drift did not recur. *Re-test update (09-12): the
+   attenuation did not survive — the same article re-measured ≥ 1.0109
+   in the 2dran batch.*
 2. **`drran7` transmits at T180 = 1.251** — the strongest amplifier on
    program record (prior worst ~1.19–1.22), with broadband T (CFC-1000)
    ≈ 2.94 and top-vertex raw peaks ~2.2 kG (16 % FS). Stable across all
    20 drops (CV 0.77 %, no drift), so it is characteristic of the
    article, not a loose-mount rattle — but worth a physical check
    (mount seat, strut/tendon integrity) and a look at its 3 slo-mo
-   clips before treating it as a design result.
+   clips before treating it as a design result. *Re-test correction
+   (09-12): the same article re-measured ≤ 1.0900 in the 2dran batch —
+   the stability inference above was wrong. A stably wrong wax seat
+   passes the drift watch; within-session stability does not certify a
+   seat.*
 3. **`drran1` has the largest specimen hop ever recorded**: landing at
    +69.1 ms (verified as a real quiet-then-burst event, tight across
    drops at 68.5–69.6 ms), e_rebound 0.063 vs the prior record 0.050

@@ -30,6 +30,29 @@ must not be forgotten between threads.
   any new analysis script, and state the watch outcome — flagged or clean —
   in every findings writeup.
 
+### Between-seat replication (standing instruction, PR #86 · 2026-09-12)
+
+The drift watch only catches *within-session* instability — a stably
+wrong wax seat passes it. Confirmed by the drran → 2dran re-test of the
+same nine articles (@ctrhjk unblinding, 09-12): `drran7` held
+T180 = 1.251 at CV 0.77 % for 20 drops with no drift, then re-measured
+≤ 1.090 after re-seating (best-fit 1.079; broadband T1000 2.94 → 1.47);
+`drran8`'s 0.980 attenuation re-measured ≥ 1.011. Same-article
+seat-to-seat shifts are heavy-tailed: median ~+1 %, five of nine within
+±2.2 %, tails +3–5 % and −13.8 %
+(`data/drop-tests/2dran-checkin/README.md`).
+
+- Any single-seating T that would drive a decision (batch extreme,
+  claimed attenuator, BO hand-off) needs confirmation on an independent
+  mount re-seat before it is treated as an article property. Positive
+  control: `6lhxfy` 0.893 reproduced to 0.13 % across a day + re-seat —
+  real attenuation does reproduce.
+- Advisory seat gauge: broadband ratio T1000/T180 ≳ 1.15 (healthy
+  ≈ 1.00–1.07 on the 1/2 in mat) has accompanied every large
+  same-article shift on record (`drran7` 2.35, `2dran2` 1.15). Standing
+  prediction (09-12): `2dran1` (ratio 1.37) reads high at 1.079 and
+  should come down on re-seat.
+
 ### Other conventions (pointers, not duplicates)
 
 - Per-capture pipeline + capture settings: `analyze_capture` in

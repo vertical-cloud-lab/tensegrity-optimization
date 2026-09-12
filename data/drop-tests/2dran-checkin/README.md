@@ -13,6 +13,20 @@ correspondence is in the repo**; the labels are evidently re-randomized
 between batches (see the comparison below), so the key is needed before
 any BO hand-off.
 
+**Unblinding status (09-12, @ctrhjk on PR #86):** (1) the `drran` and
+`2dran` sets are **the same nine structures** — the conditional
+readings in the comparison below are thereby upgraded to measured
+same-article facts (see "What the same-articles confirmation settles");
+(2) nothing unusual was observed while `2dran6` was dropped (anomaly
+item 1); (3) this batch's clips were filmed at random drops, so no
+clip ↔ recorded-drop pairing is possible here — future sessions will
+film drops 1, 10 and 20, which pairs clips to captures
+deterministically via sidecar `CreationDate` ↔ TP4 `EventTime`. Still
+pending: the per-label key (drranN / 2dranN → article/design ID), the
+BO blocker; and an explicit confirmation that "identical structures"
+means the same physical prints re-tested (not fresh re-prints of the
+same nine designs), which the seat-artifact reading below assumes.
+
 - Box share `kkhmvnj9ni19b57dryk3gdroqrp5uf0b`, one subfolder per
   session (ids in each `raw/2dran<n>/box-ids.json` manifest). Raw
   captures (~1.7 GB, 180 CSVs) stay on Box; the manifests re-fetch them
@@ -32,6 +46,11 @@ any BO hand-off.
   names C0219–C0245, and the XML ↔ MP4 pairing can't be confirmed
   without the MP4s' embedded metadata. C0233 is only 600 frames
   (~0.63 s) — likely an aborted clip. MP4s not analyzed this pass.
+  *09-12: @ctrhjk confirms the clips were recorded at random drops —
+  consistent with the timestamp finding; treat this batch's clips as
+  qualitative documentation only. Future SOP: film drops 1, 10 and 20
+  per session (endorsed — drop 1 is the only record of the discarded
+  warm-up transient, and drops 1/20 bracket the drift-watch window).*
 - Analysis: the standing campaign pipeline
   (`scripts/analysis/drop_test_campaign_analysis.py`, tail baseline,
   2-drop warm-up discard, standing T-drift watch) on the nine-session
@@ -79,6 +98,9 @@ worst channel ≤ 3.5 % of full scale everywhere except `2dran1`'s CH4
    `2dran6`'s number matters downstream, re-seat the mount and re-run;
    it is top-3-amplifier either way. The other eight sessions are clean
    (|e2e| ≤ 0.76 %) — r2d2c2-style drift did not recur in them.
+   *Update 09-12: @ctrhjk confirms nothing unusual was observed during
+   the session — the instability is latent (wax-seat), not a handling
+   incident; the provisional status stands unchanged.*
 2. **Neither drran extreme recurs.** No 2dran session comes near
    `drran7`'s T180 = 1.251 (batch max here: 1.090), and none attenuates
    (batch min 1.011 vs `drran8`'s 0.980). See the comparison below.
@@ -112,11 +134,76 @@ worst channel ≤ 3.5 % of full scale everywhere except `2dran1`'s CH4
   `drran8↔2dran8` (each batch's lowest-T article, 0.980 → 1.011),
   `drran7↔2dran1` (each batch's broadband/CH4-hot article — but hugely
   milder now: T1000 2.94 → 1.47, T180 1.251 → 1.079, CH4 16 → 6.2 %
-  FS). If these are the same nine articles, the `drran7` extreme was
-  substantially a seating/mount artifact that a re-seat halved — which
-  was exactly the caveat in the drran README — and conversely the
-  attenuation of `drran8` (0.980) did not survive its re-seat either.
+  FS). @ctrhjk confirmed on 09-12 that these **are** the same nine
+  structures — see the subsection below.
 - **Batch level**: median T180 1.053 vs 1.037 (+1.6 %, inside the known
   session-to-session re-seat envelope), inputs within 1.3 %, Δv within
   2.4 %. Within-session precision matches (median CV ≈ 0.25 %).
 - Full numbers: `figures/batch_comparison.json`.
+
+### What the same-articles confirmation settles (09-12)
+
+@ctrhjk: *"drran sets and 2dran sets are identical structures."* Taking
+that as the same nine physical articles re-tested (it answers the
+either/or in the check-in's question 1), a true bijection exists even
+though the low-hop pairings stay degenerate, and two bounds hold under
+**any** pairing:
+
+- **The article that measured T180 = 1.2513 (`drran7`) re-measured
+  ≤ 1.0900** (the 2dran max) — at least **−12.9 %**. The program-record
+  amplifier was substantially a seat artifact; its broadband signature
+  collapsed with it (best-fit partner `2dran1`: T1000 2.94 → 1.47, CH4
+  raw 16 → 6.2 % FS).
+- **The article that measured 0.9804 (`drran8`) re-measured ≥ 1.0109**
+  (the 2dran min) — at least **+3.1 %**. Round 2's only attenuation
+  measurement did not survive its re-seat: **as of now, round 2 has no
+  reproducibly attenuating article** (all nine ≥ 1.011 in the latest
+  seating).
+- A third, near-assignment-free fact: `2dran2` (1.0900) is either the
+  ex-`drran7` article (−12.9 %) or rose ≥ +4.1 % from ≤ 1.0471 — so at
+  least one *mid-field* article also moved ≥ 4 %.
+
+Best-fit paired T180 changes (pairings with runner-up margin ≲ 0.2 z
+are indicative only):
+
+| best-fit pair | T180 drran → 2dran | Δ |
+|---|---|--:|
+| `drran7 → 2dran1` (anchor) | 1.2513 → 1.0791 | **−13.8 %** |
+| `drran3 → 2dran2` (degenerate) | 1.0389 → 1.0900 | **+4.9 %** |
+| `drran9 → 2dran6` (degenerate) | 1.0425 → 1.0859 † | +4.2 % † |
+| `drran8 → 2dran8` (anchor) | 0.9804 → 1.0109 | +3.1 % |
+| `drran5 → 2dran5` | 1.0373 → 1.0604 | +2.2 % |
+| `drran1 → 2dran9` (anchor) | 1.0326 → 1.0451 | +1.2 % |
+| `drran2 → 2dran4` | 1.0345 → 1.0433 | +0.9 % |
+| `drran6 → 2dran3` (degenerate) | 1.0471 → 1.0533 | +0.6 % |
+| `drran4 → 2dran7` | 1.0344 → 1.0286 | −0.6 % |
+
+† `2dran6` is the drift-flagged provisional mean; vs its late-session
+level (~1.06) the change is ~+1.7 %.
+
+Same-article seat-to-seat noise is therefore **heavy-tailed**: median
++1.2 %, five of nine within the known ±2.2 % re-seat envelope, tails at
++3–5 % and −13.8 %. Rank order is only partly preserved (Spearman
+ρ ≈ 0.75 under best-fit — an upper bound, since the pairing was fitted
+partly on T180). Two corollaries, promoted to standing conventions in
+the repo `CLAUDE.md`:
+
+1. **Within-session stability does not certify a seat.** `drran7` held
+   1.251 at CV 0.77 % with no drift — it passed the T-drift watch —
+   and was still wrong by ~14 %. Single-seating extremes (or any
+   decision-driving T) need an independent re-seat confirmation before
+   they count as article properties. Positive control: `6lhxfy`'s
+   0.893 reproduced to 0.13 % across a day + re-seat — real
+   attenuation does reproduce.
+2. **Advisory seat gauge — broadband ratio T1000/T180** (healthy
+   ≈ 1.00–1.07 on this mat): every large same-article shift on record
+   carried ≥ 1.15 in at least one seating (`drran7` 2.35, `2dran2`
+   1.15). Standing prediction, on record before any re-test:
+   **`2dran1` (ratio 1.37, this batch's CH4-hot session) reads high at
+   1.079 and should come down on its next re-seat.**
+
+Once the per-label key lands, these two batches become a 9-article ×
+2-seat reproducibility dataset — exactly the seat-noise model the BO
+needs. The asks stand: the key for both batches (drranN → ID and
+2dranN → ID yields the cross-batch mapping for free), and confirmation
+that the articles are the same physical prints (not re-prints).
