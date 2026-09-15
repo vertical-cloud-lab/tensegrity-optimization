@@ -781,6 +781,27 @@ def load_round4_training_data(results_path=ROUND4_RESULTS,
                                      include_process=include_process)
 
 
+# Round-3 reprint (2dran) sessions. The round-3 plate was printed twice by
+# ctrhjk (print 1 = drran, log 09-02; print 2 = 2dran, log 09-05), so
+# 2dranN is a second physical article of the same design as drranN: same
+# trial, same plate file, its own weighed mass. The nine sessions
+# (2026-09-05/08/09, 20 drops each, snapshotted from the PR #86 branch's
+# 2dran-checkin at a10d890) are ingested as nine SEPARATE trials, not
+# pooled with drran: repeated designs are exactly how Ax infers the
+# noise floor the per-drop SEM understates (print-to-print + re-seat +
+# rig-state variation), so no mean/sd is computed across the pair here.
+# The key and predictions tables are shared with round 3 because geometry
+# and process come from the trial, which is identical between prints.
+ROUND3_REPRINT_RESULTS = BO_DIR / "t3-prism-bo-round3-reprint-drop-results.csv"
+
+
+def load_round3_reprint_training_data(results_path=ROUND3_REPRINT_RESULTS,
+                                      include_process=True):
+    """Measured 2dran articles as (X, y) in the fit space."""
+    return load_round3_training_data(results_path=results_path,
+                                     include_process=include_process)
+
+
 # ---- figure styling (presentation-ready, per PR #102 review) -------------
 # Matches the hand-made reference posted on PR #102 (comment 5373145690):
 # no legend box (series are named by leader-line callouts in the plot area),
@@ -1088,6 +1109,46 @@ def observed_frame(y_train, labels):
     )
 
 
+# print-ID prefixes that mark a reprint of an earlier batch's design:
+# 2dranN is the second print of drranN's design (round-3 plate, printed twice)
+REPRINT_PREFIX = {"2dran": "drran"}
+
+
+def repeat_group(print_id):
+    """Design-level group key: reprints of one design share their key."""
+    for prefix, base in REPRINT_PREFIX.items():
+        if print_id.startswith(prefix):
+            return base + print_id[len(prefix):]
+    return print_id
+
+
+def aggregate_repeats(observed):
+    """Collapse repeated prints of one design to their mean, for display.
+
+    The fit deliberately carries every session as its own Ax trial so the
+    model infers the between-print noise from the repeats; one point per
+    design is only the readable convention for the Pareto panel (PR #102).
+    A repeated design plots at the mean of its prints and is labeled
+    'drranN x2'. Frames without repeats pass through unchanged. Apply after
+    any per-gram division: each print divides by its own weighed mass, so
+    the mean of the per-gram values is the per-gram of the pair.
+    """
+    groups = [repeat_group(p) for p in observed["print_id"]]
+    if len(set(groups)) == len(groups):
+        return observed
+    frame = observed.copy()
+    frame["_group"] = groups
+    num_cols = [c for c in frame.columns if c not in ("print_id", "_group")]
+    agg = frame.groupby("_group", sort=False)
+    out = agg[num_cols].mean().reset_index()
+    out["n_prints"] = agg.size().to_numpy()
+    out["print_id"] = [
+        g if n == 1 else f"{g} x{n}"
+        for g, n in zip(out["_group"], out["n_prints"])
+    ]
+    return out.drop(columns=["_group", "n_prints"])
+
+
 def pareto_mask(xs, ys):
     """Non-dominated mask for a two-objective minimization problem."""
     xs, ys = np.asarray(xs, float), np.asarray(ys, float)
@@ -1212,6 +1273,16 @@ def render_objective_figure(observed, suggestions, round_number,
                 + prior_obstacles
             ),
         )
+
+        if observed["print_id"].str.contains(" x", regex=False).any():
+            fig.text(
+                0.5, -0.035,
+                "xN: design printed N times (the drran/2dran reprint pairs), "
+                "plotted at the mean of its prints.\n"
+                "The model is fit on every session separately, so it infers "
+                "the between-print noise from the repeats.",
+                ha="center", fontsize=14, color=LABEL_GRAY,
+            )
 
         fig_dir = BO_DIR / "figures"
         fig_dir.mkdir(exist_ok=True)
@@ -2330,11 +2401,13 @@ def main(argv=None):
     X1, y1, labels1, masses1, pending = load_training_data(args.results, args.design)
     X2, y2, labels2, masses2, trial_of = load_round2_training_data()
     X3, y3, labels3, masses3, trial_of3 = load_round3_training_data()
+    X3r, y3r, labels3r, masses3r, trial_of3r = load_round3_reprint_training_data()
     X4, y4, labels4, masses4, trial_of4 = load_round4_training_data()
-    X_train = X1 + X2 + X3 + X4
-    y_train = y1 + y2 + y3 + y4
-    labels = labels1 + labels2 + labels3 + labels4
-    masses = masses1 + masses2 + masses3 + masses4
+    # 2dran between drran and corny: session order (09-05/09 vs 09-12/14)
+    X_train = X1 + X2 + X3 + X3r + X4
+    y_train = y1 + y2 + y3 + y3r + y4
+    labels = labels1 + labels2 + labels3 + labels3r + labels4
+    masses = masses1 + masses2 + masses3 + masses3r + masses4
 
     if args.per_gram and not (args.plot_only or args.measured_round2
                               or args.measured_round3
@@ -2454,7 +2527,8 @@ def main(argv=None):
             # suggestions-only run number)
             prior, prior_label = None, None
             measured = [(y, l) for y, l in
-                        ((y1, labels1), (y2, labels2), (y3, labels3),
+                        ((y1, labels1), (y2, labels2),
+                         (y3 + y3r, labels3 + labels3r),
                          (y4, labels4)) if y]
             if args.round >= 2 and len(measured) >= 2:
                 prev_y = [row for y, _ in measured[:-1] for row in y]
@@ -2462,11 +2536,11 @@ def main(argv=None):
                 prev_frame = observed_frame(prev_y, prev_l)
                 if args.per_gram:
                     prev_frame[obj2_name] /= prev_frame["print_id"].map(mass_of)
-                prior = pareto_front(prev_frame)
+                prior = pareto_front(aggregate_repeats(prev_frame))
                 prior_label = f"Front before round {len(measured)}"
             print(
                 "Figure saved to "
-                f"{render_objective_figure(observed, suggestions, args.round, prior_front=prior, batch_number=batch_number, prior_label=prior_label)}"
+                f"{render_objective_figure(aggregate_repeats(observed), suggestions, args.round, prior_front=prior, batch_number=batch_number, prior_label=prior_label)}"
             )
             # a batch carrying print-process columns can have its recipe and
             # its process-space panel rebuilt here too, with no Ax install
@@ -2792,8 +2866,11 @@ def main(argv=None):
     suggestions = suggestions.sort_values(
         ["plate", "trial_index"]).reset_index(drop=True)
 
-    # The specimen the global filament settings formally belong to.
-    front = pareto_front(observed_frame(y_train, labels))
+    # The specimen the global filament settings formally belong to. The
+    # measured front is taken over design-level means (repeated prints of one
+    # design collapse to their mean), so a design's front membership cannot
+    # rest on its luckier print.
+    front = pareto_front(aggregate_repeats(observed_frame(y_train, labels)))
     best_pos, best_hvi = best_predicted_position(front, suggestions)
     suggestions.loc[best_pos, "best_predicted"] = True
     best = suggestions.loc[best_pos]
@@ -2859,8 +2936,9 @@ def main(argv=None):
     # ---- visualization (Honegumi visualize=True block, adapted) ----------
     # presentation-ready single panel; the parallel-coordinates panel that the
     # template pairs with it was dropped on review (PR #102)
-    out_png = render_objective_figure(observed_frame(y_train, labels), suggestions,
-                                      args.round, batch_number=batch_number)
+    out_png = render_objective_figure(
+        aggregate_repeats(observed_frame(y_train, labels)), suggestions,
+        args.round, batch_number=batch_number)
     print(f"Figure saved to {out_png}")
     proc_png = render_process_space_figure(suggestions, args.round,
                                            batch_number=batch_number,
