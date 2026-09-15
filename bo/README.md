@@ -916,8 +916,25 @@ taller 110 mm probe (t54). Consequences to review before printing:
   should stay in the fit space while they remain one-point-per-batch.
 
 Best-predicted specimen: trial 53 (predicted t180 0.937 +/- 0.130,
-rebound 8.7 +/- 4.7 mJ), by lowest predicted t180. Print files: not yet
-rendered at the time of writing; regenerate exactly as round 4's with
+rebound 8.7 +/- 4.7 mJ), by lowest predicted t180. Print files rendered
+2026-09-15 (OpenSCAD 2021.01, same toolchain as round 4):
+`per-specimen-stls/t3-prism-bo-round5-tNN-{struts,cables}.stl` (18
+plate-positioned solids named by trial),
+`slices/t3-prism-bo-round5.H2D-MM-PLAstruts-TPUcables.3mf` (objects
+"Trial 46" to "Trial 54", struts on extruder 1 / cables on extruder 2,
+the batch filament settings and all 18 per-part sparse-infill overrides
+baked in and verified by unzip), `t3-prism-bo-round5-designs.csv` (the
+manifest), plus plate/iso preview PNGs. Rendered-mass verification:
+`printed_g_est` 19.88 to 19.94 g against the 20.23 g target, worst
+deviation 0.35 g, inside the mass model's 0.38 g analytic-to-rendered
+residual; all nine deltas sit on the low side, the same one-sided
+pattern as rounds 3-4, so expect scale weighings a few tenths under
+target if the session flow deficit persists. Layout notes: the grid
+needed a +7.4 mm reach shift (TPU floor at x = 30) and this batch's
+wide articles (measured footprints 76 to 94 mm with the key-seat
+overhang) leave the wipe tower at (287, 110) closer to the grid than
+any previous round; the headless slice check below settles whether the
+slicer accepts it. Regenerate exactly as round 4's with
 
 ```bash
 python3 bo/t3_prism_printed_mass_plate.py \
@@ -925,9 +942,10 @@ python3 bo/t3_prism_printed_mass_plate.py \
     --out-prefix t3-prism-bo-round5
 ```
 
-(needs `openscad xvfb libfuse2`, ~30 min; writes the 18 per-trial STLs,
-the manifest with the rendered-mass verification, and the H2D MM 3mf
-with the filament settings and all 18 per-part infill overrides baked).
+(needs `openscad xvfb libfuse2` plus `numpy scipy pandas`, ~20 min;
+writes the 18 per-trial STLs, the manifest with the rendered-mass
+verification, and the H2D MM 3mf with the filament settings and all 18
+per-part infill overrides baked).
 
 ## Model interpretability (diagnostics)
 
