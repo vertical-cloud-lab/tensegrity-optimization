@@ -15,6 +15,137 @@ nothing to inlay at any timestamp. If comments are added later, re-running the p
 [How this was produced](#how-this-was-produced) will pick them up and place them at their
 timestamps.
 
+## Update of 2026-09-15: resolutions from the full comment sweep, and the enhanced correction list
+
+On 2026-09-15 every comment on every issue and pull request in the repository was
+re-read through the GitHub API (109 threads, 1,587 comment entries, including
+comments the web UI collapses), specifically to resolve this spec sheet's open
+questions and to enhance it with corrections the video could not have known
+about. The campaign moved a long way between the reviewed draft (built at
+`827301d`, reviewed 2026-09-02) and this update: two further batches were
+printed, drop-tested, and ingested, and the answers below are taken from the
+committed campaign record on the `claude/issue-98-20260821-0103` and
+`copilot/add-drop-test-protocol-again` branches, not from memory of the threads.
+
+### Answers to the open questions
+
+- **Item 1 (search space).** The reviewer's memory was right. The space is
+  no longer five continuous geometry variables. Batches 1 and 2 used the five
+  geometry variables. Batch 3 (printed 2026-09-01, tested 2026-09-02 and 03)
+  added two per-article sparse-infill variables (strut infill and tendon
+  infill, 12 to 35 percent) and four batch-level filament settings (PLA and
+  TPU nozzle temperature and maximum volumetric speed), drawn as one Sobol
+  point per batch because a plate carries a single filament configuration
+  (issue #108, PR #102 comments of 2026-08-26 to 31). The surrogate the
+  campaign now runs is a 12-input model. The manuscript's abstract, Table 1,
+  Contributions, and Methods are all updated to say exactly this.
+- **Items 3 and 24 (drop count).** Confirmed against the committed per-drop
+  records rather than the threads: the seed batch used 101 stabilized captures
+  per article (103 recorded, first two discarded as warm-up); batch 2
+  (`r2d2c1` to `r2d2c9`, sessions of 2026-08-24) recorded 21 drops per
+  article; batches 3 and 4 (`drran`, `corny`) recorded 20. The reviewer's "21"
+  is the batch-2 protocol; the standing SOP is 20 recorded drops with the
+  first two discarded. The justification the reviewer asked for exists in the
+  record: the pre-campaign variance study (PR #86 sample-size analysis) put
+  the statistical minimum at 5 stabilized drops after 2 warm-ups; the seed
+  round's own 101-drop sessions showed within-session per-drop CVs of 0.17 to
+  0.48 percent with flat post-warm-up means; and the batch-3 reprint
+  comparison showed that seat-to-seat variation, not within-session
+  scatter, dominates the error budget, so tower time is better spent on
+  re-seats than on longer sessions. The reviewer's instruction that a person
+  re-verify the underlying drop data stands and is repeated below as an open
+  action.
+- **Items 5, 6, and 28 (simulation).** Confirmed. The 2026-09-02 deep-dive on
+  issue #99 documents that no simulated number ever fed the campaign
+  objectives, and the 2026-09-01 meeting decision to drop the simulation
+  content from the paper holds. Contribution 4, Section 3.5, the abstract
+  clause, and the SI simulation section are removed, with a short
+  justification retained in the Discussion as the reviewer requested.
+- **Item 12 (author emails).** Still open. No comment from @sgbaird answers
+  it anywhere in the record; the TODO in the author block stays.
+- **Item 26 (velocity-change gate).** No reply from @achris0520 or Jinkwan
+  Han in the record, so the reviewer's stated lean is applied: removed from
+  the Contributions list, kept as one clause in Methods, with the detail
+  (including the within-session mat warm-up and recovery pattern he
+  described) in the SI drop-tower section.
+
+### New items from the sweep (the enhanced list)
+
+- **N1. The violet dummy round-2 data is superseded by real data.** Batches
+  2, 3, and 4 are printed, drop-tested, and committed
+  (`t3-prism-bo-round1/round3/round4-drop-results.csv` on the campaign
+  branch). Every violet synthetic number and every DUMMY figure and CSV is
+  replaced by, or deleted in favor of, the measured record. The invented
+  story ("eight of nine below unity, MAPE 1.9 percent, all inside two sigma")
+  is nearly the opposite of what happened in batch 2 (two of nine below
+  unity, MAPE 14.4 percent, optimistic on nine of nine), which is exactly why
+  the reviewer's standing rule exists.
+- **N2. The seating-sensitivity finding must be reported.** The batch-3 plate
+  was printed twice and both sets of nine were tested (360 drops). Neither
+  extreme of the first pass recurred in the second: the 1.251 amplifier
+  re-measured at most 1.090 and the 0.980 attenuator at least 1.011 under any
+  pairing. Median same-design shift +1.2 percent with heavy tails. A
+  between-seat replication rule is now standing lab policy (PR #86,
+  2026-09-12): a single-seating extreme does not count until it reproduces
+  across an independent re-seat. The positive control: the seed attenuator
+  `6lhxfy` reproduced to 0.13 percent across a re-seat. Whether the
+  batch-3 second pass was the same nine articles re-seated or a fresh
+  reprint of the nine designs is being clarified on PR #86 (asked by
+  @sgbaird 2026-09-15); the manuscript words it as a second printed set, per
+  the two print logs of issue #98, and the bounds hold either way.
+- **N3. Batch 4 set the program record and it was the model's pick.**
+  `corny7` is Ax trial 37, the batch's best-predicted design, and measured
+  t180 = 0.803, 10 percent below the best seed article and 21 percent below
+  the reference prism. It is single-seating and awaits its re-seat
+  confirmation, which the manuscript states plainly.
+- **N4. Constant printed mass replaced constant solid mass.** From batch 3
+  the projection targets 20.23 g printed via the calibrated mass model;
+  batch mass CV fell from 5.5 percent (tested seed articles) and 8.7 percent
+  (batch 2) to 1.7 and 2.3 percent. The mass-transmissibility correlation
+  fell from r = 0.83 (seed) to 0.07 (26 articles): the confound the
+  Discussion worried about was broken by design, and the paper now says so
+  with the measured numbers.
+- **N5. Report the honest cross-validation trajectory.** Held-out skill went
+  down as the input space grew: t180 LOOCV MAPE 2.9 percent (8 articles, 6
+  inputs), 5.4 (17), 6.2 percent with rank correlation +0.19 (26 articles, 12
+  inputs). The committed 26-fold LOOCV figure and evolution CSV are now in
+  the manuscript, replacing the invented "SAASBO 94 versus 81 percent
+  coverage" audit, which has no measured counterpart yet.
+- **N6. The budget-matched physical Sobol baseline does not exist.** The
+  dummy draft claimed one. No such experiment was run; the claim is removed
+  and the comparison the data supports (batches 2 to 4 versus the Sobol seed
+  front: dominated hypervolume 3.155 to 5.195, +65 percent, with all five
+  final front members model-chosen) is reported instead.
+- **N7. The seed table was stale.** `ajhby6` (Spec 07) completed its 101-drop
+  session on 2026-08-21 and is in the committed record; the row is real now,
+  so the seed table gains a ninth article and the "specs 03, 06, 07 pending"
+  note shrinks to 03 and 06 (whose sessions were never uploaded).
+- **N8. Version facts.** Later refits run Ax 0.5.0 `Models.SAASBO` with
+  qNEHVI (confirmed 2026-09-15 on PR #102); the round-5 batch (trials 46 to
+  54) is generated and its print files are staged but nothing from it is in
+  the paper.
+- **N9. Transmissibility is already the campaign's own vocabulary.** Every
+  check-in table and every committed campaign figure axis says "shock
+  transmissibility t180", so the rename the reviewer asked for three times
+  aligns the paper with the lab's own records. The technical caveat the old
+  draft used to justify the long form (peak ratio of a single transient, not
+  the steady-state frequency-domain quantity) is kept as a one-sentence
+  definition note rather than as a reason to avoid the word.
+
+### Application status
+
+All change-required and change-requested items (3, 4, 7, 18, 19, 21, 22, 24,
+27, 28, 29, 32), the standing instruction (30), the lean on 26, the optional
+items 20 and 23, and new items N1 to N9 are applied to `manuscript-body.tex`
+and `supplementary.tex` in this session's commits on PR #76 (see the PR
+comment of 2026-09-15 for the commit hashes and rebuilt PDFs). Items 2 and 1
+are closed by stating the achieved mass spread and the as-run search-space
+evolution. Deferred or reviewer-owned items (11, 13, 16, 31) and the item-12
+email decision remain open, along with one human action the reviewer
+explicitly reserved: **a person, not an agent, should re-verify the
+underlying drop records behind the 21/20-drop sessions** (item 3's second
+instruction).
+
 ## How to read this
 
 Each of the 32 items below has the corrected transcript of what was said, a screenshot of what
@@ -124,6 +255,10 @@ reporting it here." The Introduction parenthetical he asks to delete
 is the same fault in a different place.
 
 ## Open questions for the team
+
+Three of the four questions below were answered by the 2026-09-15 comment
+sweep; see [the update section above](#update-of-2026-09-15-resolutions-from-the-full-comment-sweep-and-the-enhanced-correction-list).
+Only the email question remains open.
 
 - **@sgbaird**: do all five authors list a BYU email, or only the corresponding authors?
   (item [12](#12-0613-to-0632--author-order-and-footnote-markers-are-fine-decide-the-email-question-with-dr-baird))
