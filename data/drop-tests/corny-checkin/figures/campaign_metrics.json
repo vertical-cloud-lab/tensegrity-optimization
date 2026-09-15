@@ -851,7 +851,19 @@
      "e_rebound": 0.03035147733885514
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t42",
+    "mass_g": 20.2,
+    "R_mm": 17.65,
+    "H_mm": 77.66,
+    "twist_deg": 40.0,
+    "strut_d_mm": 8.47,
+    "cable_d_mm": 3.88,
+    "strut_infill_pct": 19,
+    "tpu_infill_pct": 34,
+    "plate_pos": "back-right",
+    "defects": "TPU mixed into one layer of a PLA strut"
+   }
   },
   "corny2": {
    "folder": "corny2",
@@ -1690,7 +1702,19 @@
      "e_rebound": 0.030424291702004478
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t38",
+    "mass_g": 20.21,
+    "R_mm": 18.26,
+    "H_mm": 80.34,
+    "twist_deg": 40.0,
+    "strut_d_mm": 7.98,
+    "cable_d_mm": 4.02,
+    "strut_infill_pct": 18,
+    "tpu_infill_pct": 34,
+    "plate_pos": "middle-right",
+    "defects": "none"
+   }
   },
   "corny3": {
    "folder": "corny3",
@@ -2519,7 +2543,19 @@
      "e_rebound": 0.02992415068186417
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t45",
+    "mass_g": 20.15,
+    "R_mm": 19.65,
+    "H_mm": 86.47,
+    "twist_deg": 40.0,
+    "strut_d_mm": 6.89,
+    "cable_d_mm": 4.32,
+    "strut_infill_pct": 12,
+    "tpu_infill_pct": 35,
+    "plate_pos": "front-right",
+    "defects": "none"
+   }
   },
   "corny4": {
    "folder": "corny4",
@@ -3358,7 +3394,19 @@
      "e_rebound": 0.014390371485117999
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t44",
+    "mass_g": 20.56,
+    "R_mm": 20.8,
+    "H_mm": 91.52,
+    "twist_deg": 40.0,
+    "strut_d_mm": 4.99,
+    "cable_d_mm": 4.58,
+    "strut_infill_pct": 19,
+    "tpu_infill_pct": 21,
+    "plate_pos": "back-center",
+    "defects": "many small pores on the TPU diagonal tendons"
+   }
   },
   "corny5": {
    "folder": "corny5",
@@ -4201,7 +4249,19 @@
      "e_rebound": 0.02585219365833391
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t40",
+    "mass_g": 20.58,
+    "R_mm": 20.82,
+    "H_mm": 91.62,
+    "twist_deg": 40.0,
+    "strut_d_mm": 5.0,
+    "cable_d_mm": 4.58,
+    "strut_infill_pct": 18,
+    "tpu_infill_pct": 21,
+    "plate_pos": "middle-center",
+    "defects": "none"
+   }
   },
   "corny6": {
    "folder": "corny6",
@@ -5040,7 +5100,19 @@
      "e_rebound": 0.014250965030521671
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t41",
+    "mass_g": 19.45,
+    "R_mm": 33.42,
+    "H_mm": 67.29,
+    "twist_deg": 80.0,
+    "strut_d_mm": 8.65,
+    "cable_d_mm": 2.51,
+    "strut_infill_pct": 29,
+    "tpu_infill_pct": 18,
+    "plate_pos": "front-center",
+    "defects": "none"
+   }
   },
   "corny7": {
    "folder": "corny7",
@@ -5879,7 +5951,19 @@
      "e_rebound": 0.014089194311943389
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t37",
+    "mass_g": 19.62,
+    "R_mm": 34.34,
+    "H_mm": 67.12,
+    "twist_deg": 78.98,
+    "strut_d_mm": 8.98,
+    "cable_d_mm": 2.58,
+    "strut_infill_pct": 22,
+    "tpu_infill_pct": 21,
+    "plate_pos": "back-left",
+    "defects": "none"
+   }
   },
   "corny8": {
    "folder": "corny8",
@@ -6718,7 +6802,19 @@
      "e_rebound": 0.0655427552879058
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t39",
+    "mass_g": 19.64,
+    "R_mm": 34.7,
+    "H_mm": 68.3,
+    "twist_deg": 80.0,
+    "strut_d_mm": 8.86,
+    "cable_d_mm": 2.6,
+    "strut_infill_pct": 21,
+    "tpu_infill_pct": 34,
+    "plate_pos": "middle-left",
+    "defects": "none"
+   }
   },
   "corny9": {
    "folder": "corny9",
@@ -7557,7 +7653,19 @@
      "e_rebound": 0.0653047321474867
     }
    ],
-   "design_params": null
+   "design_params": {
+    "spec": "t43",
+    "mass_g": 19.46,
+    "R_mm": 37.09,
+    "H_mm": 65.47,
+    "twist_deg": 80.0,
+    "strut_d_mm": 9.25,
+    "cable_d_mm": 2.78,
+    "strut_infill_pct": 12,
+    "tpu_infill_pct": 29,
+    "plate_pos": "front-left",
+    "defects": "none"
+   }
   }
  },
  "campaign": {
