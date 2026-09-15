@@ -753,6 +753,34 @@ def load_round3_training_data(results_path=ROUND3_RESULTS,
     return X, y, labels, masses, trial_of
 
 
+# Round-4 (corny) batch files. Same contract as round 3: the predictions
+# table is the suggestions CSV as it stood when the plate was rendered
+# (commit 535e7f3, the first all-26-article refit; the printed STLs f2d82c8
+# regenerated at 9fba359 use the same geometry), so base and process
+# coordinates both come from it. The batch-wide filament point is PLA
+# 226 C / 29.5 mm3/s + TPU 236 C / 2.6 mm3/s (Sobol point 1); the infill
+# pair varies per article, chosen by the acquisition for the first time.
+ROUND4_RESULTS = BO_DIR / "t3-prism-bo-round4-drop-results.csv"
+ROUND4_KEY = BO_DIR / "t3-prism-bo-round4-print-key.csv"
+ROUND4_PREDICTIONS = BO_DIR / "t3-prism-bo-round4-predictions.csv"
+
+
+def load_round4_training_data(results_path=ROUND4_RESULTS,
+                              key_path=ROUND4_KEY,
+                              predictions_path=ROUND4_PREDICTIONS,
+                              include_process=True):
+    """Measured corny articles as (X, y) in the fit space.
+
+    Identical contract and mechanics to ``load_round3_training_data``; only
+    the file set differs (the corny sessions of 2026-09-12/14, mapped to
+    trials 37-45 by the round-4 print key).
+    """
+    return load_round3_training_data(results_path=results_path,
+                                     key_path=key_path,
+                                     predictions_path=predictions_path,
+                                     include_process=include_process)
+
+
 # ---- figure styling (presentation-ready, per PR #102 review) -------------
 # Matches the hand-made reference posted on PR #102 (comment 5373145690):
 # no legend box (series are named by leader-line callouts in the plot area),
@@ -2266,6 +2294,17 @@ def main(argv=None):
         ),
     )
     ap.add_argument(
+        "--measured-round4",
+        action="store_true",
+        help=(
+            "draw the predicted-vs-measured figure set and animation for the "
+            "round-4 batch from the MEASURED campaign summary "
+            "(t3-prism-bo-round4-drop-results.csv) against the predictions "
+            "the printed plate was rendered from "
+            "(t3-prism-bo-round4-predictions.csv); no model refit"
+        ),
+    )
+    ap.add_argument(
         "--per-gram",
         action="store_true",
         help=(
@@ -2273,7 +2312,8 @@ def main(argv=None):
             "drop; predictions divided by their predicted or target mass), "
             "per the PR #33 intensive-form notes; display only, the BO fit "
             "and the recorded CSVs stay in absolute mJ; use with "
-            "--plot-only, --measured-round2 or --measured-round3"
+            "--plot-only, --measured-round2, --measured-round3 or "
+            "--measured-round4"
         ),
     )
     ap.add_argument(
@@ -2290,16 +2330,18 @@ def main(argv=None):
     X1, y1, labels1, masses1, pending = load_training_data(args.results, args.design)
     X2, y2, labels2, masses2, trial_of = load_round2_training_data()
     X3, y3, labels3, masses3, trial_of3 = load_round3_training_data()
-    X_train = X1 + X2 + X3
-    y_train = y1 + y2 + y3
-    labels = labels1 + labels2 + labels3
-    masses = masses1 + masses2 + masses3
+    X4, y4, labels4, masses4, trial_of4 = load_round4_training_data()
+    X_train = X1 + X2 + X3 + X4
+    y_train = y1 + y2 + y3 + y4
+    labels = labels1 + labels2 + labels3 + labels4
+    masses = masses1 + masses2 + masses3 + masses4
 
     if args.per_gram and not (args.plot_only or args.measured_round2
-                              or args.measured_round3):
+                              or args.measured_round3
+                              or args.measured_round4):
         ap.error("--per-gram is a display mode: use it with --plot-only, "
-                 "--measured-round2 or --measured-round3 (the BO fit stays "
-                 "in absolute mJ)")
+                 "--measured-round2, --measured-round3 or --measured-round4 "
+                 "(the BO fit stays in absolute mJ)")
     # weighed mass per tested article, for the per-gram display division
     mass_of = {lab.split(" ")[0]: m for lab, m in zip(labels, masses)}
     if args.per_gram:
@@ -2361,6 +2403,34 @@ def main(argv=None):
                   + ", ".join(str(x) for x in (mp4, gif) if x))
         return 0
 
+    if args.measured_round4:
+        # One round later again: predictions frozen at the plate that was
+        # printed (535e7f3 suggestions; STL geometry f2d82c8/9fba359),
+        # landings from the measured corny campaign summary, and the
+        # existing layer is every article tested in rounds 1-3. No Ax
+        # import needed.
+        predictions = pd.read_csv(ROUND4_PREDICTIONS)
+        actual, kept = measured_round2_frame(y4, labels4, trial_of4, predictions)
+        obs123 = observed_frame(y1 + y2 + y3, labels1 + labels2 + labels3)
+        if args.per_gram:
+            obs123[obj2_name] /= obs123["print_id"].map(mass_of)
+            actual[obj2_name] /= actual["print_id"].map(mass_of)
+            predictions[f"pred_{obj2_name}_mean"] /= predictions["mass_printed_g"]
+            predictions[f"pred_{obj2_name}_sd"] /= predictions["mass_printed_g"]
+        stills, gif, mp4 = render_round2_prototype(
+            obs123,
+            predictions.loc[kept].reset_index(drop=True),
+            actual, 4, animate=not args.no_animation, synthetic=False,
+            existing_label="Existing data (rounds 1-3)",
+        )
+        print("Measured round-4 stills (slide order):")
+        for i, stage in enumerate(STILL_STAGES, start=1):
+            print(f"  slide {i} ({stage}): {stills[stage]}")
+        if gif or mp4:
+            print("Animation saved to "
+                  + ", ".join(str(x) for x in (mp4, gif) if x))
+        return 0
+
     if args.plot_only or args.prototype_next_round:
         observed = observed_frame(y_train, labels)
         suggestions = pd.read_csv(
@@ -2384,7 +2454,8 @@ def main(argv=None):
             # suggestions-only run number)
             prior, prior_label = None, None
             measured = [(y, l) for y, l in
-                        ((y1, labels1), (y2, labels2), (y3, labels3)) if y]
+                        ((y1, labels1), (y2, labels2), (y3, labels3),
+                         (y4, labels4)) if y]
             if args.round >= 2 and len(measured) >= 2:
                 prev_y = [row for y, _ in measured[:-1] for row in y]
                 prev_l = [lab for _, l in measured[:-1] for lab in l]

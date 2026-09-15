@@ -749,6 +749,129 @@ the committed round-3 project predates these fixes, so it would fail
 the same headless check even though it printed fine twice through the
 GUI; it stays byte-stable as the record of what was printed.
 
+## Round-4 drop data (the corny prints, sessions 2026-09-12/14)
+
+The round-4 plate (trials 37-45, printed as `corny1`-`corny9`) was drop
+tested by @ctrhjk on 2026-09-12 (corny1-3) and 2026-09-14 (corny4-9): 20
+valid captures per session, 60 in onto the 0.5 in mat, all 180 captures
+clean. Raw data lives in the Box `Drop Test Data` folder; the per-drop
+numbers here are snapshotted from the PR #86 branch's corny check-in
+analysis (`data/drop-tests/corny-checkin/` at commit `741d3c3`), which
+runs the standing campaign pipeline (validity filter, 2-drop warmup
+discard, T-drift watch) unchanged. Files, same schema as rounds 2-3:
+
+- `t3-prism-bo-round4-drop-results.csv`: the nine-session campaign
+  summary joined to the as-printed geometry and weighed masses,
+  ingestion-ready (the loader computes `e_reb_mJ` from each article's
+  own weighed mass).
+- `t3-prism-bo-round4-per-drop-metrics.csv`: stabilized per-drop t180
+  and e_rebound, 162 rows (18 per specimen: drops 3-20).
+- `t3-prism-bo-round4-print-key.csv`: the corny -> trial mapping with
+  masses, RH, defects and the full mapping basis per row.
+- `t3-prism-bo-round4-predictions.csv`: the suggestions CSV frozen at
+  the state the plate was generated from (commit `535e7f3`; the printed
+  STL geometry is `f2d82c8`, repositioned at `9fba359`), so
+  predicted-vs-measured is drawn against what the model actually
+  claimed.
+
+The mapping: the corny numbering does NOT follow the plate raster the
+r2d2c and drran batches used. The print-log photos (ctrhjk, issue #98,
+2026-09-11), the weighed masses and the drop physics all give the same
+family split: corny1-5 are the five tall low-twist designs
+(t42/t38/t44/t40/t45 in corny order) and corny6-9 are the four wide
+high-twist thin-cable designs (t37/t39/t43/t41), i.e. the articles were
+numbered family by family, not cell by cell. Within the tall family the
+photos further separate the two fat-strut articles (corny1/2), the two
+thin-strut replicate clones (corny3/4) and the mid-strut t45 (corny5).
+The residual ambiguity, documented per row in the print key, is the
+order within three pairs (corny1/2 between t42/t38, corny3/4 between
+t44/t40, and the wide four among themselves), broken by plate raster
+order; the t44/t40 pair differs by one percentage point of strut
+infill, so that one is inconsequential, and the wide-family tie-break
+is consistent with corny8 = t43 pairing the batch's structurally
+distinct 764 Hz ringer with its geometric outlier (largest article,
+12 percent strut infill).
+
+Results, sorted by t180 (predictions are the frozen `535e7f3` columns):
+
+| ID | Trial | Mass g | t180 meas | t180 pred | e_reb meas mJ | e_reb pred | Note |
+|---|---|---|---|---|---|---|---|
+| corny7 | 39 | 19.62 | 0.803 | 0.95 +/- 0.15 | 9.37 | 8.4 +/- 6.0 | program record; strongest attenuation ever measured |
+| corny9 | 41 | 19.46 | 0.877 | 0.94 +/- 0.13 | 18.10 | 9.0 +/- 6.2 | hop near detector cap |
+| corny6 | 37 | 19.45 | 0.911 | 0.93 +/- 0.13 | 5.73 | 8.5 +/- 5.9 | erratic (CV 1.99 pct), low-confidence but attenuates under any reading |
+| corny8 | 43 | 19.64 | 0.954 | 0.94 +/- 0.15 | 17.55 | 9.6 +/- 5.7 | rings at 764 Hz (all prior articles 300-420); e_rebound is a lower bound (hop at cap) |
+| corny1 | 42 | 20.20 | 1.046 | 1.01 +/- 0.15 | 8.67 | 6.7 +/- 5.7 | seat gauge 1.24 advisory |
+| corny4 | 40 | 20.56 | 1.047 | 1.01 +/- 0.14 | 4.31 | 6.4 +/- 5.5 | small-hop censored (<= 15 ms) |
+| corny3 | 44 | 20.15 | 1.070 | 1.01 +/- 0.14 | 8.76 | 6.5 +/- 5.7 | seat gauge 1.17 advisory |
+| corny2 | 38 | 20.21 | 1.085 | 1.01 +/- 0.15 | 9.24 | 6.5 +/- 5.6 | |
+| corny5 | 45 | 20.58 | 1.088 | 1.00 +/- 0.15 | 8.48 | 7.6 +/- 5.8 | T-DRIFT flagged (output-side decline, -1.9 pct end to end); mean provisional |
+
+Calibration read: unlike round 2's nine-of-nine optimism, the t180
+misses are modest and structured. The wide family landed at -0.15 to
++0.01 of prediction (corny7 beat its band by 1.0 sd in the good
+direction), the tall family at +0.04 to +0.08 (0.3 to 0.6 sd). The
+posterior-mean regression the round-4 LOOCV warned about is visible
+(every prediction sat near 1.0; the batch spread 0.80 to 1.09), but the
+wide bands covered every outcome. Rebound: the two long-hop wide
+articles (corny8/9, 17.6 and 18.1 mJ) landed 1.4 to 1.5 sd above
+prediction; the rest inside 1 sd.
+
+Masses: batch CV 2.1 percent (19.24-20.64 g range across both families;
+19.45-20.58 measured), offset -0.26 g +/- 0.19 vs the manifest's
+per-article `printed_g_est`, milder than drran's -0.52 g at the round-3
+filament point (round 4 ran PLA 226 C / 29.5 mm3/s, closer to the
+calibration's 220 C / 30). The session-aware mass-model recalibration
+remains the standing to-do before batch 6 solves its projection.
+
+Standing caveats carried from the PR #86 check-in: every corny number is
+single-seating (the between-seat rule wants a re-seat confirmation
+before an attenuation record is treated as settled; corny7 first, then
+corny9), corny5's mean is drift-provisional, and corny6 is erratic
+without tripping the watch. corny8's e_rebound (and corny9's, at 66 ms
+mean hop against the ~70 ms cap) are lower-bound-flavored: both enter
+the fit as recorded, same convention as r2d2c8 in round 2.
+
+Figure sets, same registered grammar as rounds 2-3 (four stills at
+3300 x 2100 / 300 dpi plus GIF + MP4, absolute and per-gram):
+
+```bash
+python bo/t3_prism_bo_campaign.py --measured-round4              # absolute
+python bo/t3_prism_bo_campaign.py --measured-round4 --per-gram   # intensive
+```
+
+writes `figures/t3-prism-bo-round4-{start,uncertainty,predicted-vs-actual,front-final}[-per-gram].png`
+plus the matching `.gif`/`.mp4`. The measured front over all 35
+articles is `corny7, corny6, drran5, drran3, r2d2c6` (per-gram:
+`corny4` replaces `r2d2c6` at the low end); `corny7` dominates
+`6lhxfy`, the best attenuator since round 1, on both objectives, and
+`6lhxfy`, `r2d2c1`, `r2d2c7` and the drift-flagged `drran8` all leave
+the front.
+
+## Pareto-front evolution per batch
+
+`t3_prism_front_evolution.py` recomputes the cumulative front and its
+dominated hypervolume (reference t180 = 1.35, rebound = 15 mJ, the
+reference every HV number on PR #102 uses) after each measured batch,
+from the committed CSVs only:
+
+| after batch | n | HV | gain | best t180 | min rebound | entered / left |
+|---|---|---|---|---|---|---|
+| 1 Sobol | 8 | 3.155 | baseline | 0.893 | 6.10 mJ | 6lhxfy 6nheas bpx68c ajhby6 |
+| 2 r2d2c | 17 | 3.969 | +25.8 pct | 0.893 | 4.07 mJ | + r2d2c1/2/6/7, - 6nheas bpx68c ajhby6 |
+| 3 drran | 26 | 4.007 | +0.9 pct | 0.893 | 4.07 mJ | + drran3/5/8, - r2d2c2 |
+| 4 corny | 35 | 5.195 | +29.7 pct | 0.803 | 4.07 mJ | + corny6/7, - 6lhxfy r2d2c1 r2d2c7 drran8 |
+
+Outputs `t3-prism-bo-front-evolution.csv` and
+`figures/t3-prism-bo-front-evolution.png` (all 35 articles in gray, the
+four cumulative fronts in deepening blue). The read: batch 2 grew the
+front almost entirely on the rebound axis (r2d2c6's 4.07 mJ record,
+still unbeaten), batch 3 only filled the knee (+0.9 percent; best t180
+stuck at 6lhxfy's 0.893 for three batches), and batch 4 finally cracked
+the t180 axis, the wide high-twist thin-cable family the acquisition
+had been pushing toward since round 2. Every current front member is a
+BO-chosen article: the last round-1 Sobol article left the front when
+batch 4 landed.
+
 ## Model interpretability (diagnostics)
 
 - `t3_prism_bo_diagnostics.py`: refits the round-1 SAASBO model from the
