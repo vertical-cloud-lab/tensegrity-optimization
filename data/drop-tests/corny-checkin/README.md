@@ -147,11 +147,16 @@ the other 7 rows** (corny3=t44, corny4=t40, corny5=t45, corny6=t37,
 corny7=t39, corny8=t43, corny9=t41). The photo measurement (leg 3)
 directly contradicts it — it needs `corny5`, not `corny3`, to be the
 6.9 mm-strut t45 — and under it the within-attenuator
-predicted↔measured ranking inverts (ρ = −0.8). Consequence there: the
-0.803 record is credited to t39 instead of the best-predicted t37,
-and the round-5 refit/suggestions generated in that run inherit the
-scrambled parameter→outcome pairing within both families. The 7 rows
-need correcting and round 5 regenerating before anything prints.
+predicted↔measured ranking inverts (ρ = −0.8). **Resolved in-flight:**
+the PR #102 job picked up me-madsen's pointer mid-run and pushed
+`0a31417` adopting this exact key — all nine rows (and the plate
+row/col frame) now match this file, independently derived from the
+same annotation. One item to verify when that run posts its final
+summary: that the round-5 SAASBO refit/suggestions were (re)generated
+on the corrected key rather than the `c3aa44f` pairing the refit was
+launched on — under the old key the 0.803 record was credited to t39
+instead of the best-predicted t37, which scrambles the
+parameter→outcome pairing the refit learns from.
 
 ## Results (stabilized drops 3–20; T = TOP/CH5, CFC-180)
 
