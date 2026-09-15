@@ -1275,8 +1275,9 @@ def render_objective_figure(observed, suggestions, round_number,
         )
 
         if observed["print_id"].str.contains(" x", regex=False).any():
+            # below the x-axis label, which sits at roughly -0.06 fig coords
             fig.text(
-                0.5, -0.035,
+                0.5, -0.125,
                 "xN: design printed N times (the drran/2dran reprint pairs), "
                 "plotted at the mean of its prints.\n"
                 "The model is fit on every session separately, so it infers "
