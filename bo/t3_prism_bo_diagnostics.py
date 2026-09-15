@@ -387,13 +387,17 @@ def run_group_cv(model, labels_by_arm, diagnostics_path=None):
     }
     fold_keys = list(dict.fromkeys(group_of[obs.arm_name] for obs in training_data))
     cv_results = []
-    for gkey in fold_keys:
+    for k, gkey in enumerate(fold_keys, start=1):
         test = [obs for obs in training_data if group_of[obs.arm_name] == gkey]
         train = [obs for obs in training_data if group_of[obs.arm_name] != gkey]
+        t_fold = time.time()
         preds = model.cross_validate(
             cv_training_data=train,
             cv_test_points=[deepcopy(obs.features) for obs in test],
         )
+        print(f"    fold {k}/{len(fold_keys)} ({gkey}, {len(test)} article"
+              f"{'s' if len(test) > 1 else ''}) in {time.time() - t_fold:.0f} s",
+              flush=True)
         cv_results.extend(
             CVResult(observed=obs, predicted=pred)
             for obs, pred in zip(test, preds)
@@ -449,16 +453,16 @@ def render_loocv(table, diagnostics, out_path, n_articles=None,
 
             mape = diagnostics.get("MAPE", {}).get(metric)
             corr = _safe_corr(sub.observed.to_numpy(), sub.predicted.to_numpy())
-            note = []
+            stats = []
             if mape is not None:
-                note.append(f"MAPE {100 * mape:.1f}%")
+                stats.append(f"MAPE {100 * mape:.1f}%")
             if corr is not None:
-                note.append(f"r = {corr:.2f}")
-            if note:
+                stats.append(f"r = {corr:.2f}")
+            if stats:
                 # bottom right: the half of the panel the diagonal leaves
                 # empty, and the half the point labels do not compete for
                 ax.annotate(
-                    "   ".join(note),
+                    "   ".join(stats),
                     xy=(0.97, 0.04), xycoords="axes fraction",
                     fontsize=16, color=INK, va="bottom", ha="right",
                 )
@@ -469,11 +473,11 @@ def render_loocv(table, diagnostics, out_path, n_articles=None,
         if n_articles is None:
             n_articles = int(table["print_id"].nunique())
         fig.text(
-            0.5, -0.04,
+            0.5, -0.045,
             f"{note}\n"
             f"Dashed line is perfect prediction. n = {n_articles}, so read the "
             "direction, not the decimals.",
-            ha="center", fontsize=15, color=LABEL_GRAY,
+            ha="center", va="top", fontsize=15, color=LABEL_GRAY,
         )
         fig.tight_layout()
         fig.savefig(out_path, dpi=FIGURE_DPI, bbox_inches="tight", facecolor="white")
@@ -2012,9 +2016,13 @@ def main(argv=None):
     # not its weighed mass).
     X1, _, labels1, _, _ = load_training_data(args.results, args.design, process=None)
     X2, _, labels2, _, _ = load_round2_training_data(process=None)
-    X3, _, labels3, _, _ = load_round3_training_data(include_process=False)
-    X3r, _, labels3r, _, _ = load_round3_reprint_training_data(include_process=False)
-    X4, _, labels4, _, _ = load_round4_training_data(include_process=False)
+    # rounds 3+ must match on the full parameter set when the snapshot has
+    # one: the clone-trio designs make two 2dran articles identical in the
+    # six shape+mass keys (2dran2 and 2dran9 both weigh 19.65 g at the same
+    # base shape), and only the infill pair separates them
+    X3, _, labels3, _, _ = load_round3_training_data(include_process=has_process)
+    X3r, _, labels3r, _, _ = load_round3_reprint_training_data(include_process=has_process)
+    X4, _, labels4, _, _ = load_round4_training_data(include_process=has_process)
     X_all = X1 + X2 + X3 + X3r + X4
     labels_all = labels1 + labels2 + labels3 + labels3r + labels4
     labels_by_arm = {}
