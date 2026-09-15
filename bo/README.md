@@ -774,54 +774,58 @@ discard, T-drift watch) unchanged. Files, same schema as rounds 2-3:
   predicted-vs-measured is drawn against what the model actually
   claimed.
 
-The mapping: the corny numbering does NOT follow the plate raster the
-r2d2c and drran batches used. The print-log photos (ctrhjk, issue #98,
-2026-09-11), the weighed masses and the drop physics all give the same
-family split: corny1-5 are the five tall low-twist designs
-(t42/t38/t44/t40/t45 in corny order) and corny6-9 are the four wide
-high-twist thin-cable designs (t37/t39/t43/t41), i.e. the articles were
-numbered family by family, not cell by cell. Within the tall family the
-photos further separate the two fat-strut articles (corny1/2), the two
-thin-strut replicate clones (corny3/4) and the mid-strut t45 (corny5).
-The residual ambiguity, documented per row in the print key, is the
-order within three pairs (corny1/2 between t42/t38, corny3/4 between
-t44/t40, and the wide four among themselves), broken by plate raster
-order; the t44/t40 pair differs by one percentage point of strut
-infill, so that one is inconsequential, and the wide-family tie-break
-is consistent with corny8 = t43 pairing the batch's structurally
-distinct 764 Hz ringer with its geometric outlier (largest article,
-12 percent strut infill).
+The mapping is CONFIRMED by the lab's own key: me-madsen posted the
+round-4 plate preview with each article's corny number handwritten on
+it (PR #86 comment 5673269973, 2026-09-15). Read against the committed
+plate coordinates: right plate column top-to-bottom = corny1/2/3,
+center column = corny4/5/6, left column = corny7/8/9, i.e. raster 1..9
+with the plate viewed right-edge-up, and it is the unique raster
+orientation consistent with the physical evidence. Every independent
+check agrees: the weighed masses split 20.15-20.58 g (corny1-5) vs
+19.45-19.64 g (corny6-9) exactly along the manifest's per-family
+printed_g_est clusters, all four attenuating sessions are corny6-9
+(the wide high-twist family), and the ctrhjk print-log photos show the
+same family split. Note for the git history: the first ingestion
+commit (`c3aa44f`, made before this key existed) had the identical
+family split but broke the within-family ties by plate raster in the
+wrong orientation; the key corrects five of the nine assignments, and
+every file from this commit on carries the confirmed mapping.
 
-Results, sorted by t180 (predictions are the frozen `535e7f3` columns):
+Results, sorted by t180 (predictions are the frozen `535e7f3` columns).
+The headline pairing the key settles: the program-record attenuator
+corny7 is **trial 37, the batch's best-predicted specimen**, the first
+candidate in the campaign whose predicted means improved the measured
+front when it was generated.
 
 | ID | Trial | Mass g | t180 meas | t180 pred | e_reb meas mJ | e_reb pred | Note |
 |---|---|---|---|---|---|---|---|
-| corny7 | 39 | 19.62 | 0.803 | 0.95 +/- 0.15 | 9.37 | 8.4 +/- 6.0 | program record; strongest attenuation ever measured |
-| corny9 | 41 | 19.46 | 0.877 | 0.94 +/- 0.13 | 18.10 | 9.0 +/- 6.2 | hop near detector cap |
-| corny6 | 37 | 19.45 | 0.911 | 0.93 +/- 0.13 | 5.73 | 8.5 +/- 5.9 | erratic (CV 1.99 pct), low-confidence but attenuates under any reading |
-| corny8 | 43 | 19.64 | 0.954 | 0.94 +/- 0.15 | 17.55 | 9.6 +/- 5.7 | rings at 764 Hz (all prior articles 300-420); e_rebound is a lower bound (hop at cap) |
+| corny7 | 37 | 19.62 | 0.803 | 0.93 +/- 0.13 | 9.37 | 8.5 +/- 5.9 | program record; best-predicted trial of the batch |
+| corny9 | 43 | 19.46 | 0.877 | 0.94 +/- 0.15 | 18.10 | 9.6 +/- 5.7 | hop near detector cap |
+| corny6 | 41 | 19.45 | 0.911 | 0.94 +/- 0.13 | 5.73 | 9.0 +/- 6.2 | erratic (CV 1.99 pct), low-confidence but attenuates under any reading |
+| corny8 | 39 | 19.64 | 0.954 | 0.95 +/- 0.15 | 17.55 | 8.4 +/- 6.0 | rings at 764 Hz (all prior articles 300-420); e_rebound is a lower bound (hop at cap) |
 | corny1 | 42 | 20.20 | 1.046 | 1.01 +/- 0.15 | 8.67 | 6.7 +/- 5.7 | seat gauge 1.24 advisory |
-| corny4 | 40 | 20.56 | 1.047 | 1.01 +/- 0.14 | 4.31 | 6.4 +/- 5.5 | small-hop censored (<= 15 ms) |
-| corny3 | 44 | 20.15 | 1.070 | 1.01 +/- 0.14 | 8.76 | 6.5 +/- 5.7 | seat gauge 1.17 advisory |
+| corny4 | 44 | 20.56 | 1.047 | 1.01 +/- 0.14 | 4.31 | 6.5 +/- 5.7 | small-hop censored (<= 15 ms) |
+| corny3 | 45 | 20.15 | 1.070 | 1.00 +/- 0.15 | 8.76 | 7.6 +/- 5.8 | seat gauge 1.17 advisory |
 | corny2 | 38 | 20.21 | 1.085 | 1.01 +/- 0.15 | 9.24 | 6.5 +/- 5.6 | |
-| corny5 | 45 | 20.58 | 1.088 | 1.00 +/- 0.15 | 8.48 | 7.6 +/- 5.8 | T-DRIFT flagged (output-side decline, -1.9 pct end to end); mean provisional |
+| corny5 | 40 | 20.58 | 1.088 | 1.01 +/- 0.14 | 8.48 | 6.4 +/- 5.5 | T-DRIFT flagged (output-side decline, -1.9 pct end to end); mean provisional |
 
 Calibration read: unlike round 2's nine-of-nine optimism, the t180
-misses are modest and structured. The wide family landed at -0.15 to
-+0.01 of prediction (corny7 beat its band by 1.0 sd in the good
+misses are modest and structured. The wide family landed at -0.13 to
++0.00 of prediction (corny7 beat its band by 1.0 sd in the good
 direction), the tall family at +0.04 to +0.08 (0.3 to 0.6 sd). The
 posterior-mean regression the round-4 LOOCV warned about is visible
 (every prediction sat near 1.0; the batch spread 0.80 to 1.09), but the
 wide bands covered every outcome. Rebound: the two long-hop wide
-articles (corny8/9, 17.6 and 18.1 mJ) landed 1.4 to 1.5 sd above
-prediction; the rest inside 1 sd.
+articles (corny8/9, 17.6 and 18.1 mJ) landed 1.5 sd above prediction;
+the rest inside 1 sd.
 
-Masses: batch CV 2.1 percent (19.24-20.64 g range across both families;
-19.45-20.58 measured), offset -0.26 g +/- 0.19 vs the manifest's
-per-article `printed_g_est`, milder than drran's -0.52 g at the round-3
-filament point (round 4 ran PLA 226 C / 29.5 mm3/s, closer to the
-calibration's 220 C / 30). The session-aware mass-model recalibration
-remains the standing to-do before batch 6 solves its projection.
+Masses: batch range 19.45-20.58 g measured (CV 2.1 percent), offset
+-0.26 g +/- 0.24 vs the manifest's per-article `printed_g_est`, milder
+than drran's -0.52 g at the round-3 filament point (round 4 ran PLA
+226 C / 29.5 mm3/s, closer to the calibration's 220 C / 30). The
+largest single residual is corny3/t45 at -0.49 g. The session-aware
+mass-model recalibration remains the standing to-do before batch 6
+solves its projection.
 
 Standing caveats carried from the PR #86 check-in: every corny number is
 single-seating (the between-seat rule wants a re-seat confirmation
