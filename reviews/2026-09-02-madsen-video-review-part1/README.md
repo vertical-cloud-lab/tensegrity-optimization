@@ -137,8 +137,8 @@ committed campaign record on the `claude/issue-98-20260821-0103` and
 All change-required and change-requested items (3, 4, 7, 18, 19, 21, 22, 24,
 27, 28, 29, 32), the standing instruction (30), the lean on 26, the optional
 items 20 and 23, and new items N1 to N9 are applied to `manuscript-body.tex`
-and `supplementary.tex` in this session's commits on PR #76 (see the PR
-comment of 2026-09-15 for the commit hashes and rebuilt PDFs). Items 2 and 1
+and `supplementary.tex` in this session's commits on PR #76 (`9b62cf6`
+data import, `0dcbc3c` manuscript body, `4ee4a3c` SI and rebuilt PDFs). Items 2 and 1
 are closed by stating the achieved mass spread and the as-run search-space
 evolution. Deferred or reviewer-owned items (11, 13, 16, 31) and the item-12
 email decision remain open, along with one human action the reviewer
