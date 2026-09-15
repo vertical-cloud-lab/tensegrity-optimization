@@ -449,7 +449,7 @@ optimization loop.
 Multi-material rigid-soft FDM enables stiff/compliant combinations on a
 single platform with tunable energy absorption, demonstrated for thick-panel
 origami with PLA (or ABS/CFRP) panels and TPU hinges~\cite{ye2023multimaterial}
-and for ABS--TPU honeycombs~\cite{khatri2024energy}. Neither study is itself a
+and for ABS-TPU honeycombs~\cite{khatri2024energy}. Neither study is itself a
 tensegrity, but both establish the rigid-soft co-printing route we adopt. Ye
 et~al.~\cite{ye2023multimaterial}
 introduced a \emph{wrapping-based} strategy in which rigid cores are
@@ -478,7 +478,7 @@ experiment-driven optimization loop.
 Recent multi-material PLA/TPU sandwich and layered
 composites~\citep{arifvianto2022mechanicalpropertiesof} report
 quantitative bounds on
-stiffness, strength, and energy absorption for the same PLA--TPU pair
+stiffness, strength, and energy absorption for the same PLA-TPU pair
 used here, while FDM PLA fatigue
 data~\citep{ezeh2018onthefatigue, vanaei2021multiscaledamageanalysis}
 inform conservative design bounds for the rigid struts.
@@ -653,13 +653,13 @@ floor is a defect predictor rather than a hard failure line).
     Twist angle            & $\theta$  & deg & 40-80 & batch 1 on \\
     Strut (PLA) diameter   & $d_s$     & mm  & 6.0-12.0 & batch 1 on \\
     Cable (TPU) diameter   & $d_t$     & mm  & 3.0-5.5 & batch 1 on \\
-    Strut infill density   & --        & \%  & 12-35 & batch 3 on \\
-    Tendon infill density  & --        & \%  & 12-35 & batch 3 on \\
-    PLA nozzle temperature & --        & \si{\celsius} & 212-228 & batch 3 on\textsuperscript{a} \\
-    PLA volumetric speed   & --        & \si{mm^3/s} & 20-30 & batch 3 on\textsuperscript{a} \\
-    TPU nozzle temperature & --        & \si{\celsius} & 235-245 & batch 3 on\textsuperscript{a} \\
-    TPU volumetric speed   & --        & \si{mm^3/s} & 2.2-3.6 & batch 3 on\textsuperscript{a} \\
-    Joint diameter (fixed) & $d_j$     & mm  & 7.0 & -- \\
+    Strut infill density   & -        & \%  & 12-35 & batch 3 on \\
+    Tendon infill density  & -        & \%  & 12-35 & batch 3 on \\
+    PLA nozzle temperature & -        & \si{\celsius} & 212-228 & batch 3 on\textsuperscript{a} \\
+    PLA volumetric speed   & -        & \si{mm^3/s} & 20-30 & batch 3 on\textsuperscript{a} \\
+    TPU nozzle temperature & -        & \si{\celsius} & 235-245 & batch 3 on\textsuperscript{a} \\
+    TPU volumetric speed   & -        & \si{mm^3/s} & 2.2-3.6 & batch 3 on\textsuperscript{a} \\
+    Joint diameter (fixed) & $d_j$     & mm  & 7.0 & - \\
     \bottomrule
   \end{tabular}\\[2pt]
   {\footnotesize \textsuperscript{a}One value per print job (a plate
@@ -756,7 +756,7 @@ precedent rather than as validation of the present junction. \todo{Quantitativel
 verify the internal-anchoring junction strength against the PR~\#39 / PR~\#35
 joint pull-out studies before making any cyclic-durability claim.} \todo{Document slicer profile
 (layer height, infill, print speed, nozzle temperatures, retraction
-settings) and validation prints used to characterize PLA--TPU interface
+settings) and validation prints used to characterize PLA-TPU interface
 strength.}
 
 \paragraph{Print platform and joint geometry} The working platform is
@@ -911,9 +911,13 @@ twenty drops leaves the transmissibility ranking of all eight tested
 articles unchanged, with a worst-case mean shift of $+0.008$ against
 design-to-design gaps of 0.007 to 0.087 and a per-drop standard
 error still an order of magnitude below those gaps. Later sessions
-were therefore shortened, to 21
-to 23 recorded drops per article in batch 2 and 20 in batches 3 and
-4 (first two discarded as before), which cuts tower time per article
+were therefore shortened to about twenty drops per article: the
+committed record lists 21 to 22 valid captures per batch-2 article
+and 20 recorded drops per article in batches 3 and 4, against 101
+valid captures per seed article, with the first two drops of every
+session discarded as before (exact per-session counts are in the
+archived per-drop records). The shortening cuts tower time per
+article
 from about ninety minutes to about fifteen while retaining roughly
 four times the minimum stabilized-drop budget; a shorter session
 simply enters the surrogate with a proportionally larger standard
@@ -1446,9 +1450,10 @@ to 1.06).
   \centering
   \caption{Model-recommended batch results under the protocol and
     reporting conventions of Table~\ref{tab:seed-results} (CFC-180,
-    stabilized means $\pm$ one standard deviation; 19 to 21
-    stabilized captures per article in batch 2 and 18 in batches 3
-    and 4; rows ordered by $t_{180}$ within each batch).
+    stabilized means $\pm$ one standard deviation; about twenty
+    drops per article against the seed batch's 101, with exact
+    per-session counts in the archived per-drop records; rows
+    ordered by $t_{180}$ within each batch).
     $E_{\mathrm{reb}}$ uses each article's weighed mass per
     Eq.~\eqref{eq:objectives}. ``Pred.'' is the posterior-mean
     $t_{180}$ archived when the batch was recommended, before any of

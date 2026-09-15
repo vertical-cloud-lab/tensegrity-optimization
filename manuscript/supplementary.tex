@@ -20,7 +20,7 @@
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=black]{hyperref}
 
 % Synthetic-placeholder (dummy) data convention, matching the main text:
-% round-2 "measured" values are invented stand-ins typeset in violet.
+% any stand-in value is typeset in violet. None remain as of 2026-09-15.
 \definecolor{dummydata}{RGB}{142,68,173}
 \newcommand{\dummy}[1]{\textcolor{dummydata}{#1}}
 
@@ -43,10 +43,11 @@
 \begin{center}
   \fcolorbox{dummydata}{dummydata!6}{\parbox{0.94\linewidth}{\small
   \textcolor{dummydata}{\textbf{Draft note (remove before submission):}
-  as in the main text, every value printed in this violet color
-  (the round-2 entries of Table~\ref{tab:si-printkey-r2}) is synthetic
-  placeholder (dummy) data pending the physical round-2 drop sessions
-  and article logging; black type is real measurement or record.}}}
+  as in the main text, any value printed in this violet color is a
+  synthetic placeholder rather than a measurement. As of 2026-09-15
+  this Supplementary Information contains no violet values: the
+  former placeholder batch-2 print key was replaced by the logged
+  campaign record, which now covers batches 2 to 4.}}}
 \end{center}
 
 This Supplementary Information collects the detailed design-, fabrication-,
@@ -156,35 +157,61 @@ surrogate fit until identified.
   \end{tabular}
 \end{table}
 
-Table~\ref{tab:si-printkey-r2} is the corresponding key for the round-2
-batch (Ax trials 10 to 18, sliced from the same as-printed project
-conventions). The article identifiers, weighed masses, and defect log are
-\dummy{synthetic placeholders}: the batch is printed but its per-article
-logging and sessions are pending, and the stand-ins exist so the record
-reads at its final scope.
+Table~\ref{tab:si-printkey-r2} is the corresponding logged key for
+the three model-recommended batches. Every batch-2 and batch-3
+article printed at about 11\% dry-box relative humidity and every
+batch-4 article at about 7\%. The batch-3 plate was printed twice;
+the reprint articles (2dran1 to 2dran9, weighed 19.48 to
+\SI{20.32}{g}, \SI{0.27}{g} heavier than the first print article for
+article on average, all logged defect-free) supplied the second
+test pass of the main text. The authoritative machine-readable keys,
+with plate positions and the mapping evidence per row, are the
+\texttt{t3-prism-bo-round1/round3/round4-print-key.csv} files
+archived with the manuscript data.
 
 \begin{table}[ht]
   \centering
-  \caption{\dummy{\textbf{Synthetic placeholder data (entire
-    table).}} Print key for the round-2 model-recommended batch. Entries
-    are invented stand-ins, typeset in violet, to be replaced by the
-    logged campaign record once the batch's articles are weighed,
-    inspected, and tested.}
+  \caption{Print key for the model-recommended batches (first prints;
+    the batch-3 reprint set is summarized in the text). Masses
+    weighed on a \SI{0.01}{g} scale.}
   \label{tab:si-printkey-r2}
-  \small\color{dummydata}
-  \begin{tabular}{@{}clS[table-format=2.2]l@{}}
+  \small
+  \begin{tabular}{@{}cclS[table-format=2.2]l@{}}
     \toprule
-    Trial & Article & {Mass (g)} & Logged defects \\
+    Batch & Trial & Article & {Mass (g)} & Logged defects \\
     \midrule
-    10 & kq3w7f & 18.41 & light stringing on one diagonal tendon \\
-    11 & x8pdz2 & 19.52 & none \\
-    12 & w4jn8y & 19.88 & none \\
-    13 & e9tk2m & 19.37 & minor support scar on one bottom tendon \\
-    14 & u5rb6x & 20.68 & none \\
-    15 & r2vq9c & 20.31 & stringing near top vertex \\
-    16 & m7hs4t & 19.05 & none \\
-    17 & h3fc9q & 19.94 & none \\
-    18 & p6dm3z & 20.41 & slight seam ridge on one strut \\
+    2 & 10 & r2d2c9 & 17.91 & none \\
+    2 & 11 & r2d2c4 & 19.33 & string on one top tendon; partial \\
+      &    &        &       & \ \ TPU detachment \\
+    2 & 12 & r2d2c2 & 17.96 & none \\
+    2 & 13 & r2d2c1 & 19.38 & detached TPU string, two top \\
+      &    &        &       & \ \ tendons; odd foot support \\
+    2 & 14 & r2d2c6 & 19.11 & none \\
+    2 & 15 & r2d2c7 & 18.51 & none \\
+    2 & 16 & r2d2c3 & 18.63 & none \\
+    2 & 17 & r2d2c8 & 19.98 & full-span strings, two bottom \\
+      &    &        &       & \ \ tendons \\
+    2 & 18 & r2d2c5 & 23.47 & none \\
+    \midrule
+    3 & 28 & drran5 & 19.88 & tiny bubbles, diagonal tendons \\
+    3 & 29 & drran4 & 19.92 & none \\
+    3 & 30 & drran9 & 19.34 & none \\
+    3 & 31 & drran3 & 19.92 & tiny bubbles, diagonal tendons \\
+    3 & 32 & drran7 & 20.06 & tiny bubbles, diagonal tendons \\
+    3 & 33 & drran2 & 19.33 & none \\
+    3 & 34 & drran6 & 19.24 & tiny bubbles, diagonal tendons \\
+    3 & 35 & drran8 & 19.32 & none \\
+    3 & 36 & drran1 & 19.31 & none \\
+    \midrule
+    4 & 37 & corny7 & 19.62 & none \\
+    4 & 38 & corny2 & 20.21 & none \\
+    4 & 39 & corny8 & 19.64 & none \\
+    4 & 40 & corny5 & 20.58 & none \\
+    4 & 41 & corny6 & 19.45 & none \\
+    4 & 42 & corny1 & 20.20 & TPU mixed into one PLA strut layer \\
+    4 & 43 & corny9 & 19.46 & none \\
+    4 & 44 & corny4 & 20.56 & small pores, diagonal tendons \\
+    4 & 45 & corny3 & 20.15 & none \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -198,15 +225,31 @@ Partner~4 data-acquisition console. The development history behind the
 protocol in the main text is summarized here.
 
 \paragraph{Protocol.} \SI{60}{in} drop height; specimen upright on the
-carriage plate; 101 valid captures per specimen (103 for one article,
-autv5r), counted after the first two drops of each session are discarded as
-warm-up; three slow-motion video clips (\SI{959}{fps}) per specimen; roughly
-\SI{42}{s} per drop and about ninety minutes per specimen. Capture settings:
+carriage plate; first two drops of each session discarded as seating
+warm-up. Session length by batch: seed sessions contribute 101
+valid captures per article (103 for autv5r); the batch-2 record
+lists 21 to 22 valid captures per article; batch-3 and batch-4
+sessions recorded 20 drops per article. Exact per-session counts
+live in the archived per-drop records, whose two generations differ
+on whether the count is quoted before or after the warm-up discard.
+The
+shortening is justified in the main text (Section 3.3): the
+statistical minimum from the pre-campaign variance study is five
+stabilized drops, a truncation replay of the seed sessions preserves
+the full-session transmissibility ranking at twenty drops, and the
+batch-3 second pass showed the error budget is dominated by seating
+and print variation rather than session length. Three slow-motion
+video clips (\SI{959}{fps}) per specimen (from batch 4 filmed at
+drops 1, 10, and 20 so clips pair deterministically with captures);
+roughly \SI{42}{s} per drop, so about ninety minutes per seed
+article and fifteen per later-batch article. Capture settings:
 \SI{1.25}{MHz} sample rate, \SI{100}{ms} record, \SI{2}{ms} pre-trigger,
 \SI{150}{G} trigger on the base channel, AC-coupled ICP conditioning. The
 console settings were re-verified digit-for-digit against an archived
 screenshot after a settings-loss event, with data continuity confirmed to
-within about 1\%.
+within about 1\%. Per the review instruction of 2026-09-02, the
+per-session capture counts above should be re-verified by a person
+against the committed per-drop records before submission.
 
 \paragraph{Impact surface.} A blinded $3\times3$ crossover experiment over
 three candidate polyurethane mat arrangements (single \SI{0.25}{in} Shore
@@ -271,8 +314,8 @@ paraphrased here at the risk of diverging from the code of record.
     Peak-search window & $\approx$\SI{1.5}{ms} from first contact \\
     Baseline estimate & record tail \\
     Warm-up exclusion & first 2 drops per session \\
-    Valid captures per session & 101 (103 for autv5r) \\
-    Rig-health gate & $\Delta v$ from baselined base channel \\
+    Captures per session & 101 seed (103 autv5r); 21-22 batch 2; 20 batches 3-4 \\
+    Rig-health check & $\Delta v$ from baselined base channel \\
     Ringdown fit gate & $r^2 \ge 0.85$ (exponential fit) \\
     Second-contact threshold and window & code of record \\
     Per-capture exclusion rules & code of record \\
@@ -282,17 +325,44 @@ paraphrased here at the risk of diverging from the code of record.
   \end{tabular}
 \end{table}
 
-\paragraph{Rig health and repair history.} Rig health is gated on the impact
+\paragraph{Rig health and repair history.} Rig health is checked
+against the impact
 velocity change $\Delta v$ recovered from the base channel; over an
 uninterrupted 100-drop session the $\Delta v$ CV was 0.54\% with a flat
-drift slope. During commissioning, two guide-rod locking pins failed and a
+drift slope. Within a session, $\Delta v$ and the CFC-180 input
+typically ease down by 1 to 4\% as the polyurethane mat warms, and
+recover fully after a rest of minutes; after a mat rest or re-seat,
+the first 5 to 10 drops carry the settling transient, which is why
+the warm-up discard exists. The arrest velocity has visibly
+stabilized as cumulative drop count grew, which is the observation
+behind keeping the $\Delta v$ record even though it is no longer
+listed among the paper's contributions. During commissioning, two
+guide-rod locking pins failed and a
 defeated pin-park safety interlock was discovered and recommissioned; the
 pin-related friction produced a measurable $\Delta v$ deficit that resolved
-after repair (\href{\repo/issues/92}{issue~\#92}). Approximately 3{,}660
-instrumented drops across roughly 50 printed specimens were performed over
-three months of commissioning and characterization before the campaign
-sessions (\href{\repo/issues/101}{issue~\#101}); the campaign itself
-contributes over 800 clean captures to date.
+after repair (\href{\repo/issues/92}{issue~\#92}). More than 4{,}400
+instrumented drops across roughly 80 printed specimens have been
+performed over about four months of commissioning, characterization,
+and campaign sessions (tallied through
+\href{\repo/issues/101}{issue~\#101} plus the batch records); the
+campaign batches themselves contribute about 1{,}500 stabilized
+captures including the batch-3 second pass.
+
+\paragraph{Seating sensitivity, the between-seat rule, and the seat
+gauge.} The batch-3 second pass (main text, Section 4.2) established
+that a session can be internally stable and still misrepresent its
+design: the 1.251 outlier session passed every within-session check
+and did not reproduce. Two standing conventions followed. First, the
+\emph{between-seat replication rule}: any single-seating value that
+would drive a decision requires confirmation on an independent
+re-seat. Second, an advisory \emph{seat gauge}: the broadband ratio
+of CFC-1000 to CFC-180 transmissibility reads 1.00 to 1.07 in
+healthy sessions, and every large same-design shift observed so far
+carried a gauge of at least 1.15 in one of its seatings, so
+gauge-hot sessions are treated as re-seat candidates. Both
+conventions, with the session-by-session drift-watch record, live in
+the drop-test datasets on
+\href{\repo/pull/86}{PR~\#86}.
 
 \paragraph{Objective provenance and adversarial review.} The objective stack
 evolved through a measurability review
@@ -303,12 +373,18 @@ filtered peak-acceleration ratio and a provisional mass-weighted
 rebound-timing score, with quasi-static
 crush metrics deferred to a load-frame campaign. A pre-registered
 adversarial review of the objective choices (Edison ANALYSIS task
-\texttt{3e398131}, archived in the repository) subsequently recommended
-refitting with article-level noise (0.72\% CV rather than per-drop standard
-errors), treating the rebound fraction as a candidate constraint pending a
-restrained-versus-unrestrained validation with synchronized video, and
-reserving print capacity for replicate articles; these corrections define
-the round-3 plan described in the main-text Discussion.
+\texttt{3e398131}, archived in the repository) recommended
+accounting for article-level rather than per-drop noise, treating
+the rebound fraction as a candidate constraint pending a
+restrained-versus-unrestrained validation with synchronized video,
+and reserving print capacity for replicate articles. The campaign's
+realized responses are recorded in the main text: the batch-3 plate
+was printed and tested twice, which measured the design-level shift
+distribution directly and produced the between-seat replication
+rule; the rebound fraction remains a candidate constraint; and the
+surrogate continues to ingest per-session standard errors, with the
+replication evidence carried as an interpretation bound rather than
+as an inflated noise term.
 
 % -----------------------------------------------------------------------------
 \section{Printed-Mass Model}
@@ -327,63 +403,34 @@ strut diameter (fitted infill 23.6\%, wall \SI{1.18}{mm}, TPU factor 0.744).
 The model's residual standard deviation is \SI{0.378}{g}. For context, the
 three available prints of design 08 have a sample standard deviation of
 \SI{0.457}{g}; three prints of one geometry are insufficient to establish a
-general process repeatability limit. Inverting it inside the projection allows rounds to
-hold \emph{printed} grams constant with no slicer in the loop. Two round-2
-recommendation sets exist in the record and must not be conflated: the
-batch actually sliced and sent to the printer was generated before this
-correction, under the seed round's solid-mass projection, with the
-mass-aware objectives and each recommendation's predicted printed mass
-reported; a subsequently regenerated set applies the constant-printed-mass
-projection (target \SI{20.23}{g}, the reference article's weight) and is
-the working proposal for round 3. The repository's suggestion CSV at the
-branch head is the regenerated (constant-printed-mass) set.
-
-% -----------------------------------------------------------------------------
-\section{Simulation Fidelity Ladder}
-\label{si:simulation}
-% -----------------------------------------------------------------------------
-The screening ladder of the main text was assembled and benchmarked in
-\href{\repo/pull/33}{PR~\#33}. Tier~C is a MuJoCo rigid-strut, spring-tendon
-model (about \SI{0.15}{s} per design with CFC-180 filtering); PyBullet and
-PyChrono equivalents were benchmarked and demoted (the PyBullet bare-prism
-peak is contact-dominated and design-invariant). Tier~B is a Newton/Warp
-XPBD model with deformable struts and explicit tendon cross-sections
-(seconds to tens of seconds per design), which restores the
-tendon-stiffness sensitivity Tier~C lacks. Tier~A is a PolyFEM
-incremental-potential-contact hyperelastic model of the welded PLA/TPU prism
-(about a minute per run), which captures strut buckling and self-contact.
-
-Documented blind spots carried into any use of the ladder: Tier-C peak
-acceleration is floor-contact dominated and nearly flat across cable
-stiffness; the apparent strut-diameter leverage in unconstrained sweeps is
-largely a mass/contact confound (it shrinks about seventeenfold under a
-constant-mass sweep); the twist variable is not consumed by the Tier-C
-regime plumbing; rigid-strut models cannot reproduce the measured
-amplification ($t_{180}>1$ on five of eight bench articles, while simulated
-$t_{180}$ cannot exceed about 1); and simulated restitution is
-design-invariant where the measured rebound is not. Against the measured
-seed round ($n=7$ mapped articles), an intensive volumetric
-energy-absorption score computed at Tier~C showed a strong exploratory
-in-sample rank association with measured $t_{180}$ (Spearman
-$\rho_s = -0.929$; for seven untied ranks the exact two-sided
-permutation $p = 0.0028$;
-hypothesis-generating rather than validated prediction, since the metric
-was evaluated on the seed set without multiplicity adjustment), while the
-ladder's own simulated $t_{180}$ reaches only $\rho \approx 0.5$.
-
-A simulation-side closed-loop study using the same Ax/BoTorch pipeline on
-the Tier-C evaluator (ten independent Sobol-seeded repeats of 36 designs
-each) reached 97.1\% of an exhaustively computed reference-front
-hypervolume, versus 80.4\% for compass search and 60 to 66\% for random,
-Latin-hypercube, and Sobol baselines, with the smallest seed-to-seed spread;
-this motivates the budget-matched baseline comparison planned for the
-physical campaign but is not evidence about the physical loop itself.
+general process repeatability limit. Inverting the model inside the
+projection lets a batch hold \emph{printed} grams constant with no
+slicer in the loop, and batches 3 and 4 did so at the \SI{20.23}{g}
+target (the reference article's weight). Outcomes: batch mass CV
+fell from 5.5\% (tested seed articles) and 8.7\% (batch 2, still
+solid-mass-projected) to 1.7\% (batch 3) and 2.3\% (batch 4). The
+weighings sit a few tenths of a gram below target as a per-session
+flow offset ($-0.52$, $-0.25$, and \SI{-0.26}{g} for the batch-3
+first print, its reprint, and batch 4), while the model's infill
+terms passed their first test: regressing the print-averaged mass
+residuals of the eighteen batch-3 articles on the two commanded
+infills gives slopes indistinguishable from zero over the realized
+13 to 34\% spread. A session-term recalibration with the accumulated
+weighings is queued before the next batch's projection. Two batch-2
+recommendation sets exist in the record and must not be conflated:
+the batch actually sliced and sent to the printer was generated
+before this correction, under the seed batch's solid-mass
+projection; a subsequently regenerated set applies the
+constant-printed-mass projection and seeded the batch-3 tooling.
+Both are archived with the manuscript data
+(\texttt{round2-as-printed-solid-mass-projection.csv},
+\texttt{round3-candidate-constant-printed-mass.csv}).
 
 % -----------------------------------------------------------------------------
 \section{Metal-Analog Validation Plan}
 \label{si:metal-validation}
 % -----------------------------------------------------------------------------
-A final validation campaign rebuilds a subset of the $T_3$-prism designs as
+A planned future validation campaign rebuilds a subset of the $T_3$-prism designs as
 metal analogs (hollow aluminum rods for the compression members and
 stainless-steel threaded cables for the tension members) using the same
 $R$, $H$, $\theta$, and member-diameter parameterization as the printed
