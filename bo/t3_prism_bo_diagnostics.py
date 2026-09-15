@@ -133,6 +133,9 @@ from t3_prism_bo_campaign import (  # noqa: E402  (same directory)
     load_training_data,
     load_round2_training_data,
     load_round3_training_data,
+    load_round3_reprint_training_data,
+    load_round4_training_data,
+    repeat_group,
     render_round2_prototype,
     _axes_frac,
     _callout,
@@ -316,14 +319,11 @@ def render_feature_importance(table, out_path, n_articles=None):
 
 
 # ---- 2. leave-one-out cross-validation ----------------------------------
-def run_loocv(model, labels_by_arm, diagnostics_path=None):
-    from ax.modelbridge.cross_validation import compute_diagnostics, cross_validate
+def _cv_table(cv_results, labels_by_arm, diagnostics_path=None):
+    """Tidy (article, metric) table + Ax diagnostics for a list of CVResult."""
+    from ax.modelbridge.cross_validation import compute_diagnostics
 
-    t0 = time.time()
-    cv_results = cross_validate(model=model, folds=-1)  # -1 == leave-one-out
-    print(f"  LOOCV: {len(cv_results)} folds in {time.time() - t0:.0f} s")
     diagnostics = compute_diagnostics(cv_results)
-
     rows = []
     for result in cv_results:
         arm = result.observed.arm_name
@@ -353,7 +353,71 @@ def run_loocv(model, labels_by_arm, diagnostics_path=None):
     return table, diagnostics
 
 
-def render_loocv(table, diagnostics, out_path, n_articles=None):
+def run_loocv(model, labels_by_arm, diagnostics_path=None):
+    from ax.modelbridge.cross_validation import cross_validate
+
+    t0 = time.time()
+    cv_results = cross_validate(model=model, folds=-1)  # -1 == leave-one-out
+    print(f"  LOOCV: {len(cv_results)} folds in {time.time() - t0:.0f} s")
+    return _cv_table(cv_results, labels_by_arm, diagnostics_path)
+
+
+def run_group_cv(model, labels_by_arm, diagnostics_path=None):
+    """Leave-one-DESIGN-out CV: a reprint pair is one fold.
+
+    ``cross_validate(folds=-1)`` holds out one article at a time, which for
+    a repeated design leaves its twin session in the training set of the
+    fold that tests it; the GP then reads the twin at nearly the same
+    coordinates and the fold stops being out-of-sample (the leakage flagged
+    on PR #102). Grouping by design closes it in both directions: drranN
+    and 2dranN are held out together, every unrepeated article is its own
+    group. Per-fold refits are the same as ``run_loocv`` (build the model
+    with ``refit_on_cv=True`` and each fold re-runs NUTS without the
+    held-out group).
+    """
+    from copy import deepcopy
+
+    from ax.modelbridge.cross_validation import CVResult
+
+    t0 = time.time()
+    training_data = model.get_training_data()
+    group_of = {
+        obs.arm_name: repeat_group(labels_by_arm.get(obs.arm_name, obs.arm_name))
+        for obs in training_data
+    }
+    fold_keys = list(dict.fromkeys(group_of[obs.arm_name] for obs in training_data))
+    cv_results = []
+    for gkey in fold_keys:
+        test = [obs for obs in training_data if group_of[obs.arm_name] == gkey]
+        train = [obs for obs in training_data if group_of[obs.arm_name] != gkey]
+        preds = model.cross_validate(
+            cv_training_data=train,
+            cv_test_points=[deepcopy(obs.features) for obs in test],
+        )
+        cv_results.extend(
+            CVResult(observed=obs, predicted=pred)
+            for obs, pred in zip(test, preds)
+        )
+    print(
+        f"  LOGO-CV: {len(fold_keys)} design folds over "
+        f"{len(training_data)} articles in {time.time() - t0:.0f} s"
+    )
+    return _cv_table(cv_results, labels_by_arm, diagnostics_path)
+
+
+LOOCV_NOTE = (
+    "Leave-one-out: each article predicted by a model that refit NUTS "
+    "without it."
+)
+LOGOCV_NOTE = (
+    "Leave-one-design-out: each fold refits NUTS without one design's "
+    "articles, so a reprint pair\n(drranN + 2dranN) is held out together "
+    "and neither print leaks into the other's prediction."
+)
+
+
+def render_loocv(table, diagnostics, out_path, n_articles=None,
+                 note=LOOCV_NOTE):
     with plt.rc_context(FIG_RC):
         fig, axes = plt.subplots(1, len(METRIC_ORDER), figsize=(6.5 * len(METRIC_ORDER), 6.6),
                                  dpi=FIGURE_DPI, squeeze=False)
@@ -406,7 +470,7 @@ def render_loocv(table, diagnostics, out_path, n_articles=None):
             n_articles = int(table["print_id"].nunique())
         fig.text(
             0.5, -0.04,
-            "Leave-one-out: each article predicted by a model that refit NUTS without it.\n"
+            f"{note}\n"
             f"Dashed line is perfect prediction. n = {n_articles}, so read the "
             "direction, not the decimals.",
             ha="center", fontsize=15, color=LABEL_GRAY,
@@ -1767,6 +1831,15 @@ def main(argv=None):
         help="NUTS samples for the LOO refits (one per held-out article)",
     )
     ap.add_argument("--cv-warmup-steps", type=int, default=256)
+    ap.add_argument(
+        "--group-cv", action="store_true",
+        help=(
+            "with --cv-only: leave-one-DESIGN-out instead of leave-one-"
+            "article-out, so a reprint pair (drranN + 2dranN) is held out "
+            "together and neither session leaks into the other's fold; "
+            "writes -logocv tagged files next to the -loocv set"
+        ),
+    )
     ap.add_argument("--skip-cv", action="store_true", help="skip the leave-one-out refits")
     ap.add_argument(
         "--cv-only",
@@ -1940,7 +2013,10 @@ def main(argv=None):
     X1, _, labels1, _, _ = load_training_data(args.results, args.design, process=None)
     X2, _, labels2, _, _ = load_round2_training_data(process=None)
     X3, _, labels3, _, _ = load_round3_training_data(include_process=False)
-    X_all, labels_all = X1 + X2 + X3, labels1 + labels2 + labels3
+    X3r, _, labels3r, _, _ = load_round3_reprint_training_data(include_process=False)
+    X4, _, labels4, _, _ = load_round4_training_data(include_process=False)
+    X_all = X1 + X2 + X3 + X3r + X4
+    labels_all = labels1 + labels2 + labels3 + labels3r + labels4
     labels_by_arm = {}
     for trial in experiment.trials.values():
         arm = trial.arm
@@ -1956,17 +2032,25 @@ def main(argv=None):
           f"{n_articles} tested articles, {len(labels_by_arm)} labeled")
 
     if args.cv_only:
-        print("\nLeave-one-out cross-validation (one refit per article)...")
+        tag = "logocv" if args.group_cv else "loocv"
+        print(
+            "\nLeave-one-design-out (group) cross-validation (one refit "
+            "per design; reprint pairs share a fold)..."
+            if args.group_cv else
+            "\nLeave-one-out cross-validation (one refit per article)..."
+        )
         cv_model = fit_saasbo(
             experiment, data, args.cv_mcmc_samples, args.cv_warmup_steps,
             refit_on_cv=True,
         )
-        cv_png = fig_dir / f"{stem}-loocv.png"
-        cv_table, diagnostics = run_loocv(
-            cv_model, labels_by_arm, BO_DIR / f"{stem}-loocv-diagnostics.json"
+        cv_png = fig_dir / f"{stem}-{tag}.png"
+        runner = run_group_cv if args.group_cv else run_loocv
+        cv_table, diagnostics = runner(
+            cv_model, labels_by_arm, BO_DIR / f"{stem}-{tag}-diagnostics.json"
         )
-        render_loocv(cv_table, diagnostics, cv_png, n_articles=n_articles)
-        cv_table.to_csv(BO_DIR / f"{stem}-loocv.csv", index=False,
+        render_loocv(cv_table, diagnostics, cv_png, n_articles=n_articles,
+                     note=LOGOCV_NOTE if args.group_cv else LOOCV_NOTE)
+        cv_table.to_csv(BO_DIR / f"{stem}-{tag}.csv", index=False,
                         float_format="%.5f")
         print(f"  figure -> {cv_png}")
         for name in ("MAPE", "Correlation coefficient", "Rank correlation",

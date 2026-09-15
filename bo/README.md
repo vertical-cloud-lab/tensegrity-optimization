@@ -610,6 +610,48 @@ observed points as well as the batch's orange diamonds, so the committed
 pre-measurement `t3-prism-bo-round3-pareto.png` is a generation-time
 artifact; the measured story is this figure set.
 
+### Round-3 reprint drop data (the 2dran prints, sessions 2026-09-05/09)
+
+The round-3 plate was printed twice. The second print's nine articles
+(`2dran1`-`2dran9`, print log 2026-09-05 on issue #98) were drop-tested
+on 2026-09-05/08/09, 20 drops each, same rig and protocol, so `2dranN`
+is a second physical article of `drranN`'s design (same plate cell,
+same trial, its own weighed mass; the round-3 print key covers both
+prints). Snapshot from the PR #86 branch's `2dran-checkin` record
+(commit a10d890): `t3-prism-bo-round3-reprint-drop-results.csv` (batch
+summary with T-drift columns; `2dran6` is drift-flagged) and
+`t3-prism-bo-round3-reprint-per-drop-metrics.csv` (162 stabilized rows
+after the standard validity filter and 2-drop warmup discard).
+
+These are the campaign's first design-level replicates, and they are
+ingested as nine separate Ax trials rather than pooled with `drran`:
+feeding the raw repeats is what lets the model infer the noise floor
+that the per-drop SEM understates (repeated inputs are the standard Ax
+mechanism for that). Pair statistics, tabulated in
+`t3-prism-bo-round3-repeatability.csv`:
+
+- **t180**: reprints read +0.028 +/- 0.019 higher than the first print
+  (eight of nine pairs; the 2dran sessions ran on a settled mat at
+  lower input dv, so session state and print variation are
+  confounded). After that shift the per-article between-print sd is
+  roughly 0.013, against a within-session SEM of about 0.001, so the
+  SEM the fit used to carry understated the repeat noise by an order
+  of magnitude. Neither round-3 extreme replicates: `drran7`'s 1.251
+  amplification reads 1.029 on the reprint and `drran8`'s 0.980
+  attenuation reads 1.011, matching the seat-artifact reading in the
+  PR #86 record.
+- **Rebound energy**: pair ratios span 0.38x to 2.9x (between-print sd
+  roughly 4.5 mJ), and the within-batch rebound ranking does not
+  survive the reprint (rank correlation -0.18 across the nine pairs).
+  At this batch's design spread, rebound is dominated by
+  print/seat/session noise.
+
+Display convention on the Pareto panels: a repeated design plots once,
+at the mean of its prints, labeled `drranN x2` with a figure footnote,
+and the measured front used to rank suggestions is taken over those
+design-level means. The fit, the committed CSVs and the measured-round
+figure sets stay per-session.
+
 ## Round-4 batch (first refit on all 26 articles, 2026-09-07)
 
 Generated with `python bo/t3_prism_bo_campaign.py --round 4
