@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """2dran1..2dran9 vs drran1..drran9 — cross-batch comparison (PR #86, 09-10).
 
+SUPERSEDED as a correspondence (09-15): the round-3 print key (PR #102
+``bo/t3-prism-bo-round3-print-key.csv``, committed to both checkin
+folders as ``params.json``) shows the labels were never re-randomized —
+both batches are plate-cell-labeled *prints* of the same plate, so
+``drranN`` <-> ``2dranN`` is the design pairing and the best-fit
+assignment below paired hop/broadband lookalikes across designs.  Kept
+runnable as a record of what DAQ fingerprints alone can certify; the
+keyed comparison lives in ``drop_test_round3_per_design_comparison.py``.
+
 The 2dran batch (recorded 09-05/09-08/09-09) follows the drran batch
 (09-02/09-03) by 2-6 days at identical settings (60 in, arrangement B,
 SOP capture).  Neither batch's label -> design key is in the repo, and the

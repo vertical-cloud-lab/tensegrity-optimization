@@ -8,24 +8,31 @@ current SOP capture settings (4 ch, 1.25 MHz, 100 ms, 2 ms pre-trigger,
 upload date); per the TP4 timestamps the sessions ran across three days:
 `2dran1`–`2dran2` on 09-05 (~14:29–15:00 local), `2dran3`–`2dran5` on
 09-08 (~09:25–12:08), `2dran6`–`2dran9` on 09-09 (~09:48–11:02).
-**Neither the 2dran → design key nor the 2dran ↔ drran article
-correspondence is in the repo**; the labels are evidently re-randomized
-between batches (see the comparison below), so the key is needed before
-any BO hand-off.
+**Key resolved 09-15:** both batches' label → design keys are committed
+(`params.json` here and in `../drran-checkin/`, joined into the
+campaign summaries/metrics), imported from the BO branch's
+`bo/t3-prism-bo-round3-print-key.csv` (PR #102, committed 09-06,
+photo-confirmed per plate cell). The labels were never re-randomized —
+both batches are labeled by build-plate cell under the same back-left →
+front-right raster, so `drranN` and `2dranN` are **the same design
+(trials 28–36) on two different printed articles**. See "What the print
+record settles" below.
 
 **Unblinding status (09-12, @ctrhjk on PR #86):** (1) the `drran` and
-`2dran` sets are **the same nine structures** — the conditional
-readings in the comparison below are thereby upgraded to measured
-same-article facts (see "What the same-articles confirmation settles");
-(2) nothing unusual was observed while `2dran6` was dropped (anomaly
-item 1); (3) this batch's clips were filmed at random drops, so no
-clip ↔ recorded-drop pairing is possible here — future sessions will
-film drops 1, 10 and 20, which pairs clips to captures
-deterministically via sidecar `CreationDate` ↔ TP4 `EventTime`. Still
-pending: the per-label key (drranN / 2dranN → article/design ID), the
-BO blocker; and an explicit confirmation that "identical structures"
-means the same physical prints re-tested (not fresh re-prints of the
-same nine designs), which the seat-artifact reading below assumes.
+`2dran` sets are "identical structures" — read on 09-12 as the same
+nine physical articles re-tested; **corrected 09-15: it means identical
+*designs*** (the print record shows two separate prints — see "What the
+print record settles" below, which supersedes the same-article reading
+this check-in previously carried); (2) nothing unusual was observed
+while `2dran6` was dropped (anomaly item 1); (3) this batch's clips
+were filmed at random drops, so no clip ↔ recorded-drop pairing is
+possible here — future sessions will film drops 1, 10 and 20, which
+pairs clips to captures deterministically via sidecar `CreationDate` ↔
+TP4 `EventTime`. The two asks this check-in closed with — the per-label
+key, and prints-vs-re-prints confirmation — are both now answered: the
+key by PR #102's round-3 print key, the composition by PR #102's
+`bo/README.md` print logs (09-02 / 09-05, issue #98) and @me-madsen's
+09-15 statement on this PR that 2dran is a reprint.
 
 - Box share `kkhmvnj9ni19b57dryk3gdroqrp5uf0b`, one subfolder per
   session (ids in each `raw/2dran<n>/box-ids.json` manifest). Raw
@@ -60,7 +67,13 @@ same nine designs), which the seat-artifact reading below assumes.
   `scripts/analysis/drop_test_drran_checkin_analysis.py --raw … --out …`
   → `02_2dran1_drop5.png` … `10_2dran9_drop5.png`; cross-batch
   comparison via `scripts/analysis/drop_test_2dran_batch_comparison.py`
-  → `12_batch_comparison.png` + `batch_comparison.json`.
+  → `12_batch_comparison.png` + `batch_comparison.json` (fingerprint
+  best-fit — superseded as a correspondence 09-15); keyed per-design
+  comparison via
+  `scripts/analysis/drop_test_round3_per_design_comparison.py` →
+  `13_per_design_comparison.png` + `per_design_comparison.json`;
+  `params.json` (label → design key) joined into
+  `campaign_summary.csv` / `campaign_metrics.json` design_params.
 
 ## Results (stabilized drops 3–20; T = TOP/CH5, CFC-180)
 
@@ -122,11 +135,16 @@ worst channel ≤ 3.5 % of full scale everywhere except `2dran1`'s CH4
 
 ## Cross-batch comparison (vs `drran1`–`drran9`, `figures/12_batch_comparison.png`)
 
-- **The labels do not carry over.** Under the identity map the
-  standardized fingerprint distance is ~2× the best-fit assignment's
-  (19.2 vs 10.3), and identity pairs contradict the hop constants
-  (e.g. `drran1` 69.1 ms vs `2dran1` 27.2 ms). As expected for a
-  re-randomized batch.
+- **The labels do not carry over** — *so the fingerprints said.* Under
+  the identity map the standardized fingerprint distance is ~2× the
+  best-fit assignment's (19.2 vs 10.3), and identity pairs contradict
+  the hop constants (e.g. `drran1` 69.1 ms vs `2dran1` 27.2 ms).
+  *Corrected 09-15: the labels DO carry over (same raster, same design
+  per label). What this statistic actually measured is that the hop and
+  broadband features are print-dependent article properties, so
+  same-design articles from two prints don't fingerprint-match — cf.
+  the abc123 blind test, where print defects alone moved `t_second` at
+  \|d\| ≈ 10–19.*
 - **The best-fit correspondence is suggestive, not decisive** (runner-up
   margins ≲ 0.2 z for most pairs — the low-hop articles are mutually
   degenerate): `drran1↔2dran9` (each batch's big-hop article, though
@@ -134,76 +152,114 @@ worst channel ≤ 3.5 % of full scale everywhere except `2dran1`'s CH4
   `drran8↔2dran8` (each batch's lowest-T article, 0.980 → 1.011),
   `drran7↔2dran1` (each batch's broadband/CH4-hot article — but hugely
   milder now: T1000 2.94 → 1.47, T180 1.251 → 1.079, CH4 16 → 6.2 %
-  FS). @ctrhjk confirmed on 09-12 that these **are** the same nine
-  structures — see the subsection below.
+  FS). *Superseded 09-15: except for the accidental `drran8↔2dran8`,
+  these candidate pairs crossed designs (`drran7↔2dran1` is t32↔t36) —
+  the true pairing is per-label. Retained (with
+  `figures/batch_comparison.json`) as a record of what DAQ fingerprints
+  alone can and cannot certify.*
 - **Batch level**: median T180 1.053 vs 1.037 (+1.6 %, inside the known
   session-to-session re-seat envelope), inputs within 1.3 %, Δv within
   2.4 %. Within-session precision matches (median CV ≈ 0.25 %).
 - Full numbers: `figures/batch_comparison.json`.
 
-### What the same-articles confirmation settles (09-12)
+### What the print record settles (09-15) — supersedes the 09-12 same-articles reading
 
-@ctrhjk: *"drran sets and 2dran sets are identical structures."* Taking
-that as the same nine physical articles re-tested (it answers the
-either/or in the check-in's question 1), a true bijection exists even
-though the low-hop pairings stay degenerate, and two bounds hold under
-**any** pairing:
+The check-in's question 1 asked whether @ctrhjk's *"drran sets and
+2dran sets are identical structures"* meant the same physical prints
+re-tested or a re-print of the same nine designs. The print record
+answers: **re-print.** PR #102's `bo/README.md` records that the
+round-3 plate was printed twice by @ctrhjk — print 1 =
+`drran1`–`drran9` (print log with masses, RH and photos on issue #98,
+2026-09-02), print 2 = `2dran1`–`2dran9` (same log format, 2026-09-05)
+— and its `bo/t3-prism-bo-round3-print-key.csv` (committed 09-06,
+before either interpretation existed on this branch) keys **both**
+batches' labels to trials 28–36 by build-plate cell, photo-confirmed
+per cell. @me-madsen restated it on this PR on 09-15: *"2dran is a
+reprint of drran and should be a better representation of the digital
+model"* — and indeed the key logs print 2 defect-free while four
+print-1 articles (`drran3/5/6/7` = t31/t28/t34/t32) carry "some tiny
+bubbles on the diagonal tendons". The 09-12 same-articles reading was
+therefore wrong; these two batches are a **same-design print-to-print
+replication test** (print + session + seat noise combined), and the
+per-label pairing below replaces the fingerprint best-fit.
 
-- **The article that measured T180 = 1.2513 (`drran7`) re-measured
-  ≤ 1.0900** (the 2dran max) — at least **−12.9 %**. The program-record
-  amplifier was substantially a seat artifact; its broadband signature
-  collapsed with it (best-fit partner `2dran1`: T1000 2.94 → 1.47, CH4
-  raw 16 → 6.2 % FS).
-- **The article that measured 0.9804 (`drran8`) re-measured ≥ 1.0109**
-  (the 2dran min) — at least **+3.1 %**. Round 2's only attenuation
-  measurement did not survive its re-seat: **as of now, round 2 has no
-  reproducibly attenuating article** (all nine ≥ 1.011 in the latest
-  seating).
-- A third, near-assignment-free fact: `2dran2` (1.0900) is either the
-  ex-`drran7` article (−12.9 %) or rose ≥ +4.1 % from ≤ 1.0471 — so at
-  least one *mid-field* article also moved ≥ 4 %.
+Per-design T180, print 1 → print 2 (`figures/13_per_design_comparison.png`
++ `figures/per_design_comparison.json`, from
+`scripts/analysis/drop_test_round3_per_design_comparison.py`;
+pathologies = advisory seat gauge T1000/T180, T-drift-watch flags, and
+the print key's defect log):
 
-Best-fit paired T180 changes (pairings with runner-up margin ≲ 0.2 z
-are indicative only):
+| # | design | T180 print 1 → print 2 | Δ | pathologies |
+|--:|---|---|--:|---|
+| 7 | t32 | 1.2513 → 1.0286 | **−17.8 %** | p1: bubbled TPU tendons + gauge 2.35 |
+| 2 | t33 | 1.0345 → 1.0900 | +5.4 % | p2 gauge 1.15 (p1 1.09) |
+| 1 | t36 | 1.0326 → 1.0791 | +4.5 % | p2 gauge 1.37 |
+| 6 | t34 | 1.0471 → 1.0859 † | +3.7 % † | p1 bubbles; p2 drift-flagged |
+| 8 | t35 | 0.9804 ‡ → 1.0109 | +3.1 % | p1 drift-flagged |
+| 5 | t28 | 1.0373 → 1.0604 | +2.2 % | p1 bubbles |
+| 3 | t31 | 1.0389 → 1.0533 | +1.4 % | p1 bubbles; gauges 1.11 / 1.13 |
+| 4 | t29 | 1.0344 → 1.0433 | **+0.9 %** | clean |
+| 9 | t30 | 1.0425 → 1.0451 | **+0.2 %** | clean |
 
-| best-fit pair | T180 drran → 2dran | Δ |
-|---|---|--:|
-| `drran7 → 2dran1` (anchor) | 1.2513 → 1.0791 | **−13.8 %** |
-| `drran3 → 2dran2` (degenerate) | 1.0389 → 1.0900 | **+4.9 %** |
-| `drran9 → 2dran6` (degenerate) | 1.0425 → 1.0859 † | +4.2 % † |
-| `drran8 → 2dran8` (anchor) | 0.9804 → 1.0109 | +3.1 % |
-| `drran5 → 2dran5` | 1.0373 → 1.0604 | +2.2 % |
-| `drran1 → 2dran9` (anchor) | 1.0326 → 1.0451 | +1.2 % |
-| `drran2 → 2dran4` | 1.0345 → 1.0433 | +0.9 % |
-| `drran6 → 2dran3` (degenerate) | 1.0471 → 1.0533 | +0.6 % |
-| `drran4 → 2dran7` | 1.0344 → 1.0286 | −0.6 % |
+† vs `2dran6`'s late-session level (~1.06) the change is ~+1.2 %.
+‡ `drran8`'s drift-flagged mean; vs its last-10 mean (0.9838) +2.8 %.
 
-† `2dran6` is the drift-flagged provisional mean; vs its late-session
-level (~1.06) the change is ~+1.7 %.
+Reading it for repeatability: median +2.2 % with 8/9 positive — a
+systematic batch offset (the print-2 articles are +0.26 g ≈ +1.3 %
+heavier at byte-identical print settings per PR #102's session-offset
+analysis, and the sessions are different days/mount seatings) — and
+**both fully clean pairs reproduce to ≤ 0.9 %**, i.e. at within-print
+session repeatability. Every pair off by more than ~2 % carries an
+identified measurement pathology on at least one side. Cross-print rank
+order is poor overall (Spearman 0.08) for a structural reason: on
+print 1 the seven mid-field designs span only 1.4 % (including the
+t28/t30/t33 parameter-clone trio, spread 0.8 % there), so their
+ordering was never resolvable at this noise level; at the extremes the
+prints agree qualitatively — t35 (the round's only twisted design,
+61.5°) is the lowest-T design on both prints, and t34 ranks #2
+amplifier on both. The 09-12 "same-article" bounds survive re-badged as
+design-level facts: neither print-1 extreme reproduced on the clean
+print — **round 3 still has no reproduced attenuator.**
 
-Same-article seat-to-seat noise is therefore **heavy-tailed**: median
-+1.2 %, five of nine within the known ±2.2 % re-seat envelope, tails at
-+3–5 % and −13.8 %. Rank order is only partly preserved (Spearman
-ρ ≈ 0.75 under best-fit — an upper bound, since the pairing was fitted
-partly on T180). Two corollaries, promoted to standing conventions in
-the repo `CLAUDE.md`:
+**"Better representation of the digital model" — measured, yes.**
+Against the frozen round-3 predictions
+(`bo/t3-prism-bo-round3-predictions.csv`): print 1 Spearman ρ = 0.20
+(p = 0.61), RMS 0.081; print 2 **ρ = 0.72 (p = 0.03), RMS 0.020 — 4×
+closer**. The improvement is concentrated exactly at the defect: t32
+was round 3's *best-predicted* design (pred 1.0204), measured
+worst-on-record on the bubbled print-1 article (1.2513), and lands
+within 0.8 % of prediction on the clean print 2 (1.0286). Excluding
+t32, the two prints agree with the model comparably (ρ 0.71 vs 0.64,
+RMS 0.026 vs 0.021) — print 2's advantage is having no defective
+article, not a globally different response.
 
-1. **Within-session stability does not certify a seat.** `drran7` held
-   1.251 at CV 0.77 % with no drift — it passed the T-drift watch —
-   and was still wrong by ~14 %. Single-seating extremes (or any
-   decision-driving T) need an independent re-seat confirmation before
-   they count as article properties. Positive control: `6lhxfy`'s
-   0.893 reproduced to 0.13 % across a day + re-seat — real
-   attenuation does reproduce.
-2. **Advisory seat gauge — broadband ratio T1000/T180** (healthy
-   ≈ 1.00–1.07 on this mat): every large same-article shift on record
-   carried ≥ 1.15 in at least one seating (`drran7` 2.35, `2dran2`
-   1.15). Standing prediction, on record before any re-test:
-   **`2dran1` (ratio 1.37, this batch's CH4-hot session) reads high at
-   1.079 and should come down on its next re-seat.**
+**Cross-thread flag for PR #102 / round 5:**
+`bo/t3-prism-bo-round3-drop-results.csv` there is a **drran-only**
+snapshot — the BO currently holds t32 = 1.2513 and t35 = 0.9804, both
+now known unrepresentative. The round-5 regeneration already pending on
+the corny-key correction should also re-ingest round 3 per-design from
+both key-joined campaign summaries (this folder's + `../drran-checkin/`'s),
+preferring gauge-healthy, drift-clean seatings.
 
-Once the per-label key lands, these two batches become a 9-article ×
-2-seat reproducibility dataset — exactly the seat-noise model the BO
-needs. The asks stand: the key for both batches (drranN → ID and
-2dranN → ID yields the cross-batch mapping for free), and confirmation
-that the articles are the same physical prints (not re-prints).
+The two corollaries promoted to `CLAUDE.md` on 09-12 survive with their
+evidence base corrected (see the updated section there):
+
+1. **Within-session stability certifies nothing** — `drran7` held 1.251
+   at CV 0.77 %, passed the drift watch, and the value was an
+   article/seat artifact all the same. Decision-driving values need
+   replication — across a re-seat, and (for extremes) across a
+   replicate print. Positive control: `6lhxfy` 0.893 reproduced to
+   0.13 % across a day + re-seat.
+2. **The advisory seat gauge (T1000/T180 ≳ 1.15) gains evidence:** the
+   three largest per-design shifts are exactly the three pairs whose
+   one side trips it (`drran7` 2.35, `2dran1` 1.37, `2dran2` 1.15).
+   The standing 09-12 prediction sharpens: `2dran1` (= t36, gauge 1.37)
+   reads ~4 % high at 1.079 — its healthy-gauge print-1 sibling
+   (`drran1`) read 1.033 — and should come down on re-seat.
+
+Residual asks: a quick physical confirm from @ctrhjk that both printed
+sets (18 articles) exist — and, if the print-1 articles are still on
+hand, a 20-drop **re-seat of ex-`drran7`** (the bubbled t32 article)
+would split defect vs seat in the −17.8 % pair: if it repeats ~1.25 the
+artifact is the article (defect), if it lands ~1.03–1.09 it was the
+seat.

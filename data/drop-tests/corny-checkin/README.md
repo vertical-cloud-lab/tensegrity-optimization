@@ -270,7 +270,14 @@ across a day + re-seat).
   different set of structures, not a third seating of the same nine.**
   *(Post-key: confirmed and strengthened — all nine are new articles,
   the round-4 designs t37–t45; the fingerprint read was exactly
-  right.)*
+  right.)* *(09-15 print-record correction: drran/2dran are two
+  **prints** of the round-3 plate, not two seatings — the
+  "same-article seat-noise distribution" invoked above is actually
+  same-design print+seat noise, and its −13.8 % best-fit outlier is
+  the per-label t32 pair at −17.8 %, driven by print-1 tendon defects
+  plus a gauge-2.35 seat. The premise of this argument weakens but its
+  conclusion was independently key-confirmed. See
+  `../2dran-checkin/README.md`, "What the print record settles".)*
 - **Batch level**: median T180 1.046 (drran 1.037, 2dran 1.053 — the
   amplifier half of corny sits exactly in the familiar band), batch-mean
   inputs within 0.7 % (218.8–221.6 G), Δv within 1.7 % (5.19–5.32 m/s).

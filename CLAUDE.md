@@ -30,28 +30,44 @@ must not be forgotten between threads.
   any new analysis script, and state the watch outcome — flagged or clean —
   in every findings writeup.
 
-### Between-seat replication (standing instruction, PR #86 · 2026-09-12)
+### Replication across seats and prints (standing instruction, PR #86 · 2026-09-12, corrected 09-15)
 
 The drift watch only catches *within-session* instability — a stably
-wrong wax seat passes it. Confirmed by the drran → 2dran re-test of the
-same nine articles (@ctrhjk unblinding, 09-12): `drran7` held
-T180 = 1.251 at CV 0.77 % for 20 drops with no drift, then re-measured
-≤ 1.090 after re-seating (best-fit 1.079; broadband T1000 2.94 → 1.47);
-`drran8`'s 0.980 attenuation re-measured ≥ 1.011. Same-article
-seat-to-seat shifts are heavy-tailed: median ~+1 %, five of nine within
-±2.2 %, tails +3–5 % and −13.8 %
-(`data/drop-tests/2dran-checkin/README.md`).
+wrong measurement passes it: `drran7` held T180 = 1.251 at CV 0.77 %
+for 20 drops with no drift, and the value was an artifact anyway.
+**09-15 correction to this rule's evidence base:** drran → 2dran was a
+*re-print*, not a re-seat — @ctrhjk printed the round-3 plate (trials
+28–36) twice (print logs 09-02/09-05 on issue #98; PR #102
+`bo/README.md`), and the labels carry the build-plate cell in both
+prints (keys: `data/drop-tests/{drran,2dran}-checkin/params.json`), so
+`drranN` ↔ `2dranN` is the same-design pairing. The measured per-design
+shifts are same-design **print+seat** noise: median +2.2 % (batch
+offset ~+1.5 %; print-2 articles +1.3 % heavier), both fully clean
+pairs ≤ 0.9 %, tails +3–5 %, and −17.8 % on the pair whose print-1
+article had logged TPU-tendon bubbles and seat gauge 2.35
+(t32 = `drran7`→`2dran7`: 1.2513 → 1.0286; the model had predicted
+1.0204). `drran8`'s 0.9804 (drift-flagged) also did not reproduce
+(t35 → 1.0109): round 3 has no reproduced attenuator. Details:
+`data/drop-tests/2dran-checkin/README.md` ("What the print record
+settles").
 
-- Any single-seating T that would drive a decision (batch extreme,
-  claimed attenuator, BO hand-off) needs confirmation on an independent
-  mount re-seat before it is treated as an article property. Positive
-  control: `6lhxfy` 0.893 reproduced to 0.13 % across a day + re-seat —
-  real attenuation does reproduce.
+- Any single-print, single-seating T that would drive a decision (batch
+  extreme, claimed attenuator, BO hand-off) needs confirmation on an
+  independent mount re-seat — and, for extremes, ideally a replicate
+  print — before it is treated as a design property. Positive control:
+  `6lhxfy` 0.893 reproduced to 0.13 % across a day + re-seat — real
+  attenuation does reproduce.
 - Advisory seat gauge: broadband ratio T1000/T180 ≳ 1.15 (healthy
-  ≈ 1.00–1.07 on the 1/2 in mat) has accompanied every large
-  same-article shift on record (`drran7` 2.35, `2dran2` 1.15). Standing
-  prediction (09-12): `2dran1` (ratio 1.37) reads high at 1.079 and
+  ≈ 1.00–1.07 on the 1/2 in mat). The three largest round-3 per-design
+  shifts are exactly the three pairs with a gauge-tripping side
+  (`drran7` 2.35, `2dran1` 1.37, `2dran2` 1.15). Standing prediction
+  (09-12, sharpened 09-15): `2dran1` (= t36, gauge 1.37) reads ~4 %
+  high at 1.079 — its healthy-gauge print-1 sibling read 1.033 — and
   should come down on re-seat.
+- BO ingestion: PR #102's `bo/t3-prism-bo-round3-drop-results.csv` is a
+  drran-only snapshot (holds t32 = 1.251 and t35 = 0.980, both
+  unrepresentative). Round-5 regeneration must re-ingest round 3
+  per-design from both key-joined campaign summaries.
 
 ### Other conventions (pointers, not duplicates)
 

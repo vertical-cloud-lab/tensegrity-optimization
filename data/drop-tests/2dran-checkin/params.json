@@ -1,0 +1,11 @@
+{
+ "2dran1": {"spec": "t36", "mass_g": 19.48, "R_mm": 25.88, "H_mm": 62.11, "twist_deg": 40.0, "strut_d_mm": 8.27, "cable_d_mm": 3.11, "strut_infill_pct": 34, "tpu_infill_pct": 26, "plate_pos": "back-left", "defects": "none"},
+ "2dran2": {"spec": "t33", "mass_g": 19.65, "R_mm": 23.07, "H_mm": 55.37, "twist_deg": 40.0, "strut_d_mm": 5.54, "cable_d_mm": 5.08, "strut_infill_pct": 29, "tpu_infill_pct": 16, "plate_pos": "back-center", "defects": "none"},
+ "2dran3": {"spec": "t31", "mass_g": 20.15, "R_mm": 20.74, "H_mm": 65.07, "twist_deg": 40.0, "strut_d_mm": 9.04, "cable_d_mm": 4.14, "strut_infill_pct": 18, "tpu_infill_pct": 21, "plate_pos": "back-right", "defects": "none"},
+ "2dran4": {"spec": "t29", "mass_g": 20.19, "R_mm": 27.82, "H_mm": 76.5, "twist_deg": 40.0, "strut_d_mm": 8.35, "cable_d_mm": 3.83, "strut_infill_pct": 13, "tpu_infill_pct": 31, "plate_pos": "middle-left", "defects": "none"},
+ "2dran5": {"spec": "t28", "mass_g": 20.22, "R_mm": 23.23, "H_mm": 55.75, "twist_deg": 40.0, "strut_d_mm": 5.58, "cable_d_mm": 5.11, "strut_infill_pct": 21, "tpu_infill_pct": 29, "plate_pos": "middle-center", "defects": "none"},
+ "2dran6": {"spec": "t34", "mass_g": 19.54, "R_mm": 21.72, "H_mm": 52.14, "twist_deg": 40.0, "strut_d_mm": 8.81, "cable_d_mm": 4.78, "strut_infill_pct": 16, "tpu_infill_pct": 34, "plate_pos": "middle-right", "defects": "none"},
+ "2dran7": {"spec": "t32", "mass_g": 20.32, "R_mm": 29.89, "H_mm": 60.57, "twist_deg": 40.0, "strut_d_mm": 8.1, "cable_d_mm": 4.11, "strut_infill_pct": 24, "tpu_infill_pct": 13, "plate_pos": "front-left", "defects": "none"},
+ "2dran8": {"spec": "t35", "mass_g": 19.51, "R_mm": 25.34, "H_mm": 60.82, "twist_deg": 61.5, "strut_d_mm": 9.02, "cable_d_mm": 3.04, "strut_infill_pct": 26, "tpu_infill_pct": 24, "plate_pos": "front-center", "defects": "none"},
+ "2dran9": {"spec": "t30", "mass_g": 19.65, "R_mm": 23.01, "H_mm": 55.21, "twist_deg": 40.0, "strut_d_mm": 5.52, "cable_d_mm": 5.06, "strut_infill_pct": 31, "tpu_infill_pct": 18, "plate_pos": "front-right", "defects": "none"}
+}

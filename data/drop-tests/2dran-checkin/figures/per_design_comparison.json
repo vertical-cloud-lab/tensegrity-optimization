@@ -1,0 +1,329 @@
+{
+ "provenance": {
+  "key": "bo/t3-prism-bo-round3-print-key.csv @ PR #102 branch (claude/issue-98-20260821-0103, committed 09-06, photo-confirmed per plate cell); prints 1/2 logged on issue #98 09-02 / 09-05; reprint stated by @me-madsen on PR #86 09-15",
+  "predictions": "bo/t3-prism-bo-round3-predictions.csv (frozen)"
+ },
+ "designs": [
+  {
+   "spec": "t36",
+   "label_index": 1,
+   "plate_pos": "back-left",
+   "pred_t180": 1.0514,
+   "drran": {
+    "t180": 1.03259000006491,
+    "t180_sd": 0.0016495591705116388,
+    "t1000": 1.1045216126268813,
+    "gauge": 1.0696613491874312,
+    "drift_flag": false,
+    "mass_g": 19.31,
+    "defects": "none"
+   },
+   "2dran": {
+    "t180": 1.07912673342057,
+    "t180_sd": 0.0036205527646270383,
+    "t1000": 1.4730438385280202,
+    "gauge": 1.3650332189054648,
+    "drift_flag": false,
+    "mass_g": 19.48,
+    "defects": "none"
+   },
+   "delta_pct": 4.51,
+   "pathologies": [
+    "2dran seat gauge 1.37 (suspect)"
+   ],
+   "centered_delta_pct": 2.28
+  },
+  {
+   "spec": "t33",
+   "label_index": 2,
+   "plate_pos": "back-center",
+   "pred_t180": 1.0565,
+   "drran": {
+    "t180": 1.034535479213522,
+    "t180_sd": 0.000645161951072587,
+    "t1000": 1.130647981658728,
+    "gauge": 1.092904017673974,
+    "drift_flag": false,
+    "mass_g": 19.33,
+    "defects": "none"
+   },
+   "2dran": {
+    "t180": 1.0899719198151416,
+    "t180_sd": 0.005857491890007678,
+    "t1000": 1.2497654234767395,
+    "gauge": 1.1466033213852873,
+    "drift_flag": false,
+    "mass_g": 19.65,
+    "defects": "none"
+   },
+   "delta_pct": 5.36,
+   "pathologies": [
+    "drran seat gauge 1.09 (above healthy band)",
+    "2dran seat gauge 1.15 (suspect)"
+   ],
+   "centered_delta_pct": 3.13
+  },
+  {
+   "spec": "t31",
+   "label_index": 3,
+   "plate_pos": "back-right",
+   "pred_t180": 1.0432,
+   "drran": {
+    "t180": 1.038912160653277,
+    "t180_sd": 0.0011506256746595764,
+    "t1000": 1.1486002097800692,
+    "gauge": 1.1055797143213912,
+    "drift_flag": false,
+    "mass_g": 19.92,
+    "defects": "some tiny bubbles on the diagonal tendons"
+   },
+   "2dran": {
+    "t180": 1.0533168351156001,
+    "t180_sd": 0.0034511778042643757,
+    "t1000": 1.1945331627734659,
+    "gauge": 1.1340682337450416,
+    "drift_flag": false,
+    "mass_g": 20.15,
+    "defects": "none"
+   },
+   "delta_pct": 1.39,
+   "pathologies": [
+    "drran seat gauge 1.11 (above healthy band)",
+    "drran print defects (some tiny bubbles on the diagonal tendons)",
+    "2dran seat gauge 1.13 (above healthy band)"
+   ],
+   "centered_delta_pct": -0.84
+  },
+  {
+   "spec": "t29",
+   "label_index": 4,
+   "plate_pos": "middle-left",
+   "pred_t180": 1.032,
+   "drran": {
+    "t180": 1.0343554492868483,
+    "t180_sd": 0.0016671106351654524,
+    "t1000": 1.0815735162596147,
+    "gauge": 1.0456497493248782,
+    "drift_flag": false,
+    "mass_g": 19.92,
+    "defects": "none"
+   },
+   "2dran": {
+    "t180": 1.0433259242136939,
+    "t180_sd": 0.002584808323336767,
+    "t1000": 1.1076934651194625,
+    "gauge": 1.0616945667810176,
+    "drift_flag": false,
+    "mass_g": 20.19,
+    "defects": "none"
+   },
+   "delta_pct": 0.87,
+   "pathologies": [],
+   "centered_delta_pct": -1.36
+  },
+  {
+   "spec": "t28",
+   "label_index": 5,
+   "plate_pos": "middle-center",
+   "pred_t180": 1.0587,
+   "drran": {
+    "t180": 1.0373325267188342,
+    "t180_sd": 0.0023535582132952863,
+    "t1000": 1.0427000931245418,
+    "gauge": 1.0051743932321158,
+    "drift_flag": false,
+    "mass_g": 19.88,
+    "defects": "some tiny bubbles on the diagonal tendons"
+   },
+   "2dran": {
+    "t180": 1.0604276133085229,
+    "t180_sd": 0.0013760935717656297,
+    "t1000": 1.1014019230098275,
+    "gauge": 1.0386394216701555,
+    "drift_flag": false,
+    "mass_g": 20.22,
+    "defects": "none"
+   },
+   "delta_pct": 2.23,
+   "pathologies": [
+    "drran print defects (some tiny bubbles on the diagonal tendons)"
+   ],
+   "centered_delta_pct": 0.0
+  },
+  {
+   "spec": "t34",
+   "label_index": 6,
+   "plate_pos": "middle-right",
+   "pred_t180": 1.065,
+   "drran": {
+    "t180": 1.047081593224621,
+    "t180_sd": 0.003957153188435229,
+    "t1000": 1.075054971486929,
+    "gauge": 1.02671556681286,
+    "drift_flag": false,
+    "mass_g": 19.24,
+    "defects": "some tiny bubbles on the diagonal tendons"
+   },
+   "2dran": {
+    "t180": 1.085898023090542,
+    "t180_sd": 0.0195507634334464,
+    "t1000": 1.1330137478971223,
+    "gauge": 1.0433887195710014,
+    "drift_flag": true,
+    "mass_g": 19.54,
+    "defects": "none"
+   },
+   "delta_pct": 3.71,
+   "pathologies": [
+    "drran print defects (some tiny bubbles on the diagonal tendons)",
+    "2dran T-drift flag"
+   ],
+   "centered_delta_pct": 1.48
+  },
+  {
+   "spec": "t32",
+   "label_index": 7,
+   "plate_pos": "front-left",
+   "pred_t180": 1.0204,
+   "drran": {
+    "t180": 1.251289971228526,
+    "t180_sd": 0.00960942678478089,
+    "t1000": 2.937734594076864,
+    "gauge": 2.347764835989674,
+    "drift_flag": false,
+    "mass_g": 20.06,
+    "defects": "some tiny bubbles on the diagonal tendons"
+   },
+   "2dran": {
+    "t180": 1.0286127115380161,
+    "t180_sd": 0.0016119348554030262,
+    "t1000": 1.0603707533811277,
+    "gauge": 1.0308746348230773,
+    "drift_flag": false,
+    "mass_g": 20.32,
+    "defects": "none"
+   },
+   "delta_pct": -17.8,
+   "pathologies": [
+    "drran seat gauge 2.35 (suspect)",
+    "drran print defects (some tiny bubbles on the diagonal tendons)"
+   ],
+   "centered_delta_pct": -20.03
+  },
+  {
+   "spec": "t35",
+   "label_index": 8,
+   "plate_pos": "front-center",
+   "pred_t180": 1.0393,
+   "drran": {
+    "t180": 0.9804378489488348,
+    "t180_sd": 0.005080440028783636,
+    "t1000": 1.0415063485162765,
+    "gauge": 1.0622869666169208,
+    "drift_flag": true,
+    "mass_g": 19.32,
+    "defects": "none"
+   },
+   "2dran": {
+    "t180": 1.0108500365264843,
+    "t180_sd": 0.0010683212210984146,
+    "t1000": 1.0420030246278869,
+    "gauge": 1.030818605110261,
+    "drift_flag": false,
+    "mass_g": 19.51,
+    "defects": "none"
+   },
+   "delta_pct": 3.1,
+   "pathologies": [
+    "drran T-drift flag"
+   ],
+   "centered_delta_pct": 0.87
+  },
+  {
+   "spec": "t30",
+   "label_index": 9,
+   "plate_pos": "front-right",
+   "pred_t180": 1.058,
+   "drran": {
+    "t180": 1.0424926519273505,
+    "t180_sd": 0.0009387117391997051,
+    "t1000": 1.0498415053336838,
+    "gauge": 1.0070493095493256,
+    "drift_flag": false,
+    "mass_g": 19.34,
+    "defects": "none"
+   },
+   "2dran": {
+    "t180": 1.045103608146475,
+    "t180_sd": 0.002376459227987092,
+    "t1000": 1.054845515477519,
+    "gauge": 1.0093214751677313,
+    "drift_flag": false,
+    "mass_g": 19.65,
+    "defects": "none"
+   },
+   "delta_pct": 0.25,
+   "pathologies": [],
+   "centered_delta_pct": -1.98
+  }
+ ],
+ "aggregate": {
+  "median_delta_pct": 2.23,
+  "n_positive": 8,
+  "batch_median_t180": {
+   "drran": 1.0373,
+   "2dran": 1.0533
+  },
+  "mean_mass_g": {
+   "drran": 19.59,
+   "2dran": 19.86
+  },
+  "spearman_drran_vs_2dran": 0.083,
+  "clean_pairs": {
+   "t29": 0.87,
+   "t30": 0.25
+  },
+  "max_abs_delta_clean_pct": 0.87,
+  "clone_trio_spread_pct": {
+   "drran": 0.77,
+   "2dran": 4.29
+  }
+ },
+ "model_agreement": {
+  "drran": {
+   "all9": {
+    "n": 9,
+    "spearman_rho": 0.2,
+    "spearman_p": 0.606,
+    "rms_vs_pred": 0.0807
+   },
+   "excl_t32": {
+    "n": 8,
+    "spearman_rho": 0.714,
+    "spearman_p": 0.047,
+    "rms_vs_pred": 0.0258
+   }
+  },
+  "2dran": {
+   "all9": {
+    "n": 9,
+    "spearman_rho": 0.717,
+    "spearman_p": 0.03,
+    "rms_vs_pred": 0.02
+   },
+   "excl_t32": {
+    "n": 8,
+    "spearman_rho": 0.643,
+    "spearman_p": 0.086,
+    "rms_vs_pred": 0.021
+   }
+  },
+  "t32_story": {
+   "pred": 1.0204,
+   "best_predicted": true,
+   "drran7_t180": 1.251289971228526,
+   "2dran7_t180": 1.0286127115380161,
+   "note": "round 3's best-predicted design measured worst-on-record on the defective print 1 article (bubbled TPU tendons, gauge 2.35) and within 0.8 % of prediction on the clean print 2"
+  }
+ }
+}

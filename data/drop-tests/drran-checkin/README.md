@@ -8,21 +8,28 @@ current SOP capture settings (4 ch, 1.25 MHz, 100 ms, 2 ms pre-trigger,
 150 G trigger on CH5). Per the TP4 timestamps the sessions ran in order:
 `drran1`–`drran7` on 09-02 (~14:20–19:00 local), `drran8`–`drran9` on
 09-03 morning (~09:05–09:37) — the Box folder labels all say 9-3-2026.
-The `drran` labels appear to be a blind/randomized numbering of the
-round-2 batch (cf. the r2d2 naming and the 1–9 model numbers in
-@timothy-commins's video note); **the drran → design-parameter key is
-not in the repo yet** and is needed before any BO hand-off.
+The `drran` labels turned out to be build-plate-cell labels (back-left
+→ front-right raster; cf. the r2d2 naming and the 1–9 model numbers in
+@timothy-commins's video note); **key resolved 09-15**: the per-label
+design key (trials 28–36) is committed as `params.json` (from the BO
+branch's `bo/t3-prism-bo-round3-print-key.csv`, PR #102) and joined
+into `figures/campaign_summary.csv` / `campaign_metrics.json`.
 
-**Re-test update (09-12):** @ctrhjk confirms the `2dran1`–`2dran9`
-batch (09-05/08/09, `../2dran-checkin/`) re-tested **these same nine
-structures** under re-randomized labels — and neither extreme survived
-the re-seat. Under *any* label pairing, the 1.2513 article (`drran7`)
-re-measured ≤ 1.0900 (best-fit 1.0791, broadband collapsed T1000
-2.94 → 1.47) and the 0.9804 article (`drran8`) re-measured ≥ 1.0109.
-Treat both extremes as seat-contaminated single-seat values, not
-article properties. Full quantification and the standing between-seat
-replication rule: `../2dran-checkin/README.md` ("What the same-articles
-confirmation settles") and the repo `CLAUDE.md`.
+**Re-test update (09-12, corrected 09-15):** the `2dran1`–`2dran9`
+batch (09-05/08/09, `../2dran-checkin/`) measured **the same nine
+designs on a second print of the plate** — @ctrhjk printed the round-3
+plate twice (print logs 09-02 / 09-05 on issue #98; PR #102
+`bo/README.md`), and the labels carry the plate cell in both prints, so
+`drranN` ↔ `2dranN` is the same-design pairing. (The 09-12 reading —
+same physical articles re-seated under re-randomized labels — was
+wrong.) Neither extreme reproduced on the clean second print: the t32
+design (`drran7`, printed here with bubbled TPU tendons, seat gauge
+2.35) fell 1.2513 → 1.0286, and the t35 design (`drran8`,
+drift-flagged) rose 0.9804 → 1.0109. Treat both print-1 values as
+article/seat-contaminated, not design properties. Full per-design
+comparison and the corrected replication rule:
+`../2dran-checkin/README.md` ("What the print record settles") and the
+repo `CLAUDE.md`.
 
 - Box share `kkhmvnj9ni19b57dryk3gdroqrp5uf0b`, one subfolder per
   session (ids in each `raw/drran<n>/box-ids.json` manifest). Raw
@@ -71,20 +78,25 @@ confirmation settles") and the repo `CLAUDE.md`.
    because the cancellation was imperfect. Its mean is provisional;
    last-10 mean = 0.9838. It is the batch's only attenuator either way
    (next best 1.033). The other eight sessions are clean —
-   r2d2c2-style drift did not recur. *Re-test update (09-12): the
-   attenuation did not survive — the same article re-measured ≥ 1.0109
-   in the 2dran batch.*
+   r2d2c2-style drift did not recur. *Update (09-12, corrected 09-15):
+   the attenuation did not survive — the t35 design re-measured 1.0109
+   on the second print (`2dran8`, clean seat/gauge); round 3 has no
+   reproduced attenuator.*
 2. **`drran7` transmits at T180 = 1.251** — the strongest amplifier on
    program record (prior worst ~1.19–1.22), with broadband T (CFC-1000)
    ≈ 2.94 and top-vertex raw peaks ~2.2 kG (16 % FS). Stable across all
    20 drops (CV 0.77 %, no drift), so it is characteristic of the
    article, not a loose-mount rattle — but worth a physical check
    (mount seat, strut/tendon integrity) and a look at its 3 slo-mo
-   clips before treating it as a design result. *Re-test correction
-   (09-12): the same article re-measured ≤ 1.0900 in the 2dran batch —
-   the stability inference above was wrong. A stably wrong wax seat
-   passes the drift watch; within-session stability does not certify a
-   seat.*
+   clips before treating it as a design result. *Correction (09-12,
+   re-attributed 09-15): the t32 design re-measured 1.0286 on the
+   defect-free second print (`2dran7`) — 1.251 is not a design
+   property. The print key logs this article with "some tiny bubbles on
+   the diagonal tendons" and its seat gauge (T1000/T180 = 2.35) is the
+   program record, so the artifact is article- and/or seat-level; a
+   re-seat of this article would split the two. Either way the
+   stability inference above was wrong — a stably wrong article or seat
+   passes the drift watch.*
 3. **`drran1` has the largest specimen hop ever recorded**: landing at
    +69.1 ms (verified as a real quiet-then-burst event, tight across
    drops at 68.5–69.6 ms), e_rebound 0.063 vs the prior record 0.050
