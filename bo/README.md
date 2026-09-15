@@ -933,8 +933,16 @@ target if the session flow deficit persists. Layout notes: the grid
 needed a +7.4 mm reach shift (TPU floor at x = 30) and this batch's
 wide articles (measured footprints 76 to 94 mm with the key-seat
 overhang) leave the wipe tower at (287, 110) closer to the grid than
-any previous round; the headless slice check below settles whether the
-slicer accepts it. Regenerate exactly as round 4's with
+any previous round. The headless slice check settled it: BambuStudio
+v02.07.01.62 (the lab's version, same recipe as the round-4 check)
+slices the exact committed bytes to completion, exit 0, all 9 trials,
+one plate, zero error/conflict/outside lines in the debug log, 333
+layers, model time 13 h 24 m, 182.7 g PLA + 50.1 g TPU including
+tower, purge and brims (supports still get painted in the GUI, so
+production gcode runs longer); `t3-prism-bo-round5-slice-check.json`
+is the record. The all-thin-cable batch carries far less TPU than
+round 4 (50.1 vs 73.7 g) and prints ~3.5 h faster. Regenerate exactly
+as round 4's with
 
 ```bash
 python3 bo/t3_prism_printed_mass_plate.py \

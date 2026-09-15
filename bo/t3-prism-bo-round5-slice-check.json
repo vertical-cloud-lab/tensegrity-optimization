@@ -1,0 +1,40 @@
+{
+  "checked": "2026-09-15",
+  "slicer": "BambuStudio v02.07.01.62 AppImage CLI (headless, --slice 0 --debug 1), the lab's slicer version; same recipe as the round-4 check (bo/batching/SETUP.md on the issue #108 branch)",
+  "project": "bo/slices/t3-prism-bo-round5.H2D-MM-PLAstruts-TPUcables.3mf",
+  "exit_code": 0,
+  "plates": 1,
+  "objects_sliced": 9,
+  "total_layers": 333,
+  "model_time": "13h 24m 5s",
+  "total_time": "13h 24m 24s",
+  "total_filament_g": {
+    "pla": 182.68,
+    "tpu": 50.14
+  },
+  "main_used_g": {
+    "pla": 158.52,
+    "tpu": 33.95
+  },
+  "feature_type_times_s": {
+    "Bridge": 299,
+    "Brim": 49,
+    "Custom": 35,
+    "Flush": 1656,
+    "Gap infill": 1208,
+    "Inner wall": 4809,
+    "Internal solid infill": 1232,
+    "Outer wall": 9641,
+    "Overhang wall": 540,
+    "Prime tower": 14464,
+    "Sparse infill": 1987,
+    "Top surface": 102,
+    "Travel": 12264,
+    "Undefined": 12249
+  },
+  "notes": [
+    "totals include wipe tower, toolchange pads and brims; supports are painted on in the GUI afterwards, so production gcode will run longer and heavier",
+    "the slicer accepted the wipe tower at (287, 110) despite the generator's proximity warning (grid PLA x-extent ends at 292.2 mm at other y; the tower's y band is clear): zero error/conflict/outside lines in the debug log, all 9 trials sliced",
+    "TPU total 50.1 g vs round 4's 73.7 g: the all-thin-cable batch carries much less TPU, while PLA rises to 182.7 g; model print time 13h 24m vs round 4's 16h 56m"
+  ]
+}
