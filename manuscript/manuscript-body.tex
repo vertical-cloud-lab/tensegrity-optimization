@@ -186,8 +186,10 @@ claims, motivating the replication rule we adopt.
   four reported batches (35 articles) are measured data from the committed
   campaign record. Still pending, and written as future work rather than
   as results: the re-seat confirmation of the batch-4 record article, any
-  batches beyond the fourth, the quasi-static crush campaign, the
-  metal-analog comparison, and the archival (Zenodo) code release.}}}
+  batches beyond the fourth, the replicate rank-stability study (best-,
+  mid-, and worst-predicted in-sample designs in nominal triplicate), the
+  quasi-static crush campaign, the metal-analog comparison, and the
+  archival (Zenodo) code release.}}}
 \end{center}
 
 \todo[inline]{\textbf{Author order / contributions (per @me-madsen).} Planned
@@ -1167,6 +1169,63 @@ Zenodo-minted DOI mirroring the GitHub repository.\todo{Insert the
 Zenodo DOI and release version for the campaign code once the
 repository snapshot is published.}
 
+\subsection{Replicate Rank-Stability Study}
+\label{sec:methods:rankstability}
+
+The batch-3 second pass (Section~\ref{sec:results:batches}) showed
+that a single article's measurement can move between seatings and
+prints by more than the design signal separating neighboring
+articles, which bounds any claim that one design outranks another. A
+planned replicate study formalizes that bound by re-printing a
+deliberately spread subset of the already-measured designs. Among
+the campaign's in-sample designs, ranked by the current posterior's
+predictions, we will select the best-predicted design, the
+worst-predicted design, and one mid-pack (``run-of-the-mill'')
+design, then print a nominal three fresh articles of each (the
+repeat count, provisionally three, will be fixed when the print is
+scheduled) and drop-test every article under the standard protocol
+of Section~\ref{sec:methods:testing}, including the between-seat
+replication rule. The question is whether the predicted ordering
+survives fabrication and seating variation. With three designs the
+exact permutation floor for a Spearman rank correlation is
+$p = 1/6$, so no significance claim is available at this size;
+the primary readout is instead the separation of the three designs'
+repeat clusters relative to the within-design (print-to-print plus
+seat-to-seat) scatter, reported alongside $\rho_s$ between the
+predicted and measured orderings of each repeat. Clean separation
+would support treating the campaign's rankings as design properties;
+overlapping clusters would localize the ranking noise floor that the
+batch-3 second pass could only bound. The reporting format is
+specified in Table~\ref{tab:rank-stability}; entries and design IDs
+will be added once the repeat articles are printed and tested.
+
+\begin{table}[ht]
+  \centering
+  \caption{\emph{Placeholder (data pending).} Planned replicate
+    rank-stability study: the best-, mid-, and worst-predicted
+    in-sample designs, each re-printed as a nominal three fresh
+    articles and drop-tested under the standard protocol. Entries
+    will record each repeat's stabilized $t_{180}$, the
+    within-design scatter, and the measured rank of each design's
+    repeat cluster against its predicted rank.}
+  \label{tab:rank-stability}
+  \small
+  \begin{tabular}{@{}llcccc@{}}
+    \toprule
+    Tier & Design & {Pred.\ $t_{180}$} &
+    \multicolumn{3}{c}{$t_{180}$ (repeats 1 / 2 / 3)} \\
+    \midrule
+    Best  & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
+    Mid   & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
+    Worst & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
+    \bottomrule
+  \end{tabular}
+\end{table}%
+\todo[inline,color=orange!30]{Populate Table~\ref{tab:rank-stability}
+  once the repeat articles of the best-, mid-, and worst-predicted
+  in-sample designs are printed and drop-tested; fix the repeat count
+  (nominally three) and the design IDs when the print is scheduled.}
+
 \subsection{Metal-Analog Validation}
 \label{sec:methods:validation}
 
@@ -1602,9 +1661,10 @@ outperforms it here.
 \paragraph{Studies pending} The re-seat confirmations of the batch-4
 attenuators (the record article first), any batches beyond the
 fourth (a fifth batch is generated and its print files staged, but
-nothing from it appears here), a replicate-article study formalizing
-print-to-print scatter beyond the batch-3 second pass, the
-quasi-static crush campaign, and the metal-analog comparison
+nothing from it appears here), the replicate rank-stability study of
+Section~\ref{sec:methods:rankstability} (best-, mid-, and
+worst-predicted in-sample designs re-printed in nominal triplicate),
+the quasi-static crush campaign, and the metal-analog comparison
 (Table~\ref{tab:metal-validation}) remain future work; none of their
 values appear in this section.
 
@@ -1727,7 +1787,8 @@ of planned follow-on work. Sensitivity to
 print-process covariates (the print key logs defects, humidity, and
 the mid-batch nozzle change for exactly this purpose) and transfer to
 other material pairs likewise remain open. In the future we plan
-the re-seat confirmations of the batch-4 attenuators, the
+the re-seat confirmations of the batch-4 attenuators, the replicate
+rank-stability study of Section~\ref{sec:methods:rankstability}, the
 metal-analog rank-transfer comparison of
 Section~\ref{sec:methods:validation}, quasi-static testing as an
 extension of the characterization
@@ -1771,9 +1832,10 @@ design mapping, one seed design's official article assignment
 carries a recorded discrepancy, and two seed designs have no session
 record; and all results are from a single printer, material pair,
 and cell topology. The replication rule, the planned re-seat
-confirmations, and the metal-analog protocol
-(Section~\ref{sec:methods:validation}) are the designed responses to
-these limits.
+confirmations, the replicate rank-stability study
+(Section~\ref{sec:methods:rankstability}), and the metal-analog
+protocol (Section~\ref{sec:methods:validation}) are the designed
+responses to these limits.
 
 % =============================================================================
 \section{Conclusions}
