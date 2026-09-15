@@ -159,20 +159,21 @@ polyurethane three-strut prism family. The search space begins with five
 continuous geometry variables and, from the third batch, adds
 per-article infill densities and batch-level filament settings.
 Candidate geometries are projected to a common mass budget and
-fabricated in single multi-material builds, and each article is
+fabricated in single multi-material builds; each article is
 characterized by repeated instrumented drops: 101 stabilized captures in
 the seed batch and about twenty thereafter. The optimizer jointly
 minimizes the filtered peak-acceleration ratio (transmissibility) and
 the rebound energy returned to the payload. Most printed articles
-amplify the peak shock, so the campaign question became which corner of
+amplify the peak shock, so the question became which corner of
 the design space attenuates. Across one Sobol seed batch and three
-model-recommended batches, 35 articles in all, the dominated hypervolume
+model-recommended batches (35 articles), the dominated hypervolume
 grew 65 percent, the final Pareto front is entirely model-chosen, and
 the fourth batch's best-predicted design set the program record,
 lowering transmissibility to 0.803, ten percent below the best seed
-article. A second print-and-test pass of one batch showed that seating
-and print variation, not drop-to-drop scatter, limit design-level
-claims, motivating the replication rule we adopt.
+article. A second print-and-test pass of one batch, 44 articles in all,
+showed that seating and print variation, not drop-to-drop scatter,
+limit design-level claims, motivating the replication rule we
+adopt.
 \end{abstract}
 
 \maketitle
@@ -1090,7 +1091,8 @@ refit). We retain SAASBO even though the
 dimensionality is modest because marginalizing the hyperparameters
 tends to improve uncertainty quantification at the very small sample
 sizes of physical campaigns; the fitted model is audited each round
-with leave-one-out cross-validation and length-scale-based
+with cross-validation (leave-one-out, and leave-one-design-out once
+replicates entered the record) and length-scale-based
 sensitivity diagnostics
 (Section~\ref{sec:results}). Inputs are normalized to the unit cube
 and outputs standardized. Observation noise is supplied per
@@ -1111,7 +1113,15 @@ target is the latter, and the campaign's response is the measured
 replication evidence of Section~\ref{sec:results:batches} (a full
 second print-and-test pass of one batch) together with the
 between-seat replication rule, rather than an inflated per-article
-noise term. SAASBO is the
+noise term. Once the lab confirmed that second pass as article-level
+re-prints of the same designs, its nine articles were ingested as
+distinct completed trials at identical design coordinates, each with
+its own weighed mass and per-session standard error and with no
+pre-pooling, so refits from that point observe measured design-level
+replicates directly. Because per-session variances are supplied as
+known, replicate disagreement is not absorbed by a separately
+inferred noise parameter; it widens the posterior through the fit
+itself. SAASBO is the
 prespecified surrogate; we make no claim that it outperforms
 a standard single-task GP at this dimensionality and sample size,
 and the planned head-to-head calibration comparison against a
@@ -1424,7 +1434,15 @@ comparison the data support is against the campaign's own Sobol
 seed: after batch 4, every member of the combined front (corny7,
 corny6, drran5, drran3, r2d2c6) is a model-recommended design, and
 the last seed article left the front when the batch-4 record
-dominated it outright.
+dominated it outright. These fronts score every article as measured,
+repeated designs at their first prints. Collapsing the batch-3
+repeat pairs to their design means
+(Table~\ref{tab:round3-repeatability}) removes drran5 and drran3
+from the final front, whose design-mean membership becomes corny7,
+corny6, r2d2c2, corny4, and r2d2c6, still entirely
+model-recommended, with r2d2c2's membership provisional on its
+drift flag; batch 3's $+0.9\%$ should accordingly be read as an
+upper bound on a gain that was partly print luck.
 
 \paragraph{Batch 2 (Ax trials 10 to 18)} The first recommended batch
 was generated from the seed fit and printed under the
@@ -1479,31 +1497,80 @@ another (corny6) was erratic (per-drop CV 2.0\%) but attenuates
 under any reading of its record.
 
 \paragraph{Replication: a second pass of batch 3} The batch-3 plate
-was printed a second time (nine design replicates, the reprint
-weighing \SI{0.27}{g} heavier article for article on average) and
-the second set was drop-tested under the identical protocol, 360
-drops across the two passes. Neither extreme of the first pass
-recurred. Under \emph{any} pairing of the blinded session labels,
-the design that measured 1.251 re-measured at most 1.090 (a drop of
-at least 13\%) and the 0.980 attenuator re-measured at least 1.011,
-so batch 3 contains no reproducibly attenuating design; under the
-best-fit pairing, the same-design shifts have median $+1.2\%$, five
-of nine fall inside the previously characterized $\pm 2.2\%$ re-seat
-envelope, and the tails reach $-13.8\%$. The two passes cannot
-separate seating effects from print-to-print differences, but the
-methodological conclusion does not depend on that split: the 1.251
-session had passed every within-session stability check (per-drop CV
-0.77\%, no drift), so \emph{within-session stability does not
-certify a measurement as a design property}. The between-seat
-replication rule of Section~\ref{sec:methods:testing} was adopted in
-response, the seed attenuator's 0.13\% agreement across an
-independent re-seat shows that genuine attenuation does reproduce,
-and a broadband seat gauge (the ratio of CFC-1000 to CFC-180
-transmissibility; healthy sessions read 1.00 to 1.07) now
-accompanies the rule as an advisory: every large same-design shift
-observed so far carried a gauge reading of at least 1.15 in one of
-its seatings, and all four batch-4 attenuators gauge healthy (0.98
-to 1.06).
+was printed a second time and the second set was drop-tested under
+the identical protocol, 360 drops across the two passes. The lab
+record confirms the second set as design-level re-prints of the
+first, article for article (2dran$N$ re-prints drran$N$ at the same
+Ax trial, per the round-3 print key), so the nine pairs of
+Table~\ref{tab:round3-repeatability} compare directly, the reprint
+weighing \SI{0.27}{g} heavier on average. Neither extreme of the
+first pass recurred: the design that measured 1.2513 (drran7, then
+the strongest amplification on record) re-measured 1.0286, a 17.8\%
+drop, and the 0.9804 attenuator (drran8) re-measured 1.0109, so
+batch 3 contains no reproducibly attenuating design. Eight of the
+nine same-design transmissibility shifts are upward, with median
+$+2.2\%$; three of nine fall inside the previously characterized
+$\pm 2.2\%$ re-seat envelope; and the rebound score is far less
+print-repeatable than transmissibility, with same-design rebound
+pairs spanning ratios of 0.38 to 2.9 (\SI{5.2}{mJ} against
+\SI{15.1}{mJ} at trial 30) even as one pair repeats to 0.2\%. The
+reprint sessions ran on a settled seat at slightly lower arrest
+velocity, so session state and print variation are confounded in
+the systematic upward shift; after removing it, the residual
+print-to-print standard deviation in $t_{180}$ is about 0.013 per
+article, an order of magnitude above the within-session standard
+errors near 0.001 that the fit ingests, and the rebound pairs order
+their nine designs with rank correlation $-0.18$. The
+two passes cannot separate seating effects from print-to-print
+differences, but the methodological conclusion does not depend on
+that split: the 1.2513 session had passed every within-session
+stability check (per-drop CV 0.77\%, no drift), so
+\emph{within-session stability does not certify a measurement as a
+design property}. The between-seat replication rule of
+Section~\ref{sec:methods:testing} was adopted in response, the seed
+attenuator's 0.13\% agreement across an independent re-seat shows
+that genuine attenuation does reproduce, and a broadband seat gauge
+(the ratio of CFC-1000 to CFC-180 transmissibility; healthy
+sessions read 1.00 to 1.07) now accompanies the rule as an
+advisory: every large same-design shift observed so far carried a
+gauge reading of at least 1.15 in one of its seatings, and all four
+batch-4 attenuators gauge healthy (0.98 to 1.06). With the pairing
+confirmed, the nine reprint articles also join the surrogate's
+training set as distinct observations at identical design
+coordinates (Section~\ref{sec:methods:bo}), so later refits observe
+measured design-level replicates directly rather than carrying the
+replication evidence only as an interpretation bound.
+
+\begin{table}[ht]
+  \centering
+  \caption{Batch-3 print-pair repeatability: each design's first
+    print (drran) against its confirmed re-print (2dran),
+    stabilized values under the protocol of
+    Table~\ref{tab:seed-results}. $\Delta$ is the reprint's
+    relative $t_{180}$ shift, and rebound pairs are given as first
+    $\to$ reprint. Two sessions carry the transmissibility-drift
+    flag: the first print of trial 35 (drran8, flagged in
+    Table~\ref{tab:batch-results}) and the re-print of trial 34
+    (2dran6); their means are provisional.}
+  \label{tab:round3-repeatability}
+  \small
+  \begin{tabular}{@{}clS[table-format=1.4]S[table-format=1.4]S[table-format=+2.1]c@{}}
+    \toprule
+    Trial & Pair & {$t_{180}$ 1st} & {$t_{180}$ 2nd} &
+    {$\Delta$ (\%)} & {$E_{\mathrm{reb}}$ (mJ)} \\
+    \midrule
+    28 & drran5/2dran5 & 1.0373 & 1.0604 & +2.2 & 5.0 $\to$ 5.0 \\
+    29 & drran4/2dran4 & 1.0344 & 1.0433 & +0.9 & 9.1 $\to$ 11.2 \\
+    30 & drran9/2dran9 & 1.0425 & 1.0451 & +0.3 & 5.2 $\to$ 15.1 \\
+    31 & drran3/2dran3 & 1.0389 & 1.0533 & +1.4 & 4.2 $\to$ 9.4 \\
+    32 & drran7/2dran7 & 1.2513 & 1.0286 & -17.8 & 8.2 $\to$ 11.6 \\
+    33 & drran2/2dran2 & 1.0345 & 1.0900 & +5.4 & 11.8 $\to$ 4.5 \\
+    34 & drran6/2dran6 & 1.0471 & 1.0859 & +3.7 & 4.8 $\to$ 7.7 \\
+    35 & drran8/2dran8 & 0.9804 & 1.0109 & +3.1 & 11.2 $\to$ 9.9 \\
+    36 & drran1/2dran1 & 1.0326 & 1.0791 & +4.5 & 18.1 $\to$ 7.3 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \begin{table*}[t]
   \centering
@@ -1571,7 +1638,9 @@ to 1.06).
     after each batch, with the dominated hypervolume at the
     $(1.35, \SI{15}{mJ})$ reference in the legend. Batch 2 grew the
     front on the rebound axis, batch 3 filled the knee, and batch 4
-    broke the transmissibility floor. Both axes improve downward.}
+    broke the transmissibility floor. Repeated batch-3 designs are
+    drawn at their first-print values; the design-mean front is
+    given in the text. Both axes improve downward.}
   \label{fig:front-evolution}
 \end{figure*}
 
@@ -1607,9 +1676,8 @@ $t_{180}$ LOOCV MAPE was 2.9\% with rank correlation $+0.76$ on the
 seed state (8 articles, 6 model inputs), 5.4\% and $+0.60$ after
 batch 2 (17 articles), and 6.2\% and $+0.19$ after batch 3 (26
 articles, 12 inputs); the rebound channel reads 29.3\%, 23.6\%, and
-32.2\% MAPE at the same states
-(Fig.~\ref{fig:loocv}; the fold-level records are archived with the
-campaign data). Three changes landed together and are confounded:
+32.2\% MAPE at the same states (the fold-level records are archived
+with the campaign data). Three changes landed together and are confounded:
 the input space doubled from 6 to 12 while the data grew only from
 17 to 26, four of the six added axes carry a single value per batch
 and are therefore perfectly confounded with batch, and batch 3
@@ -1620,7 +1688,27 @@ this trajectory dictates, and the one the campaign took, is to treat
 predicted columns as exploration bookkeeping rather than forecasts:
 batch 4's value was the design family it selected and the record it
 found, not its point accuracy, and its best-predicted article was
-the record. Two further audit facts round out the picture. The
+the record.
+
+Plain LOOCV also leaks once replicates exist: hold out one print of
+a repeated design and its twin remains in training at nearly
+identical coordinates, so the fold tests interpolation rather than
+prediction. Re-auditing the full record with leave-one-design-out
+folds (35 folds over 44 articles, each drran/2dran pair held out
+together, one full NUTS refit per fold) gives the campaign's most
+honest held-out numbers (Fig.~\ref{fig:logocv}): $t_{180}$ MAPE
+5.0\% with rank correlation $+0.08$, the held-out posterior hugging
+the pooled mean while the measurements span 0.80 to 1.33, and
+rebound MAPE 39.4\% with rank correlation $-0.38$. Held-out
+design-level $t_{180}$ skill is therefore near zero, and the
+apparent rebound skill of the earlier states was partly the model
+predicting print luck, the model-side counterpart of the 0.38 to
+2.9 pair ratios of Table~\ref{tab:round3-repeatability}. The
+comparison to the LOOCV trajectory is descriptive rather than a
+controlled ablation: the states differ in article count, fold
+structure, and the presence of the repeat data itself.
+
+Two further audit facts round out the picture. The
 mass-transmissibility correlation fell from $r = 0.82$ over the
 seed articles to $0.07$ over the 26 articles of batches 1 to 3, so
 the constant-printed-mass projection removed the seed batch's
@@ -1646,22 +1734,26 @@ outperforms it here.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.92\linewidth]{../figures/bo/t3-prism-bo-round4-loocv.png}
-  \caption{Leave-one-out cross-validation of the SAASBO surrogate on
-    the 26 articles of batches 1 to 3 (one full NUTS refit per
-    held-out article; 12 model inputs). Vertical bars are one
-    posterior standard deviation of the held-out prediction;
-    horizontal bars are the measured standard error as ingested. The
-    dashed line is parity. The held-out posterior shrinks toward the
-    pooled mean, so the extremes (r2d2c3, drran7, the seed
-    attenuator) are the largest misses.}
-  \label{fig:loocv}
+  \includegraphics[width=0.92\linewidth]{../figures/bo/t3-prism-bo-round5-logocv.png}
+  \caption{Leave-one-design-out cross-validation of the SAASBO
+    surrogate over the full 44-article record (35 design folds;
+    each batch-3 reprint pair is held out together so neither print
+    leaks into the other's prediction; one full NUTS refit per
+    fold). Vertical bars are one posterior standard deviation of
+    the held-out prediction; horizontal bars are the ingested
+    standard error; the dashed line is parity. The held-out
+    $t_{180}$ posterior hugs the pooled mean (MAPE 5.0\%, rank
+    correlation $+0.08$) and the rebound ordering is anti-correlated
+    ($-0.38$): design-level held-out skill is near zero on
+    transmissibility and absent on rebound.}
+  \label{fig:logocv}
 \end{figure}
 
 \paragraph{Studies pending} The re-seat confirmations of the batch-4
 attenuators (the record article first), any batches beyond the
-fourth (a fifth batch is generated and its print files staged, but
-nothing from it appears here), the replicate rank-stability study of
+fourth (a fifth batch is generated, regenerated once the reprint
+pass entered the fit, and staged for printing, but nothing from it
+appears here), the replicate rank-stability study of
 Section~\ref{sec:methods:rankstability} (best-, mid-, and
 worst-predicted in-sample designs re-printed in nominal triplicate),
 the quasi-static crush campaign, and the metal-analog comparison
@@ -1717,7 +1809,9 @@ between-article variation, and therefore understate design-level
 uncertainty. The campaign's responses were physical rather than
 statistical: the batch-3 plate was printed and tested twice, which
 measured the same-design shift distribution directly (median
-$+1.2\%$, heavy tails; Section~\ref{sec:results:batches}); the
+$+2.2\%$ under the confirmed pairing, with a $-17.8\%$ tail;
+Section~\ref{sec:results:batches}) and confirmed the understatement
+at an order of magnitude in $t_{180}$; the
 between-seat replication rule now gates every extreme; rebound stays
 a candidate constraint pending its ballistic validation; and the
 constant-printed-mass projection removed the mass channel the review
@@ -1813,12 +1907,13 @@ zhang2024pressurereducingdesignof,
 janarthanan2024additivemanufacturingof} providing transferable design
 heuristics.
 
-\paragraph{Limitations} The measured evidence base is 35 articles
-across four batches, but with one mechanical-response article per
-design in the fit: only batch 3 has a second printed-and-tested set,
-and that replication is what exposed the seating and print
-sensitivity, so every single-article extreme, including the batch-4
-record, is provisional until its re-seat. The drop protocol probes
+\paragraph{Limitations} The measured evidence base is 44 articles:
+35 across the four batches plus the nine confirmed re-prints of the
+batch-3 designs, which are the only designs carrying more than one
+mechanical-response article in the fit. That replication is what
+exposed the seating and print sensitivity, so every single-article
+extreme, including the batch-4 record, is provisional until its
+re-seat. The drop protocol probes
 one height, one impact surface, and axial loading only; the
 specimens never leave the elastic regime, so crush-energy metrics
 await the quasi-static campaign; per-specimen energy absorption in

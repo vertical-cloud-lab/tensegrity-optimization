@@ -17,3 +17,17 @@ fixed during the 2026-08-22 referee pass).
 The dummy dataset `round2-measured-DUMMY.csv` and its generator were
 removed on 2026-09-15: the real batch-2, 3, and 4 measurements above
 supersede them.
+
+Four further files were snapshotted later on 2026-09-15 from the same
+branch at commit `bbf7a62`, the state after the lab confirmed the
+`2dranN` articles as re-prints of `drranN` (same Ax trial) and the nine
+reprint sessions were ingested as distinct completed trials:
+`t3-prism-bo-round3-repeatability.csv` (the nine confirmed print pairs
+behind the manuscript's repeatability table),
+`t3-prism-bo-round3-reprint-drop-results.csv` (the stabilized 2dran
+sessions), and `t3-prism-bo-round5-logocv.csv` plus
+`t3-prism-bo-round5-logocv-diagnostics.json` (leave-one-design-out CV
+over all 44 articles, reprint pairs held out together). The
+`t3-prism-bo-front-evolution.csv` values were re-verified unchanged at
+that commit; the corresponding LOGO figure snapshot is
+`figures/bo/t3-prism-bo-round5-logocv.png`.
