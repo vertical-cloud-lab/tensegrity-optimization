@@ -1015,8 +1015,15 @@ scoring against the weighings before round 6. Layout is comfortable
 this round: no reach shift needed (all TPU already right of x = 30),
 and grid PLA ends at 267.0 mm against the wipe tower at (287, 110),
 20 mm of clearance where the superseded wide batch had under 5. The
-headless slice check is recorded in
-`t3-prism-bo-round5-slice-check.json`. Regenerate with:
+headless slice check on the exact committed bytes (BambuStudio
+v02.07.01.62 CLI, the lab's version, same recipe as round 4) is
+recorded in `t3-prism-bo-round5-slice-check.json`: exit 0, one plate,
+all 9 objects sliced, 376 layers, zero conflict/outside/nozzle lines,
+model time 17h 7m, 159.9 g PLA + 83.6 g TPU including tower, purge and
+brims (supports still get painted in the GUI, so production gcode runs
+longer). Against the superseded batch's check that is +3.7 h and +33 g
+of TPU: the six thick near-solid TPU cables print at the 3.0 mm3/s
+flow ceiling and are the slow feature of the batch. Regenerate with:
 
 ```bash
 python3 bo/t3_prism_printed_mass_plate.py \
