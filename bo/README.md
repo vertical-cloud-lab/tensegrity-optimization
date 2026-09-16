@@ -996,8 +996,27 @@ first prints had claimed, and that re-admits r2d2c2, which still
 carries its round-2 T-drift flag: treat its membership as provisional,
 same as always.
 
-**Print files for trials 55-63 are not rendered yet.** Regenerate them
-exactly as round 4's were once the batch is blessed:
+Print files for trials 55-63 rendered 2026-09-16 (OpenSCAD 2021.01,
+same toolchain as rounds 3-4):
+`per-specimen-stls/t3-prism-bo-round5-tNN-{struts,cables}.stl` (18
+plate-positioned solids named by trial),
+`slices/t3-prism-bo-round5.H2D-MM-PLAstruts-TPUcables.3mf` (objects
+"Trial 55" to "Trial 63", struts on extruder 1 / cables on extruder 2,
+the batch filament settings and all 18 per-part sparse-infill overrides
+baked in and verified by unzip), `t3-prism-bo-round5-designs.csv` (the
+manifest), plus plate/iso preview PNGs. Rendered-mass verification:
+`printed_g_est` 19.90 to 20.50 g against the 20.23 g target, worst
+deviation 0.33 g, inside the mass model's 0.38 g analytic-to-rendered
+residual. Unlike the one-sided rounds 3-4 pattern, the deltas split
+cleanly by family (the six tall thick-cable articles estimate +0.18 to
++0.27 g, the three wide thin-cable ones -0.30 to -0.33 g), so the
+residual is geometry-correlated rather than a level offset; worth
+scoring against the weighings before round 6. Layout is comfortable
+this round: no reach shift needed (all TPU already right of x = 30),
+and grid PLA ends at 267.0 mm against the wipe tower at (287, 110),
+20 mm of clearance where the superseded wide batch had under 5. The
+headless slice check is recorded in
+`t3-prism-bo-round5-slice-check.json`. Regenerate with:
 
 ```bash
 python3 bo/t3_prism_printed_mass_plate.py \
