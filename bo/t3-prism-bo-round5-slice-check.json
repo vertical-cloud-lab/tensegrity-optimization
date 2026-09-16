@@ -1,0 +1,40 @@
+{
+  "checked": "2026-09-16",
+  "slicer": "BambuStudio v02.07.01.62 AppImage CLI (headless, --slice 0 --debug 1), the lab's slicer version; same recipe as the round-4 and superseded round-5 checks (bo/batching/SETUP.md on the issue #108 branch)",
+  "project": "bo/slices/t3-prism-bo-round5.H2D-MM-PLAstruts-TPUcables.3mf",
+  "exit_code": 0,
+  "plates": 1,
+  "objects_sliced": 9,
+  "total_layers": 376,
+  "model_time": "17h 7m 16s",
+  "total_time": "17h 7m 36s",
+  "total_filament_g": {
+    "pla": 159.91,
+    "tpu": 83.61
+  },
+  "main_used_g": {
+    "pla": 132.28,
+    "tpu": 64.92
+  },
+  "feature_type_times_s": {
+    "Bridge": 304,
+    "Brim": 50,
+    "Custom": 35,
+    "Flush": 1902,
+    "Gap infill": 1138,
+    "Inner wall": 7305,
+    "Internal solid infill": 5504,
+    "Outer wall": 12050,
+    "Overhang wall": 516,
+    "Prime tower": 16673,
+    "Sparse infill": 1810,
+    "Top surface": 170,
+    "Travel": 14211,
+    "Undefined": 14195
+  },
+  "notes": [
+    "totals include wipe tower, toolchange pads and brims; supports are painted on in the GUI afterwards, so production gcode will run longer and heavier",
+    "the six tall thick-cable articles put the TPU total at 83.6 g against the superseded wide batch's 50.1 g and stretch the model time to 17h 7m against its 13h 24m (TPU runs at 3.0 mm3/s, so near-solid 4.4-4.6 mm cables are the slow feature); PLA falls 182.7 -> 159.9 g",
+    "slicing is the trials 55-63 project at commit 4246d83, byte-exact as committed"
+  ]
+}
