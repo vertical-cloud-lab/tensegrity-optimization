@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "precedent": {
+      "task_id": "2af9efae-1e1e-4038-ac07-25bbe9a0fb0c",
+      "job": "PRECEDENT"
+    },
+    "literature_high": {
+      "task_id": "65bfb670-fe7a-443c-b260-c0f552a3e43b",
+      "job": "LITERATURE_HIGH"
+    }
+  }
+}
