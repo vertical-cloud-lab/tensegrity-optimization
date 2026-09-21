@@ -44,7 +44,7 @@ Both tasks agree, and agree with an independent in-session web review:
    2019 boxing gloves; Zhao et al. 2020 surfaces).
 3. Our flight-time estimator `v_sep = g t / 2` is the standard time-between-
    bounces method (Bernstein 1977 lineage) and appears in official sports
-   surface testing (FIFA Test Method 01 family, per Segura et al. 2020).
+   surface testing (FIFA Test Method 01 family, per Colino et al. 2020).
 4. Dimensionally unorthodox impact indices adopted for empirical fit are
    accepted practice when honestly labeled (Gadd Severity Index and HIC,
    viscous criterion, Jones effectiveness factor, cushion factor).
@@ -58,7 +58,7 @@ Both tasks agree, and agree with an independent in-session web review:
 
 - EN 12235 implementations in the retrieved literature measure rebound height
   directly (ultrasonic sensor); the acoustic inter-bounce timing lives in the
-  FIFA Quality Programme turf method (Test Method 01), per Segura et al.,
+  FIFA Quality Programme turf method (Test Method 01), per Colino et al.,
   Sensors 20:1688 (2020). Our claim that EN 12235 itself is timing-based was
   too broad.
 - One retrieved source labels the ASTM D3574 resilience procedure "Test D"
