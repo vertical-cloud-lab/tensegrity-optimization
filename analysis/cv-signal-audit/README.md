@@ -258,6 +258,14 @@ question from the Edison review. If the cords stay, those three logged
 numbers make cord preload a testable covariate in the replicate
 rank-stability study (manuscript Section 3.5).
 
+Per sgbaird's note on PR #76 (2026-09-22), it is worth running the backup
+modality in tandem on the same articles: a quasi-static compression test
+(the load-frame campaign already planned in the manuscript) plus a bench
+weight-drop onto a stationary article. Both are free of carriage restraint
+entirely, so they give a cord-free reference ordering of the same designs.
+If condition A vs C shows the cords matter, the campaign has a measured
+bridge to the backup rig instead of starting one cold.
+
 ## Files
 
 - [`cv_signal_audit.py`](cv_signal_audit.py): the full recomputation
