@@ -9,6 +9,10 @@ data/README.md), then answers three questions the LOGO-CV figure raised:
    Monte-Carlo permutation p, and out-of-sample R^2 against both the
    global mean and the honest per-fold training mean, plus calibration
    coverage, shrinkage, jackknife influence, and a cluster-only view.
+   Scored twice: once for the primary LOGO run at the library-default
+   NUTS budget (256/512, data/full-nuts-rerun/) and once for the
+   campaign's committed reduced-budget run (64/128), so the effect of
+   the MCMC budget is itself on the record.
 2. Design and selection level: the tests the optimizer actually needs.
    Collapses reprint pairs to design means, then scores the archived
    at-selection predictions for batches 2 to 4 within-batch (exact
@@ -19,7 +23,7 @@ data/README.md), then answers three questions the LOGO-CV figure raised:
    context for the restraint-cord (bungee) interference question.
 
 Deterministic: fixed RNG seed, exact enumeration where n makes it cheap.
-Outputs: metrics.json plus three PNG figures under figures/.
+Outputs: metrics.json plus four PNG figures under figures/.
 """
 
 from __future__ import annotations
@@ -68,9 +72,19 @@ def batch_of(print_id: str) -> str:
     return "seed"
 
 
-def load_logo() -> pd.DataFrame:
+# The primary LOGO input is the 2026-09-22 re-run at the library-default
+# NUTS settings (256 samples / 512 warmup per fold; data/full-nuts-rerun/,
+# produced by rerun_logocv_full_nuts.py). The campaign's original committed
+# run at reduced settings (64/128) is kept as a named comparison variant.
+LOGO_FULL_CSV = DATA / "full-nuts-rerun" / "t3-prism-bo-round5-logocv.csv"
+LOGO_FULL_DIAG = DATA / "full-nuts-rerun" / "t3-prism-bo-round5-logocv-diagnostics.json"
+LOGO_REDUCED_CSV = DATA / "t3-prism-bo-round5-logocv.csv"
+LOGO_REDUCED_DIAG = DATA / "t3-prism-bo-round5-logocv-diagnostics.json"
+
+
+def load_logo(csv_path: Path = LOGO_FULL_CSV) -> pd.DataFrame:
     """One row per (article, metric): observed, ingested SE, held-out pred."""
-    logo = pd.read_csv(DATA / "t3-prism-bo-round5-logocv.csv")
+    logo = pd.read_csv(csv_path)
     logo["batch"] = logo.print_id.map(batch_of)
 
     # design id: batch articles share a design iff they share an Ax source
@@ -86,7 +100,7 @@ def load_logo() -> pd.DataFrame:
     return logo
 
 
-def load_prospective() -> pd.DataFrame:
+def load_prospective(logo: pd.DataFrame) -> pd.DataFrame:
     """At-selection posterior predictions joined to measured outcomes."""
     frames = []
     for rnd, batch in (("round1", "r2d2c"), ("round3", "drran"), ("round4", "corny")):
@@ -98,7 +112,6 @@ def load_prospective() -> pd.DataFrame:
         frames.append(m)
     pro = pd.concat(frames, ignore_index=True)
 
-    logo = load_logo()
     for metric, col in (("t180", "meas_t180"), ("e_reb_mJ", "meas_e_reb_mJ")):
         obs = logo[logo.metric == metric].set_index("print_id").observed
         pro[col] = pro.print_id.map(obs)
@@ -198,9 +211,10 @@ def held_out_metrics(obs: np.ndarray, pred: np.ndarray, psem: np.ndarray,
 # analysis sections
 # --------------------------------------------------------------------------
 
-def section_logo(logo: pd.DataFrame, rng: np.random.Generator) -> dict:
+def section_logo(logo: pd.DataFrame, rng: np.random.Generator,
+                 diag_path: Path = LOGO_FULL_DIAG) -> dict:
     out = {}
-    diag = json.loads((DATA / "t3-prism-bo-round5-logocv-diagnostics.json").read_text())
+    diag = json.loads(diag_path.read_text())
     for metric in METRICS:
         d = logo[logo.metric == metric]
         m = held_out_metrics(d.observed.values, d.predicted.values,
@@ -477,7 +491,7 @@ def fig_logo_parity(logo: pd.DataFrame, res: dict):
                 bbox=dict(facecolor="white", alpha=0.9, edgecolor="0.8", pad=3))
         style_axis(ax)
         if metric == "t180":
-            for pid, dx, dy in (("corny7", 8, -4), ("r2d2c3", -40, -3),
+            for pid, dx, dy in (("corny7", -44, -3), ("r2d2c3", -40, -3),
                                 ("drran7", 8, -2), ("6lhxfy", 8, 0)):
                 row = d[d.print_id == pid].iloc[0]
                 ax.annotate(pid, (row.predicted, row.observed),
@@ -505,10 +519,50 @@ def fig_logo_parity(logo: pd.DataFrame, res: dict):
     handles, labels = axes[0, 0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", ncol=5, fontsize=8.5,
                frameon=False, bbox_to_anchor=(0.5, 0.975))
-    fig.suptitle("Held-out article-level skill: at or below the shuffled-label null",
-                 fontsize=12, y=0.998)
+    fig.suptitle("Held-out article-level skill (LOGO-CV, library-default "
+                 "NUTS 256/512)", fontsize=12, y=0.998)
     fig.tight_layout(rect=(0, 0, 1, 0.945))
     fig.savefig(FIGS / "logo-parity-and-permutation.png", dpi=200)
+    plt.close(fig)
+
+
+def fig_budget_comparison(logo_full: pd.DataFrame, logo_reduced: pd.DataFrame,
+                          res: dict):
+    """Where the two NUTS budgets put each article's held-out prediction."""
+    fig, axes = plt.subplots(1, 2, figsize=(9.8, 4.6))
+    for ax, metric in zip(axes, METRICS):
+        f = logo_full[logo_full.metric == metric].set_index("print_id")
+        r = logo_reduced[logo_reduced.metric == metric].set_index("print_id")
+        d = pd.DataFrame({"reduced": r.predicted, "full": f.predicted,
+                          "batch": f.batch})
+        lo = min(d.reduced.min(), d.full.min())
+        hi = max(d.reduced.max(), d.full.max())
+        pad = 0.06 * (hi - lo)
+        lims = (lo - pad, hi + pad)
+        ax.plot(lims, lims, ls="--", lw=1, color="0.6", zorder=1)
+        scatter_by_batch(ax, d.reset_index(), "reduced", "full")
+        ax.set_xlim(lims), ax.set_ylim(lims)
+        ax.set_aspect("equal")
+        ax.set_xlabel("Held-out prediction at 64/128 (committed run)")
+        ax.set_ylabel("Held-out prediction at 256/512 (re-run)")
+        mf = res["logo_article_level"][metric]
+        mr = res["logo_article_level_reduced_nuts_64_128"][metric]
+        box = (f"between-budget r = {np.corrcoef(d.reduced, d.full)[0, 1]:.3f}\n"
+               f"median |shift| = {np.median(np.abs(d.full - d.reduced)):.3g}\n"
+               f"rho_s vs measured: {mr['spearman_rho']:+.2f} to "
+               f"{mf['spearman_rho']:+.2f}")
+        ax.text(0.03, 0.97, box, transform=ax.transAxes, va="top", ha="left",
+                fontsize=9,
+                bbox=dict(facecolor="white", alpha=0.9, edgecolor="0.8", pad=3))
+        ax.set_title(METRIC_LABEL[metric], fontsize=11)
+        style_axis(ax)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncol=5, fontsize=8.5,
+               frameon=False, bbox_to_anchor=(0.5, 0.94))
+    fig.suptitle("Same folds, two NUTS budgets: where each article's "
+                 "held-out prediction moved", fontsize=11.5)
+    fig.tight_layout(rect=(0, 0, 1, 0.88))
+    fig.savefig(FIGS / "nuts-budget-comparison.png", dpi=200)
     plt.close(fig)
 
 
@@ -599,11 +653,30 @@ def fig_noise_ladder(res: dict):
 def main() -> None:
     FIGS.mkdir(exist_ok=True)
     rng = np.random.default_rng(SEED)
-    logo = load_logo()
-    pro = load_prospective()
+    logo = load_logo()                            # 256/512, primary
+    logo_reduced = load_logo(LOGO_REDUCED_CSV)    # 64/128, comparison
+    # same articles, same measurements; only the held-out predictions differ
+    for metric in METRICS:
+        f = logo[logo.metric == metric].set_index("print_id")
+        r = logo_reduced[logo_reduced.metric == metric].set_index("print_id")
+        assert np.allclose(f.observed, r.observed.reindex(f.index))
+    pro = load_prospective(logo)
 
-    res = {"logo_article_level": section_logo(logo, rng)}
+    res = {
+        "nuts_budget": {
+            "primary": "256 samples / 512 warmup per fold (library default; "
+                       "data/full-nuts-rerun/, re-run 2026-09-22 by "
+                       "rerun_logocv_full_nuts.py)",
+            "comparison": "64 samples / 128 warmup per fold (the campaign's "
+                          "committed run, data/t3-prism-bo-round5-logocv.csv)",
+        },
+        "logo_article_level": section_logo(logo, rng),
+    }
     res["design_level_35"] = section_design_level(logo, rng)
+    res["logo_article_level_reduced_nuts_64_128"] = section_logo(
+        logo_reduced, rng, LOGO_REDUCED_DIAG)
+    res["design_level_35_reduced_nuts_64_128"] = section_design_level(
+        logo_reduced, rng)
     res["reliability_ceiling"] = section_reliability(logo)
     res["prospective"] = section_prospective(pro, logo, rng)
     res["noise_ladder"] = section_noise_ladder(logo, res["reliability_ceiling"])
@@ -611,6 +684,7 @@ def main() -> None:
     (HERE / "metrics.json").write_text(json.dumps(res, indent=2) + "\n")
 
     fig_logo_parity(logo, res)
+    fig_budget_comparison(logo, logo_reduced, res)
     fig_prospective(pro, res)
     fig_noise_ladder(res)
 
