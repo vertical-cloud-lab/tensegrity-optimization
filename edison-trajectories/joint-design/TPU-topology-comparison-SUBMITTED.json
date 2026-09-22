@@ -1,0 +1,18 @@
+{
+  "task_id": "28d942ea-bc9e-4e7a-b32d-b7dd967ddda6",
+  "job_name": "job-futurehouse-data-analysis-crow-high",
+  "query_summary": "TPU-inside vs TPU-outside topology comparison for PLA+TPU tensegrity joints",
+  "file_uris": [
+    "data_entry:654eb927-c1ad-4667-b7ee-93e74db53681",
+    "data_entry:79eb2079-4ed2-4b98-96fc-3a9c7eecb565",
+    "data_entry:2e29eb62-cdc2-401f-92b1-8188d703c9e4",
+    "data_entry:f1556f29-621b-4cec-b5c5-b2ea948da34e",
+    "data_entry:fa8be8c5-951c-4a35-86c4-1eccab69a209",
+    "data_entry:6c76f332-5442-44d1-b833-cebad7bdddea",
+    "data_entry:bc701f24-ca56-4080-b2a5-59aa480cddaa",
+    "data_entry:5aac11f6-6304-4c36-9306-81be96fd5fcd",
+    "data_entry:643bf7f0-56cd-4a6f-aab7-d26e1b6da1dd",
+    "data_entry:0a386120-cce9-4a20-a87e-45e18f65c07b"
+  ],
+  "status": "submitted"
+}
