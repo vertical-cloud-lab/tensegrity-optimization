@@ -148,9 +148,17 @@ def fig_comparison(logos: dict, res: dict, present: list[str]) -> None:
         box = (f"between-run r = {cr['pearson_r_between_runs']:.3f}\n"
                f"median |shift| = {cr['median_abs_shift']:.3g} "
                f"({100 * cr['median_abs_shift_over_sd_obs']:.0f}% of data sd)")
-        ax.text(0.03, 0.97, box, transform=ax.transAxes, va="top", ha="left",
+        # lower-right for rebound: an outlying 2dran marker lives top-center
+        bx, by, bva, bha = ((0.03, 0.97, "top", "left") if metric == "t180"
+                            else (0.97, 0.03, "bottom", "right"))
+        ax.text(bx, by, box, transform=ax.transAxes, va=bva, ha=bha,
                 fontsize=9,
                 bbox=dict(facecolor="white", alpha=0.9, edgecolor="0.8", pad=3))
+        if metric == "t180":
+            row = d[d.print_id == "corny7"].iloc[0]
+            ax.annotate("corny7", (row.twelve, row.six),
+                        textcoords="offset points", xytext=(8, 2),
+                        fontsize=8, color="0.35")
         ax.set_title(base.METRIC_LABEL[metric], fontsize=11)
         base.style_axis(ax)
 
@@ -161,6 +169,15 @@ def fig_comparison(logos: dict, res: dict, present: list[str]) -> None:
          "Spearman rho, design means (n = 35)"),
         ("R2_oos_vs_fold_train_mean", None, "article_level", "s", True,
          "$R^2_{\\rm oos}$ vs fold-train mean"),
+    ]
+    # neutral proxy handles: in the panels the rho markers wear the metric
+    # hue, so the legend stays colorless to avoid naming either metric
+    from matplotlib.lines import Line2D
+    proxies = [
+        Line2D([], [], ls="", marker=m, markersize=8, color="0.3",
+               markerfacecolor="0.3" if filled else "none",
+               markeredgewidth=1.5, label=lbl)
+        for _, _, _, m, filled, lbl in stats_spec
     ]
     xs = {k: i for i, k in enumerate(ORDER)}
     for col, metric in enumerate(base.METRICS):
@@ -175,8 +192,7 @@ def fig_comparison(logos: dict, res: dict, present: list[str]) -> None:
                                (0.12 if stat.startswith("R2") else 0.0))
                 ax.scatter(x, m[stat], s=64, marker=marker,
                            facecolors=color if filled else "none",
-                           edgecolors=color, lw=1.5, zorder=3,
-                           label=label if key == present[0] and col == 0 else None)
+                           edgecolors=color, lw=1.5, zorder=3)
                 if pkey and level == "article_level":
                     ax.annotate(f"p = {m[pkey]:.3f}", (x, m[stat]),
                                 textcoords="offset points", xytext=(7, 4),
@@ -191,10 +207,9 @@ def fig_comparison(logos: dict, res: dict, present: list[str]) -> None:
         base.style_axis(ax)
 
     handles, labels = axes[0, 0].get_legend_handles_labels()
-    h2, l2 = axes[1, 0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", ncol=5, fontsize=8.5,
                frameon=False, bbox_to_anchor=(0.5, 0.995))
-    fig.legend(h2, l2, loc="lower center", ncol=3, fontsize=8.5,
+    fig.legend(handles=proxies, loc="lower center", ncol=3, fontsize=8.5,
                frameon=False, bbox_to_anchor=(0.5, 0.0))
     fig.suptitle("Fit-space ablation at the same folds, budget, and seeds "
                  "(LOGO-CV, NUTS 256/512)", fontsize=12, y=1.03)

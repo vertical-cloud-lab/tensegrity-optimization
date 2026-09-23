@@ -39,6 +39,17 @@ Key files:
   the settings and per-fold timings, and the CSV / diagnostics JSON / PNG
   are in the campaign's formats. This is the audit's **primary** LOGO
   input.
+- `ablation-six-param/` and `ablation-shape-only/`: the fit-space
+  ablation re-runs (2026-09-23, PR #111 follow-up), produced on this
+  branch by [`../rerun_logocv_param_ablation.py`](../rerun_logocv_param_ablation.py)
+  at the same 256/512 budget, folds, and per-fold seeding as
+  `full-nuts-rerun/`, against the same campaign code (`bbf7a62`; branch
+  tip `233f4df` leaves both bo scripts untouched). `six-param` fits the
+  rounds-1-and-2 space (five shape coordinates plus weighed printed
+  mass); `shape-only` drops mass too. Same file layout as
+  `full-nuts-rerun/` (per-fold `folds.jsonl` checkpoints committed as
+  they landed, `state.json` with settings and timings, final CSV /
+  diagnostics JSON / parity PNG in the campaign formats).
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection

@@ -20,6 +20,15 @@ Section 2's budget subsection reports what changed. Short version: t180's
 rank statistics were materially understated at the reduced budget, and the
 rebound anti-signal is budget-robust.
 
+**2026-09-23 update:** Section 6 adds a fit-space ablation (asked on PR
+#111): the LOGO-CV re-run in the rounds-1-and-2 six-parameter space
+(shape + weighed mass) and in a shape-only space. The surprise is that
+the weighed-mass input, present since round 1, was carrying the rebound
+anti-signal and suppressing t180's held-out ordering; shape-only posts
+the best rank statistics in this audit. The 12-parameter numbers
+elsewhere in this document are unchanged and remain the primary record
+of the model the campaign actually ran.
+
 ## Verdict
 
 The one-sentence answer: **the dataset contains real t180 design signal
@@ -52,7 +61,12 @@ anyway. Magnitude prediction is still noise-limited; ordering is not as
 hopeless as the reduced-budget run made it look.
 
 Section 5 is the paper trail: every claim of predictive signal posted
-during the campaign, with links, and what became of each one.
+during the campaign, with links, and what became of each one. Section 6
+re-runs the LOGO-CV in reduced fit spaces and finds the verdict's t180
+row understates what the data supports: with the weighed-mass input
+removed, held-out design ranking reaches rho_s = +0.51 (p = 0.0017), and
+the rebound anti-signal turns out to be an artifact of that input rather
+than of the data.
 
 ## 1. The r vs r^2 question first
 
@@ -402,6 +416,116 @@ mirror (the durable copies of the surrogate claims live in
 `bo/README.md` on the campaign branch); this branch via ripgrep. No
 deleted-content search was needed, since every claim was found live.
 
+## 6. The fit-space experiment: the original six parameters, and where mass belongs
+
+**The ask ([PR #111, 2026-09-23](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/111#issuecomment-5798888653)):**
+what if we ignored the six parameters added in round 3 and built the model
+on the original six, making sure mass is in the parameter space?
+
+Two facts about the spaces first. The rounds-1-and-2 fit space was exactly
+six parameters: the five shape coordinates plus the article's weighed
+printed mass (`mass_printed_g`, bounds 17.5 to 24.0 g), so "the six"
+already includes mass; it has been a fit dimension since round 1,
+deliberately a `RangeParameter` so Ax's `RemoveFixed` transform could not
+strip it. The six added in round 3 are print-process settings, and they
+are structurally two different things: the two infill percentages vary
+article by article within batches 3 and 4, while the four filament-level
+settings (nozzle temperatures, flow limits) take exactly one value per
+batch, which makes them batch labels as far as the fit is concerned. And
+on "mass is a normalized quantity in the objectives": it is the reverse.
+`t180` is a ratio with no mass in it, and the rebound objective is mass
+multiplied, `e_reb_mJ = e_rebound x m_printed x g x h`; the per-gram
+variant divides that same mass back out.
+
+So the experiment is `fit_parameters(include_process=False)` on the full
+44-article record, plus a shape-only control (mass removed too) that
+isolates what the mass input contributes.
+[`rerun_logocv_param_ablation.py`](rerun_logocv_param_ablation.py) ran
+both at the same 256/512 budget, folds, per-fold seeds, and code path as
+the primary re-run (per-fold commits, outputs under
+[`data/ablation-six-param/`](data/ablation-six-param/) and
+[`data/ablation-shape-only/`](data/ablation-shape-only/));
+[`score_param_ablation.py`](score_param_ablation.py) applies the audit
+scorecard unchanged (all numbers in
+[`metrics-param-ablation.json`](metrics-param-ablation.json), each run
+cross-checked against its archived Ax diagnostics).
+
+t180, held out (article n = 44, design n = 35, cluster n = 35):
+
+| Statistic | 12 params | 6 params (shape + mass) | 5 params (shape only) |
+|---|---|---|---|
+| Article rho_s (perm p) | +0.32 (0.036) | +0.05 (0.73) | **+0.45 (0.002)** |
+| Design-mean rho_s (p) | +0.37 (0.032) | +0.06 (0.75) | **+0.51 (0.0017)** |
+| Within-batch rho_s, mean of 5 | +0.06 | -0.17 | +0.21 |
+| Exploit-cluster rho_s (p) | **+0.41 (0.015)** | -0.07 (0.70) | +0.25 (0.14) |
+| Attenuator AUC (p) | 0.84 (0.002) | 0.71 (0.051) | 0.81 (0.004) |
+| R2_oos vs fold-train mean | +0.12 | +0.12 | +0.24 |
+| MAPE | 4.8% | 5.2% | 5.0% |
+| 95% coverage | 89% | 84% | 70% |
+
+Rebound, held out:
+
+| Statistic | 12 params | 6 params | 5 params |
+|---|---|---|---|
+| Article rho_s (perm p) | -0.40 (0.008) | -0.42 (0.006) | **+0.04 (0.78)** |
+| Design-mean rho_s (p) | -0.30 (0.080) | -0.31 (0.070) | **0.00 (1.0)** |
+| R2_oos vs fold-train mean | -0.05 | -0.37 | -0.32 |
+
+The proposed model is the one configuration that is worse than both
+alternatives. Dropping the process dimensions alone (keeping mass) took
+the article-level t180 rank correlation from +0.32 back to +0.05, the
+level the reduced-NUTS run had been criticized for, with the design-level
+and cluster views collapsing along with it. Dropping mass as well
+produced the strongest held-out t180 ordering of any run in this audit,
+article and design level, pooled and within batch, and it erased the
+rebound anti-signal outright: not into skill, into zero, which is what
+honest ignorance of a noise-floored metric should look like.
+
+The mechanism reads off the data structure. The four filament settings
+are constant within every batch, so in the 12-parameter space they hand
+the model each batch's calibration offset (batch-mean t180 spans 0.987
+to 1.092 across the five print sessions, larger than the article sd of
+0.087, and the 12-param run's pooled skill is mostly between-batch:
+batch-mean parity r = +0.65 while its mean within-batch rho is +0.06);
+the infills additionally vary per article in batches 3 and 4, real
+inputs the ablation removed. That is why 12 beats 6. Mass is the
+opposite case: it is the only coordinate that separates a reprint twin
+from its original (twins share design and trial process values), and
+the twins are not symmetric noise, since every 2dran article weighed
+0.17 to 0.34 g more than its drran twin and read t180 +0.028 higher on
+average. The weighed-mass axis is therefore a print-session label
+wearing physical units, and at fixed target mass (the constant-mass
+manifold from round 2 on) its residual variation is print scatter, which
+is exactly the campaign's own reason for pinning generation to a
++/- 0.01 g slab ("the tolerance is a fact about the printer, not a
+design variable"). Feeding each article's own weighed mass into the fit
+let between-print luck masquerade as a gradient, defeating the replicate
+structure the reprints were built to provide; with six competing
+dimensions the SAAS prior leaned on it hard (the 6-param run is the
+worst of the three), with twelve it was diluted, and with it gone the
+model finally treats twins as replicates. Rebound, whose between-print
+scatter exceeds its design spread, is where that gradient did the most
+damage, and removing it is what the anti-signal's disappearance
+confirms.
+
+Caveats, before anyone re-plans the campaign around a +0.45: each
+variant is one NUTS realization (the budget experiment in Section 2
+showed rank statistics on this data move by tenths under perturbations
+that leave magnitudes alone; the per-fold seeds in each `state.json`
+make exact replication one command). The shape-only run's posterior is
+overconfident (95% coverage 70% vs the 12-param run's 89%), so its
+uncertainties should not be trusted even where its ordering is good.
+And this section adds more looks at one dataset; the multiplicity
+paragraph in Section 2 applies with extra force.
+
+What this recommends, if a round 6 ever fits again: take
+`mass_printed_g` out of the fit space (or fit the intensive per-gram
+rebound, which removes the same mass factor from the objective side),
+keep the process dimensions only if cross-batch calibration is wanted
+and preferably as an explicit session covariate rather than filament
+values doubling as batch labels, and re-run this ablation on the
+enlarged record before believing any of it moved.
+
 ## Files
 
 - [`cv_signal_audit.py`](cv_signal_audit.py): the full recomputation
@@ -419,3 +543,11 @@ deleted-content search was needed, since every claim was found live.
   at `bbf7a62`, plus per-fold checkpoint commits and per-fold seeding; its
   docstring records the exact invocation). The committed 64/128 run
   remains in `data/` as the comparison variant.
+- [`rerun_logocv_param_ablation.py`](rerun_logocv_param_ablation.py): the
+  same driver adapted to the reduced fit spaces of Section 6
+  (`--variant six-param` and `--variant shape-only`), with guards that no
+  observation is dropped by the subspace swap.
+- [`score_param_ablation.py`](score_param_ablation.py) and
+  [`metrics-param-ablation.json`](metrics-param-ablation.json): the
+  Section 6 scorecard across the three fit spaces, and
+  [`figures/param-ablation-comparison.png`](figures/param-ablation-comparison.png).
