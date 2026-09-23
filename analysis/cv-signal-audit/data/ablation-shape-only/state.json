@@ -57,7 +57,8 @@
     "r2d2c4": 94.6,
     "r2d2c5": 91.6,
     "r2d2c6": 79.5,
-    "r2d2c7": 87.4
+    "r2d2c7": 87.4,
+    "r2d2c8": 91.0
   },
-  "status": "running"
+  "status": "resume_needed"
 }
