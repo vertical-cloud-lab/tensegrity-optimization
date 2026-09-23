@@ -51,6 +51,9 @@ out-rank a single reprint, and an ICC estimated from 9 pairs is wide
 anyway. Magnitude prediction is still noise-limited; ordering is not as
 hopeless as the reduced-budget run made it look.
 
+Section 5 is the paper trail: every claim of predictive signal posted
+during the campaign, with links, and what became of each one.
+
 ## 1. The r vs r^2 question first
 
 Three different quantities have been floating around, and they answer
@@ -330,6 +333,74 @@ weight-drop onto a stationary article. Both are free of carriage restraint
 entirely, so they give a cord-free reference ordering of the same designs.
 If condition A vs C shows the cords matter, the campaign has a measured
 bridge to the backup rig instead of starting one cold.
+
+## 5. The paper trail: every signal claim posted during the campaign
+
+Sterling's follow-up on PR #111 (2026-09-23): "I really thought there
+was some indication of signal at some point during the campaign,
+somewhere in one of the many issue or PR comments and corresponding
+analysis." The recollection is accurate. Held-out skill was reported,
+with numbers, five separate times during the campaign, and the
+trajectory of those numbers is itself a finding: each report quoted the
+cross-validation the campaign had run by then, and the apparent skill
+shrank every time the test got harder, with the full-budget re-run of
+Section 2 the one partial recovery. In order:
+
+| Date | Where | Reported | Where it stands now |
+|---|---|---|---|
+| 2026-08-21 | [PR #102](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5373212774) | Seed-data LOOCV (7 articles): t180 MAPE 3.0%, r 0.57, rank corr 0.64; "real (if weak) out-of-sample skill on t180, and none at all on e_reb_mJ" (rebound rank corr -0.14). | Direction real, size a small-n artifact: the honest n = 44 number is rho_s +0.32 (p = 0.036), and only at the full NUTS budget. |
+| 2026-08-25 | [PR #102](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5403276797) | 17-fold LOOCV after round 2: t180 rank corr 0.60, rebound **0.70**; "the rebound objective went from no out-of-sample skill to the best-ranked metric in the fit". The campaign's [`bo/README.md`](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/bbf7a62/bo/README.md#L1150) still reads "the model now has genuine out-of-sample ordering skill on both objectives". | The strongest claim on record, and the rebound half did not survive: the 2dran reprints later measured pair ratios 0.38x to 2.9x with pair rank corr -0.18, and LOGO-CV flips rebound to -0.38 / -0.40 at either budget. |
+| 2026-08-25 | [PR #102](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5404402380) | LOOCV evolution: t180 rank corr +0.76 on the 8 seed articles alone, +0.60 with round 2; rebound +0.24 to +0.70, headlined "clear learning", with its own caveat that rank correlations at n = 8 swing by tenths between NUTS realizations. | +0.76 is the highest held-out surrogate number posted during the campaign; the caveat was the operative sentence. Nothing near it reappears at any larger n. |
+| 2026-09-07 | [PR #102](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5576244863) | 26-fold LOOCV: t180 +0.19, rebound +0.30; "the honest headline: held-out skill went down, not up". The same comment names trial 37 best-predicted of the round-4 batch. | The turn of the arc, confirmed here. Trial 37 became corny7, which measured 0.803, best in the campaign: the one forecast that came true. |
+| 2026-09-15 | [PR #102](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5688705830) | First LOGO-CV (44 articles, 64/128 NUTS): t180 rank +0.08, rebound -0.38; "the round-4 LOOCV's apparent rebound skill was partly the model predicting print luck". | The rebound half held; the t180 half was the budget artifact Section 2 documents: 256/512 restores +0.32 (p = 0.036). |
+| 2026-09-15 | [PR #102](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5673199005) | Batch-4 ingestion: hypervolume 3.155 to 5.195 (+65%), corny7 measured best in the campaign. | Quantified in Section 3 as the audit's strongest result: batch-4 rho_s = +0.82, exact p = 0.011. |
+
+So the impression traces to real, quoted numbers, chiefly the two
+2026-08-25 LOOCV comments. Why they did not survive: (1) sample size,
+since rank correlations over 7 or 8 articles swing by tenths between
+NUTS realizations, and seven of the eight seed t180 values sat within
+0.07 of each other; (2) print noise, since rebound's between-print
+scatter exceeds its design spread (Section 4), so rankings of single
+prints are dominated by print draws, and the reprints showed those
+rankings do not survive a second print; (3) the test and the model both
+changing shape, since the space grew from 6 to 12 parameters between
+the 17-fold and 26-fold runs (four new axes batch-confounded), and once
+reprints existed plain LOO kept the held-out article's twin in
+training, which LOGO-CV corrects; and (4) one genuine under-count, the
+64/128 NUTS budget of the first LOGO run, whose correction in Section 2
+is what reconciles the early t180 impression with the final verdict:
+a weak t180 rank signal is really there.
+
+Claims outside the surrogate-CV lane, for completeness:
+
+- **Simulation vs bench** (PR #33 branch): Tier-B simulated t180
+  rank-correlates with measured t180 at rho = +0.75 (n = 7, p = 0.052;
+  [2026-08-24](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/33#issuecomment-5401694720)),
+  and Tier-C lander volumetric SEA at rho = -0.93 (n = 7, exact
+  p = 0.0028;
+  [issue #99 synthesis, 2026-09-02](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/99#issuecomment-5512926802)).
+  Both are screening associations picked from roughly 30 candidate
+  observables at n = 7, reframed as exploratory by the Edison
+  statistics audit
+  ([PR #76, 2026-08-22](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/76#issuecomment-5382633502)),
+  and neither has been re-scored against the full 35-design record.
+  That re-score became its own task on 2026-09-23 (sgbaird on PR #111).
+- **corr(mass, t180) = 0.83** over the 7 mapped round-1 articles
+  ([2026-08-21](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/102#issuecomment-5365706779)),
+  the finding that created `e_reb_mJ`. A confound, not signal: the
+  constant-mass rounds broke it to 0.07 by round 4.
+- **Defect grade vs transmissibility, rho = -0.90** (p = 0.04, 5
+  specimens) in the felt-stack era
+  ([PR #86, 2026-07-30](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86#issuecomment-5137176775)),
+  flagged in the same comment as pseudo-replication with three rival
+  explanations, the strongest being mount re-seating.
+
+Search provenance for this section: all 1,477 issue and PR conversation
+comments, all 127 review comments, and all 110 issue/PR bodies were
+dumped via the GitHub API and searched; other branches via a blobless
+mirror (the durable copies of the surrogate claims live in
+`bo/README.md` on the campaign branch); this branch via ripgrep. No
+deleted-content search was needed, since every claim was found live.
 
 ## Files
 
