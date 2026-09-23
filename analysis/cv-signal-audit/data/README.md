@@ -22,10 +22,23 @@ Key files:
   together, one refit per fold). Produced by
   [`bo/t3_prism_bo_diagnostics.py` at `bbf7a62`](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/bbf7a62/bo/t3_prism_bo_diagnostics.py)
   with `--round 5 --cv-only --group-cv` at reduced NUTS settings
-  (64 samples / 128 warmup per fold; see the audit README for what that
-  does and does not affect). `arm_name` in this CSV is a sequential
-  re-index (0 to 43 in article order), not the Ax source trial; joins in
-  the audit go through the print keys' `source_trial` column instead.
+  (64 samples / 128 warmup per fold). Kept as the budget-comparison
+  variant; superseded as the audit's primary input by the full-budget
+  re-run below. `arm_name` in this CSV is a sequential re-index (0 to 43
+  in article order), not the Ax source trial; joins in the audit go
+  through the print keys' `source_trial` column instead.
+- `full-nuts-rerun/`: the same LOGO-CV re-run 2026-09-22 at the
+  library-default NUTS settings (256 samples / 512 warmup per fold), the
+  budget every campaign candidate-generation fit used. Produced on this
+  branch by [`../rerun_logocv_full_nuts.py`](../rerun_logocv_full_nuts.py)
+  against the campaign branch's code and data at `bbf7a62` (same
+  `fit_saasbo`/`cross_validate` path, `refit_on_cv=True`), with per-fold
+  seeding for reproducibility. `folds.jsonl` holds the raw per-fold
+  checkpoints (observed and predicted means and covariances, one JSON
+  line per design fold, committed as each fold finished), `state.json`
+  the settings and per-fold timings, and the CSV / diagnostics JSON / PNG
+  are in the campaign's formats. This is the audit's **primary** LOGO
+  input.
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection

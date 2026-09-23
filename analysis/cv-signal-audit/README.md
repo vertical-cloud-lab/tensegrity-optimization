@@ -9,31 +9,47 @@ Everything here is recomputed from the committed campaign snapshots vendored
 in [`data/`](data/README.md) by [`cv_signal_audit.py`](cv_signal_audit.py)
 (fixed seed, exact permutation enumeration where n = 9 makes it cheap; all
 numbers in [`metrics.json`](metrics.json)). The recomputation matches the
-archived Ax diagnostics to 1e-4 on r and MAPE, so the ugly numbers in the
-manuscript's LOGO figure are real, not a processing artifact.
+archived Ax diagnostics to 1e-4 on r and MAPE for both LOGO runs, so the
+numbers in the manuscript's LOGO figure are real, not a processing artifact.
+
+**2026-09-22 update:** the LOGO-CV was re-run at the library-default NUTS
+budget (256 samples / 512 warmup per fold) after PR #76 flagged that the
+campaign's committed run had used a reduced 64/128 budget. The re-run is
+now the primary input here; the 64/128 run is kept as a comparison, and
+Section 2's budget subsection reports what changed. Short version: t180's
+rank statistics were materially understated at the reduced budget, and the
+rebound anti-signal is budget-robust.
 
 ## Verdict
 
-The one-sentence answer: **the dataset contains real design signal and the
-model has learned to use it for the one job the campaign needs (ranking new
-candidates within the sampled region), but neither the model nor a physical
-reprint of the same design can predict a single print's outcome, and the
-rebound score has no usable signal at any level.**
+The one-sentence answer: **the dataset contains real t180 design signal
+and the model uses it, prospectively for the job the campaign needs
+(ranking new candidates within the sampled region) and, at the full MCMC
+budget, detectably in held-out rank statistics too; what remains out of
+reach is the magnitude of a single print's outcome, and the rebound score
+has anti-signal at every level.**
 
-Four levels, from harshest test to the decision-relevant one:
+Four levels, from harshest test to the decision-relevant one (LOGO rows
+are the 256/512 re-run; the 64/128 numbers they replace are in the budget
+subsection of Section 2):
 
 | Level | Test | t180 | Rebound score |
 |---|---|---|---|
-| Article, full space | LOGO-CV, 44 articles | R2_oos +0.09, rho_s +0.08 (p = 0.60): **no** | rho_s = -0.38 (p = 0.011), R2_oos = -0.06: **anti-signal** |
-| Article, exploit cluster | LOGO-CV, the 35 articles in t180 [0.95, 1.10] | r = +0.39 (p = 0.02), R2_oos +0.16, MAPE 2.3%: **weak, fragile** | not separately testable |
-| Design (collapse reprints) | LOGO-CV on 35 design means | rho_s +0.05 (p = 0.76): **no** | rho_s = -0.18 (p = 0.31): **no** |
+| Article, full space | LOGO-CV, 44 articles | R2_oos +0.12, rho_s +0.32 (p = 0.036): **weak rank signal** | rho_s = -0.40 (p = 0.008), R2_oos = -0.05: **anti-signal** |
+| Article, exploit cluster | LOGO-CV, the 35 articles in t180 [0.95, 1.10] | r = +0.52 (p = 0.003), rho_s = +0.41 (p = 0.015), MAPE 2.2%: **yes, within-cluster** | not separately testable |
+| Design (collapse reprints) | LOGO-CV on 35 design means | rho_s +0.37 (p = 0.032): **weak rank signal** | rho_s = -0.30 (p = 0.080): **anti-signal trend** |
 | Selection (what BO needs) | at-selection predictions vs the batch then measured | batch 4: rho_s = +0.82, exact p = 0.011: **yes** | rho_s +0.17 to +0.55, all p > 0.13: **no** |
 
-And the model-free context that bounds all of it: a second physical print of
-the same design predicts its twin at ICC <= 0 within the exploit cluster
-(t180 pair rank correlation +0.08, rebound -0.18), so at the article level
-the surrogate is sitting at the ceiling set by the hardware, not
-underperforming it.
+The model-free context: a second physical print of the same design
+predicts its twin at ICC <= 0 within the exploit cluster (t180 pair rank
+correlation +0.08 over the 9 pairs, rebound -0.18). At the reduced budget
+the surrogate's +0.08 looked pinned to that ceiling; at the full budget it
+clears it. No contradiction: the pair statistic bounds one noisy print
+predicting another (noise on both sides), while a model prediction is a
+smooth function of the design with no seat noise of its own, so it can
+out-rank a single reprint, and an ICC estimated from 9 pairs is wide
+anyway. Magnitude prediction is still noise-limited; ordering is not as
+hopeless as the reduced-budget run made it look.
 
 ## 1. The r vs r^2 question first
 
@@ -46,8 +62,8 @@ different questions:
   and scale, so a model that predicts 1.03 for everything from 0.80 to 1.33
   can still post a positive r.
 - **r^2** (squared Pearson): same information, squared. On this data it
-  makes things look worse, not better: t180 r = +0.22 becomes r^2 = 0.05,
-  and rebound's r^2 = 0.14 hides that the correlation is **negative**.
+  makes things look worse, not better: t180 r = +0.29 becomes r^2 = 0.08,
+  and rebound's r^2 = 0.13 hides that the correlation is **negative**.
   Quoting r^2 alone would have obscured the campaign's single most alarming
   CV result.
 - **Out-of-sample R^2** (1 minus SSE over the squared error of predicting
@@ -55,12 +71,12 @@ different questions:
   honest "is the model better than no model" number. It can be negative,
   and for rebound it is.
 
-The full set, article level (n = 44):
+The full set, article level (n = 44, 256/512 re-run):
 
 | Metric | r | r^2 | rho_s (perm p) | R2_oos | MAPE | RMSE vs mean-predictor RMSE |
 |---|---|---|---|---|---|---|
-| t180 | +0.22 [95% CI -0.08, +0.49] | 0.05 | +0.08 (0.60) | **+0.09** | 5.0% | 0.084 vs 0.088 |
-| Rebound (mJ) | -0.38 [-0.61, -0.09] | 0.14 | -0.38 (0.011) | **-0.06** | 39.4% | 3.88 vs 3.76 |
+| t180 | +0.29 [95% CI -0.01, +0.54] | 0.08 | +0.32 (0.036) | **+0.12** | 4.8% | 0.082 vs 0.088 |
+| Rebound (mJ) | -0.36 [-0.59, -0.07] | 0.13 | -0.40 (0.008) | **-0.05** | 38.8% | 3.84 vs 3.76 |
 
 So the direct answer to "expected r^2": for a parity plot the pair worth
 reporting is **R2_oos plus a rank statistic with a permutation p**, with
@@ -68,59 +84,105 @@ r^2 quoted alongside r whenever Pearson appears. The audit figures and
 tables here do that throughout, and the manuscript's surrogate-audit
 paragraph should too when it is next touched.
 
-## 2. Article level: no skill, and honestly calibrated about it
+## 2. Article level: weak rank skill, magnitudes still noise-limited
+
+All numbers in this section are from the 256/512 re-run unless labeled
+otherwise; the budget subsection below shows both runs side by side.
 
 ![LOGO parity and permutation nulls](figures/logo-parity-and-permutation.png)
 
-- t180: R2_oos = +0.09 against the honest per-fold baseline (+0.05 against
-  the global mean). The model beats "predict the average" by nine percent
-  of variance. Rank correlation is indistinguishable from shuffled labels
-  (p = 0.60). Predictions shrink to the pooled mean
-  (sd(pred)/sd(obs) = 0.26) while the posterior stays wide (median held-out
-  sd 0.104 vs data sd 0.087) and roughly calibrated (89% of articles inside
-  1.96 posterior sd). That is a model reporting "I mostly know the pooled
-  distribution", which for BO acquisition is legitimate, and for
-  single-article forecasting is zero skill.
-- The +0.22 Pearson r is fragile: removing one article (corny7) drops it
-  to +0.06; the whole jackknife range is carried by three articles (corny7,
-  r2d2c3, 6lhxfy). Of the nine articles outside the cluster, the model put
-  only 3 on the correct side of the median (coin-flip p = 0.51); it missed
-  the direction of 6lhxfy, r2d2c3, and drran7 entirely.
-- Inside the cluster (35 articles in [0.95, 1.10]) there is a weak linear
-  association: r = +0.39 (perm p = 0.022), R2_oos = +0.16, MAPE 2.3%. It
-  does not survive rank-based testing (rho_s = +0.22, p = 0.21), and it is
-  one nominally significant p among the roughly twenty looks in this audit,
-  so treat it as suggestive at most.
+- t180: R2_oos = +0.12 against the honest per-fold baseline (+0.08 against
+  the global mean). Rank correlation now clears the shuffled-label null:
+  rho_s = +0.32, permutation p = 0.036. Predictions still shrink hard to
+  the pooled mean (sd(pred)/sd(obs) = 0.32) while the posterior stays wide
+  (median held-out sd 0.104 vs data sd 0.087) and roughly calibrated (89%
+  of articles inside 1.96 posterior sd). Read together: the model mostly
+  reports the pooled distribution, but the small adjustments it makes
+  around that mean are ordered in the right direction more often than
+  chance.
+- The Pearson r is less fragile than at the reduced budget but still
+  jackknife-sensitive: r = +0.29 full-sample, +0.40 with r2d2c3 removed,
+  about +0.22 with corny6 or corny7 removed. Of the nine articles outside
+  the cluster, the model put only 4 on the correct side of the median
+  (coin-flip p = 1.0): the strong attenuators and amplifiers are still
+  found by testing, not by prediction.
+- Inside the cluster (35 articles in [0.95, 1.10]) the association is now
+  solid under both tests: r = +0.52 (perm p = 0.003), rho_s = +0.41
+  (p = 0.015), R2_oos = +0.19, MAPE 2.2%. At 64/128 this was the fragile
+  part (rho_s = +0.22, p = 0.21); the extra chain budget is what firmed it
+  up.
+- Asked the coarser question acquisition actually asks ("which articles
+  measure below unity?"), the model now discriminates well: AUC = 0.84
+  (p = 0.002, 9 attenuators), up from 0.68 (p = 0.10) at the reduced
+  budget.
 - Rebound: significantly anti-correlated at every formulation (rank
-  p = 0.011, Pearson p = 0.012, AUC for picking the better half = 0.32,
-  p = 0.047). The model learned print luck and now inverts the truth on
-  held-out designs. Negative R2_oos means the pooled mean is strictly
-  better. This confirms the pre-registered Edison objection to `e_rebound`
-  (task `3e398131`) with three more batches of evidence.
-- One mildly positive note: asked the coarser question acquisition actually
-  asks ("which articles measure below unity?"), the model is better than
-  chance but not significantly so (AUC 0.68, p = 0.10, 9 attenuators).
+  p = 0.008, Pearson p = 0.020, AUC for picking the better half = 0.33,
+  p = 0.059), and slightly stronger at the full budget than at 64/128.
+  The model learned print luck and inverts the truth on held-out designs;
+  negative R2_oos means the pooled mean is strictly better. This confirms
+  the pre-registered Edison objection to `e_rebound` (task `3e398131`)
+  with three more batches of evidence, and the budget experiment rules out
+  "underfit MCMC" as its explanation.
+- Multiplicity: several t180 looks now land between p = 0.002 and
+  p = 0.04, and they are correlated views of one dataset, not independent
+  confirmations. The reason to take the rank signal seriously is not any
+  single p here but that it points the same way as the prospective
+  selection-level test in Section 3, which involves no cross-validation at
+  all.
 
 Design level (averaging the nine reprint pairs into design means, n = 35)
-changes nothing: rho_s = +0.05 (p = 0.76). Averaging two prints of nine
-designs cannot manufacture reliability the articles do not have.
+now agrees with the article level: t180 rho_s = +0.37 (p = 0.032), up
+from +0.05 (p = 0.76) at the reduced budget; rebound rho_s = -0.30
+(p = 0.080).
 
-**Caveat carried from PR #76 discussion (2026-09-22):** the committed
-round-5 LOGO run used reduced per-fold NUTS settings (64 samples / 128
-warmup, 4 retained SAAS draws) versus the 256/512 campaign standard, and
-the "direction-stable" note in its commit has no committed artifact behind
-it. That budget touches the posterior-sd-derived numbers here (coverage,
-sharpness) more than the point predictions. It does **not** touch the
-reliability ceiling (model-free) or Section 3 (the at-selection predictions
-came from full-fidelity campaign fits). A full-fidelity re-run command is
-recorded in `bo/README.md` on the campaign branch.
+### The NUTS budget experiment (re-run 2026-09-22)
+
+PR #76 flagged that the committed LOGO run had used reduced per-fold NUTS
+settings (64 samples / 128 warmup, 4 retained SAAS draws after thinning)
+versus the 256/512 library default that every campaign candidate-generation
+fit used, and that its commit-message claim of being "direction-stable vs
+128/256" had no committed artifact behind it. The re-run settles both
+points. Same code path as the campaign script (`fit_saasbo` with
+`refit_on_cv=True`, one NUTS refit per design fold, reprint pairs held out
+together), driven fold-by-fold by
+[`rerun_logocv_full_nuts.py`](rerun_logocv_full_nuts.py) with each fold
+committed as it landed; outputs in
+[`data/full-nuts-rerun/`](data/full-nuts-rerun/) in the campaign formats.
+35 folds, about 74 s per fold on 4 CPU cores.
+
+Archived Ax diagnostics, both runs:
+
+| Diagnostic | t180 at 64/128 | t180 at 256/512 | Rebound at 64/128 | Rebound at 256/512 |
+|---|---|---|---|---|
+| Pearson r | +0.22 | +0.29 | -0.38 | -0.36 |
+| Rank correlation | +0.08 | +0.32 | -0.38 | -0.40 |
+| MAPE | 5.0% | 4.8% | 39.4% | 38.8% |
+| MSE | 0.0071 | 0.0068 | 15.02 | 14.76 |
+| Fisher exact test p | 0.62 | 0.065 | 0.98 | 1.00 |
+| Mean prediction CI | 0.370 | 0.362 | 2.141 | 2.131 |
+
+![NUTS budget comparison](figures/nuts-budget-comparison.png)
+
+How a rank correlation quadruples while MAPE barely moves: the predictions
+themselves moved very little (t180 median |shift| 0.005, about 5% of the
+data sd; between-budget r = 0.84), but the model's prediction spread is
+only a third of the data sd, so shifts of that size reorder articles
+within the shrunken band. The rank statistics were the budget-sensitive
+quantities; the magnitudes, MAPE, and the calibration numbers (89%/93%
+coverage, near-identical posterior sd) were not. Verdict on the old
+caveats: the direction-stability claim held for rebound and failed for
+t180's rank statistics, and the worry about 4 retained draws distorting
+the sd-derived numbers did not materialize. The reliability ceiling
+(model-free) and Section 3 (at-selection predictions from full-budget
+campaign fits) never depended on this either way.
 
 ## 3. Selection level: the signal that actually exists
 
 The campaign committed posterior predictions for every recommended batch
 before printing it ([`data/t3-prism-bo-round{1,3,4}-predictions.csv`](data/)).
 Scoring those archived predictions against what each batch then measured is
-a prospective test, immune to CV leakage and to the NUTS caveat:
+a prospective test, immune to CV leakage and to the NUTS budget question
+(these fits always ran at 256/512):
 
 ![Prospective batch skill](figures/prospective-batch-skill.png)
 
@@ -158,11 +220,14 @@ Read together with the reliability ceiling, this table is the whole story:
   3.155 to 5.195 (+65%), and the best measured t180 moved 0.893 (Sobol
   seed) to 0.803 (model-chosen).
 
-The apparent contradiction between Sections 2 and 3 is not a contradiction.
-LOGO asks "predict a design you have never seen, anywhere in a 9-variable
-space, from at most 34 other designs, one print each". Acquisition asks
-"rank nine candidates in the region you have been sampling". The second
-question is much easier and is the one with money on it.
+Sections 2 and 3 now tell one story instead of two. At the reduced NUTS
+budget they looked contradictory (no held-out rank signal, yet strong
+prospective batch ranking); at the full budget the LOGO rank statistics
+point the same way as the selection-level test, weaker because LOGO asks
+the harder question: predict a design you have never seen, anywhere in a
+9-variable space, from at most 34 other designs, one print each, versus
+ranking nine candidates in the region being sampled. What stays out of
+reach at every budget is the magnitude of a single print's outcome.
 
 ## 4. The noise ladder, and Audrey's bungee question
 
@@ -270,9 +335,16 @@ bridge to the backup rig instead of starting one cold.
 
 - [`cv_signal_audit.py`](cv_signal_audit.py): the full recomputation
   (deterministic; run `python3 cv_signal_audit.py` from this directory).
-- [`metrics.json`](metrics.json): every number in this document.
-- [`figures/`](figures/): the three figures above.
-- [`data/`](data/README.md): vendored input snapshots with provenance.
-- The LOGO-CV itself was produced by
-  [`bo/t3_prism_bo_diagnostics.py` on the campaign branch](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/bbf7a62/bo/t3_prism_bo_diagnostics.py);
-  this audit consumes its committed outputs and does not re-run it.
+- [`metrics.json`](metrics.json): every number in this document, for both
+  NUTS budgets.
+- [`figures/`](figures/): the four figures above.
+- [`data/`](data/README.md): vendored input snapshots with provenance,
+  including the primary full-budget LOGO re-run under
+  [`data/full-nuts-rerun/`](data/full-nuts-rerun/).
+- [`rerun_logocv_full_nuts.py`](rerun_logocv_full_nuts.py): the resumable
+  driver that produced the 256/512 re-run on 2026-09-22 (same model code
+  path as
+  [`bo/t3_prism_bo_diagnostics.py` on the campaign branch](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/bbf7a62/bo/t3_prism_bo_diagnostics.py)
+  at `bbf7a62`, plus per-fold checkpoint commits and per-fold seeding; its
+  docstring records the exact invocation). The committed 64/128 run
+  remains in `data/` as the comparison variant.
