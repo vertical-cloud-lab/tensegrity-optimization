@@ -1037,6 +1037,22 @@ verification, and the H2D MM 3mf with the filament settings and all 18
 per-part infill overrides baked; follow with the headless BambuStudio
 slice check per the round-4 section).
 
+## Replicate study (3 designs x 9 articles, proposed 2026-09-23)
+
+The lab plans a repeatability study (PR #102, 2026-09-23): three
+characteristic designs, one on the Pareto front, one further away, one
+furthest away, three copies per plate, three identical plates, 27
+articles. Plan, proposed picks (corny7 / corny8 / corny2, all round 4 so
+one filament point reproduces the originals), pre-registered reference
+values for the rank check, power analysis from the drran/2dran pair
+noise, protocol, and the campaign decision rules live in
+`t3-prism-replicate-study-plan.md`. Supporting script:
+`t3_prism_replicate_study_power.py` (deterministic, reads only committed
+data), outputs `t3-prism-replicate-study-{picks,power}.csv` and
+`figures/t3-prism-replicate-study-power.png`. Picks are proposed, not
+lab-confirmed; swapping them means re-running the script and re-freezing
+the plan's tables.
+
 ## Model interpretability (diagnostics)
 
 - `t3_prism_bo_diagnostics.py`: refits the round-1 SAASBO model from the
