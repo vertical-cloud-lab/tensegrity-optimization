@@ -185,6 +185,68 @@ def bh_fdr(p: pd.Series) -> pd.Series:
     return q
 
 
+def partial_rho(df: pd.DataFrame, x: str, y: str, controls: list[str],
+                rng) -> dict:
+    """Rank-based partial correlation of x and y given the controls.
+
+    Rank-transform everything, residualize x and y on the controls by OLS,
+    then Pearson on the residuals (= partial Spearman), permutation p by
+    shuffling the y residuals.
+    """
+    cols = [x, y] + controls
+    sub = df[cols].astype(float).dropna()
+    n = len(sub)
+    if n < len(controls) + 4:
+        return dict(n=n, rho=np.nan, p=np.nan)
+    R = stats.rankdata(sub.values, axis=0)
+    X = np.column_stack([np.ones(n), R[:, 2:]])
+    beta_x, *_ = np.linalg.lstsq(X, R[:, 0], rcond=None)
+    beta_y, *_ = np.linalg.lstsq(X, R[:, 1], rcond=None)
+    rx = R[:, 0] - X @ beta_x
+    ry = R[:, 1] - X @ beta_y
+    if np.ptp(rx) == 0 or np.ptp(ry) == 0:
+        return dict(n=n, rho=np.nan, p=np.nan)
+    rho = float(np.corrcoef(rx, ry)[0, 1])
+    null = np.empty(N_PERM)
+    for i in range(N_PERM):
+        null[i] = np.corrcoef(rx, rng.permutation(ry))[0, 1]
+    p = float((np.sum(np.abs(null) >= abs(rho) - 1e-12) + 1) / (N_PERM + 1))
+    return dict(n=int(n), rho=rho, p=p)
+
+
+def within_batch_rho(frame: pd.DataFrame, x: str, y: str, rng,
+                     min_n: int = 5) -> dict:
+    """Batch-stratified rank association: mean within-batch Spearman rho
+    (weights n - 1) with a permutation p that shuffles y only within batch.
+
+    This is the guard against adaptive-sampling structure: batches 2 to 4
+    were chosen by the optimizer, so a pooled correlation can ride on
+    between-batch shifts that have nothing to do with the predictor.
+    """
+    parts = []
+    for b, sub in frame.groupby("batch"):
+        sub = sub[[x, y]].dropna()
+        if len(sub) >= min_n:
+            parts.append((stats.rankdata(sub[x]), stats.rankdata(sub[y])))
+    if not parts:
+        return dict(n_batches=0, rho=np.nan, p=np.nan)
+    w = np.array([len(rx) - 1 for rx, _ in parts], float)
+
+    def stat(ys):
+        rs = [np.corrcoef(rx, ry)[0, 1] for (rx, _), ry in zip(parts, ys)]
+        return float(np.sum(np.array(rs) * w) / w.sum())
+
+    obs = stat([ry for _, ry in parts])
+    null = np.empty(N_PERM)
+    for i in range(N_PERM):
+        null[i] = stat([rng.permutation(ry) for _, ry in parts])
+    p = float((np.sum(np.abs(null) >= abs(obs) - 1e-12) + 1) / (N_PERM + 1))
+    per_batch = {f"batch{k}": float(np.corrcoef(rx, ry)[0, 1])
+                 for k, (rx, ry) in enumerate(parts)}
+    return dict(n_batches=len(parts), rho=obs, p=p,
+                n_total=int(w.sum() + len(parts)), **per_batch)
+
+
 def rel_span(v) -> float:
     v = np.asarray(v, float)
     v = v[np.isfinite(v)]
@@ -261,15 +323,50 @@ def main():
     cl = t[(t.t180 >= 0.95) & (t.t180 <= 1.10) & t.design.notna()]
     metrics["tierB_t180_cluster"] = rho_perm(cl.tierB_t180, cl.t180, rng)
     metrics["tierC_t180_cluster"] = rho_perm(cl.tierC_t180, cl.t180, rng)
-    # attenuator discrimination: does sim t180 rank the below-unity articles?
+    # attenuator discrimination: AUC = P(a random attenuator gets a lower
+    # simulated t180 than a random non-attenuator); 0.5 = chance
     att = (t[t.design.notna()].t180 < 1.0).astype(int)
     for tier in ("tierB", "tierC"):
         x = t[t.design.notna()][f"{tier}_t180"]
         ok = np.isfinite(x) & np.isfinite(att)
-        auc = stats.mannwhitneyu(x[ok][att[ok] == 1], x[ok][att[ok] == 0],
-                                 alternative="less").statistic
-        auc /= (att[ok] == 1).sum() * (att[ok] == 0).sum()
-        metrics[f"{tier}_attenuator_auc"] = float(auc)
+        n1 = int((att[ok] == 1).sum())
+        n0 = int((att[ok] == 0).sum())
+        mw = stats.mannwhitneyu(x[ok][att[ok] == 1], x[ok][att[ok] == 0],
+                                alternative="less")
+        metrics[f"{tier}_attenuator_auc"] = float(1.0 - mw.statistic / (n1 * n0))
+        metrics[f"{tier}_attenuator_auc_p"] = float(mw.pvalue)
+
+    # do the two tiers carry the same information?
+    metrics["tierC_vs_tierB_t180"] = rho_perm(d.tierC_t180, d.tierB_t180, rng)
+
+    # ---- 1b. partial correlations: is the sim just reading cable_d? -------
+    top_preds = ["tierC_t180", "tierC_peak_tendon_strain",
+                 "tierC_peak_tendon_energy_mJ", "tierC_e_rebound",
+                 "tierB_stroke_mm", "geom_envelope_cm3", "tierC_tpu_fraction",
+                 "crutch_SEA_J_per_g", "tierB_t180"]
+    coords5 = ["nom_R_mm", "nom_H_mm", "nom_twist_deg", "nom_strut_d_mm",
+               "nom_cable_d_mm"]
+    partials = {}
+    for pred in top_preds:
+        partials[pred] = {
+            "rho_raw": rho_perm(d[pred], d.t180, rng),
+            "rho_with_cable_d": rho_perm(d[pred], d.nom_cable_d_mm, rng),
+            "partial_given_cable_d": partial_rho(d, pred, "t180",
+                                                 ["nom_cable_d_mm"], rng),
+            "partial_given_5coords": partial_rho(d, pred, "t180", coords5, rng),
+        }
+    metrics["t180_partials"] = partials
+
+    # ---- 1c. within-batch view (guards against adaptive-sampling drift) --
+    wb = {}
+    for pred in ("nom_cable_d_mm", "tierC_t180", "tierB_t180", "fn_hz",
+                 "zeta_pct", "geom_envelope_cm3", "tierC_peak_tendon_strain"):
+        wb[f"{pred}_vs_t180"] = within_batch_rho(d, pred, "t180", rng)
+    for pred in ("nom_R_mm", "tierC_e_rebound", "tierB_t180"):
+        wb[f"{pred}_vs_e_reb_mJ"] = within_batch_rho(d, pred, "e_reb_mJ", rng)
+    wb["t180_vs_e_reb_mJ"] = within_batch_rho(d, "t180", "e_reb_mJ", rng)
+    wb["zeta_pct_vs_e_rebound"] = within_batch_rho(d, "zeta_pct", "e_rebound", rng)
+    metrics["within_batch_design"] = wb
 
     # ---- 2. replication of the n = 7 screen ------------------------------
     old = pd.read_csv(SIMB / "pr102_correlations.csv")
@@ -319,12 +416,22 @@ def main():
     ta = ta.merge(t[["specimen", "t180", "e_rebound", "e_reb_mJ", "fn_hz",
                      "zeta_pct"]], left_on="print_id", right_on="specimen",
                   how="inner")
+    # The sim branch's Tier-A (and old Tier-B) roster simulated the r2d2c
+    # articles at the superseded suggestions-round1 print dims, which do not
+    # match the as-built round1-designs / drop-results geometry (up to ~40%
+    # off in H). Batch-1 rows used the correct print-key dims, so the clean
+    # Tier-A comparison is batch-1 only; the pooled number is kept with that
+    # caveat attached.
+    seeds = set(t[t.batch == "seed"].specimen)
     ta_res = {}
     for pred, tgt in (("peak_top_g", "t180"), ("e_rebound_article", "e_rebound"),
                       ("e_rebound_article", "e_reb_mJ"), ("fn_hz_x", "fn_hz_y"),
                       ("zeta_pct_x", "zeta_pct_y")):
         if pred in ta.columns and tgt in ta.columns:
             ta_res[f"{pred}_vs_{tgt}"] = rho_perm(ta[pred], ta[tgt], rng)
+            tb1 = ta[ta.print_id.isin(seeds)]
+            ta_res[f"{pred}_vs_{tgt}_batch1"] = rho_perm(tb1[pred], tb1[tgt],
+                                                         rng)
     metrics["tierA_vs_measured"] = ta_res
     metrics["tierA_n_matched"] = int(len(ta))
 
@@ -381,7 +488,7 @@ def main():
         a = r3.loc[shared, c].astype(float)
         b = r3b.loc[shared, c].astype(float)
         ok = np.isfinite(a) & np.isfinite(b)
-        if ok.sum() < 5:
+        if ok.sum() < 4:
             continue
         rho = stats.spearmanr(a[ok], b[ok]).statistic
         pair_rows.append(dict(channel=c, n_pairs=int(ok.sum()),
@@ -489,12 +596,12 @@ def fig_parity(t: pd.DataFrame, d: pd.DataFrame, metrics: dict):
             zorder=3)
     ax.axvline(0, color="0.35", lw=0.9)
     ax.axvline(s_art["rho"], color="0.2", lw=1.0, ls="--")
-    ax.text(s_art["rho"], len(per) - 0.35, f" pooled {s_art['rho']:+.2f}",
-            fontsize=7.5, va="bottom")
+    ax.text(s_art["rho"], -0.62, f"pooled {s_art['rho']:+.2f}",
+            fontsize=7.5, ha="center", va="top", clip_on=False)
     ax.set_xlim(-1, 1)
     ax.set_xlabel("Spearman rho, Tier-B t180 vs measured, within batch",
                   fontsize=9)
-    ax.set_title("Where the Tier-B signal lives", fontsize=9)
+    ax.set_title("Within-batch rank agreement (articles)", fontsize=9)
     ax.grid(axis="x", **GRID)
     fig.tight_layout()
     fig.savefig(FIGS / "tier-parity-t180.png", dpi=200)
@@ -511,10 +618,12 @@ def fig_replication(rep: pd.DataFrame):
         sub = rep[rep.target == tgt]
         ax.scatter(sub.rho_n7, sub.rho_n35, s=26, color=color, alpha=0.85,
                    label=f"target {tgt}", zorder=3)
-    lab = rep[(rep.p_n7 < 0.08) & (rep.rho_n7.abs() > 0.7)]
-    for _, r in lab.iterrows():
+    lab = rep[(rep.p_n7 < 0.08) & (rep.rho_n7.abs() > 0.7)].reset_index()
+    for i, r in lab.iterrows():
+        dy = (3, 10, -8)[i % 3]
         ax.annotate(r.observable, (r.rho_n7, r.rho_n35), fontsize=6.2,
-                    textcoords="offset points", xytext=(4, 3))
+                    textcoords="offset points", xytext=(4, dy),
+                    annotation_clip=False)
     ax.set_xlabel("Spearman rho at n = 7 (seed batch, 2026-08)", fontsize=9)
     ax.set_ylabel("Spearman rho at n = 35 designs (now)", fontsize=9)
     ax.set_title("Replication test of the sim-branch correlation screen",
@@ -560,7 +669,7 @@ def fig_measured(cross_rho: pd.DataFrame, cross_p: pd.DataFrame,
     ax.set_xlabel("t180 (design mean)", fontsize=9)
     ax.set_ylabel("rebound score e_reb_mJ (design mean)", fontsize=9)
     ax.set_title("The two campaign objectives", fontsize=9)
-    ax.legend(fontsize=6.5, loc="upper left")
+    ax.legend(fontsize=6.5, loc="upper right")
     ax.grid(**GRID)
 
     ax = fig.add_subplot(gs[2])
