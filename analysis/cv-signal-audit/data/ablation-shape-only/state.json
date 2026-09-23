@@ -88,5 +88,6 @@
     "r2d2c1": 64.0,
     "r2d2c2": 88.6
   },
-  "status": "resume_needed"
+  "status": "complete",
+  "total_fold_seconds": 3048.7
 }
