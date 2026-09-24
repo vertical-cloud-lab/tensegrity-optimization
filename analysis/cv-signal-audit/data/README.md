@@ -50,6 +50,23 @@ Key files:
   `full-nuts-rerun/` (per-fold `folds.jsonl` checkpoints committed as
   they landed, `state.json` with settings and timings, final CSV /
   diagnostics JSON / parity PNG in the campaign formats).
+- `payload-objectives.csv`: per-article payload-dose objective values
+  (2026-09-24, PR #111 follow-up): `tavg10ms` (10 ms moving-average dose
+  ratio) and `late_avg3ms_g` (hop-landing severity), each as mean and
+  SEM = sd/sqrt(n) over the same stabilized drops the campaign
+  aggregated, mirroring how t180/e_reb_mJ were ingested. Vendored by
+  [`../rerun_logocv_payload_objective.py`](../rerun_logocv_payload_objective.py)
+  `--write-objectives` from
+  [`../../payload-protection-metrics/tables/specimen_metrics.csv`](../../payload-protection-metrics/tables/specimen_metrics.csv)
+  after the full-101 seed pass (all 45 sessions bit-exact against the
+  committed drop-results).
+- `objective-tavg10ms/`: the LOGO-CV re-run with the fit metrics swapped
+  to that payload pair (2026-09-24), produced on this branch by
+  [`../rerun_logocv_payload_objective.py`](../rerun_logocv_payload_objective.py)
+  at the same 256/512 budget, 12-parameter space, folds, and per-fold
+  seeding as `full-nuts-rerun/` (fold order asserted identical), against
+  the same campaign code (`bbf7a62`). Same file layout as the other
+  rerun directories.
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection
