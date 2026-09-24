@@ -12,13 +12,15 @@ the T3 prism to the superball?
 **Short answer: the proposed metric was computable on the actual campaign
 record, so it is computed here rather than proposed.** Every per-drop
 waveform of the campaign lives on the lab's public Box share; this audit
-pulled 963 captures covering all 45 measured articles, reproduced the
-campaign pipeline bit for bit as a control, and then scored the windowed
-metrics. The user's instinct is vindicated in a specific, measurable way:
-**a 10 ms moving-average dose ranks the designs with print-to-print
-reliability +0.93 where the campaign's t180 peak ratio manages +0.08**,
-while measuring the same attenuation physics (rho +0.70 against t180,
-+0.59 against cable diameter). The organ-timescale metric is not a softer
+pulled 1,641 captures covering all 45 measured articles (updated
+2026-09-24: the seed sessions are now ingested in full, 911 captures,
+instead of their first ~26 signals), reproduced the campaign pipeline bit
+for bit as a control, and then scored the windowed metrics. The user's
+instinct is vindicated in a specific, measurable way: **a 10 ms
+moving-average dose ranks the designs with print-to-print reliability
++0.93 where the campaign's t180 peak ratio manages +0.08**, while
+measuring the same attenuation physics (rho +0.72 against t180, +0.60
+against cable diameter). The organ-timescale metric is not a softer
 version of the objective; on this rig it is the better-measured version
 of it.
 
@@ -72,15 +74,17 @@ committed both the manifests and an anonymous fetch script
 `copilot/add-drop-test-protocol-again`). Enumerating the live share
 found all 45 sessions, including two that no committed manifest covers
 (`ajhby6` and `r2d2c3` to `r2d2c9`). Selection: every capture of the four
-check-in batches (20 to 22 drops each), the first 26 signal numbers of
-each 101-drop seed session (the campaign's own drop-count sensitivity
-analysis showed first-20 aggregates reproduce full-101 aggregates).
+check-in batches (20 to 22 drops each) and, since the 2026-09-24
+refinement, every capture of the nine 101-drop seed sessions (the first
+pass took each seed session's first 26 signals; the full pass replaced
+that subset, which is why the seed control below is now exact).
 
 Control: re-running the frozen pipeline on these downloads reproduces the
 committed drop-results tables **to relative differences of about 1e-16
-for all 36 check-in sessions** (r2d2c, drran, 2dran, corny; t180, t1000,
-e_rebound, delta-v alike). The seed batch agrees to 0.7 % on t180 with
-the known cause that this audit uses the first ~24 of its 101 drops.
+for all 45 sessions** (seed, r2d2c, drran, 2dran, corny; t180, t1000,
+e_rebound, delta-v alike). The seed batch matched to only 0.7 % on t180
+while it was ingested as a first-26 subset; with all 101 drops it joins
+the check-ins at machine precision, which closes the drop-count caveat.
 One data quirk worth recording: the `r2d2c8` Box upload nests its
 time-domain files as `..._Signal9_SignalN.csv` and names its series
 table like a capture; naive `Signal` parsing mis-orders that session
@@ -96,18 +100,18 @@ record). Full table: [`tables/metric_ladder.csv`](tables/metric_ladder.csv).
 
 | metric | timescale | design span | median drop CV | reprint rank corr (9 pairs) | rho vs t180 |
 |---|---|--:|--:|--:|--:|
-| `t1000` (CFC-1000 peak ratio) | ~0.3 ms | 142 % | 1.29 % | +0.53 | +0.83 |
+| `t1000` (CFC-1000 peak ratio) | ~0.3 ms | 142 % | 1.44 % | +0.53 | +0.82 |
 | `t180` (campaign objective) | ~1.7 ms | 51 % | 0.32 % | **+0.08** | 1 |
-| `tavg3ms` | 3 ms | 60 % | 0.34 % | +0.72 | +0.85 |
-| `tavg5ms` | 5 ms | 61 % | 0.50 % | +0.80 | +0.83 |
-| **`tavg10ms`** | 10 ms | 60 % | 0.64 % | **+0.93** | +0.70 |
-| `tavg15ms` | 15 ms | 51 % | 0.81 % | +0.10 | +0.54 |
-| `tavg36ms` | 36 ms | 40 % | 1.25 % | +0.12 | +0.20 |
-| `srs60_ratio` (SDOF 60 Hz) | ~2.7 ms rise | 27 % | 0.24 % | +0.88 | +0.83 |
-| `hic15_ratio` | <= 15 ms | 207 % | 0.88 % | +0.40 | +0.94 |
-| `out_avg10ms_g` (absolute dose) | 10 ms | 60 % | 0.77 % | +0.87 | +0.69 |
-| `late_avg3ms_g` (hop landing) | >= 15 ms after impact | 177 % | 6.3 % | +0.58 | -0.36 |
-| `e_rebound` (campaign objective) | hop timing | 167 % | 2.7 % | -0.18 | -0.31 |
+| `tavg3ms` | 3 ms | 60 % | 0.36 % | +0.72 | +0.87 |
+| `tavg5ms` | 5 ms | 61 % | 0.46 % | +0.80 | +0.84 |
+| **`tavg10ms`** | 10 ms | 61 % | 0.66 % | **+0.93** | +0.72 |
+| `tavg15ms` | 15 ms | 52 % | 0.88 % | +0.10 | +0.54 |
+| `tavg36ms` | 36 ms | 40 % | 1.36 % | +0.12 | +0.16 |
+| `srs60_ratio` (SDOF 60 Hz) | ~2.7 ms rise | 27 % | 0.27 % | +0.88 | +0.84 |
+| `hic15_ratio` | <= 15 ms | 207 % | 0.92 % | +0.40 | +0.94 |
+| `out_avg10ms_g` (absolute dose) | 10 ms | 60 % | 0.80 % | +0.87 | +0.70 |
+| `late_avg3ms_g` (hop landing) | >= 15 ms after impact | 174 % | 6.3 % | +0.58 | -0.38 |
+| `e_rebound` (campaign objective) | hop timing | 166 % | 2.7 % | -0.18 | -0.31 |
 
 ![Timescale ladder](figures/timescale-ladder.png)
 
@@ -117,8 +121,8 @@ Three structural facts:
    whole transmitted pulse plus early ringdown, so single-sample peak
    luck (which is what t180 measures at reprint rho +0.08) averages out,
    while the design-driven part of the response is retained. Reliability
-   +0.80 to +0.93, and it still tracks t180 (+0.70) and cable diameter
-   (+0.59): same physics, measured about an order of magnitude better.
+   +0.80 to +0.93, and it still tracks t180 (+0.72) and cable diameter
+   (+0.60): same physics, measured about an order of magnitude better.
    The t1000-over-t180 reliability advantage found in the adjacent
    sim-correlation audit (+0.53) was a rung on this ladder, not its top.
 2. **The cliff at 15 ms is the specimen-hop landing entering the
@@ -138,7 +142,7 @@ Three structural facts:
 
 ## 3. Where the dose lives: the initial pulse owns every window up to 10 ms
 
-In 100 % of the 873 stabilized drops the maximum 10 ms window sits on
+In 100 % of the 1,551 stabilized drops the maximum 10 ms window sits on
 the initial impact (median window center 3.4 ms after impact). At organ
 timescales the metric is still an impact property, just honestly
 averaged; nothing later in the record ever dominates it.
@@ -152,10 +156,10 @@ objective:
 - **Reliable where e_rebound is not:** reprint rank correlation +0.58
   (vs -0.18), because it measures the landing's severity, not its
   ballistic timing.
-- **Uncorrelated with e_rebound** (rho +0.05, p 0.79): the timing score
+- **Uncorrelated with e_rebound** (rho +0.04, p 0.83): the timing score
   the campaign minimized was not measuring landing harshness at all.
-- **It preserves the competing-objectives structure:** rho -0.36
-  (p 0.044) against t180 and -0.43 against cable diameter: articles
+- **It preserves the competing-objectives structure:** rho -0.38
+  (p 0.033) against t180 and -0.42 against cable diameter: articles
   that transmit less of the initial pulse hop harder and land harder.
   The energy-routing trade-off the campaign framed as its Pareto front
   survives in reliable channels, with `tavg10ms` vs `late_avg3ms_g` as
@@ -212,7 +216,7 @@ family was built around (next section), and it makes the egg drop
    [`tables/specimen_metrics.csv`](tables/specimen_metrics.csv).
    `srs60_ratio` is the standards-aligned alternative (+0.88) if SRS
    language is preferred for the manuscript; the two rank designs
-   similarly (rho +0.77).
+   similarly (rho +0.78).
 2. **Replace e_rebound with `late_avg3ms_g` if a second objective is
    wanted.** It keeps the competing-objectives structure with actual
    reprint reliability, and it directly measures the thing worth
@@ -226,8 +230,8 @@ family was built around (next section), and it makes the egg drop
    tavg36ms, absolute dose, HIC15); under the reliable `tavg10ms` it is
    rank 2, with the seed attenuator `6lhxfy` at rank 1. The optimizer's
    headline pick survives the objective redefinition; the mid-field
-   reshuffles (t180 vs tavg10ms rank correlation +0.70, vs tavg36ms
-   +0.20).
+   reshuffles (t180 vs tavg10ms rank correlation +0.72, vs tavg36ms
+   +0.16).
 
 ![Rank shift](figures/rank-shift-slopegraph.png)
 
@@ -266,7 +270,7 @@ TP4 has the spare channels for a payload accelerometer).
 
 This branch (ripgrep); all branch tips via blobless mirror (waveform
 archives, drop-test pipeline, superball assets, sim topology); the live
-Box share (all 45 sessions enumerated, 963 captures fetched); and the
+Box share (all 45 sessions enumerated, 1,641 captures fetched); and the
 issue/PR record via `gh api` (egg drop #46/#47, metrics primer #97,
 SUPERball mentions, drop-test protocol PRs #67/#82/#86). Deleted-file
 history was not swept.

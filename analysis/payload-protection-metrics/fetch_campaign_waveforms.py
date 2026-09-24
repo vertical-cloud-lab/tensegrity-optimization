@@ -12,12 +12,19 @@ them to a scratch directory OUTSIDE the repo:
 
 * every capture of the four 20-ish-drop check-in batches
   (r2d2c1-9, drran1-9, 2dran1-9, corny1-9);
-* the first 26 signal numbers of each 101-drop seed-batch session
-  (matching the check-in sample size; the campaign's own
-  ``t3_prism_drop_count_sensitivity.py`` found first-20 aggregates
-  reproduce the full-101 aggregates), preferring the full/pm session
-  where a specimen has an interrupted partial session (6lhxfy-s1,
-  amdjwm-s1 are skipped).
+* every signal of each 101-drop seed-batch session (``--seed-full``,
+  the 2026-09-24 refinement asked for on PR #111; the original
+  selection was the first 26 signal numbers, matching the check-in
+  sample size), preferring the full/pm session where a specimen has an
+  interrupted partial session (6lhxfy-s1, amdjwm-s1 are skipped).
+
+``--seed-full`` upgrades a cached manifest in place: each seed
+session's folder id is re-listed and its file map extended to all
+signal numbers; check-in sessions are untouched. ``--only-batch seed``
+restricts the download to the seed sessions (the check-in captures
+feed rows of ``per-drop-payload-metrics.csv`` that are already
+bit-exact against the committed drop-results tables and do not need
+re-fetching).
 
 Writes ``data/box-session-manifest.json`` (session folder name, Box
 folder id, file name -> file id for the selected files) so the exact
@@ -153,6 +160,36 @@ def build_manifest(opener) -> dict:
     return manifest
 
 
+def refresh_seed_full(opener, manifest) -> int:
+    """Extend each cached seed session to all signal numbers, in place.
+
+    Re-lists the session's Box folder by the id frozen in the manifest,
+    so the selection stays tied to the same folders the original audit
+    used; only the per-session file map grows.
+    """
+    added = 0
+    for name, s in manifest["sessions"].items():
+        if s["batch"] != "seed":
+            continue
+        _, items = list_folder(opener, s["folder_id"])
+        files = [it for it in items if it["type"] == "file"]
+        sigs = sorted(((signal_no(str(f["name"])), f) for f in files
+                       if signal_no(str(f["name"])) is not None),
+                      key=lambda x: x[0])
+        series = [f for f in files if signal_no(str(f["name"])) is None
+                  and str(f["name"]).lower().endswith(".csv")]
+        before = len(s["files"])
+        s["files"] = {str(f["name"]): {"id": f["id"], "size": f.get("itemSize")}
+                      for _, f in sigs}
+        s["files"].update({str(f["name"]): {"id": f["id"], "size": f.get("itemSize")}
+                           for f in series})
+        s["n_signals_available"] = len(sigs)
+        s["selection"] = "all signals (2026-09-24 full-seed pass)"
+        added += len(s["files"]) - before
+        print(f"  seed-full: {name}: {before} -> {len(s['files'])} files")
+    return added
+
+
 def fetch_one(f_id, size, dest: Path):
     if dest.exists() and size and dest.stat().st_size == size:
         return "cached"
@@ -172,6 +209,11 @@ def main():
     ap.add_argument("--dest", type=Path, default=Path("/tmp/waveforms"))
     ap.add_argument("--jobs", type=int, default=6)
     ap.add_argument("--manifest-only", action="store_true")
+    ap.add_argument("--seed-full", action="store_true",
+                    help="extend the cached manifest's seed sessions to all "
+                         "signal numbers (re-lists their frozen folder ids)")
+    ap.add_argument("--only-batch", default=None,
+                    help="download only sessions of this batch")
     args = ap.parse_args()
 
     opener = make_opener()
@@ -183,6 +225,10 @@ def main():
         MANIFEST.parent.mkdir(parents=True, exist_ok=True)
         MANIFEST.write_text(json.dumps(manifest, indent=1))
         print(f"manifest -> {MANIFEST} ({len(manifest['sessions'])} sessions)")
+    if args.seed_full:
+        added = refresh_seed_full(opener, manifest)
+        MANIFEST.write_text(json.dumps(manifest, indent=1))
+        print(f"manifest updated in place: +{added} seed files")
     for name, s in sorted(manifest["sessions"].items()):
         tot = sum(f.get("size") or 0 for f in s["files"].values())
         print(f"  [{s['batch']:5s}] {name}  {len(s['files'])} files, {tot/1e6:.0f} MB")
@@ -191,6 +237,8 @@ def main():
 
     jobs = []
     for name, s in manifest["sessions"].items():
+        if args.only_batch and s["batch"] != args.only_batch:
+            continue
         sig_names = [fn for fn in s["files"] if "_Signal" in fn]
         spec = (sig_names[0].split("_Signal")[0].lower() if sig_names
                 else re.sub(r"\W+", "_", name))
