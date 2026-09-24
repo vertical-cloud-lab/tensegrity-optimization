@@ -66,7 +66,14 @@ re-runs the LOGO-CV in reduced fit spaces and finds the verdict's t180
 row understates what the data supports: with the weighed-mass input
 removed, held-out design ranking reaches rho_s = +0.51 (p = 0.0017), and
 the rebound anti-signal turns out to be an artifact of that input rather
-than of the data.
+than of the data. Section 7 re-runs the same protocol under the
+payload-dose objectives from the adjacent payload-protection analysis:
+in the campaign's 12-parameter space the reliably measured `tavg10ms`
+shows no held-out skill at all, and in the shape-only space it becomes
+the strongest within-batch design ranking in the audit (rho_s +0.52,
+p 0.0006), the same space experiment as Section 6 with a louder
+answer; the proposed `late_avg3ms` second objective is predictable in
+both spaces, with a session-confound caveat on the pooled number.
 
 ## 1. The r vs r^2 question first
 
@@ -526,6 +533,146 @@ and preferably as an explicit session covariate rather than filament
 values doubling as batch labels, and re-run this ablation on the
 enlarged record before believing any of it moved.
 
+## 7. The payload-objective re-score: the reliable metric needs the clean fit space
+
+**The ask ([PR #111, 2026-09-24](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/111#issuecomment-5814916338)):**
+re-score the BO campaign itself under `tavg10ms`, the 10 ms
+moving-average dose ratio from
+[`analysis/payload-protection-metrics/`](../payload-protection-metrics/README.md),
+which measures the same attenuation physics as t180 (design-level rho
++0.72) with print-to-print reliability +0.93 where t180 manages +0.08.
+The second fit metric is `late_avg3ms_g`, the hop-landing severity
+channel that analysis proposed as the replacement for the rebound
+objective, so the whole replacement pair gets the held-out audit in one
+run. Before the re-fit, the seed sessions were re-ingested in full (all
+101 drops instead of the first ~26), after which the reproduced
+pipeline matches the committed campaign aggregates to about 1e-16 for
+all 45 sessions; the payload objective values ingested here are from
+that refreshed record, as mean and SEM = sd/sqrt(n) over the same
+stabilized drops the campaign aggregated, exactly how t180 and
+e_reb_mJ went in ([`data/payload-objectives.csv`](data/payload-objectives.csv)).
+
+[`rerun_logocv_payload_objective.py`](rerun_logocv_payload_objective.py)
+holds everything else at the audit's standard protocol (round-5
+snapshot, `fit_saasbo` with `refit_on_cv=True`, NUTS 256/512, the same
+35 design folds and per-fold seeds as the primary re-run, fold order
+asserted identical) and swaps the fit metrics per article. Two spaces,
+one commit per fold each: the campaign's own 12-parameter space
+([`data/objective-tavg10ms/`](data/objective-tavg10ms/)) and the
+five-coordinate shape-only space Section 6 recommends
+([`data/objective-tavg10ms-shape-only/`](data/objective-tavg10ms-shape-only/)).
+[`score_payload_objective.py`](score_payload_objective.py) applies the
+audit scorecard (numbers in
+[`metrics-payload-objective.json`](metrics-payload-objective.json),
+each run cross-checked against its archived Ax diagnostics; the
+12-parameter campaign baseline is re-derived with the same seed and
+reproduces the audit's metrics.json).
+
+Transmission objective, held out (article n = 44, design n = 35):
+
+| Statistic | t180, 12 params | tavg10ms, 12 params | tavg10ms, shape only |
+|---|---|---|---|
+| Article rho_s (perm p) | +0.32 (0.036) | -0.08 (0.62) | **+0.45 (0.0019)** |
+| Design-mean rho_s (p) | +0.37 (0.032) | -0.04 (0.81) | **+0.43 (0.010)** |
+| Within-batch rho_s, mean of 5 (perm p) | +0.06 (0.69) | -0.14 (0.39) | **+0.52 (0.0006)** |
+| R2_oos vs fold-train mean | +0.12 | -0.05 | +0.21 |
+| MAPE | 4.8% | 10.8% | 8.1% |
+| Shrinkage (pred sd / obs sd) | 0.32 | 0.17 | 0.42 |
+
+Second objective, held out:
+
+| Statistic | e_reb_mJ, 12 params | late_avg3ms, 12 params | late_avg3ms, shape only |
+|---|---|---|---|
+| Article rho_s (perm p) | -0.40 (0.008) | +0.56 (0.0001) | **+0.63 (< 1e-5)** |
+| Design-mean rho_s (p) | -0.30 (0.080) | +0.47 (0.005) | **+0.56 (0.0007)** |
+| Within-batch rho_s, mean of 5 (perm p) | -0.21 (0.19) | +0.08 (0.63) | **+0.32 (0.045)** |
+| R2_oos vs fold-train mean | -0.05 | +0.35 | +0.44 |
+| Better-half AUC (p) | 0.33 (0.059) | 0.82 (0.0003) | 0.87 (< 1e-4) |
+
+![Payload objectives under the LOGO protocol](figures/payload-objective-logocv.png)
+
+Two results, each the opposite of the naive expectation.
+
+**The surrogate cannot rank the reliable transmission metric in the
+space the campaign fit.** Swapping t180 (noise-limited but +0.32
+held-out rank skill) for tavg10ms (nearly noise-free at design level)
+did not transfer the skill; it erased it, article, design, and
+within-batch alike, even though the two metrics agree at +0.60 across
+the same articles. The mechanism is visible in the posterior: the SAAS
+fit shrank its tavg10ms predictions to 17% of the data sd (t180: 32%),
+and cable diameter, the strongest real driver of the metric (observed
+article rho +0.60), survives into the predictions at only +0.21. The
+model does catch part of the tails (four of the six best-measured
+articles sit in its predicted top 8), but it also inverts the damaged
+prints: drran7, the bubbled-tendon article that is the worst payload
+dose in the record, is predicted best of all 44, because print damage
+lives in no fit coordinate.
+
+The shape-only run then turns the diagnosis into a demonstration. With
+mass and the process dimensions removed, the same protocol ranks
+tavg10ms at +0.45 article-level, +0.43 on design means, and **+0.52
+within batch (permutation p 0.0006), positive in all four
+model-recommended batches (+0.50 to +0.75; the Sobol seed batch, at
++0.02, is the one hard case)**. That within-batch number is the best
+anywhere in this audit; for comparison, the shape-only t180 run of
+Section 6 managed +0.21. The model also puts corny7 at predicted rank
+2 of 44, which is its observed rank, and it predicts each reprint twin
+identically (twins share all five coordinates), which is the correct
+thing to do for a metric whose observed twin agreement is +0.93. So
+the reliable metric is learnable after all, and Section 6's conclusion
+lands harder here than it did for t180: the weighed-mass axis and the
+process labels are not merely unhelpful for tavg10ms, they are the
+difference between no skill and the strongest design ranking the
+campaign data supports. The 12-parameter structure that flattered t180
+(process dimensions carrying between-batch calibration) actively
+buries the metric that measures the design honestly.
+
+**The proposed second objective is the first one the surrogate has
+ever predicted with conviction, and that is exactly why it needs the
+bungee experiment.** late_avg3ms swings from e_reb's anti-signal to
+the strongest article-level held-out result anywhere in this audit
+(rho_s +0.56 at permutation p 0.0001, R2_oos +0.35, better-half AUC
+0.82, 100% coverage at 95%). But the decomposition says most of that
+is between print sessions: batch-mean landing severity spans 25 G
+(round-3 pairs) to 56 G (seed), the model reproduces the five batch
+means at r = +0.95, and the within-batch residual is +0.08. In the
+12-parameter space the process dimensions are one-value-per-batch
+labels (Section 6), so the honest reading is that the model learned
+which session an article came from, and sessions genuinely differ in
+landing severity. Whether that between-session difference is design
+physics carried by mass and infill, or rig state (cord routing, seat
+wear, strap tension drifting across the campaign), is exactly the
+question the Section 4 bungee experiment was specified to settle, and
+`late_avg3ms` inherits it in full. The shape-only run bounds how much
+of the skill the confound can own: with no session-identifying input
+available (no mass, no process values), the model still ranks landing
+severity at +0.63 pooled and **+0.32 within batch (p 0.045; +0.53 to
++0.85 in the drran/2dran/corny batches)**, so a genuine
+design-to-landing-severity component exists on top of whatever the
+session piece is. The seed batch is the exception in this channel
+(within-batch -0.57), consistent with the payload analysis's note that
+the late channel drifts across the long seed sessions.
+
+Caveats: one NUTS realization per run, as in Section 6 (per-fold seeds
+in each `state.json`); this section adds two more objectives' worth of
+looks at the same 44 articles, so the Section 2 multiplicity paragraph
+applies again; and tavg10ms's MAPE sits higher than t180's partly
+because the metric's own span is three times wider, so the two MAPE
+columns are not directly comparable.
+
+What this says for a round 6: adopt `tavg10ms` as the bench objective
+(that case is measurement quality and it stands) **and fit it in the
+shape-only space**, which is the same prescription Section 6 reached
+from the t180 side; the two experiments now agree from independent
+directions. Do not fit the payload metrics in the current 12-parameter
+space, where the reliable metric reads as unlearnable. Keep the
+posterior's error bars at arm's length either way (95% coverage 73%
+in both shape-only runs, the same overconfidence Section 6 flagged).
+And treat late_avg3ms's pooled skill as partly session-confounded
+until cord state is logged per seating (the three-condition experiment
+in Section 4); its within-batch component is the part a round 6 can
+already trust.
+
 ## Files
 
 - [`cv_signal_audit.py`](cv_signal_audit.py): the full recomputation
@@ -551,3 +698,11 @@ enlarged record before believing any of it moved.
   [`metrics-param-ablation.json`](metrics-param-ablation.json): the
   Section 6 scorecard across the three fit spaces, and
   [`figures/param-ablation-comparison.png`](figures/param-ablation-comparison.png).
+- [`rerun_logocv_payload_objective.py`](rerun_logocv_payload_objective.py):
+  the Section 7 driver (fit metrics swapped to the payload pair from
+  [`data/payload-objectives.csv`](data/payload-objectives.csv);
+  `--shape-only` for the five-coordinate variant).
+- [`score_payload_objective.py`](score_payload_objective.py) and
+  [`metrics-payload-objective.json`](metrics-payload-objective.json):
+  the Section 7 scorecard against the campaign-objective baseline, and
+  [`figures/payload-objective-logocv.png`](figures/payload-objective-logocv.png).

@@ -191,17 +191,13 @@ def fig_payload(logo: pd.DataFrame, res: dict, baseline: dict,
         ax = axes[1, col]
         cp = COUNTERPART[metric]
         hue = base.T180_COLOR if col == 0 else base.REB_COLOR
-        pairs = [(baseline[cp], "0.45", f"{cp} (campaign objective, 12p)",
-                  "s", True, -0.16),
-                 (res[metric], hue, f"{PAYLOAD_LABEL[metric]}, 12p",
-                  "o", True, 0.0)]
+        pairs = [(baseline[cp], "0.45", "s", True, -0.16),
+                 (res[metric], hue, "o", True, 0.0)]
         if shape is not None:
-            pairs.append((shape[metric], hue,
-                          f"{PAYLOAD_LABEL[metric]}, shape-only",
-                          "o", False, 0.16))
+            pairs.append((shape[metric], hue, "o", False, 0.16))
         ax.axhline(0.0, color="0.55", lw=1.1, zorder=1)
         for j, (stat, lbl) in enumerate(stat_spec):
-            for src, color, name, marker, filled, off in pairs:
+            for src, color, marker, filled, off in pairs:
                 if stat == "design_spearman_rho":
                     v = src["design_level"]["spearman_rho"]
                 elif stat == "within_batch_mean":
@@ -210,8 +206,7 @@ def fig_payload(logo: pd.DataFrame, res: dict, baseline: dict,
                     v = src[stat]
                 ax.scatter(j + off, v, s=70, marker=marker,
                            facecolors=color if filled else "none",
-                           edgecolors=color, lw=1.5,
-                           label=name if j == 0 else None, zorder=3)
+                           edgecolors=color, lw=1.5, zorder=3)
         ax.annotate(f"p = {res[metric]['spearman_p_perm']:.4f}",
                     (0.0, res[metric]["spearman_rho"]),
                     textcoords="offset points", xytext=(6, 5),
@@ -219,14 +214,25 @@ def fig_payload(logo: pd.DataFrame, res: dict, baseline: dict,
         ax.set_xticks(range(len(stat_spec)))
         ax.set_xticklabels([s[1] for s in stat_spec], fontsize=8.5)
         ax.set_ylabel("Held-out statistic" if col == 0 else "")
-        ax.legend(fontsize=8, frameon=False, loc="lower left")
         ax.set_title(f"{PAYLOAD_LABEL[metric]} vs {cp}", fontsize=11)
         base.style_axis(ax)
 
+    from matplotlib.lines import Line2D
+    proxies = [
+        Line2D([], [], ls="", marker="s", markersize=8, color="0.45",
+               label="campaign objective (t180 / e_reb_mJ), 12 params"),
+        Line2D([], [], ls="", marker="o", markersize=8, color="0.25",
+               label="payload objective, 12 params"),
+        Line2D([], [], ls="", marker="o", markersize=8, color="0.25",
+               markerfacecolor="none", markeredgewidth=1.5,
+               label="payload objective, shape-only space"),
+    ]
+    fig.legend(handles=proxies, loc="lower center", ncol=3, fontsize=8.5,
+               frameon=False, bbox_to_anchor=(0.5, 0.0))
     fig.suptitle("Payload objectives under the campaign's own surrogate "
-                 "protocol (12 params, LOGO-CV, NUTS 256/512, same folds "
-                 "and seeds)", fontsize=12, y=0.995)
-    fig.tight_layout(rect=(0, 0, 1, 0.97))
+                 "protocol (LOGO-CV, NUTS 256/512, same folds and seeds)",
+                 fontsize=12, y=0.995)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.97))
     fig.savefig(FIGS / "payload-objective-logocv.png", dpi=200,
                 bbox_inches="tight")
     plt.close(fig)
