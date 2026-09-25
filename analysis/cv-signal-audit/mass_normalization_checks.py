@@ -360,7 +360,28 @@ def check_print_session_confound(df) -> dict:
     b = twins[twins.batch == "2dran"].set_index("n").sort_index()
     d_mass = (b["mass_g"] - a["mass_g"]).to_numpy()
 
-    out = {"twin_pairs": {"n_pairs": int(len(d_mass)),
+    # which fit coordinates actually separate a twin from its original,
+    # read straight out of the design matrix the campaign fitted
+    folds = AUDIT / "data" / "full-nuts-rerun" / "folds.jsonl"
+    separating, n_twin_folds = {}, 0
+    if folds.exists():
+        for line in folds.read_text().splitlines():
+            arts = json.loads(line)["articles"]
+            if len(arts) != 2:
+                continue
+            n_twin_folds += 1
+            pa, pb = arts[0]["parameters"], arts[1]["parameters"]
+            for k in pa:
+                if abs(pa[k] - pb[k]) > 1e-9:
+                    separating.setdefault(k, 0)
+                    separating[k] += 1
+
+    out = {"separating_coordinates": {
+               "n_twin_folds": n_twin_folds,
+               "n_pairs_differing_by_coordinate": separating,
+               "note": "in the campaign's 12-parameter space, read from "
+                       "data/full-nuts-rerun/folds.jsonl"},
+           "twin_pairs": {"n_pairs": int(len(d_mass)),
                           "delta_mass_g_mean": float(d_mass.mean()),
                           "delta_mass_g_min": float(d_mass.min()),
                           "delta_mass_g_max": float(d_mass.max()),
@@ -579,6 +600,10 @@ def main():
 
     print("\n=== CHECK 7: where mass's leverage lives ===")
     tp = confound["twin_pairs"]
+    sep = confound["separating_coordinates"]
+    print(f"fit coordinates that ever separate a twin from its original "
+          f"({sep['n_twin_folds']} pairs): "
+          f"{sep['n_pairs_differing_by_coordinate']}")
     print(f"nine reprint pairs: second print heavier by "
           f"{tp['delta_mass_g_mean']:+.2f} g on average "
           f"({tp['delta_mass_g_min']:+.2f} to {tp['delta_mass_g_max']:+.2f}); "

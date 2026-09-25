@@ -652,6 +652,13 @@
     }
   },
   "check7_print_session_confound": {
+    "separating_coordinates": {
+      "n_twin_folds": 9,
+      "n_pairs_differing_by_coordinate": {
+        "mass_printed_g": 9
+      },
+      "note": "in the campaign's 12-parameter space, read from data/full-nuts-rerun/folds.jsonl"
+    },
     "twin_pairs": {
       "n_pairs": 9,
       "delta_mass_g_mean": 0.2655555555555556,
