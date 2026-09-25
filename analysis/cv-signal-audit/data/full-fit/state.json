@@ -18,7 +18,8 @@
   "objectives_csv": "payload-objectives.csv",
   "fit_seconds": {
     "twelve-param|campaign|10000": 49.0,
-    "six-param|campaign|10000": 49.0
+    "six-param|campaign|10000": 49.0,
+    "shape-only|campaign|10000": 54.7
   },
   "status": "running"
 }
