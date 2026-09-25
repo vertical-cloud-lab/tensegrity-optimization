@@ -90,7 +90,14 @@ within-session mass correlation Section 9 read as a confound is the
 cable-diameter effect seen through mass (with the shape coordinates held
 fixed, mass has no leftover association with t180, partial r +0.00), so
 once mass is out of the fit space the raw objectives already leave mass
-nothing to predict.
+nothing to predict. Section 11 takes the same question to `tavg10ms`: it
+is built like t180 and tracks it, runs against the rebound measures, and
+has no mass in it; the mass spread in the record comes mostly from the
+first two batches, which were held at constant solid mass rather than
+printed mass; at a fixed design the data cannot say whether dividing by
+mass is warranted, and held out neither dividing by mass (a wash) nor
+giving the model the infill settings (article rho_s +0.45 down to +0.14)
+improves on the shape-only fit of the raw objective.
 
 ## 1. The r vs r^2 question first
 
@@ -1119,8 +1126,8 @@ help. Dividing the objectives by mass on top of it does not do what the
 ask wanted it for. With mass out of the input space the raw objectives
 already leave mass nothing to predict (10.2), and dividing t180 by mass
 gives mass predictive power over the model's errors again. On ranking
-the real objective, division was a wash for the payload pair and, on
-interim numbers, a possible gain for t180 (10.3). The exception is the
+the real objective, division was a wash for all four objectives once
+the t180 run finished (10.3). The exception is the
 rebound energy `e_reb_mJ`, which was built by multiplying by mass, so
 dividing it back out is a unit correction. The reason division was
 expected to help, the within-session confound of Section 9.3, does not
@@ -1224,18 +1231,18 @@ does the article's weighed mass correlate with the model's error?
 
 | Weighed mass vs held-out error (observed minus predicted), Pearson r (permutation p) | Articles | Shape-only, raw objective | Shape-only, objective divided by mass |
 |---|---|---|---|
-| t180 | 34 | +0.12 (0.49) | -0.47 (0.010) |
-| rebound `e_reb_mJ` | 34 | -0.05 (0.80) | -0.17 (0.32) |
+| t180 | 44 | +0.13 (0.39) | -0.43 (0.006) |
+| rebound `e_reb_mJ` | 44 | -0.04 (0.79) | -0.13 (0.39) |
 | `tavg10ms` | 44 | +0.20 (0.17) | -0.06 (0.67) |
 | `late_avg3ms` | 44 | +0.05 (0.75) | -0.08 (0.59) |
-| same, within print session (batch offsets removed) | | t180 +0.26, rebound `e_reb_mJ` -0.09, `tavg10ms` +0.33, `late_avg3ms` -0.10 | t180 -0.38, rebound `e_reb_mJ` -0.22, `tavg10ms` +0.08, `late_avg3ms` -0.25 |
+| same, within print session (batch offsets removed) | | t180 +0.28, rebound `e_reb_mJ` -0.07, `tavg10ms` +0.33, `late_avg3ms` -0.10 | t180 -0.28, rebound `e_reb_mJ` -0.16, `tavg10ms` +0.08, `late_avg3ms` -0.25 |
 
 With mass out of the input space and the objectives left alone, mass
 does not predict the held-out errors of any of the four objectives across
 all articles: the property the ask wanted holds without any
-normalization. After dividing by mass it fails for t180 (-0.47, p 0.010
-pooled; -0.38, p 0.042 within a session), on the articles the run has
-reached. One within-session exception runs the other way: the raw
+normalization. After dividing by mass it fails for t180 (-0.43, p 0.006
+pooled; -0.28, p 0.07 within a session). One within-session exception
+runs the other way: the raw
 `tavg10ms` errors track mass inside a session (+0.33, p 0.038), and
 dividing removes that (+0.08, p 0.56) without improving the ranking
 (within-session rho_s +0.41 per gram against +0.52 raw, 10.3).
@@ -1264,7 +1271,12 @@ floating-point path, so these folds follow a different, equally valid,
 NUTS trajectory than the committed runs. `state.json` records the thread
 count.
 
-Run status when this was written: `objective-payload-per-gram-shape-only`: 35/35 folds, status `complete`; `objective-per-gram-shape-only`: 25/35 folds, status `running`. The campaign-pair run (t180, rebound) could not finish inside this job's one-hour GitHub token, so its rows below are **interim**: both runs are graded on the same held-out articles the per-gram run has reached, which makes the comparison paired but leaves the remaining folds' articles out. The driver resumes from the committed checkpoint (the command is in its docstring, with `--queue`), and `score_shape_only_per_gram.py` switches to the full CSV once `--assemble` has written it.
+Both runs are complete (35/35 folds). The campaign-pair run finished at
+06:53 UTC on 2026-09-25, after the job that started it had posted its
+comment, and was scored in the Section 11 job. The first version of this
+section graded it on the 34 articles it had reached at the time; those
+interim numbers favored division for t180 (+0.45 against +0.32), and
+the finished run does not.
 
 Each objective is graded against the **raw** objective (the bare
 per-gram prediction ranked against raw values, which is the ranking an
@@ -1273,16 +1285,16 @@ target it was fitted to.
 
 | Held out, shape-only fit space | Articles | raw objective | divided by mass |
 |---|---|---|---|
-| **t180**: article rho_s vs the raw objective (p) | 34 | +0.32 (0.06) | +0.45 (0.008) |
-| t180: design-mean rho_s vs raw (p) | | +0.39 (0.06) | +0.48 (0.01) |
-| t180: within-session rho_s vs raw, mean over batches (p) | | +0.19 (0.33) | +0.38 (0.04) |
-| t180: article rho_s on the fitted target (p) | | +0.32 (0.06) | +0.47 (0.005) |
-| t180: 95% interval coverage on the fitted target | | 76% | 82% |
-| **rebound `e_reb_mJ`**: article rho_s vs the raw objective (p) | 34 | +0.13 (0.45) | +0.24 (0.17) |
-| rebound `e_reb_mJ`: design-mean rho_s vs raw (p) | | +0.12 (0.56) | +0.13 (0.52) |
-| rebound `e_reb_mJ`: within-session rho_s vs raw, mean over batches (p) | | +0.12 (0.54) | +0.01 (0.94) |
-| rebound `e_reb_mJ`: article rho_s on the fitted target (p) | | +0.13 (0.45) | +0.22 (0.21) |
-| rebound `e_reb_mJ`: 95% interval coverage on the fitted target | | 76% | 79% |
+| **t180**: article rho_s vs the raw objective (p) | 44 | +0.45 (0.002) | +0.45 (0.002) |
+| t180: design-mean rho_s vs raw (p) | | +0.51 (0.002) | +0.50 (0.002) |
+| t180: within-session rho_s vs raw, mean over batches (p) | | +0.21 (0.21) | +0.31 (0.06) |
+| t180: article rho_s on the fitted target (p) | | +0.45 (0.002) | +0.57 (<0.0001) |
+| t180: 95% interval coverage on the fitted target | | 70% | 80% |
+| **rebound `e_reb_mJ`**: article rho_s vs the raw objective (p) | 44 | +0.04 (0.78) | +0.15 (0.33) |
+| rebound `e_reb_mJ`: design-mean rho_s vs raw (p) | | 0.00 (1.0) | +0.06 (0.75) |
+| rebound `e_reb_mJ`: within-session rho_s vs raw, mean over batches (p) | | +0.05 (0.74) | +0.06 (0.71) |
+| rebound `e_reb_mJ`: article rho_s on the fitted target (p) | | +0.04 (0.78) | +0.14 (0.36) |
+| rebound `e_reb_mJ`: 95% interval coverage on the fitted target | | 70% | 70% |
 | **`tavg10ms`**: article rho_s vs the raw objective (p) | 44 | +0.45 (0.003) | +0.45 (0.002) |
 | `tavg10ms`: design-mean rho_s vs raw (p) | | +0.43 (0.009) | +0.41 (0.01) |
 | `tavg10ms`: within-session rho_s vs raw, mean over batches (p) | | +0.52 (0.0006) | +0.41 (0.009) |
@@ -1294,19 +1306,17 @@ target it was fitted to.
 | `late_avg3ms`: article rho_s on the fitted target (p) | | +0.63 (<0.0001) | +0.62 (<0.0001) |
 | `late_avg3ms`: 95% interval coverage on the fitted target | | 73% | 77% |
 
-For the payload pair (complete) dividing by mass is a wash on ranking the
-real objective: `tavg10ms` +0.45 either way at article level (within a
-session +0.52 raw, +0.41 per gram), `late_avg3ms` +0.63 and +0.64. For
-t180 the interim numbers favor division (+0.45 against +0.32 on the same
-articles, within a session +0.38 against +0.19). That gap is inside what
-one NUTS realization moves a rank correlation in this audit, and it rests
-on the articles the run has reached, so it needs the finished run before
-it means anything. If it holds, one plausible mechanism is a session
-offset: the 2dran reprint session printed every twin heavier and read
-t180 higher on average, and dividing by mass shrinks that offset, which a
-shape-only model otherwise carries as error. That would be a session
-correction that happens to be proportional to mass, and an explicit
-session term is the direct way to make it.
+Dividing by mass is a wash on ranking the real objective for all four:
+t180 +0.45 either way at article level and +0.51 against +0.50 on design
+means, `tavg10ms` +0.45 either way (within a session +0.52 raw, +0.41
+per gram), `late_avg3ms` +0.63 and +0.64, and rebound stays near zero
+(+0.04 raw, +0.15 per gram, neither significant). The one place division
+reads better for t180 is inside a session (+0.31 against +0.21), a gap
+of the size one NUTS realization moves a rank correlation in this audit,
+with neither value significant. The per-gram t180 run does look better
+on its own target (+0.57 against +0.45), but that target includes the
+1/m component the division wrote in (Section 9.5), and the gain does
+not carry over to ranking the real t180.
 
 What division changes unambiguously is the error structure in 10.2: the
 per-gram t180 model's held-out errors track mass, because division wrote
@@ -1322,10 +1332,8 @@ model with no mass input cannot reach it.
 - **Do not divide t180, `tavg10ms` or `late_avg3ms` by mass for the
   reason Section 9 gave.** They are ratios and accelerations with no mass
   in them, and with mass out of the fit space mass has no leftover
-  predictive power over them (10.2). Whether dividing t180 helps ranking
-  for a different reason (the interim +0.45 against +0.32 in 10.3) is
-  open until the campaign-pair run finishes; if it does, an explicit
-  print-session term is the direct form of that correction.
+  predictive power over them (10.2), and dividing does not improve how
+  the model ranks any of them (10.3).
 - **If rebound is kept, fit `e_rebound`** (equivalently `e_reb_mJ` /
   mass), the one objective where dividing by mass is a unit correction
   rather than a new dependence. It does not make rebound learnable
@@ -1337,6 +1345,264 @@ model with no mass input cannot reach it.
 
 Caveats: one NUTS realization per run, as in Sections 6 to 9, and one
 more look at the same 44 articles.
+
+## 11. tavg10ms and mass
+
+**The ask ([PR #111, 2026-09-25](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/111#issuecomment-5828185038)):**
+"Okay, sure for t180. But what about tavg10ms, isn't that one a bit
+closer to the thing we've been calling rebound energy? In this case,
+wouldn't it make sense to have some kind of normalization against mass,
+since originally we were hoping to print everything at the exact same
+mass anyway? It's just that we didn't account for the infill percentages
+which led to prints of varying masses."
+
+The short answer: `tavg10ms` is built the same way as t180 and tracks
+it, and if anything it runs against the rebound measures (11.1). The
+infill point
+is right about where most of the mass spread came from: the first two
+batches were held at constant *solid* mass and sliced at 15% infill, so
+the sparse PLA made their printed masses depend on the design. From the
+drran plate on, the mass model took infill as an input and the spread
+inside a print session fell to 0.34 to 0.45 g (11.2). Dividing by mass
+would be the right correction if `tavg10ms` rose in proportion to mass
+at a fixed design. The data cannot tell that apart from no effect at
+all, and nothing in how the ratio is built puts a mass in it (11.3).
+Held out, dividing by mass is a wash on the pooled ranking and loses
+some within-session ranking, and giving the model the two infill
+settings as inputs instead loses most of the skill (11.4). Everything here is from
+[`tavg10ms_mass_checks.py`](tavg10ms_mass_checks.py), numbers in
+[`metrics-tavg10ms-mass.json`](metrics-tavg10ms-mass.json).
+
+![tavg10ms, rebound and mass](figures/tavg10ms-mass-question.png)
+
+### 11.1 What tavg10ms measures
+
+The definitions, from the pipeline code
+([`compute_drop_metrics.py`](../payload-protection-metrics/compute_drop_metrics.py)
+and the campaign script):
+
+- **t180**: peak of the CFC-180 filtered top-vertex acceleration over the
+  peak of the input channel, on the same drop.
+- **`tavg10ms`**: the highest 10 ms moving average of the top-vertex
+  acceleration over the highest 10 ms moving average of the input, on
+  the same drop. The same kind of number as t180, over a longer window.
+- **`e_rebound`**: `g * t_second / (2 * dv_in)`, the launch speed of the
+  hop (from its flight time to the landing) as a fraction of the input
+  velocity change.
+- **`e_reb_mJ`**: `e_rebound * m * g * h` with `h` = 1.524 m, using the
+  article's weighed mass. The campaign multiplied by mass on purpose. Its
+  docstring: "Minimizing the millijoules compares designs on delivered
+  energy and re-penalizes the grams a design adds." The same docstring
+  keeps t180 a ratio because "it is already normalized by the measured
+  input peak, and peak acceleration on the payload side is a damage
+  criterion that does not scale with specimen mass." `tavg10ms` is
+  normalized by the measured input in the same way, so that reasoning
+  applies to it unchanged.
+
+What `tavg10ms` moves with (Spearman rho; within batch is the mean of
+the five per-batch values, with a within-batch shuffle null):
+
+| `tavg10ms` against | 44 articles | 35 design means | within batch |
+|---|---|---|---|
+| t180 | +0.60 (p <0.0001) | **+0.72** (p <0.0001) | +0.55 (p 0.0006) |
+| `e_rebound` | -0.32 (p 0.03) | **-0.35** (p 0.04) | -0.23 (p 0.15) |
+| `e_reb_mJ` | -0.32 (p 0.04) | -0.34 (p 0.04) | -0.19 (p 0.25) |
+| `late_avg3ms` (hop landing) | -0.12 (p 0.42) | -0.09 (p 0.61) | -0.26 (p 0.11) |
+| ring-down damping `zeta_pct` | -0.43 (p 0.003) | -0.41 (p 0.01) | -0.48 (p 0.002) |
+
+Designs with a high 10 ms dose tend to bounce *less*, not more (the
+within-batch value is not significant, so "tend to" is as far as it
+goes). And the 10 ms window cannot contain the rebound. Over all 1452
+stabilized drops of the 44 fit
+articles, the highest 10 ms window is centered 2.2 to 4.3 ms after impact
+(median 3.4 ms) and has closed by 9.3 ms. The earliest hop landing is at
+15.0 ms. In every drop the window closes before the specimen lands.
+
+The launch cannot be much of the dose either. A 10 ms average of an
+acceleration is a velocity change divided by 10 ms, and on the input
+side that is almost exactly what the metric reads: the input's 10 ms
+average is 1.02 to 1.08 times its measured velocity change (5.0 to
+5.5 m/s) over 10 ms. The top vertex's 10 ms average, in the same units,
+is 6.3 to 13.7 m/s. The hop's launch speed is `e_rebound * dv_in`, 0.08
+to 0.34 m/s, so even a launch that fell wholly inside the window would
+add about `e_rebound` (0.014 to 0.063) to a `tavg10ms` whose excess over
+1 runs from 0.13 to 1.47. That is a median 6% of the excess (39% at most,
+for `6lhxfy`, the article with the smallest excess). The rest is the top
+vertex's own vibration during and after the input pulse, which counts on
+every swing because the metric averages the size of the acceleration.
+That is why it falls with the ring-down damping.
+
+The measured quantity that belongs to the rebound is `late_avg3ms`, the
+3 ms dose of the hop landing (Section 7). It is an acceleration as well,
+with no mass in it.
+
+### 11.2 Where the mass spread came from
+
+| Batch | Mass rule | Infill (strut, TPU) | Weighed mass | sd | Share of the total mass variance |
+|---|---|---|---|---|---|
+| seed | constant solid mass (30.95 g) | 15%, 15% | 18.50 to 22.04 g | 1.14 g | 35% |
+| r2d2c | constant solid mass | 15%, 15% | 17.91 to 23.47 g | 1.68 g | 55% |
+| drran | constant printed mass, 20.23 g | 13% to 34%, per article | 19.24 to 20.06 g | 0.34 g | 4% |
+| 2dran (drran reprint) | same plate | same | 19.48 to 20.32 g | 0.35 g | 2% |
+| corny | constant printed mass, 20.23 g | 12% to 35%, per article | 19.45 to 20.58 g | 0.45 g | 4% |
+
+The premise holds for the first two batches, and they are 90% of the
+mass variance in the record. The constant-solid-mass rule scaled every
+design to the same mass of *solid* geometry. PLA prints sparse (walls
+plus the 15% infill) while thin TPU tendons print nearly solid, so a
+design's printed mass depended on its PLA/TPU split: fat-cable designs
+came out heavy and fat-strut designs light
+([`t3_prism_mass_model.py`](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/bbf7a62/bo/t3_prism_mass_model.py)
+docstring). That is the unaccounted-for infill. It is also a property of
+the design, which is why the shape coordinates explain most of the
+within-session mass variation (Section 10.1).
+
+From the drran plate on, the projection solved each article's scale for
+20.23 g printed, with both infill settings as inputs. The three sessions
+landed light on average (-0.64 g drran, -0.37 g 2dran, -0.24 g corny; the
+drran and 2dran prints are the same plate at identical settings, so the
+offset is a print-session effect) and scattered 0.34 to 0.45 g within a
+session. Counting each design once (the two prints of a round-3 design
+averaged after their session offsets), the infill settings explain 25%
+of that within-session scatter (F-test p 0.13; strut infill slope -3.8
++/- 1.8 g per 100 percentage points, so if anything the model's infill
+term over-corrected), and the as-printed shape explains 78%. Counting
+all 27 prints separately the infill share is 33% (p 0.013), but that
+counts every round-3 design twice. The campaign's own check on the 18
+round-3 prints found no infill trend (|t| < 1.4, 2026-09-07). So the
+misses that are left mostly follow the shape terms of the mass model,
+not infill, and they are small: 0.34 to 0.45 g is 1.7 to 2.3% of the
+target.
+
+### 11.3 What mass does to tavg10ms at a fixed design
+
+Dividing by mass is the right correction when, at a fixed design, the
+objective is proportional to mass: an exponent of 1 in
+`d ln(objective) / d ln(mass)`. Leaving it raw is right when the exponent
+is 0. The exponent is estimated with session offsets and different sets
+of design controls (95% intervals; `e_reb_mJ` is `e_rebound` times mass,
+so its exponent is `e_rebound`'s plus exactly 1):
+
+| Held fixed, besides session offsets | `tavg10ms` | t180 | `e_rebound` | `e_reb_mJ` |
+|---|---|---|---|---|
+| nothing else | +1.27 (+0.44 to +2.10) | +0.62 (+0.11 to +1.13) | -1.91 | -0.91 |
+| design coordinates (what the model sees) | +0.43 (-0.65 to +1.51) | +0.22 (-0.42 to +0.85) | -0.33 | +0.67 |
+| as-printed dimensions | +0.16 (-1.26 to +1.57) | +0.00 (-0.80 to +0.80) | -0.25 | +0.75 |
+| design coordinates + infill | +0.59 (-0.51 to +1.68) | +0.25 (-0.41 to +0.90) | -0.59 | +0.41 |
+| as-printed dimensions, without `drran7` | +0.05 (-0.85 to +0.95) | -0.04 (-0.72 to +0.63) | -0.22 | +0.78 |
+| as-printed dimensions, without `r2d2c5` | +1.34 (-0.78 to +3.46) | +0.39 (-0.84 to +1.62) | -2.92 | -1.92 |
+
+With only the session offsets held fixed, `tavg10ms` rises faster than
+mass (+1.27), because inside a session the heavy prints are the
+fat-cable designs and cable diameter drives `tavg10ms` (Section 7). With
+the design held fixed the estimate drops to +0.2 to +0.6, and every
+interval contains both 0 and 1. Two unusual prints decide which way it
+leans: without `drran7` (the bubbled-tendon print, the worst dose in the
+record) it is +0.05 and 1 is excluded (p 0.04); without `r2d2c5` (23.47 g,
+the heaviest print) it is +1.34. The nine reprint twins are the only
+prints that share a design and differ only in mass, and they cannot help:
+their masses differ by 0.9 to 1.7%, so the slope from them has a standard
+error of 20. The rebound columns have intervals several units wide
+(`e_rebound`'s spans -4.9 to +4.4 with the as-printed dimensions held),
+so the data are no more decisive there. For `e_reb_mJ` the exponent of 1
+is known from how it was built, not measured.
+
+One clarification of Section 10.1 falls out of this table. Its "shape
+coordinates" were the as-printed dimensions from the drop-results
+tables, which carry each article's size, while the model is fitted on
+the design coordinates, with the size set by the mass rule. Holding the
+design coordinates fixed instead gives the same answer for t180 (+0.22,
+p 0.49 against 0).
+
+So the data cannot choose between dividing and not dividing, and the
+choice falls to how the ratio is built. Both halves of `tavg10ms` come
+from the same drop, and the article's mass is not a factor in either. In
+a spring and mass picture, mass changes the response only through the
+natural frequency, as the square root of stiffness over mass, and
+whether a lower natural frequency raises or lowers the transmitted dose
+depends on where the article sits relative to the input pulse: the
+ring-down fits put these articles at 280 to 760 Hz (median 330 Hz),
+periods of 1.3 to 3.6 ms, on either side of the 2.4 to 2.6 ms input
+pulse. Nothing in that makes the dose
+proportional to the article's mass. And for a lower-is-better score,
+dividing by mass gives the heavier print the better number: with the
+prints meant to weigh the same, that is a bonus for whichever print came
+out heavy, such as every 2dran reprint.
+
+### 11.4 The held-out test
+
+Two ways to act on the premise went through the audit's standard LOGO
+protocol (256/512, the same 35 folds and per-fold seeds), each against
+the committed shape-only raw run of Section 7: dividing by mass (the
+Section 10 run), and giving the model the two slicer infill settings as
+inputs next to the five shape coordinates, which
+[`rerun_logocv_shape_infill.py`](rerun_logocv_shape_infill.py) ran for
+this section (objectives raw, mass and the four filament settings out;
+the two prints of a reprint pair share all seven inputs, so this space
+cannot address a single print the way weighed mass did). All three runs
+match their own archived Ax diagnostics.
+
+| Held out, LOGO-CV | shape-only, raw | shape-only, divided by mass | shape + infill, raw |
+|---|---|---|---|
+| `tavg10ms`: article rho_s vs the raw objective (p) | **+0.45** (0.002) | +0.45 (0.003) | +0.14 (0.35) |
+| `tavg10ms`: design-mean rho_s (p) | +0.43 (0.01) | +0.41 (0.01) | +0.12 (0.47) |
+| `tavg10ms`: within-session rho_s (p) | **+0.52** (0.001) | +0.41 (0.009) | +0.06 (0.70) |
+| `tavg10ms`: R2_oos; 95% coverage | +0.21; 73% | per-gram units; 73% on its target | +0.03; 89% |
+| `tavg10ms`: mass vs held-out error, within session (p) | +0.33 (0.04) | +0.08 (0.57) | +0.39 (0.02) |
+| the same, design coordinates also held fixed (p) | +0.20 (0.16) | 0.00 (0.98) | +0.16 (0.28) |
+| `late_avg3ms`: article rho_s vs the raw objective (p) | +0.63 (<0.0001) | +0.64 (<0.0001) | +0.62 (<0.0001) |
+| `late_avg3ms`: within-session rho_s (p) | +0.32 (0.04) | +0.38 (0.02) | +0.29 (0.08) |
+
+Dividing by mass is the Section 10 result: the same pooled ranking, a
+lower within-session ranking, and it does remove the one within-session
+mass trend in the raw model's errors (+0.33). That trend is mostly the
+model falling short along the design coordinates that mass tracks:
+with those held fixed, +0.20 is left (p 0.16).
+
+Giving the model the infill settings makes `tavg10ms` worse, not
+better: article ranking +0.45 to +0.14, within a session +0.52 to +0.06.
+The predictions shrink further toward the mean (their spread falls from
+0.42 to 0.26 of the data's), and the cable-diameter gradient that drives
+the dose weakens in them: across the three constant-mass sessions cable
+diameter ranks the measured dose at +0.77, the shape-only predictions at
++0.62 and the shape + infill predictions at +0.44. The lowest-dose
+designs move most: `6lhxfy`, lowest measured dose, goes from predicted
+rank 4 to 23 of 44, and `corny7` (measured rank 2) from 2 to 7. The
+infill settings carry little dose information where they varied (strut
+infill against the measured dose in the constant-mass sessions, rho
++0.03; TPU infill, -0.31), and with 44 articles the two extra inputs
+cost the model more than they gave it. They do not absorb the mass trend
+in the errors either (+0.39 within a session). `late_avg3ms` is
+unchanged by either variant.
+
+Caveat: one NUTS realization per run. The infill run's folds used one
+torch thread each and the shape-only run the library default, which
+puts them on different, equally valid, sampling paths. The article-level
+drop (0.31) is larger than the 0.24 that the NUTS budget change moved
+t180's rank correlation (Section 2), and the within-session drop is 0.46,
+so realization noise alone is an unlikely explanation, but it is one run.
+
+### 11.5 Where this leaves round 6
+
+- **Keep `tavg10ms` raw.** It is normalized by the measured input
+  already, like t180, and the campaign's reason for keeping t180 a ratio
+  applies to it unchanged. Dividing by mass is a unit correction only
+  for `e_reb_mJ`, the one objective built by multiplying by mass.
+- **If equal printed mass is the intent, make it true at the printer.**
+  The constant-printed-mass projection already holds a session to 0.34
+  to 0.45 g. What it leaves is a per-session offset (-0.24 to -0.64 g),
+  which the campaign README already proposes to absorb with a
+  per-session level term, and the shape terms of the mass model, which
+  the 27 weighed constant-mass prints can now recalibrate.
+- **Leave the infill settings out of the fit space for the payload
+  objectives.** The projection compensates for them at print time, and
+  as inputs they cost most of `tavg10ms`'s held-out skill (11.4).
+- **Keep `mass_printed_g` out of the fit space.** Unchanged from
+  Sections 6 to 10.
+- If the aim of a mass normalization is to credit lighter designs, that
+  is a separate objective or the constant-mass constraint the campaign
+  already uses. Dividing a lower-is-better ratio by mass credits the
+  heavier design.
 
 ## Files
 
@@ -1405,6 +1671,16 @@ more look at the same 44 articles.
   [`figures/mass-within-session-decoded.png`](figures/mass-within-session-decoded.png)
   and
   [`figures/shape-only-per-gram-logocv.png`](figures/shape-only-per-gram-logocv.png).
+- [`rerun_logocv_shape_infill.py`](rerun_logocv_shape_infill.py): the
+  Section 11 driver (the Section 10 driver with the fit space set to the
+  five shape coordinates plus the two infill settings, payload pair raw).
+- [`tavg10ms_mass_checks.py`](tavg10ms_mass_checks.py) and
+  [`metrics-tavg10ms-mass.json`](metrics-tavg10ms-mass.json): the
+  Section 11 checks (what `tavg10ms` moves with, window timing against
+  the hop landing and the velocity budget, where the mass spread sits,
+  the mass exponent at a fixed design, and the held-out scorecard for the
+  payload pair across three runs), with
+  [`figures/tavg10ms-mass-question.png`](figures/tavg10ms-mass-question.png).
 - [`full_fit_importance_parity.py`](full_fit_importance_parity.py) and
   [`metrics-full-fit.json`](metrics-full-fit.json): the Section 8
   full-data fits (importances with per-draw quantiles, in-sample

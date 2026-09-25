@@ -101,6 +101,31 @@ Key files:
   asserted equal to it, so differences are attributable to the objective
   transform plus NUTS realization noise. Same file layout as the other
   run directories.
+- `objective-tavg10ms-shape-only/` (2026-09-24, Section 7): the payload
+  pair in the five-coordinate shape-only space, from
+  [`../rerun_logocv_payload_objective.py`](../rerun_logocv_payload_objective.py)
+  `--shape-only`.
+- `objective-per-gram-shape-only/` and
+  `objective-payload-per-gram-shape-only/` (2026-09-25, Section 10): the
+  shape-only space with each objective divided by the weighed mass
+  (campaign pair and payload pair), from
+  [`../rerun_logocv_shape_only_per_gram.py`](../rerun_logocv_shape_only_per_gram.py),
+  values from `mass-normalized-objectives.csv`. Folds were split across
+  worker processes at one torch thread each (`torch_threads` in
+  `state.json`); the campaign-pair run finished at 06:53 UTC, after the
+  job that started it had posted its comment.
+- `objective-tavg10ms-shape-infill/` (2026-09-25, Section 11): the payload
+  pair, raw, in the five shape coordinates plus the two slicer infill
+  settings (`strut_infill_pct`, `tpu_infill_pct`), mass and the four
+  filament settings out, from
+  [`../rerun_logocv_shape_infill.py`](../rerun_logocv_shape_infill.py).
+  Before it ran, fold `r2d2c3` of `objective-tavg10ms-shape-only/` was
+  re-run alone on the same runner at the default thread count and
+  matched the committed predictions and covariances exactly. Four
+  workers at one torch thread each. Like the three directories above it,
+  this run follows the `full-nuts-rerun/` protocol: campaign code at
+  `bbf7a62`, 256/512 NUTS, the same 35 folds with the fold order
+  asserted equal, the same per-fold seeds, and the same file layout.
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection
