@@ -44,7 +44,11 @@ the shared initial fit, fold order asserted identical to
 ``data/full-nuts-rerun/state.json``.
 
 ``--shard i/n`` runs every n-th fold (fold indices i+1, i+1+n, ...), so
-n processes can split one run. Workers append to the same ``folds.jsonl``
+n processes can split one run; ``--queue`` (optionally ``--reverse``)
+instead takes whichever fold nobody has done or claimed, so workers can
+be added to a run in flight. There is no cheap way to start a worker:
+the folds refit with the initial fit's surrogate spec, so its NUTS
+budget is the per-fold budget. Workers append to the same ``folds.jsonl``
 and ``state.json`` under an exclusive file lock, and commit under the same
 lock; ``--assemble`` then rebuilds the run in canonical fold order and
 writes the campaign-format CSV, diagnostics JSON and parity PNG.
@@ -69,6 +73,7 @@ from __future__ import annotations
 import argparse
 import fcntl
 import json
+import os
 import subprocess
 import sys
 import time
@@ -191,6 +196,64 @@ def _cv_results_from_jsonl(fold_keys):
     return results
 
 
+def assemble(args, names, src, diag, labels_by_arm, n_articles, n_params,
+             t_start):
+    """Rebuild the run in canonical fold order and write the campaign-format
+    CSV, diagnostics JSON and parity PNG. Reads only the checkpoint."""
+    with _locked():
+        done = set(_read_folds())
+        fold_keys = json.loads(STATE_PATH.read_text())["fold_keys"]
+        if done != set(fold_keys):
+            print(f"RESUME_NEEDED: {len(done)}/{len(fold_keys)} folds done",
+                  flush=True)
+            return 0
+        cv_results = _cv_results_from_jsonl(fold_keys)
+        # rewrite the checkpoint in canonical fold order (shards append in
+        # completion order); the content of every record is unchanged
+        by_key = _read_folds()
+        FOLDS_PATH.write_text("".join(json.dumps(by_key[g]) + "\n"
+                                      for g in fold_keys))
+
+    diag.METRIC_ORDER = list(names)
+    unit = "per g" if args.transform == "per-gram" else "raw"
+    label = {"t180": "t180", "e_reb_mJ": "Rebound",
+             "tavg10ms": "tavg10ms", "late_avg3ms_g": "late_avg3ms"}
+    title = {"t180": "t180", "e_reb_mJ": "Rebound energy",
+             "tavg10ms": "10 ms dose ratio", "late_avg3ms_g": "Hop landing"}
+    diag.METRIC_LABEL = {n: f"{label[s]}\n({unit})" for s, n in zip(src, names)}
+    diag.METRIC_TITLE = {n: f"{title[s]}, {unit}" for s, n in zip(src, names)}
+    diag.METRIC_COLOR = dict(zip(names, ("#1f77b4", "#e8590c")))
+
+    diagnostics_path = OUT_DIR / "t3-prism-bo-round5-logocv-diagnostics.json"
+    table_out, diagnostics = diag._cv_table(cv_results, labels_by_arm,
+                                            diagnostics_path)
+    table_out.to_csv(OUT_DIR / "t3-prism-bo-round5-logocv.csv", index=False,
+                     float_format="%.5f")
+    diag.render_loocv(table_out, diagnostics,
+                      OUT_DIR / "t3-prism-bo-round5-logocv.png",
+                      n_articles=n_articles,
+                      note=diag.LOGOCV_NOTE + "\nObjective transform: "
+                      f"{args.transform}; fit space: {n_params} shape "
+                      "parameters (mass removed as an input).")
+    state = json.loads(STATE_PATH.read_text())
+    state["status"] = "complete"
+    state["total_fold_seconds"] = round(sum(state["fold_seconds"].values()), 1)
+    STATE_PATH.write_text(json.dumps(state, indent=2) + "\n")
+    for name in ("MAPE", "Correlation coefficient", "Rank correlation"):
+        if name in diagnostics:
+            values = {m: round(float(v), 4) for m, v in diagnostics[name].items()}
+            print(f"  {name}: {values}", flush=True)
+    if args.commit_each_fold:
+        with _locked():
+            _git_commit_push(
+                [OUT_DIR],
+                f"LOGO-CV shape-only, {args.pair} objectives per gram complete: "
+                f"{len(fold_keys)} folds at {args.num_samples}/{args.warmup_steps}",
+            )
+    print(f"ALL_FOLDS_DONE ({time.time() - t_start:.0f} s)", flush=True)
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--campaign-bo", type=Path, required=True,
@@ -220,6 +283,11 @@ def main(argv=None):
                     help="git commit+push the checkpoint after every fold")
     ap.add_argument("--assemble", action="store_true",
                     help="all folds done: write the campaign-format outputs")
+    ap.add_argument("--queue", action="store_true",
+                    help="work-queue mode: take the next fold nobody has done or "
+                         "claimed (claims live in /tmp), instead of a fixed shard")
+    ap.add_argument("--reverse", action="store_true",
+                    help="walk the fold list from the end")
     args = ap.parse_args(argv)
     t_start = time.time()
 
@@ -348,8 +416,16 @@ def main(argv=None):
     print(f"Shape-only fit space: {n_params} parameters ({', '.join(keep)})",
           flush=True)
 
+    # ---- assembly needs no model: go straight there -----------------------
+    if args.assemble:
+        return assemble(args, names, src, diag, labels_by_arm, n_articles,
+                        n_params, t_start)
+
     # ---- initial fit (same spec the folds refit with) --------------------
     torch.manual_seed(10_000)
+    # the folds refit with the surrogate spec of this fit, so its NUTS budget
+    # IS the per-fold budget (checked 2026-09-25: a 16/32 initial fit made a
+    # 256/512-labelled fold run in 12 s with different predictions)
     cv_model = diag.fit_saasbo(
         experiment, data, args.num_samples, args.warmup_steps, refit_on_cv=True
     )
@@ -420,13 +496,37 @@ def main(argv=None):
         assert only <= set(fold_keys), only - set(fold_keys)
         wanted = [(k, g) for k, g in wanted if g in only]
     todo = [(k, g) for k, g in wanted if g not in done]
+    if args.reverse:
+        todo = todo[::-1]
     print(f"{len(fold_keys)} design folds over {len(training_data)} articles; "
           f"{len(done)} already checkpointed; shard {shard_i}/{shard_n} has "
           f"{len(todo)} to run", flush=True)
 
     # ---- fold loop (run_group_cv, checkpointed) --------------------------
     slowest = 0.0
-    for k, gkey in todo if not args.assemble else []:
+    claims_path = Path("/tmp") / f"{OUT_DIR.name}.claims.json"
+
+    def _claim(gkey):
+        """Queue mode: atomically take a fold nobody has done or claimed."""
+        with _locked():
+            if gkey in _read_folds():
+                return False
+            claims = (json.loads(claims_path.read_text())
+                      if claims_path.exists() else {})
+            owner = claims.get(gkey)
+            if owner is not None and owner != os.getpid():
+                try:
+                    os.kill(owner, 0)
+                    return False          # a live worker has it
+                except OSError:
+                    pass                  # stale claim from a dead worker
+            claims[gkey] = os.getpid()
+            claims_path.write_text(json.dumps(claims))
+            return True
+
+    for k, gkey in todo:
+        if args.queue and not _claim(gkey):
+            continue
         elapsed = time.time() - t_start
         if slowest and elapsed + slowest > args.max_seconds:
             print(f"RESUME_NEEDED: shard {shard_i}/{shard_n} stopping at "
@@ -476,61 +576,7 @@ def main(argv=None):
                     f"fold {n_done}/{len(fold_keys)} ({gkey})",
                 )
 
-    if not args.assemble:
-        print("SHARD_DONE", flush=True)
-        return 0
-
-    # ---- assembly --------------------------------------------------------
-    with _locked():
-        done = set(_read_folds())
-        if done != set(fold_keys):
-            print(f"RESUME_NEEDED: {len(done)}/{len(fold_keys)} folds done",
-                  flush=True)
-            return 0
-        cv_results = _cv_results_from_jsonl(fold_keys)
-        # rewrite the checkpoint in canonical fold order (shards append in
-        # completion order); the content of every record is unchanged
-        by_key = _read_folds()
-        FOLDS_PATH.write_text("".join(json.dumps(by_key[g]) + "\n"
-                                      for g in fold_keys))
-
-    diag.METRIC_ORDER = list(names)
-    unit = "per g" if args.transform == "per-gram" else "raw"
-    label = {"t180": "t180", "e_reb_mJ": "Rebound",
-             "tavg10ms": "tavg10ms", "late_avg3ms_g": "late_avg3ms"}
-    title = {"t180": "t180", "e_reb_mJ": "Rebound energy",
-             "tavg10ms": "10 ms dose ratio", "late_avg3ms_g": "Hop landing"}
-    diag.METRIC_LABEL = {n: f"{label[s]}\n({unit})" for s, n in zip(src, names)}
-    diag.METRIC_TITLE = {n: f"{title[s]}, {unit}" for s, n in zip(src, names)}
-    diag.METRIC_COLOR = dict(zip(names, ("#1f77b4", "#e8590c")))
-
-    diagnostics_path = OUT_DIR / "t3-prism-bo-round5-logocv-diagnostics.json"
-    table_out, diagnostics = diag._cv_table(cv_results, labels_by_arm,
-                                            diagnostics_path)
-    table_out.to_csv(OUT_DIR / "t3-prism-bo-round5-logocv.csv", index=False,
-                     float_format="%.5f")
-    diag.render_loocv(table_out, diagnostics,
-                      OUT_DIR / "t3-prism-bo-round5-logocv.png",
-                      n_articles=n_articles,
-                      note=diag.LOGOCV_NOTE + "\nObjective transform: "
-                      f"{args.transform}; fit space: {n_params} shape "
-                      "parameters (mass removed as an input).")
-    state = json.loads(STATE_PATH.read_text())
-    state["status"] = "complete"
-    state["total_fold_seconds"] = round(sum(state["fold_seconds"].values()), 1)
-    STATE_PATH.write_text(json.dumps(state, indent=2) + "\n")
-    for name in ("MAPE", "Correlation coefficient", "Rank correlation"):
-        if name in diagnostics:
-            values = {m: round(float(v), 4) for m, v in diagnostics[name].items()}
-            print(f"  {name}: {values}", flush=True)
-    if args.commit_each_fold:
-        with _locked():
-            _git_commit_push(
-                [OUT_DIR],
-                f"LOGO-CV shape-only, {args.pair} objectives per gram complete: "
-                f"{len(fold_keys)} folds at {args.num_samples}/{args.warmup_steps}",
-            )
-    print(f"ALL_FOLDS_DONE ({time.time() - t_start:.0f} s)", flush=True)
+    print("SHARD_DONE", flush=True)
     return 0
 
 
