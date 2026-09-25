@@ -99,5 +99,6 @@
     "corny7": 131.0,
     "corny6": 99.2
   },
-  "status": "running"
+  "status": "complete",
+  "total_fold_seconds": 6235.1
 }
