@@ -63,7 +63,8 @@
     "drran1": 132.1,
     "drran2": 100.0,
     "drran3": 68.8,
-    "6nheas": 101.3
+    "6nheas": 101.3,
+    "drran4": 116.0
   },
   "status": "running"
 }
