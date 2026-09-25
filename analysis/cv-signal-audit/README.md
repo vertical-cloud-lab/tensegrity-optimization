@@ -74,6 +74,20 @@ the strongest within-batch design ranking in the audit (rho_s +0.52,
 p 0.0006), the same space experiment as Section 6 with a louder
 answer; the proposed `late_avg3ms` second objective is predictable in
 both spaces, with a session-confound caveat on the pooled number.
+Section 8 fits every space and objective pair on all 44 articles and
+reads the model's own attribution: weighed mass is the top input of all
+eight fits that contain it, and every mass-bearing space drives its
+training residuals to near zero whether or not the objective is
+learnable, so in-sample parity cannot separate the spaces and only the
+held-out comparison can. Section 9 answers the obvious follow-up, which
+is why not simply divide the objectives by mass: because three of the
+four objectives carry no factor of mass, so dividing by it writes a
+-1/m gradient into the target rather than removing one (t180 goes from
+no mass correlation to -0.43, p 0.006), and because the memorization is
+a property of the input space, not the target, so no transform of the
+objective changes it. Dividing does fix the real within-session
+confound it was aimed at, and the honest version of that fix is
+subtraction rather than division.
 
 ## 1. The r vs r^2 question first
 
