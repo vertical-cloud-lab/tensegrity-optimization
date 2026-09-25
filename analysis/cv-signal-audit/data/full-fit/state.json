@@ -17,7 +17,8 @@
   "campaign_code_commit": "bbf7a62",
   "objectives_csv": "payload-objectives.csv",
   "fit_seconds": {
-    "twelve-param|campaign|10000": 49.0
+    "twelve-param|campaign|10000": 49.0,
+    "six-param|campaign|10000": 49.0
   },
   "status": "running"
 }
