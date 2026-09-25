@@ -834,5 +834,95 @@
         }
       }
     }
+  },
+  "check8_slope_decomposition": {
+    "t180": {
+      "pooled_log_slope_on_mass": 0.21862246795324344,
+      "within_batch_log_slope_on_mass_mean": 1.3639834000854907,
+      "per_batch_log_slope": [
+        -0.43343778259221566,
+        4.091670503050709,
+        2.115399539241202,
+        0.27693787472027376,
+        0.7693468660074848
+      ],
+      "pooled_log_slope_after_division": -0.7813775320467565,
+      "within_batch_log_slope_after_division": 0.3639834000854907,
+      "within_batch_partial_given_coords_mean": 0.37218971790593824,
+      "within_batch_partial_given_coords_per_batch": [
+        -0.5547560938070843,
+        0.9662042759950021,
+        0.7265705072590964,
+        0.061712805604978244,
+        0.6612170944776985
+      ],
+      "residual_df_per_batch": 3
+    },
+    "e_reb_mJ": {
+      "pooled_log_slope_on_mass": 0.11954133163117217,
+      "within_batch_log_slope_on_mass_mean": -3.636412624373763,
+      "per_batch_log_slope": [
+        2.3638795915590167,
+        -10.253790078922659,
+        -9.042962535167742,
+        0.2745256457449146,
+        -1.5237157450823466
+      ],
+      "pooled_log_slope_after_division": -0.8804586683688278,
+      "within_batch_log_slope_after_division": -4.636412624373763,
+      "within_batch_partial_given_coords_mean": 0.24986947408723076,
+      "within_batch_partial_given_coords_per_batch": [
+        -0.17581016430448942,
+        0.9224263781661904,
+        -0.6272187599814663,
+        0.7276350974404335,
+        0.4023148191154855
+      ],
+      "residual_df_per_batch": 3
+    },
+    "tavg10ms": {
+      "pooled_log_slope_on_mass": 0.590509224994595,
+      "within_batch_log_slope_on_mass_mean": 2.725348447531322,
+      "per_batch_log_slope": [
+        1.7136319752245905,
+        3.8625553531270356,
+        5.684600163235154,
+        0.6773683029403578,
+        1.6885864431294726
+      ],
+      "pooled_log_slope_after_division": -0.409490775005405,
+      "within_batch_log_slope_after_division": 1.725348447531322,
+      "within_batch_partial_given_coords_mean": 0.3560637819638509,
+      "within_batch_partial_given_coords_per_batch": [
+        0.4195363647973454,
+        0.5532332355204139,
+        0.7477118279026447,
+        0.1913321114132343,
+        -0.13149462981438373
+      ],
+      "residual_df_per_batch": 3
+    },
+    "late_avg3ms_g": {
+      "pooled_log_slope_on_mass": 1.8026288887535513,
+      "within_batch_log_slope_on_mass_mean": -0.11800477340502517,
+      "per_batch_log_slope": [
+        -0.39990013547411735,
+        -9.336144197126304,
+        9.545901912384727,
+        1.1278132816064281,
+        -1.527694728415859
+      ],
+      "pooled_log_slope_after_division": 0.8026288887535513,
+      "within_batch_log_slope_after_division": -1.1180047734050251,
+      "within_batch_partial_given_coords_mean": -0.3057258458478431,
+      "within_batch_partial_given_coords_per_batch": [
+        -0.5463065064606564,
+        -0.44193211168856705,
+        0.3336740220224784,
+        -0.43922504242248134,
+        -0.4348395906899894
+      ],
+      "residual_df_per_batch": 3
+    }
   }
 }

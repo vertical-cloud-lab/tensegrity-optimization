@@ -888,6 +888,39 @@ objectives do not gain: `tavg10ms` goes +0.93 to +0.82, `late_avg3ms`
 +0.58 to +0.53, and rebound is unchanged at -0.18 (division recovers
 `e_rebound`, whose pair reliability was already that).
 
+Why the two views disagree is one line of arithmetic, and it is worth
+stating plainly because "division fixes one and breaks the other" is
+otherwise cryptic. Dividing by mass is a fixed correction: in logs it
+subtracts **exactly 1.00** from the slope of the objective on mass,
+unconditionally. The slope it is correcting is not the same number in the
+two views.
+
+| Slope of log(objective) on log(mass) | pooled, n = 44 | mean within a print session |
+|---|---|---|
+| t180, before division | +0.22 | +1.36 |
+| t180, after division | **-0.78** | **+0.36** |
+| `tavg10ms`, before | +0.59 | +2.73 |
+| `tavg10ms`, after | -0.41 | +1.73 |
+| `late_avg3ms`, before | +1.80 | -0.12 |
+| `late_avg3ms`, after | +0.80 | -1.12 |
+
+Inside one print session t180 already rises with mass at close to slope
+1, so subtracting 1 lands near zero. Pooled across sessions that trend
+largely washes out, the slope is only +0.22, and subtracting 1 overshoots
+into a strong negative. One fixed correction against two different slopes
+cannot zero both, and which one it happens to zero is a property of this
+dataset rather than of the transform.
+
+That within-session slope is not all confound. Mass partly tracks
+geometry, so some of the +1.36 is that bigger articles have more material
+and transmit more, which is design physics, and dividing it out deletes
+real signal. Regressing the five shape coordinates out of both sides
+inside each batch leaves a residual mass association averaging +0.37, so
+something beyond geometry does appear to be present, but nine articles
+and five covariates per batch leave three degrees of freedom and the
+per-batch values run -0.55 to +0.97. Suggestive, not established, and not
+worth more weight than that.
+
 So the instinct is sound and it found something. The catch for t180 is
 that the two effects point opposite ways: division fixes the
 within-session confound and creates a pooled one. Regressing mass out

@@ -34,7 +34,10 @@ The checks are deliberately simple and all of them are cheap:
    else: leave-one-design-out, predicting each held-out article from its
    weighed mass alone;
 7. where mass's leverage actually lives: within the nine reprint pairs
-   (same design, two prints) and within each print session.
+   (same design, two prints) and within each print session;
+8. the slope decomposition that explains check 7: division is a fixed
+   correction of exactly one unit of log-slope, and the slope it is
+   correcting differs between the pooled and within-session views.
 
 Usage (repo root)::
 
@@ -410,6 +413,58 @@ def check_print_session_confound(df) -> dict:
     return out
 
 
+
+def check_slope_decomposition(df) -> dict:
+    """Why division can fix one view of the mass association and break the other.
+
+    Dividing by mass subtracts exactly 1.00 from the slope of log(objective)
+    on log(mass), unconditionally. That slope is not the same number pooled
+    across the record as it is inside a single print session, so one fixed
+    correction cannot zero both, and which one it zeroes is a property of
+    this dataset rather than of the transform.
+
+    ``within_batch_partial_given_coords`` asks how much of the within-session
+    association survives regressing the five shape coordinates out of both
+    sides, which separates "heavier articles are bigger articles" from
+    anything mass adds on its own. At nine articles and five covariates per
+    batch that leaves three degrees of freedom, so it is read as suggestive
+    only; the per-batch values are reported so the spread is visible.
+    """
+    def logslope(m, y):
+        return float(np.polyfit(np.log(m), np.log(y), 1)[0])
+
+    def partial(x, y, Z):
+        Z = np.column_stack([np.ones(len(x)), Z])
+        rx = x - Z @ np.linalg.lstsq(Z, x, rcond=None)[0]
+        ry = y - Z @ np.linalg.lstsq(Z, y, rcond=None)[0]
+        return float(stats.pearsonr(rx, ry)[0])
+
+    out = {}
+    for obj in OBJECTIVES:
+        pooled = logslope(df["mass_g"].to_numpy(), df[obj].to_numpy())
+        per_batch, parts = [], []
+        for _, g in df.groupby("batch"):
+            if len(g) < 5:
+                continue
+            per_batch.append(logslope(g["mass_g"].to_numpy(), g[obj].to_numpy()))
+            if g[list(COORDS)].nunique().min() > 1:
+                parts.append(partial(g["mass_g"].to_numpy(), g[obj].to_numpy(),
+                                     g[list(COORDS)].to_numpy()))
+        wb = float(np.mean(per_batch))
+        out[obj] = {
+            "pooled_log_slope_on_mass": pooled,
+            "within_batch_log_slope_on_mass_mean": wb,
+            "per_batch_log_slope": per_batch,
+            "pooled_log_slope_after_division": pooled - 1.0,
+            "within_batch_log_slope_after_division": wb - 1.0,
+            "within_batch_partial_given_coords_mean": float(np.mean(parts))
+            if parts else float("nan"),
+            "within_batch_partial_given_coords_per_batch": parts,
+            "residual_df_per_batch": 3,
+        }
+    return out
+
+
 # ------------------------------------------------------------------- figure
 def make_figure(df, leverage, arith, reliab, alone, confound):
     import matplotlib
@@ -529,6 +584,7 @@ def main():
     signal = check_design_signal(df)
     alone = check_mass_alone_skill(df)
     confound = check_print_session_confound(df)
+    slopes = check_slope_decomposition(df)
 
     metrics = {
         "provenance": {
@@ -547,6 +603,7 @@ def main():
         "check5_design_signal": signal,
         "check6_mass_alone_heldout_skill": alone,
         "check7_print_session_confound": confound,
+        "check8_slope_decomposition": slopes,
     }
     OUT_JSON.write_text(json.dumps(metrics, indent=2))
     print(f"-> {OUT_JSON}")
@@ -619,6 +676,17 @@ def main():
         cells = [f"{confound['within_batch'][o][fr]['mean_r']:+.2f}"
                  for fr in FRAMINGS]
         print(f"{o:>16} | raw {cells[0]} | /mass {cells[1]} | resid {cells[2]}")
+
+    print("\n=== CHECK 8: division subtracts exactly 1.00 of log-slope ===")
+    print(f"{'objective':>16} | {'pooled':>16} | {'within-session':>16} | "
+          f"{'partial | coords':>16}")
+    for o in OBJECTIVES:
+        e = slopes[o]
+        print(f"{o:>16} | {e['pooled_log_slope_on_mass']:+.2f} -> "
+              f"{e['pooled_log_slope_after_division']:+.2f} | "
+              f"{e['within_batch_log_slope_on_mass_mean']:+.2f} -> "
+              f"{e['within_batch_log_slope_after_division']:+.2f} | "
+              f"{e['within_batch_partial_given_coords_mean']:+.2f} (3 df/batch)")
     return 0
 
 

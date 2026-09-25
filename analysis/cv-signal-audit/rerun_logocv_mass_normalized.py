@@ -170,9 +170,12 @@ def main(argv=None):
                     help="per-gram divides each objective by the article's "
                          "weighed mass (the literal ask); resid subtracts an "
                          "OLS fit on mass instead")
-    ap.add_argument("--space", choices=("twelve-param", "six-param"),
+    ap.add_argument("--space",
+                    choices=("twelve-param", "six-param", "shape-only"),
                     default="twelve-param",
-                    help="fit space; both keep mass as an input")
+                    help="fit space. twelve-param and six-param keep mass as "
+                         "an input; shape-only drops it, which combined with "
+                         "--variant per-gram removes mass from both sides")
     ap.add_argument("--max-seconds", type=float, default=3000,
                     help="clean-exit budget for this invocation")
     ap.add_argument("--num-samples", type=int, default=256,
@@ -192,8 +195,8 @@ def main(argv=None):
     OBJ1, OBJ2 = f"{SOURCE_OBJ[0]}_{sfx}", f"{SOURCE_OBJ[1]}_{sfx}"
     tag = "per-gram" if args.variant == "per-gram" else "mass-resid"
     OUT_DIR = AUDIT_DIR / "data" / f"objective-{tag}"
-    if args.space == "six-param":
-        OUT_DIR = AUDIT_DIR / "data" / f"objective-{tag}-six-param"
+    if args.space != "twelve-param":
+        OUT_DIR = AUDIT_DIR / "data" / f"objective-{tag}-{args.space}"
     if args.smoke:
         OUT_DIR = AUDIT_DIR / "data" / f"objective-{tag}-SMOKE"
         args.num_samples, args.warmup_steps = 16, 32
@@ -282,15 +285,19 @@ def main(argv=None):
           f"from {OBJECTIVES_CSV.name}, variant {args.variant}", flush=True)
 
     n_params = 12
-    if args.space == "six-param":
-        # identical mechanics to rerun_logocv_param_ablation.py, but keeping
-        # mass: the rounds-1-and-2 space is the five shape coordinates plus
-        # the weighed printed mass
+    if args.space != "twelve-param":
+        # identical mechanics to rerun_logocv_param_ablation.py. six-param is
+        # the rounds-1-and-2 space, the five shape coordinates plus the
+        # weighed printed mass; shape-only drops mass as well
         from ax.core.search_space import SearchSpace
 
         base_space = fit_search_space(include_process=False)
-        keep = list(base_space.parameters)
-        assert "mass_printed_g" in keep, keep
+        if args.space == "six-param":
+            keep = list(base_space.parameters)
+            assert "mass_printed_g" in keep, keep
+        else:
+            keep = list(PARAM_NAMES)
+            assert "mass_printed_g" not in keep, keep
         experiment._search_space = SearchSpace(
             parameters=[base_space.parameters[name] for name in keep])
         for arm in experiment.arms_by_name.values():
@@ -299,8 +306,8 @@ def main(argv=None):
             sq = experiment.status_quo
             sq._parameters = {k: v for k, v in sq._parameters.items() if k in keep}
         n_params = len(keep)
-        print(f"Six-parameter variant: fit space cut to {n_params} parameters "
-              f"({', '.join(keep)})", flush=True)
+        print(f"{args.space} variant: fit space cut to {n_params} "
+              f"parameters ({', '.join(keep)})", flush=True)
 
     # ---- initial fit (same spec the folds refit with) --------------------
     torch.manual_seed(10_000)
@@ -338,10 +345,13 @@ def main(argv=None):
         state = {
             "objectives": [OBJ1, OBJ2],
             "n_params": n_params,
-            "fit_space": ("6-parameter rounds-1-and-2 space (five shape "
-                          "coordinates plus mass_printed_g)"
-                          if args.space == "six-param" else
-                          "12-parameter round-5 space"),
+            "fit_space": {
+                "six-param": "6-parameter rounds-1-and-2 space (five shape "
+                             "coordinates plus mass_printed_g)",
+                "shape-only": "5-parameter shape-only space (mass removed "
+                              "from the inputs as well as the objectives)",
+                "twelve-param": "12-parameter round-5 space",
+            }[args.space],
             "variant": args.variant,
             "objective_note": ("campaign objectives divided per article by the "
                                "weighed printed mass (SEM scaled by 1/m, mass "
