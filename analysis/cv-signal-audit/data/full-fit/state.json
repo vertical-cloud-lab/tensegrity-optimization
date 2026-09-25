@@ -19,7 +19,8 @@
   "fit_seconds": {
     "twelve-param|campaign|10000": 49.0,
     "six-param|campaign|10000": 49.0,
-    "shape-only|campaign|10000": 54.7
+    "shape-only|campaign|10000": 54.7,
+    "twelve-param|payload|10000": 50.3
   },
   "status": "running"
 }
