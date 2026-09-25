@@ -81,6 +81,26 @@ Key files:
   posterior sd, committed as each fit landed), `state.json` the settings
   and timings; `feature-importance.csv` and `insample-predictions.csv`
   are the assembled tidy tables.
+- `mass-normalized-objectives.csv` and
+  `objective-per-gram/`, `objective-per-gram-six-param/` (2026-09-25,
+  PR #111 follow-up): the Section 9 mass-normalization experiment.
+  The CSV is the per-article table written by
+  [`../mass_normalization_checks.py`](../mass_normalization_checks.py):
+  weighed mass, the five shape coordinates, and each of the four audited
+  objectives in three framings (raw, divided by mass, and with an
+  ordinary least squares fit on mass subtracted), each with a propagated
+  standard error. Objective values are the ones the campaign fitted
+  (`t180`, `e_reb_mJ` read from `full-nuts-rerun/`) and the payload pair
+  from `payload-objectives.csv`; masses are the weighed values in the
+  drop-results tables. The two run directories are LOGO-CV re-runs from
+  [`../rerun_logocv_mass_normalized.py`](../rerun_logocv_mass_normalized.py)
+  with the fit metrics divided by mass, in the campaign's 12-parameter
+  space and the rounds-1-and-2 six-parameter space, both of which keep
+  `mass_printed_g` as an input. Same 256/512 budget, same folds, and the
+  same per-fold seeding as `full-nuts-rerun/`, with the fold order
+  asserted equal to it, so differences are attributable to the objective
+  transform plus NUTS realization noise. Same file layout as the other
+  run directories.
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection

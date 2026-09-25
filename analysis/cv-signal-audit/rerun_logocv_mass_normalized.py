@@ -477,8 +477,13 @@ def main(argv=None):
     diagnostics_path = OUT_DIR / "t3-prism-bo-round5-logocv-diagnostics.json"
     table, diagnostics = diag._cv_table(cv_results, labels_by_arm,
                                         diagnostics_path)
+    # the campaign format writes %.5f, which is fine for values near 1 but
+    # throws away three significant figures on a per-gram objective near
+    # 0.05, enough that the recomputed r drifts from the archived Ax
+    # diagnostics in the fourth decimal. Nine significant digits keeps the
+    # CSV a faithful copy of the fold checkpoints.
     table.to_csv(OUT_DIR / "t3-prism-bo-round5-logocv.csv", index=False,
-                 float_format="%.5f")
+                 float_format="%.9g")
     diag.render_loocv(table, diagnostics,
                       OUT_DIR / "t3-prism-bo-round5-logocv.png",
                       n_articles=n_articles,

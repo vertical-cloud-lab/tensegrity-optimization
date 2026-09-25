@@ -162,9 +162,14 @@ def make_figure(results, ref, logo_norm):
                     ha="center", fontsize=9)
         if ref_line is not None:
             ax.axhline(ref_line, ls=":", lw=1.6, color="0.3")
-            ax.text(len(names) - 0.45, ref_line, f" {ref_label}", fontsize=8.5,
-                    va="bottom", ha="right", color="0.3")
+            ax.text(0.01, ref_line, f" {ref_label}", fontsize=8.5,
+                    va="bottom", ha="left", color="0.3")
         ax.axhline(0, color="k", lw=0.9)
+        finite = [v for v in vals if v is not None and np.isfinite(v)]
+        if finite:
+            lo, hi = min(finite + [0.0]), max(finite + [0.0])
+            pad = 0.16 * max(hi - lo, 1e-9)
+            ax.set_ylim(lo - pad, hi + pad)
         ax.set_xticks(xs)
         ax.set_xticklabels([n.replace("|", "\n") for n in names], fontsize=8.5)
         ax.set_ylabel(ylabel, fontsize=9.5)
@@ -195,7 +200,7 @@ def make_figure(results, ref, logo_norm):
          "D. Can the model still tell the two prints of one design apart?\n"
          "Mass is the only coordinate that separates them",
          "predicted twin gap / between-design sd")
-    axes[1, 1].set_ylim(0, max(0.45, axes[1, 1].get_ylim()[1]))
+    axes[1, 1].set_ylim(0, max(0.34, axes[1, 1].get_ylim()[1]))
 
     fig.suptitle("Objectives divided by mass, mass kept in the fit space: "
                  "held-out LOGO-CV against the committed baselines",
@@ -227,6 +232,9 @@ def main() -> int:
             s["matches_archived_diagnostics"] = bool(
                 abs(s["pearson_r"] - diag["Correlation coefficient"][metric]) < 1e-4
                 and abs(s["spearman_rho"] - diag["Rank correlation"][metric]) < 1e-3)
+            assert s["matches_archived_diagnostics"], (
+                f"{name}/{metric} does not reproduce its archived Ax "
+                "diagnostics; refusing to report it")
             # raw runs: the transformed and raw views are the same thing
             results[name]["on_transformed"][metric] = s
             results[name]["on_raw"][metric] = s
@@ -245,6 +253,9 @@ def main() -> int:
             s["matches_archived_diagnostics"] = bool(
                 abs(s["pearson_r"] - diag["Correlation coefficient"][metric]) < 1e-4
                 and abs(s["spearman_rho"] - diag["Rank correlation"][metric]) < 1e-3)
+            assert s["matches_archived_diagnostics"], (
+                f"{name}/{metric} does not reproduce its archived Ax "
+                "diagnostics; refusing to report it")
             results[name]["on_transformed"][src] = s
 
             # the decision view: rank the RAW objective. Two reconstructions,
