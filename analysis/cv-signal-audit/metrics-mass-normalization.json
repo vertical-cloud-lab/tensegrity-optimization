@@ -1,0 +1,548 @@
+{
+  "provenance": {
+    "generated_by": "analysis/cv-signal-audit/mass_normalization_checks.py",
+    "question": "PR #111, sgbaird 2026-09-25: divide each objective by mass and check whether mass keeps predictive power",
+    "n_articles": 44,
+    "n_designs": 35,
+    "n_permutations": 20000,
+    "seed": 20260925
+  },
+  "check1_mass_leverage": {
+    "article_n44": {
+      "t180": {
+        "raw": {
+          "pearson_r": 0.1198510537999567,
+          "pearson_p": 0.42822858857057144,
+          "spearman_rho": 0.14314914154066136,
+          "spearman_p": 0.3511324433778311,
+          "n": 44
+        },
+        "per_gram": {
+          "pearson_r": -0.43133054511761576,
+          "pearson_p": 0.005749712514374282,
+          "spearman_rho": -0.4481251806575701,
+          "spearman_p": 0.0027498625068746564,
+          "n": 44
+        },
+        "resid": {
+          "pearson_r": -2.1018538282649512e-16,
+          "pearson_p": 1.0,
+          "spearman_rho": -0.01247533138980653,
+          "spearman_p": 0.9371531423428828,
+          "n": 44
+        }
+      },
+      "e_reb_mJ": {
+        "raw": {
+          "pearson_r": -0.04848841823217157,
+          "pearson_p": 0.7473626318684066,
+          "spearman_rho": 0.0334085145693124,
+          "spearman_p": 0.8270086495675216,
+          "n": 44
+        },
+        "per_gram": {
+          "pearson_r": -0.15161701579888098,
+          "pearson_p": 0.3185840707964602,
+          "spearman_rho": -0.08908937218483307,
+          "spearman_p": 0.560721963901805,
+          "n": 44
+        },
+        "resid": {
+          "pearson_r": 5.701083040699696e-16,
+          "pearson_p": 1.0,
+          "spearman_rho": 0.05413025145407579,
+          "spearman_p": 0.7219639018049098,
+          "n": 44
+        }
+      },
+      "tavg10ms": {
+        "raw": {
+          "pearson_r": 0.19859017279778732,
+          "pearson_p": 0.18604069796510175,
+          "spearman_rho": 0.20968424228629617,
+          "spearman_p": 0.1718414079296035,
+          "n": 44
+        },
+        "per_gram": {
+          "pearson_r": -0.14644147523424275,
+          "pearson_p": 0.32433378331083446,
+          "spearman_rho": -0.13849732305632673,
+          "spearman_p": 0.3688815559222039,
+          "n": 44
+        },
+        "resid": {
+          "pearson_r": 1.8200230444298643e-16,
+          "pearson_p": 1.0,
+          "spearman_rho": 0.00014096419649498902,
+          "spearman_p": 0.9994500274986251,
+          "n": 44
+        }
+      },
+      "late_avg3ms_g": {
+        "raw": {
+          "pearson_r": 0.1629467128635819,
+          "pearson_p": 0.2950852457377131,
+          "spearman_rho": 0.15202988591984568,
+          "spearman_p": 0.3225338733063347,
+          "n": 44
+        },
+        "per_gram": {
+          "pearson_r": 0.03709447681965434,
+          "pearson_p": 0.8177591120443978,
+          "spearman_rho": 0.07774175436698645,
+          "spearman_p": 0.6132693365331734,
+          "n": 44
+        },
+        "resid": {
+          "pearson_r": -4.048489083531682e-18,
+          "pearson_p": 1.0,
+          "spearman_rho": -0.025866930056830485,
+          "spearman_p": 0.8676066196690165,
+          "n": 44
+        }
+      }
+    },
+    "design_n35": {
+      "t180": {
+        "raw": {
+          "pearson_r": 0.12735422225335216,
+          "pearson_p": 0.45827708614569274,
+          "spearman_rho": 0.11036414565826332,
+          "spearman_p": 0.5255237238138093,
+          "n": 35
+        },
+        "per_gram": {
+          "pearson_r": -0.44738883888119096,
+          "pearson_p": 0.009349532523373831,
+          "spearman_rho": -0.4708683473389356,
+          "spearman_p": 0.004599770011499425,
+          "n": 35
+        },
+        "resid": {
+          "pearson_r": 0.0010642457540023412,
+          "pearson_p": 0.9946002699865006,
+          "spearman_rho": -0.024089635854341738,
+          "spearman_p": 0.8929053547322634,
+          "n": 35
+        }
+      },
+      "e_reb_mJ": {
+        "raw": {
+          "pearson_r": -0.051146825607853406,
+          "pearson_p": 0.7666116694165291,
+          "spearman_rho": 0.0946778711484594,
+          "spearman_p": 0.5904204789760512,
+          "n": 35
+        },
+        "per_gram": {
+          "pearson_r": -0.17557844659263197,
+          "pearson_p": 0.3086345682715864,
+          "spearman_rho": -0.09159663865546218,
+          "spearman_p": 0.6010199490025498,
+          "n": 35
+        },
+        "resid": {
+          "pearson_r": 0.008008056162119175,
+          "pearson_p": 0.9629518524073797,
+          "spearman_rho": 0.11904761904761907,
+          "spearman_p": 0.49802509874506273,
+          "n": 35
+        }
+      },
+      "tavg10ms": {
+        "raw": {
+          "pearson_r": 0.2403991495437654,
+          "pearson_p": 0.1654917254137293,
+          "spearman_rho": 0.17198879551820728,
+          "spearman_p": 0.32103394830258486,
+          "n": 35
+        },
+        "per_gram": {
+          "pearson_r": -0.186926973393092,
+          "pearson_p": 0.2817859107044648,
+          "spearman_rho": -0.18851540616246498,
+          "spearman_p": 0.27713614319284036,
+          "n": 35
+        },
+        "resid": {
+          "pearson_r": -0.006100794009605097,
+          "pearson_p": 0.9727013649317534,
+          "spearman_rho": -0.03473389355742297,
+          "spearman_p": 0.8411079446027698,
+          "n": 35
+        }
+      },
+      "late_avg3ms_g": {
+        "raw": {
+          "pearson_r": 0.15792433552547974,
+          "pearson_p": 0.36743162841857907,
+          "spearman_rho": 0.13221288515406163,
+          "spearman_p": 0.4488775561221939,
+          "n": 35
+        },
+        "per_gram": {
+          "pearson_r": 0.009930060535317963,
+          "pearson_p": 0.9533523323833808,
+          "spearman_rho": 0.03165266106442577,
+          "spearman_p": 0.8528573571321434,
+          "n": 35
+        },
+        "resid": {
+          "pearson_r": -0.031172857275989528,
+          "pearson_p": 0.855707214639268,
+          "spearman_rho": -0.06358543417366948,
+          "spearman_p": 0.711164441777911,
+          "n": 35
+        }
+      }
+    }
+  },
+  "check2_arithmetic": {
+    "cv_mass_pct": 5.1933956713627225,
+    "sd_log_mass": 0.050909011781225935,
+    "objectives": {
+      "t180": {
+        "cv_pct": 8.370080192462172,
+        "sd_log": 0.08334124869264536,
+        "predicted_r_log_if_independent": -0.5212878364598316,
+        "measured_r_log_per_gram": -0.4339158849127512,
+        "measured_r_log_raw": 0.1335455608268859
+      },
+      "e_reb_mJ": {
+        "cv_pct": 43.00448720909595,
+        "sd_log": 0.4046466216183723,
+        "predicted_r_log_if_independent": -0.12482701032231977,
+        "measured_r_log_per_gram": -0.11011031350754244,
+        "measured_r_log_raw": 0.015039619102749544
+      },
+      "tavg10ms": {
+        "cv_pct": 15.179979448308764,
+        "sd_log": 0.13810079126896585,
+        "predicted_r_log_if_independent": -0.34588345899085754,
+        "measured_r_log_per_gram": -0.15284493591976692,
+        "measured_r_log_raw": 0.217683337046369
+      },
+      "late_avg3ms_g": {
+        "cv_pct": 49.851848654254695,
+        "sd_log": 0.6150625439801882,
+        "predicted_r_log_if_independent": -0.08248838381660928,
+        "measured_r_log_per_gram": 0.067034894360727,
+        "measured_r_log_raw": 0.14920442844864415
+      }
+    }
+  },
+  "check3_reprint_reliability": {
+    "t180": {
+      "raw": {
+        "pair_rank_corr": 0.08333333333333334,
+        "pair_rank_p": 0.8518296340731853,
+        "within_pair_var": 0.0032269516944444456,
+        "between_design_var": 0.0014283692375000009,
+        "icc_like": -0.06085339804184195
+      },
+      "per_gram": {
+        "pair_rank_corr": 0.33333333333333337,
+        "pair_rank_p": 0.376124775044991,
+        "within_pair_var": 8.268786007298056e-06,
+        "between_design_var": 2.998132154569948e-06,
+        "icc_like": -0.15930695284961457
+      },
+      "resid": {
+        "pair_rank_corr": 0.2833333333333333,
+        "pair_rank_p": 0.45930813837232554,
+        "within_pair_var": 0.003231176972727516,
+        "between_design_var": 0.0013280309166029236,
+        "icc_like": -0.09768843399762343
+      }
+    },
+    "e_reb_mJ": {
+      "raw": {
+        "pair_rank_corr": -0.18333333333333335,
+        "pair_rank_p": 0.643871225754849,
+        "within_pair_var": 17.832845104916668,
+        "between_design_var": 6.098740534748612,
+        "icc_like": -0.1876557717918104
+      },
+      "per_gram": {
+        "pair_rank_corr": -0.18333333333333335,
+        "pair_rank_p": 0.643871225754849,
+        "within_pair_var": 0.046586533096512145,
+        "between_design_var": 0.016431916002152783,
+        "icc_like": -0.17272042834281884
+      },
+      "resid": {
+        "pair_rank_corr": -0.18333333333333335,
+        "pair_rank_p": 0.643871225754849,
+        "within_pair_var": 17.87708045323136,
+        "between_design_var": 6.013460383252353,
+        "icc_like": -0.19563133520960607
+      }
+    },
+    "tavg10ms": {
+      "raw": {
+        "pair_rank_corr": 0.9333333333333332,
+        "pair_rank_p": 0.0011997600479904018,
+        "within_pair_var": 0.046180175038888875,
+        "between_design_var": 0.04740076234652775,
+        "icc_like": 0.34487702834206746
+      },
+      "per_gram": {
+        "pair_rank_corr": 0.8166666666666667,
+        "pair_rank_p": 0.010797840431913617,
+        "within_pair_var": 0.0001208091787805445,
+        "between_design_var": 0.00010629254135391079,
+        "icc_like": 0.27527739535036844
+      },
+      "resid": {
+        "pair_rank_corr": 0.9166666666666666,
+        "pair_rank_p": 0.0015996800639872025,
+        "within_pair_var": 0.04743728783428497,
+        "between_design_var": 0.04426154596541383,
+        "icc_like": 0.3021895361540119
+      }
+    },
+    "late_avg3ms_g": {
+      "raw": {
+        "pair_rank_corr": 0.5833333333333334,
+        "pair_rank_p": 0.11617676464707058,
+        "within_pair_var": 83.95184728821111,
+        "between_design_var": 233.77595660307156,
+        "icc_like": 0.6955529470444272
+      },
+      "per_gram": {
+        "pair_rank_corr": 0.5333333333333333,
+        "pair_rank_p": 0.15876824635072986,
+        "within_pair_var": 0.2189750870101651,
+        "between_design_var": 0.595454756958787,
+        "icc_like": 0.6893716168456993
+      },
+      "resid": {
+        "pair_rank_corr": 0.6166666666666666,
+        "pair_rank_p": 0.09158168366326734,
+        "within_pair_var": 85.68974455906239,
+        "between_design_var": 230.93215736185996,
+        "icc_like": 0.6870090063023048
+      }
+    }
+  },
+  "check4_rank_agreement": {
+    "t180": {
+      "spearman_raw_vs_per_gram": 0.7296918767507002,
+      "spearman_raw_vs_resid": 0.9725490196078431,
+      "top5_lowest_raw": [
+        "corny7",
+        "corny9",
+        "6lhxfy",
+        "corny6",
+        "r2d2c7"
+      ],
+      "top5_lowest_per_gram": [
+        "corny7",
+        "corny9",
+        "6nheas",
+        "corny6",
+        "9hhbkp"
+      ],
+      "top5_lowest_resid": [
+        "corny7",
+        "corny9",
+        "6lhxfy",
+        "corny6",
+        "corny8"
+      ]
+    },
+    "e_reb_mJ": {
+      "spearman_raw_vs_per_gram": 0.9683473389355742,
+      "spearman_raw_vs_resid": 0.9971988795518207,
+      "top5_lowest_raw": [
+        "r2d2c6",
+        "corny4",
+        "2dran5",
+        "r2d2c3",
+        "r2d2c2"
+      ],
+      "top5_lowest_per_gram": [
+        "corny4",
+        "r2d2c6",
+        "2dran5",
+        "r2d2c5",
+        "corny6"
+      ],
+      "top5_lowest_resid": [
+        "r2d2c6",
+        "corny4",
+        "2dran5",
+        "r2d2c2",
+        "r2d2c3"
+      ]
+    },
+    "tavg10ms": {
+      "spearman_raw_vs_per_gram": 0.9126050420168068,
+      "spearman_raw_vs_resid": 0.9663865546218489,
+      "top5_lowest_raw": [
+        "6lhxfy",
+        "corny7",
+        "corny9",
+        "corny6",
+        "corny8"
+      ],
+      "top5_lowest_per_gram": [
+        "corny7",
+        "6lhxfy",
+        "corny9",
+        "autv5r",
+        "bpx68c"
+      ],
+      "top5_lowest_resid": [
+        "corny7",
+        "6lhxfy",
+        "corny9",
+        "autv5r",
+        "corny6"
+      ]
+    },
+    "late_avg3ms_g": {
+      "spearman_raw_vs_per_gram": 0.9873949579831932,
+      "spearman_raw_vs_resid": 0.9593837535014007,
+      "top5_lowest_raw": [
+        "2dran2",
+        "2dran5",
+        "2dran9",
+        "2dran3",
+        "2dran6"
+      ],
+      "top5_lowest_per_gram": [
+        "2dran2",
+        "2dran5",
+        "2dran9",
+        "2dran3",
+        "2dran6"
+      ],
+      "top5_lowest_resid": [
+        "2dran5",
+        "2dran2",
+        "2dran3",
+        "2dran9",
+        "2dran6"
+      ]
+    }
+  },
+  "check5_design_signal": {
+    "t180": {
+      "raw": {
+        "H_mm": -0.21063763352325196,
+        "R_mm": -0.5334508614792814,
+        "cable_d_mm": 0.5579100533217715,
+        "strut_d_mm": -0.21616669524166404,
+        "twist_deg": -0.28700922381053595,
+        "max_abs_coord_rho": 0.5579100533217715,
+        "mean_abs_within_batch_coord_rho": 0.4948472494688096
+      },
+      "per_gram": {
+        "H_mm": -0.581791295002476,
+        "R_mm": -0.5728586890948383,
+        "cable_d_mm": 0.3352960444318786,
+        "strut_d_mm": 0.1226072677838401,
+        "twist_deg": -0.39882597452669244,
+        "max_abs_coord_rho": 0.581791295002476,
+        "mean_abs_within_batch_coord_rho": 0.494497162686517
+      },
+      "resid": {
+        "H_mm": -0.3496528320867904,
+        "R_mm": -0.5782869587306126,
+        "cable_d_mm": 0.5180694087152496,
+        "strut_d_mm": -0.12035112484589709,
+        "twist_deg": -0.2969914804488641,
+        "max_abs_coord_rho": 0.5782869587306126,
+        "mean_abs_within_batch_coord_rho": 0.4741874845171971
+      }
+    },
+    "e_reb_mJ": {
+      "raw": {
+        "H_mm": 0.24369956462178108,
+        "R_mm": 0.41748328289682896,
+        "cable_d_mm": -0.40411811369907386,
+        "strut_d_mm": 0.11055100395920718,
+        "twist_deg": 0.08101878062270992,
+        "max_abs_coord_rho": 0.41748328289682896,
+        "mean_abs_within_batch_coord_rho": 0.38586323831666824
+      },
+      "per_gram": {
+        "H_mm": 0.17419196534001188,
+        "R_mm": 0.37342265273632275,
+        "cable_d_mm": -0.4476255078977004,
+        "strut_d_mm": 0.19748301153682354,
+        "twist_deg": 0.052542265561432704,
+        "max_abs_coord_rho": 0.4476255078977004,
+        "mean_abs_within_batch_coord_rho": 0.3763570123766463
+      },
+      "resid": {
+        "H_mm": 0.25406225944370814,
+        "R_mm": 0.42862181020140494,
+        "cable_d_mm": -0.4005923929374348,
+        "strut_d_mm": 0.10039836073846367,
+        "twist_deg": 0.09247129211474533,
+        "max_abs_coord_rho": 0.42862181020140494,
+        "mean_abs_within_batch_coord_rho": 0.3805729137424466
+      }
+    },
+    "tavg10ms": {
+      "raw": {
+        "H_mm": -0.3446477209823222,
+        "R_mm": -0.2286922947850917,
+        "cable_d_mm": 0.6513416535052077,
+        "strut_d_mm": -0.34638844544106184,
+        "twist_deg": -0.07637587055837125,
+        "max_abs_coord_rho": 0.6513416535052077,
+        "mean_abs_within_batch_coord_rho": 0.5286452475570651
+      },
+      "per_gram": {
+        "H_mm": -0.5503507379237041,
+        "R_mm": -0.29376103340612736,
+        "cable_d_mm": 0.5278003980173736,
+        "strut_d_mm": -0.14968098303915614,
+        "twist_deg": -0.12442998972427657,
+        "max_abs_coord_rho": 0.5503507379237041,
+        "mean_abs_within_batch_coord_rho": 0.4735478723067045
+      },
+      "resid": {
+        "H_mm": -0.49790281311068557,
+        "R_mm": -0.2608389305501971,
+        "cable_d_mm": 0.5906992564050151,
+        "strut_d_mm": -0.22469773572576102,
+        "twist_deg": -0.080786635119493,
+        "max_abs_coord_rho": 0.5906992564050151,
+        "mean_abs_within_batch_coord_rho": 0.5028241431554459
+      }
+    },
+    "late_avg3ms_g": {
+      "raw": {
+        "H_mm": 0.36156640640587656,
+        "R_mm": 0.5799788869287761,
+        "cable_d_mm": -0.5120756834204632,
+        "strut_d_mm": 0.16159623793016767,
+        "twist_deg": 0.6247809309911747,
+        "max_abs_coord_rho": 0.6247809309911747,
+        "mean_abs_within_batch_coord_rho": 0.49828923060033703
+      },
+      "per_gram": {
+        "H_mm": 0.3469740402280609,
+        "R_mm": 0.5872400787792276,
+        "cable_d_mm": -0.5660192110735414,
+        "strut_d_mm": 0.2121479406334531,
+        "twist_deg": 0.6259416585072595,
+        "max_abs_coord_rho": 0.6259416585072595,
+        "mean_abs_within_batch_coord_rho": 0.4837680075049594
+      },
+      "resid": {
+        "H_mm": 0.2955130387314164,
+        "R_mm": 0.5791329228296943,
+        "cable_d_mm": -0.625956464021406,
+        "strut_d_mm": 0.29210000599680824,
+        "twist_deg": 0.6121676919830547,
+        "max_abs_coord_rho": 0.625956464021406,
+        "mean_abs_within_batch_coord_rho": 0.4745913347445917
+      }
+    }
+  }
+}
