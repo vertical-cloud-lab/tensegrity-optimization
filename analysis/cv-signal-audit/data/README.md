@@ -67,6 +67,20 @@ Key files:
   seeding as `full-nuts-rerun/` (fold order asserted identical), against
   the same campaign code (`bbf7a62`). Same file layout as the other
   rerun directories.
+- `full-fit/`: the Section 8 full-data fits (2026-09-25, PR #111
+  follow-up), produced on this branch by
+  [`../full_fit_importance_parity.py`](../full_fit_importance_parity.py)
+  against the same campaign code (`bbf7a62`) at the same 256/512 NUTS
+  budget: one SAASBO fit on all 44 articles (nothing held out) per fit
+  space (12-param / 6-param shape+mass / 5-param shape-only) and
+  objective pair (campaign t180 + e_reb_mJ, payload tavg10ms +
+  late_avg3ms), `torch.manual_seed(10000)` per fit, plus repeat fits at
+  seeds 11 and 12 for two combinations to measure NUTS realization
+  noise. `fits.jsonl` holds one record per fit (per-parameter
+  importances with per-draw quantiles, in-sample predictions with
+  posterior sd, committed as each fit landed), `state.json` the settings
+  and timings; `feature-importance.csv` and `insample-predictions.csv`
+  are the assembled tidy tables.
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection

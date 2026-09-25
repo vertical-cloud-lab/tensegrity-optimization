@@ -673,13 +673,103 @@ until cord state is logged per seating (the three-condition experiment
 in Section 4); its within-batch component is the part a round 6 can
 already trust.
 
+## 8. Full-data model internals: feature importance and in-sample parity
+
+[Asked in this PR's comments on 2026-09-25](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/111#issuecomment-5825708242):
+show feature importance for a model trained on all of the data, for
+each combination of fit space and objective, plus a parity plot of the
+fully trained model's predictions with uncertainty, to spot-check
+overfitting. [`full_fit_importance_parity.py`](full_fit_importance_parity.py)
+ran one full-data SAASBO fit (all 44 articles, nothing held out) for
+each of the three fit spaces (12-parameter round-5 space, 6-parameter
+shape plus mass, 5-parameter shape-only) crossed with both objective
+pairs (t180 + e_reb_mJ, and tavg10ms + late_avg3ms from Section 7), at
+the audit's standard protocol: campaign code at `bbf7a62`, NUTS
+256/512, `torch.manual_seed(10000)`, so each fit is the same model
+state its LOGO rerun refit from. Importance is the campaign's own
+convention (Ax `feature_importances`: inverse median ARD lengthscale
+across the MCMC draws, normalized to sum to 1 on the unit-cube
+transformed space), drawn with the interquartile band across the 256
+retained draws. Four extra fits repeat two combinations at two other
+NUTS seeds, which turns the "one NUTS realization" caveat of Sections
+6 and 7 into a measured number. Outputs:
+[`figures/full-fit-feature-importance.png`](figures/full-fit-feature-importance.png),
+[`figures/full-fit-parity.png`](figures/full-fit-parity.png),
+[`metrics-full-fit.json`](metrics-full-fit.json), and the raw per-fit
+records under [`data/full-fit/`](data/full-fit/).
+
+![Feature importance grid](figures/full-fit-feature-importance.png)
+
+**Weighed printed mass is the top-ranked input of every fit that
+contains it**: all eight such fits, both objective pairs, both spaces
+(share 0.19 to 0.51 of total sensitivity among 12 parameters, 0.60 to
+0.91 among six). In the shape-only space the sensitivity lands on
+geometry instead: strut diameter 0.60 and twist 0.16 for t180, strut
+diameter 0.45 and H 0.20 for tavg10ms, R 0.30 and H 0.24 for the hop
+landing, H 0.82 for rebound. Two reading caveats. This is model
+sensitivity, not univariate correlation: cable diameter, the strongest
+single observed correlate of t180 and tavg10ms, sits third for t180
+because SAAS splits credit among correlated inputs. And the
+interquartile bands are wide: 44 points do not settle a lengthscale
+posterior, and that spread is as much a part of the answer as the bar.
+
+![In-sample parity grid](figures/full-fit-parity.png)
+
+**The parity plots confirm overfitting exactly where the LOGO gaps
+said it was: every space containing mass memorizes the data.**
+
+| Held out, article level | 12 params | 6 (shape+mass) | 5 (shape only) |
+|---|---|---|---|
+| t180 in-sample R2 / rho_s | +1.00 / +1.00 | +1.00 / +0.99 | +0.86 / +0.88 |
+| t180 held-out LOGO rho_s | +0.32 | +0.05 | +0.45 |
+| Rebound in-sample R2 / rho_s | +1.00 / +1.00 | +0.88 / +0.95 | +0.55 / +0.74 |
+| Rebound held-out LOGO rho_s | -0.40 | -0.42 | +0.04 |
+| tavg10ms in-sample R2 / rho_s | +1.00 / +1.00 | +1.00 / +1.00 | +0.62 / +0.96 |
+| tavg10ms held-out LOGO rho_s | -0.08 | no LOGO run | +0.45 |
+| late_avg3ms in-sample R2 / rho_s | +1.00 / +1.00 | +1.00 / +1.00 | +0.91 / +0.94 |
+| late_avg3ms held-out LOGO rho_s | +0.56 | no LOGO run | +0.63 |
+
+The mechanism is the one Section 6 identified, now visible point by
+point. Weighed mass is a unique label per article (reprint twins
+included), so a GP given mass can drive every training residual to
+near zero regardless of whether the objective is learnable: the
+12-parameter t180 fit's median posterior sd at its own training points
+is 0.001 against a data sd of 0.087, a model that is certain of
+memorized values. Its 95 to 100 percent in-sample coverage is the
+trivial kind (residuals near zero), and its in-sample parity is
+indistinguishable between an objective it can rank held-out (t180,
++0.32) and ones it cannot (rebound -0.40, tavg10ms -0.08). In-sample
+fit quality carries no information about skill here; only the held-out
+comparison separates the spaces, which is why Sections 6 and 7 are
+LOGO experiments. The shape-only column is the honest one by
+construction: reprint twins share every coordinate while their
+measurements differ, so the model cannot interpolate both, and the
+scatter that remains is real. The clearest single point is drran7, the
+bubbled print with the worst payload dose in the record (tavg10ms
+2.47): the 12- and 6-parameter fits place it exactly on the diagonal
+(memorized via its mass), while the shape-only fit predicts 1.59 for
+it, the same honest failure that made LOGO rank it best-of-44 in the
+12-parameter space (Section 7).
+
+Two further numbers worth keeping. Calibration: the shape-only fits'
+in-sample 95 percent coverage is 57 to 61 percent, overconfident even
+at their own training points, consistent with (and worse than) the 70
+to 73 percent LOGO coverage; the round-6 instruction to distrust the
+error bars needs no held-out data to justify. Realization noise: across
+the repeat seeds, importance shares move by up to 0.07 (12-parameter
+campaign fit) and 0.10 (shape-only payload fit) in absolute share,
+comfortably inside the drawn interquartile bands, while in-sample R2
+and rho_s move by at most 0.002. As in the NUTS-budget experiment,
+attribution and ordering statistics carry the realization noise;
+magnitude fit statistics do not.
+
 ## Files
 
 - [`cv_signal_audit.py`](cv_signal_audit.py): the full recomputation
   (deterministic; run `python3 cv_signal_audit.py` from this directory).
 - [`metrics.json`](metrics.json): every number in this document, for both
   NUTS budgets.
-- [`figures/`](figures/): the four figures above.
+- [`figures/`](figures/): the figures above.
 - [`data/`](data/README.md): vendored input snapshots with provenance,
   including the primary full-budget LOGO re-run under
   [`data/full-nuts-rerun/`](data/full-nuts-rerun/).
@@ -706,3 +796,8 @@ already trust.
   [`metrics-payload-objective.json`](metrics-payload-objective.json):
   the Section 7 scorecard against the campaign-objective baseline, and
   [`figures/payload-objective-logocv.png`](figures/payload-objective-logocv.png).
+- [`full_fit_importance_parity.py`](full_fit_importance_parity.py) and
+  [`metrics-full-fit.json`](metrics-full-fit.json): the Section 8
+  full-data fits (importances with per-draw quantiles, in-sample
+  predictions, seed repeats; raw records in
+  [`data/full-fit/`](data/full-fit/)), and the two Section 8 figures.
