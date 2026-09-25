@@ -511,7 +511,7 @@ def fig_logo(res: dict):
          lambda o: raw(o)["mass_leverage_on_residuals"]["pooled_perm_p"],
          lambda o: pg(o)["mass_leverage_on_residuals"]["pooled_perm_p"],
          "Pearson r, weighed mass vs held-out residual",
-         "C. Your goal, tested: can mass predict what the\n"
+         "C. The goal, tested: can mass predict what the\n"
          "mass-blind model got wrong? (0 = no)")
     fig.suptitle("Mass out of the fit space (5 shape coordinates), objective raw vs "
                  "divided by mass: held-out LOGO-CV, 35 design folds, NUTS 256/512 "

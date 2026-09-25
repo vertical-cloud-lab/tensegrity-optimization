@@ -85,9 +85,12 @@ four objectives carry no factor of mass, so dividing by it writes a
 -1/m gradient into the target rather than removing one (t180 goes from
 no mass correlation to -0.43, p 0.006), and because the memorization is
 a property of the input space, not the target, so no transform of the
-objective changes it. Dividing does fix the real within-session
-confound it was aimed at, and the honest version of that fix is
-subtraction rather than division.
+objective changes it. Section 10 finishes the question: the
+within-session mass correlation Section 9 read as a confound is the
+cable-diameter effect seen through mass (with the shape coordinates held
+fixed, mass has no leftover association with t180, partial r +0.00), so
+once mass is out of the fit space the raw objectives already leave mass
+nothing to predict.
 
 ## 1. The r vs r^2 question first
 
@@ -866,7 +869,17 @@ h` exactly, and leaves no mass correlation worth the name (-0.15, p
 [`bo/t3-prism-bo-objectives-mass-normalized.csv`](https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/bbf7a62/bo/t3-prism-bo-objectives-mass-normalized.csv),
 as a display mode; it had never been fitted, which Section 9.5 corrects.
 
-### 9.3 The half the ask gets right: the within-session confound is real
+### 9.3 The within-session correlation (corrected in Section 10.1)
+
+**Correction (2026-09-25, Section 10.1).** The numbers in this subsection
+are correct as computed, but the reading of them as a confound that
+division fixes does not hold. The within-session correlation is the
+cable-diameter effect seen through mass: with the five shape coordinates
+held fixed, mass has no leftover association with t180 (partial r +0.00,
+p 0.997), the per-batch slopes it is averaged from run -0.43 to +4.09 so
+division zeroes none of them, and the reliability gain is the
+reliability of mass itself (twin masses agree at rank correlation
++0.89).
 
 The pooled correlation is not where mass's leverage lives. Inside a single
 print session, heavier articles do read higher t180, and dividing by mass
@@ -1037,6 +1050,10 @@ space, and no transform of the target touches it.
 
 ### 9.6 Where this leaves round 6
 
+(Section 10.4 updates this list: the within-session "confound" below is
+geometry, per Section 10.1, so the subtraction fallback in the last
+bullet has nothing left to remove.)
+
 The ask was right that mass should not be carrying predictive weight, and
 it was right that there is a confound to attack: inside a print session
 mass does track t180 at +0.42, and dividing it out removes that and
@@ -1087,6 +1104,239 @@ looks at this one 44-article dataset keeps going up.
 ![Objectives divided by mass, held out](figures/mass-normalized-logocv.png)
 
 ![What dividing by mass does to mass's leverage](figures/mass-normalization-checks.png)
+
+## 10. Mass out of the fit space and the objectives divided by mass
+
+**The ask ([PR #111, 2026-09-25](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/111#issuecomment-5827569731)):**
+"So then, just take the mass out of the input space and divide the
+objectives by the mass. Right?" And on the Section 9.3 sentence "division
+fixes the within-session confound and creates a pooled one": "if true,
+this seems important, and it's cryptic."
+
+The short answer: take `mass_printed_g` out of the input space, yes. That
+is the recommendation of Sections 6 to 9 and the only change measured to
+help. Dividing the objectives by mass on top of it does not do what the
+ask wanted it for. With mass out of the input space the raw objectives
+already leave mass nothing to predict (10.2), and dividing t180 by mass
+gives mass predictive power over the model's errors again. On ranking
+the real objective, division was a wash for the payload pair and, on
+interim numbers, a possible gain for t180 (10.3). The exception is the
+rebound energy `e_reb_mJ`, which was built by multiplying by mass, so
+dividing it back out is a unit correction. The reason division was
+expected to help, the within-session confound of Section 9.3, does not
+hold up (10.1).
+
+### 10.1 The within-session correlation is geometry
+
+Part 1 of [`score_shape_only_per_gram.py`](score_shape_only_per_gram.py)
+(no model involved); numbers in
+[`metrics-shape-only-per-gram.json`](metrics-shape-only-per-gram.json)
+under `decode`.
+
+Section 9.3 read the within-session effect off the mean of the five
+per-batch correlations between weighed mass and t180. Per batch:
+
+| Batch | r(mass, t180) | r(mass, t180 / mass) | slope of ln t180 on ln mass |
+|---|---|---|---|
+| seed | +0.82 | -0.43 | +0.77 |
+| r2d2c | +0.20 | -0.48 | +0.28 |
+| drran | +0.54 | +0.34 | +2.12 |
+| 2dran | -0.31 | -0.72 | -0.43 |
+| corny | +0.85 | +0.77 | +4.09 |
+| mean | +0.42 | -0.10 | +1.36 |
+| mean of absolute r | 0.55 | 0.55 | |
+
+Dividing by mass subtracts exactly 1 from every batch's slope. No batch
+had a slope near 1, so no batch's correlation went to zero. The average
+landed near zero because positive and negative values cancelled, and the
+mean absolute correlation is 0.55 before and after. Fitting one
+within-session slope across all batches (batch offsets as fixed effects,
+so each article is compared only with its own session) gives +0.62
+(r +0.37) before division and -0.38 (r -0.24) after it. Division
+over-corrects rather than zeroing anything.
+
+Where the within-session mass differences come from: the five shape
+coordinates explain 68% of the within-session variance in weighed mass
+(within-session sd 0.91 g, 0.52 g once shape is accounted for). Inside a
+session the heavier prints are the designs with thicker cables (r +0.56)
+and taller cells (`H_mm`, +0.41), and the lighter ones have thicker
+struts (-0.56). Thicker cables transmit more; cable diameter is the
+strongest single observed correlate of t180 in this dataset. So
+"heavier articles read higher t180 inside a session" is the cable
+diameter effect seen through mass.
+
+That can be tested directly by holding shape fixed: regress log mass and
+log objective on batch offsets plus the five shape coordinates (one shape
+effect fitted across all 44 articles, 34 residual degrees of freedom) and
+correlate what is left.
+
+| Partial r of ln(mass) with ln(objective), permutation p | batch offsets only | batch + shape | batch + shape, without `r2d2c5` |
+|---|---|---|---|
+| t180 | +0.37 | **+0.00 (p 0.997)** | +0.11 (p 0.46) |
+| t180 / mass | -0.24 | **-0.40 (p 0.010)** | -0.18 (p 0.26) |
+| `tavg10ms` | +0.45 | +0.04 (p 0.79) | +0.22 (p 0.15) |
+| `tavg10ms` / mass | +0.11 | -0.21 (p 0.16) | +0.06 (p 0.72) |
+| rebound `e_reb_mJ` | -0.10 | +0.06 (p 0.72) | -0.10 (p 0.54) |
+| `late_avg3ms` | +0.01 | +0.19 (p 0.22) | +0.10 (p 0.53) |
+
+With shape held fixed, the t180 slope on mass is +0.00 before division
+and exactly -1.00 after it. `r2d2c5` is the one high-leverage point in
+the mass residuals (23.47 g, 4.1 g above its batch mean, from round 1,
+when mass was still a design variable); without it the raw associations
+move but none is significant. Section 9.3's per-batch version of the
+same regression (five covariates fitted inside each nine-article batch,
+three residual degrees of freedom per batch) averaged +0.37 with a range
+of -0.55 to +0.97, which is about what three degrees of freedom produce
+from noise. Fitting the shape effect once across batches is the version
+with enough data to say anything, and it finds no mass effect beyond
+shape. Figure panels C and D show it: flat for t180, a slope of exactly
+-1 for t180 / mass.
+
+The reprint reliability gain quoted in Section 9.3 (pair rank correlation
++0.08 to +0.33) has the same source. Reprint twins agree on their weighed
+mass at rank correlation +0.89 (Pearson +0.99), because mass is mostly
+set by the design. Dividing t180 by mass adds that reliable number to the
+target. In Pearson terms the twins' t180 agreement goes from -0.19 to
+-0.24. The gain is in the part of the per-gram number that is mass.
+
+The Section 9.3 sentence, decoded:
+
+- **"Creates a pooled one" is right.** t180 is a ratio of two
+  accelerations and has no mass in it. Dividing it by mass makes it
+  depend on mass: lighter articles get larger values for no physical
+  reason (pooled r +0.12 becomes -0.43, Section 9.2).
+- **"Fixes the within-session confound" is not.** Inside a session,
+  heavier means thicker cables, and thicker cables do transmit more. A
+  model that sees the shape coordinates already has that information,
+  and once shape is known mass adds nothing. Division does not remove a
+  confound there; it swaps a geometry effect for an arithmetic 1/mass
+  one.
+
+![Where the within-session mass correlation comes from](figures/mass-within-session-decoded.png)
+
+### 10.2 The direct test of the goal
+
+Section 9's ask was for objectives "normalized such that mass would have
+no predictive power relative to the objectives". For a model with no mass
+input that is testable directly: after the model has predicted each
+held-out article (LOGO-CV, the same 35 design folds as every other run),
+does the article's weighed mass correlate with the model's error?
+
+| Weighed mass vs held-out error (observed minus predicted), Pearson r (permutation p) | Articles | Shape-only, raw objective | Shape-only, objective divided by mass |
+|---|---|---|---|
+| t180 | 34 | +0.12 (0.49) | -0.47 (0.010) |
+| rebound `e_reb_mJ` | 34 | -0.05 (0.80) | -0.17 (0.32) |
+| `tavg10ms` | 44 | +0.20 (0.17) | -0.06 (0.67) |
+| `late_avg3ms` | 44 | +0.05 (0.75) | -0.08 (0.59) |
+| same, within print session (batch offsets removed) | | t180 +0.26, rebound `e_reb_mJ` -0.09, `tavg10ms` +0.33, `late_avg3ms` -0.10 | t180 -0.38, rebound `e_reb_mJ` -0.22, `tavg10ms` +0.08, `late_avg3ms` -0.25 |
+
+With mass out of the input space and the objectives left alone, mass
+does not predict the held-out errors of any of the four objectives across
+all articles: the property the ask wanted holds without any
+normalization. After dividing by mass it fails for t180 (-0.47, p 0.010
+pooled; -0.38, p 0.042 within a session), on the articles the run has
+reached. One within-session exception runs the other way: the raw
+`tavg10ms` errors track mass inside a session (+0.33, p 0.038), and
+dividing removes that (+0.08, p 0.56) without improving the ranking
+(within-session rho_s +0.41 per gram against +0.52 raw, 10.3).
+
+### 10.3 The held-out test of the combination
+
+[`rerun_logocv_shape_only_per_gram.py`](rerun_logocv_shape_only_per_gram.py)
+ran the requested configuration through the standard protocol: the
+campaign's round-5 snapshot, the five shape coordinates as the fit space,
+each objective divided by the article's weighed mass (values from
+[`data/mass-normalized-objectives.csv`](data/mass-normalized-objectives.csv),
+the table Section 9 fitted), NUTS 256/512, and the 35 design folds and
+per-fold seeds of every other run. Outputs are under
+[`data/objective-per-gram-shape-only/`](data/objective-per-gram-shape-only/)
+(t180 and rebound) and
+[`data/objective-payload-per-gram-shape-only/`](data/objective-payload-per-gram-shape-only/)
+(`tavg10ms` and `late_avg3ms`).
+
+Two protocol notes. Before the run, one committed fold (`r2d2c3` of the
+Section 7 shape-only run) was re-run alone in a fresh process at the
+default thread count and matched the committed predictions exactly, so
+this environment reproduces the earlier runs and a fold does not depend
+on the folds run before it. The run itself was split across worker
+processes at one torch thread each, and thread count is part of the
+floating-point path, so these folds follow a different, equally valid,
+NUTS trajectory than the committed runs. `state.json` records the thread
+count.
+
+Run status when this was written: `objective-payload-per-gram-shape-only`: 35/35 folds, status `complete`; `objective-per-gram-shape-only`: 25/35 folds, status `running`. The campaign-pair run (t180, rebound) could not finish inside this job's one-hour GitHub token, so its rows below are **interim**: both runs are graded on the same held-out articles the per-gram run has reached, which makes the comparison paired but leaves the remaining folds' articles out. The driver resumes from the committed checkpoint (the command is in its docstring, with `--queue`), and `score_shape_only_per_gram.py` switches to the full CSV once `--assemble` has written it.
+
+Each objective is graded against the **raw** objective (the bare
+per-gram prediction ranked against raw values, which is the ranking an
+optimizer minimizing the per-gram objective acts on), and on the per-gram
+target it was fitted to.
+
+| Held out, shape-only fit space | Articles | raw objective | divided by mass |
+|---|---|---|---|
+| **t180**: article rho_s vs the raw objective (p) | 34 | +0.32 (0.06) | +0.45 (0.008) |
+| t180: design-mean rho_s vs raw (p) | | +0.39 (0.06) | +0.48 (0.01) |
+| t180: within-session rho_s vs raw, mean over batches (p) | | +0.19 (0.33) | +0.38 (0.04) |
+| t180: article rho_s on the fitted target (p) | | +0.32 (0.06) | +0.47 (0.005) |
+| t180: 95% interval coverage on the fitted target | | 76% | 82% |
+| **rebound `e_reb_mJ`**: article rho_s vs the raw objective (p) | 34 | +0.13 (0.45) | +0.24 (0.17) |
+| rebound `e_reb_mJ`: design-mean rho_s vs raw (p) | | +0.12 (0.56) | +0.13 (0.52) |
+| rebound `e_reb_mJ`: within-session rho_s vs raw, mean over batches (p) | | +0.12 (0.54) | +0.01 (0.94) |
+| rebound `e_reb_mJ`: article rho_s on the fitted target (p) | | +0.13 (0.45) | +0.22 (0.21) |
+| rebound `e_reb_mJ`: 95% interval coverage on the fitted target | | 76% | 79% |
+| **`tavg10ms`**: article rho_s vs the raw objective (p) | 44 | +0.45 (0.003) | +0.45 (0.002) |
+| `tavg10ms`: design-mean rho_s vs raw (p) | | +0.43 (0.009) | +0.41 (0.01) |
+| `tavg10ms`: within-session rho_s vs raw, mean over batches (p) | | +0.52 (0.0006) | +0.41 (0.009) |
+| `tavg10ms`: article rho_s on the fitted target (p) | | +0.45 (0.003) | +0.51 (0.0008) |
+| `tavg10ms`: 95% interval coverage on the fitted target | | 73% | 73% |
+| **`late_avg3ms`**: article rho_s vs the raw objective (p) | 44 | +0.63 (<0.0001) | +0.64 (<0.0001) |
+| `late_avg3ms`: design-mean rho_s vs raw (p) | | +0.56 (0.0007) | +0.57 (0.0003) |
+| `late_avg3ms`: within-session rho_s vs raw, mean over batches (p) | | +0.32 (0.04) | +0.38 (0.02) |
+| `late_avg3ms`: article rho_s on the fitted target (p) | | +0.63 (<0.0001) | +0.62 (<0.0001) |
+| `late_avg3ms`: 95% interval coverage on the fitted target | | 73% | 77% |
+
+For the payload pair (complete) dividing by mass is a wash on ranking the
+real objective: `tavg10ms` +0.45 either way at article level (within a
+session +0.52 raw, +0.41 per gram), `late_avg3ms` +0.63 and +0.64. For
+t180 the interim numbers favor division (+0.45 against +0.32 on the same
+articles, within a session +0.38 against +0.19). That gap is inside what
+one NUTS realization moves a rank correlation in this audit, and it rests
+on the articles the run has reached, so it needs the finished run before
+it means anything. If it holds, one plausible mechanism is a session
+offset: the 2dran reprint session printed every twin heavier and read
+t180 higher on average, and dividing by mass shrinks that offset, which a
+shape-only model otherwise carries as error. That would be a session
+correction that happens to be proportional to mass, and an explicit
+session term is the direct way to make it.
+
+What division changes unambiguously is the error structure in 10.2: the
+per-gram t180 model's held-out errors track mass, because division wrote
+the part of mass that shape does not explain into the target, where a
+model with no mass input cannot reach it.
+
+![Mass out of the fit space, objective raw vs divided by mass](figures/shape-only-per-gram-logocv.png)
+
+### 10.4 Where this leaves round 6
+
+- **Take `mass_printed_g` out of the fit space.** Unchanged from
+  Sections 6 to 9.
+- **Do not divide t180, `tavg10ms` or `late_avg3ms` by mass for the
+  reason Section 9 gave.** They are ratios and accelerations with no mass
+  in them, and with mass out of the fit space mass has no leftover
+  predictive power over them (10.2). Whether dividing t180 helps ranking
+  for a different reason (the interim +0.45 against +0.32 in 10.3) is
+  open until the campaign-pair run finishes; if it does, an explicit
+  print-session term is the direct form of that correction.
+- **If rebound is kept, fit `e_rebound`** (equivalently `e_reb_mJ` /
+  mass), the one objective where dividing by mass is a unit correction
+  rather than a new dependence. It does not make rebound learnable
+  (Section 9.5 and 10.3), which is the Section 7 case for replacing it
+  with `late_avg3ms`.
+- **No mass covariate is needed.** Section 9.6's fallback of subtracting
+  a mass line was aimed at the within-session effect, which 10.1 shows is
+  geometry that the shape coordinates already carry.
+
+Caveats: one NUTS realization per run, as in Sections 6 to 9, and one
+more look at the same 44 articles.
 
 ## Files
 
@@ -1142,6 +1392,19 @@ looks at this one 44-article dataset keeps going up.
   was fitted to and on the raw objective, alongside what mass alone buys
   on the same folds, and
   [`figures/mass-normalized-logocv.png`](figures/mass-normalized-logocv.png).
+- [`rerun_logocv_shape_only_per_gram.py`](rerun_logocv_shape_only_per_gram.py):
+  the Section 10 driver (shape-only fit space, objectives divided by
+  mass, `--pair campaign` or `--pair payload`; `--shard` and `--queue`
+  split one run across processes under a file lock, `--transform raw`
+  is the reproduction check against a committed fold).
+- [`score_shape_only_per_gram.py`](score_shape_only_per_gram.py) and
+  [`metrics-shape-only-per-gram.json`](metrics-shape-only-per-gram.json):
+  the Section 10 decode of the within-session mass correlation and the
+  held-out scorecard (raw objective, fitted target, and mass against the
+  held-out residuals), with
+  [`figures/mass-within-session-decoded.png`](figures/mass-within-session-decoded.png)
+  and
+  [`figures/shape-only-per-gram-logocv.png`](figures/shape-only-per-gram-logocv.png).
 - [`full_fit_importance_parity.py`](full_fit_importance_parity.py) and
   [`metrics-full-fit.json`](metrics-full-fit.json): the Section 8
   full-data fits (importances with per-draw quantiles, in-sample
