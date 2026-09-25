@@ -21,7 +21,8 @@
     "six-param|campaign|10000": 49.0,
     "shape-only|campaign|10000": 54.7,
     "twelve-param|payload|10000": 50.3,
-    "six-param|payload|10000": 40.1
+    "six-param|payload|10000": 40.1,
+    "shape-only|payload|10000": 36.5
   },
   "status": "running"
 }
