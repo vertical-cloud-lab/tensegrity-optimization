@@ -133,7 +133,8 @@ def _git_commit_push(paths, message, push=True):
             r = subprocess.run([str(PUSH_SCRIPT), "origin", "HEAD"], cwd=repo_root,
                                capture_output=True, text=True)
             if r.returncode != 0:
-                subprocess.run(["git", "pull", "-q", "--rebase", "origin", branch],
+                subprocess.run(["git", "pull", "-q", "--rebase", "--autostash",
+                                "origin", branch],
                                cwd=repo_root, check=True)
                 subprocess.run([str(PUSH_SCRIPT), "origin", "HEAD"],
                                cwd=repo_root, check=True, capture_output=True)
