@@ -1,0 +1,38 @@
+{
+  "Correlation coefficient": {
+    "late_avg3ms_g_per_g": 0.6191710925734476,
+    "tavg10ms_per_g": 0.5026984667139144
+  },
+  "Fisher exact test p": {
+    "late_avg3ms_g_per_g": 2.6583669287640703e-05,
+    "tavg10ms_per_g": 0.016825144892144452
+  },
+  "Log likelihood": {
+    "late_avg3ms_g_per_g": -1889.8570336549149,
+    "tavg10ms_per_g": -8433.00400101172
+  },
+  "MAPE": {
+    "late_avg3ms_g_per_g": 0.3678258911918983,
+    "tavg10ms_per_g": 0.07695898599487562
+  },
+  "MSE": {
+    "late_avg3ms_g_per_g": 0.5006848659955642,
+    "tavg10ms_per_g": 9.471777977000662e-05
+  },
+  "Mean prediction CI": {
+    "late_avg3ms_g_per_g": 1.5859023326503583,
+    "tavg10ms_per_g": 0.4085309094650098
+  },
+  "Rank correlation": {
+    "late_avg3ms_g_per_g": 0.6168270727337531,
+    "tavg10ms_per_g": 0.5087589695907997
+  },
+  "Total raw effect": {
+    "late_avg3ms_g_per_g": 11.543687183407348,
+    "tavg10ms_per_g": 1.0820774285381012
+  },
+  "wMAPE": {
+    "late_avg3ms_g_per_g": 0.2906724852259076,
+    "tavg10ms_per_g": 0.08202779615085619
+  }
+}

@@ -1,0 +1,7038 @@
+{
+ "shared_name": "kkhmvnj9ni19b57dryk3gdroqrp5uf0b",
+ "host": "byu.box.com",
+ "sessions": {
+  "8-21-2026 - ajhby6 - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 410920465434,
+   "n_signals_available": 101,
+   "files": {
+    "ajhby6_Signal1.csv": {
+     "id": 2419456365503,
+     "size": 9604266
+    },
+    "ajhby6_Signal2.csv": {
+     "id": 2419456509503,
+     "size": 9548427
+    },
+    "ajhby6_Signal3.csv": {
+     "id": 2419456247090,
+     "size": 9537284
+    },
+    "ajhby6_Signal4.csv": {
+     "id": 2419431717190,
+     "size": 9533760
+    },
+    "ajhby6_Signal5.csv": {
+     "id": 2419449349854,
+     "size": 9544611
+    },
+    "ajhby6_Signal6.csv": {
+     "id": 2419455813270,
+     "size": 9540483
+    },
+    "ajhby6_Signal7.csv": {
+     "id": 2419444314075,
+     "size": 9521224
+    },
+    "ajhby6_Signal8.csv": {
+     "id": 2419429953055,
+     "size": 9535654
+    },
+    "ajhby6_Signal9.csv": {
+     "id": 2419437638215,
+     "size": 9536727
+    },
+    "ajhby6_Signal10.csv": {
+     "id": 2419454387517,
+     "size": 9528012
+    },
+    "ajhby6_Signal11.csv": {
+     "id": 2419431318790,
+     "size": 9536565
+    },
+    "ajhby6_Signal12.csv": {
+     "id": 2419442118546,
+     "size": 9531815
+    },
+    "ajhby6_Signal13.csv": {
+     "id": 2419442552546,
+     "size": 9540301
+    },
+    "ajhby6_Signal14.csv": {
+     "id": 2419454697465,
+     "size": 9529592
+    },
+    "ajhby6_Signal15.csv": {
+     "id": 2419454481117,
+     "size": 9527398
+    },
+    "ajhby6_Signal16.csv": {
+     "id": 2419448625054,
+     "size": 9528581
+    },
+    "ajhby6_Signal17.csv": {
+     "id": 2419448627454,
+     "size": 9529844
+    },
+    "ajhby6_Signal18.csv": {
+     "id": 2419454264660,
+     "size": 9537137
+    },
+    "ajhby6_Signal19.csv": {
+     "id": 2419451905670,
+     "size": 9537265
+    },
+    "ajhby6_Signal20.csv": {
+     "id": 2419454523972,
+     "size": 9543207
+    },
+    "ajhby6_Signal21.csv": {
+     "id": 2419456282909,
+     "size": 9545115
+    },
+    "ajhby6_Signal22.csv": {
+     "id": 2419444561859,
+     "size": 9544599
+    },
+    "ajhby6_Signal23.csv": {
+     "id": 2419450816401,
+     "size": 9541098
+    },
+    "ajhby6_Signal24.csv": {
+     "id": 2419449969371,
+     "size": 9542390
+    },
+    "ajhby6_Signal25.csv": {
+     "id": 2419451790617,
+     "size": 9546633
+    },
+    "ajhby6_Signal26.csv": {
+     "id": 2419453007876,
+     "size": 9550327
+    },
+    "ajhby6_Signal27.csv": {
+     "id": 2419422794313,
+     "size": 9546815
+    },
+    "ajhby6_Signal28.csv": {
+     "id": 2419451800217,
+     "size": 9540374
+    },
+    "ajhby6_Signal29.csv": {
+     "id": 2419454733032,
+     "size": 9531290
+    },
+    "ajhby6_Signal30.csv": {
+     "id": 2419455548957,
+     "size": 9534839
+    },
+    "ajhby6_Signal31.csv": {
+     "id": 2419457182866,
+     "size": 9528758
+    },
+    "ajhby6_Signal32.csv": {
+     "id": 2419450684583,
+     "size": 9535684
+    },
+    "ajhby6_Signal33.csv": {
+     "id": 2419454887133,
+     "size": 9548108
+    },
+    "ajhby6_Signal34.csv": {
+     "id": 2419449381308,
+     "size": 9530609
+    },
+    "ajhby6_Signal35.csv": {
+     "id": 2419454994203,
+     "size": 9558338
+    },
+    "ajhby6_Signal36.csv": {
+     "id": 2419440695171,
+     "size": 9544418
+    },
+    "ajhby6_Signal37.csv": {
+     "id": 2419429732255,
+     "size": 9538299
+    },
+    "ajhby6_Signal38.csv": {
+     "id": 2419442874773,
+     "size": 9543681
+    },
+    "ajhby6_Signal39.csv": {
+     "id": 2419454181514,
+     "size": 9549238
+    },
+    "ajhby6_Signal40.csv": {
+     "id": 2419451749201,
+     "size": 9526145
+    },
+    "ajhby6_Signal41.csv": {
+     "id": 2419457010810,
+     "size": 9539906
+    },
+    "ajhby6_Signal42.csv": {
+     "id": 2419452774877,
+     "size": 9534010
+    },
+    "ajhby6_Signal43.csv": {
+     "id": 2419451198142,
+     "size": 9544284
+    },
+    "ajhby6_Signal44.csv": {
+     "id": 2419456912703,
+     "size": 9547236
+    },
+    "ajhby6_Signal45.csv": {
+     "id": 2419444799812,
+     "size": 9537817
+    },
+    "ajhby6_Signal46.csv": {
+     "id": 2419444139663,
+     "size": 9537376
+    },
+    "ajhby6_Signal47.csv": {
+     "id": 2419450628602,
+     "size": 9532263
+    },
+    "ajhby6_Signal48.csv": {
+     "id": 2419442900496,
+     "size": 9541325
+    },
+    "ajhby6_Signal49.csv": {
+     "id": 2419452911065,
+     "size": 9528797
+    },
+    "ajhby6_Signal50.csv": {
+     "id": 2419450192700,
+     "size": 9526171
+    },
+    "ajhby6_Signal51.csv": {
+     "id": 2419444070207,
+     "size": 9535304
+    },
+    "ajhby6_Signal52.csv": {
+     "id": 2419443859002,
+     "size": 9539388
+    },
+    "ajhby6_Signal53.csv": {
+     "id": 2419455068803,
+     "size": 9533757
+    },
+    "ajhby6_Signal54.csv": {
+     "id": 2419455961757,
+     "size": 9527178
+    },
+    "ajhby6_Signal55.csv": {
+     "id": 2419449865564,
+     "size": 9537968
+    },
+    "ajhby6_Signal56.csv": {
+     "id": 2419444010239,
+     "size": 9534692
+    },
+    "ajhby6_Signal57.csv": {
+     "id": 2419453713423,
+     "size": 9536378
+    },
+    "ajhby6_Signal58.csv": {
+     "id": 2419458462648,
+     "size": 9534377
+    },
+    "ajhby6_Signal59.csv": {
+     "id": 2419458200676,
+     "size": 9536058
+    },
+    "ajhby6_Signal60.csv": {
+     "id": 2419438130245,
+     "size": 9545800
+    },
+    "ajhby6_Signal61.csv": {
+     "id": 2419455054515,
+     "size": 9525655
+    },
+    "ajhby6_Signal62.csv": {
+     "id": 2419444393719,
+     "size": 9549520
+    },
+    "ajhby6_Signal63.csv": {
+     "id": 2419454656247,
+     "size": 9531382
+    },
+    "ajhby6_Signal64.csv": {
+     "id": 2419452702521,
+     "size": 9536610
+    },
+    "ajhby6_Signal65.csv": {
+     "id": 2419456185591,
+     "size": 9536424
+    },
+    "ajhby6_Signal66.csv": {
+     "id": 2419457466658,
+     "size": 9542638
+    },
+    "ajhby6_Signal67.csv": {
+     "id": 2419444070202,
+     "size": 9534823
+    },
+    "ajhby6_Signal68.csv": {
+     "id": 2419449032944,
+     "size": 9548108
+    },
+    "ajhby6_Signal69.csv": {
+     "id": 2419438324645,
+     "size": 9541719
+    },
+    "ajhby6_Signal70.csv": {
+     "id": 2419457545696,
+     "size": 9534537
+    },
+    "ajhby6_Signal71.csv": {
+     "id": 2419458781631,
+     "size": 9541588
+    },
+    "ajhby6_Signal72.csv": {
+     "id": 2419449151112,
+     "size": 9538647
+    },
+    "ajhby6_Signal73.csv": {
+     "id": 2419455328095,
+     "size": 9548875
+    },
+    "ajhby6_Signal74.csv": {
+     "id": 2419458645083,
+     "size": 9544317
+    },
+    "ajhby6_Signal75.csv": {
+     "id": 2419430619603,
+     "size": 9537959
+    },
+    "ajhby6_Signal76.csv": {
+     "id": 2419440450999,
+     "size": 9546452
+    },
+    "ajhby6_Signal77.csv": {
+     "id": 2419448785337,
+     "size": 9537158
+    },
+    "ajhby6_Signal78.csv": {
+     "id": 2419444422075,
+     "size": 9544160
+    },
+    "ajhby6_Signal79.csv": {
+     "id": 2419453153817,
+     "size": 9539693
+    },
+    "ajhby6_Signal80.csv": {
+     "id": 2419441102835,
+     "size": 9541905
+    },
+    "ajhby6_Signal81.csv": {
+     "id": 2419454418248,
+     "size": 9540696
+    },
+    "ajhby6_Signal82.csv": {
+     "id": 2419443707754,
+     "size": 9554596
+    },
+    "ajhby6_Signal83.csv": {
+     "id": 2419445898456,
+     "size": 9541385
+    },
+    "ajhby6_Signal84.csv": {
+     "id": 2419443738546,
+     "size": 9534667
+    },
+    "ajhby6_Signal85.csv": {
+     "id": 2419455734298,
+     "size": 9554287
+    },
+    "ajhby6_Signal86.csv": {
+     "id": 2419444535362,
+     "size": 9539316
+    },
+    "ajhby6_Signal87.csv": {
+     "id": 2419452944678,
+     "size": 9542451
+    },
+    "ajhby6_Signal88.csv": {
+     "id": 2419457098822,
+     "size": 9539270
+    },
+    "ajhby6_Signal89.csv": {
+     "id": 2419455411860,
+     "size": 9553125
+    },
+    "ajhby6_Signal90.csv": {
+     "id": 2419456621349,
+     "size": 9530882
+    },
+    "ajhby6_Signal91.csv": {
+     "id": 2419441761074,
+     "size": 9528636
+    },
+    "ajhby6_Signal92.csv": {
+     "id": 2419454979886,
+     "size": 9550785
+    },
+    "ajhby6_Signal93.csv": {
+     "id": 2419445094090,
+     "size": 9527499
+    },
+    "ajhby6_Signal94.csv": {
+     "id": 2419453521420,
+     "size": 9548245
+    },
+    "ajhby6_Signal95.csv": {
+     "id": 2419427173766,
+     "size": 9536546
+    },
+    "ajhby6_Signal96.csv": {
+     "id": 2419458158211,
+     "size": 9542791
+    },
+    "ajhby6_Signal97.csv": {
+     "id": 2419455047086,
+     "size": 9536952
+    },
+    "ajhby6_Signal98.csv": {
+     "id": 2419444283947,
+     "size": 9552553
+    },
+    "ajhby6_Signal99.csv": {
+     "id": 2419458321590,
+     "size": 9537404
+    },
+    "ajhby6_Signal100.csv": {
+     "id": 2419426563874,
+     "size": 9545322
+    },
+    "ajhby6_Signal101.csv": {
+     "id": 2419444369851,
+     "size": 9538258
+    },
+    "ajhby6.csv": {
+     "id": 2419442735530,
+     "size": 12421
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-20-2026 - 6nheas - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 410692405304,
+   "n_signals_available": 101,
+   "files": {
+    "6nheas_Signal1.csv": {
+     "id": 2418004199059,
+     "size": 9581311
+    },
+    "6nheas_Signal2.csv": {
+     "id": 2418023622519,
+     "size": 9584130
+    },
+    "6nheas_Signal3.csv": {
+     "id": 2418016151534,
+     "size": 9588005
+    },
+    "6nheas_Signal4.csv": {
+     "id": 2417998947762,
+     "size": 9590077
+    },
+    "6nheas_Signal5.csv": {
+     "id": 2418016002300,
+     "size": 9587651
+    },
+    "6nheas_Signal6.csv": {
+     "id": 2417991861497,
+     "size": 9577779
+    },
+    "6nheas_Signal7.csv": {
+     "id": 2418006352752,
+     "size": 9574666
+    },
+    "6nheas_Signal8.csv": {
+     "id": 2417994383147,
+     "size": 9581339
+    },
+    "6nheas_Signal9.csv": {
+     "id": 2417993003999,
+     "size": 9575596
+    },
+    "6nheas_Signal10.csv": {
+     "id": 2418019571707,
+     "size": 9572264
+    },
+    "6nheas_Signal11.csv": {
+     "id": 2417992161171,
+     "size": 9575196
+    },
+    "6nheas_Signal12.csv": {
+     "id": 2417999413629,
+     "size": 9577273
+    },
+    "6nheas_Signal13.csv": {
+     "id": 2418004333459,
+     "size": 9575175
+    },
+    "6nheas_Signal14.csv": {
+     "id": 2418004502080,
+     "size": 9577384
+    },
+    "6nheas_Signal15.csv": {
+     "id": 2417980007366,
+     "size": 9574859
+    },
+    "6nheas_Signal16.csv": {
+     "id": 2417997594748,
+     "size": 9576833
+    },
+    "6nheas_Signal17.csv": {
+     "id": 2418004624215,
+     "size": 9572238
+    },
+    "6nheas_Signal18.csv": {
+     "id": 2417994925588,
+     "size": 9581207
+    },
+    "6nheas_Signal19.csv": {
+     "id": 2418019554815,
+     "size": 9575825
+    },
+    "6nheas_Signal20.csv": {
+     "id": 2418004400634,
+     "size": 9573304
+    },
+    "6nheas_Signal21.csv": {
+     "id": 2418003272932,
+     "size": 9575787
+    },
+    "6nheas_Signal22.csv": {
+     "id": 2418015602023,
+     "size": 9568888
+    },
+    "6nheas_Signal23.csv": {
+     "id": 2418001196591,
+     "size": 9574410
+    },
+    "6nheas_Signal24.csv": {
+     "id": 2417992513720,
+     "size": 9571822
+    },
+    "6nheas_Signal25.csv": {
+     "id": 2418004389210,
+     "size": 9571898
+    },
+    "6nheas_Signal26.csv": {
+     "id": 2417993526347,
+     "size": 9572054
+    },
+    "6nheas_Signal27.csv": {
+     "id": 2417980425246,
+     "size": 9574343
+    },
+    "6nheas_Signal28.csv": {
+     "id": 2418006227030,
+     "size": 9568664
+    },
+    "6nheas_Signal29.csv": {
+     "id": 2417988760260,
+     "size": 9574423
+    },
+    "6nheas_Signal30.csv": {
+     "id": 2418000935523,
+     "size": 9570332
+    },
+    "6nheas_Signal31.csv": {
+     "id": 2418020509346,
+     "size": 9575437
+    },
+    "6nheas_Signal32.csv": {
+     "id": 2418007022034,
+     "size": 9563008
+    },
+    "6nheas_Signal33.csv": {
+     "id": 2417993554841,
+     "size": 9573352
+    },
+    "6nheas_Signal34.csv": {
+     "id": 2418006787114,
+     "size": 9569979
+    },
+    "6nheas_Signal35.csv": {
+     "id": 2418005764620,
+     "size": 9573161
+    },
+    "6nheas_Signal36.csv": {
+     "id": 2418016134054,
+     "size": 9562556
+    },
+    "6nheas_Signal37.csv": {
+     "id": 2418004269194,
+     "size": 9568679
+    },
+    "6nheas_Signal38.csv": {
+     "id": 2417991186703,
+     "size": 9577815
+    },
+    "6nheas_Signal39.csv": {
+     "id": 2418004741448,
+     "size": 9575980
+    },
+    "6nheas_Signal40.csv": {
+     "id": 2417993211794,
+     "size": 9574768
+    },
+    "6nheas_Signal41.csv": {
+     "id": 2417991246947,
+     "size": 9572313
+    },
+    "6nheas_Signal42.csv": {
+     "id": 2417996591702,
+     "size": 9571061
+    },
+    "6nheas_Signal43.csv": {
+     "id": 2417997198770,
+     "size": 9575208
+    },
+    "6nheas_Signal44.csv": {
+     "id": 2418015971529,
+     "size": 9576858
+    },
+    "6nheas_Signal45.csv": {
+     "id": 2417997957381,
+     "size": 9577639
+    },
+    "6nheas_Signal46.csv": {
+     "id": 2417997159615,
+     "size": 9571983
+    },
+    "6nheas_Signal47.csv": {
+     "id": 2418004979574,
+     "size": 9564175
+    },
+    "6nheas_Signal48.csv": {
+     "id": 2418006431238,
+     "size": 9570084
+    },
+    "6nheas_Signal49.csv": {
+     "id": 2417994700603,
+     "size": 9571039
+    },
+    "6nheas_Signal50.csv": {
+     "id": 2417994691003,
+     "size": 9573198
+    },
+    "6nheas_Signal51.csv": {
+     "id": 2417991682872,
+     "size": 9572598
+    },
+    "6nheas_Signal52.csv": {
+     "id": 2418006759830,
+     "size": 9575575
+    },
+    "6nheas_Signal53.csv": {
+     "id": 2417992960194,
+     "size": 9572369
+    },
+    "6nheas_Signal54.csv": {
+     "id": 2418008613531,
+     "size": 9573481
+    },
+    "6nheas_Signal55.csv": {
+     "id": 2418005320480,
+     "size": 9576940
+    },
+    "6nheas_Signal56.csv": {
+     "id": 2417980456685,
+     "size": 9571860
+    },
+    "6nheas_Signal57.csv": {
+     "id": 2418006013375,
+     "size": 9573754
+    },
+    "6nheas_Signal58.csv": {
+     "id": 2417991234104,
+     "size": 9569704
+    },
+    "6nheas_Signal59.csv": {
+     "id": 2417991565701,
+     "size": 9572385
+    },
+    "6nheas_Signal60.csv": {
+     "id": 2417998175631,
+     "size": 9570875
+    },
+    "6nheas_Signal61.csv": {
+     "id": 2417998239619,
+     "size": 9571993
+    },
+    "6nheas_Signal62.csv": {
+     "id": 2418006254220,
+     "size": 9573375
+    },
+    "6nheas_Signal63.csv": {
+     "id": 2418007339114,
+     "size": 9576163
+    },
+    "6nheas_Signal64.csv": {
+     "id": 2418007765419,
+     "size": 9572306
+    },
+    "6nheas_Signal65.csv": {
+     "id": 2418005996790,
+     "size": 9575953
+    },
+    "6nheas_Signal66.csv": {
+     "id": 2417994405106,
+     "size": 9573181
+    },
+    "6nheas_Signal67.csv": {
+     "id": 2418006794139,
+     "size": 9571135
+    },
+    "6nheas_Signal68.csv": {
+     "id": 2418004573549,
+     "size": 9577731
+    },
+    "6nheas_Signal69.csv": {
+     "id": 2417992929222,
+     "size": 9574092
+    },
+    "6nheas_Signal70.csv": {
+     "id": 2418016873768,
+     "size": 9577915
+    },
+    "6nheas_Signal71.csv": {
+     "id": 2418007319559,
+     "size": 9570003
+    },
+    "6nheas_Signal72.csv": {
+     "id": 2418016323952,
+     "size": 9574599
+    },
+    "6nheas_Signal73.csv": {
+     "id": 2418006114278,
+     "size": 9566031
+    },
+    "6nheas_Signal74.csv": {
+     "id": 2417999027525,
+     "size": 9578401
+    },
+    "6nheas_Signal75.csv": {
+     "id": 2417994322837,
+     "size": 9574710
+    },
+    "6nheas_Signal76.csv": {
+     "id": 2418016718078,
+     "size": 9568095
+    },
+    "6nheas_Signal77.csv": {
+     "id": 2418005708452,
+     "size": 9574517
+    },
+    "6nheas_Signal78.csv": {
+     "id": 2417998950626,
+     "size": 9576208
+    },
+    "6nheas_Signal79.csv": {
+     "id": 2418005536374,
+     "size": 9568182
+    },
+    "6nheas_Signal80.csv": {
+     "id": 2418015870674,
+     "size": 9572386
+    },
+    "6nheas_Signal81.csv": {
+     "id": 2417999231008,
+     "size": 9579342
+    },
+    "6nheas_Signal82.csv": {
+     "id": 2418004612217,
+     "size": 9575118
+    },
+    "6nheas_Signal83.csv": {
+     "id": 2417983238029,
+     "size": 9570588
+    },
+    "6nheas_Signal84.csv": {
+     "id": 2418005514865,
+     "size": 9569637
+    },
+    "6nheas_Signal85.csv": {
+     "id": 2417981455040,
+     "size": 9575890
+    },
+    "6nheas_Signal86.csv": {
+     "id": 2417997853970,
+     "size": 9571843
+    },
+    "6nheas_Signal87.csv": {
+     "id": 2418016365446,
+     "size": 9574851
+    },
+    "6nheas_Signal88.csv": {
+     "id": 2418021337954,
+     "size": 9576913
+    },
+    "6nheas_Signal89.csv": {
+     "id": 2417993785707,
+     "size": 9576659
+    },
+    "6nheas_Signal90.csv": {
+     "id": 2417997767164,
+     "size": 9577369
+    },
+    "6nheas_Signal91.csv": {
+     "id": 2417983240563,
+     "size": 9577736
+    },
+    "6nheas_Signal92.csv": {
+     "id": 2418007706037,
+     "size": 9577846
+    },
+    "6nheas_Signal93.csv": {
+     "id": 2418005338919,
+     "size": 9567016
+    },
+    "6nheas_Signal94.csv": {
+     "id": 2417983291049,
+     "size": 9573431
+    },
+    "6nheas_Signal95.csv": {
+     "id": 2418024719114,
+     "size": 9573897
+    },
+    "6nheas_Signal96.csv": {
+     "id": 2418007564657,
+     "size": 9569509
+    },
+    "6nheas_Signal97.csv": {
+     "id": 2418007261949,
+     "size": 9576506
+    },
+    "6nheas_Signal98.csv": {
+     "id": 2417996867262,
+     "size": 9576096
+    },
+    "6nheas_Signal99.csv": {
+     "id": 2418017255231,
+     "size": 9572903
+    },
+    "6nheas_Signal100.csv": {
+     "id": 2417977804654,
+     "size": 9572296
+    },
+    "6nheas_Signal101.csv": {
+     "id": 2417991964602,
+     "size": 9571310
+    },
+    "6nheas.csv": {
+     "id": 2418005171952,
+     "size": 12261
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-20-2026 - nvxsrv - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 410692314629,
+   "n_signals_available": 101,
+   "files": {
+    "nvxsrv_Signal1.csv": {
+     "id": 2417984250589,
+     "size": 9596712
+    },
+    "nvxsrv_Signal2.csv": {
+     "id": 2417984737426,
+     "size": 9589309
+    },
+    "nvxsrv_Signal3.csv": {
+     "id": 2417978319712,
+     "size": 9608766
+    },
+    "nvxsrv_Signal4.csv": {
+     "id": 2417972157263,
+     "size": 9597752
+    },
+    "nvxsrv_Signal5.csv": {
+     "id": 2417972874132,
+     "size": 9605577
+    },
+    "nvxsrv_Signal6.csv": {
+     "id": 2417984454248,
+     "size": 9603991
+    },
+    "nvxsrv_Signal7.csv": {
+     "id": 2417967517504,
+     "size": 9590713
+    },
+    "nvxsrv_Signal8.csv": {
+     "id": 2417986599775,
+     "size": 9599503
+    },
+    "nvxsrv_Signal9.csv": {
+     "id": 2417980422130,
+     "size": 9592045
+    },
+    "nvxsrv_Signal10.csv": {
+     "id": 2417971499368,
+     "size": 9592184
+    },
+    "nvxsrv_Signal11.csv": {
+     "id": 2417972505407,
+     "size": 9594576
+    },
+    "nvxsrv_Signal12.csv": {
+     "id": 2417985585047,
+     "size": 9596281
+    },
+    "nvxsrv_Signal13.csv": {
+     "id": 2417991928460,
+     "size": 9590348
+    },
+    "nvxsrv_Signal14.csv": {
+     "id": 2417971854863,
+     "size": 9592454
+    },
+    "nvxsrv_Signal15.csv": {
+     "id": 2417980695943,
+     "size": 9582360
+    },
+    "nvxsrv_Signal16.csv": {
+     "id": 2417977072532,
+     "size": 9589590
+    },
+    "nvxsrv_Signal17.csv": {
+     "id": 2417978912829,
+     "size": 9598671
+    },
+    "nvxsrv_Signal18.csv": {
+     "id": 2417984694582,
+     "size": 9597478
+    },
+    "nvxsrv_Signal19.csv": {
+     "id": 2417971376450,
+     "size": 9593544
+    },
+    "nvxsrv_Signal20.csv": {
+     "id": 2417985539357,
+     "size": 9606463
+    },
+    "nvxsrv_Signal21.csv": {
+     "id": 2417985551106,
+     "size": 9597231
+    },
+    "nvxsrv_Signal22.csv": {
+     "id": 2417971963012,
+     "size": 9597320
+    },
+    "nvxsrv_Signal23.csv": {
+     "id": 2417973044714,
+     "size": 9596522
+    },
+    "nvxsrv_Signal24.csv": {
+     "id": 2417971771097,
+     "size": 9593539
+    },
+    "nvxsrv_Signal25.csv": {
+     "id": 2417974789241,
+     "size": 9606252
+    },
+    "nvxsrv_Signal26.csv": {
+     "id": 2417984893222,
+     "size": 9598591
+    },
+    "nvxsrv_Signal27.csv": {
+     "id": 2417985402837,
+     "size": 9593035
+    },
+    "nvxsrv_Signal28.csv": {
+     "id": 2417980103148,
+     "size": 9606972
+    },
+    "nvxsrv_Signal29.csv": {
+     "id": 2417976853487,
+     "size": 9595474
+    },
+    "nvxsrv_Signal30.csv": {
+     "id": 2417983355698,
+     "size": 9599629
+    },
+    "nvxsrv_Signal31.csv": {
+     "id": 2417984459823,
+     "size": 9595716
+    },
+    "nvxsrv_Signal32.csv": {
+     "id": 2417983739481,
+     "size": 9601813
+    },
+    "nvxsrv_Signal33.csv": {
+     "id": 2417967155033,
+     "size": 9591324
+    },
+    "nvxsrv_Signal34.csv": {
+     "id": 2417973877406,
+     "size": 9595896
+    },
+    "nvxsrv_Signal35.csv": {
+     "id": 2417976807865,
+     "size": 9598221
+    },
+    "nvxsrv_Signal36.csv": {
+     "id": 2417978524754,
+     "size": 9596023
+    },
+    "nvxsrv_Signal37.csv": {
+     "id": 2417977581319,
+     "size": 9607003
+    },
+    "nvxsrv_Signal38.csv": {
+     "id": 2417976849415,
+     "size": 9604894
+    },
+    "nvxsrv_Signal39.csv": {
+     "id": 2417972169223,
+     "size": 9587450
+    },
+    "nvxsrv_Signal40.csv": {
+     "id": 2417976095166,
+     "size": 9602216
+    },
+    "nvxsrv_Signal41.csv": {
+     "id": 2417985435709,
+     "size": 9591780
+    },
+    "nvxsrv_Signal42.csv": {
+     "id": 2417973056981,
+     "size": 9602136
+    },
+    "nvxsrv_Signal43.csv": {
+     "id": 2417985863357,
+     "size": 9602078
+    },
+    "nvxsrv_Signal44.csv": {
+     "id": 2417984320382,
+     "size": 9603217
+    },
+    "nvxsrv_Signal45.csv": {
+     "id": 2417984869824,
+     "size": 9607622
+    },
+    "nvxsrv_Signal46.csv": {
+     "id": 2417995031406,
+     "size": 9598138
+    },
+    "nvxsrv_Signal47.csv": {
+     "id": 2417966473512,
+     "size": 9594964
+    },
+    "nvxsrv_Signal48.csv": {
+     "id": 2417971707907,
+     "size": 9605998
+    },
+    "nvxsrv_Signal49.csv": {
+     "id": 2417985969270,
+     "size": 9593009
+    },
+    "nvxsrv_Signal50.csv": {
+     "id": 2417984250116,
+     "size": 9591105
+    },
+    "nvxsrv_Signal51.csv": {
+     "id": 2417972960532,
+     "size": 9594809
+    },
+    "nvxsrv_Signal52.csv": {
+     "id": 2417983391132,
+     "size": 9600932
+    },
+    "nvxsrv_Signal53.csv": {
+     "id": 2417984601318,
+     "size": 9600726
+    },
+    "nvxsrv_Signal54.csv": {
+     "id": 2417985556363,
+     "size": 9596151
+    },
+    "nvxsrv_Signal55.csv": {
+     "id": 2417977222917,
+     "size": 9600389
+    },
+    "nvxsrv_Signal56.csv": {
+     "id": 2417986214121,
+     "size": 9595765
+    },
+    "nvxsrv_Signal57.csv": {
+     "id": 2417978865354,
+     "size": 9587138
+    },
+    "nvxsrv_Signal58.csv": {
+     "id": 2417985563172,
+     "size": 9591096
+    },
+    "nvxsrv_Signal59.csv": {
+     "id": 2417974487755,
+     "size": 9597161
+    },
+    "nvxsrv_Signal60.csv": {
+     "id": 2417976323700,
+     "size": 9593277
+    },
+    "nvxsrv_Signal61.csv": {
+     "id": 2417972550823,
+     "size": 9593749
+    },
+    "nvxsrv_Signal62.csv": {
+     "id": 2417972862937,
+     "size": 9591337
+    },
+    "nvxsrv_Signal63.csv": {
+     "id": 2417985673994,
+     "size": 9594618
+    },
+    "nvxsrv_Signal64.csv": {
+     "id": 2417980067709,
+     "size": 9593473
+    },
+    "nvxsrv_Signal65.csv": {
+     "id": 2417973390394,
+     "size": 9597162
+    },
+    "nvxsrv_Signal66.csv": {
+     "id": 2417969252561,
+     "size": 9600702
+    },
+    "nvxsrv_Signal67.csv": {
+     "id": 2417987080199,
+     "size": 9596262
+    },
+    "nvxsrv_Signal68.csv": {
+     "id": 2417986703288,
+     "size": 9589075
+    },
+    "nvxsrv_Signal69.csv": {
+     "id": 2417974321794,
+     "size": 9590256
+    },
+    "nvxsrv_Signal70.csv": {
+     "id": 2417971566025,
+     "size": 9582957
+    },
+    "nvxsrv_Signal71.csv": {
+     "id": 2417978310011,
+     "size": 9584944
+    },
+    "nvxsrv_Signal72.csv": {
+     "id": 2417984695048,
+     "size": 9592044
+    },
+    "nvxsrv_Signal73.csv": {
+     "id": 2417971153386,
+     "size": 9584547
+    },
+    "nvxsrv_Signal74.csv": {
+     "id": 2417971813409,
+     "size": 9588270
+    },
+    "nvxsrv_Signal75.csv": {
+     "id": 2417967819889,
+     "size": 9584375
+    },
+    "nvxsrv_Signal76.csv": {
+     "id": 2417972267336,
+     "size": 9589850
+    },
+    "nvxsrv_Signal77.csv": {
+     "id": 2417986963103,
+     "size": 9589401
+    },
+    "nvxsrv_Signal78.csv": {
+     "id": 2417981886758,
+     "size": 9589014
+    },
+    "nvxsrv_Signal79.csv": {
+     "id": 2417974838360,
+     "size": 9585491
+    },
+    "nvxsrv_Signal80.csv": {
+     "id": 2417992873803,
+     "size": 9581340
+    },
+    "nvxsrv_Signal81.csv": {
+     "id": 2417980971753,
+     "size": 9581106
+    },
+    "nvxsrv_Signal82.csv": {
+     "id": 2417976932479,
+     "size": 9584107
+    },
+    "nvxsrv_Signal83.csv": {
+     "id": 2417972353736,
+     "size": 9594067
+    },
+    "nvxsrv_Signal84.csv": {
+     "id": 2417978689275,
+     "size": 9592053
+    },
+    "nvxsrv_Signal85.csv": {
+     "id": 2417985647424,
+     "size": 9590848
+    },
+    "nvxsrv_Signal86.csv": {
+     "id": 2417986295030,
+     "size": 9584430
+    },
+    "nvxsrv_Signal87.csv": {
+     "id": 2417985397732,
+     "size": 9596489
+    },
+    "nvxsrv_Signal88.csv": {
+     "id": 2417972254835,
+     "size": 9594743
+    },
+    "nvxsrv_Signal89.csv": {
+     "id": 2417975298090,
+     "size": 9589951
+    },
+    "nvxsrv_Signal90.csv": {
+     "id": 2417979899220,
+     "size": 9589853
+    },
+    "nvxsrv_Signal91.csv": {
+     "id": 2417974487924,
+     "size": 9588826
+    },
+    "nvxsrv_Signal92.csv": {
+     "id": 2417980674815,
+     "size": 9596047
+    },
+    "nvxsrv_Signal93.csv": {
+     "id": 2417980393313,
+     "size": 9594961
+    },
+    "nvxsrv_Signal94.csv": {
+     "id": 2417979896820,
+     "size": 9592615
+    },
+    "nvxsrv_Signal95.csv": {
+     "id": 2417995720770,
+     "size": 9596014
+    },
+    "nvxsrv_Signal96.csv": {
+     "id": 2417986562218,
+     "size": 9583981
+    },
+    "nvxsrv_Signal97.csv": {
+     "id": 2417971765874,
+     "size": 9576785
+    },
+    "nvxsrv_Signal98.csv": {
+     "id": 2417979093045,
+     "size": 9592164
+    },
+    "nvxsrv_Signal99.csv": {
+     "id": 2417987898286,
+     "size": 9592179
+    },
+    "nvxsrv_Signal100.csv": {
+     "id": 2417985255803,
+     "size": 9590444
+    },
+    "nvxsrv_Signal101.csv": {
+     "id": 2417985290071,
+     "size": 9584771
+    },
+    "nvxsrv.csv": {
+     "id": 2417978675441,
+     "size": 12485
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-20-2026 - 9hhbkp - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 410689135003,
+   "n_signals_available": 101,
+   "files": {
+    "9hhbkp_Signal1.csv": {
+     "id": 2417983045831,
+     "size": 9570144
+    },
+    "9hhbkp_Signal2.csv": {
+     "id": 2417977696489,
+     "size": 9574472
+    },
+    "9hhbkp_Signal3.csv": {
+     "id": 2417976354748,
+     "size": 9573930
+    },
+    "9hhbkp_Signal4.csv": {
+     "id": 2417978841053,
+     "size": 9596394
+    },
+    "9hhbkp_Signal5.csv": {
+     "id": 2417978528743,
+     "size": 9586314
+    },
+    "9hhbkp_Signal6.csv": {
+     "id": 2417968379649,
+     "size": 9586907
+    },
+    "9hhbkp_Signal7.csv": {
+     "id": 2417969879410,
+     "size": 9587188
+    },
+    "9hhbkp_Signal8.csv": {
+     "id": 2417980675178,
+     "size": 9586012
+    },
+    "9hhbkp_Signal9.csv": {
+     "id": 2417984251033,
+     "size": 9594010
+    },
+    "9hhbkp_Signal10.csv": {
+     "id": 2417976622900,
+     "size": 9589750
+    },
+    "9hhbkp_Signal11.csv": {
+     "id": 2417973477415,
+     "size": 9591815
+    },
+    "9hhbkp_Signal12.csv": {
+     "id": 2417970049534,
+     "size": 9586035
+    },
+    "9hhbkp_Signal13.csv": {
+     "id": 2417982047637,
+     "size": 9589467
+    },
+    "9hhbkp_Signal14.csv": {
+     "id": 2417967949613,
+     "size": 9592981
+    },
+    "9hhbkp_Signal15.csv": {
+     "id": 2417983871321,
+     "size": 9592075
+    },
+    "9hhbkp_Signal16.csv": {
+     "id": 2417982270230,
+     "size": 9594314
+    },
+    "9hhbkp_Signal17.csv": {
+     "id": 2417969015633,
+     "size": 9587331
+    },
+    "9hhbkp_Signal18.csv": {
+     "id": 2417976400525,
+     "size": 9594597
+    },
+    "9hhbkp_Signal19.csv": {
+     "id": 2417982637506,
+     "size": 9590533
+    },
+    "9hhbkp_Signal20.csv": {
+     "id": 2417967282991,
+     "size": 9589218
+    },
+    "9hhbkp_Signal21.csv": {
+     "id": 2417982913375,
+     "size": 9590418
+    },
+    "9hhbkp_Signal22.csv": {
+     "id": 2417975826641,
+     "size": 9591395
+    },
+    "9hhbkp_Signal23.csv": {
+     "id": 2417968834853,
+     "size": 9591196
+    },
+    "9hhbkp_Signal24.csv": {
+     "id": 2417974614145,
+     "size": 9590873
+    },
+    "9hhbkp_Signal25.csv": {
+     "id": 2417982647836,
+     "size": 9582082
+    },
+    "9hhbkp_Signal26.csv": {
+     "id": 2417981910834,
+     "size": 9584515
+    },
+    "9hhbkp_Signal27.csv": {
+     "id": 2417982191637,
+     "size": 9591361
+    },
+    "9hhbkp_Signal28.csv": {
+     "id": 2417979659860,
+     "size": 9596718
+    },
+    "9hhbkp_Signal29.csv": {
+     "id": 2417976282123,
+     "size": 9591241
+    },
+    "9hhbkp_Signal30.csv": {
+     "id": 2417967102156,
+     "size": 9582977
+    },
+    "9hhbkp_Signal31.csv": {
+     "id": 2417968218869,
+     "size": 9594737
+    },
+    "9hhbkp_Signal32.csv": {
+     "id": 2417965869034,
+     "size": 9588479
+    },
+    "9hhbkp_Signal33.csv": {
+     "id": 2417982436733,
+     "size": 9591239
+    },
+    "9hhbkp_Signal34.csv": {
+     "id": 2417970793854,
+     "size": 9591399
+    },
+    "9hhbkp_Signal35.csv": {
+     "id": 2417973225300,
+     "size": 9588025
+    },
+    "9hhbkp_Signal36.csv": {
+     "id": 2417965643089,
+     "size": 9582630
+    },
+    "9hhbkp_Signal37.csv": {
+     "id": 2417968122849,
+     "size": 9589611
+    },
+    "9hhbkp_Signal38.csv": {
+     "id": 2417975470824,
+     "size": 9590065
+    },
+    "9hhbkp_Signal39.csv": {
+     "id": 2417981677268,
+     "size": 9589929
+    },
+    "9hhbkp_Signal40.csv": {
+     "id": 2417983279165,
+     "size": 9589585
+    },
+    "9hhbkp_Signal41.csv": {
+     "id": 2417976508770,
+     "size": 9587588
+    },
+    "9hhbkp_Signal42.csv": {
+     "id": 2417980263932,
+     "size": 9589308
+    },
+    "9hhbkp_Signal43.csv": {
+     "id": 2417970126511,
+     "size": 9595969
+    },
+    "9hhbkp_Signal44.csv": {
+     "id": 2417983975099,
+     "size": 9589446
+    },
+    "9hhbkp_Signal45.csv": {
+     "id": 2417968494101,
+     "size": 9599735
+    },
+    "9hhbkp_Signal46.csv": {
+     "id": 2417981699389,
+     "size": 9590654
+    },
+    "9hhbkp_Signal47.csv": {
+     "id": 2417967539799,
+     "size": 9588506
+    },
+    "9hhbkp_Signal48.csv": {
+     "id": 2417982439114,
+     "size": 9590509
+    },
+    "9hhbkp_Signal49.csv": {
+     "id": 2417970640738,
+     "size": 9594386
+    },
+    "9hhbkp_Signal50.csv": {
+     "id": 2417976892525,
+     "size": 9586962
+    },
+    "9hhbkp_Signal51.csv": {
+     "id": 2417969092559,
+     "size": 9594120
+    },
+    "9hhbkp_Signal52.csv": {
+     "id": 2417982519709,
+     "size": 9589984
+    },
+    "9hhbkp_Signal53.csv": {
+     "id": 2417982399859,
+     "size": 9592630
+    },
+    "9hhbkp_Signal54.csv": {
+     "id": 2417981557383,
+     "size": 9590873
+    },
+    "9hhbkp_Signal55.csv": {
+     "id": 2417976613948,
+     "size": 9584616
+    },
+    "9hhbkp_Signal56.csv": {
+     "id": 2417982205959,
+     "size": 9599224
+    },
+    "9hhbkp_Signal57.csv": {
+     "id": 2417967359756,
+     "size": 9600149
+    },
+    "9hhbkp_Signal58.csv": {
+     "id": 2417981570118,
+     "size": 9591738
+    },
+    "9hhbkp_Signal59.csv": {
+     "id": 2417981387048,
+     "size": 9587044
+    },
+    "9hhbkp_Signal60.csv": {
+     "id": 2417969975826,
+     "size": 9596811
+    },
+    "9hhbkp_Signal61.csv": {
+     "id": 2417970676334,
+     "size": 9592796
+    },
+    "9hhbkp_Signal62.csv": {
+     "id": 2417970748334,
+     "size": 9591181
+    },
+    "9hhbkp_Signal63.csv": {
+     "id": 2417968278674,
+     "size": 9588214
+    },
+    "9hhbkp_Signal64.csv": {
+     "id": 2417964943054,
+     "size": 9589365
+    },
+    "9hhbkp_Signal65.csv": {
+     "id": 2417923273560,
+     "size": 9591261
+    },
+    "9hhbkp_Signal66.csv": {
+     "id": 2417983247810,
+     "size": 9595330
+    },
+    "9hhbkp_Signal67.csv": {
+     "id": 2417976783723,
+     "size": 9601306
+    },
+    "9hhbkp_Signal68.csv": {
+     "id": 2417965931104,
+     "size": 9591689
+    },
+    "9hhbkp_Signal69.csv": {
+     "id": 2417971004907,
+     "size": 9590093
+    },
+    "9hhbkp_Signal70.csv": {
+     "id": 2417976558641,
+     "size": 9599051
+    },
+    "9hhbkp_Signal71.csv": {
+     "id": 2417968894901,
+     "size": 9600096
+    },
+    "9hhbkp_Signal72.csv": {
+     "id": 2417970200403,
+     "size": 9592263
+    },
+    "9hhbkp_Signal73.csv": {
+     "id": 2417983329591,
+     "size": 9595016
+    },
+    "9hhbkp_Signal74.csv": {
+     "id": 2417983189977,
+     "size": 9591271
+    },
+    "9hhbkp_Signal75.csv": {
+     "id": 2417990149542,
+     "size": 9596618
+    },
+    "9hhbkp_Signal76.csv": {
+     "id": 2417983630975,
+     "size": 9593389
+    },
+    "9hhbkp_Signal77.csv": {
+     "id": 2417976676785,
+     "size": 9595756
+    },
+    "9hhbkp_Signal78.csv": {
+     "id": 2417970806022,
+     "size": 9591345
+    },
+    "9hhbkp_Signal79.csv": {
+     "id": 2417974501510,
+     "size": 9586875
+    },
+    "9hhbkp_Signal80.csv": {
+     "id": 2417983214139,
+     "size": 9588290
+    },
+    "9hhbkp_Signal81.csv": {
+     "id": 2417973992510,
+     "size": 9595862
+    },
+    "9hhbkp_Signal82.csv": {
+     "id": 2417982501453,
+     "size": 9592702
+    },
+    "9hhbkp_Signal83.csv": {
+     "id": 2417983501382,
+     "size": 9588220
+    },
+    "9hhbkp_Signal84.csv": {
+     "id": 2417971375055,
+     "size": 9588708
+    },
+    "9hhbkp_Signal85.csv": {
+     "id": 2417970670896,
+     "size": 9592883
+    },
+    "9hhbkp_Signal86.csv": {
+     "id": 2417976769600,
+     "size": 9589100
+    },
+    "9hhbkp_Signal87.csv": {
+     "id": 2417976292186,
+     "size": 9597989
+    },
+    "9hhbkp_Signal88.csv": {
+     "id": 2417978642371,
+     "size": 9592137
+    },
+    "9hhbkp_Signal89.csv": {
+     "id": 2417970740794,
+     "size": 9592613
+    },
+    "9hhbkp_Signal90.csv": {
+     "id": 2417968823653,
+     "size": 9593421
+    },
+    "9hhbkp_Signal91.csv": {
+     "id": 2417974765999,
+     "size": 9601739
+    },
+    "9hhbkp_Signal92.csv": {
+     "id": 2417982369024,
+     "size": 9595326
+    },
+    "9hhbkp_Signal93.csv": {
+     "id": 2417970244563,
+     "size": 9593583
+    },
+    "9hhbkp_Signal94.csv": {
+     "id": 2417970959622,
+     "size": 9592233
+    },
+    "9hhbkp_Signal95.csv": {
+     "id": 2417982011078,
+     "size": 9589180
+    },
+    "9hhbkp_Signal96.csv": {
+     "id": 2417973015862,
+     "size": 9590465
+    },
+    "9hhbkp_Signal97.csv": {
+     "id": 2417983382139,
+     "size": 9597881
+    },
+    "9hhbkp_Signal98.csv": {
+     "id": 2417982146142,
+     "size": 9593338
+    },
+    "9hhbkp_Signal99.csv": {
+     "id": 2417983607810,
+     "size": 9589361
+    },
+    "9hhbkp_Signal100.csv": {
+     "id": 2417971107706,
+     "size": 9589472
+    },
+    "9hhbkp_Signal101.csv": {
+     "id": 2417969944422,
+     "size": 9583827
+    },
+    "9hhbkp.csv": {
+     "id": 2417982727165,
+     "size": 12285
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-20-2026 - 6lhxfy - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 410686974674,
+   "n_signals_available": 101,
+   "files": {
+    "6lhxfy_Signal2.csv": {
+     "id": 2417973236904,
+     "size": 9607239
+    },
+    "6lhxfy_Signal3.csv": {
+     "id": 2417966272755,
+     "size": 9600874
+    },
+    "6lhxfy_Signal4.csv": {
+     "id": 2417967455194,
+     "size": 9596996
+    },
+    "6lhxfy_Signal5.csv": {
+     "id": 2417968394163,
+     "size": 9590237
+    },
+    "6lhxfy_Signal6.csv": {
+     "id": 2417981245349,
+     "size": 9595946
+    },
+    "6lhxfy_Signal7.csv": {
+     "id": 2417973078361,
+     "size": 9583148
+    },
+    "6lhxfy_Signal8.csv": {
+     "id": 2417967044707,
+     "size": 9580392
+    },
+    "6lhxfy_Signal9.csv": {
+     "id": 2417968840385,
+     "size": 9586824
+    },
+    "6lhxfy_Signal10.csv": {
+     "id": 2417966252453,
+     "size": 9584088
+    },
+    "6lhxfy_Signal11.csv": {
+     "id": 2417979517657,
+     "size": 9578219
+    },
+    "6lhxfy_Signal12.csv": {
+     "id": 2417965929246,
+     "size": 9580435
+    },
+    "6lhxfy_Signal13.csv": {
+     "id": 2417966838780,
+     "size": 9588600
+    },
+    "6lhxfy_Signal14.csv": {
+     "id": 2417978315321,
+     "size": 9583429
+    },
+    "6lhxfy_Signal15.csv": {
+     "id": 2417978353590,
+     "size": 9582176
+    },
+    "6lhxfy_Signal16.csv": {
+     "id": 2417967514823,
+     "size": 9576908
+    },
+    "6lhxfy_Signal17.csv": {
+     "id": 2417973658913,
+     "size": 9584067
+    },
+    "6lhxfy_Signal18.csv": {
+     "id": 2417967726125,
+     "size": 9580716
+    },
+    "6lhxfy_Signal19.csv": {
+     "id": 2417970664500,
+     "size": 9588019
+    },
+    "6lhxfy_Signal20.csv": {
+     "id": 2417967943143,
+     "size": 9570937
+    },
+    "6lhxfy_Signal21.csv": {
+     "id": 2417976446216,
+     "size": 9581442
+    },
+    "6lhxfy_Signal22.csv": {
+     "id": 2417973488530,
+     "size": 9588275
+    },
+    "6lhxfy_Signal23.csv": {
+     "id": 2417972397154,
+     "size": 9574563
+    },
+    "6lhxfy_Signal24.csv": {
+     "id": 2417973745323,
+     "size": 9574480
+    },
+    "6lhxfy_Signal25.csv": {
+     "id": 2417979758139,
+     "size": 9579787
+    },
+    "6lhxfy_Signal26.csv": {
+     "id": 2417976575279,
+     "size": 9573774
+    },
+    "6lhxfy_Signal27.csv": {
+     "id": 2417966180446,
+     "size": 9573968
+    },
+    "6lhxfy_Signal28.csv": {
+     "id": 2417978135740,
+     "size": 9579205
+    },
+    "6lhxfy_Signal29.csv": {
+     "id": 2417921418360,
+     "size": 9576804
+    },
+    "6lhxfy_Signal30.csv": {
+     "id": 2417966509701,
+     "size": 9580701
+    },
+    "6lhxfy_Signal31.csv": {
+     "id": 2417966339107,
+     "size": 9578849
+    },
+    "6lhxfy_Signal32.csv": {
+     "id": 2417966469439,
+     "size": 9581096
+    },
+    "6lhxfy_Signal33.csv": {
+     "id": 2417972442688,
+     "size": 9582462
+    },
+    "6lhxfy_Signal34.csv": {
+     "id": 2417965312248,
+     "size": 9583604
+    },
+    "6lhxfy_Signal35.csv": {
+     "id": 2417968074146,
+     "size": 9573451
+    },
+    "6lhxfy_Signal36.csv": {
+     "id": 2417978713982,
+     "size": 9570869
+    },
+    "6lhxfy_Signal37.csv": {
+     "id": 2417967618132,
+     "size": 9583993
+    },
+    "6lhxfy_Signal38.csv": {
+     "id": 2417973335972,
+     "size": 9576725
+    },
+    "6lhxfy_Signal39.csv": {
+     "id": 2417978896224,
+     "size": 9580473
+    },
+    "6lhxfy_Signal40.csv": {
+     "id": 2417972372411,
+     "size": 9580076
+    },
+    "6lhxfy_Signal41.csv": {
+     "id": 2417965369386,
+     "size": 9574888
+    },
+    "6lhxfy_Signal42.csv": {
+     "id": 2417966475907,
+     "size": 9577324
+    },
+    "6lhxfy_Signal43.csv": {
+     "id": 2417974343470,
+     "size": 9582607
+    },
+    "6lhxfy_Signal44.csv": {
+     "id": 2417980735011,
+     "size": 9574889
+    },
+    "6lhxfy_Signal45.csv": {
+     "id": 2417966973233,
+     "size": 9572564
+    },
+    "6lhxfy_Signal46.csv": {
+     "id": 2417977446617,
+     "size": 9574318
+    },
+    "6lhxfy_Signal47.csv": {
+     "id": 2417980763668,
+     "size": 9573804
+    },
+    "6lhxfy_Signal48.csv": {
+     "id": 2417967268273,
+     "size": 9584517
+    },
+    "6lhxfy_Signal49.csv": {
+     "id": 2417969056259,
+     "size": 9571008
+    },
+    "6lhxfy_Signal50.csv": {
+     "id": 2417977806908,
+     "size": 9586608
+    },
+    "6lhxfy_Signal51.csv": {
+     "id": 2417966147009,
+     "size": 9592318
+    },
+    "6lhxfy_Signal52.csv": {
+     "id": 2417973220245,
+     "size": 9597669
+    },
+    "6lhxfy_Signal53.csv": {
+     "id": 2417972864761,
+     "size": 9592829
+    },
+    "6lhxfy_Signal54.csv": {
+     "id": 2417980191979,
+     "size": 9604308
+    },
+    "6lhxfy_Signal55.csv": {
+     "id": 2417977183060,
+     "size": 9601760
+    },
+    "6lhxfy_Signal56.csv": {
+     "id": 2417980602070,
+     "size": 9595105
+    },
+    "6lhxfy_Signal57.csv": {
+     "id": 2417979181789,
+     "size": 9593413
+    },
+    "6lhxfy_Signal58.csv": {
+     "id": 2417973592029,
+     "size": 9592418
+    },
+    "6lhxfy_Signal59.csv": {
+     "id": 2417968333534,
+     "size": 9595832
+    },
+    "6lhxfy_Signal60.csv": {
+     "id": 2417980600115,
+     "size": 9592982
+    },
+    "6lhxfy_Signal61.csv": {
+     "id": 2417967978771,
+     "size": 9595860
+    },
+    "6lhxfy_Signal62.csv": {
+     "id": 2417965983874,
+     "size": 9599637
+    },
+    "6lhxfy_Signal63.csv": {
+     "id": 2417981994438,
+     "size": 9589447
+    },
+    "6lhxfy_Signal64.csv": {
+     "id": 2417974432525,
+     "size": 9596749
+    },
+    "6lhxfy_Signal65.csv": {
+     "id": 2417966440446,
+     "size": 9594266
+    },
+    "6lhxfy_Signal66.csv": {
+     "id": 2417962643419,
+     "size": 9595471
+    },
+    "6lhxfy_Signal67.csv": {
+     "id": 2417980696247,
+     "size": 9595723
+    },
+    "6lhxfy_Signal68.csv": {
+     "id": 2417981183075,
+     "size": 9591807
+    },
+    "6lhxfy_Signal69.csv": {
+     "id": 2417979515274,
+     "size": 9597174
+    },
+    "6lhxfy_Signal70.csv": {
+     "id": 2417974134017,
+     "size": 9600087
+    },
+    "6lhxfy_Signal71.csv": {
+     "id": 2417980304551,
+     "size": 9593635
+    },
+    "6lhxfy_Signal72.csv": {
+     "id": 2417979789531,
+     "size": 9596154
+    },
+    "6lhxfy_Signal73.csv": {
+     "id": 2417981247834,
+     "size": 9593150
+    },
+    "6lhxfy_Signal74.csv": {
+     "id": 2417967709624,
+     "size": 9594377
+    },
+    "6lhxfy_Signal75.csv": {
+     "id": 2417974379340,
+     "size": 9592901
+    },
+    "6lhxfy_Signal76.csv": {
+     "id": 2417980547610,
+     "size": 9600722
+    },
+    "6lhxfy_Signal77.csv": {
+     "id": 2417967009577,
+     "size": 9601190
+    },
+    "6lhxfy_Signal78.csv": {
+     "id": 2417979472623,
+     "size": 9599540
+    },
+    "6lhxfy_Signal79.csv": {
+     "id": 2417980010034,
+     "size": 9602276
+    },
+    "6lhxfy_Signal80.csv": {
+     "id": 2417966824136,
+     "size": 9597014
+    },
+    "6lhxfy_Signal81.csv": {
+     "id": 2417965461553,
+     "size": 9574323
+    },
+    "6lhxfy_Signal82.csv": {
+     "id": 2417968439705,
+     "size": 9585575
+    },
+    "6lhxfy_Signal83.csv": {
+     "id": 2417980146632,
+     "size": 9577524
+    },
+    "6lhxfy_Signal84.csv": {
+     "id": 2417974609797,
+     "size": 9574808
+    },
+    "6lhxfy_Signal85.csv": {
+     "id": 2417969864834,
+     "size": 9577776
+    },
+    "6lhxfy_Signal86.csv": {
+     "id": 2417969300624,
+     "size": 9571638
+    },
+    "6lhxfy_Signal87.csv": {
+     "id": 2417968114896,
+     "size": 9600964
+    },
+    "6lhxfy_Signal88.csv": {
+     "id": 2417974703525,
+     "size": 9594616
+    },
+    "6lhxfy_Signal89.csv": {
+     "id": 2417968758785,
+     "size": 9591659
+    },
+    "6lhxfy_Signal90.csv": {
+     "id": 2417976661543,
+     "size": 9601309
+    },
+    "6lhxfy_Signal91.csv": {
+     "id": 2417968765514,
+     "size": 9594024
+    },
+    "6lhxfy_Signal92.csv": {
+     "id": 2417979225579,
+     "size": 9596888
+    },
+    "6lhxfy_Signal93.csv": {
+     "id": 2417968324222,
+     "size": 9603358
+    },
+    "6lhxfy_Signal94.csv": {
+     "id": 2417974892608,
+     "size": 9604862
+    },
+    "6lhxfy_Signal95.csv": {
+     "id": 2417979235048,
+     "size": 9605008
+    },
+    "6lhxfy_Signal96.csv": {
+     "id": 2417981036828,
+     "size": 9601034
+    },
+    "6lhxfy_Signal97.csv": {
+     "id": 2417978464534,
+     "size": 9602057
+    },
+    "6lhxfy_Signal98.csv": {
+     "id": 2417968499383,
+     "size": 9596066
+    },
+    "6lhxfy_Signal99.csv": {
+     "id": 2417964429034,
+     "size": 9591821
+    },
+    "6lhxfy_Signal100.csv": {
+     "id": 2417968676758,
+     "size": 9595276
+    },
+    "6lhxfy_Signal101.csv": {
+     "id": 2417967791846,
+     "size": 9579584
+    },
+    "6lhxfy_Signal102.csv": {
+     "id": 2417978752229,
+     "size": 9585937
+    },
+    "6lhxfy.csv": {
+     "id": 2417973664325,
+     "size": 12599
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-19-2026 - autv5r - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 410687223654,
+   "n_signals_available": 103,
+   "files": {
+    "autv5r_Signal1.csv": {
+     "id": 2417973839060,
+     "size": 9599893
+    },
+    "autv5r_Signal2.csv": {
+     "id": 2417964986163,
+     "size": 9594572
+    },
+    "autv5r_Signal3.csv": {
+     "id": 2417972579579,
+     "size": 9579357
+    },
+    "autv5r_Signal4.csv": {
+     "id": 2417968749125,
+     "size": 9570469
+    },
+    "autv5r_Signal5.csv": {
+     "id": 2417971496869,
+     "size": 9569613
+    },
+    "autv5r_Signal6.csv": {
+     "id": 2417961524707,
+     "size": 9559555
+    },
+    "autv5r_Signal7.csv": {
+     "id": 2417965509363,
+     "size": 9556808
+    },
+    "autv5r_Signal8.csv": {
+     "id": 2417966953912,
+     "size": 9559953
+    },
+    "autv5r_Signal9.csv": {
+     "id": 2417973680678,
+     "size": 9561701
+    },
+    "autv5r_Signal10.csv": {
+     "id": 2417968989266,
+     "size": 9557561
+    },
+    "autv5r_Signal11.csv": {
+     "id": 2417975095118,
+     "size": 9559492
+    },
+    "autv5r_Signal12.csv": {
+     "id": 2417959278999,
+     "size": 9561860
+    },
+    "autv5r_Signal13.csv": {
+     "id": 2417958757571,
+     "size": 9562320
+    },
+    "autv5r_Signal14.csv": {
+     "id": 2417968957923,
+     "size": 9553245
+    },
+    "autv5r_Signal15.csv": {
+     "id": 2417964868406,
+     "size": 9546782
+    },
+    "autv5r_Signal16.csv": {
+     "id": 2417964743108,
+     "size": 9561485
+    },
+    "autv5r_Signal17.csv": {
+     "id": 2417974551709,
+     "size": 9566528
+    },
+    "autv5r_Signal18.csv": {
+     "id": 2417973903906,
+     "size": 9549463
+    },
+    "autv5r_Signal19.csv": {
+     "id": 2417960886307,
+     "size": 9562545
+    },
+    "autv5r_Signal20.csv": {
+     "id": 2417970943094,
+     "size": 9553543
+    },
+    "autv5r_Signal21.csv": {
+     "id": 2417972511990,
+     "size": 9563128
+    },
+    "autv5r_Signal22.csv": {
+     "id": 2417973347172,
+     "size": 9561968
+    },
+    "autv5r_Signal23.csv": {
+     "id": 2417972163848,
+     "size": 9555212
+    },
+    "autv5r_Signal24.csv": {
+     "id": 2417962463585,
+     "size": 9559466
+    },
+    "autv5r_Signal25.csv": {
+     "id": 2417974753270,
+     "size": 9555280
+    },
+    "autv5r_Signal26.csv": {
+     "id": 2417967763172,
+     "size": 9560309
+    },
+    "autv5r_Signal27.csv": {
+     "id": 2417974492666,
+     "size": 9548568
+    },
+    "autv5r_Signal28.csv": {
+     "id": 2417975336848,
+     "size": 9555252
+    },
+    "autv5r_Signal29.csv": {
+     "id": 2417969051689,
+     "size": 9562937
+    },
+    "autv5r_Signal30.csv": {
+     "id": 2417967291961,
+     "size": 9563450
+    },
+    "autv5r_Signal31.csv": {
+     "id": 2417972077702,
+     "size": 9569101
+    },
+    "autv5r_Signal32.csv": {
+     "id": 2417962383672,
+     "size": 9561772
+    },
+    "autv5r_Signal33.csv": {
+     "id": 2417968562110,
+     "size": 9563450
+    },
+    "autv5r_Signal34.csv": {
+     "id": 2417966245631,
+     "size": 9565428
+    },
+    "autv5r_Signal35.csv": {
+     "id": 2417963139706,
+     "size": 9566456
+    },
+    "autv5r_Signal36.csv": {
+     "id": 2417961342104,
+     "size": 9567088
+    },
+    "autv5r_Signal37.csv": {
+     "id": 2417962813811,
+     "size": 9557896
+    },
+    "autv5r_Signal38.csv": {
+     "id": 2417961162141,
+     "size": 9557881
+    },
+    "autv5r_Signal39.csv": {
+     "id": 2417962818524,
+     "size": 9566699
+    },
+    "autv5r_Signal40.csv": {
+     "id": 2417968741677,
+     "size": 9557476
+    },
+    "autv5r_Signal41.csv": {
+     "id": 2417961868210,
+     "size": 9560585
+    },
+    "autv5r_Signal42.csv": {
+     "id": 2417974972410,
+     "size": 9548075
+    },
+    "autv5r_Signal43.csv": {
+     "id": 2417960835974,
+     "size": 9552522
+    },
+    "autv5r_Signal44.csv": {
+     "id": 2417973721316,
+     "size": 9558207
+    },
+    "autv5r_Signal45.csv": {
+     "id": 2417964104607,
+     "size": 9554301
+    },
+    "autv5r_Signal46.csv": {
+     "id": 2417963480747,
+     "size": 9555809
+    },
+    "autv5r_Signal47.csv": {
+     "id": 2417962014054,
+     "size": 9552163
+    },
+    "autv5r_Signal48.csv": {
+     "id": 2417959629553,
+     "size": 9564433
+    },
+    "autv5r_Signal49.csv": {
+     "id": 2417963192691,
+     "size": 9558746
+    },
+    "autv5r_Signal50.csv": {
+     "id": 2417964383657,
+     "size": 9560040
+    },
+    "autv5r_Signal51.csv": {
+     "id": 2417965471076,
+     "size": 9562649
+    },
+    "autv5r_Signal52.csv": {
+     "id": 2417964056437,
+     "size": 9568070
+    },
+    "autv5r_Signal53.csv": {
+     "id": 2417963356194,
+     "size": 9554854
+    },
+    "autv5r_Signal54.csv": {
+     "id": 2417963567147,
+     "size": 9563849
+    },
+    "autv5r_Signal55.csv": {
+     "id": 2417961532797,
+     "size": 9558645
+    },
+    "autv5r_Signal56.csv": {
+     "id": 2417968220997,
+     "size": 9560048
+    },
+    "autv5r_Signal57.csv": {
+     "id": 2417965324106,
+     "size": 9555376
+    },
+    "autv5r_Signal58.csv": {
+     "id": 2417966187910,
+     "size": 9552061
+    },
+    "autv5r_Signal59.csv": {
+     "id": 2417975230870,
+     "size": 9553051
+    },
+    "autv5r_Signal60.csv": {
+     "id": 2417966295865,
+     "size": 9557653
+    },
+    "autv5r_Signal61.csv": {
+     "id": 2417973226921,
+     "size": 9548776
+    },
+    "autv5r_Signal62.csv": {
+     "id": 2417963145185,
+     "size": 9556137
+    },
+    "autv5r_Signal63.csv": {
+     "id": 2417975641252,
+     "size": 9551211
+    },
+    "autv5r_Signal64.csv": {
+     "id": 2417963058611,
+     "size": 9551798
+    },
+    "autv5r_Signal65.csv": {
+     "id": 2417963654240,
+     "size": 9555161
+    },
+    "autv5r_Signal66.csv": {
+     "id": 2417974732624,
+     "size": 9557326
+    },
+    "autv5r_Signal67.csv": {
+     "id": 2417964808167,
+     "size": 9568304
+    },
+    "autv5r_Signal68.csv": {
+     "id": 2417965808766,
+     "size": 9559322
+    },
+    "autv5r_Signal69.csv": {
+     "id": 2417960027799,
+     "size": 9570232
+    },
+    "autv5r_Signal70.csv": {
+     "id": 2417962854761,
+     "size": 9558769
+    },
+    "autv5r_Signal71.csv": {
+     "id": 2417973011848,
+     "size": 9565830
+    },
+    "autv5r_Signal72.csv": {
+     "id": 2417971255100,
+     "size": 9575509
+    },
+    "autv5r_Signal73.csv": {
+     "id": 2417974251648,
+     "size": 9587707
+    },
+    "autv5r_Signal74.csv": {
+     "id": 2417972942198,
+     "size": 9584862
+    },
+    "autv5r_Signal75.csv": {
+     "id": 2417959261834,
+     "size": 9587629
+    },
+    "autv5r_Signal76.csv": {
+     "id": 2417960114353,
+     "size": 9580722
+    },
+    "autv5r_Signal77.csv": {
+     "id": 2417963346125,
+     "size": 9579701
+    },
+    "autv5r_Signal78.csv": {
+     "id": 2417961926397,
+     "size": 9584101
+    },
+    "autv5r_Signal79.csv": {
+     "id": 2417960507186,
+     "size": 9579179
+    },
+    "autv5r_Signal80.csv": {
+     "id": 2417975039432,
+     "size": 9587552
+    },
+    "autv5r_Signal81.csv": {
+     "id": 2417963360423,
+     "size": 9581409
+    },
+    "autv5r_Signal82.csv": {
+     "id": 2417966145512,
+     "size": 9584356
+    },
+    "autv5r_Signal83.csv": {
+     "id": 2417961121409,
+     "size": 9579770
+    },
+    "autv5r_Signal84.csv": {
+     "id": 2417973908858,
+     "size": 9585715
+    },
+    "autv5r_Signal85.csv": {
+     "id": 2417962765296,
+     "size": 9585629
+    },
+    "autv5r_Signal86.csv": {
+     "id": 2417960704591,
+     "size": 9582618
+    },
+    "autv5r_Signal87.csv": {
+     "id": 2417962209580,
+     "size": 9586032
+    },
+    "autv5r_Signal88.csv": {
+     "id": 2417973251048,
+     "size": 9583223
+    },
+    "autv5r_Signal89.csv": {
+     "id": 2417975699610,
+     "size": 9584442
+    },
+    "autv5r_Signal90.csv": {
+     "id": 2417968852140,
+     "size": 9584142
+    },
+    "autv5r_Signal91.csv": {
+     "id": 2417969127700,
+     "size": 9588001
+    },
+    "autv5r_Signal92.csv": {
+     "id": 2417974946257,
+     "size": 9584248
+    },
+    "autv5r_Signal93.csv": {
+     "id": 2417975711574,
+     "size": 9582597
+    },
+    "autv5r_Signal94.csv": {
+     "id": 2417967889476,
+     "size": 9583308
+    },
+    "autv5r_Signal95.csv": {
+     "id": 2417970117107,
+     "size": 9586179
+    },
+    "autv5r_Signal96.csv": {
+     "id": 2417962933296,
+     "size": 9584748
+    },
+    "autv5r_Signal97.csv": {
+     "id": 2417969255781,
+     "size": 9580806
+    },
+    "autv5r_Signal98.csv": {
+     "id": 2417970246162,
+     "size": 9582043
+    },
+    "autv5r_Signal99.csv": {
+     "id": 2417976261518,
+     "size": 9586509
+    },
+    "autv5r_Signal100.csv": {
+     "id": 2417963787807,
+     "size": 9591095
+    },
+    "autv5r_Signal101.csv": {
+     "id": 2417974814211,
+     "size": 9585868
+    },
+    "autv5r_Signal103.csv": {
+     "id": 2417971202108,
+     "size": 9585513
+    },
+    "autv5r_Signal104.csv": {
+     "id": 2417973522203,
+     "size": 9587381
+    },
+    "autv5r.csv": {
+     "id": 2417966421307,
+     "size": 12682
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-17-2026 - bpx68c - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 409814613009,
+   "n_signals_available": 101,
+   "files": {
+    "bpx68c_Signal1.csv": {
+     "id": 2412474635366,
+     "size": 9546085
+    },
+    "bpx68c_Signal2.csv": {
+     "id": 2412438729539,
+     "size": 9550089
+    },
+    "bpx68c_Signal3.csv": {
+     "id": 2412446834337,
+     "size": 9539737
+    },
+    "bpx68c_Signal4.csv": {
+     "id": 2412436316697,
+     "size": 9553146
+    },
+    "bpx68c_Signal5.csv": {
+     "id": 2412442427823,
+     "size": 9559244
+    },
+    "bpx68c_Signal6.csv": {
+     "id": 2412476684775,
+     "size": 9553356
+    },
+    "bpx68c_Signal7.csv": {
+     "id": 2412475477680,
+     "size": 9557478
+    },
+    "bpx68c_Signal8.csv": {
+     "id": 2412446001446,
+     "size": 9544232
+    },
+    "bpx68c_Signal9.csv": {
+     "id": 2412476727793,
+     "size": 9543781
+    },
+    "bpx68c_Signal10.csv": {
+     "id": 2412475890572,
+     "size": 9547809
+    },
+    "bpx68c_Signal11.csv": {
+     "id": 2412474630907,
+     "size": 9547588
+    },
+    "bpx68c_Signal12.csv": {
+     "id": 2412434915727,
+     "size": 9545204
+    },
+    "bpx68c_Signal13.csv": {
+     "id": 2412435986002,
+     "size": 9548521
+    },
+    "bpx68c_Signal14.csv": {
+     "id": 2412438834531,
+     "size": 9542096
+    },
+    "bpx68c_Signal15.csv": {
+     "id": 2412475204611,
+     "size": 9557344
+    },
+    "bpx68c_Signal16.csv": {
+     "id": 2412446007693,
+     "size": 9552193
+    },
+    "bpx68c_Signal17.csv": {
+     "id": 2412438351962,
+     "size": 9540081
+    },
+    "bpx68c_Signal18.csv": {
+     "id": 2412437946184,
+     "size": 9548911
+    },
+    "bpx68c_Signal19.csv": {
+     "id": 2412439333786,
+     "size": 9548758
+    },
+    "bpx68c_Signal20.csv": {
+     "id": 2412435023233,
+     "size": 9548906
+    },
+    "bpx68c_Signal21.csv": {
+     "id": 2412439484920,
+     "size": 9544705
+    },
+    "bpx68c_Signal22.csv": {
+     "id": 2412434445525,
+     "size": 9556042
+    },
+    "bpx68c_Signal23.csv": {
+     "id": 2412442173198,
+     "size": 9550249
+    },
+    "bpx68c_Signal24.csv": {
+     "id": 2412439091070,
+     "size": 9548174
+    },
+    "bpx68c_Signal25.csv": {
+     "id": 2412476121047,
+     "size": 9540160
+    },
+    "bpx68c_Signal26.csv": {
+     "id": 2412476691640,
+     "size": 9557585
+    },
+    "bpx68c_Signal27.csv": {
+     "id": 2412445103267,
+     "size": 9560365
+    },
+    "bpx68c_Signal28.csv": {
+     "id": 2412476089912,
+     "size": 9553086
+    },
+    "bpx68c_Signal29.csv": {
+     "id": 2412462471818,
+     "size": 9551016
+    },
+    "bpx68c_Signal30.csv": {
+     "id": 2412439583319,
+     "size": 9553956
+    },
+    "bpx68c_Signal31.csv": {
+     "id": 2412439794604,
+     "size": 9555632
+    },
+    "bpx68c_Signal32.csv": {
+     "id": 2412439670378,
+     "size": 9553734
+    },
+    "bpx68c_Signal33.csv": {
+     "id": 2412440939980,
+     "size": 9557120
+    },
+    "bpx68c_Signal34.csv": {
+     "id": 2412439717997,
+     "size": 9540893
+    },
+    "bpx68c_Signal35.csv": {
+     "id": 2412435546334,
+     "size": 9553073
+    },
+    "bpx68c_Signal36.csv": {
+     "id": 2412442058282,
+     "size": 9553361
+    },
+    "bpx68c_Signal37.csv": {
+     "id": 2412438611538,
+     "size": 9540194
+    },
+    "bpx68c_Signal38.csv": {
+     "id": 2412475962503,
+     "size": 9552685
+    },
+    "bpx68c_Signal39.csv": {
+     "id": 2412438910844,
+     "size": 9551208
+    },
+    "bpx68c_Signal40.csv": {
+     "id": 2412446331814,
+     "size": 9543044
+    },
+    "bpx68c_Signal41.csv": {
+     "id": 2412442563723,
+     "size": 9550987
+    },
+    "bpx68c_Signal42.csv": {
+     "id": 2412435471954,
+     "size": 9551335
+    },
+    "bpx68c_Signal43.csv": {
+     "id": 2412437635066,
+     "size": 9552264
+    },
+    "bpx68c_Signal44.csv": {
+     "id": 2412440039548,
+     "size": 9545251
+    },
+    "bpx68c_Signal45.csv": {
+     "id": 2412439763796,
+     "size": 9551279
+    },
+    "bpx68c_Signal46.csv": {
+     "id": 2412459109377,
+     "size": 9549119
+    },
+    "bpx68c_Signal47.csv": {
+     "id": 2412476855153,
+     "size": 9552735
+    },
+    "bpx68c_Signal48.csv": {
+     "id": 2412444944813,
+     "size": 9551853
+    },
+    "bpx68c_Signal49.csv": {
+     "id": 2412459122397,
+     "size": 9541872
+    },
+    "bpx68c_Signal50.csv": {
+     "id": 2412476375986,
+     "size": 9548006
+    },
+    "bpx68c_Signal51.csv": {
+     "id": 2412476362873,
+     "size": 9552429
+    },
+    "bpx68c_Signal52.csv": {
+     "id": 2412475228080,
+     "size": 9550427
+    },
+    "bpx68c_Signal53.csv": {
+     "id": 2412442410896,
+     "size": 9538768
+    },
+    "bpx68c_Signal54.csv": {
+     "id": 2412439912390,
+     "size": 9545388
+    },
+    "bpx68c_Signal55.csv": {
+     "id": 2412476469507,
+     "size": 9552176
+    },
+    "bpx68c_Signal56.csv": {
+     "id": 2412462315720,
+     "size": 9548865
+    },
+    "bpx68c_Signal57.csv": {
+     "id": 2412439732524,
+     "size": 9542183
+    },
+    "bpx68c_Signal58.csv": {
+     "id": 2412438409228,
+     "size": 9549812
+    },
+    "bpx68c_Signal59.csv": {
+     "id": 2412440841222,
+     "size": 9546455
+    },
+    "bpx68c_Signal60.csv": {
+     "id": 2412459334977,
+     "size": 9536887
+    },
+    "bpx68c_Signal61.csv": {
+     "id": 2412442377482,
+     "size": 9543807
+    },
+    "bpx68c_Signal62.csv": {
+     "id": 2412438706857,
+     "size": 9541533
+    },
+    "bpx68c_Signal63.csv": {
+     "id": 2412441794395,
+     "size": 9545432
+    },
+    "bpx68c_Signal64.csv": {
+     "id": 2412437293216,
+     "size": 9543921
+    },
+    "bpx68c_Signal65.csv": {
+     "id": 2412440034938,
+     "size": 9545452
+    },
+    "bpx68c_Signal66.csv": {
+     "id": 2412476799811,
+     "size": 9543309
+    },
+    "bpx68c_Signal67.csv": {
+     "id": 2412441057014,
+     "size": 9539265
+    },
+    "bpx68c_Signal68.csv": {
+     "id": 2412469491669,
+     "size": 9546298
+    },
+    "bpx68c_Signal69.csv": {
+     "id": 2412440408738,
+     "size": 9552771
+    },
+    "bpx68c_Signal70.csv": {
+     "id": 2412437205334,
+     "size": 9540998
+    },
+    "bpx68c_Signal71.csv": {
+     "id": 2412434018239,
+     "size": 9540597
+    },
+    "bpx68c_Signal72.csv": {
+     "id": 2412436393969,
+     "size": 9557038
+    },
+    "bpx68c_Signal73.csv": {
+     "id": 2412446763806,
+     "size": 9551173
+    },
+    "bpx68c_Signal74.csv": {
+     "id": 2412440577549,
+     "size": 9549697
+    },
+    "bpx68c_Signal75.csv": {
+     "id": 2412476178592,
+     "size": 9547286
+    },
+    "bpx68c_Signal76.csv": {
+     "id": 2412443260526,
+     "size": 9546427
+    },
+    "bpx68c_Signal77.csv": {
+     "id": 2412475953585,
+     "size": 9545614
+    },
+    "bpx68c_Signal78.csv": {
+     "id": 2412475955048,
+     "size": 9546386
+    },
+    "bpx68c_Signal79.csv": {
+     "id": 2412476176600,
+     "size": 9550383
+    },
+    "bpx68c_Signal80.csv": {
+     "id": 2412459318391,
+     "size": 9555100
+    },
+    "bpx68c_Signal81.csv": {
+     "id": 2412435191186,
+     "size": 9539803
+    },
+    "bpx68c_Signal82.csv": {
+     "id": 2412476764683,
+     "size": 9550027
+    },
+    "bpx68c_Signal83.csv": {
+     "id": 2412436542414,
+     "size": 9545111
+    },
+    "bpx68c_Signal84.csv": {
+     "id": 2412436151134,
+     "size": 9543490
+    },
+    "bpx68c_Signal85.csv": {
+     "id": 2412442629194,
+     "size": 9541936
+    },
+    "bpx68c_Signal86.csv": {
+     "id": 2412470190962,
+     "size": 9549221
+    },
+    "bpx68c_Signal87.csv": {
+     "id": 2412439509262,
+     "size": 9550706
+    },
+    "bpx68c_Signal88.csv": {
+     "id": 2412441747782,
+     "size": 9540800
+    },
+    "bpx68c_Signal89.csv": {
+     "id": 2412436744694,
+     "size": 9536563
+    },
+    "bpx68c_Signal90.csv": {
+     "id": 2412442677577,
+     "size": 9556284
+    },
+    "bpx68c_Signal91.csv": {
+     "id": 2412443097100,
+     "size": 9539388
+    },
+    "bpx68c_Signal92.csv": {
+     "id": 2412437490861,
+     "size": 9548005
+    },
+    "bpx68c_Signal93.csv": {
+     "id": 2412477771979,
+     "size": 9550913
+    },
+    "bpx68c_Signal94.csv": {
+     "id": 2412459172179,
+     "size": 9546293
+    },
+    "bpx68c_Signal95.csv": {
+     "id": 2412443109177,
+     "size": 9543397
+    },
+    "bpx68c_Signal96.csv": {
+     "id": 2412439667351,
+     "size": 9547862
+    },
+    "bpx68c_Signal97.csv": {
+     "id": 2412437902934,
+     "size": 9552999
+    },
+    "bpx68c_Signal98.csv": {
+     "id": 2412475910170,
+     "size": 9544110
+    },
+    "bpx68c_Signal99.csv": {
+     "id": 2412476944431,
+     "size": 9562966
+    },
+    "bpx68c_Signal100.csv": {
+     "id": 2412475708083,
+     "size": 9536136
+    },
+    "bpx68c_Signal101.csv": {
+     "id": 2412433027039,
+     "size": 9542017
+    },
+    "bpx68c.csv": {
+     "id": 2412474364036,
+     "size": 12484
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-17-2026 - amdjwm - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 409810792554,
+   "n_signals_available": 101,
+   "files": {
+    "amdjwm_Signal1.csv": {
+     "id": 2412432822643,
+     "size": 9581320
+    },
+    "amdjwm_Signal2.csv": {
+     "id": 2412437392390,
+     "size": 9579615
+    },
+    "amdjwm_Signal3.csv": {
+     "id": 2412438759782,
+     "size": 9584012
+    },
+    "amdjwm_Signal4.csv": {
+     "id": 2412442422413,
+     "size": 9580628
+    },
+    "amdjwm_Signal5.csv": {
+     "id": 2412439165540,
+     "size": 9593448
+    },
+    "amdjwm_Signal6.csv": {
+     "id": 2412437223871,
+     "size": 9585838
+    },
+    "amdjwm_Signal7.csv": {
+     "id": 2412446415810,
+     "size": 9587117
+    },
+    "amdjwm_Signal8.csv": {
+     "id": 2412434308694,
+     "size": 9578780
+    },
+    "amdjwm_Signal9.csv": {
+     "id": 2412447249033,
+     "size": 9579594
+    },
+    "amdjwm_Signal10.csv": {
+     "id": 2412439093736,
+     "size": 9576774
+    },
+    "amdjwm_Signal11.csv": {
+     "id": 2412445211745,
+     "size": 9581881
+    },
+    "amdjwm_Signal12.csv": {
+     "id": 2412436175674,
+     "size": 9587604
+    },
+    "amdjwm_Signal13.csv": {
+     "id": 2412439345268,
+     "size": 9586517
+    },
+    "amdjwm_Signal14.csv": {
+     "id": 2412473334454,
+     "size": 9579473
+    },
+    "amdjwm_Signal15.csv": {
+     "id": 2412473733507,
+     "size": 9574347
+    },
+    "amdjwm_Signal16.csv": {
+     "id": 2412433460413,
+     "size": 9579338
+    },
+    "amdjwm_Signal17.csv": {
+     "id": 2412444570740,
+     "size": 9577686
+    },
+    "amdjwm_Signal18.csv": {
+     "id": 2412472801284,
+     "size": 9580568
+    },
+    "amdjwm_Signal19.csv": {
+     "id": 2412434473653,
+     "size": 9580237
+    },
+    "amdjwm_Signal20.csv": {
+     "id": 2412472857188,
+     "size": 9578352
+    },
+    "amdjwm_Signal21.csv": {
+     "id": 2412435927657,
+     "size": 9583711
+    },
+    "amdjwm_Signal22.csv": {
+     "id": 2412472852388,
+     "size": 9579528
+    },
+    "amdjwm_Signal23.csv": {
+     "id": 2412474085981,
+     "size": 9583409
+    },
+    "amdjwm_Signal24.csv": {
+     "id": 2412467020562,
+     "size": 9579047
+    },
+    "amdjwm_Signal25.csv": {
+     "id": 2412455203073,
+     "size": 9574609
+    },
+    "amdjwm_Signal26.csv": {
+     "id": 2412434490134,
+     "size": 9580721
+    },
+    "amdjwm_Signal27.csv": {
+     "id": 2412437070552,
+     "size": 9582509
+    },
+    "amdjwm_Signal28.csv": {
+     "id": 2412457026908,
+     "size": 9583089
+    },
+    "amdjwm_Signal29.csv": {
+     "id": 2412473002935,
+     "size": 9577558
+    },
+    "amdjwm_Signal30.csv": {
+     "id": 2412446367788,
+     "size": 9572852
+    },
+    "amdjwm_Signal31.csv": {
+     "id": 2412456808760,
+     "size": 9584061
+    },
+    "amdjwm_Signal32.csv": {
+     "id": 2412436588404,
+     "size": 9574635
+    },
+    "amdjwm_Signal33.csv": {
+     "id": 2412438038098,
+     "size": 9581590
+    },
+    "amdjwm_Signal34.csv": {
+     "id": 2412436254055,
+     "size": 9578935
+    },
+    "amdjwm_Signal35.csv": {
+     "id": 2412455824245,
+     "size": 9579122
+    },
+    "amdjwm_Signal36.csv": {
+     "id": 2412473572138,
+     "size": 9572550
+    },
+    "amdjwm_Signal37.csv": {
+     "id": 2412474239393,
+     "size": 9577936
+    },
+    "amdjwm_Signal38.csv": {
+     "id": 2412442135026,
+     "size": 9577416
+    },
+    "amdjwm_Signal39.csv": {
+     "id": 2412455833899,
+     "size": 9572741
+    },
+    "amdjwm_Signal40.csv": {
+     "id": 2412435054969,
+     "size": 9579403
+    },
+    "amdjwm_Signal41.csv": {
+     "id": 2412436921611,
+     "size": 9572950
+    },
+    "amdjwm_Signal42.csv": {
+     "id": 2412444935677,
+     "size": 9584765
+    },
+    "amdjwm_Signal43.csv": {
+     "id": 2412433806935,
+     "size": 9575063
+    },
+    "amdjwm_Signal44.csv": {
+     "id": 2412433096033,
+     "size": 9579542
+    },
+    "amdjwm_Signal45.csv": {
+     "id": 2412435947266,
+     "size": 9579711
+    },
+    "amdjwm_Signal46.csv": {
+     "id": 2412436323784,
+     "size": 9574754
+    },
+    "amdjwm_Signal47.csv": {
+     "id": 2412434763952,
+     "size": 9571845
+    },
+    "amdjwm_Signal48.csv": {
+     "id": 2412438512727,
+     "size": 9585149
+    },
+    "amdjwm_Signal49.csv": {
+     "id": 2412473965757,
+     "size": 9578478
+    },
+    "amdjwm_Signal50.csv": {
+     "id": 2412474207673,
+     "size": 9577734
+    },
+    "amdjwm_Signal51.csv": {
+     "id": 2412445010046,
+     "size": 9579486
+    },
+    "amdjwm_Signal52.csv": {
+     "id": 2412437846378,
+     "size": 9573989
+    },
+    "amdjwm_Signal53.csv": {
+     "id": 2412443722972,
+     "size": 9587611
+    },
+    "amdjwm_Signal54.csv": {
+     "id": 2412436791647,
+     "size": 9580132
+    },
+    "amdjwm_Signal55.csv": {
+     "id": 2412474165047,
+     "size": 9576797
+    },
+    "amdjwm_Signal56.csv": {
+     "id": 2412436103266,
+     "size": 9579718
+    },
+    "amdjwm_Signal57.csv": {
+     "id": 2412439132389,
+     "size": 9569290
+    },
+    "amdjwm_Signal58.csv": {
+     "id": 2412474486593,
+     "size": 9570584
+    },
+    "amdjwm_Signal59.csv": {
+     "id": 2412436590395,
+     "size": 9579811
+    },
+    "amdjwm_Signal60.csv": {
+     "id": 2412474494166,
+     "size": 9575126
+    },
+    "amdjwm_Signal61.csv": {
+     "id": 2412452339409,
+     "size": 9583211
+    },
+    "amdjwm_Signal62.csv": {
+     "id": 2412442567026,
+     "size": 9574219
+    },
+    "amdjwm_Signal63.csv": {
+     "id": 2412474789436,
+     "size": 9577372
+    },
+    "amdjwm_Signal64.csv": {
+     "id": 2412439187935,
+     "size": 9581593
+    },
+    "amdjwm_Signal65.csv": {
+     "id": 2412436986862,
+     "size": 9576435
+    },
+    "amdjwm_Signal66.csv": {
+     "id": 2412465003983,
+     "size": 9575417
+    },
+    "amdjwm_Signal67.csv": {
+     "id": 2412474345507,
+     "size": 9579483
+    },
+    "amdjwm_Signal68.csv": {
+     "id": 2412473486315,
+     "size": 9577454
+    },
+    "amdjwm_Signal69.csv": {
+     "id": 2412440623193,
+     "size": 9582022
+    },
+    "amdjwm_Signal70.csv": {
+     "id": 2412474085703,
+     "size": 9585159
+    },
+    "amdjwm_Signal71.csv": {
+     "id": 2412436269559,
+     "size": 9584709
+    },
+    "amdjwm_Signal72.csv": {
+     "id": 2412433602643,
+     "size": 9585759
+    },
+    "amdjwm_Signal73.csv": {
+     "id": 2412434788490,
+     "size": 9587695
+    },
+    "amdjwm_Signal74.csv": {
+     "id": 2412443833596,
+     "size": 9578107
+    },
+    "amdjwm_Signal75.csv": {
+     "id": 2412474541912,
+     "size": 9574098
+    },
+    "amdjwm_Signal76.csv": {
+     "id": 2412436782395,
+     "size": 9579964
+    },
+    "amdjwm_Signal77.csv": {
+     "id": 2412473863000,
+     "size": 9584181
+    },
+    "amdjwm_Signal78.csv": {
+     "id": 2412441210422,
+     "size": 9576882
+    },
+    "amdjwm_Signal79.csv": {
+     "id": 2412465241583,
+     "size": 9581873
+    },
+    "amdjwm_Signal80.csv": {
+     "id": 2412474335476,
+     "size": 9583606
+    },
+    "amdjwm_Signal81.csv": {
+     "id": 2412437425611,
+     "size": 9578212
+    },
+    "amdjwm_Signal82.csv": {
+     "id": 2412434510117,
+     "size": 9581790
+    },
+    "amdjwm_Signal83.csv": {
+     "id": 2412437293848,
+     "size": 9590179
+    },
+    "amdjwm_Signal84.csv": {
+     "id": 2412436837544,
+     "size": 9578704
+    },
+    "amdjwm_Signal85.csv": {
+     "id": 2412440173602,
+     "size": 9581183
+    },
+    "amdjwm_Signal86.csv": {
+     "id": 2412467886962,
+     "size": 9577828
+    },
+    "amdjwm_Signal87.csv": {
+     "id": 2412465518068,
+     "size": 9582462
+    },
+    "amdjwm_Signal88.csv": {
+     "id": 2412434735655,
+     "size": 9582117
+    },
+    "amdjwm_Signal89.csv": {
+     "id": 2412474844544,
+     "size": 9584732
+    },
+    "amdjwm_Signal90.csv": {
+     "id": 2412470658742,
+     "size": 9580722
+    },
+    "amdjwm_Signal91.csv": {
+     "id": 2412474819674,
+     "size": 9582107
+    },
+    "amdjwm_Signal92.csv": {
+     "id": 2412434516807,
+     "size": 9583708
+    },
+    "amdjwm_Signal93.csv": {
+     "id": 2412437634714,
+     "size": 9582645
+    },
+    "amdjwm_Signal94.csv": {
+     "id": 2412440737743,
+     "size": 9580103
+    },
+    "amdjwm_Signal95.csv": {
+     "id": 2412473831915,
+     "size": 9591577
+    },
+    "amdjwm_Signal96.csv": {
+     "id": 2412474889274,
+     "size": 9582172
+    },
+    "amdjwm_Signal97.csv": {
+     "id": 2412474332639,
+     "size": 9580367
+    },
+    "amdjwm_Signal98.csv": {
+     "id": 2412470248038,
+     "size": 9579754
+    },
+    "amdjwm_Signal99.csv": {
+     "id": 2412433255125,
+     "size": 9581531
+    },
+    "amdjwm_Signal100.csv": {
+     "id": 2412466782962,
+     "size": 9581199
+    },
+    "amdjwm_Signal101.csv": {
+     "id": 2412436424879,
+     "size": 9578599
+    },
+    "amdjwm.csv": {
+     "id": 2412434732753,
+     "size": 12381
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-13-2026 - bag26v - 60 in - 0.5 in mat - 101 drops": {
+   "batch": "seed",
+   "folder_id": 409810619250,
+   "n_signals_available": 101,
+   "files": {
+    "bag26v_Signal1.csv": {
+     "id": 2412427400808,
+     "size": 9712167
+    },
+    "bag26v_Signal2.csv": {
+     "id": 2412422248786,
+     "size": 9569629
+    },
+    "bag26v_Signal3.csv": {
+     "id": 2412463040720,
+     "size": 9563049
+    },
+    "bag26v_Signal4.csv": {
+     "id": 2412426837315,
+     "size": 9564899
+    },
+    "bag26v_Signal5.csv": {
+     "id": 2412464091745,
+     "size": 9558379
+    },
+    "bag26v_Signal6.csv": {
+     "id": 2412429491980,
+     "size": 9553277
+    },
+    "bag26v_Signal7.csv": {
+     "id": 2412430185100,
+     "size": 9552129
+    },
+    "bag26v_Signal8.csv": {
+     "id": 2412423244725,
+     "size": 9545737
+    },
+    "bag26v_Signal9.csv": {
+     "id": 2412431104063,
+     "size": 9540178
+    },
+    "bag26v_Signal10.csv": {
+     "id": 2412424531034,
+     "size": 9541365
+    },
+    "bag26v_Signal11.csv": {
+     "id": 2412426208767,
+     "size": 9547009
+    },
+    "bag26v_Signal12.csv": {
+     "id": 2412462976168,
+     "size": 9540716
+    },
+    "bag26v_Signal13.csv": {
+     "id": 2412430744076,
+     "size": 9534616
+    },
+    "bag26v_Signal14.csv": {
+     "id": 2412426623063,
+     "size": 9549189
+    },
+    "bag26v_Signal15.csv": {
+     "id": 2412427859518,
+     "size": 9537561
+    },
+    "bag26v_Signal16.csv": {
+     "id": 2412428341555,
+     "size": 9547110
+    },
+    "bag26v_Signal17.csv": {
+     "id": 2412429937323,
+     "size": 9546074
+    },
+    "bag26v_Signal18.csv": {
+     "id": 2412428371135,
+     "size": 9541272
+    },
+    "bag26v_Signal19.csv": {
+     "id": 2412427101046,
+     "size": 9550321
+    },
+    "bag26v_Signal20.csv": {
+     "id": 2412426719070,
+     "size": 9546408
+    },
+    "bag26v_Signal21.csv": {
+     "id": 2412454667668,
+     "size": 9550879
+    },
+    "bag26v_Signal22.csv": {
+     "id": 2412424635616,
+     "size": 9549160
+    },
+    "bag26v_Signal23.csv": {
+     "id": 2412450193765,
+     "size": 9540677
+    },
+    "bag26v_Signal24.csv": {
+     "id": 2412427876769,
+     "size": 9545212
+    },
+    "bag26v_Signal25.csv": {
+     "id": 2412423224963,
+     "size": 9545033
+    },
+    "bag26v_Signal26.csv": {
+     "id": 2412430388726,
+     "size": 9544231
+    },
+    "bag26v_Signal27.csv": {
+     "id": 2412462669307,
+     "size": 9542103
+    },
+    "bag26v_Signal28.csv": {
+     "id": 2412423988631,
+     "size": 9545678
+    },
+    "bag26v_Signal29.csv": {
+     "id": 2412424972598,
+     "size": 9546544
+    },
+    "bag26v_Signal30.csv": {
+     "id": 2412463012510,
+     "size": 9550998
+    },
+    "bag26v_Signal31.csv": {
+     "id": 2412426935723,
+     "size": 9545053
+    },
+    "bag26v_Signal32.csv": {
+     "id": 2412426995351,
+     "size": 9544028
+    },
+    "bag26v_Signal33.csv": {
+     "id": 2412446507379,
+     "size": 9542073
+    },
+    "bag26v_Signal34.csv": {
+     "id": 2412447076313,
+     "size": 9545020
+    },
+    "bag26v_Signal35.csv": {
+     "id": 2412423003975,
+     "size": 9539564
+    },
+    "bag26v_Signal36.csv": {
+     "id": 2412429448541,
+     "size": 9545681
+    },
+    "bag26v_Signal37.csv": {
+     "id": 2412429546666,
+     "size": 9548808
+    },
+    "bag26v_Signal38.csv": {
+     "id": 2412432921151,
+     "size": 9549683
+    },
+    "bag26v_Signal39.csv": {
+     "id": 2412463508593,
+     "size": 9547186
+    },
+    "bag26v_Signal40.csv": {
+     "id": 2412427868986,
+     "size": 9540812
+    },
+    "bag26v_Signal41.csv": {
+     "id": 2412424864026,
+     "size": 9548668
+    },
+    "bag26v_Signal42.csv": {
+     "id": 2412423018927,
+     "size": 9549418
+    },
+    "bag26v_Signal43.csv": {
+     "id": 2412456566341,
+     "size": 9544520
+    },
+    "bag26v_Signal44.csv": {
+     "id": 2412423988670,
+     "size": 9545995
+    },
+    "bag26v_Signal45.csv": {
+     "id": 2412427478124,
+     "size": 9549976
+    },
+    "bag26v_Signal46.csv": {
+     "id": 2412427194862,
+     "size": 9548898
+    },
+    "bag26v_Signal47.csv": {
+     "id": 2412423530350,
+     "size": 9545803
+    },
+    "bag26v_Signal48.csv": {
+     "id": 2412425103953,
+     "size": 9550405
+    },
+    "bag26v_Signal49.csv": {
+     "id": 2412459167238,
+     "size": 9554298
+    },
+    "bag26v_Signal50.csv": {
+     "id": 2412431046422,
+     "size": 9550439
+    },
+    "bag26v_Signal51.csv": {
+     "id": 2412427016447,
+     "size": 9555929
+    },
+    "bag26v_Signal52.csv": {
+     "id": 2412463391539,
+     "size": 9545239
+    },
+    "bag26v_Signal53.csv": {
+     "id": 2412428896389,
+     "size": 9550316
+    },
+    "bag26v_Signal54.csv": {
+     "id": 2412463803957,
+     "size": 9545704
+    },
+    "bag26v_Signal55.csv": {
+     "id": 2412444047633,
+     "size": 9558181
+    },
+    "bag26v_Signal56.csv": {
+     "id": 2412427091514,
+     "size": 9547202
+    },
+    "bag26v_Signal57.csv": {
+     "id": 2412424597278,
+     "size": 9550246
+    },
+    "bag26v_Signal58.csv": {
+     "id": 2412428490356,
+     "size": 9545791
+    },
+    "bag26v_Signal59.csv": {
+     "id": 2412436687171,
+     "size": 9552590
+    },
+    "bag26v_Signal60.csv": {
+     "id": 2412463451956,
+     "size": 9549964
+    },
+    "bag26v_Signal61.csv": {
+     "id": 2412429265237,
+     "size": 9550400
+    },
+    "bag26v_Signal62.csv": {
+     "id": 2412428903250,
+     "size": 9553926
+    },
+    "bag26v_Signal63.csv": {
+     "id": 2412429870794,
+     "size": 9548901
+    },
+    "bag26v_Signal64.csv": {
+     "id": 2412433998396,
+     "size": 9553008
+    },
+    "bag26v_Signal65.csv": {
+     "id": 2412424902371,
+     "size": 9552624
+    },
+    "bag26v_Signal66.csv": {
+     "id": 2412429716468,
+     "size": 9548008
+    },
+    "bag26v_Signal67.csv": {
+     "id": 2412427201255,
+     "size": 9554567
+    },
+    "bag26v_Signal68.csv": {
+     "id": 2412424000493,
+     "size": 9549088
+    },
+    "bag26v_Signal69.csv": {
+     "id": 2412464490708,
+     "size": 9559110
+    },
+    "bag26v_Signal70.csv": {
+     "id": 2412424396565,
+     "size": 9557254
+    },
+    "bag26v_Signal71.csv": {
+     "id": 2412463240080,
+     "size": 9549837
+    },
+    "bag26v_Signal72.csv": {
+     "id": 2412426093279,
+     "size": 9558531
+    },
+    "bag26v_Signal73.csv": {
+     "id": 2412430187500,
+     "size": 9553278
+    },
+    "bag26v_Signal74.csv": {
+     "id": 2412430252470,
+     "size": 9552308
+    },
+    "bag26v_Signal75.csv": {
+     "id": 2412433362501,
+     "size": 9544739
+    },
+    "bag26v_Signal76.csv": {
+     "id": 2412423805403,
+     "size": 9545730
+    },
+    "bag26v_Signal77.csv": {
+     "id": 2412425392534,
+     "size": 9553486
+    },
+    "bag26v_Signal78.csv": {
+     "id": 2412457737362,
+     "size": 9556030
+    },
+    "bag26v_Signal79.csv": {
+     "id": 2412457099117,
+     "size": 9548827
+    },
+    "bag26v_Signal80.csv": {
+     "id": 2412447220179,
+     "size": 9557363
+    },
+    "bag26v_Signal81.csv": {
+     "id": 2412427348134,
+     "size": 9550564
+    },
+    "bag26v_Signal82.csv": {
+     "id": 2412428159976,
+     "size": 9550737
+    },
+    "bag26v_Signal83.csv": {
+     "id": 2412446553099,
+     "size": 9551910
+    },
+    "bag26v_Signal84.csv": {
+     "id": 2412426846336,
+     "size": 9556012
+    },
+    "bag26v_Signal85.csv": {
+     "id": 2412456620701,
+     "size": 9550475
+    },
+    "bag26v_Signal86.csv": {
+     "id": 2412429987782,
+     "size": 9552590
+    },
+    "bag26v_Signal87.csv": {
+     "id": 2412425486169,
+     "size": 9549745
+    },
+    "bag26v_Signal88.csv": {
+     "id": 2412425295998,
+     "size": 9557590
+    },
+    "bag26v_Signal89.csv": {
+     "id": 2412444549233,
+     "size": 9553657
+    },
+    "bag26v_Signal90.csv": {
+     "id": 2412429862870,
+     "size": 9554332
+    },
+    "bag26v_Signal91.csv": {
+     "id": 2412424004603,
+     "size": 9552651
+    },
+    "bag26v_Signal92.csv": {
+     "id": 2412423616135,
+     "size": 9558018
+    },
+    "bag26v_Signal93.csv": {
+     "id": 2412445122533,
+     "size": 9557431
+    },
+    "bag26v_Signal94.csv": {
+     "id": 2412427874158,
+     "size": 9552804
+    },
+    "bag26v_Signal95.csv": {
+     "id": 2412431464100,
+     "size": 9553552
+    },
+    "bag26v_Signal96.csv": {
+     "id": 2412428125977,
+     "size": 9560881
+    },
+    "bag26v_Signal97.csv": {
+     "id": 2412428514678,
+     "size": 9553314
+    },
+    "bag26v_Signal98.csv": {
+     "id": 2412428807548,
+     "size": 9552353
+    },
+    "bag26v_Signal99.csv": {
+     "id": 2412427521098,
+     "size": 9559208
+    },
+    "bag26v_Signal100.csv": {
+     "id": 2412426338367,
+     "size": 9558380
+    },
+    "bag26v_Signal101.csv": {
+     "id": 2412429849408,
+     "size": 9549708
+    },
+    "bag26v.csv": {
+     "id": 2412423486071,
+     "size": 12501
+    }
+   },
+   "selection": "all signals (2026-09-24 full-seed pass)"
+  },
+  "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411659610187,
+   "n_signals_available": 21,
+   "files": {
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal1.csv": {
+     "id": 2424899347014,
+     "size": 9574755
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal2.csv": {
+     "id": 2424901406184,
+     "size": 9569536
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal3.csv": {
+     "id": 2424901502184,
+     "size": 9571405
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal4.csv": {
+     "id": 2424901743805,
+     "size": 9570206
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal5.csv": {
+     "id": 2424891167765,
+     "size": 9569523
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal6.csv": {
+     "id": 2424900762395,
+     "size": 9571988
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal7.csv": {
+     "id": 2424892367771,
+     "size": 9570345
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal8.csv": {
+     "id": 2424901545384,
+     "size": 9567217
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424890334811,
+     "size": 9570265
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal10.csv": {
+     "id": 2424900085953,
+     "size": 9568875
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal11.csv": {
+     "id": 2424897640772,
+     "size": 9571799
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal12.csv": {
+     "id": 2424899675825,
+     "size": 9571277
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal13.csv": {
+     "id": 2424860761707,
+     "size": 9574489
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal14.csv": {
+     "id": 2424890996672,
+     "size": 9572845
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal15.csv": {
+     "id": 2424892717893,
+     "size": 9572520
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal16.csv": {
+     "id": 2424891013559,
+     "size": 9572985
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal17.csv": {
+     "id": 2424901787482,
+     "size": 9576236
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal18.csv": {
+     "id": 2424898528356,
+     "size": 9573646
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal19.csv": {
+     "id": 2424892480372,
+     "size": 9574530
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal20.csv": {
+     "id": 2424861383599,
+     "size": 9570030
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops_Signal21.csv": {
+     "id": 2424899250126,
+     "size": 9570865
+    },
+    "8-24-2026 -r2d2c9 - 60in - 0.5in mat - 21 drops.csv": {
+     "id": 2424891793223,
+     "size": 2978
+    }
+   }
+  },
+  "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411654362191,
+   "n_signals_available": 23,
+   "files": {
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal1.csv": {
+     "id": 2424844497341,
+     "size": 9582463
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal2.csv": {
+     "id": 2424866322533,
+     "size": 9585993
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal3.csv": {
+     "id": 2424867423820,
+     "size": 9586305
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal4.csv": {
+     "id": 2424864556202,
+     "size": 9586434
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal5.csv": {
+     "id": 2424864052577,
+     "size": 9591785
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal6.csv": {
+     "id": 2424850571029,
+     "size": 9592546
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal7.csv": {
+     "id": 2424866635032,
+     "size": 9591447
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal8.csv": {
+     "id": 2424866375791,
+     "size": 9582081
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal9.csv": {
+     "id": 2424851670097,
+     "size": 9592076
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424866846117,
+     "size": 3170
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal10.csv": {
+     "id": 2424864332554,
+     "size": 9584992
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal11.csv": {
+     "id": 2424860284104,
+     "size": 9589955
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal12.csv": {
+     "id": 2424866137814,
+     "size": 9586182
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal13.csv": {
+     "id": 2424858565574,
+     "size": 9588902
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal14.csv": {
+     "id": 2424867550986,
+     "size": 9585638
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal15.csv": {
+     "id": 2424867104607,
+     "size": 9582893
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal16.csv": {
+     "id": 2424852424248,
+     "size": 9586992
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal17.csv": {
+     "id": 2424841981529,
+     "size": 9588382
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal18.csv": {
+     "id": 2424850566469,
+     "size": 9582493
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal19.csv": {
+     "id": 2424864097437,
+     "size": 9586044
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal20.csv": {
+     "id": 2424866584738,
+     "size": 9582343
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal21.csv": {
+     "id": 2424864772182,
+     "size": 9582952
+    },
+    "8-24-2026 -r2d2c8 - 60in - 0.5in mat - 21 drops_Signal9_Signal22.csv": {
+     "id": 2424845419063,
+     "size": 9585647
+    }
+   }
+  },
+  "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411634427962,
+   "n_signals_available": 21,
+   "files": {
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal1.csv": {
+     "id": 2424794121247,
+     "size": 9603997
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal2.csv": {
+     "id": 2424745789481,
+     "size": 9598141
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal3.csv": {
+     "id": 2424795702657,
+     "size": 9599701
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal4.csv": {
+     "id": 2424800077580,
+     "size": 9598251
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal5.csv": {
+     "id": 2424815917651,
+     "size": 9592911
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal6.csv": {
+     "id": 2424797886666,
+     "size": 9593544
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal7.csv": {
+     "id": 2424804844298,
+     "size": 9591562
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal8.csv": {
+     "id": 2424757151132,
+     "size": 9594282
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424744235195,
+     "size": 9592700
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal10.csv": {
+     "id": 2424792287683,
+     "size": 9591024
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal11.csv": {
+     "id": 2424801892610,
+     "size": 9588389
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal12.csv": {
+     "id": 2424797428207,
+     "size": 9587085
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal13.csv": {
+     "id": 2424793014566,
+     "size": 9591580
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal14.csv": {
+     "id": 2424797540653,
+     "size": 9590013
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal15.csv": {
+     "id": 2424797990232,
+     "size": 9587972
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal16.csv": {
+     "id": 2424803134984,
+     "size": 9589470
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal17.csv": {
+     "id": 2424809116520,
+     "size": 9584962
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal18.csv": {
+     "id": 2424800774301,
+     "size": 9590905
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal19.csv": {
+     "id": 2424806634059,
+     "size": 9587335
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal20.csv": {
+     "id": 2424799422460,
+     "size": 9588479
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops_Signal21.csv": {
+     "id": 2424816811187,
+     "size": 9584700
+    },
+    "8-24-2026 -r2d2c7 - 60in - 0.5in mat - 21 drops.csv": {
+     "id": 2424801710210,
+     "size": 3070
+    }
+   }
+  },
+  "8-24-2026 -r2d2c1 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411619211572,
+   "n_signals_available": 21,
+   "files": {
+    "r2d2c1_Signal1.csv": {
+     "id": 2424634842882,
+     "size": 9573949
+    },
+    "r2d2c1_Signal2.csv": {
+     "id": 2424638502151,
+     "size": 9578353
+    },
+    "r2d2c1_Signal3.csv": {
+     "id": 2424638687464,
+     "size": 9564263
+    },
+    "r2d2c1_Signal4.csv": {
+     "id": 2424639498641,
+     "size": 9551483
+    },
+    "r2d2c1_Signal5.csv": {
+     "id": 2424636345059,
+     "size": 9586552
+    },
+    "r2d2c1_Signal6.csv": {
+     "id": 2424638398986,
+     "size": 9576394
+    },
+    "r2d2c1_Signal7.csv": {
+     "id": 2424637278838,
+     "size": 9583367
+    },
+    "r2d2c1_Signal8.csv": {
+     "id": 2424640151676,
+     "size": 9586517
+    },
+    "r2d2c1_Signal9.csv": {
+     "id": 2424634518582,
+     "size": 9585080
+    },
+    "r2d2c1_Signal10.csv": {
+     "id": 2424632613586,
+     "size": 9585358
+    },
+    "r2d2c1_Signal11.csv": {
+     "id": 2424638039556,
+     "size": 9588567
+    },
+    "r2d2c1_Signal12.csv": {
+     "id": 2424635346445,
+     "size": 9585829
+    },
+    "r2d2c1_Signal13.csv": {
+     "id": 2424637840628,
+     "size": 9556171
+    },
+    "r2d2c1_Signal14.csv": {
+     "id": 2424636119362,
+     "size": 9561036
+    },
+    "r2d2c1_Signal15.csv": {
+     "id": 2424638319835,
+     "size": 9551380
+    },
+    "r2d2c1_Signal16.csv": {
+     "id": 2424623276732,
+     "size": 9564606
+    },
+    "r2d2c1_Signal17.csv": {
+     "id": 2424637324606,
+     "size": 9562251
+    },
+    "r2d2c1_Signal18.csv": {
+     "id": 2424637806789,
+     "size": 9554935
+    },
+    "r2d2c1_Signal19.csv": {
+     "id": 2424636698264,
+     "size": 9559500
+    },
+    "r2d2c1_Signal20.csv": {
+     "id": 2424634376409,
+     "size": 9558532
+    },
+    "r2d2c1_Signal21.csv": {
+     "id": 2424637283638,
+     "size": 9554459
+    },
+    "r2d2c1.csv": {
+     "id": 2424633745225,
+     "size": 2995
+    }
+   }
+  },
+  "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411638799623,
+   "n_signals_available": 21,
+   "files": {
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal1.csv": {
+     "id": 2424787446838,
+     "size": 9590902
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal2.csv": {
+     "id": 2424790067657,
+     "size": 9546836
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal3.csv": {
+     "id": 2424788502229,
+     "size": 9555935
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal4.csv": {
+     "id": 2424798556378,
+     "size": 9556749
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal5.csv": {
+     "id": 2424790350350,
+     "size": 9550845
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal6.csv": {
+     "id": 2424789263756,
+     "size": 9553807
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal7.csv": {
+     "id": 2424773137795,
+     "size": 9552633
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal8.csv": {
+     "id": 2424780670825,
+     "size": 9558263
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424798253574,
+     "size": 9548024
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal10.csv": {
+     "id": 2424785358490,
+     "size": 9559117
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal11.csv": {
+     "id": 2424790002857,
+     "size": 9545858
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal12.csv": {
+     "id": 2424781194828,
+     "size": 9557248
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal13.csv": {
+     "id": 2424787933483,
+     "size": 9554343
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal14.csv": {
+     "id": 2424780638370,
+     "size": 9559831
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal15.csv": {
+     "id": 2424790388586,
+     "size": 9548972
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal16.csv": {
+     "id": 2424778036158,
+     "size": 9555757
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal17.csv": {
+     "id": 2424779493455,
+     "size": 9544915
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal18.csv": {
+     "id": 2424780642421,
+     "size": 9559675
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal19.csv": {
+     "id": 2424779526646,
+     "size": 9550900
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal20.csv": {
+     "id": 2424775441766,
+     "size": 9549304
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops_Signal21.csv": {
+     "id": 2424790897955,
+     "size": 9543932
+    },
+    "8-24-2026 -r2d2c6 - 60in - 0.5in mat - 21 drops.csv": {
+     "id": 2424773435312,
+     "size": 2967
+    }
+   }
+  },
+  "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411638730821,
+   "n_signals_available": 21,
+   "files": {
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal1.csv": {
+     "id": 2424787141386,
+     "size": 9600367
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal2.csv": {
+     "id": 2424774958954,
+     "size": 9565178
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal3.csv": {
+     "id": 2424781420140,
+     "size": 9573337
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal4.csv": {
+     "id": 2424776795797,
+     "size": 9576580
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal5.csv": {
+     "id": 2424788737405,
+     "size": 9574696
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal6.csv": {
+     "id": 2424786846820,
+     "size": 9568702
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal7.csv": {
+     "id": 2424780915850,
+     "size": 9572180
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal8.csv": {
+     "id": 2424790057976,
+     "size": 9570533
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424785680524,
+     "size": 9568254
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal10.csv": {
+     "id": 2424787672355,
+     "size": 9568913
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal11.csv": {
+     "id": 2424775377547,
+     "size": 9573283
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal12.csv": {
+     "id": 2424777887314,
+     "size": 9570557
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal13.csv": {
+     "id": 2424787125165,
+     "size": 9576228
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal14.csv": {
+     "id": 2424779010362,
+     "size": 9564567
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal15.csv": {
+     "id": 2424772900112,
+     "size": 9572836
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal16.csv": {
+     "id": 2424772904912,
+     "size": 9568337
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal17.csv": {
+     "id": 2424734893999,
+     "size": 9563186
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal18.csv": {
+     "id": 2424736430185,
+     "size": 9565465
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal19.csv": {
+     "id": 2424787052490,
+     "size": 9570633
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal20.csv": {
+     "id": 2424781071855,
+     "size": 9567772
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops_Signal21.csv": {
+     "id": 2424787549910,
+     "size": 9567815
+    },
+    "8-24-2026 -r2d2c5 - 60in - 0.5in mat - 21 drops.csv": {
+     "id": 2424780371348,
+     "size": 3001
+    }
+   }
+  },
+  "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411633263159,
+   "n_signals_available": 21,
+   "files": {
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal1.csv": {
+     "id": 2424746689690,
+     "size": 9583497
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal2.csv": {
+     "id": 2424733009586,
+     "size": 9582298
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal3.csv": {
+     "id": 2424748588534,
+     "size": 9574534
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal4.csv": {
+     "id": 2424747004606,
+     "size": 9577032
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal5.csv": {
+     "id": 2424743073057,
+     "size": 9572672
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal6.csv": {
+     "id": 2424741484010,
+     "size": 9574063
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal7.csv": {
+     "id": 2424744361354,
+     "size": 9577519
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal8.csv": {
+     "id": 2424749459063,
+     "size": 9570953
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424747640355,
+     "size": 9575585
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal10.csv": {
+     "id": 2424743087401,
+     "size": 9568913
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal11.csv": {
+     "id": 2424749147498,
+     "size": 9578050
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal12.csv": {
+     "id": 2424742015055,
+     "size": 9571938
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal13.csv": {
+     "id": 2424745837791,
+     "size": 9574388
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal14.csv": {
+     "id": 2424724083881,
+     "size": 9575360
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal15.csv": {
+     "id": 2424746442089,
+     "size": 9571973
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal16.csv": {
+     "id": 2424741376010,
+     "size": 9575471
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal17.csv": {
+     "id": 2424746456805,
+     "size": 9576724
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal18.csv": {
+     "id": 2424743807838,
+     "size": 9578187
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal19.csv": {
+     "id": 2424742014174,
+     "size": 9573853
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal20.csv": {
+     "id": 2424748378879,
+     "size": 9571885
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops_Signal21.csv": {
+     "id": 2424746636635,
+     "size": 9575474
+    },
+    "8-24-2026 -r2d2c4 - 60in - 0.5in mat - 21 drops.csv": {
+     "id": 2424745456329,
+     "size": 3000
+    }
+   }
+  },
+  "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411630638267,
+   "n_signals_available": 21,
+   "files": {
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal1.csv": {
+     "id": 2424709019520,
+     "size": 9542194
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal2.csv": {
+     "id": 2424708440827,
+     "size": 9575318
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal3.csv": {
+     "id": 2424713891807,
+     "size": 9571004
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal4.csv": {
+     "id": 2424720013614,
+     "size": 9583133
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal5.csv": {
+     "id": 2424719113599,
+     "size": 9580694
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal6.csv": {
+     "id": 2424719471788,
+     "size": 9581452
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal7.csv": {
+     "id": 2424722744505,
+     "size": 9586926
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal8.csv": {
+     "id": 2424710833955,
+     "size": 9574309
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424711633265,
+     "size": 9586580
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal10.csv": {
+     "id": 2424708198878,
+     "size": 9582807
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal11.csv": {
+     "id": 2424707286934,
+     "size": 9579956
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal12.csv": {
+     "id": 2424718703958,
+     "size": 9577025
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal13.csv": {
+     "id": 2424719581766,
+     "size": 9578323
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal14.csv": {
+     "id": 2424708532629,
+     "size": 9577751
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal15.csv": {
+     "id": 2424719600958,
+     "size": 9580787
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal16.csv": {
+     "id": 2424709646322,
+     "size": 9572029
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal17.csv": {
+     "id": 2424718799777,
+     "size": 9581840
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal18.csv": {
+     "id": 2424708006917,
+     "size": 9571203
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal19.csv": {
+     "id": 2424718274083,
+     "size": 9578334
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal20.csv": {
+     "id": 2424718825281,
+     "size": 9574816
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops_Signal21.csv": {
+     "id": 2424709919267,
+     "size": 9572364
+    },
+    "8-24-2026 -r2d2c3 - 60in - 0.5in mat - 21 drops.csv": {
+     "id": 2424718249437,
+     "size": 3048
+    }
+   }
+  },
+  "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops": {
+   "batch": "r2d2c",
+   "folder_id": 411623696481,
+   "n_signals_available": 21,
+   "files": {
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal1.csv": {
+     "id": 2424678669434,
+     "size": 9569945
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal2.csv": {
+     "id": 2424683193382,
+     "size": 9567881
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal3.csv": {
+     "id": 2424683019661,
+     "size": 9572446
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal4.csv": {
+     "id": 2424682741656,
+     "size": 9569465
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal5.csv": {
+     "id": 2424612141413,
+     "size": 9571825
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal6.csv": {
+     "id": 2424688948552,
+     "size": 9571533
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal7.csv": {
+     "id": 2424679677377,
+     "size": 9570793
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal8.csv": {
+     "id": 2424681345055,
+     "size": 9564402
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal9.csv": {
+     "id": 2424685498907,
+     "size": 9571550
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal10.csv": {
+     "id": 2424678211090,
+     "size": 9552002
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal11.csv": {
+     "id": 2424683387322,
+     "size": 9552969
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal12.csv": {
+     "id": 2424678770177,
+     "size": 9568655
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal13.csv": {
+     "id": 2424684524896,
+     "size": 9557236
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal14.csv": {
+     "id": 2424687099948,
+     "size": 9557524
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal15.csv": {
+     "id": 2424677219263,
+     "size": 9553819
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal16.csv": {
+     "id": 2424684376322,
+     "size": 9571909
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal17.csv": {
+     "id": 2424682825388,
+     "size": 9570504
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal18.csv": {
+     "id": 2424680891055,
+     "size": 9567092
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal19.csv": {
+     "id": 2424604948742,
+     "size": 9573394
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal20.csv": {
+     "id": 2424678875635,
+     "size": 9571508
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops_Signal21.csv": {
+     "id": 2424679526382,
+     "size": 9575072
+    },
+    "8-24-2026 -r2d2c2 - 60in - 0.5in mat - 21 drops.csv": {
+     "id": 2424687830207,
+     "size": 2976
+    }
+   }
+  },
+  "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415033343051,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446411631447,
+     "size": 9573687
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446408305152,
+     "size": 9572259
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446407163045,
+     "size": 9574797
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446401489280,
+     "size": 9573925
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446411298120,
+     "size": 9578154
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446411957813,
+     "size": 9573203
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446405597493,
+     "size": 9570697
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446404116878,
+     "size": 9577199
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446407914163,
+     "size": 9572093
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446407563873,
+     "size": 9572290
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446411511630,
+     "size": 9581047
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446407796438,
+     "size": 9574435
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446405712854,
+     "size": 9578861
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446410758291,
+     "size": 9580054
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446405201582,
+     "size": 9575460
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446404352449,
+     "size": 9572427
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446407897568,
+     "size": 9580104
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446408417859,
+     "size": 9579459
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446411268534,
+     "size": 9574591
+    },
+    "9-3-2026 - drran1 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446409831142,
+     "size": 9576969
+    }
+   }
+  },
+  "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415034468414,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446405483069,
+     "size": 9538151
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446403056449,
+     "size": 9544358
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446410391070,
+     "size": 9545852
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446406598539,
+     "size": 9546143
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446406171107,
+     "size": 9552174
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446406788244,
+     "size": 9547041
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446402703040,
+     "size": 9542270
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446407229380,
+     "size": 9547183
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446400781557,
+     "size": 9542854
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446409354059,
+     "size": 9545162
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446406127777,
+     "size": 9547639
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446404433489,
+     "size": 9543270
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446406300725,
+     "size": 9544847
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446404921288,
+     "size": 9544983
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446408941592,
+     "size": 9541750
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446406610639,
+     "size": 9547354
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446401884779,
+     "size": 9538825
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446406207617,
+     "size": 9543528
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446410044454,
+     "size": 9544476
+    },
+    "9-3-2026 - drran2 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446410674270,
+     "size": 9539866
+    }
+   }
+  },
+  "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415038546251,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446408640426,
+     "size": 9554691
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446411302589,
+     "size": 9547036
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446405359925,
+     "size": 9546835
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446410903829,
+     "size": 9564273
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446404592774,
+     "size": 9557439
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446409550035,
+     "size": 9559716
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446409948733,
+     "size": 9549970
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446402499649,
+     "size": 9546070
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446408686690,
+     "size": 9539615
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446402057440,
+     "size": 9547587
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446400860771,
+     "size": 9530016
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446401159736,
+     "size": 9532171
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446410338253,
+     "size": 9543661
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446410331053,
+     "size": 9537731
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446409818835,
+     "size": 9550267
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446408978826,
+     "size": 9540501
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446409812195,
+     "size": 9533197
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446402518870,
+     "size": 9543144
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446407554205,
+     "size": 9539896
+    },
+    "9-3-2026 - drran3 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446409912407,
+     "size": 9534229
+    }
+   }
+  },
+  "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415048067519,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446408657552,
+     "size": 9570419
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446407049261,
+     "size": 9578770
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446401793551,
+     "size": 9567818
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446406185688,
+     "size": 9580366
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446402456002,
+     "size": 9574185
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446407290272,
+     "size": 9586277
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446403133440,
+     "size": 9570382
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446407457249,
+     "size": 9575102
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446409204981,
+     "size": 9576405
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446398817373,
+     "size": 9580893
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446406576538,
+     "size": 9581748
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446404961703,
+     "size": 9577612
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446409204733,
+     "size": 9583379
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446407067135,
+     "size": 9573017
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446405084266,
+     "size": 9573244
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446400852505,
+     "size": 9578029
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446403476587,
+     "size": 9582442
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446400701963,
+     "size": 9576110
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446402227936,
+     "size": 9583877
+    },
+    "9-3-2026 - drran4 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446408758786,
+     "size": 9570206
+    }
+   }
+  },
+  "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415047455586,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446405094205,
+     "size": 9520752
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446404217860,
+     "size": 9525604
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446403889238,
+     "size": 9527953
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446397353969,
+     "size": 9519751
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446402993937,
+     "size": 9518972
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446398191594,
+     "size": 9514214
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446403408725,
+     "size": 9522239
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446406623138,
+     "size": 9521575
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446404385834,
+     "size": 9524718
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446406627938,
+     "size": 9526360
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446401800884,
+     "size": 9525004
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446400175694,
+     "size": 9526427
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446401949356,
+     "size": 9517132
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446401148737,
+     "size": 9521169
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446401896884,
+     "size": 9519462
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446401452537,
+     "size": 9527091
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446407203154,
+     "size": 9525416
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446403087487,
+     "size": 9516548
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446410093484,
+     "size": 9535360
+    },
+    "9-3-2026 - drran5 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446407875395,
+     "size": 9535160
+    }
+   }
+  },
+  "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415049507242,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446399732160,
+     "size": 9541767
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446408110229,
+     "size": 9543744
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446406980247,
+     "size": 9541440
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446405076461,
+     "size": 9542887
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446400540689,
+     "size": 9543583
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446405293530,
+     "size": 9542520
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446402263925,
+     "size": 9540491
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446403113366,
+     "size": 9540372
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446402994368,
+     "size": 9547273
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446400672689,
+     "size": 9552052
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446404207632,
+     "size": 9545262
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446401764679,
+     "size": 9546731
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446406824671,
+     "size": 9544383
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446398431896,
+     "size": 9549036
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446402919530,
+     "size": 9543122
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446401203340,
+     "size": 9546894
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446406563183,
+     "size": 9539960
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446399636018,
+     "size": 9544780
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446397548124,
+     "size": 9547435
+    },
+    "9-3-2026 - drran6 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446408922184,
+     "size": 9544987
+    }
+   }
+  },
+  "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415048269484,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446398064637,
+     "size": 9579977
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446384420678,
+     "size": 9600760
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446394627763,
+     "size": 9597999
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446394166752,
+     "size": 9600731
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446388721341,
+     "size": 9590965
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446392117387,
+     "size": 9598947
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446387358271,
+     "size": 9594848
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446396525542,
+     "size": 9596967
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446384359734,
+     "size": 9597329
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446389659457,
+     "size": 9588722
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446394951695,
+     "size": 9595566
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446392922804,
+     "size": 9590551
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446393732767,
+     "size": 9591262
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446396537476,
+     "size": 9592787
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446394413952,
+     "size": 9593799
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446394135750,
+     "size": 9587686
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446390136842,
+     "size": 9593264
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446394713366,
+     "size": 9599945
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446391944766,
+     "size": 9596950
+    },
+    "9-3-2026 - drran7 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446389534618,
+     "size": 9599021
+    }
+   }
+  },
+  "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415049689451,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446383583092,
+     "size": 9582030
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446391739777,
+     "size": 9584610
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446393372561,
+     "size": 9581644
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446390245207,
+     "size": 9581207
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446388941418,
+     "size": 9577246
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446390231137,
+     "size": 9587783
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446382905533,
+     "size": 9567581
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446384535070,
+     "size": 9578897
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446394493599,
+     "size": 9589190
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446392455845,
+     "size": 9574528
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446391915537,
+     "size": 9575813
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446390842014,
+     "size": 9577935
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446390252216,
+     "size": 9575496
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446392568742,
+     "size": 9571297
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446395978042,
+     "size": 9569559
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446391207254,
+     "size": 9571606
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446391250225,
+     "size": 9563576
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446392530245,
+     "size": 9563749
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446392031167,
+     "size": 9578014
+    },
+    "9-3-2026 - drran8 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446390513602,
+     "size": 9567572
+    }
+   }
+  },
+  "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops": {
+   "batch": "drran",
+   "folder_id": 415049363971,
+   "n_signals_available": 20,
+   "files": {
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal1.csv": {
+     "id": 2446382463773,
+     "size": 9510032
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal2.csv": {
+     "id": 2446384833591,
+     "size": 9504575
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal3.csv": {
+     "id": 2446385812063,
+     "size": 9517957
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal4.csv": {
+     "id": 2446390446276,
+     "size": 9511659
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal5.csv": {
+     "id": 2446390511096,
+     "size": 9512856
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal6.csv": {
+     "id": 2446387446552,
+     "size": 9512391
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal7.csv": {
+     "id": 2446388320417,
+     "size": 9511647
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal8.csv": {
+     "id": 2446389178805,
+     "size": 9508617
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal9.csv": {
+     "id": 2446383458197,
+     "size": 9501345
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal10.csv": {
+     "id": 2446391236520,
+     "size": 9504968
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal11.csv": {
+     "id": 2446386498541,
+     "size": 9503312
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal12.csv": {
+     "id": 2446387189659,
+     "size": 9511920
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal13.csv": {
+     "id": 2446377920923,
+     "size": 9517784
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal14.csv": {
+     "id": 2446390533000,
+     "size": 9512009
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal15.csv": {
+     "id": 2446391407002,
+     "size": 9517834
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal16.csv": {
+     "id": 2446386906458,
+     "size": 9516720
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal17.csv": {
+     "id": 2446386493463,
+     "size": 9512528
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal18.csv": {
+     "id": 2446388730714,
+     "size": 9522919
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal19.csv": {
+     "id": 2446384706221,
+     "size": 9515769
+    },
+    "9-3-2026 - drran9 - 60 in - 0.5in mat - 20 drops_Signal20.csv": {
+     "id": 2446383659387,
+     "size": 9521768
+    }
+   }
+  },
+  "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416740794788,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457295540124,
+     "size": 9570406
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457307139254,
+     "size": 9563980
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457307533195,
+     "size": 9570586
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457308007673,
+     "size": 9559572
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457304290017,
+     "size": 9558114
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457295991613,
+     "size": 9561149
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457306743833,
+     "size": 9559226
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457295765710,
+     "size": 9557048
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457296882289,
+     "size": 9556358
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457295136946,
+     "size": 9567058
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457299790303,
+     "size": 9559381
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457294464469,
+     "size": 9562167
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457300025954,
+     "size": 9547363
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457306873382,
+     "size": 9546536
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457306249184,
+     "size": 9542987
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457299394379,
+     "size": 9544364
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457297307047,
+     "size": 9562809
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457301571459,
+     "size": 9548081
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457299843335,
+     "size": 9557598
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457299811995,
+     "size": 9560717
+    },
+    "9-09-2026 - 2dran1 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457295693694,
+     "size": 2845
+    }
+   }
+  },
+  "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416739724620,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457288558533,
+     "size": 9505189
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457297539452,
+     "size": 9478027
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457302931730,
+     "size": 9506884
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457292384389,
+     "size": 9492989
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457303619159,
+     "size": 9448809
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457299397511,
+     "size": 9456565
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457306728610,
+     "size": 9447878
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457305994086,
+     "size": 9470008
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457302547902,
+     "size": 9503639
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457293930259,
+     "size": 9452437
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457298475956,
+     "size": 9456049
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457305963955,
+     "size": 9459120
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457295333844,
+     "size": 9512134
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457298782395,
+     "size": 9523239
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457303718866,
+     "size": 9473393
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457294599017,
+     "size": 9463628
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457305853591,
+     "size": 9484066
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457303647327,
+     "size": 9490170
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457297590052,
+     "size": 9493102
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457298741931,
+     "size": 9491216
+    },
+    "9-09-2026 - 2dran2 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457298132563,
+     "size": 2829
+    }
+   }
+  },
+  "9-09-2026 - 2dran3 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416741517583,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457303990628,
+     "size": 9483914
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457298331988,
+     "size": 9543906
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457295549996,
+     "size": 9518984
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457299442294,
+     "size": 9518929
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457297212549,
+     "size": 9494183
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457295436415,
+     "size": 9492635
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457302732858,
+     "size": 9511442
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457298446209,
+     "size": 9514392
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457302737945,
+     "size": 9505820
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457297484563,
+     "size": 9512167
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457294260894,
+     "size": 9506897
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457304799240,
+     "size": 9501097
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457292934219,
+     "size": 9514216
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457296139874,
+     "size": 9507700
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457288294165,
+     "size": 9518705
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457301650602,
+     "size": 9514625
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457295693759,
+     "size": 9507782
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457294095542,
+     "size": 9506090
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457301535112,
+     "size": 9504142
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457302876519,
+     "size": 9512066
+    },
+    "9-09-2026 - 2dran3- 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457293246266,
+     "size": 2816
+    }
+   }
+  },
+  "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416744118135,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457295906929,
+     "size": 9513384
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457290752352,
+     "size": 9525164
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457298389130,
+     "size": 9527936
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457304578091,
+     "size": 9511011
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457304343048,
+     "size": 9531474
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457304568840,
+     "size": 9511103
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457303469701,
+     "size": 9518363
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457294167999,
+     "size": 9524960
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457296822230,
+     "size": 9515173
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457292043029,
+     "size": 9508795
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457302083012,
+     "size": 9517209
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457287238732,
+     "size": 9526985
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457294050278,
+     "size": 9504777
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457302068612,
+     "size": 9529228
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457303837421,
+     "size": 9522204
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457293111524,
+     "size": 9530775
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457303450135,
+     "size": 9508508
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457298259140,
+     "size": 9511371
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457298065451,
+     "size": 9513847
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457293090268,
+     "size": 9516460
+    },
+    "9-09-2026 - 2dran5 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457294032681,
+     "size": 2825
+    }
+   }
+  },
+  "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416743962536,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457295374162,
+     "size": 9536122
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457295698819,
+     "size": 9541851
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457298401059,
+     "size": 9549650
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457300335307,
+     "size": 9545214
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457292470510,
+     "size": 9552826
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457302713701,
+     "size": 9553797
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457295948695,
+     "size": 9541364
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457293917219,
+     "size": 9543845
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457302006369,
+     "size": 9546309
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457290665718,
+     "size": 9546105
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457302673421,
+     "size": 9542482
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457292688504,
+     "size": 9537628
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457300294484,
+     "size": 9548682
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457286899819,
+     "size": 9547569
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457296735648,
+     "size": 9546720
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457302594395,
+     "size": 9542893
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457289444562,
+     "size": 9545701
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457299773776,
+     "size": 9547496
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457289530152,
+     "size": 9539969
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457296872788,
+     "size": 9550932
+    },
+    "9-09-2026 - 2dran7 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457289419709,
+     "size": 2835
+    }
+   }
+  },
+  "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416742925350,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457296164446,
+     "size": 9600279
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457292024094,
+     "size": 9580645
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457300166999,
+     "size": 9570664
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457297198187,
+     "size": 9587332
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457295053376,
+     "size": 9574410
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457296594046,
+     "size": 9576760
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457300829473,
+     "size": 9576982
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457295720590,
+     "size": 9580215
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457286523505,
+     "size": 9562936
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457295718048,
+     "size": 9585322
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457298909512,
+     "size": 9589999
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457290797922,
+     "size": 9584508
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457299682458,
+     "size": 9579736
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457294815855,
+     "size": 9577727
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457300681570,
+     "size": 9577236
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457290546033,
+     "size": 9579232
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457289302589,
+     "size": 9583785
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457299833317,
+     "size": 9580515
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457294791561,
+     "size": 9576686
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457294916030,
+     "size": 9577743
+    },
+    "9-09-2026 - 2dran4 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457288978795,
+     "size": 2846
+    }
+   }
+  },
+  "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416740926229,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457299324673,
+     "size": 9572270
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457285918750,
+     "size": 9563441
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457301792615,
+     "size": 9579580
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457289120239,
+     "size": 9576166
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457301151428,
+     "size": 9576161
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457287985030,
+     "size": 9579438
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457295840627,
+     "size": 9587514
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457300594997,
+     "size": 9586308
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457294813390,
+     "size": 9584462
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457284259630,
+     "size": 9582407
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457283938249,
+     "size": 9572500
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457295736914,
+     "size": 9581009
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457284869365,
+     "size": 9580695
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457289902904,
+     "size": 9581175
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457286352912,
+     "size": 9585525
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457299917370,
+     "size": 9586616
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457294971956,
+     "size": 9580647
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457295797130,
+     "size": 9580861
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457299937570,
+     "size": 9580982
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457290031669,
+     "size": 9580288
+    },
+    "9-09-2026 - 2dran8 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457298777266,
+     "size": 2835
+    }
+   }
+  },
+  "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416742066835,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457281754160,
+     "size": 9637409
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457290454494,
+     "size": 9589767
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457299668597,
+     "size": 9550332
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457291265219,
+     "size": 9530762
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457295292445,
+     "size": 9523955
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457293077536,
+     "size": 9517367
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457284209780,
+     "size": 9505779
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457286028912,
+     "size": 9516948
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457294034882,
+     "size": 9496803
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457289711183,
+     "size": 9514038
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457296755200,
+     "size": 9505892
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457294186807,
+     "size": 9504270
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457299920228,
+     "size": 9498995
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457293994754,
+     "size": 9509901
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457289897425,
+     "size": 9520001
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457292621536,
+     "size": 9503918
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457289950493,
+     "size": 9518239
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457288126786,
+     "size": 9509310
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457292648486,
+     "size": 9508983
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457294772134,
+     "size": 9501651
+    },
+    "9-09-2026 - 2dran6 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457298763427,
+     "size": 2823
+    }
+   }
+  },
+  "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops": {
+   "batch": "2dran",
+   "folder_id": 416741915675,
+   "n_signals_available": 20,
+   "files": {
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2457299267833,
+     "size": 9518064
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2457282971333,
+     "size": 9543625
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2457294260459,
+     "size": 9533820
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2457299714133,
+     "size": 9546204
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2457297659460,
+     "size": 9534073
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2457298036797,
+     "size": 9530331
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2457290735847,
+     "size": 9529829
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2457293358771,
+     "size": 9527540
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2457295866957,
+     "size": 9511612
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2457298029021,
+     "size": 9513213
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2457291993287,
+     "size": 9514551
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2457282603745,
+     "size": 9516713
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2457292144361,
+     "size": 9518901
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2457298650495,
+     "size": 9504887
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2457297491717,
+     "size": 9513669
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2457297939651,
+     "size": 9505366
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2457297328797,
+     "size": 9508901
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2457285985506,
+     "size": 9510191
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2457289579024,
+     "size": 9499208
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2457295614957,
+     "size": 9528161
+    },
+    "9-09-2026 - 2dran9 - 60in - 0.5 mat - 20 drops.csv": {
+     "id": 2457286931173,
+     "size": 2834
+    }
+   }
+  },
+  "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418100492612,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466858877762,
+     "size": 9588796
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466867459885,
+     "size": 9575607
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466871963026,
+     "size": 9593701
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466861366382,
+     "size": 9594522
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466865984603,
+     "size": 9600160
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466863648826,
+     "size": 9602226
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466863547759,
+     "size": 9603609
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466867659315,
+     "size": 9600188
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466866157294,
+     "size": 9600839
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466860450210,
+     "size": 9605376
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466863161402,
+     "size": 9593477
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466858560727,
+     "size": 9598705
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466865503991,
+     "size": 9602797
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466860101850,
+     "size": 9595911
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466869226433,
+     "size": 9601188
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466871856585,
+     "size": 9600418
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466864663629,
+     "size": 9599531
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466867419195,
+     "size": 9599689
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466870174679,
+     "size": 9600626
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466866955789,
+     "size": 9595633
+    },
+    "9-14-2026 - corny9 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466864119931,
+     "size": 2846
+    }
+   }
+  },
+  "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418100528678,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466860929655,
+     "size": 9539057
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466861020471,
+     "size": 9588933
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466868547708,
+     "size": 9586965
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466866740046,
+     "size": 9581720
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466864872806,
+     "size": 9575200
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466871317166,
+     "size": 9575906
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466871549915,
+     "size": 9576679
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466862297365,
+     "size": 9578840
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466861736160,
+     "size": 9579816
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466859162862,
+     "size": 9579267
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466866535885,
+     "size": 9581483
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466865801311,
+     "size": 9580555
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466862814096,
+     "size": 9581839
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466871638819,
+     "size": 9579089
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466858303773,
+     "size": 9582587
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466860819423,
+     "size": 9586229
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466857877461,
+     "size": 9582268
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466871391353,
+     "size": 9574533
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466864374387,
+     "size": 9579819
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466871468797,
+     "size": 9576785
+    },
+    "9-14-2026 - corny8 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466871300153,
+     "size": 2902
+    }
+   }
+  },
+  "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418103685489,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466870940349,
+     "size": 9580561
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466862554036,
+     "size": 9579783
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466871003056,
+     "size": 9560723
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466865513481,
+     "size": 9595781
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466863771853,
+     "size": 9579934
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466859830590,
+     "size": 9569685
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466870539045,
+     "size": 9579541
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466860075182,
+     "size": 9575421
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466870623382,
+     "size": 9572113
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466858440835,
+     "size": 9574063
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466859216684,
+     "size": 9573991
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466868399172,
+     "size": 9575715
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466870032829,
+     "size": 9574915
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466868062793,
+     "size": 9571979
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466861414686,
+     "size": 9576592
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466864894447,
+     "size": 9579442
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466865883315,
+     "size": 9596357
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466862283499,
+     "size": 9577404
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466868754042,
+     "size": 9581854
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466864254103,
+     "size": 9577742
+    },
+    "9-14-2026 - corny7 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466868280409,
+     "size": 2901
+    }
+   }
+  },
+  "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418101289628,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466859137596,
+     "size": 9601508
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466860747722,
+     "size": 9604375
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466857613415,
+     "size": 9591049
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466870503872,
+     "size": 9598521
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466866116560,
+     "size": 9602971
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466869934045,
+     "size": 9597562
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466858034862,
+     "size": 9595614
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466866514057,
+     "size": 9598260
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466858061980,
+     "size": 9592603
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466858882442,
+     "size": 9592210
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466858582469,
+     "size": 9599088
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466870378951,
+     "size": 9592910
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466863042163,
+     "size": 9586506
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466864743617,
+     "size": 9594829
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466863567224,
+     "size": 9573617
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466870817930,
+     "size": 9592049
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466867886942,
+     "size": 9590981
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466859504717,
+     "size": 9590575
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466861911065,
+     "size": 9590195
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466865715533,
+     "size": 9589943
+    },
+    "9-14-2026 - corny6 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466865175254,
+     "size": 2899
+    }
+   }
+  },
+  "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418101465215,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466863836361,
+     "size": 9576267
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466856052727,
+     "size": 9600504
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466869008182,
+     "size": 9596859
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466869233966,
+     "size": 9583870
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466869660509,
+     "size": 9584184
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466863809500,
+     "size": 9578205
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466866221944,
+     "size": 9600641
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466859785220,
+     "size": 9582228
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466869636625,
+     "size": 9579739
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466860248795,
+     "size": 9583609
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466868940585,
+     "size": 9603868
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466866656040,
+     "size": 9586864
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466864947973,
+     "size": 9581841
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466862827777,
+     "size": 9592550
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466867320628,
+     "size": 9592835
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466863884361,
+     "size": 9575126
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466866466223,
+     "size": 9590449
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466865115495,
+     "size": 9574776
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466862472610,
+     "size": 9572137
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466867083902,
+     "size": 9556708
+    },
+    "9-14-2026 - corny5 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466862007013,
+     "size": 2887
+    }
+   }
+  },
+  "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418100471261,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466869058929,
+     "size": 9575215
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466865187920,
+     "size": 9566631
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466859055149,
+     "size": 9570368
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466866361538,
+     "size": 9552191
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466868653321,
+     "size": 9568414
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466860236547,
+     "size": 9561348
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466857279884,
+     "size": 9552257
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466859172491,
+     "size": 9567230
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466866733550,
+     "size": 9548444
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466855282624,
+     "size": 9560009
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466857534396,
+     "size": 9558536
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466862266899,
+     "size": 9552484
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466865468599,
+     "size": 9553638
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466861966177,
+     "size": 9549167
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466860226997,
+     "size": 9554269
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466868686225,
+     "size": 9547194
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466856871734,
+     "size": 9557903
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466860447207,
+     "size": 9552856
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466868999163,
+     "size": 9557263
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466859134849,
+     "size": 9548517
+    },
+    "9-14-2026 - corny4 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466868796509,
+     "size": 2843
+    }
+   }
+  },
+  "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418102775342,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466866778216,
+     "size": 9562364
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466856621641,
+     "size": 9564733
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466863217513,
+     "size": 9575657
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466861726033,
+     "size": 9569327
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466860872375,
+     "size": 9569527
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466868948104,
+     "size": 9578835
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466865436483,
+     "size": 9573410
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466867169245,
+     "size": 9581344
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466867640521,
+     "size": 9568904
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466854317824,
+     "size": 9570687
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466854318282,
+     "size": 9563806
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466866843396,
+     "size": 9563090
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466854545836,
+     "size": 9576857
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466867287163,
+     "size": 9576148
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466860862815,
+     "size": 9578487
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466867374330,
+     "size": 9574152
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466860286963,
+     "size": 9573636
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466863181133,
+     "size": 9570183
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466867237426,
+     "size": 9578940
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466862881511,
+     "size": 9573339
+    },
+    "9-14-2026 - corny3 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466866838992,
+     "size": 2859
+    }
+   }
+  },
+  "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418102295233,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466856917152,
+     "size": 9506976
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466863793159,
+     "size": 9549328
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466857790323,
+     "size": 9558511
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466867438945,
+     "size": 9543476
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466863281259,
+     "size": 9532827
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466861112584,
+     "size": 9538262
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466856019186,
+     "size": 9545230
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466859247151,
+     "size": 9510679
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466867767351,
+     "size": 9508069
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466860315803,
+     "size": 9565094
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466858796778,
+     "size": 9527985
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466854975449,
+     "size": 9534314
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466856864099,
+     "size": 9561244
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466865146594,
+     "size": 9561975
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466861016584,
+     "size": 9572203
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466864855828,
+     "size": 9559776
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466856940989,
+     "size": 9560385
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466866661597,
+     "size": 9555409
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466864779001,
+     "size": 9555504
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466867148084,
+     "size": 9560781
+    },
+    "9-14-2026 - corny2 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466866684804,
+     "size": 2838
+    }
+   }
+  },
+  "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops": {
+   "batch": "corny",
+   "folder_id": 418101692815,
+   "n_signals_available": 20,
+   "files": {
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal1.csv": {
+     "id": 2466866118225,
+     "size": 9557568
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal2.csv": {
+     "id": 2466853578170,
+     "size": 9544445
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal3.csv": {
+     "id": 2466867074247,
+     "size": 9549917
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal4.csv": {
+     "id": 2466866065392,
+     "size": 9550133
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal5.csv": {
+     "id": 2466856497152,
+     "size": 9537199
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal6.csv": {
+     "id": 2466854238780,
+     "size": 9555187
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal7.csv": {
+     "id": 2466866221548,
+     "size": 9566559
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal8.csv": {
+     "id": 2466855483884,
+     "size": 9568148
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal9.csv": {
+     "id": 2466858162680,
+     "size": 9557520
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal10.csv": {
+     "id": 2466866542875,
+     "size": 9564530
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal11.csv": {
+     "id": 2466866231347,
+     "size": 9569147
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal12.csv": {
+     "id": 2466855318823,
+     "size": 9561384
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal13.csv": {
+     "id": 2466853144695,
+     "size": 9559236
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal14.csv": {
+     "id": 2466862966889,
+     "size": 9560759
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal15.csv": {
+     "id": 2466855829320,
+     "size": 9558520
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal16.csv": {
+     "id": 2466866958730,
+     "size": 9547655
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal17.csv": {
+     "id": 2466866866821,
+     "size": 9573319
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal18.csv": {
+     "id": 2466858014197,
+     "size": 9565272
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal19.csv": {
+     "id": 2466854754625,
+     "size": 9569113
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops_Signal20.csv": {
+     "id": 2466866967621,
+     "size": 9576901
+    },
+    "9-14-2026 - corny1 - 60 in - 0.5 mat - 20 drops.csv": {
+     "id": 2466863238908,
+     "size": 2892
+    }
+   }
+  }
+ }
+}
