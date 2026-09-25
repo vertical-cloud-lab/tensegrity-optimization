@@ -65,7 +65,8 @@
     "r2d2c2"
   ],
   "fold_seconds": {
-    "r2d2c3": 118.9
+    "r2d2c3": 118.9,
+    "r2d2c5": 116.8
   },
   "status": "running"
 }
