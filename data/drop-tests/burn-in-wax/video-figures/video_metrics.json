@@ -1,0 +1,67 @@
+{
+  "rec1": {
+    "base": 1.3079365079365077,
+    "impact": 253,
+    "start": 163,
+    "descent_frames": 90,
+    "descent_ms_real": 93.8,
+    "vel_px_fr": 2.151,
+    "acc_px_fr2": 0.0147,
+    "rebound_px": 106.5,
+    "rebound_frac": 0.47,
+    "apex": 364,
+    "total": 784
+  },
+  "rec2": {
+    "base": 1.8226600985221675,
+    "impact": 275,
+    "start": 185,
+    "descent_frames": 90,
+    "descent_ms_real": 93.8,
+    "vel_px_fr": 2.164,
+    "acc_px_fr2": 0.017,
+    "rebound_px": 109.8,
+    "rebound_frac": 0.48,
+    "apex": 392,
+    "total": 835
+  },
+  "rec3": {
+    "base": 1.7723970944309928,
+    "impact": 336,
+    "start": 245,
+    "descent_frames": 91,
+    "descent_ms_real": 94.8,
+    "vel_px_fr": 2.161,
+    "acc_px_fr2": 0.0161,
+    "rebound_px": 108.6,
+    "rebound_frac": 0.47,
+    "apex": 470,
+    "total": 864
+  },
+  "rec4": {
+    "base": 1.3942857142857141,
+    "impact": 253,
+    "start": 162,
+    "descent_frames": 91,
+    "descent_ms_real": 94.8,
+    "vel_px_fr": 2.169,
+    "acc_px_fr2": 0.0153,
+    "rebound_px": 108.3,
+    "rebound_frac": 0.47,
+    "apex": 379,
+    "total": 769
+  },
+  "rec5": {
+    "base": 1.054945054945055,
+    "impact": 255,
+    "start": 163,
+    "descent_frames": 92,
+    "descent_ms_real": 95.8,
+    "vel_px_fr": 2.166,
+    "acc_px_fr2": 0.0162,
+    "rebound_px": 108.4,
+    "rebound_frac": 0.47,
+    "apex": 373,
+    "total": 808
+  }
+}
