@@ -1,0 +1,138 @@
+{
+  "checked": "2026-09-28",
+  "slicer": "BambuStudio v02.07.01.62 AppImage CLI (headless, --slice 0 --debug 1), the lab's slicer version; same recipe as the round-4 and round-5 checks (bo/batching/SETUP.md on the issue #108 branch)",
+  "plates": {
+    "sne1": {
+      "project": "bo/replicate-study/t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf",
+      "sha256_12": "ec1976b6bf8c",
+      "exit_code": 0,
+      "objects_sliced": [
+        "1sne71",
+        "1sne81",
+        "1sne21",
+        "1sne82",
+        "1sne22",
+        "1sne72",
+        "1sne23",
+        "1sne73",
+        "1sne83"
+      ],
+      "model_time": "14h 54m 23s",
+      "total_time": "14h 54m 43s",
+      "layers": 337,
+      "total_filament_g": {
+        "pla": 175.34,
+        "tpu": 59.72
+      },
+      "max_z_mm": 101.1,
+      "main_used_g": {
+        "pla": 150.83,
+        "tpu": 43.19
+      },
+      "sparse_infill_time_s": 2115,
+      "warning": "It seems object 1sne23 has floating cantilever. Please re-orient the object or enable support generation.",
+      "log_lines": {
+        "conflict": 0,
+        "outside": 0,
+        "no_valid_nozzle": 0,
+        "error": 0
+      }
+    },
+    "sne2": {
+      "project": "bo/replicate-study/t3-prism-replicate-sne-plate2.H2D-MM-PLAstruts-TPUcables.3mf",
+      "sha256_12": "223d990b17f1",
+      "exit_code": 0,
+      "objects_sliced": [
+        "2sne81",
+        "2sne21",
+        "2sne71",
+        "2sne22",
+        "2sne72",
+        "2sne82",
+        "2sne73",
+        "2sne83",
+        "2sne23"
+      ],
+      "model_time": "14h 55m 22s",
+      "total_time": "14h 55m 42s",
+      "layers": 337,
+      "total_filament_g": {
+        "pla": 175.34,
+        "tpu": 59.73
+      },
+      "max_z_mm": 101.1,
+      "main_used_g": {
+        "pla": 150.83,
+        "tpu": 43.19
+      },
+      "sparse_infill_time_s": 2117,
+      "warning": "It seems object 2sne23 has floating cantilever. Please re-orient the object or enable support generation.",
+      "log_lines": {
+        "conflict": 0,
+        "outside": 0,
+        "no_valid_nozzle": 0,
+        "error": 0
+      }
+    },
+    "sne3": {
+      "project": "bo/replicate-study/t3-prism-replicate-sne-plate3.H2D-MM-PLAstruts-TPUcables.3mf",
+      "sha256_12": "331d99c2b2bb",
+      "exit_code": 0,
+      "objects_sliced": [
+        "3sne21",
+        "3sne71",
+        "3sne81",
+        "3sne72",
+        "3sne82",
+        "3sne22",
+        "3sne83",
+        "3sne23",
+        "3sne73"
+      ],
+      "model_time": "14h 54m 13s",
+      "total_time": "14h 54m 33s",
+      "layers": 337,
+      "total_filament_g": {
+        "pla": 175.33,
+        "tpu": 59.72
+      },
+      "max_z_mm": 101.1,
+      "main_used_g": {
+        "pla": 150.82,
+        "tpu": 43.18
+      },
+      "sparse_infill_time_s": 2116,
+      "warning": "It seems object 3sne22 has floating cantilever. Please re-orient the object or enable support generation.",
+      "log_lines": {
+        "conflict": 0,
+        "outside": 0,
+        "no_valid_nozzle": 0,
+        "error": 0
+      }
+    }
+  },
+  "infill_override_control": {
+    "what": "plate 1 re-sliced with its 18 per-part sparse_infill_density overrides deleted (so every part falls back to the process default, 15 %)",
+    "exit_code": 0,
+    "main_used_g": {
+      "pla": 144.14,
+      "tpu": 42.75
+    },
+    "sparse_infill_time_s": 1570,
+    "total_time": "14h 45m 8s",
+    "reading": "with the overrides, plate 1 uses 6.7 g more PLA (150.83 vs 144.14 g main use) and 35 % more sparse-infill time (2115 vs 1570 s); every override is above 15 %, so the overrides are active in the slice, not just present in the metadata"
+  },
+  "3dran": {
+    "project": "bo/replicate-study/t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf",
+    "sha256_12": "7803bb2fc183",
+    "exit_code": 156,
+    "return_code": -100,
+    "message": "No valid nozzle found. Please check nozzle count.",
+    "reading": "expected: the round-3 project was assembled before bo/t3_prism_printed_mass_plate.py wrote the H2D dual-nozzle machine state (_patch_h2d_state, added for round 4), so the headless CLI rejects it at the nozzle check; the committed round-3 original behaves the same way, and the GUI printed it twice (drran, 2dran). Left unpatched on purpose so the third print uses the same file as the first two."
+  },
+  "notes": [
+    "totals include the wipe tower, flushing and brims; supports are painted in the GUI afterwards, so production gcode will run longer and heavier",
+    "the one warning per plate is the floating-cantilever notice on a corny2 copy that every unsupported round has shown; it goes away once supports are painted",
+    "the three plates hold the same nine meshes in different positions, so their totals agree to within 0.01 g and about one minute"
+  ]
+}

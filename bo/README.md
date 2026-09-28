@@ -1037,7 +1037,7 @@ verification, and the H2D MM 3mf with the filament settings and all 18
 per-part infill overrides baked; follow with the headless BambuStudio
 slice check per the round-4 section).
 
-## Replicate study (3 designs x 9 articles, proposed 2026-09-23)
+## Replicate study (3 designs x 9 articles, proposed 2026-09-23, print files 2026-09-28)
 
 The lab plans a repeatability study (PR #102, 2026-09-23): three
 characteristic designs, one on the Pareto front, one further away, one
@@ -1049,9 +1049,34 @@ noise, protocol, and the campaign decision rules live in
 `t3-prism-replicate-study-plan.md`. Supporting script:
 `t3_prism_replicate_study_power.py` (deterministic, reads only committed
 data), outputs `t3-prism-replicate-study-{picks,power}.csv` and
-`figures/t3-prism-replicate-study-power.png`. Picks are proposed, not
-lab-confirmed; swapping them means re-running the script and re-freezing
-the plan's tables.
+`figures/t3-prism-replicate-study-power.png`. The lab accepted the
+picks on 2026-09-28 (PR #102, @me-madsen).
+
+Print files (2026-09-28): [`replicate-study/`](replicate-study/), with its
+own [README](replicate-study/README.md) written as the print sheet. Three
+plate projects, one per print job, each holding three copies of corny7
+(trial 37), corny8 (trial 39) and corny2 (trial 38) with objects named
+`[plate]sne[design digit][copy]` (for example `2sne73` = plate 2, corny7,
+copy 3); the copy digit is the row (1 = back), and each plate is a Latin
+square cycled across the plates, so every design sits in every one of the
+nine positions exactly once over the study. Also there: the `3dran`
+project for the third print of the round-3 plate (the committed round-3
+project with only its object names changed, `3dranN` = the design of
+`drranN` and `2dranN`), labeled plate maps, the print key CSV for all 36
+articles, byte copies of the STLs named by article, and a rebound-energy
+vs t180 figure of the three picks alone. Built by
+`t3_prism_replicate_plates.py` straight from the committed round-4 and
+round-3 projects (no re-render, no mass re-solve; the script checks the
+project meshes against the committed STLs and manifests first), at the
+round-4 filament point (PLA 226 C / 29.5 mm3/s, TPU 236 C / 2.6 mm3/s).
+Headless slice check with BambuStudio v02.07.01.62: all three plates exit
+0 with all nine named objects sliced and only the usual pre-support
+cantilever warning, about 14 h 55 min and 175 g PLA + 60 g TPU per plate
+including tower, flushing and brims; a control slice with the per-part
+infill overrides deleted used 6.7 g less PLA, so the overrides are live.
+The 3dran project, like the round-3 original, stops at the CLI's nozzle
+check (it predates `_patch_h2d_state`) and is left unpatched on purpose.
+Record: `replicate-study/t3-prism-replicate-slice-check.json`.
 
 ## Model interpretability (diagnostics)
 

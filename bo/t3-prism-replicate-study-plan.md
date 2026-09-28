@@ -1,6 +1,8 @@
 # Replicate study plan: 3 designs x 9 articles (27 prints)
 
-Status: **proposed picks, awaiting lab confirmation**. Plan and
+Status: **picks accepted by the lab on 2026-09-28** (@me-madsen, PR #102);
+print files, plate maps and the article key are in
+[`replicate-study/`](replicate-study/README.md). Plan and
 pre-registration for the study described by @sgbaird on PR #102 on
 2026-09-23, to be run by @achris0520, @me-madsen and @ctrhjk: three
 characteristic designs (one on the Pareto front, one further away, one
@@ -202,7 +204,9 @@ Printing (required):
   needed), same spools if possible, RH noted per print.
 - Per-part sparse infill per article: trial 37 struts 22 / cables 21,
   trial 39 struts 21 / cables 34, trial 38 struts 18 / cables 34 percent.
-- Two routes to the file. GUI route: open
+- The dedicated project files now exist, one per plate, in
+  [`replicate-study/`](replicate-study/README.md); the two routes below are
+  kept for the record. GUI route: open
   [`slices/t3-prism-bo-round4.H2D-MM-PLAstruts-TPUcables.3mf`](slices/),
   delete trials 40 to 45, clone each remaining object twice, verify every
   clone kept its per-part infill overrides (select the part, the settings
