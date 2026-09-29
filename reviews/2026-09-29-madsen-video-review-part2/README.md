@@ -13,10 +13,11 @@ on this branch; the two commits after it did not touch the manuscript). Line num
 the PDF's margin numbers; source pointers are into
 [`manuscript/manuscript-body.tex`](../../manuscript/manuscript-body.tex) at the same commit.
 
-**There are no comments on the video.** The YouTube API reports `comment_count: 0`, so there is
-nothing to inlay. YouTube had not generated auto-captions yet when the video was downloaded
-(shortly after upload), so the transcript is a Whisper pass with a second pass over
-the unclear passages (see [How this was produced](#how-this-was-produced)).
+**There are no comments on the video.** The YouTube API reports `comment_count: 0`, both at
+download and when re-checked about 35 minutes later, so there is nothing to inlay. The transcript
+is a Whisper pass, a second Whisper pass over the unclear passages, and YouTube's own
+auto-captions, which appeared after the download and were fetched as an independent check (see
+[How this was produced](#how-this-was-produced)).
 
 **Nothing in the manuscript has been changed.** As requested, each item says what I would
 change, for the team to approve first. The inquiries he asked for have been run, and their
@@ -1038,7 +1039,9 @@ untaped articles on a light seamless backdrop are the corny1 to corny9 photos (i
 `faster-whisper` `medium.en` (greedy decoding, primed with project vocabulary) is in
 [`transcript-whisper-medium-en.json`](transcript-whisper-medium-en.json); a second pass over the
 unclear windows (beam search, no vocabulary prompt) is in
-[`transcript-second-pass-beam5.json`](transcript-second-pass-beam5.json). The table below is the
+[`transcript-second-pass-beam5.json`](transcript-second-pass-beam5.json), and YouTube's
+auto-captions (word-timed) are in [`transcript-youtube-auto.json`](transcript-youtube-auto.json).
+The three agree on every passage an item depends on. The table below is the
 first pass with the corrections in [Appendix B](#appendix-b-transcription-corrections) applied.
 Square brackets mark words inserted for readability; quotation marks mark text he reads aloud
 from the draft.
@@ -1096,9 +1099,9 @@ from the draft.
 
 Judgment calls worth flagging:
 
-- `01:38` Both passes hear "something else [is] said right there". I read it as "something along
+- `01:38` All three passes hear "something else [is] said right there". I read it as "something along
   those lines", closing his offer of wording; the meaning of the item does not depend on it.
-- `02:02` The second pass hears "the beige optimization, whether that's awarded in here"; "the
+- `02:02` The second pass and YouTube hear "the beige optimization, [the] way that that's awarded in here"; "the
   way that's worded in here" is the only reading that fits the highlighted Section 2.3 heading.
 - `01:01` "2dran" and "3dran" are the print-batch IDs (the second and third prints of the batch-3
   designs); the vocabulary prompt carried "2dran", and "3dran" matches the print project committed
@@ -1118,7 +1121,9 @@ datacenter IP ranges; everything after the download ran on the runner.
    (same `rpicam-vid` and `ffmpeg` processes, uninterrupted), and the scratch directory was removed.
 2. **Transfer.** `rsync --bwlimit=1200`; SHA-256 hashes matched on both ends.
 3. **Transcription.** `faster-whisper` `medium.en`, int8 on CPU, greedy decoding with a
-   vocabulary prompt; then a beam-search pass without the prompt over nine unclear windows.
+   vocabulary prompt; then a beam-search pass without the prompt over nine unclear windows; then
+   YouTube's auto-captions, fetched through the Pi once they appeared (the comment count was
+   re-checked at the same time and was still zero).
 4. **Highlight detection.** One frame per second, Edge's highlighter yellow (about RGB 249, 243,
    110) segmented by color; a new highlight is a yellow region that appears while the page is not
    scrolling. The detected events on the PDF pages line up with the remarks.
