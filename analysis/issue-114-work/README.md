@@ -84,7 +84,7 @@ drift and the later impacts.
 **Figure 1.** The submitted computation on drop 2. (A) CH4 follows the base
 plate (CH5); CH2 does not. (B) The top-minus-base displacement implied by the
 submitted inputs passes the specimen's full height by 20 ms. (C) The
-submitted work curve, including the step at the second impact near 75 ms,
+submitted work curve, including the step at the impact near 75 ms,
 next to the corrected curve.
 
 ![Submitted versus corrected, drop 2](figures/01_submitted_vs_corrected_drop2.png)
@@ -177,8 +177,8 @@ mean (standard deviation across drops). They are computed by
 | Tilt-corrected | tail median | 15 ms | -3.78 (0.03) | 7.9 | -0.59 |
 
 - **Tail median** is the lab's zeroing convention: subtract each channel's
-  median over 70 to 100 ms. That window contains the second impact, so it is
-  not a clean at-rest reference here.
+  median over 70 to 100 ms. That window contains the impact near 75 ms, so
+  it is not a clean at-rest reference here.
 - **CH4 × 0.953** puts the top sensor on the base sensor's scale using the
   side-by-side comparison in [PR #74](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/74#issuecomment-4673941024)
   (CH5 = 0.953 × CH4 on bare metal).
