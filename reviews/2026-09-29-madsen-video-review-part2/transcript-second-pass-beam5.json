@@ -1,0 +1,47 @@
+[
+ {
+  "start": 92,
+  "end": 121,
+  "text": "need to be they can probably just be mentioned here as a velocity loss index so it could say the filtered peak acceleration ratio transmissibility and a velocity loss index of the we could mention that's of the top vertex we could explore different ways to say it but something else said right there Let's make a note."
+ },
+ {
+  "start": 118,
+  "end": 146,
+  "text": "Let's make a note that it would be helpful probably to just have Sterling do a brief review of the beige optimization, whether that's awarded in here, just to double check that that's, it seems like it's good to me, but it'd probably be good to pass it by him as he's more of an expert in that area."
+ },
+ {
+  "start": 224,
+  "end": 252,
+  "text": "variance from this up so for example the lowest starting printing mass we could just put as 0 or have that be 18.5 at the very left whatever like the last one used to be the starting one And then we can track transmissibility is the y-value on that I just like to see how that compares so let's have Claude string that up And take a look at that"
+ },
+ {
+  "start": 250,
+  "end": 300,
+  "text": "Clarification here, and this line right here, so let's just read it from the beginning. From batch three, the projection instead holds printed mass at 20.23 grams, the reference article's weight by inverting the calibrated printed mass model described in the supplementary information. I guess I need to read over the supplementary information to find out what it means to invert the calibrated printed mass model, pull up when this video is uploaded, pull up a reference whatever this is. Second, information..."
+ },
+ {
+  "start": 295,
+  "end": 316,
+  "text": "a reference to whatever this is. Second, information, the achieved batch mass, CVs, I'm assuming this is control volumes. I know that's a pretty standard abbreviation. We're 1.7%"
+ },
+ {
+  "start": 338,
+  "end": 372,
+  "text": "I'm just curious on that. On this next part here, the two printability masses, like from right here, two printability screens, to right here, this is pretty dense and interesting, especially considering I'm not sure I'm even sure what this is talking about. Printability screens, so it's going over checking whether or not it can be printed"
+ },
+ {
+  "start": 412,
+  "end": 442,
+  "text": "Below the floor, the two C designs where this occurred both exhibited tendon stringing defects. So, one, I'm really not sure what this part here from the 3mm TPU cell crunching floor to below the floor means. too."
+ },
+ {
+  "start": 518,
+  "end": 552,
+  "text": "a report on that would be great. Right here where it matches that they're printed vertically, vertical orientation. Though it's inferrable, let's put in maybe C figure 3 or something here. There's something that shows what we mean by vertical because Yeah More explicit"
+ },
+ {
+  "start": 549,
+  "end": 572,
+  "text": "explicit just in terms of readability maybe it's standard F symbol units range normally when you're reading a number though you read the units after the number so why don't we put units after range we're going to pause this session right here in line"
+ }
+]

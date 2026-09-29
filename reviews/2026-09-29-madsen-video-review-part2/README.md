@@ -885,7 +885,7 @@ manuscript body does not mention the sign at all.
 ### D. Printability screens: plain-language report, origin, and number check
 
 Items [11](#11-0541-to-0618--the-printability-screens-sentence-is-too-dense-where-did-the-screens-come-from)
-to [15](#15-0754-to-0821--plain-language-report-on-the-highlighted-passage-with-related-posts).
+to [15](#15-0808-to-0822--plain-language-report-on-the-highlighted-passage-with-related-posts).
 The full report, with the per-article table for all 48 printed articles and every link, is
 [`printability-screens-report.md`](printability-screens-report.md). The short version:
 
