@@ -21,8 +21,10 @@ and an Edison Scientific review of the same material.
 - **Integrating 100 ms of raw data turns sensor offsets into most of the
   result.** With the submitted inputs, the top of the specimen ends up 341 mm
   (drop 1) and 416 mm (drop 2) below the base plate. The specimen is 67 mm
-  tall. The record also contains a second impact at about 75 ms, which is
-  the jump in both of the submitted plots.
+  tall. The 100 ms record also contains later events: the specimen landing
+  again 42 to 46 ms after impact (per the export's README) and a burst on
+  every channel, base plate included, at about 75 ms. The 75 ms burst is the
+  jump in both submitted plots.
 - **Corrected, the result is 3.6 to 4.8 J per kg of top mass** (negative
   work, drops 3 to 20), depending on reasonable analysis choices. Drop to
   drop it repeats to 0.03 J/kg. The submitted value is about -10 J/kg.
@@ -31,6 +33,51 @@ and an Edison Scientific review of the same material.
   a 0.8 g sensor, its wax, and a cable, against a 19.62 g specimen. A
   point mass on a massless spring does not describe that, and no mass
   estimate fixes it. A known payload on top would.
+- **Edison's independent review agrees on every point it tested** (see
+  "Edison review" below). Its corrected central value is 4.665 J/kg, with
+  a sensitivity range of 3.90 to 5.55 J/kg.
+
+## What happens during a drop
+
+1. The carriage, base plate and specimen fall 60 in together and reach
+   about 5.3 m/s. Before contact nothing loads the specimen.
+2. The PU mat stops the base plate in a pulse about 2.4 ms wide. CH5 peaks
+   near 220 G (CFC-180 filtered) around 3 ms into the record.
+3. The top of the specimen is still moving down while the base stops, so
+   the specimen compresses. The struts and cables push the top back up, and
+   the top peaks near 176 G, a fraction of a millisecond after the base.
+   That ratio is the lab's T180 of about 0.80.
+4. The power flowing into the specimen at any instant is the force it
+   carries times how fast it is being squeezed. Justin's work is the time
+   integral of that power. With the corrected inputs, nearly all of it
+   builds up between 2 and 6 ms, while the force is large (figure 2A).
+5. After about 6 ms the pulse is over. The top vertex keeps ringing at
+   400 to 800 Hz, and CH3 shows large sideways motion. The specimen lands
+   again 42 to 46 ms after impact, and a burst shows on every channel at
+   about 75 ms. None of that belongs in a first-impact energy.
+
+For scale, the kinetic energy per kg of anything moving at 5.3 m/s is
+about 14 J/kg.
+
+## Justin's method, step by step
+
+| Step | What he did | Verdict |
+|---|---|---|
+| Model | The specimen is a spring between the base plate (CH5) and a point mass at the top vertex (the triaxial sensor). | A reasonable first model. The point mass is the weak part (see "What the number means"). |
+| Force | From the free-body diagram of the top mass, $F_s - mg = m\,a_{top}$, so $F_s = m(g + a_{top})$. | Right, if $a_{top}$ is the vertical acceleration. |
+| Work | The spring pushes the top up and the base down, so the total work is $W = \int F_s\,(v_{top} - v_{bottom})\,dt$. | Right. It is the area under force against compression, and it does not depend on the unknown impact speed. |
+| Velocity and displacement | Trapezoid rule for $v$ from $a$, then for each step's displacement from $v$. | Right. |
+| Summation | Each step's relative displacement times the force at the end of the step. | Fine: 0.3 % from a full trapezoid rule at 50 kHz. |
+| Verification | A polynomial acceleration with a closed-form work, plus a fitted correction $u\,a + v$. | The integration passes. The fitted correction is an initial-velocity mismatch in the reference, not numerical error (see "The polynomial test"). |
+| Data | corny7 drop 2 (and drop 1 for the other plot), ms to s, G to m/s² with 9.81, $m = 1$, `v0 = 0`. | Drops 1 and 2 are warm-up drops. Otherwise right. |
+| Channels | CH2 as the top acceleration, CH5 as the bottom. | **Wrong channel.** CH2 is sideways; the vertical is CH4. |
+| Window | All 100 ms, unzeroed and unfiltered. | **Too long.** Offsets and later impacts dominate. Use the main impact only. |
+| Top and bottom work curves | The top and bottom terms plotted separately. | These depend on the choice of reference frame (`v0`), so only the total is meaningful. |
+
+Why the submitted answer looked believable: -9 to -11 J/kg is below the
+14 J/kg kinetic energy scale, so nothing flagged it. With Justin's inputs,
+drop 1 has only about -3.7 J/kg by 15 ms. The rest builds up later from
+drift and the later impacts.
 
 ## Figures
 
@@ -105,7 +152,7 @@ A constant offset of the size seen in the raw top channels (1 to 4 G) costs
 |---|---|---|---|
 | 1 | CH2 (sideways X axis of the top sensor) used as the vertical top acceleration. CH4 is the drop axis: correlation with CH5 is 0.92 for CH4, -0.64 for CH3, and -0.11 for CH2 (drops 3 to 20). | `implimatation_or_work.py` line 42 | Changes the answer from about -4.3 to about -10 J/kg. Figure 1A. |
 | 2 | 100 ms of raw, unzeroed data double-integrated. The raw channels sit well off zero after the impact (70 to 100 ms medians of about +0.8, +4.8, +2.1 and -0.8 G on CH2 to CH5). A constant offset $\epsilon$ adds $\epsilon t^2/2$ to displacement: 1 G over 100 ms is 49 mm. | lines 12 to 19 | Implied displacement of -341 mm (drop 1) and -416 mm (drop 2) on a 67 mm specimen. Figure 1B. |
-| 3 | The 100 ms record contains a second impact near 75 ms that shows on every channel, including the base plate. The final value at 100 ms mixes two events. | whole-record integration | The step at 75 ms in both submitted plots. Figure 1C. |
+| 3 | The 100 ms record contains later events: the specimen landing again 42 to 46 ms after impact, and a burst on every channel, base plate included, near 75 ms. The final value at 100 ms mixes all of them. | whole-record integration | The step at 75 ms in both submitted plots. Figure 1C. |
 | 4 | Drops 1 and 2 are the session's warm-up drops, which the lab leaves out of averages. | line 34 (`data[:, 0] == 2`) | Small for this specimen. Use drops 3 to 20 and report a mean and spread. |
 | 5 | The top mass is not a point mass on a massless spring. There is no payload; the top sensor weighs 0.8 g and the specimen 19.62 g. | the model | Decides what the number means. See "What the number means". |
 
@@ -246,10 +293,37 @@ Optional, in order of value:
 
 ## Edison review
 
-The same material (both scripts, the derivation, the plots, and the corny7
-export) was submitted to Edison Scientific as an analysis task on
-2026-09-29. The task id and submit script are in [`edison/`](edison/), and
-the results are added there once fetched.
+The same material (both scripts, the derivation, the plots, the corny7
+export and its README) went to Edison Scientific as an analysis task on
+2026-09-29 (task `a74889a5`, [submit script](edison/submit_work_review.py),
+[fetch script](edison/fetch_work_review.py)). The prompt listed three claims
+from this review and asked Edison to try to refute them with the data.
+Edison's full answer is in
+[`edison/edison-a74889a5-answer.md`](edison/edison-a74889a5-answer.md), and
+its script, CSV, figures and notebook are in
+[`edison/artifacts/`](edison/artifacts/).
+
+| Question | This review | Edison |
+|---|---|---|
+| Is CH4, not CH2, the vertical axis? | Yes (correlation with CH5: 0.92 against -0.11) | Survives strongly. First-15-ms velocity change: CH4 +4.89 m/s, CH5 +5.34 m/s, CH2 +0.12 m/s (drop 3). |
+| Is the submitted work curve mostly drift? | Yes (341 to 428 mm implied compression) | Substantially survives. Qualification: the first-impact signal and about 10 mm of compression are not all drift. |
+| Is the physics sound? | Yes | Yes, as an idealization: correct signs if the acceleration is kinematic, the axes stay aligned, the element is massless and the top mass is known. |
+| Corrected value, drops 3 to 20 | -4.30 (CH4, 15 ms, raw) to -4.69 (tail-zeroed); -3.6 to -4.8 over all variants | Median 4.665 J/kg (CH4, tail-zeroed, 300 Hz filter, 15 ms); range 3.90 to 5.55 J/kg over baseline window, filter, end time, a ±0.1 m/s starting relative velocity, and the gravity term |
+| Polynomial test | The fitted correction equals a 0.489 m/s initial-velocity mismatch in the reference | Same finding: the correction adds about 5.97 J/kg and compensates for mismatched initial conditions. The scheme converges at second order when the conditions match. |
+| Use for ranking | Log it next to T180 once the protocol is fixed; do not call it joules | Keep T180 as the objective; use this as a diagnostic, not a second calibrated objective |
+
+Edison adds two points worth keeping:
+
+- $-W$ equals the energy dissipated only over a completed cycle that
+  returns to the starting state. Stopping at 15 ms leaves the loop open, so
+  the number mixes dissipated and still-stored energy.
+- Its sensitivity range includes the starting relative velocity, which the
+  data cannot pin down, because the record begins after contact has
+  already started (CH5 already averages about 14 G over the first
+  millisecond).
+
+The two reviews used different variant sets. Taken together, the
+first-impact value is 3.6 to 5.6 J/kg of top mass.
 
 ## Files
 
@@ -258,7 +332,7 @@ the results are added there once fetched.
 | [`justin/`](justin/) | Justin's files as attached to issue #114: both scripts, the handwritten derivation ([PDF](justin/work-derivation-2026-09-29.pdf), [transcription](justin/derivation_transcribed.md)), his two plots, and [his stated intent](justin/intent.md) |
 | [`review_work_analysis.py`](review_work_analysis.py) | Reproduces the submitted numbers, runs the corrected variants and the known-answer test, and draws the figures |
 | [`results/`](results/) | Per-drop results, the known-answer test, and a summary |
-| [`edison/`](edison/) | Edison submit script, task id, and fetched review |
+| [`edison/`](edison/) | Edison submit and fetch scripts, task id, the answer, the full task record, and Edison's own script, CSV, figures and notebook in `artifacts/` |
 
 To rerun: `python analysis/issue-114-work/review_work_analysis.py`. It needs
 numpy, scipy, pandas and matplotlib, and downloads the corny7 waveform CSV
