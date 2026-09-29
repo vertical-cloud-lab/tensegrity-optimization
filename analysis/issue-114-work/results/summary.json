@@ -1,0 +1,151 @@
+{
+  "submitted_drop1_drop2": [
+    -11.278,
+    -9.459
+  ],
+  "submitted_min_rel_disp_mm_drop1_drop2": [
+    -341.4,
+    -416.3
+  ],
+  "corr_with_ch5_mean": {
+    "corr_ch2_ch5": -0.114,
+    "corr_ch3_ch5": -0.644,
+    "corr_ch4_ch5": 0.923
+  },
+  "drops3to20_mean": {
+    "submitted": -10.083,
+    "corr_ch2_ch5": -0.114,
+    "corr_ch3_ch5": -0.644,
+    "corr_ch4_ch5": 0.923,
+    "ch4_raw_8": -4.123,
+    "ch4_raw_15": -4.301,
+    "ch4_raw_30": -3.912,
+    "ch4_tail_8": -4.438,
+    "ch4_tail_15": -4.686,
+    "ch4_tail_30": -4.784,
+    "principal_raw_8": -3.667,
+    "principal_raw_15": -3.638,
+    "principal_raw_30": -3.64,
+    "principal_tail_8": -3.836,
+    "principal_tail_15": -3.778,
+    "principal_tail_30": -3.734
+  },
+  "drops3to20_sd": {
+    "submitted": 0.506,
+    "corr_ch2_ch5": 0.023,
+    "corr_ch3_ch5": 0.042,
+    "corr_ch4_ch5": 0.004,
+    "ch4_raw_8": 0.025,
+    "ch4_raw_15": 0.033,
+    "ch4_raw_30": 0.07,
+    "ch4_tail_8": 0.032,
+    "ch4_tail_15": 0.034,
+    "ch4_tail_30": 0.056,
+    "principal_raw_8": 0.027,
+    "principal_raw_15": 0.024,
+    "principal_raw_30": 0.024,
+    "principal_tail_8": 0.039,
+    "principal_tail_15": 0.028,
+    "principal_tail_30": 0.034
+  },
+  "ch4_tail_15_max_compression_mm_mean": 10.12,
+  "ch4_tail_15_end_rel_vel_m_s_mean": -0.421,
+  "ch4_tail_15_right_endpoint_mean": -4.671,
+  "ch4_tail_15_no_g_mean": -4.587,
+  "ch4_pr74scale_raw_15_mean": -4.738,
+  "ch4_pr74scale_raw_15_end_rel_vel_m_s_mean": -0.263,
+  "ch4_raw_15_max_compression_mm_mean": 7.1,
+  "ch4_raw_15_end_rel_vel_m_s_mean": -0.017,
+  "synthetic": [
+    {
+      "offset_g": 0.0,
+      "window_ms": 15.0,
+      "true_dissipated_J_per_kg": 8.111,
+      "true_minus_work_J_per_kg": 9.036,
+      "pipeline_minus_work_J_per_kg": 9.036,
+      "max_compression_mm": 6.01,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 0.0,
+      "window_ms": 100.0,
+      "true_dissipated_J_per_kg": 9.051,
+      "true_minus_work_J_per_kg": 9.051,
+      "pipeline_minus_work_J_per_kg": 9.051,
+      "max_compression_mm": 6.01,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 0.5,
+      "window_ms": 15.0,
+      "true_dissipated_J_per_kg": 8.111,
+      "true_minus_work_J_per_kg": 9.036,
+      "pipeline_minus_work_J_per_kg": 8.981,
+      "max_compression_mm": 5.944,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 0.5,
+      "window_ms": 100.0,
+      "true_dissipated_J_per_kg": 9.051,
+      "true_minus_work_J_per_kg": 9.051,
+      "pipeline_minus_work_J_per_kg": 8.631,
+      "max_compression_mm": 5.944,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 1.0,
+      "window_ms": 15.0,
+      "true_dissipated_J_per_kg": 8.111,
+      "true_minus_work_J_per_kg": 9.036,
+      "pipeline_minus_work_J_per_kg": 8.92,
+      "max_compression_mm": 5.878,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 1.0,
+      "window_ms": 100.0,
+      "true_dissipated_J_per_kg": 9.051,
+      "true_minus_work_J_per_kg": 9.051,
+      "pipeline_minus_work_J_per_kg": 7.971,
+      "max_compression_mm": 5.878,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 2.0,
+      "window_ms": 15.0,
+      "true_dissipated_J_per_kg": 8.111,
+      "true_minus_work_J_per_kg": 9.036,
+      "pipeline_minus_work_J_per_kg": 8.781,
+      "max_compression_mm": 5.747,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 2.0,
+      "window_ms": 100.0,
+      "true_dissipated_J_per_kg": 9.051,
+      "true_minus_work_J_per_kg": 9.051,
+      "pipeline_minus_work_J_per_kg": 5.929,
+      "max_compression_mm": 5.747,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 4.0,
+      "window_ms": 15.0,
+      "true_dissipated_J_per_kg": 8.111,
+      "true_minus_work_J_per_kg": 9.036,
+      "pipeline_minus_work_J_per_kg": 8.439,
+      "max_compression_mm": 5.489,
+      "true_max_compression_mm": 6.01
+    },
+    {
+      "offset_g": 4.0,
+      "window_ms": 100.0,
+      "true_dissipated_J_per_kg": 9.051,
+      "true_minus_work_J_per_kg": 9.051,
+      "pipeline_minus_work_J_per_kg": -1.041,
+      "max_compression_mm": 5.489,
+      "true_max_compression_mm": 6.01
+    }
+  ]
+}
