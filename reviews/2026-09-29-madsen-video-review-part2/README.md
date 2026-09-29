@@ -140,9 +140,9 @@ but not yet measured. This is the part-1 standing rule (part 1, item 30) applied
 
 ![Item 1 at 00:12](images/01-rebound-energy-becomes-velocity-loss-index--b-t00m12s.jpg)
 
-**Where in the source:** `manuscript-body.tex` has 37 lines that mention rebound (166, 312, 416, 959 to 974, 1041 to 1136, 1271 to 1289, 1355 to 1640, 1678 to 1748, 1784 to 1861) and 16 lines carrying the symbol $E_{\mathrm{reb}}$; `supplementary.tex` lines 378, 383, 389, 454. Table 1 ("This work" row: "$t_{180}$; provisional $E_{\mathrm{reb}}$") and the rebound axes of the Pareto, front-evolution and LOGO-CV figures carry it too.
+**Where in the source:** `manuscript-body.tex` has 37 lines that mention rebound (166, 312, 416, 959 to 974, 1041 to 1136, 1271 to 1289, 1355 to 1640, 1678 to 1748, 1784 to 1861) and 16 lines carrying the symbol $E_{\mathrm{reb}}$; `supplementary.tex` lines 378, 383, 389, 454. Table 1 (the "This work" row lists "t180; provisional E_reb") and the rebound axes of the Pareto, front-evolution and LOGO-CV figures carry it too.
 
-**What I would change:** This is not a find-and-replace, and it needs one decision first (see [Inquiry F](#f-what-the-velocity-loss-index-is-in-this-pipeline)). The pipeline's rebound fraction is already a velocity ratio, $e_{\mathrm{reb}} = g\,t_{\mathrm{second}}/(2\,\Delta v)$ (the top vertex's hop speed over the base-plate velocity change), so the natural definition is **VLI = 1 minus $e_{\mathrm{reb}}$**: dimensionless, higher is better, 0.937 to 0.986 across the 44 articles. What the campaign actually optimized in batches 1 to 4 was the mass-weighted score $E_{\mathrm{reb}} = e_{\mathrm{reb}}\,m\,g\,h$ in millijoules. I would (1) define VLI once in the objectives paragraph (`manuscript-body.tex:938` to `980`) with its formula, (2) use "velocity loss index" in all prose, (3) keep the record honest by saying the optimizer minimized the mass-weighted counterpart, $(1 - \mathrm{VLI})\,m\,g\,h$, and (4) regenerate the figure axes from the campaign plotting pipeline. The two rankings nearly coincide where printed mass was held constant (Spearman 0.995 between $E_{\mathrm{reb}}$ and $e_{\mathrm{reb}}$ over batches 3 and 4) but less so in batches 1 and 2 (0.855), so the wording matters for those batches. **Needs @sgbaird:** whether future batches optimize VLI itself rather than the mass-weighted score.
+**What I would change:** This is not a find-and-replace, and it needs one decision first (see [Inquiry F](#f-what-the-velocity-loss-index-is-in-this-pipeline)). The pipeline's rebound fraction is already a velocity ratio, $e_{\mathrm{reb}} = g t_{\mathrm{second}}/(2 \Delta v)$ (the top vertex's hop speed over the base-plate velocity change), so the natural definition is **VLI = 1 minus $e_{\mathrm{reb}}$**: dimensionless, higher is better, 0.937 to 0.986 across the 44 articles. What the campaign actually optimized in batches 1 to 4 was the mass-weighted score $E_{\mathrm{reb}} = e_{\mathrm{reb}} m g h$ in millijoules. I would (1) define VLI once in the objectives paragraph (`manuscript-body.tex:938` to `980`) with its formula, (2) use "velocity loss index" in all prose, (3) keep the record honest by saying the optimizer minimized the mass-weighted counterpart, $(1 - \mathrm{VLI}) m g h$, and (4) regenerate the figure axes from the campaign plotting pipeline. The two rankings nearly coincide where printed mass was held constant (Spearman 0.995 between $E_{\mathrm{reb}}$ and $e_{\mathrm{reb}}$ over batches 3 and 4) but less so in batches 1 and 2 (0.855), so the wording matters for those batches. **Needs @sgbaird:** whether future batches optimize VLI itself rather than the mass-weighted score.
 
 <details>
 <summary>Burst frames and full screen</summary>
@@ -453,7 +453,7 @@ Mouse pointer detected at (874, 1031) in the 2210 x 1200 frame.
 
 > Of 1.7% and 2.3%? Can we get some clarification on: does that mean they were within 1.7% of this mass here? Like, the printed batches were within 1.7%? Also, was that positive or negative? Like, were they over or under? Just curious on that.
 
-**On screen** ([jump to 05:14 in the video](https://youtu.be/LgUbi-ZpGi0?t=314)): Pointer on "1.7% (batch 3) and 2.3% (batch 4)" (lines 290 and 291).
+**On screen** ([jump to 05:14 in the video](https://youtu.be/LgUbi-ZpGi0?t=314)): Pointer at the end of "1.7% (batch 3) and 2.3% (batch 4)" (lines 290 and 291).
 
 ![Item 10 at 05:25](images/10-what-1-7-and-2-3-percent-mean--b-t05m25s.jpg)
 
@@ -989,11 +989,11 @@ Items [1](#1-0000-to-0028--call-the-rebound-quantity-the-velocity-loss-index-eve
 [4](#4-0122-to-0157--abstract-name-the-second-objective-the-velocity-loss-index). Checked against
 the five committed drop-result files:
 
-- The pipeline's rebound fraction is $e_{\mathrm{reb}} = g\,t_{\mathrm{second}}/(2\,\Delta v)$,
-  reproduced from the per-article means to within 5e-5. $g\,t_{\mathrm{second}}/2$ is the speed at
+- The pipeline's rebound fraction is $e_{\mathrm{reb}} = g t_{\mathrm{second}}/(2 \Delta v)$,
+  reproduced from the per-article means to within 5e-5. $g t_{\mathrm{second}}/2$ is the speed at
   which the top vertex leaves the base after impact, if the hop is ballistic, and $\Delta v$ is the
   base plate's velocity change. **So $e_{\mathrm{reb}}$ is already a velocity ratio.**
-- The campaign objective is $E_{\mathrm{reb}} = e_{\mathrm{reb}}\,m\,g\,h$ with $h$ = 1.524 m
+- The campaign objective is $E_{\mathrm{reb}} = e_{\mathrm{reb}} m g h$ with $h$ = 1.524 m
   (checked for all 44 articles), in millijoules: a velocity ratio times the article's potential
   energy. That is why the manuscript calls it a "mass-weighted rebound score" and not a measured
   rebound energy (returned kinetic energy would scale with the square of the ratio).
