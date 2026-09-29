@@ -1,0 +1,5718 @@
+{
+ "model": "medium.en",
+ "language": "en",
+ "duration": 584.8533125,
+ "initial_prompt": "Manuscript review of a tensegrity paper for the ASME Journal of Mechanical Design. Terms: tensegrity, tensegrity-inspired, T3 prism, PLA, TPU, FDM, Bambu, infill, strut, tendon, Bayesian optimization, SAASBO, Ax, BoTorch, Sobol, qNEHVI, hypervolume, Pareto front, transmissibility, t180, rebound energy, velocity loss index, drop tower, drop test, accelerometer, SAE J211, CFC-180, LOGO-CV, LOOCV, leave-one-out cross-validation, surrogate, posterior, Spearman, reprint, re-seat, seating, batch, seed round, drran, 2dran, corny, r2d2c, Madsen, Baird, Christiansen, Jinkwan Han, Jeff Hill, Audrey, Claude, Edison, Pajunen, Intrigila, Instron, quasi-static, compression test, supplementary information, Figure, Table, Section.",
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 28.6,
+   "text": "All right, this is the second batch of video edits for the manuscript. Before getting into that, as a note to Claude, let us replace any note in here. I think Sterling mentioned it before, of rebound energy. Let's replace that with velocity loss index.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 1.5,
+     "word": " All"
+    },
+    {
+     "start": 1.5,
+     "end": 1.96,
+     "word": " right,"
+    },
+    {
+     "start": 2.42,
+     "end": 2.9,
+     "word": " this"
+    },
+    {
+     "start": 2.9,
+     "end": 3.5,
+     "word": " is"
+    },
+    {
+     "start": 3.5,
+     "end": 3.9,
+     "word": " the"
+    },
+    {
+     "start": 3.9,
+     "end": 4.3,
+     "word": " second"
+    },
+    {
+     "start": 4.3,
+     "end": 4.88,
+     "word": " batch"
+    },
+    {
+     "start": 4.88,
+     "end": 5.56,
+     "word": " of"
+    },
+    {
+     "start": 5.56,
+     "end": 6.0,
+     "word": " video"
+    },
+    {
+     "start": 6.0,
+     "end": 6.52,
+     "word": " edits"
+    },
+    {
+     "start": 6.52,
+     "end": 7.86,
+     "word": " for"
+    },
+    {
+     "start": 7.86,
+     "end": 9.72,
+     "word": " the"
+    },
+    {
+     "start": 9.72,
+     "end": 11.46,
+     "word": " manuscript."
+    },
+    {
+     "start": 13.0,
+     "end": 13.5,
+     "word": " Before"
+    },
+    {
+     "start": 13.5,
+     "end": 14.06,
+     "word": " getting"
+    },
+    {
+     "start": 14.06,
+     "end": 14.46,
+     "word": " into"
+    },
+    {
+     "start": 14.46,
+     "end": 14.96,
+     "word": " that,"
+    },
+    {
+     "start": 15.6,
+     "end": 16.06,
+     "word": " as"
+    },
+    {
+     "start": 16.06,
+     "end": 16.16,
+     "word": " a"
+    },
+    {
+     "start": 16.16,
+     "end": 16.26,
+     "word": " note"
+    },
+    {
+     "start": 16.26,
+     "end": 16.5,
+     "word": " to"
+    },
+    {
+     "start": 16.5,
+     "end": 16.68,
+     "word": " Claude,"
+    },
+    {
+     "start": 16.84,
+     "end": 16.96,
+     "word": " let"
+    },
+    {
+     "start": 16.96,
+     "end": 17.9,
+     "word": " us"
+    },
+    {
+     "start": 17.9,
+     "end": 18.74,
+     "word": " replace"
+    },
+    {
+     "start": 18.74,
+     "end": 19.94,
+     "word": " any"
+    },
+    {
+     "start": 19.94,
+     "end": 20.2,
+     "word": " note"
+    },
+    {
+     "start": 20.2,
+     "end": 20.44,
+     "word": " in"
+    },
+    {
+     "start": 20.44,
+     "end": 20.86,
+     "word": " here."
+    },
+    {
+     "start": 21.28,
+     "end": 21.3,
+     "word": " I"
+    },
+    {
+     "start": 21.3,
+     "end": 21.68,
+     "word": " think"
+    },
+    {
+     "start": 21.68,
+     "end": 22.5,
+     "word": " Sterling"
+    },
+    {
+     "start": 22.5,
+     "end": 22.94,
+     "word": " mentioned"
+    },
+    {
+     "start": 22.94,
+     "end": 23.14,
+     "word": " it"
+    },
+    {
+     "start": 23.14,
+     "end": 23.6,
+     "word": " before,"
+    },
+    {
+     "start": 24.58,
+     "end": 25.06,
+     "word": " of"
+    },
+    {
+     "start": 25.06,
+     "end": 25.86,
+     "word": " rebound"
+    },
+    {
+     "start": 25.86,
+     "end": 26.3,
+     "word": " energy."
+    },
+    {
+     "start": 26.52,
+     "end": 26.58,
+     "word": " Let's"
+    },
+    {
+     "start": 26.58,
+     "end": 26.9,
+     "word": " replace"
+    },
+    {
+     "start": 26.9,
+     "end": 27.08,
+     "word": " that"
+    },
+    {
+     "start": 27.08,
+     "end": 27.24,
+     "word": " with"
+    },
+    {
+     "start": 27.24,
+     "end": 27.72,
+     "word": " velocity"
+    },
+    {
+     "start": 27.72,
+     "end": 28.0,
+     "word": " loss"
+    },
+    {
+     "start": 28.0,
+     "end": 28.6,
+     "word": " index."
+    }
+   ]
+  },
+  {
+   "start": 29.68,
+   "end": 58.58,
+   "text": "That is probably the best term we'll have to use for that going forward. I believe that I last left off somewhere partway through this. We're going to give it a quick glance over the very beginning and then pick up where I was before. I'll note really quick, this remains to be seen as we still yet to finish our validation test.",
+   "words": [
+    {
+     "start": 29.68,
+     "end": 30.24,
+     "word": " That"
+    },
+    {
+     "start": 30.24,
+     "end": 30.44,
+     "word": " is"
+    },
+    {
+     "start": 30.44,
+     "end": 30.7,
+     "word": " probably"
+    },
+    {
+     "start": 30.7,
+     "end": 30.86,
+     "word": " the"
+    },
+    {
+     "start": 30.86,
+     "end": 31.04,
+     "word": " best"
+    },
+    {
+     "start": 31.04,
+     "end": 31.44,
+     "word": " term"
+    },
+    {
+     "start": 31.44,
+     "end": 31.94,
+     "word": " we'll"
+    },
+    {
+     "start": 31.94,
+     "end": 32.16,
+     "word": " have"
+    },
+    {
+     "start": 32.16,
+     "end": 32.42,
+     "word": " to"
+    },
+    {
+     "start": 32.42,
+     "end": 32.58,
+     "word": " use"
+    },
+    {
+     "start": 32.58,
+     "end": 32.82,
+     "word": " for"
+    },
+    {
+     "start": 32.82,
+     "end": 33.3,
+     "word": " that"
+    },
+    {
+     "start": 33.3,
+     "end": 33.74,
+     "word": " going"
+    },
+    {
+     "start": 33.74,
+     "end": 34.32,
+     "word": " forward."
+    },
+    {
+     "start": 35.62,
+     "end": 36.18,
+     "word": " I"
+    },
+    {
+     "start": 36.18,
+     "end": 36.46,
+     "word": " believe"
+    },
+    {
+     "start": 36.46,
+     "end": 36.84,
+     "word": " that"
+    },
+    {
+     "start": 36.84,
+     "end": 37.06,
+     "word": " I"
+    },
+    {
+     "start": 37.06,
+     "end": 37.64,
+     "word": " last"
+    },
+    {
+     "start": 37.64,
+     "end": 38.76,
+     "word": " left"
+    },
+    {
+     "start": 38.76,
+     "end": 39.86,
+     "word": " off"
+    },
+    {
+     "start": 39.86,
+     "end": 41.12,
+     "word": " somewhere"
+    },
+    {
+     "start": 41.12,
+     "end": 41.94,
+     "word": " partway"
+    },
+    {
+     "start": 41.94,
+     "end": 42.28,
+     "word": " through"
+    },
+    {
+     "start": 42.28,
+     "end": 42.72,
+     "word": " this."
+    },
+    {
+     "start": 43.46,
+     "end": 43.52,
+     "word": " We're"
+    },
+    {
+     "start": 43.52,
+     "end": 43.62,
+     "word": " going"
+    },
+    {
+     "start": 43.62,
+     "end": 43.68,
+     "word": " to"
+    },
+    {
+     "start": 43.68,
+     "end": 43.78,
+     "word": " give"
+    },
+    {
+     "start": 43.78,
+     "end": 43.88,
+     "word": " it"
+    },
+    {
+     "start": 43.88,
+     "end": 44.04,
+     "word": " a"
+    },
+    {
+     "start": 44.04,
+     "end": 44.18,
+     "word": " quick"
+    },
+    {
+     "start": 44.18,
+     "end": 44.56,
+     "word": " glance"
+    },
+    {
+     "start": 44.56,
+     "end": 44.98,
+     "word": " over"
+    },
+    {
+     "start": 44.98,
+     "end": 45.62,
+     "word": " the"
+    },
+    {
+     "start": 45.62,
+     "end": 45.84,
+     "word": " very"
+    },
+    {
+     "start": 45.84,
+     "end": 46.18,
+     "word": " beginning"
+    },
+    {
+     "start": 46.18,
+     "end": 46.6,
+     "word": " and"
+    },
+    {
+     "start": 46.6,
+     "end": 46.8,
+     "word": " then"
+    },
+    {
+     "start": 46.8,
+     "end": 47.06,
+     "word": " pick"
+    },
+    {
+     "start": 47.06,
+     "end": 47.32,
+     "word": " up"
+    },
+    {
+     "start": 47.32,
+     "end": 47.54,
+     "word": " where"
+    },
+    {
+     "start": 47.54,
+     "end": 47.66,
+     "word": " I"
+    },
+    {
+     "start": 47.66,
+     "end": 47.84,
+     "word": " was"
+    },
+    {
+     "start": 47.84,
+     "end": 48.5,
+     "word": " before."
+    },
+    {
+     "start": 50.2,
+     "end": 50.32,
+     "word": " I'll"
+    },
+    {
+     "start": 50.32,
+     "end": 50.46,
+     "word": " note"
+    },
+    {
+     "start": 50.46,
+     "end": 50.7,
+     "word": " really"
+    },
+    {
+     "start": 50.7,
+     "end": 51.16,
+     "word": " quick,"
+    },
+    {
+     "start": 51.64,
+     "end": 52.12,
+     "word": " this"
+    },
+    {
+     "start": 52.12,
+     "end": 54.66,
+     "word": " remains"
+    },
+    {
+     "start": 54.66,
+     "end": 55.0,
+     "word": " to"
+    },
+    {
+     "start": 55.0,
+     "end": 55.18,
+     "word": " be"
+    },
+    {
+     "start": 55.18,
+     "end": 55.44,
+     "word": " seen"
+    },
+    {
+     "start": 55.44,
+     "end": 55.6,
+     "word": " as"
+    },
+    {
+     "start": 55.6,
+     "end": 55.76,
+     "word": " we"
+    },
+    {
+     "start": 55.76,
+     "end": 56.08,
+     "word": " still"
+    },
+    {
+     "start": 56.08,
+     "end": 56.3,
+     "word": " yet"
+    },
+    {
+     "start": 56.3,
+     "end": 56.9,
+     "word": " to"
+    },
+    {
+     "start": 56.9,
+     "end": 57.64,
+     "word": " finish"
+    },
+    {
+     "start": 57.64,
+     "end": 57.88,
+     "word": " our"
+    },
+    {
+     "start": 57.88,
+     "end": 58.26,
+     "word": " validation"
+    },
+    {
+     "start": 58.26,
+     "end": 58.58,
+     "word": " test."
+    }
+   ]
+  },
+  {
+   "start": 61.6,
+   "end": 80.94,
+   "text": "I believe this is talking about 2dran, which I guess I'll find out about later. But we're still waiting to validate it with a more perfect replication of printing a 3dran. That'll probably be a more perfect print that we can run.",
+   "words": [
+    {
+     "start": 61.6,
+     "end": 62.28,
+     "word": " I"
+    },
+    {
+     "start": 62.28,
+     "end": 62.96,
+     "word": " believe"
+    },
+    {
+     "start": 62.96,
+     "end": 63.12,
+     "word": " this"
+    },
+    {
+     "start": 63.12,
+     "end": 63.22,
+     "word": " is"
+    },
+    {
+     "start": 63.22,
+     "end": 63.52,
+     "word": " talking"
+    },
+    {
+     "start": 63.52,
+     "end": 63.8,
+     "word": " about"
+    },
+    {
+     "start": 63.8,
+     "end": 64.44,
+     "word": " 2dran,"
+    },
+    {
+     "start": 65.34,
+     "end": 65.54,
+     "word": " which"
+    },
+    {
+     "start": 65.54,
+     "end": 65.68,
+     "word": " I"
+    },
+    {
+     "start": 65.68,
+     "end": 65.82,
+     "word": " guess"
+    },
+    {
+     "start": 65.82,
+     "end": 66.06,
+     "word": " I'll"
+    },
+    {
+     "start": 66.06,
+     "end": 66.22,
+     "word": " find"
+    },
+    {
+     "start": 66.22,
+     "end": 66.6,
+     "word": " out"
+    },
+    {
+     "start": 66.6,
+     "end": 66.98,
+     "word": " about"
+    },
+    {
+     "start": 66.98,
+     "end": 67.5,
+     "word": " later."
+    },
+    {
+     "start": 69.2,
+     "end": 69.4,
+     "word": " But"
+    },
+    {
+     "start": 69.4,
+     "end": 69.72,
+     "word": " we're"
+    },
+    {
+     "start": 69.72,
+     "end": 69.92,
+     "word": " still"
+    },
+    {
+     "start": 69.92,
+     "end": 70.1,
+     "word": " waiting"
+    },
+    {
+     "start": 70.1,
+     "end": 70.24,
+     "word": " to"
+    },
+    {
+     "start": 70.24,
+     "end": 70.58,
+     "word": " validate"
+    },
+    {
+     "start": 70.58,
+     "end": 70.74,
+     "word": " it"
+    },
+    {
+     "start": 70.74,
+     "end": 70.88,
+     "word": " with"
+    },
+    {
+     "start": 70.88,
+     "end": 71.02,
+     "word": " a"
+    },
+    {
+     "start": 71.02,
+     "end": 71.14,
+     "word": " more"
+    },
+    {
+     "start": 71.14,
+     "end": 71.58,
+     "word": " perfect"
+    },
+    {
+     "start": 71.58,
+     "end": 72.26,
+     "word": " replication"
+    },
+    {
+     "start": 72.26,
+     "end": 73.4,
+     "word": " of"
+    },
+    {
+     "start": 73.4,
+     "end": 74.62,
+     "word": " printing"
+    },
+    {
+     "start": 74.62,
+     "end": 74.96,
+     "word": " a"
+    },
+    {
+     "start": 74.96,
+     "end": 75.6,
+     "word": " 3dran."
+    },
+    {
+     "start": 75.94,
+     "end": 76.26,
+     "word": " That'll"
+    },
+    {
+     "start": 76.26,
+     "end": 76.64,
+     "word": " probably"
+    },
+    {
+     "start": 76.64,
+     "end": 76.9,
+     "word": " be"
+    },
+    {
+     "start": 76.9,
+     "end": 77.48,
+     "word": " a"
+    },
+    {
+     "start": 77.48,
+     "end": 78.22,
+     "word": " more"
+    },
+    {
+     "start": 78.22,
+     "end": 78.58,
+     "word": " perfect"
+    },
+    {
+     "start": 78.58,
+     "end": 79.0,
+     "word": " print"
+    },
+    {
+     "start": 79.0,
+     "end": 79.98,
+     "word": " that"
+    },
+    {
+     "start": 79.98,
+     "end": 80.1,
+     "word": " we"
+    },
+    {
+     "start": 80.1,
+     "end": 80.26,
+     "word": " can"
+    },
+    {
+     "start": 80.26,
+     "end": 80.94,
+     "word": " run."
+    }
+   ]
+  },
+  {
+   "start": 82.7,
+   "end": 96.62,
+   "text": "Noting here is one of the cases of rebound energy. There's probably a lot in here. Just replace that with the velocity loss index. We'll need to explain it at some point. It probably doesn't need to be. It can probably just be mentioned here as a velocity loss index.",
+   "words": [
+    {
+     "start": 82.7,
+     "end": 83.1,
+     "word": " Noting"
+    },
+    {
+     "start": 83.1,
+     "end": 83.24,
+     "word": " here"
+    },
+    {
+     "start": 83.24,
+     "end": 83.36,
+     "word": " is"
+    },
+    {
+     "start": 83.36,
+     "end": 83.46,
+     "word": " one"
+    },
+    {
+     "start": 83.46,
+     "end": 83.58,
+     "word": " of"
+    },
+    {
+     "start": 83.58,
+     "end": 83.7,
+     "word": " the"
+    },
+    {
+     "start": 83.7,
+     "end": 83.96,
+     "word": " cases"
+    },
+    {
+     "start": 83.96,
+     "end": 84.18,
+     "word": " of"
+    },
+    {
+     "start": 84.18,
+     "end": 84.38,
+     "word": " rebound"
+    },
+    {
+     "start": 84.38,
+     "end": 84.7,
+     "word": " energy."
+    },
+    {
+     "start": 84.82,
+     "end": 84.94,
+     "word": " There's"
+    },
+    {
+     "start": 84.94,
+     "end": 85.1,
+     "word": " probably"
+    },
+    {
+     "start": 85.1,
+     "end": 85.22,
+     "word": " a"
+    },
+    {
+     "start": 85.22,
+     "end": 85.34,
+     "word": " lot"
+    },
+    {
+     "start": 85.34,
+     "end": 85.46,
+     "word": " in"
+    },
+    {
+     "start": 85.46,
+     "end": 85.96,
+     "word": " here."
+    },
+    {
+     "start": 86.36,
+     "end": 86.4,
+     "word": " Just"
+    },
+    {
+     "start": 86.4,
+     "end": 86.7,
+     "word": " replace"
+    },
+    {
+     "start": 86.7,
+     "end": 86.92,
+     "word": " that"
+    },
+    {
+     "start": 86.92,
+     "end": 87.32,
+     "word": " with"
+    },
+    {
+     "start": 87.32,
+     "end": 88.36,
+     "word": " the"
+    },
+    {
+     "start": 88.36,
+     "end": 88.7,
+     "word": " velocity"
+    },
+    {
+     "start": 88.7,
+     "end": 89.0,
+     "word": " loss"
+    },
+    {
+     "start": 89.0,
+     "end": 89.46,
+     "word": " index."
+    },
+    {
+     "start": 89.64,
+     "end": 89.7,
+     "word": " We'll"
+    },
+    {
+     "start": 89.7,
+     "end": 89.84,
+     "word": " need"
+    },
+    {
+     "start": 89.84,
+     "end": 90.04,
+     "word": " to"
+    },
+    {
+     "start": 90.04,
+     "end": 90.4,
+     "word": " explain"
+    },
+    {
+     "start": 90.4,
+     "end": 90.56,
+     "word": " it"
+    },
+    {
+     "start": 90.56,
+     "end": 90.72,
+     "word": " at"
+    },
+    {
+     "start": 90.72,
+     "end": 90.9,
+     "word": " some"
+    },
+    {
+     "start": 90.9,
+     "end": 91.42,
+     "word": " point."
+    },
+    {
+     "start": 91.74,
+     "end": 91.84,
+     "word": " It"
+    },
+    {
+     "start": 91.84,
+     "end": 91.84,
+     "word": " probably"
+    },
+    {
+     "start": 91.84,
+     "end": 92.04,
+     "word": " doesn't"
+    },
+    {
+     "start": 92.04,
+     "end": 92.16,
+     "word": " need"
+    },
+    {
+     "start": 92.16,
+     "end": 92.28,
+     "word": " to"
+    },
+    {
+     "start": 92.28,
+     "end": 92.54,
+     "word": " be."
+    },
+    {
+     "start": 93.42,
+     "end": 93.64,
+     "word": " It"
+    },
+    {
+     "start": 93.64,
+     "end": 93.74,
+     "word": " can"
+    },
+    {
+     "start": 93.74,
+     "end": 93.9,
+     "word": " probably"
+    },
+    {
+     "start": 93.9,
+     "end": 94.08,
+     "word": " just"
+    },
+    {
+     "start": 94.08,
+     "end": 94.24,
+     "word": " be"
+    },
+    {
+     "start": 94.24,
+     "end": 94.5,
+     "word": " mentioned"
+    },
+    {
+     "start": 94.5,
+     "end": 94.68,
+     "word": " here"
+    },
+    {
+     "start": 94.68,
+     "end": 94.84,
+     "word": " as"
+    },
+    {
+     "start": 94.84,
+     "end": 95.06,
+     "word": " a"
+    },
+    {
+     "start": 95.06,
+     "end": 95.52,
+     "word": " velocity"
+    },
+    {
+     "start": 95.52,
+     "end": 95.88,
+     "word": " loss"
+    },
+    {
+     "start": 95.88,
+     "end": 96.62,
+     "word": " index."
+    }
+   ]
+  },
+  {
+   "start": 98.6,
+   "end": 117.42,
+   "text": "So it could say the filter peak acceleration ratio, transmissibility, and a velocity loss index. We could mention that it's of the top vertex, we could explain it in different ways to say it, but something else is sad right there.",
+   "words": [
+    {
+     "start": 98.6,
+     "end": 99.12,
+     "word": " So"
+    },
+    {
+     "start": 99.12,
+     "end": 99.3,
+     "word": " it"
+    },
+    {
+     "start": 99.3,
+     "end": 99.46,
+     "word": " could"
+    },
+    {
+     "start": 99.46,
+     "end": 99.9,
+     "word": " say"
+    },
+    {
+     "start": 99.9,
+     "end": 100.16,
+     "word": " the"
+    },
+    {
+     "start": 100.16,
+     "end": 100.4,
+     "word": " filter"
+    },
+    {
+     "start": 100.4,
+     "end": 100.66,
+     "word": " peak"
+    },
+    {
+     "start": 100.66,
+     "end": 101.24,
+     "word": " acceleration"
+    },
+    {
+     "start": 101.24,
+     "end": 101.92,
+     "word": " ratio,"
+    },
+    {
+     "start": 102.12,
+     "end": 103.0,
+     "word": " transmissibility,"
+    },
+    {
+     "start": 103.9,
+     "end": 104.16,
+     "word": " and"
+    },
+    {
+     "start": 104.16,
+     "end": 104.4,
+     "word": " a"
+    },
+    {
+     "start": 104.4,
+     "end": 104.96,
+     "word": " velocity"
+    },
+    {
+     "start": 104.96,
+     "end": 105.36,
+     "word": " loss"
+    },
+    {
+     "start": 105.36,
+     "end": 106.28,
+     "word": " index."
+    },
+    {
+     "start": 108.96,
+     "end": 109.48,
+     "word": " We"
+    },
+    {
+     "start": 109.48,
+     "end": 111.22,
+     "word": " could"
+    },
+    {
+     "start": 111.22,
+     "end": 111.54,
+     "word": " mention"
+    },
+    {
+     "start": 111.54,
+     "end": 111.72,
+     "word": " that"
+    },
+    {
+     "start": 111.72,
+     "end": 111.8,
+     "word": " it's"
+    },
+    {
+     "start": 111.8,
+     "end": 111.9,
+     "word": " of"
+    },
+    {
+     "start": 111.9,
+     "end": 112.02,
+     "word": " the"
+    },
+    {
+     "start": 112.02,
+     "end": 112.2,
+     "word": " top"
+    },
+    {
+     "start": 112.2,
+     "end": 112.58,
+     "word": " vertex,"
+    },
+    {
+     "start": 112.78,
+     "end": 112.88,
+     "word": " we"
+    },
+    {
+     "start": 112.88,
+     "end": 113.0,
+     "word": " could"
+    },
+    {
+     "start": 113.0,
+     "end": 113.3,
+     "word": " explain"
+    },
+    {
+     "start": 113.3,
+     "end": 113.46,
+     "word": " it"
+    },
+    {
+     "start": 113.46,
+     "end": 113.58,
+     "word": " in"
+    },
+    {
+     "start": 113.58,
+     "end": 113.58,
+     "word": " different"
+    },
+    {
+     "start": 113.58,
+     "end": 113.72,
+     "word": " ways"
+    },
+    {
+     "start": 113.72,
+     "end": 113.86,
+     "word": " to"
+    },
+    {
+     "start": 113.86,
+     "end": 114.08,
+     "word": " say"
+    },
+    {
+     "start": 114.08,
+     "end": 114.26,
+     "word": " it,"
+    },
+    {
+     "start": 114.32,
+     "end": 114.4,
+     "word": " but"
+    },
+    {
+     "start": 114.4,
+     "end": 114.7,
+     "word": " something"
+    },
+    {
+     "start": 114.7,
+     "end": 115.2,
+     "word": " else"
+    },
+    {
+     "start": 115.2,
+     "end": 116.04,
+     "word": " is"
+    },
+    {
+     "start": 116.04,
+     "end": 116.32,
+     "word": " sad"
+    },
+    {
+     "start": 116.32,
+     "end": 116.78,
+     "word": " right"
+    },
+    {
+     "start": 116.78,
+     "end": 117.42,
+     "word": " there."
+    }
+   ]
+  },
+  {
+   "start": 119.5,
+   "end": 144.36,
+   "text": "Let's make a note that it would be helpful probably to just have Sterling do a brief review of the Bayesian optimization, whether that's awarded in here. Just to double check that that's, it seems like it's good to me, but it'd probably be good to pass it by him as he's more of an expert in that area.",
+   "words": [
+    {
+     "start": 119.5,
+     "end": 120.02,
+     "word": " Let's"
+    },
+    {
+     "start": 120.02,
+     "end": 120.54,
+     "word": " make"
+    },
+    {
+     "start": 120.54,
+     "end": 120.72,
+     "word": " a"
+    },
+    {
+     "start": 120.72,
+     "end": 121.12,
+     "word": " note"
+    },
+    {
+     "start": 121.12,
+     "end": 122.04,
+     "word": " that"
+    },
+    {
+     "start": 122.04,
+     "end": 123.6,
+     "word": " it"
+    },
+    {
+     "start": 123.6,
+     "end": 123.86,
+     "word": " would"
+    },
+    {
+     "start": 123.86,
+     "end": 123.92,
+     "word": " be"
+    },
+    {
+     "start": 123.92,
+     "end": 124.26,
+     "word": " helpful"
+    },
+    {
+     "start": 124.26,
+     "end": 124.74,
+     "word": " probably"
+    },
+    {
+     "start": 124.74,
+     "end": 124.9,
+     "word": " to"
+    },
+    {
+     "start": 124.9,
+     "end": 125.12,
+     "word": " just"
+    },
+    {
+     "start": 125.12,
+     "end": 125.28,
+     "word": " have"
+    },
+    {
+     "start": 125.28,
+     "end": 125.72,
+     "word": " Sterling"
+    },
+    {
+     "start": 125.72,
+     "end": 127.1,
+     "word": " do"
+    },
+    {
+     "start": 127.1,
+     "end": 127.36,
+     "word": " a"
+    },
+    {
+     "start": 127.36,
+     "end": 127.54,
+     "word": " brief"
+    },
+    {
+     "start": 127.54,
+     "end": 128.0,
+     "word": " review"
+    },
+    {
+     "start": 128.0,
+     "end": 129.46,
+     "word": " of"
+    },
+    {
+     "start": 129.46,
+     "end": 130.3,
+     "word": " the"
+    },
+    {
+     "start": 130.3,
+     "end": 130.66,
+     "word": " Bayesian"
+    },
+    {
+     "start": 130.66,
+     "end": 131.26,
+     "word": " optimization,"
+    },
+    {
+     "start": 131.26,
+     "end": 132.16,
+     "word": " whether"
+    },
+    {
+     "start": 132.16,
+     "end": 132.48,
+     "word": " that's"
+    },
+    {
+     "start": 132.48,
+     "end": 132.76,
+     "word": " awarded"
+    },
+    {
+     "start": 132.76,
+     "end": 134.0,
+     "word": " in"
+    },
+    {
+     "start": 134.0,
+     "end": 134.28,
+     "word": " here."
+    },
+    {
+     "start": 134.94,
+     "end": 135.18,
+     "word": " Just"
+    },
+    {
+     "start": 135.18,
+     "end": 135.38,
+     "word": " to"
+    },
+    {
+     "start": 135.38,
+     "end": 135.54,
+     "word": " double"
+    },
+    {
+     "start": 135.54,
+     "end": 135.84,
+     "word": " check"
+    },
+    {
+     "start": 135.84,
+     "end": 136.08,
+     "word": " that"
+    },
+    {
+     "start": 136.08,
+     "end": 136.52,
+     "word": " that's,"
+    },
+    {
+     "start": 136.68,
+     "end": 136.84,
+     "word": " it"
+    },
+    {
+     "start": 136.84,
+     "end": 137.02,
+     "word": " seems"
+    },
+    {
+     "start": 137.02,
+     "end": 137.22,
+     "word": " like"
+    },
+    {
+     "start": 137.22,
+     "end": 138.1,
+     "word": " it's"
+    },
+    {
+     "start": 138.1,
+     "end": 138.38,
+     "word": " good"
+    },
+    {
+     "start": 138.38,
+     "end": 138.56,
+     "word": " to"
+    },
+    {
+     "start": 138.56,
+     "end": 139.26,
+     "word": " me,"
+    },
+    {
+     "start": 139.86,
+     "end": 141.06,
+     "word": " but"
+    },
+    {
+     "start": 141.06,
+     "end": 141.22,
+     "word": " it'd"
+    },
+    {
+     "start": 141.22,
+     "end": 141.36,
+     "word": " probably"
+    },
+    {
+     "start": 141.36,
+     "end": 141.54,
+     "word": " be"
+    },
+    {
+     "start": 141.54,
+     "end": 141.68,
+     "word": " good"
+    },
+    {
+     "start": 141.68,
+     "end": 141.94,
+     "word": " to"
+    },
+    {
+     "start": 141.94,
+     "end": 142.22,
+     "word": " pass"
+    },
+    {
+     "start": 142.22,
+     "end": 142.36,
+     "word": " it"
+    },
+    {
+     "start": 142.36,
+     "end": 142.48,
+     "word": " by"
+    },
+    {
+     "start": 142.48,
+     "end": 142.7,
+     "word": " him"
+    },
+    {
+     "start": 142.7,
+     "end": 142.8,
+     "word": " as"
+    },
+    {
+     "start": 142.8,
+     "end": 143.02,
+     "word": " he's"
+    },
+    {
+     "start": 143.02,
+     "end": 143.16,
+     "word": " more"
+    },
+    {
+     "start": 143.16,
+     "end": 143.26,
+     "word": " of"
+    },
+    {
+     "start": 143.26,
+     "end": 143.38,
+     "word": " an"
+    },
+    {
+     "start": 143.38,
+     "end": 143.68,
+     "word": " expert"
+    },
+    {
+     "start": 143.68,
+     "end": 143.9,
+     "word": " in"
+    },
+    {
+     "start": 143.9,
+     "end": 144.04,
+     "word": " that"
+    },
+    {
+     "start": 144.04,
+     "end": 144.36,
+     "word": " area."
+    }
+   ]
+  },
+  {
+   "start": 146.16,
+   "end": 163.66,
+   "text": "So I really like this figure here, but I don't like the background. I think we should replace this photo, perhaps with one like this. Let's take it on a light backdrop. So let's do that.",
+   "words": [
+    {
+     "start": 146.16,
+     "end": 146.88,
+     "word": " So"
+    },
+    {
+     "start": 146.88,
+     "end": 147.4,
+     "word": " I"
+    },
+    {
+     "start": 147.4,
+     "end": 147.6,
+     "word": " really"
+    },
+    {
+     "start": 147.6,
+     "end": 147.96,
+     "word": " like"
+    },
+    {
+     "start": 147.96,
+     "end": 148.28,
+     "word": " this"
+    },
+    {
+     "start": 148.28,
+     "end": 148.72,
+     "word": " figure"
+    },
+    {
+     "start": 148.72,
+     "end": 149.1,
+     "word": " here,"
+    },
+    {
+     "start": 149.1,
+     "end": 150.14,
+     "word": " but"
+    },
+    {
+     "start": 150.14,
+     "end": 150.24,
+     "word": " I"
+    },
+    {
+     "start": 150.24,
+     "end": 150.48,
+     "word": " don't"
+    },
+    {
+     "start": 150.48,
+     "end": 150.72,
+     "word": " like"
+    },
+    {
+     "start": 150.72,
+     "end": 150.9,
+     "word": " the"
+    },
+    {
+     "start": 150.9,
+     "end": 151.38,
+     "word": " background."
+    },
+    {
+     "start": 152.72,
+     "end": 152.78,
+     "word": " I"
+    },
+    {
+     "start": 152.78,
+     "end": 153.0,
+     "word": " think"
+    },
+    {
+     "start": 153.0,
+     "end": 153.18,
+     "word": " we"
+    },
+    {
+     "start": 153.18,
+     "end": 153.34,
+     "word": " should"
+    },
+    {
+     "start": 153.34,
+     "end": 153.72,
+     "word": " replace"
+    },
+    {
+     "start": 153.72,
+     "end": 154.08,
+     "word": " this"
+    },
+    {
+     "start": 154.08,
+     "end": 154.58,
+     "word": " photo,"
+    },
+    {
+     "start": 154.74,
+     "end": 155.26,
+     "word": " perhaps"
+    },
+    {
+     "start": 155.26,
+     "end": 156.18,
+     "word": " with"
+    },
+    {
+     "start": 156.18,
+     "end": 156.52,
+     "word": " one"
+    },
+    {
+     "start": 156.52,
+     "end": 156.8,
+     "word": " like"
+    },
+    {
+     "start": 156.8,
+     "end": 157.26,
+     "word": " this."
+    },
+    {
+     "start": 157.92,
+     "end": 158.06,
+     "word": " Let's"
+    },
+    {
+     "start": 158.06,
+     "end": 158.22,
+     "word": " take"
+    },
+    {
+     "start": 158.22,
+     "end": 158.34,
+     "word": " it"
+    },
+    {
+     "start": 158.34,
+     "end": 158.44,
+     "word": " on"
+    },
+    {
+     "start": 158.44,
+     "end": 158.58,
+     "word": " a"
+    },
+    {
+     "start": 158.58,
+     "end": 158.72,
+     "word": " light"
+    },
+    {
+     "start": 158.72,
+     "end": 159.14,
+     "word": " backdrop."
+    },
+    {
+     "start": 161.06,
+     "end": 161.24,
+     "word": " So"
+    },
+    {
+     "start": 161.24,
+     "end": 161.8,
+     "word": " let's"
+    },
+    {
+     "start": 161.8,
+     "end": 162.76,
+     "word": " do"
+    },
+    {
+     "start": 162.76,
+     "end": 163.66,
+     "word": " that."
+    }
+   ]
+  },
+  {
+   "start": 165.06,
+   "end": 178.86,
+   "text": "If Claude, if you can't do that really well, maybe try your hand at making one and then also put a note for us to check that. If not, we can do it ourselves.",
+   "words": [
+    {
+     "start": 165.06,
+     "end": 165.58,
+     "word": " If"
+    },
+    {
+     "start": 165.58,
+     "end": 166.02,
+     "word": " Claude,"
+    },
+    {
+     "start": 166.24,
+     "end": 166.28,
+     "word": " if"
+    },
+    {
+     "start": 166.28,
+     "end": 166.4,
+     "word": " you"
+    },
+    {
+     "start": 166.4,
+     "end": 166.9,
+     "word": " can't"
+    },
+    {
+     "start": 166.9,
+     "end": 167.24,
+     "word": " do"
+    },
+    {
+     "start": 167.24,
+     "end": 167.48,
+     "word": " that"
+    },
+    {
+     "start": 167.48,
+     "end": 167.74,
+     "word": " really"
+    },
+    {
+     "start": 167.74,
+     "end": 168.18,
+     "word": " well,"
+    },
+    {
+     "start": 168.9,
+     "end": 169.72,
+     "word": " maybe"
+    },
+    {
+     "start": 169.72,
+     "end": 170.04,
+     "word": " try"
+    },
+    {
+     "start": 170.04,
+     "end": 170.26,
+     "word": " your"
+    },
+    {
+     "start": 170.26,
+     "end": 170.46,
+     "word": " hand"
+    },
+    {
+     "start": 170.46,
+     "end": 170.6,
+     "word": " at"
+    },
+    {
+     "start": 170.6,
+     "end": 170.82,
+     "word": " making"
+    },
+    {
+     "start": 170.82,
+     "end": 171.18,
+     "word": " one"
+    },
+    {
+     "start": 171.18,
+     "end": 172.0,
+     "word": " and"
+    },
+    {
+     "start": 172.0,
+     "end": 172.18,
+     "word": " then"
+    },
+    {
+     "start": 172.18,
+     "end": 172.46,
+     "word": " also"
+    },
+    {
+     "start": 172.46,
+     "end": 172.64,
+     "word": " put"
+    },
+    {
+     "start": 172.64,
+     "end": 172.76,
+     "word": " a"
+    },
+    {
+     "start": 172.76,
+     "end": 172.88,
+     "word": " note"
+    },
+    {
+     "start": 172.88,
+     "end": 173.06,
+     "word": " for"
+    },
+    {
+     "start": 173.06,
+     "end": 173.24,
+     "word": " us"
+    },
+    {
+     "start": 173.24,
+     "end": 173.5,
+     "word": " to"
+    },
+    {
+     "start": 173.5,
+     "end": 173.96,
+     "word": " check"
+    },
+    {
+     "start": 173.96,
+     "end": 174.34,
+     "word": " that."
+    },
+    {
+     "start": 175.74,
+     "end": 176.06,
+     "word": " If"
+    },
+    {
+     "start": 176.06,
+     "end": 176.26,
+     "word": " not,"
+    },
+    {
+     "start": 176.38,
+     "end": 176.44,
+     "word": " we"
+    },
+    {
+     "start": 176.44,
+     "end": 177.32,
+     "word": " can"
+    },
+    {
+     "start": 177.32,
+     "end": 178.24,
+     "word": " do"
+    },
+    {
+     "start": 178.24,
+     "end": 178.38,
+     "word": " it"
+    },
+    {
+     "start": 178.38,
+     "end": 178.86,
+     "word": " ourselves."
+    }
+   ]
+  },
+  {
+   "start": 181.16,
+   "end": 197.14,
+   "text": "I'm thinking the only thing is we'll probably want to take a picture of one that doesn't have this tape on it, such as the raw tensegrity structure, but I think a photo like this would look a lot better than having this with background in the back. Doesn't look too bad, but still.",
+   "words": [
+    {
+     "start": 181.16,
+     "end": 181.56,
+     "word": " I'm"
+    },
+    {
+     "start": 181.56,
+     "end": 181.88,
+     "word": " thinking"
+    },
+    {
+     "start": 181.88,
+     "end": 182.1,
+     "word": " the"
+    },
+    {
+     "start": 182.1,
+     "end": 182.28,
+     "word": " only"
+    },
+    {
+     "start": 182.28,
+     "end": 182.54,
+     "word": " thing"
+    },
+    {
+     "start": 182.54,
+     "end": 182.68,
+     "word": " is"
+    },
+    {
+     "start": 182.68,
+     "end": 182.82,
+     "word": " we'll"
+    },
+    {
+     "start": 182.82,
+     "end": 182.96,
+     "word": " probably"
+    },
+    {
+     "start": 182.96,
+     "end": 183.12,
+     "word": " want"
+    },
+    {
+     "start": 183.12,
+     "end": 183.12,
+     "word": " to"
+    },
+    {
+     "start": 183.12,
+     "end": 183.24,
+     "word": " take"
+    },
+    {
+     "start": 183.24,
+     "end": 183.38,
+     "word": " a"
+    },
+    {
+     "start": 183.38,
+     "end": 183.66,
+     "word": " picture"
+    },
+    {
+     "start": 183.66,
+     "end": 183.86,
+     "word": " of"
+    },
+    {
+     "start": 183.86,
+     "end": 184.02,
+     "word": " one"
+    },
+    {
+     "start": 184.02,
+     "end": 184.18,
+     "word": " that"
+    },
+    {
+     "start": 184.18,
+     "end": 184.5,
+     "word": " doesn't"
+    },
+    {
+     "start": 184.5,
+     "end": 184.96,
+     "word": " have"
+    },
+    {
+     "start": 184.96,
+     "end": 185.42,
+     "word": " this"
+    },
+    {
+     "start": 185.42,
+     "end": 185.68,
+     "word": " tape"
+    },
+    {
+     "start": 185.68,
+     "end": 185.88,
+     "word": " on"
+    },
+    {
+     "start": 185.88,
+     "end": 186.06,
+     "word": " it,"
+    },
+    {
+     "start": 186.06,
+     "end": 186.22,
+     "word": " such"
+    },
+    {
+     "start": 186.22,
+     "end": 186.4,
+     "word": " as"
+    },
+    {
+     "start": 186.4,
+     "end": 186.56,
+     "word": " the"
+    },
+    {
+     "start": 186.56,
+     "end": 186.8,
+     "word": " raw"
+    },
+    {
+     "start": 186.8,
+     "end": 187.38,
+     "word": " tensegrity"
+    },
+    {
+     "start": 187.38,
+     "end": 187.82,
+     "word": " structure,"
+    },
+    {
+     "start": 188.08,
+     "end": 189.22,
+     "word": " but"
+    },
+    {
+     "start": 189.22,
+     "end": 189.36,
+     "word": " I"
+    },
+    {
+     "start": 189.36,
+     "end": 189.52,
+     "word": " think"
+    },
+    {
+     "start": 189.52,
+     "end": 189.7,
+     "word": " a"
+    },
+    {
+     "start": 189.7,
+     "end": 189.88,
+     "word": " photo"
+    },
+    {
+     "start": 189.88,
+     "end": 190.08,
+     "word": " like"
+    },
+    {
+     "start": 190.08,
+     "end": 190.3,
+     "word": " this"
+    },
+    {
+     "start": 190.3,
+     "end": 190.48,
+     "word": " would"
+    },
+    {
+     "start": 190.48,
+     "end": 190.62,
+     "word": " look"
+    },
+    {
+     "start": 190.62,
+     "end": 190.74,
+     "word": " a"
+    },
+    {
+     "start": 190.74,
+     "end": 190.9,
+     "word": " lot"
+    },
+    {
+     "start": 190.9,
+     "end": 191.32,
+     "word": " better"
+    },
+    {
+     "start": 191.32,
+     "end": 192.28,
+     "word": " than"
+    },
+    {
+     "start": 192.28,
+     "end": 194.08,
+     "word": " having"
+    },
+    {
+     "start": 194.08,
+     "end": 194.26,
+     "word": " this"
+    },
+    {
+     "start": 194.26,
+     "end": 194.38,
+     "word": " with"
+    },
+    {
+     "start": 194.38,
+     "end": 194.78,
+     "word": " background"
+    },
+    {
+     "start": 194.78,
+     "end": 194.96,
+     "word": " in"
+    },
+    {
+     "start": 194.96,
+     "end": 195.04,
+     "word": " the"
+    },
+    {
+     "start": 195.04,
+     "end": 195.24,
+     "word": " back."
+    },
+    {
+     "start": 195.34,
+     "end": 195.56,
+     "word": " Doesn't"
+    },
+    {
+     "start": 195.56,
+     "end": 195.72,
+     "word": " look"
+    },
+    {
+     "start": 195.72,
+     "end": 195.82,
+     "word": " too"
+    },
+    {
+     "start": 195.82,
+     "end": 196.1,
+     "word": " bad,"
+    },
+    {
+     "start": 196.32,
+     "end": 196.64,
+     "word": " but"
+    },
+    {
+     "start": 196.64,
+     "end": 197.14,
+     "word": " still."
+    }
+   ]
+  },
+  {
+   "start": 199.46,
+   "end": 226.2,
+   "text": "This is less a criticism and more of a note that I want pulled up. I would like to see a graph charting the performance and transmissibility for each structure over its printed mass variance from this up.",
+   "words": [
+    {
+     "start": 199.46,
+     "end": 200.48,
+     "word": " This"
+    },
+    {
+     "start": 200.48,
+     "end": 200.64,
+     "word": " is"
+    },
+    {
+     "start": 200.64,
+     "end": 200.9,
+     "word": " less"
+    },
+    {
+     "start": 200.9,
+     "end": 201.74,
+     "word": " a"
+    },
+    {
+     "start": 201.74,
+     "end": 203.06,
+     "word": " criticism"
+    },
+    {
+     "start": 203.06,
+     "end": 203.42,
+     "word": " and"
+    },
+    {
+     "start": 203.42,
+     "end": 203.66,
+     "word": " more"
+    },
+    {
+     "start": 203.66,
+     "end": 204.1,
+     "word": " of"
+    },
+    {
+     "start": 204.1,
+     "end": 204.62,
+     "word": " a"
+    },
+    {
+     "start": 204.62,
+     "end": 204.82,
+     "word": " note"
+    },
+    {
+     "start": 204.82,
+     "end": 204.96,
+     "word": " that"
+    },
+    {
+     "start": 204.96,
+     "end": 205.12,
+     "word": " I"
+    },
+    {
+     "start": 205.12,
+     "end": 205.36,
+     "word": " want"
+    },
+    {
+     "start": 205.36,
+     "end": 205.92,
+     "word": " pulled"
+    },
+    {
+     "start": 205.92,
+     "end": 206.34,
+     "word": " up."
+    },
+    {
+     "start": 207.52,
+     "end": 207.82,
+     "word": " I"
+    },
+    {
+     "start": 207.82,
+     "end": 208.14,
+     "word": " would"
+    },
+    {
+     "start": 208.14,
+     "end": 208.38,
+     "word": " like"
+    },
+    {
+     "start": 208.38,
+     "end": 208.6,
+     "word": " to"
+    },
+    {
+     "start": 208.6,
+     "end": 209.06,
+     "word": " see"
+    },
+    {
+     "start": 209.06,
+     "end": 210.36,
+     "word": " a"
+    },
+    {
+     "start": 210.36,
+     "end": 210.86,
+     "word": " graph"
+    },
+    {
+     "start": 210.86,
+     "end": 213.18,
+     "word": " charting"
+    },
+    {
+     "start": 213.18,
+     "end": 214.5,
+     "word": " the"
+    },
+    {
+     "start": 214.5,
+     "end": 215.24,
+     "word": " performance"
+    },
+    {
+     "start": 215.24,
+     "end": 215.54,
+     "word": " and"
+    },
+    {
+     "start": 215.54,
+     "end": 216.48,
+     "word": " transmissibility"
+    },
+    {
+     "start": 216.48,
+     "end": 217.72,
+     "word": " for"
+    },
+    {
+     "start": 217.72,
+     "end": 217.98,
+     "word": " each"
+    },
+    {
+     "start": 217.98,
+     "end": 218.56,
+     "word": " structure"
+    },
+    {
+     "start": 218.56,
+     "end": 219.88,
+     "word": " over"
+    },
+    {
+     "start": 219.88,
+     "end": 220.58,
+     "word": " its"
+    },
+    {
+     "start": 220.58,
+     "end": 222.02,
+     "word": " printed"
+    },
+    {
+     "start": 222.02,
+     "end": 223.22,
+     "word": " mass"
+    },
+    {
+     "start": 223.22,
+     "end": 224.46,
+     "word": " variance"
+    },
+    {
+     "start": 224.46,
+     "end": 225.44,
+     "word": " from"
+    },
+    {
+     "start": 225.44,
+     "end": 225.76,
+     "word": " this"
+    },
+    {
+     "start": 225.76,
+     "end": 226.2,
+     "word": " up."
+    }
+   ]
+  },
+  {
+   "start": 226.74,
+   "end": 238.06,
+   "text": "So for example, the lowest starting printing mass we could just put as zero or have that be 18.5 at the very left. Whatever the lowest one, just be the starting one.",
+   "words": [
+    {
+     "start": 226.74,
+     "end": 227.18,
+     "word": " So"
+    },
+    {
+     "start": 227.18,
+     "end": 227.42,
+     "word": " for"
+    },
+    {
+     "start": 227.42,
+     "end": 227.82,
+     "word": " example,"
+    },
+    {
+     "start": 228.1,
+     "end": 228.4,
+     "word": " the"
+    },
+    {
+     "start": 228.4,
+     "end": 228.78,
+     "word": " lowest"
+    },
+    {
+     "start": 228.78,
+     "end": 229.74,
+     "word": " starting"
+    },
+    {
+     "start": 229.74,
+     "end": 230.18,
+     "word": " printing"
+    },
+    {
+     "start": 230.18,
+     "end": 230.6,
+     "word": " mass"
+    },
+    {
+     "start": 230.6,
+     "end": 231.04,
+     "word": " we"
+    },
+    {
+     "start": 231.04,
+     "end": 231.18,
+     "word": " could"
+    },
+    {
+     "start": 231.18,
+     "end": 231.32,
+     "word": " just"
+    },
+    {
+     "start": 231.32,
+     "end": 231.64,
+     "word": " put"
+    },
+    {
+     "start": 231.64,
+     "end": 232.12,
+     "word": " as"
+    },
+    {
+     "start": 232.12,
+     "end": 233.22,
+     "word": " zero"
+    },
+    {
+     "start": 233.22,
+     "end": 234.1,
+     "word": " or"
+    },
+    {
+     "start": 234.1,
+     "end": 234.32,
+     "word": " have"
+    },
+    {
+     "start": 234.32,
+     "end": 234.48,
+     "word": " that"
+    },
+    {
+     "start": 234.48,
+     "end": 234.66,
+     "word": " be"
+    },
+    {
+     "start": 234.66,
+     "end": 234.98,
+     "word": " 18"
+    },
+    {
+     "start": 234.98,
+     "end": 235.5,
+     "word": ".5"
+    },
+    {
+     "start": 235.5,
+     "end": 235.64,
+     "word": " at"
+    },
+    {
+     "start": 235.64,
+     "end": 235.74,
+     "word": " the"
+    },
+    {
+     "start": 235.74,
+     "end": 235.88,
+     "word": " very"
+    },
+    {
+     "start": 235.88,
+     "end": 236.1,
+     "word": " left."
+    },
+    {
+     "start": 236.2,
+     "end": 236.38,
+     "word": " Whatever"
+    },
+    {
+     "start": 236.38,
+     "end": 236.62,
+     "word": " the"
+    },
+    {
+     "start": 236.62,
+     "end": 236.86,
+     "word": " lowest"
+    },
+    {
+     "start": 236.86,
+     "end": 237.08,
+     "word": " one,"
+    },
+    {
+     "start": 237.18,
+     "end": 237.26,
+     "word": " just"
+    },
+    {
+     "start": 237.26,
+     "end": 237.4,
+     "word": " be"
+    },
+    {
+     "start": 237.4,
+     "end": 237.52,
+     "word": " the"
+    },
+    {
+     "start": 237.52,
+     "end": 237.74,
+     "word": " starting"
+    },
+    {
+     "start": 237.74,
+     "end": 238.06,
+     "word": " one."
+    }
+   ]
+  },
+  {
+   "start": 239.06,
+   "end": 249.52,
+   "text": "And then we can track transmissibility as the y value on that. I'd just like to see how that compares. So let's have Claude string that up and take a look at that.",
+   "words": [
+    {
+     "start": 239.06,
+     "end": 239.2,
+     "word": " And"
+    },
+    {
+     "start": 239.2,
+     "end": 239.34,
+     "word": " then"
+    },
+    {
+     "start": 239.34,
+     "end": 239.46,
+     "word": " we"
+    },
+    {
+     "start": 239.46,
+     "end": 239.7,
+     "word": " can"
+    },
+    {
+     "start": 239.7,
+     "end": 240.08,
+     "word": " track"
+    },
+    {
+     "start": 240.08,
+     "end": 240.86,
+     "word": " transmissibility"
+    },
+    {
+     "start": 240.86,
+     "end": 241.08,
+     "word": " as"
+    },
+    {
+     "start": 241.08,
+     "end": 241.64,
+     "word": " the"
+    },
+    {
+     "start": 241.64,
+     "end": 241.84,
+     "word": " y"
+    },
+    {
+     "start": 241.84,
+     "end": 242.12,
+     "word": " value"
+    },
+    {
+     "start": 242.12,
+     "end": 242.34,
+     "word": " on"
+    },
+    {
+     "start": 242.34,
+     "end": 242.56,
+     "word": " that."
+    },
+    {
+     "start": 242.68,
+     "end": 242.84,
+     "word": " I'd"
+    },
+    {
+     "start": 242.84,
+     "end": 242.92,
+     "word": " just"
+    },
+    {
+     "start": 242.92,
+     "end": 243.06,
+     "word": " like"
+    },
+    {
+     "start": 243.06,
+     "end": 243.18,
+     "word": " to"
+    },
+    {
+     "start": 243.18,
+     "end": 243.34,
+     "word": " see"
+    },
+    {
+     "start": 243.34,
+     "end": 243.48,
+     "word": " how"
+    },
+    {
+     "start": 243.48,
+     "end": 243.62,
+     "word": " that"
+    },
+    {
+     "start": 243.62,
+     "end": 244.08,
+     "word": " compares."
+    },
+    {
+     "start": 244.74,
+     "end": 244.74,
+     "word": " So"
+    },
+    {
+     "start": 244.74,
+     "end": 245.3,
+     "word": " let's"
+    },
+    {
+     "start": 245.3,
+     "end": 245.46,
+     "word": " have"
+    },
+    {
+     "start": 245.46,
+     "end": 245.66,
+     "word": " Claude"
+    },
+    {
+     "start": 245.66,
+     "end": 246.02,
+     "word": " string"
+    },
+    {
+     "start": 246.02,
+     "end": 246.2,
+     "word": " that"
+    },
+    {
+     "start": 246.2,
+     "end": 246.62,
+     "word": " up"
+    },
+    {
+     "start": 246.62,
+     "end": 248.2,
+     "word": " and"
+    },
+    {
+     "start": 248.2,
+     "end": 248.4,
+     "word": " take"
+    },
+    {
+     "start": 248.4,
+     "end": 248.54,
+     "word": " a"
+    },
+    {
+     "start": 248.54,
+     "end": 248.62,
+     "word": " look"
+    },
+    {
+     "start": 248.62,
+     "end": 248.76,
+     "word": " at"
+    },
+    {
+     "start": 248.76,
+     "end": 249.52,
+     "word": " that."
+    }
+   ]
+  },
+  {
+   "start": 253.0,
+   "end": 274.72,
+   "text": "Clarification here. This line right here. So let's just read it from the beginning. From batch three, the projection instead holds printed mass at 20.23 grams. The reference article is weight by inverting the calibrated printed mass model described in the supplementary information.",
+   "words": [
+    {
+     "start": 253.0,
+     "end": 253.56,
+     "word": " Clarification"
+    },
+    {
+     "start": 253.56,
+     "end": 254.12,
+     "word": " here."
+    },
+    {
+     "start": 255.72,
+     "end": 255.96,
+     "word": " This"
+    },
+    {
+     "start": 255.96,
+     "end": 258.56,
+     "word": " line"
+    },
+    {
+     "start": 258.56,
+     "end": 259.2,
+     "word": " right"
+    },
+    {
+     "start": 259.2,
+     "end": 260.04,
+     "word": " here."
+    },
+    {
+     "start": 260.3,
+     "end": 260.3,
+     "word": " So"
+    },
+    {
+     "start": 260.3,
+     "end": 260.42,
+     "word": " let's"
+    },
+    {
+     "start": 260.42,
+     "end": 260.56,
+     "word": " just"
+    },
+    {
+     "start": 260.56,
+     "end": 260.7,
+     "word": " read"
+    },
+    {
+     "start": 260.7,
+     "end": 260.84,
+     "word": " it"
+    },
+    {
+     "start": 260.84,
+     "end": 260.92,
+     "word": " from"
+    },
+    {
+     "start": 260.92,
+     "end": 261.02,
+     "word": " the"
+    },
+    {
+     "start": 261.02,
+     "end": 261.2,
+     "word": " beginning."
+    },
+    {
+     "start": 261.34,
+     "end": 261.42,
+     "word": " From"
+    },
+    {
+     "start": 261.42,
+     "end": 261.66,
+     "word": " batch"
+    },
+    {
+     "start": 261.66,
+     "end": 261.9,
+     "word": " three,"
+    },
+    {
+     "start": 262.02,
+     "end": 262.06,
+     "word": " the"
+    },
+    {
+     "start": 262.06,
+     "end": 262.56,
+     "word": " projection"
+    },
+    {
+     "start": 262.56,
+     "end": 263.72,
+     "word": " instead"
+    },
+    {
+     "start": 263.72,
+     "end": 264.0,
+     "word": " holds"
+    },
+    {
+     "start": 264.0,
+     "end": 264.36,
+     "word": " printed"
+    },
+    {
+     "start": 264.36,
+     "end": 264.68,
+     "word": " mass"
+    },
+    {
+     "start": 264.68,
+     "end": 264.92,
+     "word": " at"
+    },
+    {
+     "start": 264.92,
+     "end": 265.12,
+     "word": " 20"
+    },
+    {
+     "start": 265.12,
+     "end": 265.58,
+     "word": ".23"
+    },
+    {
+     "start": 265.58,
+     "end": 266.2,
+     "word": " grams."
+    },
+    {
+     "start": 266.4,
+     "end": 266.52,
+     "word": " The"
+    },
+    {
+     "start": 266.52,
+     "end": 266.72,
+     "word": " reference"
+    },
+    {
+     "start": 266.72,
+     "end": 267.04,
+     "word": " article"
+    },
+    {
+     "start": 267.04,
+     "end": 267.28,
+     "word": " is"
+    },
+    {
+     "start": 267.28,
+     "end": 267.54,
+     "word": " weight"
+    },
+    {
+     "start": 267.54,
+     "end": 267.9,
+     "word": " by"
+    },
+    {
+     "start": 267.9,
+     "end": 268.3,
+     "word": " inverting"
+    },
+    {
+     "start": 268.3,
+     "end": 268.46,
+     "word": " the"
+    },
+    {
+     "start": 268.46,
+     "end": 269.14,
+     "word": " calibrated"
+    },
+    {
+     "start": 269.14,
+     "end": 270.76,
+     "word": " printed"
+    },
+    {
+     "start": 270.76,
+     "end": 271.36,
+     "word": " mass"
+    },
+    {
+     "start": 271.36,
+     "end": 272.12,
+     "word": " model"
+    },
+    {
+     "start": 272.12,
+     "end": 272.96,
+     "word": " described"
+    },
+    {
+     "start": 272.96,
+     "end": 273.36,
+     "word": " in"
+    },
+    {
+     "start": 273.36,
+     "end": 273.54,
+     "word": " the"
+    },
+    {
+     "start": 273.54,
+     "end": 273.92,
+     "word": " supplementary"
+    },
+    {
+     "start": 273.92,
+     "end": 274.72,
+     "word": " information."
+    }
+   ]
+  },
+  {
+   "start": 275.72,
+   "end": 297.68,
+   "text": "I guess I need to read over the supplementary information to find out what it means to invert the calibrated printed mass model. Claude, pull up when this video is uploaded. Pull up a reference to whatever this is.",
+   "words": [
+    {
+     "start": 275.72,
+     "end": 276.46,
+     "word": " I"
+    },
+    {
+     "start": 276.46,
+     "end": 276.64,
+     "word": " guess"
+    },
+    {
+     "start": 276.64,
+     "end": 276.82,
+     "word": " I"
+    },
+    {
+     "start": 276.82,
+     "end": 276.94,
+     "word": " need"
+    },
+    {
+     "start": 276.94,
+     "end": 277.12,
+     "word": " to"
+    },
+    {
+     "start": 277.12,
+     "end": 277.26,
+     "word": " read"
+    },
+    {
+     "start": 277.26,
+     "end": 277.46,
+     "word": " over"
+    },
+    {
+     "start": 277.46,
+     "end": 277.7,
+     "word": " the"
+    },
+    {
+     "start": 277.7,
+     "end": 278.04,
+     "word": " supplementary"
+    },
+    {
+     "start": 278.04,
+     "end": 278.7,
+     "word": " information"
+    },
+    {
+     "start": 278.7,
+     "end": 278.94,
+     "word": " to"
+    },
+    {
+     "start": 278.94,
+     "end": 279.18,
+     "word": " find"
+    },
+    {
+     "start": 279.18,
+     "end": 279.5,
+     "word": " out"
+    },
+    {
+     "start": 279.5,
+     "end": 279.74,
+     "word": " what"
+    },
+    {
+     "start": 279.74,
+     "end": 280.8,
+     "word": " it"
+    },
+    {
+     "start": 280.8,
+     "end": 281.62,
+     "word": " means"
+    },
+    {
+     "start": 281.62,
+     "end": 281.88,
+     "word": " to"
+    },
+    {
+     "start": 281.88,
+     "end": 282.42,
+     "word": " invert"
+    },
+    {
+     "start": 282.42,
+     "end": 283.76,
+     "word": " the"
+    },
+    {
+     "start": 283.76,
+     "end": 284.16,
+     "word": " calibrated"
+    },
+    {
+     "start": 284.16,
+     "end": 284.78,
+     "word": " printed"
+    },
+    {
+     "start": 284.78,
+     "end": 285.16,
+     "word": " mass"
+    },
+    {
+     "start": 285.16,
+     "end": 285.62,
+     "word": " model."
+    },
+    {
+     "start": 286.78,
+     "end": 286.78,
+     "word": " Claude,"
+    },
+    {
+     "start": 288.24,
+     "end": 288.34,
+     "word": " pull"
+    },
+    {
+     "start": 288.34,
+     "end": 289.26,
+     "word": " up"
+    },
+    {
+     "start": 289.26,
+     "end": 290.12,
+     "word": " when"
+    },
+    {
+     "start": 290.12,
+     "end": 290.26,
+     "word": " this"
+    },
+    {
+     "start": 290.26,
+     "end": 290.4,
+     "word": " video"
+    },
+    {
+     "start": 290.4,
+     "end": 290.54,
+     "word": " is"
+    },
+    {
+     "start": 290.54,
+     "end": 290.98,
+     "word": " uploaded."
+    },
+    {
+     "start": 292.28,
+     "end": 292.44,
+     "word": " Pull"
+    },
+    {
+     "start": 292.44,
+     "end": 293.48,
+     "word": " up"
+    },
+    {
+     "start": 293.48,
+     "end": 294.24,
+     "word": " a"
+    },
+    {
+     "start": 294.24,
+     "end": 296.26,
+     "word": " reference"
+    },
+    {
+     "start": 296.26,
+     "end": 296.62,
+     "word": " to"
+    },
+    {
+     "start": 296.62,
+     "end": 296.86,
+     "word": " whatever"
+    },
+    {
+     "start": 296.86,
+     "end": 297.12,
+     "word": " this"
+    },
+    {
+     "start": 297.12,
+     "end": 297.68,
+     "word": " is."
+    }
+   ]
+  },
+  {
+   "start": 297.68,
+   "end": 313.4,
+   "text": "Second, information, the achieved batch mass CVs. I'm assuming this is control volumes. I know that's a pretty standard abbreviation.",
+   "words": [
+    {
+     "start": 297.68,
+     "end": 298.96,
+     "word": " Second,"
+    },
+    {
+     "start": 299.54,
+     "end": 300.18,
+     "word": " information,"
+    },
+    {
+     "start": 300.58,
+     "end": 300.68,
+     "word": " the"
+    },
+    {
+     "start": 300.68,
+     "end": 301.18,
+     "word": " achieved"
+    },
+    {
+     "start": 301.18,
+     "end": 301.82,
+     "word": " batch"
+    },
+    {
+     "start": 301.82,
+     "end": 302.4,
+     "word": " mass"
+    },
+    {
+     "start": 302.4,
+     "end": 303.52,
+     "word": " CVs."
+    },
+    {
+     "start": 303.62,
+     "end": 303.74,
+     "word": " I'm"
+    },
+    {
+     "start": 303.74,
+     "end": 303.96,
+     "word": " assuming"
+    },
+    {
+     "start": 303.96,
+     "end": 304.14,
+     "word": " this"
+    },
+    {
+     "start": 304.14,
+     "end": 304.3,
+     "word": " is"
+    },
+    {
+     "start": 304.3,
+     "end": 304.6,
+     "word": " control"
+    },
+    {
+     "start": 304.6,
+     "end": 305.12,
+     "word": " volumes."
+    },
+    {
+     "start": 306.96,
+     "end": 306.96,
+     "word": " I"
+    },
+    {
+     "start": 306.96,
+     "end": 307.12,
+     "word": " know"
+    },
+    {
+     "start": 307.12,
+     "end": 307.3,
+     "word": " that's"
+    },
+    {
+     "start": 307.3,
+     "end": 307.4,
+     "word": " a"
+    },
+    {
+     "start": 307.4,
+     "end": 307.64,
+     "word": " pretty"
+    },
+    {
+     "start": 307.64,
+     "end": 311.12,
+     "word": " standard"
+    },
+    {
+     "start": 311.12,
+     "end": 313.4,
+     "word": " abbreviation."
+    }
+   ]
+  },
+  {
+   "start": 314.4,
+   "end": 340.7,
+   "text": "Or 1.7% and 2.3%? Can we get some clarification on does that mean they were within 1.7% of this mass here? Like the printed batches were within 1.7%? Also, was that positive or negative? Like were they over or under? Just curious on that.",
+   "words": [
+    {
+     "start": 314.4,
+     "end": 314.88,
+     "word": " Or"
+    },
+    {
+     "start": 314.88,
+     "end": 315.2,
+     "word": " 1"
+    },
+    {
+     "start": 315.2,
+     "end": 315.66,
+     "word": ".7"
+    },
+    {
+     "start": 315.66,
+     "end": 316.2,
+     "word": "%"
+    },
+    {
+     "start": 316.2,
+     "end": 316.64,
+     "word": " and"
+    },
+    {
+     "start": 316.64,
+     "end": 316.84,
+     "word": " 2"
+    },
+    {
+     "start": 316.84,
+     "end": 317.6,
+     "word": ".3"
+    },
+    {
+     "start": 317.6,
+     "end": 318.24,
+     "word": "%?"
+    },
+    {
+     "start": 319.66,
+     "end": 320.04,
+     "word": " Can"
+    },
+    {
+     "start": 320.04,
+     "end": 320.3,
+     "word": " we"
+    },
+    {
+     "start": 320.3,
+     "end": 320.48,
+     "word": " get"
+    },
+    {
+     "start": 320.48,
+     "end": 320.66,
+     "word": " some"
+    },
+    {
+     "start": 320.66,
+     "end": 321.32,
+     "word": " clarification"
+    },
+    {
+     "start": 321.32,
+     "end": 322.02,
+     "word": " on"
+    },
+    {
+     "start": 322.02,
+     "end": 322.66,
+     "word": " does"
+    },
+    {
+     "start": 322.66,
+     "end": 322.84,
+     "word": " that"
+    },
+    {
+     "start": 322.84,
+     "end": 323.0,
+     "word": " mean"
+    },
+    {
+     "start": 323.0,
+     "end": 323.22,
+     "word": " they"
+    },
+    {
+     "start": 323.22,
+     "end": 324.02,
+     "word": " were"
+    },
+    {
+     "start": 324.02,
+     "end": 325.02,
+     "word": " within"
+    },
+    {
+     "start": 325.02,
+     "end": 325.34,
+     "word": " 1"
+    },
+    {
+     "start": 325.34,
+     "end": 325.86,
+     "word": ".7"
+    },
+    {
+     "start": 325.86,
+     "end": 326.38,
+     "word": "%"
+    },
+    {
+     "start": 326.38,
+     "end": 326.8,
+     "word": " of"
+    },
+    {
+     "start": 326.8,
+     "end": 327.94,
+     "word": " this"
+    },
+    {
+     "start": 327.94,
+     "end": 328.98,
+     "word": " mass"
+    },
+    {
+     "start": 328.98,
+     "end": 329.48,
+     "word": " here?"
+    },
+    {
+     "start": 330.28,
+     "end": 330.4,
+     "word": " Like"
+    },
+    {
+     "start": 330.4,
+     "end": 330.52,
+     "word": " the"
+    },
+    {
+     "start": 330.52,
+     "end": 330.8,
+     "word": " printed"
+    },
+    {
+     "start": 330.8,
+     "end": 331.22,
+     "word": " batches"
+    },
+    {
+     "start": 331.22,
+     "end": 331.5,
+     "word": " were"
+    },
+    {
+     "start": 331.5,
+     "end": 331.88,
+     "word": " within"
+    },
+    {
+     "start": 331.88,
+     "end": 332.16,
+     "word": " 1"
+    },
+    {
+     "start": 332.16,
+     "end": 332.52,
+     "word": ".7"
+    },
+    {
+     "start": 332.52,
+     "end": 332.8,
+     "word": "%?"
+    },
+    {
+     "start": 333.12,
+     "end": 333.38,
+     "word": " Also,"
+    },
+    {
+     "start": 333.56,
+     "end": 333.6,
+     "word": " was"
+    },
+    {
+     "start": 333.6,
+     "end": 334.24,
+     "word": " that"
+    },
+    {
+     "start": 334.24,
+     "end": 335.14,
+     "word": " positive"
+    },
+    {
+     "start": 335.14,
+     "end": 335.38,
+     "word": " or"
+    },
+    {
+     "start": 335.38,
+     "end": 335.78,
+     "word": " negative?"
+    },
+    {
+     "start": 336.52,
+     "end": 336.64,
+     "word": " Like"
+    },
+    {
+     "start": 336.64,
+     "end": 336.76,
+     "word": " were"
+    },
+    {
+     "start": 336.76,
+     "end": 336.92,
+     "word": " they"
+    },
+    {
+     "start": 336.92,
+     "end": 337.2,
+     "word": " over"
+    },
+    {
+     "start": 337.2,
+     "end": 337.4,
+     "word": " or"
+    },
+    {
+     "start": 337.4,
+     "end": 337.66,
+     "word": " under?"
+    },
+    {
+     "start": 339.02,
+     "end": 339.62,
+     "word": " Just"
+    },
+    {
+     "start": 339.62,
+     "end": 340.14,
+     "word": " curious"
+    },
+    {
+     "start": 340.14,
+     "end": 340.44,
+     "word": " on"
+    },
+    {
+     "start": 340.44,
+     "end": 340.7,
+     "word": " that."
+    }
+   ]
+  },
+  {
+   "start": 341.7,
+   "end": 367.08,
+   "text": "On this next part here, the two printed ability masses, from right here, two printed ability screens, to right here. This is pretty dense and interesting, especially considering I'm not sure I'm even sure what this is talking about.",
+   "words": [
+    {
+     "start": 341.62,
+     "end": 342.08,
+     "word": " On"
+    },
+    {
+     "start": 342.08,
+     "end": 342.26,
+     "word": " this"
+    },
+    {
+     "start": 342.26,
+     "end": 342.52,
+     "word": " next"
+    },
+    {
+     "start": 342.52,
+     "end": 342.8,
+     "word": " part"
+    },
+    {
+     "start": 342.8,
+     "end": 343.7,
+     "word": " here,"
+    },
+    {
+     "start": 344.8,
+     "end": 344.92,
+     "word": " the"
+    },
+    {
+     "start": 344.92,
+     "end": 345.06,
+     "word": " two"
+    },
+    {
+     "start": 345.06,
+     "end": 345.2,
+     "word": " printed"
+    },
+    {
+     "start": 345.2,
+     "end": 345.42,
+     "word": " ability"
+    },
+    {
+     "start": 345.42,
+     "end": 345.96,
+     "word": " masses,"
+    },
+    {
+     "start": 346.94,
+     "end": 347.38,
+     "word": " from"
+    },
+    {
+     "start": 347.38,
+     "end": 347.6,
+     "word": " right"
+    },
+    {
+     "start": 347.6,
+     "end": 348.66,
+     "word": " here,"
+    },
+    {
+     "start": 350.06,
+     "end": 350.54,
+     "word": " two"
+    },
+    {
+     "start": 350.54,
+     "end": 350.72,
+     "word": " printed"
+    },
+    {
+     "start": 350.72,
+     "end": 351.08,
+     "word": " ability"
+    },
+    {
+     "start": 351.08,
+     "end": 351.74,
+     "word": " screens,"
+    },
+    {
+     "start": 352.3,
+     "end": 353.92,
+     "word": " to"
+    },
+    {
+     "start": 353.92,
+     "end": 354.08,
+     "word": " right"
+    },
+    {
+     "start": 354.08,
+     "end": 354.6,
+     "word": " here."
+    },
+    {
+     "start": 355.9,
+     "end": 356.26,
+     "word": " This"
+    },
+    {
+     "start": 356.26,
+     "end": 356.44,
+     "word": " is"
+    },
+    {
+     "start": 356.44,
+     "end": 356.8,
+     "word": " pretty"
+    },
+    {
+     "start": 356.8,
+     "end": 358.92,
+     "word": " dense"
+    },
+    {
+     "start": 358.92,
+     "end": 359.14,
+     "word": " and"
+    },
+    {
+     "start": 359.14,
+     "end": 359.74,
+     "word": " interesting,"
+    },
+    {
+     "start": 360.38,
+     "end": 361.0,
+     "word": " especially"
+    },
+    {
+     "start": 361.0,
+     "end": 361.64,
+     "word": " considering"
+    },
+    {
+     "start": 361.64,
+     "end": 362.5,
+     "word": " I'm"
+    },
+    {
+     "start": 362.5,
+     "end": 362.84,
+     "word": " not"
+    },
+    {
+     "start": 362.84,
+     "end": 364.38,
+     "word": " sure"
+    },
+    {
+     "start": 364.38,
+     "end": 364.62,
+     "word": " I'm"
+    },
+    {
+     "start": 364.62,
+     "end": 364.84,
+     "word": " even"
+    },
+    {
+     "start": 364.84,
+     "end": 365.78,
+     "word": " sure"
+    },
+    {
+     "start": 365.78,
+     "end": 365.9,
+     "word": " what"
+    },
+    {
+     "start": 365.9,
+     "end": 366.04,
+     "word": " this"
+    },
+    {
+     "start": 366.04,
+     "end": 366.2,
+     "word": " is"
+    },
+    {
+     "start": 366.2,
+     "end": 366.48,
+     "word": " talking"
+    },
+    {
+     "start": 366.48,
+     "end": 367.08,
+     "word": " about."
+    }
+   ]
+  },
+  {
+   "start": 367.08,
+   "end": 378.54,
+   "text": "Printability screens, it's going over, checking whether or not it can be printed, which I don't remember implementing. Let's look at where that originated from.",
+   "words": [
+    {
+     "start": 367.08,
+     "end": 368.12,
+     "word": " Printability"
+    },
+    {
+     "start": 368.12,
+     "end": 368.8,
+     "word": " screens,"
+    },
+    {
+     "start": 369.1,
+     "end": 370.02,
+     "word": " it's"
+    },
+    {
+     "start": 370.02,
+     "end": 370.26,
+     "word": " going"
+    },
+    {
+     "start": 370.26,
+     "end": 370.6,
+     "word": " over,"
+    },
+    {
+     "start": 370.64,
+     "end": 371.0,
+     "word": " checking"
+    },
+    {
+     "start": 371.0,
+     "end": 371.26,
+     "word": " whether"
+    },
+    {
+     "start": 371.26,
+     "end": 371.46,
+     "word": " or"
+    },
+    {
+     "start": 371.46,
+     "end": 371.48,
+     "word": " not"
+    },
+    {
+     "start": 371.48,
+     "end": 371.6,
+     "word": " it"
+    },
+    {
+     "start": 371.6,
+     "end": 371.7,
+     "word": " can"
+    },
+    {
+     "start": 371.7,
+     "end": 371.82,
+     "word": " be"
+    },
+    {
+     "start": 371.82,
+     "end": 372.22,
+     "word": " printed,"
+    },
+    {
+     "start": 373.18,
+     "end": 373.72,
+     "word": " which"
+    },
+    {
+     "start": 373.72,
+     "end": 374.02,
+     "word": " I"
+    },
+    {
+     "start": 374.02,
+     "end": 374.1,
+     "word": " don't"
+    },
+    {
+     "start": 374.1,
+     "end": 374.32,
+     "word": " remember"
+    },
+    {
+     "start": 374.32,
+     "end": 374.92,
+     "word": " implementing."
+    },
+    {
+     "start": 376.44,
+     "end": 376.76,
+     "word": " Let's"
+    },
+    {
+     "start": 376.76,
+     "end": 376.98,
+     "word": " look"
+    },
+    {
+     "start": 376.98,
+     "end": 377.12,
+     "word": " at"
+    },
+    {
+     "start": 377.12,
+     "end": 377.28,
+     "word": " where"
+    },
+    {
+     "start": 377.28,
+     "end": 377.52,
+     "word": " that"
+    },
+    {
+     "start": 377.52,
+     "end": 377.98,
+     "word": " originated"
+    },
+    {
+     "start": 377.98,
+     "end": 378.54,
+     "word": " from."
+    }
+   ]
+  },
+  {
+   "start": 380.74,
+   "end": 393.12,
+   "text": "This looks like the volume constraints, which we talked about adding in. I would like to know, I would like these numbers double checked right here specifically.",
+   "words": [
+    {
+     "start": 380.74,
+     "end": 381.42,
+     "word": " This"
+    },
+    {
+     "start": 381.42,
+     "end": 382.1,
+     "word": " looks"
+    },
+    {
+     "start": 382.1,
+     "end": 382.42,
+     "word": " like"
+    },
+    {
+     "start": 382.42,
+     "end": 382.74,
+     "word": " the"
+    },
+    {
+     "start": 382.74,
+     "end": 383.12,
+     "word": " volume"
+    },
+    {
+     "start": 383.12,
+     "end": 383.7,
+     "word": " constraints,"
+    },
+    {
+     "start": 383.7,
+     "end": 383.9,
+     "word": " which"
+    },
+    {
+     "start": 383.9,
+     "end": 384.04,
+     "word": " we"
+    },
+    {
+     "start": 384.04,
+     "end": 384.24,
+     "word": " talked"
+    },
+    {
+     "start": 384.24,
+     "end": 384.44,
+     "word": " about"
+    },
+    {
+     "start": 384.44,
+     "end": 384.68,
+     "word": " adding"
+    },
+    {
+     "start": 384.68,
+     "end": 385.04,
+     "word": " in."
+    },
+    {
+     "start": 386.0,
+     "end": 386.0,
+     "word": " I"
+    },
+    {
+     "start": 386.0,
+     "end": 386.26,
+     "word": " would"
+    },
+    {
+     "start": 386.26,
+     "end": 386.88,
+     "word": " like"
+    },
+    {
+     "start": 386.88,
+     "end": 388.74,
+     "word": " to"
+    },
+    {
+     "start": 388.74,
+     "end": 389.18,
+     "word": " know,"
+    },
+    {
+     "start": 389.18,
+     "end": 389.5,
+     "word": " I"
+    },
+    {
+     "start": 389.5,
+     "end": 389.64,
+     "word": " would"
+    },
+    {
+     "start": 389.64,
+     "end": 389.8,
+     "word": " like"
+    },
+    {
+     "start": 389.8,
+     "end": 390.08,
+     "word": " these"
+    },
+    {
+     "start": 390.08,
+     "end": 390.38,
+     "word": " numbers"
+    },
+    {
+     "start": 390.38,
+     "end": 390.72,
+     "word": " double"
+    },
+    {
+     "start": 390.72,
+     "end": 391.08,
+     "word": " checked"
+    },
+    {
+     "start": 391.08,
+     "end": 392.0,
+     "word": " right"
+    },
+    {
+     "start": 392.0,
+     "end": 392.34,
+     "word": " here"
+    },
+    {
+     "start": 392.34,
+     "end": 393.12,
+     "word": " specifically."
+    }
+   ]
+  },
+  {
+   "start": 394.96,
+   "end": 412.94,
+   "text": "I'm really not sure what this whole part is talking about. TPU self-bridging floor on the as-projected cable diameter. The projection can scale a nominally feasible cable below the floor.",
+   "words": [
+    {
+     "start": 394.96,
+     "end": 395.72,
+     "word": " I'm"
+    },
+    {
+     "start": 395.72,
+     "end": 395.96,
+     "word": " really"
+    },
+    {
+     "start": 395.96,
+     "end": 396.24,
+     "word": " not"
+    },
+    {
+     "start": 396.24,
+     "end": 396.6,
+     "word": " sure"
+    },
+    {
+     "start": 396.6,
+     "end": 396.92,
+     "word": " what"
+    },
+    {
+     "start": 396.92,
+     "end": 397.22,
+     "word": " this"
+    },
+    {
+     "start": 397.22,
+     "end": 397.56,
+     "word": " whole"
+    },
+    {
+     "start": 397.56,
+     "end": 397.74,
+     "word": " part"
+    },
+    {
+     "start": 397.74,
+     "end": 397.88,
+     "word": " is"
+    },
+    {
+     "start": 397.88,
+     "end": 398.12,
+     "word": " talking"
+    },
+    {
+     "start": 398.12,
+     "end": 398.5,
+     "word": " about."
+    },
+    {
+     "start": 398.74,
+     "end": 399.1,
+     "word": " TPU"
+    },
+    {
+     "start": 399.1,
+     "end": 399.52,
+     "word": " self"
+    },
+    {
+     "start": 399.52,
+     "end": 399.92,
+     "word": "-bridging"
+    },
+    {
+     "start": 399.92,
+     "end": 400.44,
+     "word": " floor"
+    },
+    {
+     "start": 400.44,
+     "end": 401.32,
+     "word": " on"
+    },
+    {
+     "start": 401.32,
+     "end": 401.5,
+     "word": " the"
+    },
+    {
+     "start": 401.5,
+     "end": 401.78,
+     "word": " as"
+    },
+    {
+     "start": 401.78,
+     "end": 402.46,
+     "word": "-projected"
+    },
+    {
+     "start": 402.46,
+     "end": 402.8,
+     "word": " cable"
+    },
+    {
+     "start": 402.8,
+     "end": 403.52,
+     "word": " diameter."
+    },
+    {
+     "start": 405.86,
+     "end": 406.16,
+     "word": " The"
+    },
+    {
+     "start": 406.16,
+     "end": 406.56,
+     "word": " projection"
+    },
+    {
+     "start": 406.56,
+     "end": 406.86,
+     "word": " can"
+    },
+    {
+     "start": 406.86,
+     "end": 407.24,
+     "word": " scale"
+    },
+    {
+     "start": 407.24,
+     "end": 408.48,
+     "word": " a"
+    },
+    {
+     "start": 408.48,
+     "end": 409.98,
+     "word": " nominally"
+    },
+    {
+     "start": 409.98,
+     "end": 410.54,
+     "word": " feasible"
+    },
+    {
+     "start": 410.54,
+     "end": 411.36,
+     "word": " cable"
+    },
+    {
+     "start": 411.36,
+     "end": 412.02,
+     "word": " below"
+    },
+    {
+     "start": 412.02,
+     "end": 412.24,
+     "word": " the"
+    },
+    {
+     "start": 412.24,
+     "end": 412.94,
+     "word": " floor."
+    }
+   ]
+  },
+  {
+   "start": 419.72,
+   "end": 437.52,
+   "text": "The two C designs where this occurred both exhibited tendon stringing defects. So, 1. I'm really not sure what this part here from the 3mm TPU self-bridging floor to below the floor means.",
+   "words": [
+    {
+     "start": 419.72,
+     "end": 420.48,
+     "word": " The"
+    },
+    {
+     "start": 420.48,
+     "end": 420.74,
+     "word": " two"
+    },
+    {
+     "start": 420.74,
+     "end": 420.96,
+     "word": " C"
+    },
+    {
+     "start": 420.96,
+     "end": 421.4,
+     "word": " designs"
+    },
+    {
+     "start": 421.4,
+     "end": 421.58,
+     "word": " where"
+    },
+    {
+     "start": 421.58,
+     "end": 421.72,
+     "word": " this"
+    },
+    {
+     "start": 421.72,
+     "end": 422.14,
+     "word": " occurred"
+    },
+    {
+     "start": 422.14,
+     "end": 422.48,
+     "word": " both"
+    },
+    {
+     "start": 422.48,
+     "end": 422.92,
+     "word": " exhibited"
+    },
+    {
+     "start": 422.92,
+     "end": 423.3,
+     "word": " tendon"
+    },
+    {
+     "start": 423.3,
+     "end": 423.88,
+     "word": " stringing"
+    },
+    {
+     "start": 423.88,
+     "end": 424.44,
+     "word": " defects."
+    },
+    {
+     "start": 425.28,
+     "end": 425.38,
+     "word": " So,"
+    },
+    {
+     "start": 426.02,
+     "end": 426.7,
+     "word": " 1."
+    },
+    {
+     "start": 426.92,
+     "end": 427.56,
+     "word": " I'm"
+    },
+    {
+     "start": 427.56,
+     "end": 427.7,
+     "word": " really"
+    },
+    {
+     "start": 427.7,
+     "end": 427.88,
+     "word": " not"
+    },
+    {
+     "start": 427.88,
+     "end": 428.14,
+     "word": " sure"
+    },
+    {
+     "start": 428.14,
+     "end": 428.48,
+     "word": " what"
+    },
+    {
+     "start": 428.48,
+     "end": 429.28,
+     "word": " this"
+    },
+    {
+     "start": 429.28,
+     "end": 429.5,
+     "word": " part"
+    },
+    {
+     "start": 429.5,
+     "end": 429.86,
+     "word": " here"
+    },
+    {
+     "start": 429.86,
+     "end": 430.5,
+     "word": " from"
+    },
+    {
+     "start": 430.5,
+     "end": 430.78,
+     "word": " the"
+    },
+    {
+     "start": 430.78,
+     "end": 431.34,
+     "word": " 3mm"
+    },
+    {
+     "start": 431.34,
+     "end": 432.28,
+     "word": " TPU"
+    },
+    {
+     "start": 432.28,
+     "end": 432.58,
+     "word": " self"
+    },
+    {
+     "start": 432.58,
+     "end": 432.84,
+     "word": "-bridging"
+    },
+    {
+     "start": 432.84,
+     "end": 433.22,
+     "word": " floor"
+    },
+    {
+     "start": 433.22,
+     "end": 433.9,
+     "word": " to"
+    },
+    {
+     "start": 433.9,
+     "end": 436.32,
+     "word": " below"
+    },
+    {
+     "start": 436.32,
+     "end": 436.56,
+     "word": " the"
+    },
+    {
+     "start": 436.56,
+     "end": 436.82,
+     "word": " floor"
+    },
+    {
+     "start": 436.82,
+     "end": 437.52,
+     "word": " means."
+    }
+   ]
+  },
+  {
+   "start": 437.52,
+   "end": 449.52,
+   "text": "2. The talking of stringing defects will probably...",
+   "words": [
+    {
+     "start": 437.52,
+     "end": 439.36,
+     "word": " 2."
+    },
+    {
+     "start": 442.9,
+     "end": 443.32,
+     "word": " The"
+    },
+    {
+     "start": 443.32,
+     "end": 444.1,
+     "word": " talking"
+    },
+    {
+     "start": 444.1,
+     "end": 444.4,
+     "word": " of"
+    },
+    {
+     "start": 444.4,
+     "end": 445.1,
+     "word": " stringing"
+    },
+    {
+     "start": 445.1,
+     "end": 445.72,
+     "word": " defects"
+    },
+    {
+     "start": 445.72,
+     "end": 447.5,
+     "word": " will"
+    },
+    {
+     "start": 447.5,
+     "end": 449.52,
+     "word": " probably..."
+    }
+   ]
+  },
+  {
+   "start": 451.86,
+   "end": 474.12,
+   "text": "Actually, never mind on that. Stringing defects is pretty well known. Our specific ones, the ones that I'm thinking of anyway, aren't necessarily spaghetti failures, so much as they are a string that detaches from the tendon that just didn't connect properly.",
+   "words": [
+    {
+     "start": 451.86,
+     "end": 452.54,
+     "word": " Actually,"
+    },
+    {
+     "start": 452.64,
+     "end": 452.74,
+     "word": " never"
+    },
+    {
+     "start": 452.74,
+     "end": 452.98,
+     "word": " mind"
+    },
+    {
+     "start": 452.98,
+     "end": 453.52,
+     "word": " on"
+    },
+    {
+     "start": 453.52,
+     "end": 453.8,
+     "word": " that."
+    },
+    {
+     "start": 454.1,
+     "end": 454.32,
+     "word": " Stringing"
+    },
+    {
+     "start": 454.32,
+     "end": 454.58,
+     "word": " defects"
+    },
+    {
+     "start": 454.58,
+     "end": 454.84,
+     "word": " is"
+    },
+    {
+     "start": 454.84,
+     "end": 455.04,
+     "word": " pretty"
+    },
+    {
+     "start": 455.04,
+     "end": 455.2,
+     "word": " well"
+    },
+    {
+     "start": 455.2,
+     "end": 455.58,
+     "word": " known."
+    },
+    {
+     "start": 457.08,
+     "end": 457.28,
+     "word": " Our"
+    },
+    {
+     "start": 457.28,
+     "end": 457.86,
+     "word": " specific"
+    },
+    {
+     "start": 457.86,
+     "end": 458.46,
+     "word": " ones,"
+    },
+    {
+     "start": 460.42,
+     "end": 461.18,
+     "word": " the"
+    },
+    {
+     "start": 461.18,
+     "end": 461.52,
+     "word": " ones"
+    },
+    {
+     "start": 461.52,
+     "end": 461.84,
+     "word": " that"
+    },
+    {
+     "start": 461.84,
+     "end": 462.18,
+     "word": " I'm"
+    },
+    {
+     "start": 462.18,
+     "end": 462.42,
+     "word": " thinking"
+    },
+    {
+     "start": 462.42,
+     "end": 462.66,
+     "word": " of"
+    },
+    {
+     "start": 462.66,
+     "end": 463.16,
+     "word": " anyway,"
+    },
+    {
+     "start": 463.98,
+     "end": 464.2,
+     "word": " aren't"
+    },
+    {
+     "start": 464.2,
+     "end": 464.86,
+     "word": " necessarily"
+    },
+    {
+     "start": 464.86,
+     "end": 465.52,
+     "word": " spaghetti"
+    },
+    {
+     "start": 465.52,
+     "end": 466.14,
+     "word": " failures,"
+    },
+    {
+     "start": 467.36,
+     "end": 467.66,
+     "word": " so"
+    },
+    {
+     "start": 467.66,
+     "end": 467.88,
+     "word": " much"
+    },
+    {
+     "start": 467.88,
+     "end": 468.1,
+     "word": " as"
+    },
+    {
+     "start": 468.1,
+     "end": 468.32,
+     "word": " they"
+    },
+    {
+     "start": 468.32,
+     "end": 468.78,
+     "word": " are"
+    },
+    {
+     "start": 468.78,
+     "end": 469.12,
+     "word": " a"
+    },
+    {
+     "start": 469.12,
+     "end": 469.54,
+     "word": " string"
+    },
+    {
+     "start": 469.54,
+     "end": 469.78,
+     "word": " that"
+    },
+    {
+     "start": 469.78,
+     "end": 470.28,
+     "word": " detaches"
+    },
+    {
+     "start": 470.28,
+     "end": 470.76,
+     "word": " from"
+    },
+    {
+     "start": 470.76,
+     "end": 471.04,
+     "word": " the"
+    },
+    {
+     "start": 471.04,
+     "end": 471.34,
+     "word": " tendon"
+    },
+    {
+     "start": 471.34,
+     "end": 472.12,
+     "word": " that"
+    },
+    {
+     "start": 472.12,
+     "end": 472.34,
+     "word": " just"
+    },
+    {
+     "start": 472.34,
+     "end": 473.18,
+     "word": " didn't"
+    },
+    {
+     "start": 473.18,
+     "end": 473.66,
+     "word": " connect"
+    },
+    {
+     "start": 473.66,
+     "end": 474.12,
+     "word": " properly."
+    }
+   ]
+  },
+  {
+   "start": 474.12,
+   "end": 488.12,
+   "text": "Let's make sure that's clarified. And, Claude, give me a report in as layman's terms as you can muster about what this is trying to say in here.",
+   "words": [
+    {
+     "start": 474.12,
+     "end": 474.66,
+     "word": " Let's"
+    },
+    {
+     "start": 474.66,
+     "end": 474.78,
+     "word": " make"
+    },
+    {
+     "start": 474.78,
+     "end": 474.94,
+     "word": " sure"
+    },
+    {
+     "start": 474.94,
+     "end": 475.24,
+     "word": " that's"
+    },
+    {
+     "start": 475.24,
+     "end": 475.82,
+     "word": " clarified."
+    },
+    {
+     "start": 477.92,
+     "end": 477.92,
+     "word": " And,"
+    },
+    {
+     "start": 478.94,
+     "end": 479.06,
+     "word": " Claude,"
+    },
+    {
+     "start": 479.34,
+     "end": 479.48,
+     "word": " give"
+    },
+    {
+     "start": 479.48,
+     "end": 479.7,
+     "word": " me"
+    },
+    {
+     "start": 479.7,
+     "end": 480.18,
+     "word": " a"
+    },
+    {
+     "start": 480.18,
+     "end": 480.6,
+     "word": " report"
+    },
+    {
+     "start": 480.6,
+     "end": 480.9,
+     "word": " in"
+    },
+    {
+     "start": 480.9,
+     "end": 481.4,
+     "word": " as"
+    },
+    {
+     "start": 481.4,
+     "end": 482.14,
+     "word": " layman's"
+    },
+    {
+     "start": 482.14,
+     "end": 482.48,
+     "word": " terms"
+    },
+    {
+     "start": 482.48,
+     "end": 482.84,
+     "word": " as"
+    },
+    {
+     "start": 482.84,
+     "end": 482.98,
+     "word": " you"
+    },
+    {
+     "start": 482.98,
+     "end": 483.18,
+     "word": " can"
+    },
+    {
+     "start": 483.18,
+     "end": 483.54,
+     "word": " muster"
+    },
+    {
+     "start": 483.54,
+     "end": 484.6,
+     "word": " about"
+    },
+    {
+     "start": 484.6,
+     "end": 484.88,
+     "word": " what"
+    },
+    {
+     "start": 484.88,
+     "end": 485.12,
+     "word": " this"
+    },
+    {
+     "start": 485.12,
+     "end": 485.42,
+     "word": " is"
+    },
+    {
+     "start": 485.42,
+     "end": 485.82,
+     "word": " trying"
+    },
+    {
+     "start": 485.82,
+     "end": 486.46,
+     "word": " to"
+    },
+    {
+     "start": 486.46,
+     "end": 486.76,
+     "word": " say"
+    },
+    {
+     "start": 486.76,
+     "end": 487.86,
+     "word": " in"
+    },
+    {
+     "start": 487.86,
+     "end": 488.22,
+     "word": " here."
+    }
+   ]
+  },
+  {
+   "start": 489.44,
+   "end": 501.78,
+   "text": "Specifically the highlighted area. And pull up any necessary, any related posts about it in the report that I'm going to have you generate.",
+   "words": [
+    {
+     "start": 489.44,
+     "end": 490.16,
+     "word": " Specifically"
+    },
+    {
+     "start": 490.16,
+     "end": 490.66,
+     "word": " the"
+    },
+    {
+     "start": 490.66,
+     "end": 491.32,
+     "word": " highlighted"
+    },
+    {
+     "start": 491.32,
+     "end": 491.86,
+     "word": " area."
+    },
+    {
+     "start": 493.28,
+     "end": 493.74,
+     "word": " And"
+    },
+    {
+     "start": 493.74,
+     "end": 494.04,
+     "word": " pull"
+    },
+    {
+     "start": 494.04,
+     "end": 494.24,
+     "word": " up"
+    },
+    {
+     "start": 494.24,
+     "end": 494.44,
+     "word": " any"
+    },
+    {
+     "start": 494.44,
+     "end": 494.98,
+     "word": " necessary,"
+    },
+    {
+     "start": 496.18,
+     "end": 496.48,
+     "word": " any"
+    },
+    {
+     "start": 496.48,
+     "end": 497.0,
+     "word": " related"
+    },
+    {
+     "start": 497.0,
+     "end": 498.14,
+     "word": " posts"
+    },
+    {
+     "start": 498.14,
+     "end": 498.98,
+     "word": " about"
+    },
+    {
+     "start": 498.98,
+     "end": 499.34,
+     "word": " it"
+    },
+    {
+     "start": 499.34,
+     "end": 499.78,
+     "word": " in"
+    },
+    {
+     "start": 499.78,
+     "end": 500.02,
+     "word": " the"
+    },
+    {
+     "start": 500.02,
+     "end": 500.34,
+     "word": " report"
+    },
+    {
+     "start": 500.34,
+     "end": 500.5,
+     "word": " that"
+    },
+    {
+     "start": 500.5,
+     "end": 500.68,
+     "word": " I'm"
+    },
+    {
+     "start": 500.68,
+     "end": 500.8,
+     "word": " going"
+    },
+    {
+     "start": 500.8,
+     "end": 501.0,
+     "word": " to"
+    },
+    {
+     "start": 501.0,
+     "end": 501.24,
+     "word": " have"
+    },
+    {
+     "start": 501.24,
+     "end": 501.4,
+     "word": " you"
+    },
+    {
+     "start": 501.4,
+     "end": 501.78,
+     "word": " generate."
+    }
+   ]
+  },
+  {
+   "start": 503.76,
+   "end": 520.26,
+   "text": "This is completely unrelated, but another note that I'd like summarized. I think we need to check if Justin has access to pinging Claude, so make a note for us to check that. I don't know if you have the ability to check that, Claude. But a report on that would be great.",
+   "words": [
+    {
+     "start": 503.76,
+     "end": 504.12,
+     "word": " This"
+    },
+    {
+     "start": 504.12,
+     "end": 504.28,
+     "word": " is"
+    },
+    {
+     "start": 504.28,
+     "end": 504.64,
+     "word": " completely"
+    },
+    {
+     "start": 504.64,
+     "end": 505.18,
+     "word": " unrelated,"
+    },
+    {
+     "start": 505.24,
+     "end": 505.42,
+     "word": " but"
+    },
+    {
+     "start": 505.42,
+     "end": 505.7,
+     "word": " another"
+    },
+    {
+     "start": 505.7,
+     "end": 506.1,
+     "word": " note"
+    },
+    {
+     "start": 506.1,
+     "end": 506.8,
+     "word": " that"
+    },
+    {
+     "start": 506.8,
+     "end": 506.98,
+     "word": " I'd"
+    },
+    {
+     "start": 506.98,
+     "end": 507.16,
+     "word": " like"
+    },
+    {
+     "start": 507.16,
+     "end": 507.64,
+     "word": " summarized."
+    },
+    {
+     "start": 508.74,
+     "end": 508.76,
+     "word": " I"
+    },
+    {
+     "start": 508.76,
+     "end": 508.94,
+     "word": " think"
+    },
+    {
+     "start": 508.94,
+     "end": 509.08,
+     "word": " we"
+    },
+    {
+     "start": 509.08,
+     "end": 509.18,
+     "word": " need"
+    },
+    {
+     "start": 509.18,
+     "end": 509.32,
+     "word": " to"
+    },
+    {
+     "start": 509.32,
+     "end": 509.5,
+     "word": " check"
+    },
+    {
+     "start": 509.5,
+     "end": 509.72,
+     "word": " if"
+    },
+    {
+     "start": 509.72,
+     "end": 510.02,
+     "word": " Justin"
+    },
+    {
+     "start": 510.02,
+     "end": 510.24,
+     "word": " has"
+    },
+    {
+     "start": 510.24,
+     "end": 510.66,
+     "word": " access"
+    },
+    {
+     "start": 510.66,
+     "end": 511.56,
+     "word": " to"
+    },
+    {
+     "start": 511.56,
+     "end": 512.6,
+     "word": " pinging"
+    },
+    {
+     "start": 512.6,
+     "end": 512.94,
+     "word": " Claude,"
+    },
+    {
+     "start": 513.3,
+     "end": 513.4,
+     "word": " so"
+    },
+    {
+     "start": 513.4,
+     "end": 513.62,
+     "word": " make"
+    },
+    {
+     "start": 513.62,
+     "end": 513.74,
+     "word": " a"
+    },
+    {
+     "start": 513.74,
+     "end": 513.88,
+     "word": " note"
+    },
+    {
+     "start": 513.88,
+     "end": 514.04,
+     "word": " for"
+    },
+    {
+     "start": 514.04,
+     "end": 514.14,
+     "word": " us"
+    },
+    {
+     "start": 514.14,
+     "end": 514.3,
+     "word": " to"
+    },
+    {
+     "start": 514.3,
+     "end": 514.42,
+     "word": " check"
+    },
+    {
+     "start": 514.42,
+     "end": 514.68,
+     "word": " that."
+    },
+    {
+     "start": 514.84,
+     "end": 514.84,
+     "word": " I"
+    },
+    {
+     "start": 514.84,
+     "end": 514.94,
+     "word": " don't"
+    },
+    {
+     "start": 514.94,
+     "end": 515.06,
+     "word": " know"
+    },
+    {
+     "start": 515.06,
+     "end": 515.16,
+     "word": " if"
+    },
+    {
+     "start": 515.16,
+     "end": 515.24,
+     "word": " you"
+    },
+    {
+     "start": 515.24,
+     "end": 515.32,
+     "word": " have"
+    },
+    {
+     "start": 515.32,
+     "end": 515.4,
+     "word": " the"
+    },
+    {
+     "start": 515.4,
+     "end": 515.64,
+     "word": " ability"
+    },
+    {
+     "start": 515.64,
+     "end": 515.82,
+     "word": " to"
+    },
+    {
+     "start": 515.82,
+     "end": 515.94,
+     "word": " check"
+    },
+    {
+     "start": 515.94,
+     "end": 516.18,
+     "word": " that,"
+    },
+    {
+     "start": 516.34,
+     "end": 516.54,
+     "word": " Claude."
+    },
+    {
+     "start": 517.94,
+     "end": 518.16,
+     "word": " But"
+    },
+    {
+     "start": 518.16,
+     "end": 518.94,
+     "word": " a"
+    },
+    {
+     "start": 518.94,
+     "end": 519.18,
+     "word": " report"
+    },
+    {
+     "start": 519.18,
+     "end": 519.32,
+     "word": " on"
+    },
+    {
+     "start": 519.32,
+     "end": 519.44,
+     "word": " that"
+    },
+    {
+     "start": 519.44,
+     "end": 519.54,
+     "word": " would"
+    },
+    {
+     "start": 519.54,
+     "end": 519.64,
+     "word": " be"
+    },
+    {
+     "start": 519.64,
+     "end": 520.26,
+     "word": " great."
+    }
+   ]
+  },
+  {
+   "start": 521.76,
+   "end": 538.16,
+   "text": "Right here, where it matches that they're printed vertically, vertical orientation. Though it's inferable, let's put in maybe C figure 3 or something here.",
+   "words": [
+    {
+     "start": 521.76,
+     "end": 522.68,
+     "word": " Right"
+    },
+    {
+     "start": 522.68,
+     "end": 523.6,
+     "word": " here,"
+    },
+    {
+     "start": 523.86,
+     "end": 523.86,
+     "word": " where"
+    },
+    {
+     "start": 523.86,
+     "end": 524.56,
+     "word": " it"
+    },
+    {
+     "start": 524.56,
+     "end": 524.88,
+     "word": " matches"
+    },
+    {
+     "start": 524.88,
+     "end": 525.16,
+     "word": " that"
+    },
+    {
+     "start": 525.16,
+     "end": 525.5,
+     "word": " they're"
+    },
+    {
+     "start": 525.5,
+     "end": 526.18,
+     "word": " printed"
+    },
+    {
+     "start": 526.18,
+     "end": 527.22,
+     "word": " vertically,"
+    },
+    {
+     "start": 528.36,
+     "end": 528.36,
+     "word": " vertical"
+    },
+    {
+     "start": 528.36,
+     "end": 528.98,
+     "word": " orientation."
+    },
+    {
+     "start": 531.92,
+     "end": 532.84,
+     "word": " Though"
+    },
+    {
+     "start": 532.84,
+     "end": 533.26,
+     "word": " it's"
+    },
+    {
+     "start": 533.26,
+     "end": 533.82,
+     "word": " inferable,"
+    },
+    {
+     "start": 534.46,
+     "end": 534.88,
+     "word": " let's"
+    },
+    {
+     "start": 534.88,
+     "end": 535.02,
+     "word": " put"
+    },
+    {
+     "start": 535.02,
+     "end": 535.32,
+     "word": " in"
+    },
+    {
+     "start": 535.32,
+     "end": 535.62,
+     "word": " maybe"
+    },
+    {
+     "start": 535.62,
+     "end": 536.08,
+     "word": " C"
+    },
+    {
+     "start": 536.08,
+     "end": 536.32,
+     "word": " figure"
+    },
+    {
+     "start": 536.32,
+     "end": 536.68,
+     "word": " 3"
+    },
+    {
+     "start": 536.68,
+     "end": 536.9,
+     "word": " or"
+    },
+    {
+     "start": 536.9,
+     "end": 537.24,
+     "word": " something"
+    },
+    {
+     "start": 537.24,
+     "end": 538.16,
+     "word": " here."
+    }
+   ]
+  },
+  {
+   "start": 538.16,
+   "end": 549.56,
+   "text": "Just something that shows what we mean by vertical. Because, yeah, it's more explicit.",
+   "words": [
+    {
+     "start": 538.16,
+     "end": 539.6,
+     "word": " Just"
+    },
+    {
+     "start": 539.6,
+     "end": 539.9,
+     "word": " something"
+    },
+    {
+     "start": 539.9,
+     "end": 540.1,
+     "word": " that"
+    },
+    {
+     "start": 540.1,
+     "end": 540.4,
+     "word": " shows"
+    },
+    {
+     "start": 540.4,
+     "end": 540.82,
+     "word": " what"
+    },
+    {
+     "start": 540.82,
+     "end": 541.14,
+     "word": " we"
+    },
+    {
+     "start": 541.14,
+     "end": 541.5,
+     "word": " mean"
+    },
+    {
+     "start": 541.5,
+     "end": 542.46,
+     "word": " by"
+    },
+    {
+     "start": 542.46,
+     "end": 542.92,
+     "word": " vertical."
+    },
+    {
+     "start": 544.78,
+     "end": 544.88,
+     "word": " Because,"
+    },
+    {
+     "start": 546.46,
+     "end": 546.96,
+     "word": " yeah,"
+    },
+    {
+     "start": 547.3,
+     "end": 547.5,
+     "word": " it's"
+    },
+    {
+     "start": 547.5,
+     "end": 549.02,
+     "word": " more"
+    },
+    {
+     "start": 549.02,
+     "end": 549.56,
+     "word": " explicit."
+    }
+   ]
+  },
+  {
+   "start": 551.98,
+   "end": 567.3,
+   "text": "Just in terms of readability, maybe it's standard to have symbol units range. Normally when you're reading a number, you read the units after the number. So why don't we put units after range.",
+   "words": [
+    {
+     "start": 551.98,
+     "end": 552.5,
+     "word": " Just"
+    },
+    {
+     "start": 552.5,
+     "end": 552.72,
+     "word": " in"
+    },
+    {
+     "start": 552.72,
+     "end": 552.92,
+     "word": " terms"
+    },
+    {
+     "start": 552.92,
+     "end": 553.44,
+     "word": " of"
+    },
+    {
+     "start": 553.44,
+     "end": 554.18,
+     "word": " readability,"
+    },
+    {
+     "start": 555.2,
+     "end": 555.48,
+     "word": " maybe"
+    },
+    {
+     "start": 555.48,
+     "end": 555.78,
+     "word": " it's"
+    },
+    {
+     "start": 555.78,
+     "end": 556.1,
+     "word": " standard"
+    },
+    {
+     "start": 556.1,
+     "end": 556.26,
+     "word": " to"
+    },
+    {
+     "start": 556.26,
+     "end": 556.42,
+     "word": " have"
+    },
+    {
+     "start": 556.42,
+     "end": 556.66,
+     "word": " symbol"
+    },
+    {
+     "start": 556.66,
+     "end": 556.98,
+     "word": " units"
+    },
+    {
+     "start": 556.98,
+     "end": 557.52,
+     "word": " range."
+    },
+    {
+     "start": 558.92,
+     "end": 559.18,
+     "word": " Normally"
+    },
+    {
+     "start": 559.18,
+     "end": 559.36,
+     "word": " when"
+    },
+    {
+     "start": 559.36,
+     "end": 559.46,
+     "word": " you're"
+    },
+    {
+     "start": 559.46,
+     "end": 559.62,
+     "word": " reading"
+    },
+    {
+     "start": 559.62,
+     "end": 559.8,
+     "word": " a"
+    },
+    {
+     "start": 559.8,
+     "end": 559.98,
+     "word": " number,"
+    },
+    {
+     "start": 560.14,
+     "end": 560.28,
+     "word": " you"
+    },
+    {
+     "start": 560.28,
+     "end": 560.5,
+     "word": " read"
+    },
+    {
+     "start": 560.5,
+     "end": 560.64,
+     "word": " the"
+    },
+    {
+     "start": 560.64,
+     "end": 560.92,
+     "word": " units"
+    },
+    {
+     "start": 560.92,
+     "end": 561.38,
+     "word": " after"
+    },
+    {
+     "start": 561.38,
+     "end": 561.58,
+     "word": " the"
+    },
+    {
+     "start": 561.58,
+     "end": 561.88,
+     "word": " number."
+    },
+    {
+     "start": 562.78,
+     "end": 563.02,
+     "word": " So"
+    },
+    {
+     "start": 563.02,
+     "end": 563.18,
+     "word": " why"
+    },
+    {
+     "start": 563.18,
+     "end": 563.3,
+     "word": " don't"
+    },
+    {
+     "start": 563.3,
+     "end": 563.54,
+     "word": " we"
+    },
+    {
+     "start": 563.54,
+     "end": 564.42,
+     "word": " put"
+    },
+    {
+     "start": 564.42,
+     "end": 565.64,
+     "word": " units"
+    },
+    {
+     "start": 565.64,
+     "end": 566.3,
+     "word": " after"
+    },
+    {
+     "start": 566.3,
+     "end": 567.3,
+     "word": " range."
+    }
+   ]
+  },
+  {
+   "start": 569.72,
+   "end": 582.5,
+   "text": "We're going to pause this session right here in line 300. And we'll resume it later. I'm just going to upload this as a partial run through that I'll continue on later today.",
+   "words": [
+    {
+     "start": 569.72,
+     "end": 570.24,
+     "word": " We're"
+    },
+    {
+     "start": 570.24,
+     "end": 570.32,
+     "word": " going"
+    },
+    {
+     "start": 570.32,
+     "end": 570.44,
+     "word": " to"
+    },
+    {
+     "start": 570.44,
+     "end": 570.56,
+     "word": " pause"
+    },
+    {
+     "start": 570.56,
+     "end": 570.8,
+     "word": " this"
+    },
+    {
+     "start": 570.8,
+     "end": 571.12,
+     "word": " session"
+    },
+    {
+     "start": 571.12,
+     "end": 571.28,
+     "word": " right"
+    },
+    {
+     "start": 571.28,
+     "end": 571.54,
+     "word": " here"
+    },
+    {
+     "start": 571.54,
+     "end": 571.74,
+     "word": " in"
+    },
+    {
+     "start": 571.74,
+     "end": 571.88,
+     "word": " line"
+    },
+    {
+     "start": 571.88,
+     "end": 572.54,
+     "word": " 300."
+    },
+    {
+     "start": 576.06,
+     "end": 576.58,
+     "word": " And"
+    },
+    {
+     "start": 576.58,
+     "end": 576.84,
+     "word": " we'll"
+    },
+    {
+     "start": 576.84,
+     "end": 577.2,
+     "word": " resume"
+    },
+    {
+     "start": 577.2,
+     "end": 577.44,
+     "word": " it"
+    },
+    {
+     "start": 577.44,
+     "end": 577.64,
+     "word": " later."
+    },
+    {
+     "start": 577.76,
+     "end": 577.78,
+     "word": " I'm"
+    },
+    {
+     "start": 577.78,
+     "end": 577.88,
+     "word": " just"
+    },
+    {
+     "start": 577.88,
+     "end": 577.98,
+     "word": " going"
+    },
+    {
+     "start": 577.98,
+     "end": 578.06,
+     "word": " to"
+    },
+    {
+     "start": 578.06,
+     "end": 578.34,
+     "word": " upload"
+    },
+    {
+     "start": 578.34,
+     "end": 578.64,
+     "word": " this"
+    },
+    {
+     "start": 578.64,
+     "end": 578.96,
+     "word": " as"
+    },
+    {
+     "start": 578.96,
+     "end": 579.52,
+     "word": " a"
+    },
+    {
+     "start": 579.52,
+     "end": 580.06,
+     "word": " partial"
+    },
+    {
+     "start": 580.06,
+     "end": 580.32,
+     "word": " run"
+    },
+    {
+     "start": 580.32,
+     "end": 580.7,
+     "word": " through"
+    },
+    {
+     "start": 580.7,
+     "end": 581.18,
+     "word": " that"
+    },
+    {
+     "start": 581.18,
+     "end": 581.38,
+     "word": " I'll"
+    },
+    {
+     "start": 581.38,
+     "end": 581.68,
+     "word": " continue"
+    },
+    {
+     "start": 581.68,
+     "end": 581.92,
+     "word": " on"
+    },
+    {
+     "start": 581.92,
+     "end": 582.12,
+     "word": " later"
+    },
+    {
+     "start": 582.12,
+     "end": 582.5,
+     "word": " today."
+    }
+   ]
+  }
+ ]
+}
