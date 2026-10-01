@@ -122,13 +122,14 @@
     "total_time": "14h 45m 8s",
     "reading": "with the overrides, plate 1 uses 6.7 g more PLA (150.83 vs 144.14 g main use) and 35 % more sparse-infill time (2115 vs 1570 s); every override is above 15 %, so the overrides are active in the slice, not just present in the metadata"
   },
-  "3dran": {
-    "project": "bo/replicate-study/t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf",
+  "dran3": {
+    "project": "bo/replicate-study/t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf (at cf667d8)",
     "sha256_12": "7803bb2fc183",
     "exit_code": 156,
     "return_code": -100,
     "message": "No valid nozzle found. Please check nozzle count.",
-    "reading": "expected: the round-3 project was assembled before bo/t3_prism_printed_mass_plate.py wrote the H2D dual-nozzle machine state (_patch_h2d_state, added for round 4), so the headless CLI rejects it at the nozzle check; the committed round-3 original behaves the same way, and the GUI printed it twice (drran, 2dran). Left unpatched on purpose so the third print uses the same file as the first two."
+    "reading": "expected: the round-3 project was assembled before bo/t3_prism_printed_mass_plate.py wrote the H2D dual-nozzle machine state (_patch_h2d_state, added for round 4), so the headless CLI rejects it at the nozzle check; the committed round-3 original behaves the same way, and the GUI printed it twice (drran, 2dran). Left unpatched on purpose so the third print uses the same file as the first two.",
+    "renamed_2026-10-01": "Now bo/replicate-study/t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf, sha256_12 9844dc01986a: the same project with its nine object names changed from 3dranN to dran3N (and the plate label from '3dran reprint' to 'dran3 reprint'), to match the labels the lab put on the printed articles (PR #102, 2026-10-01). No other byte changed, and the check stops at the machine's nozzle-count check, so it was not re-run."
   },
   "notes": [
     "totals include the wipe tower, flushing and brims; supports are painted in the GUI afterwards, so production gcode will run longer and heavier",

@@ -1110,8 +1110,11 @@ def observed_frame(y_train, labels):
 
 
 # print-ID prefixes that mark a reprint of an earlier batch's design:
-# 2dranN is the second print of drranN's design (round-3 plate, printed twice)
-REPRINT_PREFIX = {"2dran": "drran"}
+# 2dranN is the second print of drranN's design and dran3N the third
+# (round-3 plate, printed three times). The third print's articles carry
+# the labels dran31-dran39; its print files first called them 3dranN
+# (cf667d8), so read any older 3dranN as dran3N (PR #102, 2026-10-01).
+REPRINT_PREFIX = {"2dran": "drran", "dran3": "drran"}
 
 
 def repeat_group(print_id):

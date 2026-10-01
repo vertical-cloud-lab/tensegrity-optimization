@@ -1,4 +1,4 @@
-"""Print package for the replicate study (sne plates) and the 3dran reprint.
+"""Print package for the replicate study (sne plates) and the dran3 reprint.
 
 Requested on PR #102 on 2026-09-28 (comment 5873581840, @me-madsen): the
 three designs proposed in ``t3-prism-replicate-study-plan.md`` and accepted
@@ -7,11 +7,17 @@ the lab-confirmed corny key of commit 0a31417), three copies of each design
 per plate, three plates, 27 articles named ``[plate]sne[spec][copy]`` (for
 example ``2sne73`` = plate 2, corny7, copy 3); plus a third print of the
 round-3 plate, whose first two prints are drran1-9 and 2dran1-9, named
-``3dran1`` to ``3dran9``.
+``dran31`` to ``dran39`` (``dran3N`` is the design of drranN and 2dranN).
+
+The third print first shipped (commit cf667d8) with its objects named
+``3dran1`` to ``3dran9``. The lab labeled the printed articles ``dran31`` to
+``dran39`` instead and asked for the repo to follow the physical labels
+(@achris0520 on PR #102, 2026-10-01, comment 5937228673), so ``3dranN`` and
+``dran3N`` are the same article; only the name changed.
 
 Nothing is re-rendered and no mass is re-solved. Every article is built from
 the mesh data of the committed slicer project it was first printed from
-(round 4 for the corny designs, round 3 for 3dran), so the geometry is the
+(round 4 for the corny designs, round 3 for dran3), so the geometry is the
 printed geometry bit for bit, and the per-part sparse infill overrides and
 the filament settings are carried over verbatim. Before writing anything the
 script checks the project meshes against the committed per-trial STLs and
@@ -39,13 +45,13 @@ Outputs, all under ``bo/replicate-study/``:
 
 * ``t3-prism-replicate-sne-plate{1,2,3}.H2D-MM-PLAstruts-TPUcables.3mf``:
   one Bambu Studio project per plate, objects named by article ID.
-* ``t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf``: the committed round-3
-  project with only its object names changed (``Trial 36`` -> ``3dran1``
+* ``t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf``: the committed round-3
+  project with only its object names changed (``Trial 36`` -> ``dran31``
   and so on); every other byte of the project is the drran/2dran file.
 * ``t3-prism-replicate-print-key.csv``: every article ID with its design,
   plate, position, infill and filament settings.
 * ``t3-prism-replicate-sne-plate-maps.png`` and
-  ``t3-prism-3dran-plate-map.png``: top-down labeled plate maps.
+  ``t3-prism-dran3-plate-map.png``: top-down labeled plate maps.
 * ``t3-prism-replicate-picks-performance.png``: measured rebound energy vs
   shock transmissibility for the three picks only.
 * ``stls/``: byte copies of the committed per-trial STLs for the three
@@ -130,6 +136,11 @@ PROJECT_FILE = "Metadata/project_settings.config"
 UUID_NS = uuid.UUID("5d0c6f3e-2f7a-4c1e-9a55-3b1f0c7e9a21")
 
 DESIGN_COLORS = {"corny7": "#2a78d6", "corny8": "#eb6834", "corny2": "#3f9b5a"}
+
+# Third print of the round-3 plate: article dran3N is the design of drranN
+# and 2dranN. These are the labels on the physical articles; the print files
+# of commit cf667d8 called them 3dranN (see the module docstring).
+DRAN3_PREFIX = "dran3"
 
 
 # ---- 3mf parsing ------------------------------------------------------------
@@ -475,9 +486,9 @@ def _articles_by_object(proj: dict) -> list[dict]:
     return out
 
 
-# ---- 3dran ----------------------------------------------------------------------
-def load_3dran_key() -> list[dict]:
-    """3dranN is the same design as drranN and 2dranN (photo-confirmed key)."""
+# ---- dran3 ----------------------------------------------------------------------
+def load_dran3_key() -> list[dict]:
+    """dran3N is the same design as drranN and 2dranN (photo-confirmed key)."""
     rows = list(csv.DictReader(ROUND3_KEY.open()))
     first = {r["print_id"]: r for r in rows}
     key = []
@@ -485,13 +496,13 @@ def load_3dran_key() -> list[dict]:
         a, b = first[f"drran{n}"], first[f"2dran{n}"]
         if a["source_trial"] != b["source_trial"]:
             raise SystemExit(f"drran{n} and 2dran{n} map to different trials")
-        key.append({"id": f"3dran{n}", "trial": int(a["source_trial"]),
+        key.append({"id": f"{DRAN3_PREFIX}{n}", "trial": int(a["source_trial"]),
                     "spec": int(a["spec"]), "row": a["plate_row"],
                     "slot": a["plate_col"], "drran": a, "2dran": b})
     return key
 
 
-def build_3dran_project(key: list[dict], out: Path) -> dict:
+def build_dran3_project(key: list[dict], out: Path) -> dict:
     """The round-3 project with only the object names (and the plate label)
     changed. Returns the parsed source for the plate map."""
     src = parse_project(ROUND3_3MF)
@@ -503,7 +514,8 @@ def build_3dran_project(key: list[dict], out: Path) -> dict:
                              f"{cfg.count(old)} times")
         cfg = cfg.replace(old, f'<metadata key="name" value="{k["id"]}"/>')
     cfg = re.sub(r'(key="plater_name" value=")[^"]*(")',
-                 r"\g<1>3dran reprint of drran/2dran\g<2>", cfg, count=1)
+                 rf"\g<1>{DRAN3_PREFIX} reprint of drran/2dran\g<2>", cfg,
+                 count=1)
     contents = dict(src["contents"])
     contents[SETTINGS_FILE] = cfg.encode()
     write_zip(out, src["infos"], contents)
@@ -512,12 +524,12 @@ def build_3dran_project(key: list[dict], out: Path) -> dict:
     _, new = read_zip(out)
     for name, data in src["contents"].items():
         if name != SETTINGS_FILE and new[name] != data:
-            raise SystemExit(f"3dran project: {name} differs from round 3")
+            raise SystemExit(f"dran3 project: {name} differs from round 3")
     old_lines = src["contents"][SETTINGS_FILE].decode().splitlines()
     new_lines = new[SETTINGS_FILE].decode().splitlines()
     changed = [(a, b) for a, b in zip(old_lines, new_lines) if a != b]
     if len(old_lines) != len(new_lines) or len(changed) != len(key) + 1:
-        raise SystemExit("3dran project: unexpected settings changes")
+        raise SystemExit("dran3 project: unexpected settings changes")
     return src
 
 
@@ -559,7 +571,7 @@ def write_key(layout: dict, key3: list[dict], src3: dict) -> Path:
         lo, hi = article_bbox(src3, art)
         man = m3[k["trial"]]
         rows.append([
-            k["id"], "3dran", f"round-3 trial {k['trial']}", k["trial"], "",
+            k["id"], DRAN3_PREFIX, f"round-3 trial {k['trial']}", k["trial"], "",
             "", k["row"], k["slot"], f"{(lo[0] + hi[0]) / 2:.1f}",
             f"{(lo[1] + hi[1]) / 2:.1f}",
             man["strut_infill_pct"], man["tpu_infill_pct"],
@@ -570,9 +582,9 @@ def write_key(layout: dict, key3: list[dict], src3: dict) -> Path:
             f"{k['drran']['print_id']}; {k['2dran']['print_id']}",
             f"{k['drran']['mass_g_with_label']}; "
             f"{k['2dran']['mass_g_with_label']}",
-            "t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf",
-            f"stls/3dran/{k['id']}-t{k['trial']}-struts.stl",
-            f"stls/3dran/{k['id']}-t{k['trial']}-cables.stl",
+            f"t3-prism-{DRAN3_PREFIX}.H2D-MM-PLAstruts-TPUcables.3mf",
+            f"stls/{DRAN3_PREFIX}/{k['id']}-t{k['trial']}-struts.stl",
+            f"stls/{DRAN3_PREFIX}/{k['id']}-t{k['trial']}-cables.stl",
         ])
     path = OUT_DIR / "t3-prism-replicate-print-key.csv"
     with path.open("w", newline="") as f:
@@ -585,7 +597,7 @@ def write_key(layout: dict, key3: list[dict], src3: dict) -> Path:
 def copy_stls(key3: list[dict]) -> None:
     """Byte copies of the committed per-trial STLs, renamed by article so the
     folder is self-contained (git stores identical content once)."""
-    (OUT_DIR / "stls" / "3dran").mkdir(parents=True, exist_ok=True)
+    (OUT_DIR / "stls" / DRAN3_PREFIX).mkdir(parents=True, exist_ok=True)
     for d in DESIGNS:
         for kind in ("struts", "cables"):
             shutil.copyfile(
@@ -595,7 +607,8 @@ def copy_stls(key3: list[dict]) -> None:
         for kind in ("struts", "cables"):
             shutil.copyfile(
                 STL_DIR / f"t3-prism-bo-round3-t{k['trial']}-{kind}.stl",
-                OUT_DIR / "stls" / "3dran" / f"{k['id']}-t{k['trial']}-{kind}.stl")
+                OUT_DIR / "stls" / DRAN3_PREFIX
+                / f"{k['id']}-t{k['trial']}-{kind}.stl")
 
 
 # ---- figures ---------------------------------------------------------------------
@@ -661,13 +674,13 @@ def render_sne_plate_maps(layout: dict, geo4: dict, tower_xy) -> Path:
     return path
 
 
-def render_3dran_plate_map(key3: list[dict], src3: dict) -> Path:
+def render_dran3_plate_map(key3: list[dict], src3: dict) -> Path:
     """No wipe tower on this map: the round-3 project still carries the
     profile default (x = 15 mm), which the GUI dealt with when drran and
     2dran were printed, so the file does not say where it actually went."""
     with plt.rc_context({**FIG_RC, "font.size": 12}):
         fig, ax = plt.subplots(figsize=(8.2, 8.3), dpi=FIGURE_DPI)
-        _plate_axes(ax, "3dran plate (third print of drran and 2dran)")
+        _plate_axes(ax, f"{DRAN3_PREFIX} plate (third print of drran and 2dran)")
         for k in key3:
             art = src3["articles"][k["trial"]]
             verts = np.vstack([src3["meshes"][p["mesh_id"]]["verts"]
@@ -683,10 +696,11 @@ def render_3dran_plate_map(key3: list[dict], src3: dict) -> Path:
                     f", {k['2dran']['print_id']}", ha="center", va="center",
                     fontsize=10, color="#3d3d3a", zorder=3, linespacing=1.2)
         fig.text(0.5, 0.02, "Positions as laid out in the committed round-3 "
-                 "project (3dranN is the same design as drranN and 2dranN).",
+                 f"project ({DRAN3_PREFIX}N is the same design as drranN and "
+                 "2dranN).",
                  ha="center", fontsize=11, color=LABEL_GRAY)
         fig.subplots_adjust(left=0.01, right=0.99, top=0.95, bottom=0.07)
-        path = OUT_DIR / "t3-prism-3dran-plate-map.png"
+        path = OUT_DIR / f"t3-prism-{DRAN3_PREFIX}-plate-map.png"
         fig.savefig(path, dpi=FIGURE_DPI, facecolor="white")
         plt.close(fig)
     return path
@@ -773,18 +787,18 @@ def main() -> int:
               f"\n      back:   {rows[0]}\n      middle: {rows[1]}"
               f"\n      front:  {rows[2]}")
 
-    key3 = load_3dran_key()
-    out3 = OUT_DIR / "t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf"
-    src3 = build_3dran_project(key3, out3)
+    key3 = load_dran3_key()
+    out3 = OUT_DIR / f"t3-prism-{DRAN3_PREFIX}.H2D-MM-PLAstruts-TPUcables.3mf"
+    src3 = build_dran3_project(key3, out3)
     verify_against_stls(src3, "round3", [k["trial"] for k in key3])
-    print(f"==> 3dran: {out3.name}; only object names differ from "
+    print(f"==> {DRAN3_PREFIX}: {out3.name}; only object names differ from "
           f"{ROUND3_3MF.name}: "
           + ", ".join(f"{k['id']} = t{k['trial']}" for k in key3))
 
     copy_stls(key3)
     key_path = write_key(layout, key3, src3)
     maps = render_sne_plate_maps(layout, geo4, tower4)
-    map3 = render_3dran_plate_map(key3, src3)
+    map3 = render_dran3_plate_map(key3, src3)
     perf = render_picks_performance()
     for path in (key_path, maps, map3, perf):
         print(f"==> wrote {path.relative_to(BO_DIR.parent)}")

@@ -1,4 +1,4 @@
-# Replicate study and 3dran reprint: print files
+# Replicate study and dran3 reprint: print files
 
 Prepared on 2026-09-28 for @achris0520, as requested by @me-madsen on
 PR #102 (comment 5873581840). There are four print jobs:
@@ -8,12 +8,12 @@ PR #102 (comment 5873581840). There are four print jobs:
 | Replicate plate 1 | [`t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf) | 1sne71 to 1sne83 | PLA 226 C at 29.5 mm3/s, TPU 236 C at 2.6 mm3/s |
 | Replicate plate 2 | [`t3-prism-replicate-sne-plate2.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-replicate-sne-plate2.H2D-MM-PLAstruts-TPUcables.3mf) | 2sne71 to 2sne83 | same as plate 1 |
 | Replicate plate 3 | [`t3-prism-replicate-sne-plate3.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-replicate-sne-plate3.H2D-MM-PLAstruts-TPUcables.3mf) | 3sne71 to 3sne83 | same as plate 1 |
-| 3dran reprint | [`t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-3dran.H2D-MM-PLAstruts-TPUcables.3mf) | 3dran1 to 3dran9 | PLA 217 C at 20.5 mm3/s, TPU 244 C at 3.6 mm3/s |
+| dran3 reprint | [`t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf) | dran31 to dran39 | PLA 217 C at 20.5 mm3/s, TPU 244 C at 3.6 mm3/s |
 
 Each replicate plate holds three copies of each of the three designs picked
 in the [replicate study plan](../t3-prism-replicate-study-plan.md): corny7
 (trial 37, on the Pareto front), corny8 (trial 39, further away) and corny2
-(trial 38, furthest away). The 3dran plate is a third print of the round-3
+(trial 38, furthest away). The dran3 plate is a third print of the round-3
 plate that was printed as drran1-9 and again as 2dran1-9.
 
 Every file here was built from the slicer project each design was first
@@ -100,27 +100,45 @@ floating cantilever on a corny2 copy, because supports are not painted yet).
 Each plate estimates about 14 h 55 min and 175 g PLA + 60 g TPU including the
 wipe tower, flushing and brims, before supports.
 
-## 3dran reprint
+## dran3 reprint
 
-![3dran plate map](t3-prism-3dran-plate-map.png)
+![dran3 plate map](t3-prism-dran3-plate-map.png)
 
-3dranN is the same design as drranN and 2dranN:
+**The articles of this print are labeled `dran31` to `dran39`.** These files
+first named them `3dran1` to `3dran9` (commit cf667d8, 2026-09-28); the lab
+labeled the printed articles `dran31` to `dran39` instead, and the files now
+use the labels that are on the articles (@achris0520 on PR #102,
+2026-10-01). `3dranN` and `dran3N` are the same article, so read `3dranN` in
+anything older as `dran3N`.
 
-| ID | Trial | Earlier prints (mass with label, g) | Struts infill | Cables infill |
-|---|--:|---|--:|--:|
-| 3dran1 | 36 | drran1 19.31, 2dran1 19.48 | 34 % | 26 % |
-| 3dran2 | 33 | drran2 19.33, 2dran2 19.65 | 29 % | 16 % |
-| 3dran3 | 31 | drran3 19.92, 2dran3 20.15 | 18 % | 21 % |
-| 3dran4 | 29 | drran4 19.92, 2dran4 20.19 | 13 % | 31 % |
-| 3dran5 | 28 | drran5 19.88, 2dran5 20.22 | 21 % | 29 % |
-| 3dran6 | 34 | drran6 19.24, 2dran6 19.54 | 16 % | 34 % |
-| 3dran7 | 32 | drran7 20.06, 2dran7 20.32 | 24 % | 13 % |
-| 3dran8 | 35 | drran8 19.32, 2dran8 19.51 | 26 % | 24 % |
-| 3dran9 | 30 | drran9 19.34, 2dran9 19.65 | 31 % | 18 % |
+dran3N is the same design as drranN and 2dranN. Masses for this print are
+from the print log @ctrhjk posted on issue #98 on 2026-09-29:
+
+| ID | Trial | Earlier prints (mass with label, g) | This print (mass with label, g) | Struts infill | Cables infill |
+|---|--:|---|--:|--:|--:|
+| dran31 | 36 | drran1 19.31, 2dran1 19.48 | 19.93 | 34 % | 26 % |
+| dran32 | 33 | drran2 19.33, 2dran2 19.65 | 19.71 | 29 % | 16 % |
+| dran33 | 31 | drran3 19.92, 2dran3 20.15 | 20.46 | 18 % | 21 % |
+| dran34 | 29 | drran4 19.92, 2dran4 20.19 | 20.41 | 13 % | 31 % |
+| dran35 | 28 | drran5 19.88, 2dran5 20.22 | 20.17 | 21 % | 29 % |
+| dran36 | 34 | drran6 19.24, 2dran6 19.54 | 19.72 | 16 % | 34 % |
+| dran37 | 32 | drran7 20.06, 2dran7 20.32 | 20.56 | 24 % | 13 % |
+| dran38 | 35 | drran8 19.32, 2dran8 19.51 | 20.00 | 26 % | 24 % |
+| dran39 | 30 | drran9 19.34, 2dran9 19.65 | 19.68 | 31 % | 18 % |
+
+The photos in that log show each label on an article of the right design
+family, and the masses repeat the pattern of the first two prints: the same
+four designs are the heaviest, and dran35 is again the heaviest of the three
+articles that share one shape (dran32, dran35, dran39). This print averages
+0.21 g above 2dran and 0.48 g above drran. Two pairs cannot be told apart
+from these photos or masses (dran31 and dran38, the two thin-cable designs,
+which differ mainly in twist; dran32 and dran39, which share a shape), so
+for those two pairs the label order rests on the plate positions the labels
+were applied from.
 
 The file is the committed round-3 project
 ([`../slices/t3-prism-bo-round3.H2D-MM-PLAstruts-TPUcables.3mf`](../slices/t3-prism-bo-round3.H2D-MM-PLAstruts-TPUcables.3mf))
-with only the object names changed (`Trial 36` became `3dran1`, and so on)
+with only the object names changed (`Trial 36` became `dran31`, and so on)
 and the plate label set. The build script checks that every other byte of the
 project, including the meshes, the filament settings and the 18 infill
 overrides, is unchanged.
@@ -182,17 +200,17 @@ Drop testing, from the plan (required unless marked optional):
 - Start and end each block with the same reference article (bpx68c, or one
   designated corny7 copy), and log the accelerometer re-seat (wax bed plus
   tape) for every article.
-- Weigh and photograph every article, 3dran included.
+- Weigh and photograph every article, dran3 included.
 - Optional: one 10 to 12 drop re-seat re-run of r2d2c3 in the same campaign.
 
 ## Other files
 
 - [`t3-prism-replicate-print-key.csv`](t3-prism-replicate-print-key.csv):
-  every article ID (27 replicate + 9 3dran) with design, trial, plate, row,
+  every article ID (27 replicate + 9 dran3) with design, trial, plate, row,
   slot, plate position, infill, filament settings, predicted printed mass and
   the earlier prints of the same design.
 - [`stls/`](stls/): the struts and cables STLs for corny7, corny8 and corny2,
-  and in [`stls/3dran/`](stls/3dran/) the nine round-3 designs named by 3dran
+  and in [`stls/dran3/`](stls/dran3/) the nine round-3 designs named by dran3
   ID. These are byte copies of the committed per-trial STLs in
   [`../per-specimen-stls/`](../per-specimen-stls/). Struts are PLA, cables are
   TPU; load a pair together as one object with two parts so they stay

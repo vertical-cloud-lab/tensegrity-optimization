@@ -542,8 +542,12 @@ Files:
 - `t3-prism-bo-round3-per-drop-metrics.csv`: stabilized per-drop t180 and
   e_rebound (18 rows per article: 20 valid captures minus the 2-drop
   warm-up).
-- `t3-prism-bo-round3-print-key.csv`: both prints, all 18 articles, with
-  masses, plate positions, defects and the trial mapping.
+- `t3-prism-bo-round3-print-key.csv`: all three prints, 27 articles, with
+  masses, plate positions, defects and the trial mapping. The third print
+  is `dran31`-`dran39` (print log with masses and photos on issue #98,
+  2026-09-29; no drop sessions yet). Its print files first named those
+  articles `3dran1`-`3dran9`, which is not what the lab put on them, so
+  `3dranN` in anything written before 2026-10-01 means `dran3N`.
 - `t3-prism-bo-round3-predictions.csv`: byte copy of the suggestions CSV
   the plate was rendered from (commit `d119a54`), so predicted-vs-measured
   is always drawn against what the model claimed at generation time.
@@ -1059,10 +1063,12 @@ plate projects, one per print job, each holding three copies of corny7
 `[plate]sne[design digit][copy]` (for example `2sne73` = plate 2, corny7,
 copy 3); the copy digit is the row (1 = back), and each plate is a Latin
 square cycled across the plates, so every design sits in every one of the
-nine positions exactly once over the study. Also there: the `3dran`
+nine positions exactly once over the study. Also there: the `dran3`
 project for the third print of the round-3 plate (the committed round-3
-project with only its object names changed, `3dranN` = the design of
-`drranN` and `2dranN`), labeled plate maps, the print key CSV for all 36
+project with only its object names changed, `dran3N` = the design of
+`drranN` and `2dranN`; first committed as `3dranN` and renamed on
+2026-10-01 to the labels the lab put on the printed articles), labeled
+plate maps, the print key CSV for all 36
 articles, byte copies of the STLs named by article, and a rebound-energy
 vs t180 figure of the three picks alone. Built by
 `t3_prism_replicate_plates.py` straight from the committed round-4 and
@@ -1074,7 +1080,7 @@ Headless slice check with BambuStudio v02.07.01.62: all three plates exit
 cantilever warning, about 14 h 55 min and 175 g PLA + 60 g TPU per plate
 including tower, flushing and brims; a control slice with the per-part
 infill overrides deleted used 6.7 g less PLA, so the overrides are live.
-The 3dran project, like the round-3 original, stops at the CLI's nozzle
+The dran3 project, like the round-3 original, stops at the CLI's nozzle
 check (it predates `_patch_h2d_state`) and is left unpatched on purpose.
 Record: `replicate-study/t3-prism-replicate-slice-check.json`.
 
