@@ -68,6 +68,18 @@ settles").
   drran-only snapshot (holds t32 = 1.251 and t35 = 0.980, both
   unrepresentative). Round-5 regeneration must re-ingest round 3
   per-design from both key-joined campaign summaries.
+- **10-03 update: third print (`dran31`–`dran39`, same designs).** With
+  three prints per design (`data/drop-tests/dran3-checkin/`, "Three-print
+  comparison"): screened article+seat sd 0.0087 (gauge < 1.145, no
+  drift flag); all four gauge-tripping round-3 sessions are their
+  design's high outlier (+4.5 to +19.8 % vs the three-print median),
+  while healthy-gauge sessions sit at a median 0.2 % from it. New
+  outlier: `dran35` (t28), gauge 2.43, T180 1.168 vs a 1.06 median,
+  pending re-seat. t32 is settled: clean prints read 1.029 and 1.045.
+  The t36 prediction holds at design level: `2dran1` reads +5.1 % over
+  its healthy siblings (1.033, 1.021); the article-level re-seat is
+  still open. For BO, quote the screened per-design means and carry
+  every unhealthy session's flag.
 
 ### Other conventions (pointers, not duplicates)
 

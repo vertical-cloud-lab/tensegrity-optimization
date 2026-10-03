@@ -1,0 +1,679 @@
+{
+ "provenance": {
+  "keys": "params.json in drran-/2dran-/dran3-checkin (round-3 print key, PR #102 branch; dran3N per relabel e9f5e2d, masses from the 09-28 print log on issue #98)",
+  "predictions": "bo/t3-prism-bo-round3-predictions.csv (frozen 09-06)",
+  "screen": "gauge T1000/T180 < 1.145 and no T-drift flag"
+ },
+ "designs": [
+  {
+   "spec": "t36",
+   "label_index": 1,
+   "pred_t180": 1.0514,
+   "prints": {
+    "drran": {
+     "t180": 1.03259000006491,
+     "t180_sd": 0.0016495591705116388,
+     "t1000": 1.1045216126268813,
+     "gauge": 1.0696613491874312,
+     "drift_flag": false,
+     "mass_g": 19.31,
+     "defects": "none",
+     "label": "drran1",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.0
+    },
+    "2dran": {
+     "t180": 1.07912673342057,
+     "t180_sd": 0.0036205527646270383,
+     "t1000": 1.4730438385280202,
+     "gauge": 1.3650332189054648,
+     "drift_flag": false,
+     "mass_g": 19.48,
+     "defects": "none",
+     "label": "2dran1",
+     "screened": false,
+     "pathologies": [
+      "2dran seat gauge 1.37 (suspect)"
+     ],
+     "dev_from_median_pct": 4.51
+    },
+    "dran3": {
+     "t180": 1.0208896432566605,
+     "t180_sd": 0.0025663632140747387,
+     "t1000": 1.0478456201589135,
+     "gauge": 1.0264043984384665,
+     "drift_flag": false,
+     "mass_g": 19.93,
+     "defects": "none",
+     "label": "dran31",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": -1.13
+    }
+   },
+   "median_t180": 1.0326,
+   "screened_mean_t180": 1.0267,
+   "n_screened": 2,
+   "range_pct": 5.7
+  },
+  {
+   "spec": "t33",
+   "label_index": 2,
+   "pred_t180": 1.0565,
+   "prints": {
+    "drran": {
+     "t180": 1.034535479213522,
+     "t180_sd": 0.000645161951072587,
+     "t1000": 1.130647981658728,
+     "gauge": 1.092904017673974,
+     "drift_flag": false,
+     "mass_g": 19.33,
+     "defects": "none",
+     "label": "drran2",
+     "screened": true,
+     "pathologies": [
+      "drran seat gauge 1.09 (above healthy band)"
+     ],
+     "dev_from_median_pct": -0.4
+    },
+    "2dran": {
+     "t180": 1.0899719198151416,
+     "t180_sd": 0.005857491890007678,
+     "t1000": 1.2497654234767395,
+     "gauge": 1.1466033213852873,
+     "drift_flag": false,
+     "mass_g": 19.65,
+     "defects": "none",
+     "label": "2dran2",
+     "screened": false,
+     "pathologies": [
+      "2dran seat gauge 1.15 (suspect)"
+     ],
+     "dev_from_median_pct": 4.94
+    },
+    "dran3": {
+     "t180": 1.0386402168918916,
+     "t180_sd": 0.0012173809693935393,
+     "t1000": 1.060753727545034,
+     "gauge": 1.0212908284249926,
+     "drift_flag": false,
+     "mass_g": 19.71,
+     "defects": "none",
+     "label": "dran32",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.0
+    }
+   },
+   "median_t180": 1.0386,
+   "screened_mean_t180": 1.0366,
+   "n_screened": 2,
+   "range_pct": 5.36
+  },
+  {
+   "spec": "t31",
+   "label_index": 3,
+   "pred_t180": 1.0432,
+   "prints": {
+    "drran": {
+     "t180": 1.038912160653277,
+     "t180_sd": 0.0011506256746595764,
+     "t1000": 1.1486002097800692,
+     "gauge": 1.1055797143213912,
+     "drift_flag": false,
+     "mass_g": 19.92,
+     "defects": "some tiny bubbles on the diagonal tendons",
+     "label": "drran3",
+     "screened": true,
+     "pathologies": [
+      "drran seat gauge 1.11 (above healthy band)",
+      "drran print defects (some tiny bubbles on the diagonal tendons)"
+     ],
+     "dev_from_median_pct": 0.0
+    },
+    "2dran": {
+     "t180": 1.0533168351156001,
+     "t180_sd": 0.0034511778042643757,
+     "t1000": 1.1945331627734659,
+     "gauge": 1.1340682337450416,
+     "drift_flag": false,
+     "mass_g": 20.15,
+     "defects": "none",
+     "label": "2dran3",
+     "screened": true,
+     "pathologies": [
+      "2dran seat gauge 1.13 (above healthy band)"
+     ],
+     "dev_from_median_pct": 1.39
+    },
+    "dran3": {
+     "t180": 1.0365889556181571,
+     "t180_sd": 0.004832038587516287,
+     "t1000": 1.0749582206729211,
+     "gauge": 1.0370149275147187,
+     "drift_flag": false,
+     "mass_g": 20.46,
+     "defects": "none",
+     "label": "dran33",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": -0.22
+    }
+   },
+   "median_t180": 1.0389,
+   "screened_mean_t180": 1.0429,
+   "n_screened": 3,
+   "range_pct": 1.61
+  },
+  {
+   "spec": "t29",
+   "label_index": 4,
+   "pred_t180": 1.032,
+   "prints": {
+    "drran": {
+     "t180": 1.0343554492868483,
+     "t180_sd": 0.0016671106351654524,
+     "t1000": 1.0815735162596147,
+     "gauge": 1.0456497493248782,
+     "drift_flag": false,
+     "mass_g": 19.92,
+     "defects": "none",
+     "label": "drran4",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.0
+    },
+    "2dran": {
+     "t180": 1.0433259242136939,
+     "t180_sd": 0.002584808323336767,
+     "t1000": 1.1076934651194625,
+     "gauge": 1.0616945667810176,
+     "drift_flag": false,
+     "mass_g": 20.19,
+     "defects": "none",
+     "label": "2dran4",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.87
+    },
+    "dran3": {
+     "t180": 1.0200975866926572,
+     "t180_sd": 0.002527790362385137,
+     "t1000": 1.0691656615374987,
+     "gauge": 1.048101353718451,
+     "drift_flag": false,
+     "mass_g": 20.41,
+     "defects": "none",
+     "label": "dran34",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": -1.38
+    }
+   },
+   "median_t180": 1.0344,
+   "screened_mean_t180": 1.0326,
+   "n_screened": 3,
+   "range_pct": 2.28
+  },
+  {
+   "spec": "t28",
+   "label_index": 5,
+   "pred_t180": 1.0587,
+   "prints": {
+    "drran": {
+     "t180": 1.0373325267188342,
+     "t180_sd": 0.0023535582132952863,
+     "t1000": 1.0427000931245418,
+     "gauge": 1.0051743932321158,
+     "drift_flag": false,
+     "mass_g": 19.88,
+     "defects": "some tiny bubbles on the diagonal tendons",
+     "label": "drran5",
+     "screened": true,
+     "pathologies": [
+      "drran print defects (some tiny bubbles on the diagonal tendons)"
+     ],
+     "dev_from_median_pct": -2.18
+    },
+    "2dran": {
+     "t180": 1.0604276133085229,
+     "t180_sd": 0.0013760935717656297,
+     "t1000": 1.1014019230098275,
+     "gauge": 1.0386394216701555,
+     "drift_flag": false,
+     "mass_g": 20.22,
+     "defects": "none",
+     "label": "2dran5",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.0
+    },
+    "dran3": {
+     "t180": 1.1678785082305863,
+     "t180_sd": 0.01703743590389908,
+     "t1000": 2.8398265407629855,
+     "gauge": 2.431611268423384,
+     "drift_flag": false,
+     "mass_g": 20.17,
+     "defects": "none",
+     "label": "dran35",
+     "screened": false,
+     "pathologies": [
+      "dran3 seat gauge 2.43 (suspect)"
+     ],
+     "dev_from_median_pct": 10.13
+    }
+   },
+   "median_t180": 1.0604,
+   "screened_mean_t180": 1.0489,
+   "n_screened": 2,
+   "range_pct": 12.58
+  },
+  {
+   "spec": "t34",
+   "label_index": 6,
+   "pred_t180": 1.065,
+   "prints": {
+    "drran": {
+     "t180": 1.047081593224621,
+     "t180_sd": 0.003957153188435229,
+     "t1000": 1.075054971486929,
+     "gauge": 1.02671556681286,
+     "drift_flag": false,
+     "mass_g": 19.24,
+     "defects": "some tiny bubbles on the diagonal tendons",
+     "label": "drran6",
+     "screened": true,
+     "pathologies": [
+      "drran print defects (some tiny bubbles on the diagonal tendons)"
+     ],
+     "dev_from_median_pct": 0.0
+    },
+    "2dran": {
+     "t180": 1.085898023090542,
+     "t180_sd": 0.0195507634334464,
+     "t1000": 1.1330137478971223,
+     "gauge": 1.0433887195710014,
+     "drift_flag": true,
+     "mass_g": 19.54,
+     "defects": "none",
+     "label": "2dran6",
+     "screened": false,
+     "pathologies": [
+      "2dran T-drift flag"
+     ],
+     "dev_from_median_pct": 3.71
+    },
+    "dran3": {
+     "t180": 1.0353359563610338,
+     "t180_sd": 0.000795139977138989,
+     "t1000": 1.0455757014080553,
+     "gauge": 1.0098902631402968,
+     "drift_flag": false,
+     "mass_g": 19.72,
+     "defects": "none",
+     "label": "dran36",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": -1.12
+    }
+   },
+   "median_t180": 1.0471,
+   "screened_mean_t180": 1.0412,
+   "n_screened": 2,
+   "range_pct": 4.88
+  },
+  {
+   "spec": "t32",
+   "label_index": 7,
+   "pred_t180": 1.0204,
+   "prints": {
+    "drran": {
+     "t180": 1.251289971228526,
+     "t180_sd": 0.00960942678478089,
+     "t1000": 2.937734594076864,
+     "gauge": 2.347764835989674,
+     "drift_flag": false,
+     "mass_g": 20.06,
+     "defects": "some tiny bubbles on the diagonal tendons",
+     "label": "drran7",
+     "screened": false,
+     "pathologies": [
+      "drran seat gauge 2.35 (suspect)",
+      "drran print defects (some tiny bubbles on the diagonal tendons)"
+     ],
+     "dev_from_median_pct": 19.76
+    },
+    "2dran": {
+     "t180": 1.0286127115380161,
+     "t180_sd": 0.0016119348554030262,
+     "t1000": 1.0603707533811277,
+     "gauge": 1.0308746348230773,
+     "drift_flag": false,
+     "mass_g": 20.32,
+     "defects": "none",
+     "label": "2dran7",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": -1.55
+    },
+    "dran3": {
+     "t180": 1.0448371254563946,
+     "t180_sd": 0.003071117652223865,
+     "t1000": 1.0907800432316175,
+     "gauge": 1.0439713680303564,
+     "drift_flag": false,
+     "mass_g": 20.56,
+     "defects": "none",
+     "label": "dran37",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.0
+    }
+   },
+   "median_t180": 1.0448,
+   "screened_mean_t180": 1.0367,
+   "n_screened": 2,
+   "range_pct": 21.65
+  },
+  {
+   "spec": "t35",
+   "label_index": 8,
+   "pred_t180": 1.0393,
+   "prints": {
+    "drran": {
+     "t180": 0.9804378489488348,
+     "t180_sd": 0.005080440028783636,
+     "t1000": 1.0415063485162765,
+     "gauge": 1.0622869666169208,
+     "drift_flag": true,
+     "mass_g": 19.32,
+     "defects": "none",
+     "label": "drran8",
+     "screened": false,
+     "pathologies": [
+      "drran T-drift flag"
+     ],
+     "dev_from_median_pct": -1.54
+    },
+    "2dran": {
+     "t180": 1.0108500365264843,
+     "t180_sd": 0.0010683212210984146,
+     "t1000": 1.0420030246278869,
+     "gauge": 1.030818605110261,
+     "drift_flag": false,
+     "mass_g": 19.51,
+     "defects": "none",
+     "label": "2dran8",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 1.51
+    },
+    "dran3": {
+     "t180": 0.9958146004644648,
+     "t180_sd": 0.005679682377881052,
+     "t1000": 1.0566227646002408,
+     "gauge": 1.0610637402860073,
+     "drift_flag": false,
+     "mass_g": 20.0,
+     "defects": "none",
+     "label": "dran38",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.0
+    }
+   },
+   "median_t180": 0.9958,
+   "screened_mean_t180": 1.0033,
+   "n_screened": 2,
+   "range_pct": 3.1
+  },
+  {
+   "spec": "t30",
+   "label_index": 9,
+   "pred_t180": 1.058,
+   "prints": {
+    "drran": {
+     "t180": 1.0424926519273505,
+     "t180_sd": 0.0009387117391997051,
+     "t1000": 1.0498415053336838,
+     "gauge": 1.0070493095493256,
+     "drift_flag": false,
+     "mass_g": 19.34,
+     "defects": "none",
+     "label": "drran9",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": -0.12
+    },
+    "2dran": {
+     "t180": 1.045103608146475,
+     "t180_sd": 0.002376459227987092,
+     "t1000": 1.054845515477519,
+     "gauge": 1.0093214751677313,
+     "drift_flag": false,
+     "mass_g": 19.65,
+     "defects": "none",
+     "label": "2dran9",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.13
+    },
+    "dran3": {
+     "t180": 1.043761932088484,
+     "t180_sd": 0.0012585922367796514,
+     "t1000": 1.0668951992243878,
+     "gauge": 1.0221633558618257,
+     "drift_flag": false,
+     "mass_g": 19.68,
+     "defects": "none",
+     "label": "dran39",
+     "screened": true,
+     "pathologies": [],
+     "dev_from_median_pct": 0.0
+    }
+   },
+   "median_t180": 1.0438,
+   "screened_mean_t180": 1.0438,
+   "n_screened": 3,
+   "range_pct": 0.25
+  }
+ ],
+ "aggregate": {
+  "batch_median_t180": {
+   "drran": 1.0373,
+   "2dran": 1.0533,
+   "dran3": 1.0366
+  },
+  "mean_mass_g": {
+   "drran": 19.59,
+   "2dran": 19.86,
+   "dran3": 20.07
+  },
+  "n_screened_cells": 21,
+  "additive_fit_screened": {
+   "n_cells": 21,
+   "dof": 10,
+   "resid_sd": 0.0087,
+   "print_offset": {
+    "drran": 0.0,
+    "2dran": 0.008,
+    "dran3": -0.0026
+   },
+   "design_mean": {
+    "t36": 1.0281,
+    "t33": 1.0379,
+    "t31": 1.0411,
+    "t29": 1.0308,
+    "t28": 1.0449,
+    "t34": 1.0425,
+    "t32": 1.034,
+    "t35": 1.0006,
+    "t30": 1.042
+   },
+   "max_abs_resid": 0.0134
+  },
+  "additive_fit_all27": {
+   "n_cells": 27,
+   "dof": 16,
+   "resid_sd": 0.0536,
+   "print_offset": {
+    "drran": 0.0,
+    "2dran": -0.0003,
+    "dran3": -0.0106
+   },
+   "design_mean": {
+    "t36": 1.0478,
+    "t33": 1.058,
+    "t31": 1.0466,
+    "t29": 1.0362,
+    "t28": 1.0922,
+    "t34": 1.0597,
+    "t32": 1.1119,
+    "t35": 0.9993,
+    "t30": 1.0474
+   },
+   "max_abs_resid": 0.1394
+  },
+  "between_design_sd_screened_means": 0.0136,
+  "article_sd_prereg": 0.013,
+  "rank_agreement_between_prints": {
+   "drran vs 2dran": {
+    "rho": 0.083,
+    "p": 0.831
+   },
+   "drran vs dran3": {
+    "rho": 0.667,
+    "p": 0.05
+   },
+   "2dran vs dran3": {
+    "rho": 0.2,
+    "p": 0.606
+   }
+  }
+ },
+ "model_agreement": {
+  "drran": {
+   "all9": {
+    "n": 9,
+    "spearman_rho": 0.2,
+    "spearman_p": 0.606,
+    "rms_vs_pred": 0.0807
+   },
+   "screened": {
+    "n": 7,
+    "spearman_rho": 0.643,
+    "spearman_p": 0.119,
+    "rms_vs_pred": 0.0164
+   }
+  },
+  "2dran": {
+   "all9": {
+    "n": 9,
+    "spearman_rho": 0.717,
+    "spearman_p": 0.03,
+    "rms_vs_pred": 0.02
+   },
+   "screened": {
+    "n": 6,
+    "spearman_rho": 0.771,
+    "spearman_p": 0.072,
+    "rms_vs_pred": 0.0146
+   }
+  },
+  "dran3": {
+   "all9": {
+    "n": 9,
+    "spearman_rho": 0.3,
+    "spearman_p": 0.433,
+    "rms_vs_pred": 0.0434
+   },
+   "screened": {
+    "n": 8,
+    "spearman_rho": 0.119,
+    "spearman_p": 0.779,
+    "rms_vs_pred": 0.025
+   }
+  },
+  "screened_design_means": {
+   "n": 9,
+   "spearman_rho": 0.75,
+   "spearman_p": 0.02,
+   "rms_vs_pred": 0.0198
+  },
+  "three_print_median": {
+   "n": 9,
+   "spearman_rho": 0.517,
+   "spearman_p": 0.154,
+   "rms_vs_pred": 0.0203
+  }
+ },
+ "seat_gauge": {
+  "spearman_gauge_vs_dev": {
+   "rho": 0.516,
+   "p": 0.00591
+  },
+  "tripped_cells": [
+   {
+    "label": "2dran1",
+    "spec": "t36",
+    "gauge": 1.365,
+    "t180": 1.0791,
+    "dev_from_median_pct": 4.51,
+    "is_design_max": true
+   },
+   {
+    "label": "2dran2",
+    "spec": "t33",
+    "gauge": 1.147,
+    "t180": 1.09,
+    "dev_from_median_pct": 4.94,
+    "is_design_max": true
+   },
+   {
+    "label": "dran35",
+    "spec": "t28",
+    "gauge": 2.432,
+    "t180": 1.1679,
+    "dev_from_median_pct": 10.13,
+    "is_design_max": true
+   },
+   {
+    "label": "drran7",
+    "spec": "t32",
+    "gauge": 2.348,
+    "t180": 1.2513,
+    "dev_from_median_pct": 19.76,
+    "is_design_max": true
+   }
+  ],
+  "healthy_gauge_cells": {
+   "n": 20,
+   "max_abs_dev_pct": 3.71,
+   "median_abs_dev_pct": 0.17
+  }
+ },
+ "standing_checks": {
+  "t36_2dran1_reads_high": {
+   "2dran1": 1.07912673342057,
+   "healthy_siblings": {
+    "drran": 1.03259000006491,
+    "dran3": 1.0208896432566605
+   },
+   "2dran1_vs_healthy_mean_pct": 5.1
+  },
+  "t32_drran7_artifact": {
+   "drran": 1.251289971228526,
+   "2dran": 1.0286127115380161,
+   "dran3": 1.0448371254563946,
+   "pred": 1.0204
+  },
+  "t35_lowest": {
+   "drran": 0.9804378489488348,
+   "2dran": 1.0108500365264843,
+   "dran3": 0.9958146004644648,
+   "lowest_in_every_print": true
+  }
+ }
+}
