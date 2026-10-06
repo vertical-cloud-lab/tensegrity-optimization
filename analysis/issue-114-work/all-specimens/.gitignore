@@ -1,0 +1,5 @@
+# Round-3 waveform CSVs (27 x 3.5 MB) are rebuilt by fetch_waveforms.py, not committed
+waveforms/drran*
+waveforms/2dran*
+waveforms/dran3*
+__pycache__/

@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""Justin's peak work near 40 ms for every drop of corny1 to corny9 (issue #114).
+"""Justin's peak work near 40 ms for every drop of every specimen (issue #114).
 
 Justin's request (2026-10-06): run his updated code on every drop of every
 specimen, take the peak of the total work near 40 ms, correct the peak finder
 for any specimen where it misses, leave out trials or specimens with no such
 peak, and report each specimen's mean and standard deviation.
+
+Specimens: corny1 to corny9 (corny7's batch, round 4) and the 27 specimens
+of round 3 dropped the same way (drran1 to drran9, 2dran1 to 2dran9, dran31
+to dran39): 60 in onto the 1/2 in PU mat, 20 drops each, same four channels.
 
 * The work curve is Justin's own ``numaric_work``, pulled unchanged out of
   ``justin/implimatation_or_work_2026-10-06.py`` (it is compiled from his file,
@@ -13,7 +17,9 @@ peak, and report each specimen's mean and standard deviation.
 * His peak is ``max(work_z[1250:2250])``, the largest total work between 25 and
   45 ms. A pick only counts as a peak if it is a real local maximum: at least
   0.5 ms inside the window and standing at least ``MIN_PROM`` above the curve
-  on both sides (``scipy.signal.peak_prominences``).
+  on both sides (``scipy.signal.peak_prominences``). Every peak on corny6 to
+  corny9 stands 0.96 J/kg or more; the largest bump on any other specimen's
+  curve is 0.54 J/kg, so ``MIN_PROM`` sits between the two.
 * If a pick fails that test, the script looks for the most prominent peak
   between 15 and 70 ms instead and marks the drop "corrected". If there is
   none, the drop is marked "no peak" and left out of the averages.
@@ -41,11 +47,17 @@ from scipy import signal as sig
 
 HERE = Path(__file__).resolve().parent
 JUSTIN = HERE / "justin" / "implimatation_or_work_2026-10-06.py"
-SPECIMENS = [f"corny{n}" for n in range(1, 10)]
+BATCHES = {
+    "corny": [f"corny{n}" for n in range(1, 10)],
+    "drran": [f"drran{n}" for n in range(1, 10)],
+    "2dran": [f"2dran{n}" for n in range(1, 10)],
+    "dran3": [f"dran3{n}" for n in range(1, 10)],
+}
+SPECIMENS = [s for b in BATCHES.values() for s in b]
 DROPS = range(3, 21)        # Justin's loop: range(3, 21)
 WIN = (1250, 2250)          # Justin's window, 25 to 45 ms at 50 kHz
 EDGE = 25                   # 0.5 ms: a pick this close to a window edge is the edge
-MIN_PROM = 0.5              # J/kg; peaks on corny6-9 stand 0.96 or more, bumps on corny1-5 0.31 or less
+MIN_PROM = 0.75             # J/kg; peaks on corny6-9 stand 0.96 or more, other bumps 0.54 or less
 FALLBACK_MS = (15.0, 70.0)  # where a corrected search looks
 G = 9.81
 
@@ -174,6 +186,7 @@ def style(ax) -> None:
 
 
 def fig_mean_sd(rows, summ, png: Path) -> None:
+    summ = [s for s in summ if s["specimen_id"] in BATCHES["corny"]]
     fig, ax = plt.subplots(figsize=(9, 4.8), facecolor=SURFACE)
     rng = np.random.default_rng(0)
     ax.axhline(0.0, color=AXIS, lw=1.0)
@@ -205,8 +218,10 @@ def fig_mean_sd(rows, summ, png: Path) -> None:
     plt.close(fig)
 
 
-def fig_curves(curves, summ, png: Path) -> None:
-    fig, axs = plt.subplots(3, 3, figsize=(14, 10.5), facecolor=SURFACE, sharex=True)
+def fig_curves(curves, summ, png: Path, ncols: int = 3) -> None:
+    nrows = -(-len(summ) // ncols)
+    fig, axs = plt.subplots(nrows, ncols, figsize=(4.67 * ncols, 3.5 * nrows),
+                            facecolor=SURFACE, sharex=True, squeeze=False)
     for ax, s in zip(axs.flat, summ):
         spec = s["specimen_id"]
         ax.axvspan(WIN[0] / 50, WIN[1] / 50, color=GRID, alpha=0.6, lw=0, zorder=0)
@@ -222,7 +237,7 @@ def fig_curves(curves, summ, png: Path) -> None:
         note = (f"peak in {s['n_with_peak']} of {s['n_drops']} drops" if s["n_with_peak"]
                 else "no peak in any drop")
         ax.set_title(f"{spec}  (T180 {s['T180_mean']:.3f}): {note}", loc="left",
-                     color=INK, fontsize=10)
+                     color=INK, fontsize=10 if ncols <= 3 else 9)
         ax.set_xlim(0, 100)
         style(ax)
     for ax in axs[-1]:
@@ -262,6 +277,37 @@ def fig_vs_t180(rows, summ, png: Path) -> None:
     plt.close(fig)
 
 
+def fig_prominence(rows, summ, png: Path) -> None:
+    """Largest peak on each specimen's curves (15 to 70 ms) against T180."""
+    fig, ax = plt.subplots(figsize=(8, 4.8), facecolor=SURFACE)
+    ax.axhline(MIN_PROM, color=ORANGE, lw=1.2, ls=(0, (4, 3)))
+    ax.text(1.255, MIN_PROM + 0.03, f"cutoff {MIN_PROM} J/kg", ha="right", va="bottom",
+            color=INK2, fontsize=9)
+    for s in summ:
+        r = [x for x in rows if x["specimen_id"] == s["specimen_id"] and not x["warmup"]]
+        prom = [x["peak_prominence_J_per_kg"] for x in r]
+        has = s["n_with_peak"] > 0
+        ax.errorbar(s["T180_mean"], np.median(prom),
+                    yerr=[[np.median(prom) - min(prom)], [max(prom) - np.median(prom)]],
+                    fmt="o", ms=7 if has else 5.5, color=BLUE if has else MUTED,
+                    mec=SURFACE, mew=1.0, elinewidth=1.2, capsize=3, zorder=3 if has else 2)
+        if has or s["specimen_id"] in ("2dran8", "drran7", "dran35"):
+            ax.annotate(s["specimen_id"], (s["T180_mean"], max(prom)), xytext=(4, 4),
+                        textcoords="offset points", color=INK2, fontsize=8.5)
+    ax.plot([], [], "o", color=BLUE, ms=7, label="peak in every drop: corny6 to corny9")
+    ax.plot([], [], "o", color=MUTED, ms=5.5, label="no peak: the other 32 specimens")
+    ax.legend(loc="upper right", frameon=False, fontsize=9, labelcolor=INK2)
+    ax.set_ylim(-0.05, 1.45)
+    ax.set_xlabel("T180, mean of drops 3 to 20")
+    ax.set_ylabel("Height of the peak (prominence, J/kg)")
+    ax.set_title("Tallest peak on each specimen's work curve, drops 3 to 20 "
+                 "(dot: median, bar: range)", loc="left", color=INK, fontsize=10.5)
+    style(ax)
+    fig.tight_layout()
+    fig.savefig(png, dpi=150, facecolor=SURFACE)
+    plt.close(fig)
+
+
 def main():
     (HERE / "results").mkdir(exist_ok=True)
     (HERE / "figures").mkdir(exist_ok=True)
@@ -283,8 +329,12 @@ def main():
               | {"T180_mean": 4, "T180_sd": 4})
 
     fig_mean_sd(rows, summ, HERE / "figures" / "01_mean_peak_work_by_specimen.png")
-    fig_curves(curves, summ, HERE / "figures" / "02_work_curves_all_specimens.png")
+    corny = [s for s in summ if s["specimen_id"] in BATCHES["corny"]]
+    fig_curves(curves, corny, HERE / "figures" / "02_work_curves_corny.png")
     fig_vs_t180(rows, summ, HERE / "figures" / "03_peak_work_vs_t180.png")
+    fig_prominence(rows, summ, HERE / "figures" / "04_peak_height_all_36_specimens.png")
+    fig_curves(curves, [s for s in summ if s not in corny],
+               HERE / "figures" / "05_work_curves_round3.png", ncols=9)
 
     for s in summ:
         print(f"{s['specimen_id']}: peak in {s['n_with_peak']}/{s['n_drops']} "

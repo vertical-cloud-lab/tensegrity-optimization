@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""Fetch the corny1 to corny9 drop captures from Box and write one 50 kHz
-waveform CSV per specimen, in the same format as the corny7 export of
-issue #110 (``corny7_waveforms_50kHz.csv``), so Justin's script reads any
-of them unchanged.
+"""Fetch drop captures from Box and write one 50 kHz waveform CSV per
+specimen, in the same format as the corny7 export of issue #110
+(``corny7_waveforms_50kHz.csv``), so Justin's script reads any of them
+unchanged.
+
+Four batches are recorded under the same procedure (60 in onto the 1/2 in
+PU mat, 20 drops, same four channels): corny1 to corny9 (round 4) and the
+three prints of round 3, drran1 to drran9, 2dran1 to 2dran9 and dran31 to
+dran39. The Box ids of each session are in ``box-ids/``.
 
 Each Box session folder holds one TP4 capture per drop
 (``*_Signal<k>.csv``: 9 header lines, then time and CH2 to CH5 at
@@ -15,7 +20,8 @@ reproduces the committed corny7 CSV byte for byte (checked with
 ``--check-corny7``).
 
 Usage:
-    python fetch_waveforms.py --raw /tmp/corny-raw --out waveforms
+    python fetch_waveforms.py --raw /tmp/drop-raw                  # all four batches
+    python fetch_waveforms.py --raw /tmp/drop-raw --batches corny  # corny only
 """
 from __future__ import annotations
 
@@ -30,7 +36,12 @@ import numpy as np
 from scipy import signal as sig
 
 HERE = Path(__file__).resolve().parent
-SPECIMENS = [f"corny{n}" for n in range(1, 10)]
+BATCHES = {
+    "corny": [f"corny{n}" for n in range(1, 10)],
+    "drran": [f"drran{n}" for n in range(1, 10)],
+    "2dran": [f"2dran{n}" for n in range(1, 10)],
+    "dran3": [f"dran3{n}" for n in range(1, 10)],
+}
 DECIM = 25                 # 1.25 MHz -> 50 kHz
 TP4_HEADER_LINES = 9
 BOX_DOWNLOAD = ("https://byu.app.box.com/index.php?rm=box_download_shared_file"
@@ -51,9 +62,9 @@ def download(url: str, dest: Path) -> None:
     tmp.rename(dest)
 
 
-def fetch_all(raw: Path, workers: int = 8) -> None:
+def fetch_all(raw: Path, specimens: list[str], workers: int = 8) -> None:
     jobs = []
-    for spec in SPECIMENS:
+    for spec in specimens:
         m = json.loads((HERE / "box-ids" / f"{spec}.json").read_text())
         d = raw / spec
         d.mkdir(parents=True, exist_ok=True)
@@ -88,13 +99,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", type=Path, required=True, help="where the Box captures go")
     ap.add_argument("--out", type=Path, default=HERE / "waveforms")
+    ap.add_argument("--batches", nargs="+", choices=list(BATCHES), default=list(BATCHES))
     ap.add_argument("--check-corny7", action="store_true",
                     help="compare the corny7 CSV written here with the issue #110 export")
     args = ap.parse_args()
 
-    fetch_all(args.raw)
+    specimens = [s for b in args.batches for s in BATCHES[b]]
+    fetch_all(args.raw, specimens)
     args.out.mkdir(parents=True, exist_ok=True)
-    for spec in SPECIMENS:
+    for spec in specimens:
         out = args.out / f"{spec}_waveforms_50kHz.csv"
         if not out.exists():
             n = convert(args.raw / spec, out)
