@@ -1,0 +1,70 @@
+{
+ "specimen": "corny2",
+ "drop": 10,
+ "clip": "corny2-10th.MP4 (C0250M01)",
+ "camera_fps": 959.04,
+ "impact_frame_subframe": 1098.375,
+ "ch5_pulse_centroid_ms": 2.986,
+ "ch5_peak_ms": 2.96,
+ "ch5_delta_v_pulse_m_s": 5.455,
+ "frame_at_record_start_t0": 1095.51,
+ "frame_at_record_end_t100ms": 1191.42,
+ "carriage_px_per_mm": 4.476,
+ "carriage_impact_speed_from_video_m_s": 4.676,
+ "label_box_x0x1y0y1": [
+  1630,
+  1770,
+  108,
+  378
+ ],
+ "top_box_x0x1y0y1": [
+  1116,
+  1206,
+  213,
+  379
+ ],
+ "template_frame": 1138,
+ "label_match_score_min": 0.961,
+ "video_height_change_mm": {
+  "min_after_2ms": -1.81,
+  "t_of_min_ms": 47.4,
+  "max_after_2ms": 0.47,
+  "frames_without_a_top_edge": 0,
+  "at_15ms": -0.3,
+  "at_41ms": -1.22,
+  "reference": "median over 50-95 ms (carriage in the air)",
+  "sd_over_reference_window": 0.52,
+  "median_in_free_fall_before_impact_blurred": -3.95,
+  "template_track_at_15ms_cross_check": -0.16,
+  "template_track_at_41ms_cross_check": -1.26,
+  "template_track_min_match_score": 0.834
+ },
+ "accel_height_change_mm": {
+  "min": 0.0,
+  "t_of_min_ms": 0.0,
+  "at_15ms": 4.46,
+  "at_41ms": 27.33,
+  "at_100ms": 181.6
+ },
+ "dv_15ms_m_s": {
+  "ch4_top": 5.939,
+  "ch5_base": 5.293
+ },
+ "peak_g": {
+  "ch4_top": 267.0,
+  "ch5_base": 262.8
+ },
+ "work_J_per_kg": {
+  "min": 0.0,
+  "t_of_min_ms": 0.0,
+  "at_15ms": 0.603,
+  "justin_window_max_25_45ms": 1.752,
+  "t_of_window_max_ms": 44.98
+ },
+ "video_crop_x0x1y0y1": [
+  996,
+  1920,
+  0,
+  702
+ ]
+}
