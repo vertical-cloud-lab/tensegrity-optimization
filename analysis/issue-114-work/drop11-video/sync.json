@@ -1,0 +1,19 @@
+{
+ "drop": 11,
+ "clip": "corny7-10th.MP4 (C0265M01)",
+ "camera_fps": 959.04,
+ "impact_frame_subframe": 1016.635,
+ "ch5_pulse_centroid_ms": 2.891,
+ "ch5_peak_ms": 2.98,
+ "ch5_delta_v_pulse_m_s": 5.41,
+ "frame_at_record_start_t0": 1013.86,
+ "frame_at_record_end_t100ms": 1109.77,
+ "carriage_px_per_mm": 3.93,
+ "carriage_impact_speed_from_video_m_s": 4.659,
+ "rebound_speed_from_video_m_s": 0.751,
+ "label_match_score_min": 0.872,
+ "justin_peak_25_45ms": {
+  "t_ms": 41.1,
+  "work_J_per_kg": -2.5135
+ }
+}
