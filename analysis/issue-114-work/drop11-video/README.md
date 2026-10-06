@@ -63,6 +63,41 @@ numbers.
   is his "peak", the largest total work between 25 and 45 ms.
 - Right: the camera frame number and the time that frame was taken.
 
+## What the video shows (first look)
+
+These are read off the video by eye, so treat them as a starting point.
+
+- **0 to 3 ms:** the carriage is still falling and the specimen is unloaded.
+- **3 to 10 ms:** the carriage stops within about two frames. The top keeps
+  moving down and the cables go slack and bow out. The total work drops to
+  about -4.2 J/kg.
+- **10 to 30 ms:** the top triangle is tilted and the cables stay slack: the
+  specimen is squashed and twisted, not just shortened. The total stays near
+  -4.2 J/kg.
+- **30 to 41 ms:** the specimen straightens, the cables pull taut, and by about
+  41 ms it looks back to full height. The total climbs to the 41 ms peak
+  (-2.51 J/kg) as the specimen gives energy back.
+- **After 41 ms:** the dip right after the peak is too small to see at this
+  resolution.
+- **The carriage bounces.** It leaves the mat right after impact, rises about
+  17 mm, peaks near 62 ms and is still in the air at 100 ms. After the first
+  few ms, the bottom of the specimen is not resting on the mat.
+
+Because the specimen looks back to full height at the 41 ms peak, little energy
+is still stored in it there. That makes the 41 ms value closer to "energy lost
+in one squash-and-return" than the 15 ms value, which is taken while the
+specimen is still squashed. Integrating to 41 ms picks up more sensor offset
+than integrating to 15 ms, so the offset caveat from the earlier review still
+applies.
+
+The carriage also seems to hit the mat slower than the 5.46 m/s used for v0.
+Two estimates that need no pixel scale agree on about 4.6 to 4.8 m/s: CH5's
+velocity change minus the rebound speed implied by when the bounce peaks, and
+the ratio of the carriage's speeds before and after impact in the video. v0
+cancels in the total, but it shifts the split: with v0 = -4.66 m/s, the top
+work at 15 ms goes from -15.2 to -10.9 J/kg and the bottom work from +10.9 to
++6.6 J/kg.
+
 ## Reproduce
 
 ```bash
