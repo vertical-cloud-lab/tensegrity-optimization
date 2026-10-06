@@ -91,7 +91,7 @@ than integrating to 15 ms, so the offset caveat from the earlier review still
 applies.
 
 The carriage also seems to hit the mat slower than the 5.46 m/s used for v0.
-Two estimates that need no pixel scale agree on about 4.6 to 4.8 m/s: CH5's
+Two estimates that need no pixel scale agree on about 4.5 to 4.8 m/s: CH5's
 velocity change minus the rebound speed implied by when the bounce peaks, and
 the ratio of the carriage's speeds before and after impact in the video. v0
 cancels in the total, but it shifts the split: with v0 = -4.66 m/s, the top
