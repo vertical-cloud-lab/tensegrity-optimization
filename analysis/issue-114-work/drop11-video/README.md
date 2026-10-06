@@ -6,7 +6,9 @@ video, to connect the graph to how the structure deforms.
 
 **Result:** [`corny7_drop11_work_video.mp4`](corny7_drop11_work_video.mp4),
 14 s long: a 1 s still at 0 ms, then the full 100 ms record over 12 s (120 times
-slower than real time), then a 1 s still at 100 ms.
+slower than real time), then a 1 s still at 100 ms. A smaller, lower-quality
+GIF of the same video is in
+[`corny7_drop11_work_video_preview.gif`](corny7_drop11_work_video_preview.gif).
 
 ![key frames](key_frames.png)
 
