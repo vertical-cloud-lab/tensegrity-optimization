@@ -1,0 +1,40 @@
+{
+  "n_layers": 646,
+  "slicer_total_s": 20008,
+  "tendon_layer_time_mean_s": 30.042942607882505,
+  "soft_length_mm": {
+    "single-material schedule (this g-code)": 1.0356139184308268,
+    "PLA+TPU schedule (\u00d73.8 layer times)": 0.20712278368616538,
+    "worst case: tendon-only schedule (3 s/layer)": 9.527648049563608
+  },
+  "lengths_mm": [
+    10.356139184308269,
+    20.712278368616538,
+    31.06841755292481,
+    41.42455673723308,
+    51.78069592154135,
+    62.13683510584962,
+    72.49297429015789,
+    82.84911347446615
+  ],
+  "max_deflection_mm": {
+    "single-material schedule (this g-code)": {
+      "bare": 5.220188,
+      "committed cage (1.2 @ 18)": 1.525033,
+      "recommended cage (0.8 @ 12)": 1.034026
+    },
+    "PLA+TPU schedule (\u00d73.8 layer times)": {
+      "bare": 5.193385,
+      "committed cage (1.2 @ 18)": 1.521095,
+      "recommended cage (0.8 @ 12)": 1.030067
+    },
+    "worst case: tendon-only schedule (3 s/layer)": {
+      "bare": 5.391791,
+      "committed cage (1.2 @ 18)": 1.587553,
+      "recommended cage (0.8 @ 12)": 1.096871
+    }
+  },
+  "tau_s": 73.0,
+  "t_noz_c": 230.0,
+  "e_tpu_mpa": 15.0
+}

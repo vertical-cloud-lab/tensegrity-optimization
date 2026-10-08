@@ -1,0 +1,81 @@
+{
+  "wittbrodt_white_vs_black": {
+    "uts_white_mpa": 53.97,
+    "uts_black_mpa": 52.81,
+    "uts_white_over_black_pct": 2.196553683014574,
+    "yield_white_over_black_pct": 2.600040625634778,
+    "crystallinity_white_pct": 5.05,
+    "crystallinity_black_pct": 2.62,
+    "scatter_sd_white_mpa": 0.82,
+    "scatter_sd_black_mpa": 3.72,
+    "modulus_gpa": 2.78,
+    "modulus_band_gpa": 0.35,
+    "modulus_band_pct": 12.589928057553958
+  },
+  "shock_transmission": {
+    "density_kgm3": 1240.0,
+    "E_nom_mpa": 2580.0,
+    "E_band_mpa": [
+      2360.0,
+      2800.0
+    ],
+    "E_band_spread_pct": 18.64406779661017,
+    "wave_speed_nom_ms": 1442.444162278153,
+    "wave_speed_band_ms": [
+      1379.574501957619,
+      1502.6857675938213
+    ],
+    "wave_speed_spread_pct": 8.923857715658494,
+    "impedance_nom_mrayl": 1.7886307612249097,
+    "impedance_band_mrayl": [
+      1.7106723824274477,
+      1.8633303518163384
+    ],
+    "reflection_amplitude": 0.04271344504754311,
+    "reflected_energy_fraction": 0.0018244383878294852,
+    "transmitted_energy_fraction": 0.9981755616121705
+  },
+  "colour_spreads_pct": {
+    "Modulus, 14 colours (Pandzic 2019)": 18.0,
+    "UTS, 14 colours (Pandzic 2019)": 31.0,
+    "UTS, 8 colours (Yao 2022, eSUN)": 32.0,
+    "UTS, 10 colours (CNC Kitchen)": 15.0,
+    "Layer adhesion, 10 colours (CNC Kitchen)": 48.0,
+    "Impact, 10 colours (CNC Kitchen)": 80.0
+  },
+  "other_effects_pct": {
+    "Bambu's own modulus band (+/- 220 MPa)": 17.9,
+    "Bambu's own UTS band (+/- 4 MPa)": 25.8,
+    "Print direction, XY vs Z modulus (Bambu)": 25.2,
+    "Print direction, XY vs Z impact (Bambu)": 92.8,
+    "Nozzle temp 200-240 C, black PLA (Petousis 2022)": 21.2,
+    "Print speed 100-600 mm/s, natural PLA (2025)": 13.9
+  },
+  "bambu_pla_basic_tds_v3": {
+    "E_xy_mpa": [
+      2580.0,
+      220.0
+    ],
+    "E_z_mpa": [
+      2060.0,
+      170.0
+    ],
+    "uts_xy_mpa": [
+      35.0,
+      4.0
+    ],
+    "uts_z_mpa": [
+      31.0,
+      3.0
+    ],
+    "impact_xy_kjm2": [
+      26.6,
+      2.8
+    ],
+    "impact_xy_notched_kjm2": [
+      7.9,
+      1.2
+    ],
+    "density_kgm3": 1240.0
+  }
+}
