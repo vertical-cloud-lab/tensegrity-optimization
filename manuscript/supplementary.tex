@@ -97,9 +97,9 @@ edge supports were painted manually in Bambu Studio along each tendon, with
 the support-to-object XY clearance tightened from \SI{0.35}{mm} to
 \SI{0.2}{mm} during tuning on the S0 reference prism
 (\href{\repo/issues/98}{issue~\#98}). Support removal is the leading source of
-the logged cosmetic defects (surface stringing; on two seed articles, TPU
-strands pulled off bottom tendons), so defects are recorded per article in the
-print key (Section~\ref{si:printkey}).
+the logged cosmetic defects (surface stringing; on two seed articles, a TPU
+strand that did not fuse to a bottom tendon and separated from it), so defects
+are recorded per article in the print key (Section~\ref{si:printkey}).
 
 An automated alternative was developed in parallel: a tensegrity-specific
 Bambu Studio recipe (support threshold angle lowered from \SI{40}{\degree} to
@@ -144,9 +144,9 @@ surrogate fit until identified.
     Spec 00 & 9hhbkp & 21.62 & none \\
     Spec 01 & 6lhxfy & 18.50 & slight strut misprint; divot on one top tendon \\
     Spec 02 & autv5r & 22.04 & minor tendon misalignment near top \\
-    Spec 03 & ebdna8 & 19.61 & two strands off bottom tendons (support removal) \\
+    Spec 03 & ebdna8 & 19.61 & two strands separated from bottom tendons (support removal) \\
     Spec 04 & nvxsrv & 20.66 & misalignment ring after printer pause \\
-    Spec 05 & 6nheas & 21.73 & two strands off bottom tendons (support-related) \\
+    Spec 05 & 6nheas & 21.73 & two strands separated from bottom tendons (support-related) \\
     Spec 06 & 1zm8rv & 18.50 & stringing along diagonal tendons \\
     Spec 07 & ajhby6 & 20.53 & filament line pulled from bottom struts \\
     Spec 08 & dea4ls & 22.29 & stringing; residual PLA on tendon \\
@@ -333,7 +333,8 @@ paraphrased here at the risk of diverging from the code of record.
 \paragraph{Rig health and repair history.} Rig health is checked
 against the impact
 velocity change $\Delta v$ recovered from the base channel; over an
-uninterrupted 100-drop session the $\Delta v$ CV was 0.54\% with a flat
+uninterrupted 100-drop session the $\Delta v$ coefficient of variation (CV,
+the standard deviation divided by the mean) was 0.54\% with a flat
 drift slope. Within a session, $\Delta v$ and the CFC-180 input
 typically ease down by 1 to 4\% as the polyurethane mat warms, and
 recover fully after a rest of minutes; after a mat rest or re-seat,
@@ -374,19 +375,19 @@ evolved through a measurability review
 (\href{\repo/pull/97}{PR~\#97}): per-specimen crush energy in joules is not
 recoverable from this rig (no falling-mass or displacement channel, and the
 specimens stay elastic), which is why the campaign responses are the
-filtered peak-acceleration ratio and a provisional mass-weighted
-rebound-timing score, with quasi-static
+filtered peak-acceleration ratio and a provisional velocity loss index,
+optimized in a mass-weighted form, with quasi-static
 crush metrics deferred to a load-frame campaign. A pre-registered
 adversarial review of the objective choices (Edison ANALYSIS task
 \texttt{3e398131}, archived in the repository) recommended
 accounting for article-level rather than per-drop noise, treating
-the rebound fraction as a candidate constraint pending a
+the velocity loss index as a candidate constraint pending a
 restrained-versus-unrestrained validation with synchronized video,
 and reserving print capacity for replicate articles. The campaign's
 realized responses are recorded in the main text: the batch-3 plate
 was printed and tested twice, which measured the design-level shift
 distribution directly and produced the between-seat replication
-rule; the rebound fraction remains a candidate constraint; and the
+rule; the velocity loss index remains a candidate constraint; and the
 surrogate continues to ingest per-session standard errors, with the
 replication evidence carried as an interpretation bound rather than
 as an inflated noise term. The reserved-replicate recommendation now
@@ -412,10 +413,14 @@ strut diameter (fitted infill 23.6\%, wall \SI{1.18}{mm}, TPU factor 0.744).
 The model's residual standard deviation is \SI{0.378}{g}. For context, the
 three available prints of design 08 have a sample standard deviation of
 \SI{0.457}{g}; three prints of one geometry are insufficient to establish a
-general process repeatability limit. Inverting the model inside the
-projection lets a batch hold \emph{printed} grams constant with no
-slicer in the loop, and batches 3 and 4 did so at the \SI{20.23}{g}
-target (the reference article's weight). Outcomes: batch mass CV
+general process repeatability limit. Run in reverse inside the
+projection, the model holds \emph{printed} grams constant with no
+slicer in the loop: for a target mass the projection solves for the
+uniform scale factor at which the predicted printed mass equals the
+target (by bisection, since predicted mass rises monotonically with
+scale), and the design is printed at that scale. Batches 3 and 4 did
+so at the \SI{20.23}{g} target (the reference article's weight).
+Outcomes: batch mass CV
 fell from 5.5\% (tested seed articles) and 8.7\% (batch 2, still
 solid-mass-projected) to 1.7\% (batch 3) and 2.3\% (batch 4). The
 weighings sit a few tenths of a gram below target as a per-session
@@ -451,7 +456,7 @@ and characterized under the identical drop protocol of
 Section~\ref{si:drop}. Rank agreement between the measured PLA/TPU ranking
 and the hollow-aluminum/stainless-steel ranking on the primary campaign
 metric $t_{180}$ (to be reported in the main-text metal-analog table and
-figure, with the provisional rebound score and, later, quasi-static SEA as
+figure, with the velocity loss index and, later, quasi-static SEA as
 secondary rankings) would be preliminary evidence consistent with transfer
 beyond the as-printed polymers; disagreement would not isolate which
 material or joint difference caused the change.
