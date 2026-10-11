@@ -97,9 +97,10 @@ edge supports were painted manually in Bambu Studio along each tendon, with
 the support-to-object XY clearance tightened from \SI{0.35}{mm} to
 \SI{0.2}{mm} during tuning on the S0 reference prism
 (\href{\repo/issues/98}{issue~\#98}). Support removal is the leading source of
-the logged cosmetic defects (surface stringing; on two seed articles, a TPU
-strand that did not fuse to a bottom tendon and separated from it), so defects
-are recorded per article in the print key (Section~\ref{si:printkey}).
+the logged cosmetic defects, so defects are recorded per article in the print
+key (Section~\ref{si:printkey}). They are surface stringing and, on two seed
+articles, a TPU strand that did not fuse to a bottom tendon and came away from
+it.
 
 An automated alternative was developed in parallel: a tensegrity-specific
 Bambu Studio recipe (support threshold angle lowered from \SI{40}{\degree} to
@@ -414,12 +415,13 @@ The model's residual standard deviation is \SI{0.378}{g}. For context, the
 three available prints of design 08 have a sample standard deviation of
 \SI{0.457}{g}; three prints of one geometry are insufficient to establish a
 general process repeatability limit. Run in reverse inside the
-projection, the model holds \emph{printed} grams constant with no
-slicer in the loop: for a target mass the projection solves for the
+projection, the model holds \emph{printed} grams constant without
+running the slicer. For a target mass, the projection finds the
 uniform scale factor at which the predicted printed mass equals the
-target (by bisection, since predicted mass rises monotonically with
-scale), and the design is printed at that scale. Batches 3 and 4 did
-so at the \SI{20.23}{g} target (the reference article's weight).
+target, and the design is printed at that scale. Bisection is enough
+for this, because predicted mass rises monotonically with scale.
+Batches 3 and 4 used a target of \SI{20.23}{g}, the weight of the
+printed reference article.
 Outcomes: batch mass CV
 fell from 5.5\% (tested seed articles) and 8.7\% (batch 2, still
 solid-mass-projected) to 1.7\% (batch 3) and 2.3\% (batch 4). The
