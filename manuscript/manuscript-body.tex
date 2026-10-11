@@ -1038,10 +1038,10 @@ measurements bound what a single session can claim. The seed
 attenuator, re-measured across a day and an independent re-seat,
 agreed to 0.13\%. Three prints of the batch-3 designs put the
 standard deviation between articles and seatings at 0.0087 in
-$t_{180}$ once sessions with a failed seat gauge or a drift flag are
-set aside, and the two largest deviations (10 and 20\% above their
-design medians) both came with a failed gauge
-(Section~\ref{sec:results:batches}). We therefore adopted a
+$t_{180}$, once sessions that fail the seat gauge or carry a drift
+flag are set aside (Section~\ref{sec:results:batches}). The two
+largest deviations, 10 and 20\% above their design medians, both came
+with a failed gauge. We therefore adopted a
 between-seat replication rule: a single-seating value that would
 drive a decision (a batch extreme, a claimed attenuator, a front
 membership) requires confirmation on an independent re-seat before
@@ -1242,8 +1242,9 @@ repository snapshot is published.}
 \subsection{Replicate Rank-Stability Study}
 \label{sec:methods:rankstability}
 
-The three prints of batch 3 (Section~\ref{sec:results:batches})
-showed that a single article's measurement can move between seatings
+Repeated prints of the batch-3 designs
+(Section~\ref{sec:results:batches}) showed that a single article's
+measurement can move between seatings
 and prints by more than the design signal separating neighboring
 designs, which bounds any claim that one design outranks another. A
 planned replicate study formalizes that bound by re-printing a
@@ -1625,54 +1626,10 @@ shows that genuine attenuation does reproduce. The seat gauge
 accompanies the rule as an advisory screen, and all four batch-4
 attenuators gauge healthy (0.98 to 1.06). The nine second-print
 articles joined the surrogate's training set as distinct observations
-at identical design coordinates (Section~\ref{sec:methods:bo}). The
-third print was tested after the last refit reported here and has not
-yet entered the fit, the cross-validation, or
-Fig.~\ref{fig:front-evolution}.
-
-\begin{table*}[t]
-  \centering
-  \caption{Batch-3 repeatability over three prints of the same nine
-    designs: articles drran$N$ (print 1), 2dran$N$ (print 2), and
-    dran3$N$ (print 3), stabilized $t_{180}$ under the protocol of
-    Table~\ref{tab:seed-results}. ``Pred.'' is the posterior-mean
-    $t_{180}$ archived before any batch-3 article was tested. ``Mean''
-    averages the prints that pass the health screen, a seat gauge (the
-    ratio of CFC-1000 to CFC-180 transmissibility) below 1.15 and no
-    drift flag. $\S$ marks a failed seat gauge and $\dagger$ a
-    transmissibility-drift flag. $E_{\mathrm{reb}}$ is listed for
-    prints 1, 2, and 3.}
-  \label{tab:round3-repeatability}
-  \small
-  \begin{tabular}{@{}cccccccc@{}}
-    \toprule
-    Trial & $N$ & Pred. & Print 1 & Print 2 & Print 3 & Mean &
-    $E_{\mathrm{reb}}$ (mJ) \\
-    \midrule
-    28 & 5 & 1.059 & 1.0373 & 1.0604 & 1.1679$^{\S}$ & 1.0489 & 5.0 / 5.0 / 7.2 \\
-    29 & 4 & 1.032 & 1.0344 & 1.0433 & 1.0201 & 1.0326 & 9.1 / 11.2 / 15.5 \\
-    30 & 9 & 1.058 & 1.0425 & 1.0451 & 1.0438 & 1.0438 & 5.2 / 15.1 / 6.7 \\
-    31 & 3 & 1.043 & 1.0389 & 1.0533 & 1.0366 & 1.0429 & 4.2 / 9.4 / 7.0 \\
-    32 & 7 & 1.020 & 1.2513$^{\S}$ & 1.0286 & 1.0448 & 1.0367 & 8.2 / 11.6 / 10.8 \\
-    33 & 2 & 1.056 & 1.0345 & 1.0900$^{\S}$ & 1.0386 & 1.0366 & 11.8 / 4.5 / 4.5 \\
-    34 & 6 & 1.065 & 1.0471 & 1.0859$^{\dagger}$ & 1.0353 & 1.0412 & 4.8 / 7.7 / 6.8 \\
-    35 & 8 & 1.039 & 0.9804$^{\dagger}$ & 1.0109 & 0.9958 & 1.0033 & 11.2 / 9.9 / 8.3 \\
-    36 & 1 & 1.051 & 1.0326 & 1.0791$^{\S}$ & 1.0209 & 1.0267 & 18.1 / 7.3 / 9.6 \\
-    \bottomrule
-  \end{tabular}
-\end{table*}
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.85\textwidth]{../figures/analysis/round3-three-print.png}
-  \caption{Three prints of each batch-3 design. \emph{(a)} Transmissibility
-    and \emph{(b)} $E_{\mathrm{reb}}$ for print 1 (circles), print 2
-    (squares), and print 3 (triangles), with the designs ordered by their
-    screened mean transmissibility. Open red markers are sessions with a
-    failed seat gauge or a drift flag, which the screened means leave out.
-    The dashed line marks $t_{180} = 1$.}
-  \label{fig:three-print}
-\end{figure*}
+at identical design coordinates (Section~\ref{sec:methods:bo}). None of
+the third-print articles enters the fits, the cross-validation, or
+Fig.~\ref{fig:front-evolution}. Their sessions (2026-09-28 to
+2026-10-02) postdate the most recent refit.
 
 \begin{table*}[t]
   \centering
@@ -1761,6 +1718,50 @@ Fig.~\ref{fig:front-evolution}.
     (measured 0.803) is the left-most measured point. Both axes improve
     downward.}
   \label{fig:batch4-pred-vs-meas}
+\end{figure*}
+
+\begin{table*}[t]
+  \centering
+  \caption{Batch-3 repeatability over three prints of the same nine
+    designs: articles drran$N$ (print 1), 2dran$N$ (print 2), and
+    dran3$N$ (print 3), stabilized $t_{180}$ under the protocol of
+    Table~\ref{tab:seed-results}. ``Pred.'' is the posterior-mean
+    $t_{180}$ archived before any batch-3 article was tested. ``Mean''
+    averages the prints that pass the health screen, a seat gauge (the
+    ratio of CFC-1000 to CFC-180 transmissibility) below 1.15 and no
+    drift flag. $\S$ marks a failed seat gauge and $\dagger$ a
+    transmissibility-drift flag. $E_{\mathrm{reb}}$ is listed for
+    prints 1, 2, and 3.}
+  \label{tab:round3-repeatability}
+  \small
+  \begin{tabular}{@{}cccccccc@{}}
+    \toprule
+    Trial & $N$ & Pred. & Print 1 & Print 2 & Print 3 & Mean &
+    $E_{\mathrm{reb}}$ (mJ) \\
+    \midrule
+    28 & 5 & 1.059 & 1.0373 & 1.0604 & 1.1679$^{\S}$ & 1.0489 & 5.0 / 5.0 / 7.2 \\
+    29 & 4 & 1.032 & 1.0344 & 1.0433 & 1.0201 & 1.0326 & 9.1 / 11.2 / 15.5 \\
+    30 & 9 & 1.058 & 1.0425 & 1.0451 & 1.0438 & 1.0438 & 5.2 / 15.1 / 6.7 \\
+    31 & 3 & 1.043 & 1.0389 & 1.0533 & 1.0366 & 1.0429 & 4.2 / 9.4 / 7.0 \\
+    32 & 7 & 1.020 & 1.2513$^{\S}$ & 1.0286 & 1.0448 & 1.0367 & 8.2 / 11.6 / 10.8 \\
+    33 & 2 & 1.056 & 1.0345 & 1.0900$^{\S}$ & 1.0386 & 1.0366 & 11.8 / 4.5 / 4.5 \\
+    34 & 6 & 1.065 & 1.0471 & 1.0859$^{\dagger}$ & 1.0353 & 1.0412 & 4.8 / 7.7 / 6.8 \\
+    35 & 8 & 1.039 & 0.9804$^{\dagger}$ & 1.0109 & 0.9958 & 1.0033 & 11.2 / 9.9 / 8.3 \\
+    36 & 1 & 1.051 & 1.0326 & 1.0791$^{\S}$ & 1.0209 & 1.0267 & 18.1 / 7.3 / 9.6 \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.85\textwidth]{../figures/analysis/round3-three-print.png}
+  \caption{Three prints of each batch-3 design. \emph{(a)} Transmissibility
+    and \emph{(b)} $E_{\mathrm{reb}}$ for print 1 (circles), print 2
+    (squares), and print 3 (triangles), with the designs ordered by their
+    screened mean transmissibility. Open red markers are sessions with a
+    failed seat gauge or a drift flag, which the screened means leave out.
+    The dashed line marks $t_{180} = 1$.}
+  \label{fig:three-print}
 \end{figure*}
 
 \subsection{Surrogate Audits Across the Campaign}
