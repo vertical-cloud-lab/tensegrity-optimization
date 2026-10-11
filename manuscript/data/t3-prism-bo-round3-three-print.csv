@@ -1,0 +1,10 @@
+trial,pred_t180,article_drran,mass_g_drran,t180_drran,gauge_drran,drift_drran,screened_drran,e_reb_mJ_drran,vli_drran,article_2dran,mass_g_2dran,t180_2dran,gauge_2dran,drift_2dran,screened_2dran,e_reb_mJ_2dran,vli_2dran,article_dran3,mass_g_dran3,t180_dran3,gauge_dran3,drift_dran3,screened_dran3,e_reb_mJ_dran3,vli_dran3,t180_screened_mean,e_reb_mJ_mean
+28,1.059,drran5,19.88,1.0373,1.005,False,True,4.97,0.9833,2dran5,20.22,1.0604,1.039,False,True,4.98,0.9835,dran35,20.17,1.1679,2.432,False,False,7.24,0.976,1.0489,5.73
+29,1.032,drran4,19.92,1.0344,1.046,False,True,9.1,0.9694,2dran4,20.19,1.0433,1.062,False,True,11.19,0.9629,dran34,20.41,1.0201,1.048,False,True,15.47,0.9493,1.0326,11.92
+30,1.058,drran9,19.34,1.0425,1.007,False,True,5.2,0.982,2dran9,19.65,1.0451,1.009,False,True,15.13,0.9485,dran39,19.68,1.0438,1.022,False,True,6.65,0.9774,1.0438,8.99
+31,1.043,drran3,19.92,1.0389,1.106,False,True,4.23,0.9858,2dran3,20.15,1.0533,1.134,False,True,9.43,0.9687,dran33,20.46,1.0366,1.037,False,True,6.98,0.9772,1.0429,6.88
+32,1.02,drran7,20.06,1.2513,2.348,False,False,8.17,0.9727,2dran7,20.32,1.0286,1.031,False,True,11.63,0.9617,dran37,20.56,1.0448,1.044,False,True,10.83,0.9648,1.0367,10.21
+33,1.056,drran2,19.33,1.0345,1.093,False,True,11.76,0.9593,2dran2,19.65,1.09,1.147,False,False,4.48,0.9848,dran32,19.71,1.0386,1.021,False,True,4.54,0.9846,1.0366,6.93
+34,1.065,drran6,19.24,1.0471,1.027,False,True,4.77,0.9834,2dran6,19.54,1.0859,1.043,True,False,7.74,0.9735,dran36,19.72,1.0353,1.01,False,True,6.8,0.9769,1.0412,6.43
+35,1.039,drran8,19.32,0.9804,1.062,True,False,11.22,0.9611,2dran8,19.51,1.0109,1.031,False,True,9.9,0.966,dran38,20.0,0.9958,1.061,False,True,8.3,0.9722,1.0033,9.81
+36,1.051,drran1,19.31,1.0326,1.07,False,True,18.09,0.9373,2dran1,19.48,1.0791,1.365,False,False,7.34,0.9748,dran31,19.93,1.0209,1.026,False,True,9.63,0.9677,1.0267,11.69

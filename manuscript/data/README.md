@@ -54,3 +54,34 @@ that commit; the corresponding LOGO figure snapshot is
   docstring for sources and caveats (seed windows are approximate, and no
   TPU spool swap is documented after 2026-07-13, so spool age assumes the
   same spool stayed loaded).
+
+## Third print of the batch-3 designs (added 2026-10-11)
+
+The batch-3 plate (Ax trials 28 to 36) was printed a third time as
+`dran31` to `dran39` (same designs as `drranN` and `2dranN`; the print
+files first called them `3dranN`) and drop-tested on 2026-09-28,
+2026-09-29 and 2026-10-02 (20 drops each, 60 in, arrangement B). Three
+files are verbatim copies from branch `copilot/add-drop-test-protocol-again`
+(PR #86) at commit `64e468e`, directory `data/drop-tests/dran3-checkin/`:
+
+- `t3-prism-bo-round3-third-print-drop-results.csv` is
+  `figures/campaign_summary.csv` (stabilized drops 3 to 20, CFC-180).
+- `t3-prism-bo-round3-third-print-key.json` is `params.json` (round-3
+  print-key geometry and infill, masses from the 2026-09-28 print log on
+  issue #98).
+- `t3-prism-bo-round3-three-print-checkin.json` is
+  `figures/three_print_comparison.json`, the check-in's own three-print
+  comparison, kept for cross-checking.
+
+`scripts/figures/round3_three_print_analysis.py` reads these with the
+first two prints and writes `t3-prism-bo-round3-three-print.csv` (one
+row per design: three transmissibilities, seat gauges, flags,
+E_reb and VLI), `t3-prism-bo-round3-three-print-stats.json` (every
+number the manuscript quotes about the three prints, plus the
+design-mean fronts and hypervolumes), and
+`figures/analysis/round3-three-print.png`. It reproduces the check-in's
+screened residual standard deviation (0.0087) and its rank statistic
+against the frozen predictions (0.75, which uses design means adjusted
+for the offset between prints; plain screened means give 0.55). The
+third print is not in the surrogate fit or the round-5 LOGO-CV files
+above, which predate it.
