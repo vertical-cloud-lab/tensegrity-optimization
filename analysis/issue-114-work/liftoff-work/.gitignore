@@ -1,0 +1,4 @@
+# Waveform CSVs (36 x 3.5 MB) are rebuilt by fetch_waveforms.py, not committed.
+# corny1 to corny9 are also committed on branch claude/issue-114-20261006-1741 (1aff9ff).
+waveforms/
+__pycache__/
