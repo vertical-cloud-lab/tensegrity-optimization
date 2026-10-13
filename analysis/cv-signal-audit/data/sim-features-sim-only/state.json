@@ -127,7 +127,8 @@
     "drran4": 112.2,
     "drran6": 106.7,
     "drran7": 84.6,
-    "drran8": 88.0
+    "drran8": 88.0,
+    "drran9": 104.0
   },
   "status": "running"
 }
