@@ -151,17 +151,37 @@ def uncertainty_metrics(obs: np.ndarray, pred: np.ndarray,
     crps = psd * (z * (2 * Phi - 1) + 2 * phi - 1 / np.sqrt(np.pi))
     nll = 0.5 * np.log(2 * np.pi * psd ** 2) + 0.5 * z ** 2
     rho_sd_err = stats.spearmanr(psd, np.abs(resid)).statistic
+    # a fold whose NUTS posterior collapsed to a near-deterministic function
+    # leaves its articles with a posterior sd far below anything the data
+    # support; those articles dominate any mean of z, NLL or CRPS, so the
+    # metrics are also reported with them set aside
+    sd_obs = obs.std(ddof=1)
+    degenerate = psd < 0.05 * sd_obs
+    ok = ~degenerate
     return {
         "coverage_68_pct": float(np.mean(np.abs(z) <= 1.0) * 100),
         "coverage_95_pct": float(np.mean(np.abs(z) <= 1.96) * 100),
         "z_sd": float(z.std(ddof=1)),
         "z_rms": float(np.sqrt(np.mean(z ** 2))),
         "mean_nll": float(nll.mean()),
+        "median_nll": float(np.median(nll)),
         "mean_crps": float(crps.mean()),
-        "crps_over_sd_obs": float(crps.mean() / obs.std(ddof=1)),
+        "crps_over_sd_obs": float(crps.mean() / sd_obs),
         "median_posterior_sd": float(np.median(psd)),
-        "sharpness_sd_over_sd_obs": float(np.median(psd) / obs.std(ddof=1)),
+        "sharpness_sd_over_sd_obs": float(np.median(psd) / sd_obs),
         "spearman_sd_vs_abs_error": float(rho_sd_err),
+        "n_degenerate_sd": int(degenerate.sum()),
+        "degenerate_print_ids_note": "posterior sd below 5 percent of the data sd",
+        "excluding_degenerate": {
+            "n": int(ok.sum()),
+            "coverage_95_pct": float(np.mean(np.abs(z[ok]) <= 1.96) * 100),
+            "z_sd": float(z[ok].std(ddof=1)) if ok.sum() > 2 else float("nan"),
+            "mean_nll": float(nll[ok].mean()),
+            "crps_over_sd_obs": float(crps[ok].mean() / sd_obs),
+            "spearman_sd_vs_abs_error": float(
+                stats.spearmanr(psd[ok], np.abs(resid[ok])).statistic)
+            if ok.sum() > 2 else float("nan"),
+        },
     }
 
 
@@ -220,6 +240,19 @@ def grade(d: pd.DataFrame, rng) -> dict:
                                g.index.to_numpy(), rng)
     m["design_level"] = {k: dl[k] for k in ("n", "spearman_rho",
                                             "spearman_p_perm", "pearson_r")}
+    # rank skill with the collapsed-fold articles set aside (their
+    # predictions are the training mean, so they only add ties and noise)
+    ok = d.predicted_sem.to_numpy() >= 0.05 * d.observed.std(ddof=1)
+    if ok.sum() >= 8 and ok.sum() < len(d):
+        sub = d[ok]
+        rho, p = base.perm_p_spearman(sub.observed.to_numpy(),
+                                      sub.predicted.to_numpy(), rng)
+        wb = within_batch_spearman(sub, "observed", "predicted", rng)
+        m["excluding_collapsed"] = {"n": int(ok.sum()), "spearman_rho": float(rho),
+                                    "spearman_p_perm": float(p),
+                                    "within_batch_mean_rho": wb["mean_rho"],
+                                    "within_batch_p": wb["perm_p"],
+                                    "collapsed_print_ids": sorted(d[~ok].print_id)}
     return m
 
 
@@ -353,6 +386,35 @@ def heldout(rng) -> dict:
     return out
 
 
+def baselines_alone(rng) -> dict:
+    """The four committed baselines graded on their own, so the collapsed-
+    fold count and the rank statistics without those articles are on the
+    record for every space the earlier sections leaned on."""
+    out = {}
+    for base_name in ("ablation-shape-only", "full-nuts-rerun",
+                      "objective-tavg10ms-shape-only", "objective-tavg10ms"):
+        objectives = (("t180", "e_reb_mJ") if "tavg10ms" not in base_name
+                      else ("tavg10ms", "late_avg3ms_g"))
+        ent = {}
+        for obj in objectives:
+            d = load_run(DATA / base_name, obj)
+            g = grade(d, rng)
+            ent[obj] = {
+                "spearman_rho": g["spearman_rho"],
+                "spearman_p_perm": g["spearman_p_perm"],
+                "within_batch_mean_rho": g["within_batch"]["mean_rho"],
+                "within_batch_p": g["within_batch"]["perm_p"],
+                "design_rho": g["design_level"]["spearman_rho"],
+                "coverage_95_pct": g["uncertainty"]["coverage_95_pct"],
+                "n_collapsed": g["uncertainty"]["n_degenerate_sd"],
+                "uncertainty_excluding_collapsed":
+                    g["uncertainty"]["excluding_degenerate"],
+                "excluding_collapsed": g.get("excluding_collapsed"),
+            }
+        out[base_name] = ent
+    return out
+
+
 # ------------------------------------------------------------ figures
 def fig_correlations(df: pd.DataFrame, corr: dict) -> None:
     des = df.groupby("design").mean(numeric_only=True)
@@ -443,9 +505,10 @@ def fig_heldout(res: dict) -> None:
             ax.text(0.02, 0.98,
                     f"rho_s {g['spearman_rho']:+.2f} (p {g['spearman_p_perm']:.3f})\n"
                     f"within batch {g['within_batch']['mean_rho']:+.2f}\n"
-                    f"95% cov {u['coverage_95_pct']:.0f}%, z sd {u['z_sd']:.2f}\n"
-                    f"NLL {u['mean_nll']:+.2f}, CRPS/sd {u['crps_over_sd_obs']:.2f}\n"
-                    f"post sd / data sd {u['sharpness_sd_over_sd_obs']:.2f}",
+                    f"95% cov {u['coverage_95_pct']:.0f}%, z sd {u['excluding_degenerate']['z_sd']:.2f}*\n"
+                    f"NLL {u['excluding_degenerate']['mean_nll']:+.2f}*, CRPS/sd {u['crps_over_sd_obs']:.2f}\n"
+                    f"post sd / data sd {u['sharpness_sd_over_sd_obs']:.2f}; "
+                    f"{u['n_degenerate_sd']} collapsed",
                     transform=ax.transAxes, va="top", fontsize=7.8,
                     bbox=dict(boxstyle="round", fc="white", ec="0.8", alpha=0.9))
             ax.set_xlabel("measured (held out)")
@@ -468,7 +531,8 @@ def main() -> None:
     corr = correlations(df, rng)
     res = heldout(rng)
     out = {"seed": SEED, "n_perm": N_PERM, "features": list(FEATURES),
-           "correlations": corr, "heldout": res}
+           "correlations": corr, "heldout": res,
+           "baselines_alone": baselines_alone(rng)}
     OUT_JSON.write_text(json.dumps(out, indent=2) + "\n")
     fig_correlations(df, corr)
     fig_heldout(res)
@@ -495,7 +559,9 @@ def main() -> None:
                       f"R2oos {g['R2_oos_vs_fold_train_mean']:+.2f} | cov95 "
                       f"{u['coverage_95_pct']:.0f}% z_sd {u['z_sd']:.2f} NLL {u['mean_nll']:+.2f} "
                       f"CRPS/sd {u['crps_over_sd_obs']:.2f} sharp {u['sharpness_sd_over_sd_obs']:.2f} "
-                      f"sd~|err| {u['spearman_sd_vs_abs_error']:+.2f}")
+                      f"sd~|err| {u['spearman_sd_vs_abs_error']:+.2f} | degenerate {u['n_degenerate_sd']}: "
+                      f"cov95 {u['excluding_degenerate']['coverage_95_pct']:.0f}% "
+                      f"z_sd {u['excluding_degenerate']['z_sd']:.2f} NLL {u['excluding_degenerate']['mean_nll']:+.2f}")
             s = o["prediction_shift"]
             print(f"  {'':14s} shift: rank agreement {s['spearman_pred_sim_vs_base']:+.2f}, "
                   f"median |shift|/sd {s['median_abs_shift_over_sd_obs']:.2f}, "

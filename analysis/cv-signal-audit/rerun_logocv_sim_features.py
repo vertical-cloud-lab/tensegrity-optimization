@@ -428,13 +428,18 @@ def main(argv=None):
     assert not missing, f"arms lack {missing}"
 
     feats = list(FEATURES) if variant["features"] else []
-    bounds = {}
+    bounds, placeholder_arms = {}, []
     if feats:
         ftable = pd.read_csv(FEATURES_CSV).set_index("print_id")
         bounds = feature_bounds(ftable)
-        unmatched = [a for a in experiment.arms_by_name
-                     if labels_by_arm.get(a) not in ftable.index]
-        assert not unmatched, f"arms without simulation features: {unmatched}"
+        tested = set(data.df["arm_name"])
+        unmatched = [a for a in tested if labels_by_arm.get(a) not in ftable.index]
+        assert not unmatched, f"tested arms without simulation features: {unmatched}"
+        # the snapshot also carries the round-5 candidate arms (generated,
+        # never printed, no data); they never enter a fit, but every arm
+        # needs a complete parameterization, so they get the table mean
+        placeholder_arms = [a for a in experiment.arms_by_name if a not in tested]
+        placeholder = {f: float(ftable[f].mean()) for f in feats}
     params = [base_space.parameters[name] for name in keep] + [
         RangeParameter(name=f, parameter_type=ParameterType.FLOAT,
                        lower=bounds[f][0], upper=bounds[f][1]) for f in feats]
@@ -442,8 +447,13 @@ def main(argv=None):
     for name, arm in experiment.arms_by_name.items():
         pid = labels_by_arm.get(name)
         new = {k: arm._parameters[k] for k in keep}
-        new.update({f: float(ftable.loc[pid, f]) for f in feats})
+        if feats:
+            new.update(placeholder if name in placeholder_arms
+                       else {f: float(ftable.loc[pid, f]) for f in feats})
         arm._parameters = new
+    if placeholder_arms:
+        print(f"  {len(placeholder_arms)} untested candidate arms carry "
+              "placeholder features (no data, never fitted)", flush=True)
     if experiment.status_quo is not None:
         sq = experiment.status_quo
         twin = experiment.arms_by_name.get(sq.name)
@@ -494,6 +504,7 @@ def main(argv=None):
         "sim_features": feats,
         "sim_feature_bounds": bounds,
         "sim_feature_source": str(FEATURES_CSV.relative_to(AUDIT_DIR)),
+        "untested_arms_with_placeholder_features": placeholder_arms,
         "sim_feature_note": "Tier C / Tier B drop-tower simulators from the "
                             "sim branch at 94e53a8, run at the design's print "
                             "geometry with the simulator's own mass model, so "
