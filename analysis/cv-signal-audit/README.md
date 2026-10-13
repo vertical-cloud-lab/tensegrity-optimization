@@ -97,7 +97,16 @@ first two batches, which were held at constant solid mass rather than
 printed mass; at a fixed design the data cannot say whether dividing by
 mass is warranted, and held out neither dividing by mass (a wash) nor
 giving the model the infill settings (article rho_s +0.45 down to +0.14)
-improves on the shape-only fit of the raw objective.
+improves on the shape-only fit of the raw objective. Section 12 brings the
+#33 simulation outputs into the fit space as extra inputs, Honegumi
+style: the features are correlated with the bench (the Tier C analogue
+follows the measured 10 ms dose at rho +0.66) but are functions of the
+coordinates the model already has, and appended to the shape-only space
+they invert the held-out ranking (t180 rho_s +0.45 to -0.34) while the
+posterior widens into honest calibration on predictions that no longer
+say anything; it also finds that five folds of every shape-only run in
+Sections 6 to 11 had a collapsed NUTS posterior, which trims two of
+those sections' within-batch and `late_avg3ms` numbers.
 
 ## 1. The r vs r^2 question first
 
@@ -1604,6 +1613,406 @@ so realization noise alone is an unlikely explanation, but it is one run.
   already uses. Dividing a lower-is-better ratio by mass credits the
   heavier design.
 
+## 12. Simulation outputs as model inputs (featurization)
+
+**The ask ([PR #111, 2026-10-13](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/111#issuecomment-6156574846)):**
+"see what happens if you bring in simulation results from #33 as
+additional contextual variables the model is able to learn and if it
+improves uncertainty (see the Honegumi featurization tutorial). Are
+these correlated?"
+
+The short answer: yes, the simulation outputs are correlated with the
+bench, and no, giving them to the model as extra inputs does not help.
+Four of the six features chosen track the measured objectives at design
+level (Tier C's transmissibility analogue follows measured t180 at rho
++0.52 and the reliable 10 ms dose at +0.66; Tier C tendon energy is the
+strongest correlate of three of the four objectives), but each feature
+is 59 to 95 percent a linear function of the five shape coordinates the
+model already has, and with the coordinates held fixed the two
+transmissibility analogues have no partial correlation with t180 left
+(12.2). Appended to the shape-only fit space under the standard LOGO
+protocol, the six features turn the audit's best held-out t180 ranking
+(rho_s +0.45) into an anti-ranking (-0.34, p 0.026), and the rebound
+score's zero into -0.41 (12.3). The posterior sd does become honest, 95
+percent coverage 70 to 89 percent and a standardized-error sd of 0.93
+once collapsed folds are set aside, but it gets there by widening
+toward "do not know": the prediction spread falls to a quarter of the
+shape-only run's, so the uncertainty is better calibrated on a model
+that has stopped saying anything (12.3). The mechanism is visible in the
+full-data fit: the sparsity prior has to divide relevance among six
+proxies of the same five coordinates, the posterior over which input
+matters becomes wide (interquartile ranges of 0.1 to 0.8 on one
+feature), each fold's chain settles on a different proxy, and the
+cable-diameter gradient that the shape-only model rides is diluted to
+an importance of 0.03 (12.4). In the campaign's twelve-parameter space the features are nearly inert (weighed mass keeps the model memorizing) and still cost t180 rank skill (+0.32 to +0.22) while deepening the rebound anti-signal (-0.40 to -0.55). The six features on their own rank t180 at -0.23, so they are no substitute for the coordinates either; appended to the coordinates, they pull the model down to their own level. A finding on
+the way: in every committed shape-only run of Sections 6 to 11, the same
+five folds have a collapsed NUTS posterior, which changes two of those
+sections' within-batch numbers (12.5). Everything here is from
+[`compute_sim_features.py`](compute_sim_features.py),
+[`rerun_logocv_sim_features.py`](rerun_logocv_sim_features.py),
+[`sim_features_importance.py`](sim_features_importance.py) and
+[`score_sim_features.py`](score_sim_features.py), numbers in
+[`metrics-sim-features.json`](metrics-sim-features.json).
+
+![Held out: base space vs base space plus the six simulation features](figures/sim-features-logocv.png)
+
+### 12.1 What was done
+
+The Honegumi recipe is simple: compute descriptive features for every
+training point and every candidate outside Ax, add them to the search
+space as range parameters next to the raw inputs, fit the GP on the
+widened vector, and score candidates with their features filled in. The
+tutorial's features are elemental-property aggregates of a composition;
+here they are the outputs of the #33 drop-tower analogues, which
+[`../sim-measured-correlations/run_sims_on_articles.py`](../sim-measured-correlations/run_sims_on_articles.py)
+had already run on every measured article. Six were chosen before any
+held-out number was looked at, from that audit's design-level results:
+
+| feature | what it is | why it is in the set |
+|---|---|---|
+| `sim_tierC_t180` | Tier C (rigid-strut MuJoCo) transmissibility at CFC 180 | the purpose-built analogue of the objective; design-level rho +0.52 with measured t180 |
+| `sim_tierC_tendon_energy_mJ` | Tier C peak elastic energy in the tendon network | representative of the strain / energy / stroke cluster, the strongest simulated correlate of t180 (-0.65) |
+| `sim_tierC_stroke_mm` | Tier C vertical stroke of the top vertex | the payload-stroke axis, nearly uncorrelated with t180 |
+| `sim_tierB_t180` | Tier B (flexural-strut MuJoCo) transmissibility | the second instrument; Tier C and Tier B rank the designs almost independently (rho -0.14) and Tier B was the only tier with a trace beyond the coordinates |
+| `sim_tierB_fn_hz` | Tier B ringdown frequency of the top vertex | the structural mode the SRS analysis placed the between-design differences at |
+| `sim_tierB_zeta_pct` | Tier B ringdown damping | its measured counterpart anti-correlates with t180 within batches |
+
+[`compute_sim_features.py`](compute_sim_features.py) re-ran both
+simulators (sim branch at `94e53a8`, unmodified) on the 46 design-mapped
+articles with one change from the sibling run: the mass handed to the
+simulator is the design-mean weighed mass, so the nine reprint pairs get
+identical features and nothing in the widened input vector can address a
+single print (Sections 6 and 9 are the reason that matters). The 26
+single-print designs reproduce the sibling run's values to 2e-7
+relative (mujoco 3.15.0 here against 3.14.0 there). Two choices on the
+way:
+
+- The simulators' no-mass path (`article_mass_g=None`) was tried first
+  and rejected. It puts only the sparse-PLA capsule density on the
+  struts, dropping the joint and housing share of the article mass and,
+  in Tier B, the vertex point masses that set the flexural frequencies,
+  so it is a different instrument from the one the sibling audit
+  validated: its Tier B ringdown frequency agreed with the weighed-mass
+  run at Spearman +0.22 and its Tier C t180 at +0.37.
+- A design's feature is insensitive to the within-design mass choice
+  for the four Tier C and Tier B transmissibility and energy channels:
+  across the nine twin pairs (0.17 to 0.34 g apart) the weighed-mass
+  versions differ by at most 0.07 of a design sd, so a predicted printed
+  mass from the campaign's mass model, the quantity available before a
+  candidate is printed, would give practically the same features. The
+  two Tier B ringdown channels are the exception, see 12.2.
+
+[`rerun_logocv_sim_features.py`](rerun_logocv_sim_features.py) is the
+Section 11 driver with the fit space generalized: it appends the six
+features to a base space as Ax `RangeParameter`s, with bounds set to the
+observed range over the 46 articles padded by ten percent of the span.
+The Honegumi tutorial uses placeholder bounds of plus or minus 1e5; Ax's
+`UnitX` transform maps the search-space bounds onto the unit cube, so
+with the tutorial's bounds a feature spanning a few units would occupy a
+sliver of the cube that the SAAS lengthscale prior reads as constant,
+and observed bounds put the features on the same footing as the shape
+coordinates. Everything else is the standard protocol: round-5
+snapshot, `fit_saasbo` with `refit_on_cv=True`, 256/512 NUTS, the same
+35 design folds and per-fold seeds, fold order asserted equal to the
+full-NUTS re-run, four workers at one torch thread each, one commit per
+fold. Before any feature run, the driver with no features re-ran fold
+`6lhxfy` of the committed shape-only run and matched its predictions
+and covariances exactly (maximum difference 0.0). Three base spaces:
+the five shape coordinates (the audit's recommended space, Section 6),
+the campaign's twelve parameters, and no coordinates at all (the six
+features alone, which asks whether the simulations carry the geometry
+information by themselves).
+
+### 12.2 Are the features correlated with the bench?
+
+Design level (35 design means), Spearman rho with a permutation p
+(20,000 draws), from [`score_sim_features.py`](score_sim_features.py):
+
+| feature | t180 | rebound | tavg10ms | late_avg3ms | linear R2 on the 5 coordinates | partial vs t180 given the 5 |
+|---|--:|--:|--:|--:|--:|--:|
+| `sim_tierC_t180` | **+0.52** (0.002) | -0.32 (0.06) | **+0.66** (<0.001) | -0.19 | 0.67 | +0.02 (0.93) |
+| `sim_tierC_tendon_energy_mJ` | **-0.65** (<0.001) | **+0.40** (0.018) | **-0.46** (0.006) | **+0.50** (0.003) | 0.95 | -0.34 (0.05) |
+| `sim_tierC_stroke_mm` | -0.19 | +0.06 | -0.10 | -0.15 | 0.66 | -0.22 (0.22) |
+| `sim_tierB_t180` | **+0.36** (0.033) | **-0.39** (0.020) | +0.05 | -0.15 | 0.65 | +0.11 (0.52) |
+| `sim_tierB_fn_hz` | +0.01 | -0.18 | +0.19 | +0.08 | 0.59 | -0.15 (0.38) |
+| `sim_tierB_zeta_pct` | +0.15 | +0.01 | -0.01 | -0.16 | 0.67 | **+0.38** (0.02) |
+
+Yes, four of the six are correlated with the bench, and the pattern is
+the one the sibling audit found at the article level, now with the
+payload objectives added. Tier C's transmissibility analogue tracks the
+reliable 10 ms dose (`tavg10ms`, rho +0.66) more closely than it tracks
+t180 itself (+0.52), and the Tier C tendon energy is the single
+strongest correlate of three of the four objectives, including the hop
+landing (`late_avg3ms`, +0.50). Within a print session (mean of the
+per-batch rho, permutations within batch) the same two features hold
+up: Tier C t180 against `tavg10ms` +0.65 (p <0.001), tendon energy
+against t180 -0.59 (p <0.001), and Tier B t180 against t180 +0.53
+(p 0.001), the one Tier B channel that ranks the bench.
+
+The right-hand columns are the part that decides what a feature can add
+to a model that already has the coordinates. A linear function of the
+five shape coordinates explains 59 to 67 percent of each feature and 95
+percent of the tendon energy (99 percent in log), and once the five
+coordinates are held fixed the features' partial correlations with t180
+are small: +0.02 for Tier C t180, +0.11 for Tier B t180. Two residual
+traces survive at the edge of significance, the tendon energy at -0.34
+(p 0.05) and the Tier B damping at +0.38 (p 0.02, with a raw rho of only
++0.15). Against `tavg10ms` the picture is the same (tendon energy and
+stroke -0.33, p 0.05 each; the Tier B damping +0.39, p 0.02). So the
+features are mostly a nonlinear re-expression of the coordinates, which
+is exactly the case the Honegumi tutorial argues for: a representation
+"more amenable to statistical modeling" than the raw inputs. Whether a
+GP that sees both benefits is the held-out question of 12.3.
+
+Among themselves the six features are not redundant (the only strong
+pair is the two Tier B ringdown channels at -0.88; Tier C t180 and Tier
+B t180 sit at -0.14, as in the sibling audit). One numerical caveat the
+twin pairs exposed: the two Tier B ringdown channels are fragile. For
+twins 0.17 to 0.34 g apart, the weighed-mass run's `fn_hz` differed by
+up to 3.0 design sd and `zeta_pct` by 1.9, against at most 0.07 for the
+four other features, so the ringdown identification jumps between modes
+on tiny input changes. At the design-mean mass they are well defined,
+but they are the two features a candidate's predicted mass could not
+reproduce, and they are also the two with no raw correlation to the
+bench.
+
+![Sim features vs the bench and the coordinates](figures/sim-features-correlations.png)
+
+### 12.3 Held out: what the features do to the model
+
+The audit's standard scorecard plus the uncertainty scorecard the
+question asks for. "Collapsed" counts the articles whose fold left a
+posterior sd below 5 percent of the data sd (12.5); the calibration
+columns are reported with those articles set aside, because they
+otherwise dominate any average of standardized errors.
+
+| held out, campaign pair | shape only (5) | shape + sim (11) | 12 params | 12 + sim (18) | sim only (6) |
+|---|--:|--:|--:|--:|--:|
+| t180 article rho_s (perm p) | +0.45 (0.002) | **-0.34 (0.026)** | +0.32 (0.034) | +0.22 (0.163) | -0.23 (0.122) |
+| t180 within-batch rho_s (p) | +0.21 (0.20) | -0.27 (0.09) | +0.06 (0.70) | -0.12 (0.439) | -0.24 (0.141) |
+| t180 design-mean rho_s (p) | +0.51 (0.002) | -0.38 (0.025) | +0.37 (0.03) | +0.25 (0.144) | -0.25 (0.152) |
+| t180 R2_oos vs fold-train mean | +0.24 | -0.03 | +0.12 | +0.16 | -0.03 |
+| t180 prediction spread / data sd | 0.51 | **0.12** | 0.32 | 0.26 | 0.13 |
+| t180 MAPE | 5.0% | 5.5% | 4.8% | 4.8% | 5.5% |
+| rebound article rho_s (p) | +0.04 (0.78) | **-0.41 (0.006)** | -0.40 (0.009) | **-0.55 (<0.001)** | -0.19 (0.211) |
+| rebound within-batch rho_s (p) | +0.05 (0.74) | -0.49 (0.002) | -0.21 (0.19) | -0.50 (0.001) | -0.15 (0.346) |
+| collapsed articles, t180 / rebound | 8 / 7 | 2 / 1 | 0 / 0 | 0 / 0 | 2 / 1 |
+| t180 95% coverage, all / excluding collapsed | 70% / 86% | 89% / 93% | 89% / 89% | 91% / 91% | 89% / 93% |
+| t180 standardized-error sd, excluding collapsed | 2.30 | **0.93** | 1.01 | 0.97 | 0.95 |
+| t180 mean NLL, excluding collapsed | +1.06 | -0.91 | -0.99 | -1.02 | -0.90 |
+| t180 CRPS / data sd | 0.51 | 0.56 | 0.50 | 0.50 | 0.56 |
+| t180 median posterior sd / data sd | 1.14 | 1.22 | 1.20 | 1.19 | 1.21 |
+| rebound 95% coverage, excluding collapsed | 84% | 91% | 93% | 91% | 88% |
+
+Reading the shape + sim column against the shape-only one:
+
+- **Ranking inverts.** Article, within-batch and design-mean rank
+  correlations all change sign for both objectives. For t180 the
+  per-batch correlations are negative in all five print sessions (seed
+  -0.10, r2d2c -0.38, drran -0.50, 2dran -0.33, corny -0.03), and with
+  the two collapsed articles set aside the article-level figure is -0.45
+  (p 0.004). This is not realization noise of the size seen elsewhere in
+  the audit (the NUTS budget moved t180's rank correlation by 0.24 in
+  Section 2); it is a different model.
+- **The predictions shrink to the mean.** The held-out prediction spread
+  is 0.12 of the data sd, down from 0.51; the median shift of an
+  article's prediction between the two runs is 0.17 sd (0.21 for
+  rebound) and the two runs' predictions agree in rank at only +0.17
+  (+0.30). The widened model is mostly saying "about average" and the
+  little it adds on top points the wrong way.
+- **Calibration improves, for the trivial reason.** With collapsed folds
+  set aside, the standardized-error sd goes from 2.30 to 0.93 and the
+  mean NLL from +1.06 to -0.91; 95 percent coverage goes from 70 to 89
+  percent on all 44 articles. But the median posterior sd is 1.22 of the
+  data sd (1.14 before) on predictions that have lost their spread, so
+  the model is well calibrated because it has become uninformative: an
+  honest "I do not know" is cheap. The sharpness-aware score, CRPS over
+  the data sd, is unchanged for t180 (0.51 to 0.56) and only mildly
+  better for rebound (0.71 to 0.60). The posterior sd also does not
+  order the errors in either run (Spearman of sd against absolute error
+  -0.14 with features, -0.37 without).
+- **Rebound acquires the anti-signal the shape-only space had removed.**
+  Section 6 showed that taking mass out of the fit space turned
+  rebound's -0.40 into +0.04. The features bring it back (-0.41, within
+  batch -0.49, negative in all five sessions) without any mass in the
+  inputs, so the anti-signal is not only a mass artifact: a model with
+  enough proxy inputs to fit print luck in the training set will also
+  produce it.
+
+Against the twelve-parameter baseline the features are nearly inert:
+the held-out predictions move by a median 0.05 sd and agree in rank
+with the baseline's at +0.75, so the uncertainty scorecard does not
+change (95 percent coverage 89 to 91 percent, standardized-error sd
+0.97, NLL and CRPS equal to two decimals, no collapsed folds in
+either run). What moves, moves the wrong way: t180's article ranking
+drops from +0.32 to +0.22 and is no longer significant, the within-batch
+mean from +0.06 to -0.12, and the rebound anti-signal deepens from -0.40
+to -0.55 (within batch -0.21 to -0.50). The full-data fit explains the
+inertness (12.4): weighed mass keeps an importance of 0.31 and no
+feature rises above 0.05, so the model still memorizes through mass as
+in Section 8, and the features only supply more proxies for the
+print-luck fit that produces the rebound anti-signal.
+
+The six features on their own (sim only) rank t180 at -0.23 (within
+batch -0.24, design means -0.25) and rebound at -0.19, with a
+prediction spread of 0.13 of the data sd. The simulations are no
+substitute for the five coordinates (+0.45 in the same protocol), even
+though four of the six features correlate with the bench at design
+level: a correlation the GP has to find across 44 noisy articles in a
+six-dimensional space is not the same as a gradient it is handed along
+one coordinate. The sim-only and shape + sim columns are nearly the same
+column (ranking, spread, calibration, collapsed folds), which is the
+held-out face of the full-data finding in 12.4 that the widened model
+stops using the coordinates once the features are present.
+
+### 12.4 Why: relevance dilution, and the gradient that got lost
+
+![Full-data importances in the widened spaces](figures/sim-features-importance.png)
+
+Full-data SAASBO fits (all 44 articles, nothing held out, Section 8
+conventions) in the widened spaces, from
+[`sim_features_importance.py`](sim_features_importance.py):
+
+| full-data fit | top importances | in-sample R2 | in-sample 95% coverage |
+|---|---|--:|--:|
+| shape + sim, t180 | Tier C stroke 0.32 [IQR 0.08 to 0.85], Tier B zeta 0.12, Tier C t180 0.11, R 0.09, Tier B t180 0.09, H 0.08, **cable d 0.03** | 0.87 | 61% |
+| shape + sim, rebound | Tier C stroke 0.45 [0.03 to 0.91], Tier C t180 0.42 [0.00 to 0.51] | 0.63 | 70% |
+| sim only, t180 | Tier C stroke 0.84 [0.10 to 0.97] | 0.87 | 61% |
+| sim only, rebound | Tier C stroke 0.98 | 0.63 | 70% |
+| 12 + sim, t180 | mass 0.31, strut infill 0.07, cable d 0.06; no feature above 0.05 | 1.00 | 100% |
+| shape + sim, tavg10ms | Tier C t180 0.82 [0.09 to 0.97] | 0.64 | 61% |
+| shape only (Section 8), t180 | strut d 0.60, twist 0.16 | 0.86 | 57 to 61% |
+
+Three things follow.
+
+1. **The widened model ignores the coordinates.** The shape + sim fit
+   and the sim-only fit have the same in-sample R2 (0.872 and 0.872) and
+   the same coverage, and the five shape coordinates together carry an
+   importance of 0.27 in the former. Given the features, the GP no
+   longer uses the geometry directly.
+2. **It puts its relevance on the one feature that does not track the
+   bench.** Tier C stroke has a design-level rho of -0.19 with t180 and
+   -0.03 with rebound (12.2), yet it carries the largest importance in
+   both widened fits and nearly all of it in the sim-only fits. Stroke is
+   a smooth function of H (rho -0.72) that spreads the 35 designs out
+   evenly along one axis, and a GP with a short lengthscale on such an
+   axis can interpolate the training set (R2 0.87) whether or not the
+   axis means anything. Section 8 made the same point about weighed
+   mass: in-sample fit quality carries no information about skill here.
+3. **The interquartile ranges are the real answer.** Stroke's importance
+   spans 0.08 to 0.85 across the 256 NUTS draws in the shape + sim fit,
+   Tier C t180's 0.09 to 0.97 in the payload fit. With 44 articles the
+   posterior cannot decide which of six proxies of the same five
+   coordinates is the relevant one, so each fold's chain, which starts
+   from its own seed and never sees the held-out design, lands on a
+   different proxy. Held-out predictions made from different proxies in
+   different folds do not line up with each other, which is how a
+   collection of individually reasonable fits produces a pooled rank
+   correlation of -0.34.
+
+The casualty is the gradient the bench actually answers to. Cable
+diameter orders measured t180 at rho +0.66 (article level); the
+shape-only run's held-out predictions follow it at +0.49, the widened
+run's at **-0.29**. The Tier C transmissibility analogue is the same
+story (observed +0.49, shape-only predictions +0.29, widened -0.42), and
+the widened predictions instead move with the two Tier B ringdown
+channels (+0.34 and -0.34), the fragile pair with no raw correlation to
+the bench (12.2). At the batch level the widened model reverses the
+order: r2d2c measured highest (1.092) and is predicted lowest (1.032),
+corny measured lowest (0.987) and is predicted highest (1.041); the
+shape-only run gets both right (1.064 and 1.006).
+
+This is also where the Honegumi analogy breaks. The tutorial's features
+carry information the raw inputs lack (a composition vector says nothing
+about electronegativity until a lookup table is applied), so the GP
+gains a representation. Here the raw inputs are five geometric
+coordinates that already determine the features (12.2), so the GP gains
+six collinear re-expressions of what it had, and a sparsity prior built
+to pick a few relevant axes out of many has to split one relevant axis
+across seven. The 44-point record is too small to resolve the split.
+The mass lesson of Sections 6 to 9 recurs in a different costume: an
+input that lets the GP fit the training set more closely (mass, a
+unique label; stroke, a smooth spreading axis) is not an input that
+helps it predict, and only the held-out comparison can tell the two
+apart.
+
+### 12.5 Found on the way: five collapsed folds in every shape-only run
+
+The uncertainty scorecard surfaced something the earlier sections'
+coverage numbers hid. In `ablation-shape-only/` (Section 6), the
+articles `drran2`, `2dran2`, `drran5`, `2dran5`, `drran9`, `2dran9`,
+`corny4` and `corny5` have held-out posterior sds of 0.0004 to 0.002 on
+t180, against a median of 0.10, and predictions equal to the training
+mean (1.046). Their fold's NUTS chain settled on the mode where the
+function is constant and all variation is noise; with the observation
+noise excluded from Ax's predictive variance, that mode reports
+near-certainty about a prediction that carries no information. The
+same five folds (fold indices 10, 14, 18, 23, 24, which fix the per-fold
+seeds) collapse in every shape-only run on the branch regardless of the
+objective fitted: the campaign pair, the payload pair (Section 7), both
+per-gram variants (Section 10), 7 or 8 articles each time. No
+12-parameter run has a collapsed fold, and the widened shape + sim run
+has two (corny4, corny5). The collapse is a seed-and-space event of the
+sampler, not a property of the designs.
+
+What it changes, from `baselines_alone` in the metrics file (rank
+statistics recomputed without the collapsed articles):
+
+| shape-only run | as reported | excluding collapsed articles |
+|---|---|---|
+| t180 article rho_s (Section 6) | +0.45 (p 0.002), n 44 | +0.43 (p 0.010), n 36 |
+| t180 within-batch rho_s (Section 6) | +0.21 (p 0.20) | **+0.08 (p 0.65)** |
+| tavg10ms article rho_s (Section 7) | +0.45 (p 0.002) | +0.43 (p 0.006), n 37 |
+| tavg10ms within-batch rho_s (Section 7) | +0.52 (p 0.0006) | +0.50 (p 0.005) |
+| late_avg3ms article rho_s (Section 7) | +0.63 (p <1e-5) | **+0.39 (p 0.021)**, n 36 |
+| late_avg3ms within-batch rho_s (Section 7) | +0.32 (p 0.045) | +0.31 (p 0.10) |
+| t180 95% coverage (Sections 6, 8) | 70% | 86% |
+
+The Section 6 and Section 7 headline rankings survive (t180 +0.43,
+tavg10ms +0.43 and +0.50 within batch), but two numbers do not: the
+shape-only t180 within-batch skill was carried by the collapsed
+articles (their training-mean predictions happened to sit on the right
+side of their batch mates), and `late_avg3ms`'s +0.63 falls to +0.39
+without them, which puts it level with the other objectives rather than
+ahead of them. The shape-only coverage of 70 percent quoted in Sections
+6 to 8 was 86 percent on the folds that did not collapse; the "distrust
+the posterior sd" instruction stands, but for a different reason than
+over-confidence everywhere. The committed runs are unchanged (they are
+what the protocol produced); the caveat is recorded here and the
+scorer's `excluding_collapsed` block carries the numbers for any future
+re-use of those runs. A fold-level NUTS restart on collapse is the
+obvious fix for a round 6 protocol.
+
+### 12.6 Where this leaves round 6
+
+- **Do not append the simulation outputs to the fit space.** In the
+  recommended shape-only space they cost the model its held-out
+  ranking for every objective tested, and in the campaign's twelve
+  parameter space they leave the predictions almost where they were (median shift 0.05 sd) and still cost t180 rank skill (+0.32 to +0.22) while deepening the rebound anti-signal (-0.40 to -0.55). The features are correlated
+  with the bench, but through the coordinates the model already has.
+- **The one defensible use of the simulations in the loop is as a
+  screen, not as an input.** Tier C's t180 analogue orders the measured
+  10 ms dose at rho +0.66 with no training data at all, and the
+  sibling audit measured attenuator AUC 0.80 for it. A candidate pool
+  pre-filtered by the simulation (reject designs the analogue rates as
+  amplifiers) uses that information without asking a 44-point GP to
+  re-learn it. A simulation-informed mean function or a multi-fidelity
+  model would be the principled next step, and neither is a featurization.
+- **If a feature is ever added, replace rather than append.** The
+  failure here is collinearity under a sparsity prior. Swapping one
+  coordinate for a better-behaved function of it (the route the
+  Honegumi tutorial's problem actually takes, where the raw composition
+  is dropped) keeps the dimension count fixed; appending six functions
+  of five coordinates does not.
+- **Add a collapse guard to the LOGO protocol**: re-run a fold's NUTS
+  from a second seed when the posterior sd at the held-out points
+  falls below a few percent of the data sd, and record the restart.
+  Eight of 44 articles in every shape-only run of this audit were
+  predicted by a collapsed chain.
+- Unchanged from Sections 6 to 11: fit shape-only, keep weighed mass and
+  the infill settings out, measure with the payload pair, and treat the
+  posterior sd as an ordering aid at most.
+
 ## Files
 
 - [`cv_signal_audit.py`](cv_signal_audit.py): the full recomputation
@@ -1686,3 +2095,16 @@ so realization noise alone is an unlikely explanation, but it is one run.
   full-data fits (importances with per-draw quantiles, in-sample
   predictions, seed repeats; raw records in
   [`data/full-fit/`](data/full-fit/)), and the two Section 8 figures.
+- [`compute_sim_features.py`](compute_sim_features.py),
+  [`rerun_logocv_sim_features.py`](rerun_logocv_sim_features.py),
+  [`sim_features_importance.py`](sim_features_importance.py),
+  [`score_sim_features.py`](score_sim_features.py) and
+  [`metrics-sim-features.json`](metrics-sim-features.json): Section 12.
+  The feature table ([`data/sim-features.csv`](data/sim-features.csv)),
+  the LOGO driver that appends the six #33 simulation outputs to a base
+  fit space as range parameters (runs in
+  [`data/sim-features-*/`](data/README.md)), the full-data importance
+  fits ([`data/sim-features-importance.csv`](data/sim-features-importance.csv)),
+  and the scorer (feature correlations, held-out scorecard with the
+  uncertainty metrics, the collapsed-fold audit of the committed
+  baselines), with the three Section 12 figures.

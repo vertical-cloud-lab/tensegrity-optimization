@@ -126,6 +126,40 @@ Key files:
   this run follows the `full-nuts-rerun/` protocol: campaign code at
   `bbf7a62`, 256/512 NUTS, the same 35 folds with the fold order
   asserted equal, the same per-fold seeds, and the same file layout.
+- `sim-features.csv` (2026-10-13, Section 12): one row per design-mapped
+  article (46: the 44 LOGO articles plus the printed-but-unmeasured
+  `ebdna8` and `1zm8rv`), written by
+  [`../compute_sim_features.py`](../compute_sim_features.py). The six
+  `sim_*` columns are the features the Section 12 runs append to the fit
+  space: Tier C and Tier B transmissibility analogues, Tier C peak tendon
+  energy and stroke, Tier B ringdown frequency and damping, from the #33
+  simulators (sim branch `copilot/explore-simulations-for-tensegrity` at
+  `94e53a8`, unmodified, mujoco 3.15.0) run at the design's print
+  geometry with the design-mean weighed mass (`mass_used_g`), so reprint
+  twins share identical features. The `*_weighed` columns are the same
+  channels from the sibling audit's per-print weighed-mass run
+  ([`../../sim-measured-correlations/data/sim-articles/sim_articles.csv`](../../sim-measured-correlations/data/sim-articles/sim_articles.csv));
+  the 26 single-print designs reproduce them to 2e-7 relative. The full
+  `tierC_*` and `tierB_*` channel sets at the design-mean mass are kept
+  alongside.
+- `sim-features-shape-sim/`, `sim-features-twelve-sim/`,
+  `sim-features-sim-only/` (2026-10-13, Section 12): the campaign pair,
+  raw, with the six simulation features appended as `RangeParameter`s
+  (bounds: observed range over the 46 articles padded by ten percent) to
+  the five shape coordinates, to the campaign's twelve parameters, and to
+  nothing (features alone), from
+  [`../rerun_logocv_sim_features.py`](../rerun_logocv_sim_features.py).
+  The twenty round-5 candidate arms in the snapshot (generated, never
+  printed, no data) carry the feature-table mean as a placeholder so the
+  experiment stays well formed; they never enter a fit. Before the first
+  feature run, the same driver with no features re-ran fold `6lhxfy` of
+  `ablation-shape-only/` at the default thread count and matched its
+  predictions and covariances exactly (maximum difference 0.0). Four
+  workers at one torch thread each; otherwise the `full-nuts-rerun/`
+  protocol: campaign code at `bbf7a62`, 256/512 NUTS, the same 35 folds
+  with the fold order asserted equal, the same per-fold seeds, the same
+  file layout (`folds.jsonl`, `state.json`, CSV at `%.9g`, diagnostics
+  JSON, parity PNG).
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection
