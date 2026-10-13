@@ -25,31 +25,45 @@ the round manifests, and it refuses to write if they disagree.
 
 Replicate plate layout
 ----------------------
-Each plate is a 3 x 3 Latin square: every row (back, middle, front) and
-every left/center/right slot holds one article of each design, and the
-square is cycled from plate to plate so that each design occupies each of
-the nine plate positions exactly once over the three plates. Plate position
-therefore cannot masquerade as a design effect, within a plate or across
-the study. Because every row holds one copy of each design, the copy digit
-is the row: copy 1 is the back row, copy 2 the middle row, copy 3 the front
-row (the back-left to front-right raster every earlier plate used).
+All three replicate plates print from one file. The lab slices the plate-1
+project once and prints that gcode three times, so 2sneXY and 3sneXY sit
+exactly where 1sneXY does (@achris0520 on PR #102, 2026-10-13, comment
+6156067024). The package of commits cf667d8 and e9f5e2d instead cycled the
+layout from plate to plate and wrote separate projects for plates 2 and 3;
+those two files were removed, and the plate-1 project is unchanged byte for
+byte.
+
+The one layout is a 3 x 3 Latin square: every row (back, middle, front)
+and every left/center/right slot holds one article of each design, so a
+front-to-back or left-to-right trend across the bed affects every design
+equally on every plate. A fixed layout cannot balance a position effect
+that is not a sum of a row and a column effect: corny2 takes the center
+cell and the back-right and front-left corners on every plate, corny7 and
+corny8 one corner each. Because every row holds one copy of each design,
+the copy digit is the row: copy 1 is the back row, copy 2 the middle row,
+copy 3 the front row (the back-left to front-right raster every earlier
+plate used).
 
 Rows are packed from measured mesh extents, so the wide corny7/corny8
 articles do not force a wide cell on the narrow corny2. The whole layout
 stays inside the H2D reach limits the round-4 generator enforces (TPU at
 x >= 30 mm, PLA well left of the wipe tower the round-4 project places at
-x = 287 mm), and the round-4 project settings are reused verbatim, so the
-three plates print at exactly the round-4 filament point.
+x = 287 mm), and the round-4 project settings are reused verbatim, so all
+three prints run at exactly the round-4 filament point.
 
 Outputs, all under ``bo/replicate-study/``:
 
-* ``t3-prism-replicate-sne-plate{1,2,3}.H2D-MM-PLAstruts-TPUcables.3mf``:
-  one Bambu Studio project per plate, objects named by article ID.
+* ``t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf``: the
+  Bambu Studio project for all three replicate plates, objects named by
+  their plate-1 article IDs (1sne71 and so on). The printer shows those
+  names on every print; the print key gives the name each 2sne and 3sne
+  article has in the file.
 * ``t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf``: the committed round-3
   project with only its object names changed (``Trial 36`` -> ``dran31``
   and so on); every other byte of the project is the drran/2dran file.
 * ``t3-prism-replicate-print-key.csv``: every article ID with its design,
-  plate, position, infill and filament settings.
+  plate, position, infill, filament settings and the object name it has in
+  the slicer project and gcode.
 * ``t3-prism-replicate-sne-plate-maps.png`` and
   ``t3-prism-dran3-plate-map.png``: top-down labeled plate maps.
 * ``t3-prism-replicate-picks-performance.png``: measured rebound energy vs
@@ -120,6 +134,11 @@ DESIGNS = [
     {"print_id": "corny2", "spec": 2, "trial": 38, "role": "furthest away"},
 ]
 N_PLATES = 3
+# All three replicate plates print the gcode of this plate's project
+# (@achris0520, PR #102, 2026-10-13): same file, same positions.
+GCODE_PLATE = 1
+SNE_3MF = (f"t3-prism-replicate-sne-plate{GCODE_PLATE}."
+           "H2D-MM-PLAstruts-TPUcables.3mf")
 ROWS = ("back", "middle", "front")    # copy digit = row index + 1
 SLOTS = ("left", "center", "right")
 ROW_GAP_MM = 8.0     # bbox-to-bbox, between rows
@@ -270,15 +289,18 @@ def verify_against_stls(project: dict, rnd: str, trials) -> dict[int, dict]:
 
 
 # ---- replicate plates ---------------------------------------------------------
-def latin_design(plate: int, row: int, slot: int) -> dict:
-    """Design at (row, slot) of plate `plate` (1-based). Each plate is a Latin
-    square, and cycling it by one per plate puts every design in every plate
-    position exactly once over the three plates."""
-    return DESIGNS[(row + slot + plate - 1) % len(DESIGNS)]
+def layout_design(row: int, slot: int) -> dict:
+    """Design at (row, slot) on every replicate plate: one fixed Latin square
+    (each row and each slot holds one article of each design). The plates do
+    not differ, because all three print the plate-1 gcode. This is the
+    plate-1 square of the earlier cycled layout, so the plate-1 project
+    comes out byte-identical."""
+    return DESIGNS[(row + slot) % len(DESIGNS)]
 
 
 def plan_replicate_layout(geo: dict[int, dict], wipe_tower_x: float) -> dict:
-    """Row-packed Latin-square layout from measured extents."""
+    """Row-packed Latin-square layout from measured extents, the same on
+    every plate; only the plate digit of the article IDs changes."""
     ext = {d["trial"]: geo[d["trial"]]["hi"] - geo[d["trial"]]["lo"]
            for d in DESIGNS}
     # Left edge that keeps every design's TPU reachable if it is leftmost.
@@ -300,11 +322,12 @@ def plan_replicate_layout(geo: dict[int, dict], wipe_tower_x: float) -> dict:
         for r in range(len(ROWS)):
             x = left
             for s in range(len(SLOTS)):
-                d = latin_design(p, r, s)
+                d = layout_design(r, s)
                 w = ext[d["trial"]][0]
                 cells.append({"plate": p, "row": r, "slot": s, "design": d,
                               "cx": x + w / 2.0, "cy": row_cy[r],
-                              "id": f"{p}sne{d['spec']}{r + 1}"})
+                              "id": f"{p}sne{d['spec']}{r + 1}",
+                              "object": f"{GCODE_PLATE}sne{d['spec']}{r + 1}"})
                 x += w + SLOT_GAP_MM
         plates[p] = cells
 
@@ -546,7 +569,7 @@ def write_key(layout: dict, key3: list[dict], src3: dict) -> Path:
             "strut_infill_pct", "tpu_infill_pct", "pla_nozzle_temp_C",
             "pla_flow_mm3_s", "tpu_nozzle_temp_C", "tpu_flow_mm3_s",
             "printed_g_est", "earlier_prints", "earlier_masses_g",
-            "slicer_project", "struts_stl", "cables_stl"]
+            "slicer_project", "gcode_object", "struts_stl", "cables_stl"]
     rows = []
     for p, cells in layout["plates"].items():
         for c in sorted(cells, key=lambda c: (c["row"], c["slot"])):
@@ -561,8 +584,7 @@ def write_key(layout: dict, key3: list[dict], src3: dict) -> Path:
                     "tpu_nozzle_temp_C", "tpu_flow_mm3_s")),
                 man["printed_g_est"], d["print_id"],
                 picks[d["print_id"]]["mass_g"],
-                f"t3-prism-replicate-sne-plate{p}."
-                "H2D-MM-PLAstruts-TPUcables.3mf",
+                SNE_3MF, c["object"],
                 f"stls/{d['print_id']}-t{d['trial']}-struts.stl",
                 f"stls/{d['print_id']}-t{d['trial']}-cables.stl",
             ])
@@ -582,7 +604,7 @@ def write_key(layout: dict, key3: list[dict], src3: dict) -> Path:
             f"{k['drran']['print_id']}; {k['2dran']['print_id']}",
             f"{k['drran']['mass_g_with_label']}; "
             f"{k['2dran']['mass_g_with_label']}",
-            f"t3-prism-{DRAN3_PREFIX}.H2D-MM-PLAstruts-TPUcables.3mf",
+            f"t3-prism-{DRAN3_PREFIX}.H2D-MM-PLAstruts-TPUcables.3mf", k["id"],
             f"stls/{DRAN3_PREFIX}/{k['id']}-t{k['trial']}-struts.stl",
             f"stls/{DRAN3_PREFIX}/{k['id']}-t{k['trial']}-cables.stl",
         ])
@@ -664,8 +686,9 @@ def render_sne_plate_maps(layout: dict, geo4: dict, tower_xy) -> Path:
         fig.text(0.5, 0.02,
                  "ID = [plate] sne [design digit: 7 = corny7, 8 = corny8, "
                  "2 = corny2] [copy: 1 = back row, 2 = middle, 3 = front]."
-                 "  Each design sits in every position once over the three "
-                 "plates.", ha="center", fontsize=12, color=LABEL_GRAY)
+                 "  All three plates print the same plate-1 gcode, so every "
+                 "article sits in the same place on each plate.",
+                 ha="center", fontsize=12, color=LABEL_GRAY)
         fig.subplots_adjust(left=0.01, right=0.99, top=0.97, bottom=0.07,
                             wspace=0.04)
         path = OUT_DIR / "t3-prism-replicate-sne-plate-maps.png"
@@ -776,16 +799,18 @@ def main() -> int:
     print(f"==> Layout: rows {layout['row_w_mm']:.1f} x "
           f"{layout['total_h_mm']:.1f} mm from x = {layout['left_mm']:.1f}; "
           f"wipe tower kept at {tower4}")
-    for p, cells in layout["plates"].items():
-        out = OUT_DIR / (f"t3-prism-replicate-sne-plate{p}."
-                         "H2D-MM-PLAstruts-TPUcables.3mf")
-        build_replicate_project(src4, cells, p, out)
-        verify_replicate_project(out, cells, src4)
-        rows = [" ".join(c["id"] for c in cells if c["row"] == r)
+    # One project; plates 2 and 3 print its gcode, so only it is written.
+    cells = layout["plates"][GCODE_PLATE]
+    out = OUT_DIR / SNE_3MF
+    build_replicate_project(src4, cells, GCODE_PLATE, out)
+    verify_replicate_project(out, cells, src4)
+    print(f"==> Plates 1 to {N_PLATES}: {out.name} "
+          f"({out.stat().st_size / 1e6:.1f} MB), printed {N_PLATES} times")
+    for p, pcells in layout["plates"].items():
+        rows = [" ".join(c["id"] for c in pcells if c["row"] == r)
                 for r in range(len(ROWS))]
-        print(f"==> Plate {p}: {out.name} ({out.stat().st_size / 1e6:.1f} MB)"
-              f"\n      back:   {rows[0]}\n      middle: {rows[1]}"
-              f"\n      front:  {rows[2]}")
+        print(f"    plate {p}  back: {rows[0]}  middle: {rows[1]}  "
+              f"front: {rows[2]}")
 
     key3 = load_dran3_key()
     out3 = OUT_DIR / f"t3-prism-{DRAN3_PREFIX}.H2D-MM-PLAstruts-TPUcables.3mf"

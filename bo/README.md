@@ -1057,13 +1057,18 @@ data), outputs `t3-prism-replicate-study-{picks,power}.csv` and
 picks on 2026-09-28 (PR #102, @me-madsen).
 
 Print files (2026-09-28): [`replicate-study/`](replicate-study/), with its
-own [README](replicate-study/README.md) written as the print sheet. Three
-plate projects, one per print job, each holding three copies of corny7
-(trial 37), corny8 (trial 39) and corny2 (trial 38) with objects named
-`[plate]sne[design digit][copy]` (for example `2sne73` = plate 2, corny7,
-copy 3); the copy digit is the row (1 = back), and each plate is a Latin
-square cycled across the plates, so every design sits in every one of the
-nine positions exactly once over the study. Also there: the `dran3`
+own [README](replicate-study/README.md) written as the print sheet. One
+plate project holding three copies of corny7 (trial 37), corny8 (trial 39)
+and corny2 (trial 38), sliced once and printed three times: plates 2 and 3
+reuse the plate-1 gcode and orientation (@achris0520 on PR #102,
+2026-10-13), so `2sneXY` and `3sneXY` print where `1sneXY` does. Articles
+are named `[plate]sne[design digit][copy]` (for example `2sne73` = plate 2,
+corny7, copy 3) and keep their plate-1 object names in the file; the copy
+digit is the row (1 = back), and the layout is a Latin square, one copy of
+each design per row and per left/center/right column. The first package
+(2026-09-28) cycled that square across three separate plate files so that
+every design sat in every position once over the study; the plate-2 and
+plate-3 files were removed on 2026-10-13. Also there: the `dran3`
 project for the third print of the round-3 plate (the committed round-3
 project with only its object names changed, `dran3N` = the design of
 `drranN` and `2dranN`; first committed as `3dranN` and renamed on
@@ -1075,10 +1080,11 @@ vs t180 figure of the three picks alone. Built by
 round-3 projects (no re-render, no mass re-solve; the script checks the
 project meshes against the committed STLs and manifests first), at the
 round-4 filament point (PLA 226 C / 29.5 mm3/s, TPU 236 C / 2.6 mm3/s).
-Headless slice check with BambuStudio v02.07.01.62: all three plates exit
-0 with all nine named objects sliced and only the usual pre-support
-cantilever warning, about 14 h 55 min and 175 g PLA + 60 g TPU per plate
-including tower, flushing and brims; a control slice with the per-part
+Headless slice check with BambuStudio v02.07.01.62 (2026-09-28): the
+plate-1 project, and the two plate files since removed, exit 0 with all
+nine named objects sliced and only the usual pre-support cantilever
+warning, about 14 h 55 min and 175 g PLA + 60 g TPU per plate including
+tower, flushing and brims; a control slice with the per-part
 infill overrides deleted used 6.7 g less PLA, so the overrides are live.
 The dran3 project, like the round-3 original, stops at the CLI's nozzle
 check (it predates `_patch_h2d_state`) and is left unpatched on purpose.

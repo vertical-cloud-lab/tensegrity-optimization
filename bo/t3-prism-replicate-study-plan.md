@@ -204,9 +204,18 @@ Printing (required):
   needed), same spools if possible, RH noted per print.
 - Per-part sparse infill per article: trial 37 struts 22 / cables 21,
   trial 39 struts 21 / cables 34, trial 38 struts 18 / cables 34 percent.
-- The dedicated project files now exist, one per plate, in
-  [`replicate-study/`](replicate-study/README.md); the two routes below are
-  kept for the record. GUI route: open
+- Layout: every row and every left/center/right column holds one copy of
+  each design, so front-to-back and left-to-right bed trends cancel out of
+  design contrasts, and so do whole-plate shifts, since every plate carries
+  three copies of each design. All three plates repeat one layout, so a
+  center-versus-corner bed effect does not cancel (corny2 holds the center
+  cell on every plate).
+- The dedicated project file now exists in
+  [`replicate-study/`](replicate-study/README.md): one 9-object project,
+  sliced once and printed three times, so plates 2 and 3 repeat the plate-1
+  gcode and layout (@achris0520 on PR #102, 2026-10-13; the first package,
+  of 2026-09-28, had a separate file per plate with the designs moved
+  around). The two routes below are kept for the record. GUI route: open
   [`slices/t3-prism-bo-round4.H2D-MM-PLAstruts-TPUcables.3mf`](slices/),
   delete trials 40 to 45, clone each remaining object twice, verify every
   clone kept its per-part infill overrides (select the part, the settings

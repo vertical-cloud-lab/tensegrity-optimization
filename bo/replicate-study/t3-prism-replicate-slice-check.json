@@ -135,5 +135,6 @@
     "totals include the wipe tower, flushing and brims; supports are painted in the GUI afterwards, so production gcode will run longer and heavier",
     "the one warning per plate is the floating-cantilever notice on a corny2 copy that every unsupported round has shown; it goes away once supports are painted",
     "the three plates hold the same nine meshes in different positions, so their totals agree to within 0.01 g and about one minute"
-  ]
+  ],
+  "plates_2026-10-13": "Plates 2 and 3 now print the plate-1 gcode, so 2sneXY and 3sneXY sit where 1sneXY does (@achris0520 on PR #102, 2026-10-13, comment 6156067024). The sne1 entry above is therefore the check for all three print jobs. The sne2 and sne3 projects were removed from the repo (they remain in git history at e9f5e2d); their entries are kept as the record of what was checked on 2026-09-28. The plate-1 project is unchanged (sha256_12 ec1976b6bf8c)."
 }

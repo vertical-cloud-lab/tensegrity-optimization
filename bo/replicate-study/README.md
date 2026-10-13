@@ -1,14 +1,20 @@
 # Replicate study and dran3 reprint: print files
 
 Prepared on 2026-09-28 for @achris0520, as requested by @me-madsen on
-PR #102 (comment 5873581840). There are four print jobs:
+PR #102 (comment 5873581840). There are four print jobs from two files:
 
 | Print job | File to open in Bambu Studio | Articles | Filament settings |
 |---|---|---|---|
-| Replicate plate 1 | [`t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf) | 1sne71 to 1sne83 | PLA 226 C at 29.5 mm3/s, TPU 236 C at 2.6 mm3/s |
-| Replicate plate 2 | [`t3-prism-replicate-sne-plate2.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-replicate-sne-plate2.H2D-MM-PLAstruts-TPUcables.3mf) | 2sne71 to 2sne83 | same as plate 1 |
-| Replicate plate 3 | [`t3-prism-replicate-sne-plate3.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-replicate-sne-plate3.H2D-MM-PLAstruts-TPUcables.3mf) | 3sne71 to 3sne83 | same as plate 1 |
+| Replicate plates 1, 2 and 3: one gcode, printed three times | [`t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf) | 1sne## on the first print, 2sne## on the second, 3sne## on the third (nine per plate) | PLA 226 C at 29.5 mm3/s, TPU 236 C at 2.6 mm3/s |
 | dran3 reprint | [`t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf`](t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf) | dran31 to dran39 | PLA 217 C at 20.5 mm3/s, TPU 244 C at 3.6 mm3/s |
+
+**Plates 2 and 3 print the same gcode as plate 1, in the same
+orientation** (@achris0520 on PR #102, 2026-10-13). Every article on
+plates 2 and 3 sits exactly where the plate-1 article with the same last
+two digits sits: 2sne73 and 3sne73 print where 1sne73 does. The package
+first shipped on 2026-09-28 with separate files for plates 2 and 3 that
+moved the designs to different positions; those two files were removed on
+2026-10-13, and the plate-1 file is unchanged.
 
 Each replicate plate holds three copies of each of the three designs picked
 in the [replicate study plan](../t3-prism-replicate-study-plan.md): corny7
@@ -23,15 +29,20 @@ was re-rendered.
 
 ## Article IDs on the replicate plates
 
-`[plate]sne[design digit][copy]`, where the design digit is 7 for corny7, 8
+`[plate]sne[design digit][copy]`, where the plate digit is the print (first,
+second or third print of the gcode), the design digit is 7 for corny7, 8
 for corny8 and 2 for corny2, and the copy digit is the row: 1 = back row,
 2 = middle row, 3 = front row. Example: `2sne73` is plate 2, corny7, front
-row. The objects in each 3mf already carry these names.
+row. The objects in the 3mf carry the plate-1 IDs (1sne71 and so on), and
+the printer shows those names on every print: on plates 2 and 3, the object
+called 1sne73 is the article you label 2sne73 or 3sne73. The `gcode_object`
+column of the print key gives this for every article.
 
 ![Plate maps for the three replicate plates](t3-prism-replicate-sne-plate-maps.png)
 
 Positions as seen from the front of the printer (left and right as you face
-the door):
+the door). The layout is the same on all three plates; only the plate digit
+changes:
 
 | Plate 1 | left | center | right |
 |---|---|---|---|
@@ -41,31 +52,40 @@ the door):
 
 | Plate 2 | left | center | right |
 |---|---|---|---|
-| back | 2sne81 | 2sne21 | 2sne71 |
-| middle | 2sne22 | 2sne72 | 2sne82 |
-| front | 2sne73 | 2sne83 | 2sne23 |
+| back | 2sne71 | 2sne81 | 2sne21 |
+| middle | 2sne82 | 2sne22 | 2sne72 |
+| front | 2sne23 | 2sne73 | 2sne83 |
 
 | Plate 3 | left | center | right |
 |---|---|---|---|
-| back | 3sne21 | 3sne71 | 3sne81 |
-| middle | 3sne72 | 3sne82 | 3sne22 |
-| front | 3sne83 | 3sne23 | 3sne73 |
+| back | 3sne71 | 3sne81 | 3sne21 |
+| middle | 3sne82 | 3sne22 | 3sne72 |
+| front | 3sne23 | 3sne73 | 3sne83 |
 
 Every row and every left/center/right column holds one article of each
-design, and over the three plates each design sits in each of the nine
-positions exactly once. That way a hot or cold spot on the bed cannot show
-up in the data as a difference between designs.
+design, so a front-to-back or left-to-right difference across the bed
+affects all three designs equally on every plate. Because the plates are
+identical, each design also prints in the same three positions every time:
+corny2 holds the center and the back-right and front-left corners, corny7
+the back-left corner, corny8 the front-right corner. A bed effect that is
+not a simple front-to-back or left-to-right trend (center against corners,
+for example) would therefore count toward the design difference. In
+exchange, every position gets the same supports and the same toolpath on
+all three plates, so the plates differ only by print job (spool, humidity,
+bed condition).
 
 **Required: label every article from the plate map before it comes off the
-plate, and photograph the labeled plate.** corny7 and corny8 look almost the
+plate, using the plate digit of that print, and photograph the labeled
+plate.** The three plates are identical, so the label is the only record of
+which print an article came from. corny7 and corny8 also look almost the
 same (same wide, high-twist family; the main difference is TPU infill, 21
 vs 34 percent), and with three copies of each on a plate there is no way to
 tell them apart after the fact.
 
 ## Print settings for the three replicate plates
 
-These are the round-4 (corny) plate settings, already written into all three
-files. All three designs come from that one plate, so a single set of
+These are the round-4 (corny) plate settings, already written into the
+file. All three designs come from that one plate, so a single set of
 filament settings reproduces each design's original print. (Nozzle
 temperature and max volumetric speed are per filament, so a plate can only
 carry one value of each; that is why the picks were kept within round 4.)
@@ -80,25 +100,29 @@ carry one value of each; that is why the picks were kept within round 4.)
 | Supports | off in the files; paint them on as for round 4 |
 | Wipe tower | pre-placed at x = 287 mm, y = 110 mm, 10 mm wide (same as round 4) |
 
-Before slicing each plate (required):
+Before slicing (required; you slice once for all three plates):
 
-1. Check the object list shows nine objects named by article ID.
+1. Check the object list shows nine objects named by plate-1 article ID
+   (1sne21 to 1sne83).
 2. Select any part and confirm its settings list shows "Sparse infill
    density" with the value from the table above. A control slice showed the
-   overrides are active in these files (deleting them saves 6.7 g of PLA per
+   overrides are active in this file (deleting them saves 6.7 g of PLA per
    plate), but check anyway after the file opens.
-3. Paint supports, slice, print. Print the three plates as three separate
-   jobs, from the same spools if possible, and note the relative humidity for
-   each print.
+3. Paint supports and slice once. Print that gcode three times, as three
+   separate jobs (plates 1, 2 and 3), without re-slicing or moving anything
+   in between. Use the same spools if possible, and note the relative
+   humidity for each print.
 
 Headless slice check on 2026-09-28 (Bambu Studio v02.07.01.62 command line,
 the lab's version; record in
 [`t3-prism-replicate-slice-check.json`](t3-prism-replicate-slice-check.json)):
-all three plates slice with exit code 0, all nine named objects sliced, no
-conflict, out-of-area or nozzle errors, and one expected warning per plate (a
-floating cantilever on a corny2 copy, because supports are not painted yet).
-Each plate estimates about 14 h 55 min and 175 g PLA + 60 g TPU including the
-wipe tower, flushing and brims, before supports.
+the plate-1 file slices with exit code 0, all nine named objects sliced, no
+conflict, out-of-area or nozzle errors, and one expected warning (a floating
+cantilever on a corny2 copy, because supports are not painted yet). It
+estimates about 14 h 55 min and 175 g PLA + 60 g TPU per print including the
+wipe tower, flushing and brims, before supports, so about 45 h and 526 g PLA
++ 179 g TPU for the three prints. The record also keeps the passing checks
+of the two removed plate-2 and plate-3 files.
 
 ## dran3 reprint
 
@@ -188,6 +212,8 @@ predictions and the scoring rules are in the
   front (corny7), one further away (corny8), one furthest away (corny2).
 - Three repeats of each design per plate (nine articles per plate), three
   plates, 27 articles in total.
+- All three plates print one gcode with one layout (@achris0520,
+  2026-10-13).
 - The question: is there signal, do repeats help the campaign, and do the
   measured ranks follow the predictions (rank correlation).
 
@@ -207,8 +233,10 @@ Drop testing, from the plan (required unless marked optional):
 
 - [`t3-prism-replicate-print-key.csv`](t3-prism-replicate-print-key.csv):
   every article ID (27 replicate + 9 dran3) with design, trial, plate, row,
-  slot, plate position, infill, filament settings, predicted printed mass and
-  the earlier prints of the same design.
+  slot, plate position, infill, filament settings, predicted printed mass,
+  the earlier prints of the same design, and `gcode_object`, the name the
+  article's object has in the 3mf and on the printer (the plate-1 ID for
+  every replicate plate).
 - [`stls/`](stls/): the struts and cables STLs for corny7, corny8 and corny2,
   and in [`stls/dran3/`](stls/dran3/) the nine round-3 designs named by dran3
   ID. These are byte copies of the committed per-trial STLs in
