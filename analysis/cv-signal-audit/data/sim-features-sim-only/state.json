@@ -147,5 +147,6 @@
     "ajhby6": 105.4,
     "r2d2c1": 94.3
   },
-  "status": "running"
+  "status": "complete",
+  "total_fold_seconds": 3496.2
 }
