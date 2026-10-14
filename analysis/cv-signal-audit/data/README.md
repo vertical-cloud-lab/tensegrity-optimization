@@ -160,6 +160,19 @@ Key files:
   with the fold order asserted equal, the same per-fold seeds, the same
   file layout (`folds.jsonl`, `state.json`, CSV at `%.9g`, diagnostics
   JSON, parity PNG).
+- `sim-features-shape-sim-payload/`, `sim-features-twelve-sim-payload/`
+  (2026-10-14, Section 12): the same two widened spaces with the payload
+  pair from `payload-objectives.csv` (same driver, `--objectives
+  payload`), baselines `objective-tavg10ms-shape-only/` and
+  `objective-tavg10ms/`. Same protocol and layout as the three
+  campaign-pair directories above.
+- `sim-features-importance.csv`, `sim-features-importance-insample.csv`
+  (2026-10-13, Section 12): full-data SAASBO fits in the widened spaces
+  (shape + sim, 12 + sim, sim only for the campaign pair; shape + sim for
+  the payload pair), all 44 articles, 256/512 NUTS, seed 10000, from
+  [`../sim_features_importance.py`](../sim_features_importance.py):
+  Ax importances with per-draw quartiles, and in-sample R2, coverage and
+  posterior sd.
 - `t3-prism-bo-round3-repeatability.csv`: the nine confirmed drran/2dran
   print pairs (identical designs, printed and tested twice).
 - `t3-prism-bo-round{1,3,4}-predictions.csv`: the committed at-selection

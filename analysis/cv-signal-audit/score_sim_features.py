@@ -475,52 +475,74 @@ def fig_correlations(df: pd.DataFrame, corr: dict) -> None:
 
 
 def fig_heldout(res: dict) -> None:
-    """Parity with error bars, baseline vs with features, per run and
-    objective, plus a scorecard strip."""
-    panels = []
-    for run_name, ent in res.items():
-        for obj, o in ent["objectives"].items():
-            panels.append((run_name, ent, obj, o))
-    if not panels:
+    """Parity with 95 percent bands: one row per objective, one column per
+    fit space (base space and base space plus the six features)."""
+    # (objective, [(run or baseline dir, label, color), ...])
+    layout = []
+    for obj, pair in (("t180", "campaign"), ("e_reb_mJ", "campaign"),
+                      ("tavg10ms", "payload"), ("late_avg3ms_g", "payload")):
+        suffix = "-payload" if pair == "payload" else ""
+        shape_base = "objective-tavg10ms-shape-only" if pair == "payload" else "ablation-shape-only"
+        twelve_base = "objective-tavg10ms" if pair == "payload" else "full-nuts-rerun"
+        cols = [(shape_base, BASE_LABEL[shape_base], BASE_COLOR),
+                (f"sim-features-shape-sim{suffix}", "shape + sim (11)", SIM_COLOR),
+                (twelve_base, BASE_LABEL[twelve_base], BASE_COLOR),
+                (f"sim-features-twelve-sim{suffix}", "12 params + sim (18)", SIM_COLOR),
+                (f"sim-features-sim-only{suffix}", "sim only (6)", SIM_COLOR)]
+        cols = [c for c in cols if (DATA / c[0] / "folds.jsonl").exists()
+                or (DATA / c[0] / CSV_NAME).exists()]
+        if any(c[0].startswith("sim-features") for c in cols):
+            layout.append((obj, cols))
+    if not layout:
         return
-    n = len(panels)
-    fig, axes = plt.subplots(n, 2, figsize=(9.2, 3.6 * n), squeeze=False)
-    for row, (run_name, ent, obj, o) in enumerate(panels):
-        d_sim = load_run(DATA / run_name, obj)
-        d_base = load_run(DATA / ent["baseline"], obj)
-        d_base = d_base[d_base.print_id.isin(d_sim.print_id)]
-        for col, (d, g, title, color) in enumerate((
-                (d_base, o["baseline"], ent["baseline_label"], BASE_COLOR),
-                (d_sim, o["with_sim_features"], ent["label"], SIM_COLOR))):
+    ncol = max(len(c) for _, c in layout)
+    fig, axes = plt.subplots(len(layout), ncol, figsize=(3.6 * ncol, 3.5 * len(layout)),
+                             squeeze=False)
+    rng = np.random.default_rng(0)
+    for row, (obj, cols) in enumerate(layout):
+        for col in range(ncol):
             ax = axes[row, col]
+            if col >= len(cols):
+                ax.axis("off")
+                continue
+            run_dir, title, color = cols[col]
+            d = load_run(DATA / run_dir, obj)
+            if d is None:
+                ax.axis("off")
+                continue
+            g = grade(d, rng) if len(d) == 44 else None
             ax.errorbar(d.observed, d.predicted, yerr=1.96 * d.predicted_sem,
                         fmt="none", ecolor=color, alpha=0.35, lw=1, zorder=2)
             base.scatter_by_batch(ax, d, "observed", "predicted")
             lo = min(d.observed.min(), d.predicted.min())
             hi = max(d.observed.max(), d.predicted.max())
             ax.plot([lo, hi], [lo, hi], color="0.5", lw=0.9, zorder=1)
-            u = g["uncertainty"]
-            ax.set_title(f"{OBJ_LABEL[obj]}: {title}"
-                         + (" (partial)" if o["partial"] else ""), fontsize=10)
-            ax.text(0.02, 0.98,
-                    f"rho_s {g['spearman_rho']:+.2f} (p {g['spearman_p_perm']:.3f})\n"
-                    f"within batch {g['within_batch']['mean_rho']:+.2f}\n"
-                    f"95% cov {u['coverage_95_pct']:.0f}%, z sd {u['excluding_degenerate']['z_sd']:.2f}*\n"
-                    f"NLL {u['excluding_degenerate']['mean_nll']:+.2f}*, CRPS/sd {u['crps_over_sd_obs']:.2f}\n"
-                    f"post sd / data sd {u['sharpness_sd_over_sd_obs']:.2f}; "
-                    f"{u['n_degenerate_sd']} collapsed",
-                    transform=ax.transAxes, va="top", fontsize=7.8,
-                    bbox=dict(boxstyle="round", fc="white", ec="0.8", alpha=0.9))
-            ax.set_xlabel("measured (held out)")
-            ax.set_ylabel("predicted, 95% band")
+            ax.set_title(f"{OBJ_LABEL[obj]}: {title}", fontsize=9.5, color=color)
+            if g is not None:
+                u = g["uncertainty"]
+                ax.text(0.02, 0.98,
+                        f"rho_s {g['spearman_rho']:+.2f} (p {g['spearman_p_perm']:.3f})\n"
+                        f"within batch {g['within_batch']['mean_rho']:+.2f}\n"
+                        f"spread/sd {g['shrinkage_sd_pred_over_sd_obs']:.2f}\n"
+                        f"95% cov {u['coverage_95_pct']:.0f}%, z sd {u['excluding_degenerate']['z_sd']:.2f}*\n"
+                        f"CRPS/sd {u['crps_over_sd_obs']:.2f}; {u['n_degenerate_sd']} collapsed",
+                        transform=ax.transAxes, va="top", fontsize=7.2,
+                        bbox=dict(boxstyle="round", fc="white", ec="0.8", alpha=0.9))
+            if row == len(layout) - 1:
+                ax.set_xlabel("measured (held out)", fontsize=8.5)
+            if col == 0:
+                ax.set_ylabel("predicted, 95% band", fontsize=8.5)
+            ax.tick_params(labelsize=7.5)
             base.style_axis(ax)
     handles, labels = axes[0, 0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="lower center", ncol=5, fontsize=8,
-               frameon=False, bbox_to_anchor=(0.5, -0.012))
-    fig.suptitle("LOGO-CV (256/512 NUTS, same 35 folds): base space vs base "
-                 "space + six simulation features", fontsize=11, y=1.0)
-    fig.tight_layout(rect=(0, 0.02, 1, 0.99))
-    fig.savefig(FIGS / "sim-features-logocv.png", dpi=150, bbox_inches="tight")
+    fig.legend(handles, labels, loc="lower center", ncol=5, fontsize=8.5,
+               frameon=False, bbox_to_anchor=(0.5, -0.005))
+    fig.suptitle("LOGO-CV (256/512 NUTS, same 35 folds): each base space (blue) next to "
+                 "the same space plus the six simulation features (red). "
+                 "* standardized-error sd with collapsed folds set aside",
+                 fontsize=10.5, y=0.995)
+    fig.tight_layout(rect=(0, 0.02, 1, 0.985))
+    fig.savefig(FIGS / "sim-features-logocv.png", dpi=140, bbox_inches="tight")
     plt.close(fig)
 
 

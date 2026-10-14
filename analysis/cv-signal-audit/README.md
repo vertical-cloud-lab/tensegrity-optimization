@@ -1796,14 +1796,14 @@ otherwise dominate any average of standardized errors.
 
 | held out, campaign pair | shape only (5) | shape + sim (11) | 12 params | 12 + sim (18) | sim only (6) |
 |---|--:|--:|--:|--:|--:|
-| t180 article rho_s (perm p) | +0.45 (0.002) | **-0.34 (0.026)** | +0.32 (0.034) | +0.22 (0.163) | -0.23 (0.122) |
-| t180 within-batch rho_s (p) | +0.21 (0.20) | -0.27 (0.09) | +0.06 (0.70) | -0.12 (0.439) | -0.24 (0.141) |
-| t180 design-mean rho_s (p) | +0.51 (0.002) | -0.38 (0.025) | +0.37 (0.03) | +0.25 (0.144) | -0.25 (0.152) |
+| t180 article rho_s (perm p) | +0.45 (0.002) | **-0.34 (0.023)** | +0.32 (0.037) | +0.22 (0.159) | -0.23 (0.129) |
+| t180 within-batch rho_s (p) | +0.21 (0.206) | -0.27 (0.092) | +0.06 (0.695) | -0.12 (0.450) | -0.24 (0.137) |
+| t180 design-mean rho_s (p) | +0.51 (0.001) | -0.38 (0.027) | +0.37 (0.029) | +0.25 (0.153) | -0.25 (0.152) |
 | t180 R2_oos vs fold-train mean | +0.24 | -0.03 | +0.12 | +0.16 | -0.03 |
 | t180 prediction spread / data sd | 0.51 | **0.12** | 0.32 | 0.26 | 0.13 |
 | t180 MAPE | 5.0% | 5.5% | 4.8% | 4.8% | 5.5% |
-| rebound article rho_s (p) | +0.04 (0.78) | **-0.41 (0.006)** | -0.40 (0.009) | **-0.55 (<0.001)** | -0.19 (0.211) |
-| rebound within-batch rho_s (p) | +0.05 (0.74) | -0.49 (0.002) | -0.21 (0.19) | -0.50 (0.001) | -0.15 (0.346) |
+| rebound article rho_s (p) | +0.04 (0.782) | **-0.41 (0.006)** | -0.40 (0.008) | **-0.55 (<0.001)** | -0.19 (0.218) |
+| rebound within-batch rho_s (p) | +0.05 (0.736) | -0.49 (0.002) | -0.21 (0.199) | -0.50 (0.001) | -0.15 (0.343) |
 | collapsed articles, t180 / rebound | 8 / 7 | 2 / 1 | 0 / 0 | 0 / 0 | 2 / 1 |
 | t180 95% coverage, all / excluding collapsed | 70% / 86% | 89% / 93% | 89% / 89% | 91% / 91% | 89% / 93% |
 | t180 standardized-error sd, excluding collapsed | 2.30 | **0.93** | 1.01 | 0.97 | 0.95 |
@@ -1876,20 +1876,20 @@ stops using the coordinates once the features are present.
 The payload pair (Section 7's objectives), same protocol, shape-only
 base space:
 
-| held out, payload pair | tavg10ms, shape only (5) | tavg10ms, shape + sim (11) | late_avg3ms, shape only (5) | late_avg3ms, shape + sim (11) |
-|---|--:|--:|--:|--:|
-| article rho_s (perm p) | +0.45 (0.002) | -0.34 (0.026) | +0.63 (<0.001) | +0.42 (0.005) |
-| within-batch rho_s (p) | +0.52 (<0.001) | -0.23 (0.158) | +0.32 (0.042) | +0.18 (0.259) |
-| design-mean rho_s (p) | +0.43 (0.012) | -0.44 (0.007) | +0.56 (<0.001) | +0.29 (0.086) |
-| article rho_s, excluding collapsed | +0.43 | -0.32 | +0.39 | +0.21 |
-| R2_oos vs fold-train mean | +0.21 | +0.01 | +0.44 | +0.32 |
-| prediction spread / data sd | 0.42 | 0.10 | 0.71 | 0.46 |
-| collapsed articles | 7 | 1 | 8 | 5 |
-| 95% coverage, all / excluding collapsed | 73% / 86% | 91% / 93% | 73% / 89% | 86% / 95% |
-| standardized-error sd, excluding collapsed | 2.63 | 1.51 | 1.44 | 0.99 |
-| mean NLL, excluding collapsed | +2.44 | +0.37 | +4.56 | +4.27 |
-| CRPS / data sd | 0.45 | 0.52 | 0.43 | 0.47 |
-| median posterior sd / data sd | 0.86 | 0.91 | 0.90 | 1.06 |
+| held out, payload pair | tavg10ms: shape only (5) | shape + sim (11) | 12 params | 12 + sim (18) | late_avg3ms: shape only (5) | shape + sim (11) | 12 params | 12 + sim (18) |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| article rho_s (perm p) | +0.45 (0.002) | -0.34 (0.026) | -0.08 (0.615) | -0.25 (0.103) | +0.63 (<0.001) | +0.42 (0.005) | +0.56 (<0.001) | +0.56 (<0.001) |
+| within-batch rho_s (p) | +0.52 (0.001) | -0.23 (0.158) | -0.14 (0.379) | -0.34 (0.031) | +0.32 (0.043) | +0.18 (0.268) | +0.08 (0.630) | +0.10 (0.554) |
+| design-mean rho_s (p) | +0.43 (0.010) | -0.44 (0.007) | -0.04 (0.812) | -0.24 (0.157) | +0.56 (<0.001) | +0.29 (0.087) | +0.47 (0.006) | +0.48 (0.004) |
+| article rho_s, excluding collapsed | +0.43 | -0.32 | same | same | +0.39 | +0.21 | same | same |
+| R2_oos vs fold-train mean | +0.21 | +0.01 | -0.05 | -0.03 | +0.44 | +0.32 | +0.35 | +0.32 |
+| prediction spread / data sd | 0.42 | 0.10 | 0.17 | 0.15 | 0.71 | 0.46 | 0.53 | 0.51 |
+| collapsed articles | 7 | 1 | 0 | 0 | 8 | 5 | 0 | 0 |
+| 95% coverage, all / excluding collapsed | 73% / 86% | 91% / 93% | 91% / 91% | 93% / 93% | 73% / 89% | 86% / 95% | 100% / 100% | 95% / 95% |
+| standardized-error sd, excluding collapsed | 2.63 | 1.51 | 1.20 | 1.11 | 1.44 | 0.99 | 0.89 | 0.99 |
+| mean NLL, excluding collapsed | +2.44 | +0.37 | +0.16 | +0.08 | +4.56 | +4.27 | +4.03 | +4.09 |
+| CRPS / data sd | 0.45 | 0.52 | 0.55 | 0.55 | 0.43 | 0.47 | 0.45 | 0.47 |
+| median posterior sd / data sd | 0.86 | 0.91 | 1.13 | 1.12 | 0.90 | 1.06 | 1.10 | 1.11 |
 
 `tavg10ms`, the reliable metric that the shape-only model ranked best of
 anything in the audit, inverts exactly as t180 did (+0.45 to
@@ -1912,6 +1912,15 @@ here the features dilute rather than replace. Calibration improves in
 both cases the same way as before, by widening (standardized-error sd
 2.63 to 1.51 and 1.44 to 0.99), and the sharpness-aware CRPS gets
 worse for both (0.45 to 0.52, 0.43 to 0.47).
+
+In the twelve-parameter space the payload pair repeats the campaign
+pair's pattern: the features are nearly inert (median prediction shifts
+of 0.06 and 0.07 sd, rank agreement with the baseline +0.70 and
++0.95), `late_avg3ms` is unchanged (+0.56 to +0.56), and `tavg10ms`,
+which the twelve-parameter model could not rank to begin with (Section
+7), moves further the wrong way (-0.08 to -0.25; within batch -0.14 to
+-0.34). No fold collapsed in either twelve-parameter payload run, and the
+calibration columns are the same to two decimals.
 
 ### 12.4 Why: relevance dilution, and the gradient that got lost
 
