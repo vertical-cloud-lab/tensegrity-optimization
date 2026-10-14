@@ -1644,8 +1644,16 @@ proxies of the same five coordinates, the posterior over which input
 matters becomes wide (interquartile ranges of 0.1 to 0.8 on one
 feature), each fold's chain settles on a different proxy, and the
 cable-diameter gradient that the shape-only model rides is diluted to
-an importance of 0.03 (12.4). In the campaign's twelve-parameter space the features are nearly inert (weighed mass keeps the model memorizing) and still cost t180 rank skill (+0.32 to +0.22) while deepening the rebound anti-signal (-0.40 to -0.55). The six features on their own rank t180 at -0.23, so they are no substitute for the coordinates either; appended to the coordinates, they pull the model down to their own level. A finding on
-the way: in every committed shape-only run of Sections 6 to 11, the same
+an importance of 0.03 (12.4). In the campaign's twelve-parameter space
+the features are nearly inert (weighed mass keeps the model memorizing)
+and still cost t180 rank skill (+0.32 to +0.22) while deepening the
+rebound anti-signal (-0.40 to -0.55). The six features on their own rank
+t180 at -0.23, so they are no substitute for the coordinates either;
+appended to the coordinates, they pull the model down to their own
+level. The payload pair behaves the same way: `tavg10ms`, whose
+simulated analogue is the most strongly correlated feature of the set,
+goes from +0.45 to -0.34, and `late_avg3ms` keeps a positive but
+reduced ranking (+0.63 to +0.42). A finding on the way: in every committed shape-only run of Sections 6 to 11, the same
 five folds have a collapsed NUTS posterior, which changes two of those
 sections' within-batch numbers (12.5). Everything here is from
 [`compute_sim_features.py`](compute_sim_features.py),
@@ -1827,7 +1835,7 @@ Reading the shape + sim column against the shape-only one:
   data sd (1.14 before) on predictions that have lost their spread, so
   the model is well calibrated because it has become uninformative: an
   honest "I do not know" is cheap. The sharpness-aware score, CRPS over
-  the data sd, is unchanged for t180 (0.51 to 0.56) and only mildly
+  the data sd, is slightly worse for t180 (0.51 to 0.56) and mildly
   better for rebound (0.71 to 0.60). The posterior sd also does not
   order the errors in either run (Spearman of sd against absolute error
   -0.14 with features, -0.37 without).
@@ -1864,6 +1872,46 @@ one coordinate. The sim-only and shape + sim columns are nearly the same
 column (ranking, spread, calibration, collapsed folds), which is the
 held-out face of the full-data finding in 12.4 that the widened model
 stops using the coordinates once the features are present.
+
+The payload pair (Section 7's objectives), same protocol, shape-only
+base space:
+
+| held out, payload pair | tavg10ms, shape only (5) | tavg10ms, shape + sim (11) | late_avg3ms, shape only (5) | late_avg3ms, shape + sim (11) |
+|---|--:|--:|--:|--:|
+| article rho_s (perm p) | +0.45 (0.002) | -0.34 (0.026) | +0.63 (<0.001) | +0.42 (0.005) |
+| within-batch rho_s (p) | +0.52 (<0.001) | -0.23 (0.158) | +0.32 (0.042) | +0.18 (0.259) |
+| design-mean rho_s (p) | +0.43 (0.012) | -0.44 (0.007) | +0.56 (<0.001) | +0.29 (0.086) |
+| article rho_s, excluding collapsed | +0.43 | -0.32 | +0.39 | +0.21 |
+| R2_oos vs fold-train mean | +0.21 | +0.01 | +0.44 | +0.32 |
+| prediction spread / data sd | 0.42 | 0.10 | 0.71 | 0.46 |
+| collapsed articles | 7 | 1 | 8 | 5 |
+| 95% coverage, all / excluding collapsed | 73% / 86% | 91% / 93% | 73% / 89% | 86% / 95% |
+| standardized-error sd, excluding collapsed | 2.63 | 1.51 | 1.44 | 0.99 |
+| mean NLL, excluding collapsed | +2.44 | +0.37 | +4.56 | +4.27 |
+| CRPS / data sd | 0.45 | 0.52 | 0.43 | 0.47 |
+| median posterior sd / data sd | 0.86 | 0.91 | 0.90 | 1.06 |
+
+`tavg10ms`, the reliable metric that the shape-only model ranked best of
+anything in the audit, inverts exactly as t180 did (+0.45 to
+-0.34; design means +0.43 to -0.44), with the
+prediction spread down from 0.42 to 0.10 of the data sd and the two
+runs' predictions unrelated to each other in rank
+(-0.02). This is the objective whose simulated analogue is the most
+strongly correlated feature of the set (Tier C t180 against `tavg10ms`,
+rho +0.66 at design level, 12.2), and the full-data fit for this pair
+put nearly all of its relevance on that one feature (Tier C t180 0.82,
+IQR 0.09 to 0.97; 12.4). A feature correlated with the objective at
++0.66 was not enough: appended next to the five coordinates it replaced
+a gradient the GP could use with one it could not, and the held-out
+ranking went negative. `late_avg3ms` is the one objective that keeps a
+positive ranking with the features (+0.63 to +0.42; +0.39 to +0.21
+with the collapsed articles set aside), at the cost of its within-batch
+skill (+0.32 to +0.18) and with five collapsed folds of its own.
+Its predictions move with the baseline's (+0.75 rank agreement), so
+here the features dilute rather than replace. Calibration improves in
+both cases the same way as before, by widening (standardized-error sd
+2.63 to 1.51 and 1.44 to 0.99), and the sharpness-aware CRPS gets
+worse for both (0.45 to 0.52, 0.43 to 0.47).
 
 ### 12.4 Why: relevance dilution, and the gradient that got lost
 
@@ -1987,7 +2035,8 @@ obvious fix for a round 6 protocol.
 
 - **Do not append the simulation outputs to the fit space.** In the
   recommended shape-only space they cost the model its held-out
-  ranking for every objective tested, and in the campaign's twelve
+  ranking for every objective tested (t180, rebound and `tavg10ms`
+  inverted, `late_avg3ms` reduced), and in the campaign's twelve
   parameter space they leave the predictions almost where they were (median shift 0.05 sd) and still cost t180 rank skill (+0.32 to +0.22) while deepening the rebound anti-signal (-0.40 to -0.55). The features are correlated
   with the bench, but through the coordinates the model already has.
 - **The one defensible use of the simulations in the loop is as a
