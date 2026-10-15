@@ -1,0 +1,35 @@
+print_id,round,trial_index,metric,measured,measured_sem,pred_before,pred_before_sd,before_in_fit,before_source,pred_after,pred_after_sd
+6lhxfy,1,,t180,0.89308,0.00041,0.89309,0.00054,True,plate-model refit (7a048ee),0.89311,0.00098
+6lhxfy,1,,e_reb_mJ,13.92846,0.34529,13.89375,0.34437,True,plate-model refit (7a048ee),13.85654,0.34381
+6nheas,1,,t180,0.99701,0.00032,0.99700,0.00054,True,plate-model refit (7a048ee),0.99701,0.00098
+6nheas,1,,e_reb_mJ,13.07036,0.27512,13.03544,0.27495,True,plate-model refit (7a048ee),13.00453,0.27358
+9hhbkp,1,,t180,1.01834,0.00017,1.01835,0.00054,True,plate-model refit (7a048ee),1.01835,0.00098
+9hhbkp,1,,e_reb_mJ,6.94742,0.14748,6.95624,0.14736,True,plate-model refit (7a048ee),6.95590,0.14709
+autv5r,1,,t180,1.04043,0.00034,1.04043,0.00054,True,plate-model refit (7a048ee),1.04043,0.00098
+autv5r,1,,e_reb_mJ,8.83094,0.18508,8.83704,0.18486,True,plate-model refit (7a048ee),8.85025,0.18481
+bag26v,1,,t180,1.06162,0.00051,1.06161,0.00054,True,plate-model refit (7a048ee),1.06159,0.00098
+bag26v,1,,e_reb_mJ,7.71451,0.16466,7.71253,0.16433,True,plate-model refit (7a048ee),7.72627,0.16413
+bpx68c,1,,t180,1.01107,0.00023,1.01108,0.00054,True,plate-model refit (7a048ee),1.01108,0.00098
+bpx68c,1,,e_reb_mJ,6.18044,0.13997,6.18844,0.13996,True,plate-model refit (7a048ee),6.17499,0.13855
+nvxsrv,1,,t180,1.02755,0.00044,1.02753,0.00054,True,plate-model refit (7a048ee),1.02756,0.00098
+nvxsrv,1,,e_reb_mJ,8.20205,0.18474,8.19703,0.18445,True,plate-model refit (7a048ee),8.18214,0.18409
+ajhby6,1,,t180,1.01266,0.00038,0.99026,0.03478,False,"plate-model refit (7a048ee), out of sample",1.01265,0.00098
+ajhby6,1,,e_reb_mJ,6.09974,0.13724,7.91861,3.43011,False,"plate-model refit (7a048ee), out of sample",6.10635,0.13686
+r2d2c1,2,13.00000,t180,0.99415,0.00045,0.94770,0.04640,False,frozen suggestions CSV (7a048ee),0.99416,0.00098
+r2d2c1,2,13.00000,e_reb_mJ,5.96517,0.14590,8.30680,3.17610,False,frozen suggestions CSV (7a048ee),5.97520,0.14245
+r2d2c2,2,12.00000,t180,1.04107,0.00336,0.92560,0.09450,False,frozen suggestions CSV (7a048ee),1.04100,0.00336
+r2d2c2,2,12.00000,e_reb_mJ,5.62455,0.15060,9.89600,5.03480,False,frozen suggestions CSV (7a048ee),5.61791,0.14979
+r2d2c3,2,16.00000,t180,1.33365,0.00254,0.91020,0.07280,False,frozen suggestions CSV (7a048ee),1.33344,0.00254
+r2d2c3,2,16.00000,e_reb_mJ,5.59153,0.13816,10.08960,5.19530,False,frozen suggestions CSV (7a048ee),5.58421,0.13771
+r2d2c4,2,11.00000,t180,1.18468,0.00166,0.88490,0.07490,False,frozen suggestions CSV (7a048ee),1.18468,0.00166
+r2d2c4,2,11.00000,e_reb_mJ,6.44300,0.15283,12.24740,5.72810,False,frozen suggestions CSV (7a048ee),6.46101,0.15258
+r2d2c5,2,18.00000,t180,1.15155,0.00087,0.98680,0.06630,False,frozen suggestions CSV (7a048ee),1.15155,0.00098
+r2d2c5,2,18.00000,e_reb_mJ,6.70613,0.13180,8.37410,4.33840,False,frozen suggestions CSV (7a048ee),6.70150,0.13149
+r2d2c6,2,14.00000,t180,1.05485,0.00092,0.95300,0.09440,False,frozen suggestions CSV (7a048ee),1.05486,0.00098
+r2d2c6,2,14.00000,e_reb_mJ,4.06643,0.09830,8.97800,5.57760,False,frozen suggestions CSV (7a048ee),4.07422,0.09823
+r2d2c7,2,15.00000,t180,0.94838,0.00018,0.90510,0.09120,False,frozen suggestions CSV (7a048ee),0.94838,0.00098
+r2d2c7,2,15.00000,e_reb_mJ,12.16638,0.30060,13.02190,5.10520,False,frozen suggestions CSV (7a048ee),12.13734,0.30027
+r2d2c8,2,17.00000,t180,1.07043,0.00247,0.95480,0.07110,False,frozen suggestions CSV (7a048ee),1.07042,0.00247
+r2d2c8,2,17.00000,e_reb_mJ,7.89260,0.18176,9.97120,5.33530,False,frozen suggestions CSV (7a048ee),7.88012,0.18149
+r2d2c9,2,10.00000,t180,1.05299,0.00077,0.87280,0.05260,False,frozen suggestions CSV (7a048ee),1.05297,0.00098
+r2d2c9,2,10.00000,e_reb_mJ,5.84132,0.14923,11.30640,4.28910,False,frozen suggestions CSV (7a048ee),5.84806,0.14650
