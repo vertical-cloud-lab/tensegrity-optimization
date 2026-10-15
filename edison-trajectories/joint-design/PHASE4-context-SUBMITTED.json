@@ -1,0 +1,11 @@
+{
+  "task_id": "f9804247-51f3-43de-a676-94b4b008b886",
+  "name": "LITERATURE_HIGH",
+  "submitted_at": "2026-05-12T05:35:07Z",
+  "attached_files": [
+    "data_entry:497fd5db-2bfc-48aa-94cf-fbfc3622fb9d",
+    "data_entry:859baa1d-5b65-42d5-9c64-0f1a05de3b03",
+    "data_entry:65e187bf-814d-44a4-8ff7-1f550cfe6e56"
+  ],
+  "purpose": "Project-context-aware single-joint recommendation (PLA per #45, TPU 85A, lander/egg-drop per #16, H2D)."
+}
