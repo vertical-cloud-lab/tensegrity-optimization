@@ -762,8 +762,8 @@ def fig_sync(rows: list[dict], path: Path):
     ax.set_ylabel("carriage, mm below its rest position", fontsize=9, color=INK2)
     ax.set_title("Example: corny7-1st (drop 1). One frame = 1.04 ms; the kink is the impact",
                  fontsize=10, color=INK, loc="left")
-    ax.legend(fontsize=8, frameon=False, loc="lower right")
-    ins = ax.inset_axes([0.07, 0.5, 0.36, 0.44])
+    ax.legend(fontsize=8, frameon=False, loc="upper left")
+    ins = ax.inset_axes([0.6, 0.1, 0.36, 0.42])       # empty lower right: hides no data
     style(ins)
     zq = np.linspace(-4, 7, 300)
     ins.plot(zq, sync_model_mm(ex["sync"], ex["trace"], zq), color=C_TOP, lw=1.6)
