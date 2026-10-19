@@ -359,3 +359,24 @@ has t1000 and t180 to recompute it). They must not enter the surrogate
 as replicates of t37/t39 until they are re-run, and nothing here
 replaces the first-article values in the round-5 fit yet. When plates
 2–3 land, score the study from the screened design means, per the plan.
+
+## Follow-up (10-19): the CH5 cable timeline and the article spread
+
+Written after @me-madsen reported that the CH5 cable has since broken. The
+full write-up is [`ch5-fault-and-replicates.md`](ch5-fault-and-replicates.md),
+with figures and `ch5_replicates.json` in
+[`figures/ch5-replicates/`](figures/ch5-replicates/).
+
+- **The fault was intermittent, not a disconnection.** CH5 was healthy for
+  the first 30 captures and for all 80 after 18:23. In the hour between, 14
+  of 70 captures still held their impact. The bad triggers fired during the
+  fall, 0.33 ± 0.10 s before impact on average, and three fired between
+  drops.
+- **The print files are identical** for the first articles and the plate-1
+  copies: 556/556 slicer keys, including PLA 226 °C and TPU 236 °C nozzle
+  temperatures. The undocumented difference is the strut PLA: **white on
+  the first articles, black on every plate-1 copy** (the switch came between
+  the corny and dran3 prints).
+- **Article spread:** corny2's copies agree to SD 0.0072. The corny7 and
+  corny8 copies' scatter is mostly the knocking seat. corny7's first article
+  (0.803) remains the outlier against its cleanest copy (0.904).

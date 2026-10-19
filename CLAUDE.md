@@ -94,6 +94,20 @@ settles").
   until they are re-run on a healthy seat. Under the plan's artifact rule
   that re-run should include the original corny7 article in the same
   session.
+- **10-19 follow-up (`1sne-checkin/ch5-fault-and-replicates.md`).** Two
+  points for later analyses:
+  - **Strut PLA colour is an unlogged print-batch variable.** It is white
+    on drran, 2dran and corny (the first articles) and black on dran3 and
+    on all three replicate plates (#98 photos; no file records it). The
+    slicer projects of the first articles and plate 1 are otherwise
+    identical (556/556 keys; PLA 226 °C / TPU 236 °C). dran3 showed no
+    colour offset on the round-3 designs (−0.003). When comparing first
+    articles with replicates, name the colour change as a confound.
+  - **The 10-17 CH5 fault (17:18–18:17) was intermittent.** The bad
+    triggers fired during the fall. CH5 was healthy for every capture
+    outside that hour. The cable broke completely afterwards, so check the
+    first batch on the replacement cable with the live check (TP4 CH4
+    ≥ 150 G, CH5 Δv ≈ 205–225 in/s) before using it.
 
 ### Other conventions (pointers, not duplicates)
 
