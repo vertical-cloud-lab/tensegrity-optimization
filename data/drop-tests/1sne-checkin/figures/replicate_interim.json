@@ -1,0 +1,851 @@
+{
+ "note": "INTERIM, plate 1 of 3. Every corny7/corny8 session fails the seat gauge, so their values are not design values; see README.",
+ "references": {
+  "first article": {
+   "corny7": [
+    0.8031,
+    null
+   ],
+   "corny8": [
+    0.9535,
+    null
+   ],
+   "corny2": [
+    1.0846,
+    null
+   ]
+  },
+  "held-out model (LOGO-CV)": {
+   "corny7": [
+    0.9784,
+    0.0852
+   ],
+   "corny8": [
+    0.9722,
+    0.1343
+   ],
+   "corny2": [
+    1.0501,
+    0.0705
+   ]
+  },
+  "frozen round-4 model": {
+   "corny7": [
+    0.9344,
+    0.1311
+   ],
+   "corny8": [
+    0.9535,
+    0.1529
+   ],
+   "corny2": [
+    1.0077,
+    0.1471
+   ]
+  }
+ },
+ "first_articles": {
+  "corny2": {
+   "t180": 1.0846226870626232,
+   "gauge": 1.0237014436505811,
+   "spec": "t38",
+   "mass_g": 20.21,
+   "raw_check": {
+    "n": 18,
+    "t180": 1.0846226870626232,
+    "dv_ratio_z": 0.9972158596182574,
+    "knock_drops_gauge": 0
+   }
+  },
+  "corny7": {
+   "t180": 0.8031138203968776,
+   "gauge": 0.9794618871163995,
+   "spec": "t37",
+   "mass_g": 19.62,
+   "raw_check": {
+    "n": 18,
+    "t180": 0.8031138203968776,
+    "dv_ratio_z": 0.9588927574418,
+    "knock_drops_gauge": 0
+   }
+  },
+  "corny8": {
+   "t180": 0.9535275915651015,
+   "gauge": 1.0335853043421284,
+   "spec": "t39",
+   "mass_g": 19.64,
+   "raw_check": {
+    "n": 18,
+    "t180": 0.9535275915651015,
+    "dv_ratio_z": 0.978199400252052,
+    "knock_drops_gauge": 0
+   }
+  }
+ },
+ "pooled_gauge_slope": {
+  "slope_t180_per_gauge": 0.09224231129656402,
+  "se": 0.007753005352638985,
+  "t": 11.897619968128408,
+  "n_drops": 72,
+  "sessions": [
+   "1sne73",
+   "1sne81",
+   "1sne82",
+   "1sne83"
+  ],
+  "gauge_ref": 1.03
+ },
+ "articles": {
+  "1sne21": {
+   "n": 18,
+   "signals": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "t180_all": 1.0628837258552641,
+   "t180_sd": 0.0053212245113424435,
+   "gauge_session": 1.0402967727971801,
+   "n_low_gauge": 18,
+   "t180_low_gauge": 1.0628837258552641,
+   "t180_adjusted": 1.0618404422196983,
+   "gauge_min_drop": 1.0238345275641771,
+   "t180_at_min_gauge": 1.0609410003201774,
+   "design": "corny2",
+   "spec": "t38",
+   "mass_g": 20.92,
+   "plate_pos": "back-right",
+   "n_captures": 20,
+   "n_valid": 20,
+   "screened": {},
+   "t_drift_watch": {
+    "flagged": false,
+    "slope_pct_per_drop": 0.014726297430879075,
+    "slope_p": 0.5337552491030667,
+    "end_to_end_pct": 0.22,
+    "envelope": {
+     "slope_max": 0.06,
+     "e2e_max": 2.5
+    }
+   },
+   "passes_gauge_screen": true,
+   "dv_ratio_z": 0.9607503419664704,
+   "dv_top_lateral_ms": 0.38441073370325973,
+   "e_reb_mJ": 9.8082394419776
+  },
+  "1sne22": {
+   "n": 10,
+   "signals": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    14,
+    17
+   ],
+   "t180_all": 1.0715086383020094,
+   "t180_sd": 0.017512708929394664,
+   "gauge_session": 1.1748254084146479,
+   "n_low_gauge": 9,
+   "t180_low_gauge": 1.0692704688535806,
+   "t180_adjusted": 1.057787098892018,
+   "gauge_min_drop": 0.998236887945645,
+   "t180_at_min_gauge": 1.0308115660504336,
+   "design": "corny2",
+   "spec": "t38",
+   "mass_g": 20.89,
+   "plate_pos": "middle-center",
+   "n_captures": 20,
+   "n_valid": 12,
+   "screened": {
+    "11": "no top-vertex impact in the record (mistimed trigger)",
+    "12": "raw input below the trigger level",
+    "13": "no top-vertex impact in the record (mistimed trigger)",
+    "15": "no top-vertex impact in the record (mistimed trigger)",
+    "16": "no top-vertex impact in the record (mistimed trigger)",
+    "18": "no top-vertex impact in the record (mistimed trigger)",
+    "19": "no top-vertex impact in the record (mistimed trigger)",
+    "20": "no top-vertex impact in the record (mistimed trigger)"
+   },
+   "t_drift_watch": {
+    "flagged": false,
+    "slope_pct_per_drop": -0.2087482704541074,
+    "slope_p": 0.2696465503877192,
+    "end_to_end_pct": -0.48,
+    "envelope": {
+     "slope_max": 0.06,
+     "e2e_max": 2.5
+    }
+   },
+   "passes_gauge_screen": false,
+   "dv_ratio_z": 1.0065742937475408,
+   "dv_top_lateral_ms": 0.4196120010316794,
+   "e_reb_mJ": 7.020464865448113
+  },
+  "1sne23": {
+   "n": 6,
+   "signals": [
+    5,
+    14,
+    16,
+    17,
+    19,
+    20
+   ],
+   "t180_all": 1.0771621691763034,
+   "t180_sd": 0.015148085819059872,
+   "gauge_session": 1.0204562014270202,
+   "n_low_gauge": 6,
+   "t180_low_gauge": 1.0771621691763034,
+   "t180_adjusted": 1.076815203936688,
+   "gauge_min_drop": 0.9981979307475396,
+   "t180_at_min_gauge": 1.0838611425969924,
+   "design": "corny2",
+   "spec": "t38",
+   "mass_g": 21.08,
+   "plate_pos": "front-left",
+   "n_captures": 20,
+   "n_valid": 6,
+   "screened": {
+    "1": "no top-vertex impact in the record (mistimed trigger)",
+    "2": "non-physical input dv 3.42 m/s",
+    "3": "no top-vertex impact in the record (mistimed trigger)",
+    "4": "no top-vertex impact in the record (mistimed trigger)",
+    "6": "no top-vertex impact in the record (mistimed trigger)",
+    "7": "no top-vertex impact in the record (mistimed trigger)",
+    "8": "no top-vertex impact in the record (mistimed trigger)",
+    "9": "no top-vertex impact in the record (mistimed trigger)",
+    "10": "no top-vertex impact in the record (mistimed trigger)",
+    "11": "no top-vertex impact in the record (mistimed trigger)",
+    "12": "no top-vertex impact in the record (mistimed trigger)",
+    "13": "no top-vertex impact in the record (mistimed trigger)",
+    "15": "no top-vertex impact in the record (mistimed trigger)",
+    "18": "non-physical input dv 9.57 m/s"
+   },
+   "t_drift_watch": {
+    "flagged": false,
+    "slope_pct_per_drop": 0.13994354119270877,
+    "slope_p": 0.7239709364717527,
+    "end_to_end_pct": -0.18,
+    "envelope": {
+     "slope_max": 0.06,
+     "e2e_max": 2.5
+    }
+   },
+   "passes_gauge_screen": true,
+   "dv_ratio_z": 1.015877759059563,
+   "dv_top_lateral_ms": 0.30280074893503844,
+   "e_reb_mJ": 9.059067007671427
+  },
+  "1sne71": {
+   "n": 2,
+   "signals": [
+    13,
+    14
+   ],
+   "t180_all": 0.9379886845920411,
+   "t180_sd": 0.012599065358742037,
+   "gauge_session": 1.3764365051541443,
+   "n_low_gauge": 0,
+   "t180_low_gauge": null,
+   "t180_adjusted": 0.9061466621636458,
+   "gauge_min_drop": 1.2449852278794347,
+   "t180_at_min_gauge": 0.929079800040262,
+   "design": "corny7",
+   "spec": "t37",
+   "mass_g": 20.27,
+   "plate_pos": "back-left",
+   "n_captures": 20,
+   "n_valid": 2,
+   "screened": {
+    "1": "no top-vertex impact in the record (mistimed trigger)",
+    "2": "no top-vertex impact in the record (mistimed trigger)",
+    "3": "no top-vertex impact in the record (mistimed trigger)",
+    "4": "no top-vertex impact in the record (mistimed trigger)",
+    "5": "no top-vertex impact in the record (mistimed trigger)",
+    "6": "no top-vertex impact in the record (mistimed trigger)",
+    "7": "no top-vertex impact in the record (mistimed trigger)",
+    "8": "no top-vertex impact in the record (mistimed trigger)",
+    "9": "no top-vertex impact in the record (mistimed trigger)",
+    "10": "no top-vertex impact in the record (mistimed trigger)",
+    "11": "raw input below the trigger level",
+    "12": "raw input below the trigger level",
+    "15": "no top-vertex impact in the record (mistimed trigger)",
+    "16": "no top-vertex impact in the record (mistimed trigger)",
+    "17": "no top-vertex impact in the record (mistimed trigger)",
+    "18": "no top-vertex impact in the record (mistimed trigger)",
+    "19": "no top-vertex impact in the record (mistimed trigger)",
+    "20": "no top-vertex impact in the record (mistimed trigger)"
+   },
+   "t_drift_watch": {
+    "flagged": false,
+    "note": "too few drops to screen"
+   },
+   "passes_gauge_screen": false,
+   "dv_ratio_z": 0.9620331794139116,
+   "dv_top_lateral_ms": 1.3383088245355146,
+   "e_reb_mJ": 4.443399153027325
+  },
+  "1sne72": {
+   "n": 2,
+   "signals": [
+    5,
+    6
+   ],
+   "t180_all": 0.9723082287888992,
+   "t180_sd": 0.03588910457191569,
+   "gauge_session": 2.012938160432044,
+   "n_low_gauge": 0,
+   "t180_low_gauge": null,
+   "t180_adjusted": 0.8819263872134668,
+   "gauge_min_drop": 1.890768849833742,
+   "t180_at_min_gauge": 0.9469307995753845,
+   "design": "corny7",
+   "spec": "t37",
+   "mass_g": 20.23,
+   "plate_pos": "middle-right",
+   "n_captures": 20,
+   "n_valid": 2,
+   "screened": {
+    "1": "no top-vertex impact in the record (mistimed trigger)",
+    "2": "no top-vertex impact in the record (mistimed trigger)",
+    "3": "no top-vertex impact in the record (mistimed trigger)",
+    "4": "no top-vertex impact in the record (mistimed trigger)",
+    "7": "no top-vertex impact in the record (mistimed trigger)",
+    "8": "no top-vertex impact in the record (mistimed trigger)",
+    "9": "no top-vertex impact in the record (mistimed trigger)",
+    "15": "no top-vertex impact in the record (mistimed trigger)",
+    "16": "no top-vertex impact in the record (mistimed trigger)",
+    "17": "no top-vertex impact in the record (mistimed trigger)",
+    "18": "no top-vertex impact in the record (mistimed trigger)",
+    "19": "no top-vertex impact in the record (mistimed trigger)",
+    "20": "raw input below the trigger level",
+    "21": "raw input below the trigger level",
+    "22": "no top-vertex impact in the record (mistimed trigger)",
+    "23": "no top-vertex impact in the record (mistimed trigger)",
+    "24": "no top-vertex impact in the record (mistimed trigger)",
+    "25": "no top-vertex impact in the record (mistimed trigger)"
+   },
+   "t_drift_watch": {
+    "flagged": false,
+    "note": "too few drops to screen"
+   },
+   "passes_gauge_screen": false,
+   "dv_ratio_z": 0.9643360662499654,
+   "dv_top_lateral_ms": 1.4017963657822161,
+   "e_reb_mJ": 4.551620008713668
+  },
+  "1sne73": {
+   "n": 18,
+   "signals": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "t180_all": 0.9094671603246355,
+   "t180_sd": 0.010336358481138102,
+   "gauge_session": 1.1566499708913118,
+   "n_low_gauge": 5,
+   "t180_low_gauge": 0.9039479652368984,
+   "t180_adjusted": 0.8976578019733223,
+   "gauge_min_drop": 1.0005909013626386,
+   "t180_at_min_gauge": 0.9004500298593886,
+   "design": "corny7",
+   "spec": "t37",
+   "mass_g": 20.26,
+   "plate_pos": "front-center",
+   "n_captures": 20,
+   "n_valid": 20,
+   "screened": {},
+   "t_drift_watch": {
+    "flagged": false,
+    "slope_pct_per_drop": -0.1121026217669652,
+    "slope_p": 0.02476401466106682,
+    "end_to_end_pct": -1.44,
+    "envelope": {
+     "slope_max": 0.06,
+     "e2e_max": 2.5
+    }
+   },
+   "passes_gauge_screen": false,
+   "dv_ratio_z": 0.9936389000188428,
+   "dv_top_lateral_ms": 0.6969518685152758,
+   "e_reb_mJ": 13.879606651316452
+  },
+  "1sne81": {
+   "n": 18,
+   "signals": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "t180_all": 0.9100601926007086,
+   "t180_sd": 0.01754855310195091,
+   "gauge_session": 1.4498781900555961,
+   "n_low_gauge": 1,
+   "t180_low_gauge": 0.8894523666660238,
+   "t180_adjusted": 0.8715733651006622,
+   "gauge_min_drop": 1.1154252890044527,
+   "t180_at_min_gauge": 0.8894523666660238,
+   "design": "corny8",
+   "spec": "t39",
+   "mass_g": 20.11,
+   "plate_pos": "back-center",
+   "n_captures": 20,
+   "n_valid": 20,
+   "screened": {},
+   "t_drift_watch": {
+    "flagged": false,
+    "slope_pct_per_drop": -0.13246737770597833,
+    "slope_p": 0.13439741648780698,
+    "end_to_end_pct": -1.05,
+    "envelope": {
+     "slope_max": 0.06,
+     "e2e_max": 2.5
+    }
+   },
+   "passes_gauge_screen": false,
+   "dv_ratio_z": 1.0184140290934725,
+   "dv_top_lateral_ms": 0.2164576215479047,
+   "e_reb_mJ": 4.507889453310924
+  },
+  "1sne82": {
+   "n": 18,
+   "signals": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "t180_all": 1.0160519837199078,
+   "t180_sd": 0.031588584114927196,
+   "gauge_session": 1.402559156041885,
+   "n_low_gauge": 3,
+   "t180_low_gauge": 0.966650540046824,
+   "t180_adjusted": 0.9820126403830631,
+   "gauge_min_drop": 1.092359837998427,
+   "t180_at_min_gauge": 0.9689211947375849,
+   "design": "corny8",
+   "spec": "t39",
+   "mass_g": 20.3,
+   "plate_pos": "middle-left",
+   "n_captures": 20,
+   "n_valid": 20,
+   "screened": {},
+   "t_drift_watch": {
+    "flagged": false,
+    "slope_pct_per_drop": 0.040453148562549765,
+    "slope_p": 0.7841736841997287,
+    "end_to_end_pct": -0.56,
+    "envelope": {
+     "slope_max": 0.06,
+     "e2e_max": 2.5
+    }
+   },
+   "passes_gauge_screen": false,
+   "dv_ratio_z": 0.9175555255755614,
+   "dv_top_lateral_ms": 1.5864143855246513,
+   "e_reb_mJ": 13.291221488317031
+  },
+  "1sne83": {
+   "n": 18,
+   "signals": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "t180_all": 0.9950510460110679,
+   "t180_sd": 0.04506924471880764,
+   "gauge_session": 1.7729856679365998,
+   "n_low_gauge": 3,
+   "t180_low_gauge": 0.9438654120512459,
+   "t180_adjusted": 0.928156997810047,
+   "gauge_min_drop": 1.118108056215317,
+   "t180_at_min_gauge": 0.9471018489798104,
+   "design": "corny8",
+   "spec": "t39",
+   "mass_g": 20.3,
+   "plate_pos": "front-right",
+   "n_captures": 20,
+   "n_valid": 20,
+   "screened": {},
+   "t_drift_watch": {
+    "flagged": false,
+    "slope_pct_per_drop": -0.2284513510522756,
+    "slope_p": 0.27992006663688374,
+    "end_to_end_pct": -2.07,
+    "envelope": {
+     "slope_max": 0.06,
+     "e2e_max": 2.5
+    }
+   },
+   "passes_gauge_screen": false,
+   "dv_ratio_z": 0.9361736446825168,
+   "dv_top_lateral_ms": 1.6837991470690494,
+   "e_reb_mJ": 6.089837379324056
+  }
+ },
+ "readings": {
+  "t180_all": {
+   "designs": {
+    "corny7": {
+     "n_articles": 3,
+     "mean": 0.9399213579018587,
+     "sd": 0.0314650820914936,
+     "values": [
+      0.938,
+      0.9723,
+      0.9095
+     ]
+    },
+    "corny8": {
+     "n_articles": 3,
+     "mean": 0.9737210741105614,
+     "sd": 0.05612299637511601,
+     "values": [
+      0.9101,
+      1.0161,
+      0.9951
+     ]
+    },
+    "corny2": {
+     "n_articles": 3,
+     "mean": 1.070518177777859,
+     "sd": 0.007190566386277067,
+     "values": [
+      1.0629,
+      1.0715,
+      1.0772
+     ]
+    }
+   },
+   "gap_corny7_minus_corny8": -0.0337997162087027,
+   "ordering_low_to_high": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ]
+  },
+  "t180_low_gauge": {
+   "designs": {
+    "corny7": {
+     "n_articles": 1,
+     "mean": 0.9039479652368984,
+     "sd": null,
+     "values": [
+      0.9039
+     ]
+    },
+    "corny8": {
+     "n_articles": 3,
+     "mean": 0.9333227729213646,
+     "sd": 0.03966421464242299,
+     "values": [
+      0.8895,
+      0.9667,
+      0.9439
+     ]
+    },
+    "corny2": {
+     "n_articles": 3,
+     "mean": 1.0697721212950493,
+     "sd": 0.007152428070037203,
+     "values": [
+      1.0629,
+      1.0693,
+      1.0772
+     ]
+    }
+   },
+   "gap_corny7_minus_corny8": -0.02937480768446621,
+   "ordering_low_to_high": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ]
+  },
+  "t180_adjusted": {
+   "designs": {
+    "corny7": {
+     "n_articles": 3,
+     "mean": 0.8952436171168117,
+     "sd": 0.012289289892285109,
+     "values": [
+      0.9061,
+      0.8819,
+      0.8977
+     ]
+    },
+    "corny8": {
+     "n_articles": 3,
+     "mean": 0.9272476677645908,
+     "sd": 0.0552252527569966,
+     "values": [
+      0.8716,
+      0.982,
+      0.9282
+     ]
+    },
+    "corny2": {
+     "n_articles": 3,
+     "mean": 1.0654809150161348,
+     "sd": 0.010022822807669779,
+     "values": [
+      1.0618,
+      1.0578,
+      1.0768
+     ]
+    }
+   },
+   "gap_corny7_minus_corny8": -0.032004050647779114,
+   "ordering_low_to_high": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ]
+  }
+ },
+ "endpoints": {
+  "E1_article_sd_corny2_healthy_seats": {
+   "values": [
+    1.0629,
+    1.0693,
+    1.0772
+   ],
+   "sd": 0.007152428070037203,
+   "dof": 2,
+   "pooled_with_round3": 0.008461749496972204,
+   "decision_threshold": 0.015
+  },
+  "E2_gap_corny7_minus_corny8": {
+   "t180_all": -0.0337997162087027,
+   "t180_low_gauge": -0.02937480768446621,
+   "t180_adjusted": -0.032004050647779114
+  },
+  "E2_first_article_gap": -0.15041377116822385,
+  "E2_rule": {
+   "reproduces_if_abs_gap_at_least": 0.1,
+   "collapses_if_abs_gap_at_most": 0.05
+  },
+  "E3_rebound": {
+   "status": "not scoreable on plate 1: the hop detector sits at its 15 ms floor or is multimodal on all six corny7/corny8 sessions (the knock ring outlasts the 15 ms search start)",
+   "corny2_e_reb_mJ": {
+    "1sne21": 9.81,
+    "1sne22": 7.02,
+    "1sne23": 9.06
+   },
+   "corny2_first_article_e_reb_mJ": 9.22
+  },
+  "E4_ordering_low_to_high": {
+   "t180_all": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ],
+   "t180_low_gauge": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ],
+   "t180_adjusted": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ]
+  },
+  "E4_reference_orderings": {
+   "first article": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ],
+   "held-out model (LOGO-CV)": [
+    "corny8",
+    "corny7",
+    "corny2"
+   ],
+   "frozen round-4 model": [
+    "corny7",
+    "corny8",
+    "corny2"
+   ]
+  },
+  "E5_regression_to_mean": "deferred to plates 2-3 (needs healthy corny7/corny8 seats)"
+ },
+ "census_checks": {
+  "n_captures": 180,
+  "classes": {
+   "valid": 50,
+   "knock": 72,
+   "mistimed": 56,
+   "bad input": 2
+  },
+  "screened": {
+   "mistimed": [
+    "1sne22:S11",
+    "1sne22:S12",
+    "1sne22:S13",
+    "1sne22:S15",
+    "1sne22:S16",
+    "1sne22:S18",
+    "1sne22:S19",
+    "1sne22:S20",
+    "1sne23:S1",
+    "1sne23:S3",
+    "1sne23:S4",
+    "1sne23:S6",
+    "1sne23:S7",
+    "1sne23:S8",
+    "1sne23:S9",
+    "1sne23:S10",
+    "1sne23:S11",
+    "1sne23:S12",
+    "1sne23:S13",
+    "1sne23:S15",
+    "1sne71:S1",
+    "1sne71:S2",
+    "1sne71:S3",
+    "1sne71:S4",
+    "1sne71:S5",
+    "1sne71:S6",
+    "1sne71:S7",
+    "1sne71:S8",
+    "1sne71:S9",
+    "1sne71:S10",
+    "1sne71:S11",
+    "1sne71:S12",
+    "1sne71:S15",
+    "1sne71:S16",
+    "1sne71:S17",
+    "1sne71:S18",
+    "1sne71:S19",
+    "1sne71:S20",
+    "1sne72:S1",
+    "1sne72:S2",
+    "1sne72:S3",
+    "1sne72:S4",
+    "1sne72:S7",
+    "1sne72:S8",
+    "1sne72:S9",
+    "1sne72:S15",
+    "1sne72:S16",
+    "1sne72:S17",
+    "1sne72:S18",
+    "1sne72:S19",
+    "1sne72:S20",
+    "1sne72:S21",
+    "1sne72:S22",
+    "1sne72:S23",
+    "1sne72:S24",
+    "1sne72:S25"
+   ],
+   "bad input": [
+    "1sne23:S2",
+    "1sne23:S18"
+   ]
+  },
+  "tp4_ch5_peak_agreement_valid_pct": {
+   "median_abs": 0.12202036122859194,
+   "max_abs": 9.437384352824928
+  },
+  "mistimed_tp4_ch4_peak_g_max": 14.64,
+  "mistimed_top_dv_ms_max": 0.0780169593718324,
+  "noise_floor_g_all_median": [
+   0.5064241042937896,
+   0.5203045391722456,
+   0.45931133136189534,
+   0.30430431984068895
+  ],
+  "noise_floor_g_mistimed_median": [
+   0.5038259578567066,
+   0.5183184769684319,
+   0.4571566410364322,
+   0.30628753991468444
+  ],
+  "live_knock_rule": {
+   "rule": "TP4 CH4 peak > 2.0 x CH5 peak",
+   "knock_drops": 72,
+   "caught": 63,
+   "false_flags": 3,
+   "non_knock_drops": 50
+  }
+ }
+}

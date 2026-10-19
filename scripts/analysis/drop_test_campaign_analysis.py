@@ -22,7 +22,8 @@ Per drop it reuses ``analyze_capture`` from the abc123 blind-test pipeline
 unchanged (SAE J211 CFC-180/1000 peaks, transmissibility T, pulse FWHM,
 Δv, specimen-hop delay t_second, e_rebound, ringdown f_n/ζ).  Per
 specimen it discards the SOP warm-up drops, drops invalid captures (raw
-input below the trigger level — cf. abc123 Signal 12), and reports
+input below the trigger level — cf. abc123 Signal 12 — or failing the
+physical-plausibility screen, ``screen_reason``), and reports
 stabilized mean/CV/OLS-drift for every campaign metric plus the Δv rig
 health check (settled post-grease band vs the healthy-tower bar,
 ``docs/drop-test-speed-decay-analysis.md``).  Campaign level: one-way
@@ -83,6 +84,15 @@ RING_R2_MIN = 0.85        # abc123 convention: below this, ζ is not a damping r
 # |end-to-end| 2.18 %; the r2d2c2 event sat at +0.253 %/drop, +3.50 %).
 T_DRIFT_SLOPE_MAX = 0.06   # |%/drop| on stabilized T180, with slope_p < 0.01
 T_DRIFT_E2E_MAX = 2.5      # |first-5 vs last-5 mean| in %
+
+# Physical-plausibility screen (added 10-19 for the 1sne batch, where an
+# intermittent CH5 chain fired 56 mistimed captures that all cleared the
+# trigger-level check).  The 1,480 scored drops of the batches before it
+# (08-13 to 10-02) ran T180 0.80-1.27, Δv 4.76-5.56 m/s and top channels
+# <= 16 % of full scale, so the limits screen nothing in prior batches.
+SCREEN_T180_MIN = 0.5      # below: no top-vertex impact inside the record
+SCREEN_DV = (3.5, 7.0)     # m/s; outside: the CH5 trace is not an impact pulse
+SCREEN_TOP_FS_MAX = 0.5    # top channel above this fraction of FS: glitch
 
 DROP_HEIGHT_M = 60 * 0.0254
 V_FREEFALL = float(np.sqrt(2.0 * GRAVITY * DROP_HEIGHT_M))  # 5.468 m/s
@@ -149,6 +159,20 @@ def t_drift_watch(stab: list[dict], metrics: dict) -> dict:
     return watch
 
 
+def screen_reason(r: dict) -> str | None:
+    """Why a capture is not a usable drop, or None if it is."""
+    if r["in_raw_g"] < TRIGGER_LEVEL_G:
+        return "raw input below the trigger level"
+    if r["t180"] < SCREEN_T180_MIN:
+        return "no top-vertex impact in the record (mistimed trigger)"
+    if not SCREEN_DV[0] <= r["in_dv_ms"] <= SCREEN_DV[1]:
+        return f"non-physical input dv {r['in_dv_ms']:.2f} m/s"
+    top_fs = max(r["frac_fs"][c] for c in ("CH2", "CH3", "CH4"))
+    if top_fs > SCREEN_TOP_FS_MAX:
+        return f"top-channel electrical glitch ({100 * top_fs:.0f} % of full scale)"
+    return None
+
+
 def find_captures(folder: Path, scratch: Path) -> list[Path]:
     """Loose Signal CSVs plus any inside zip archives, deduped by signal no."""
     files = {p.name: p for p in folder.rglob("*Signal*.csv")}
@@ -198,9 +222,15 @@ def analyze_specimen(spec_id: str, folder: Path, scratch: Path, warmup: int,
               f"T {r['t180']:.3f}  dv {r['in_dv_ms']:.3f} m/s  "
               f"t_sec {r.get('t_second_ms', float('nan')):6.2f} ms", flush=True)
 
-    valid = [r for r in rows if r["in_raw_g"] >= TRIGGER_LEVEL_G]
-    invalid = [r["signal"] for r in rows if r["in_raw_g"] < TRIGGER_LEVEL_G]
-    stab = valid[warmup:] if len(valid) > warmup + 2 else valid
+    why = {r["signal"]: screen_reason(r) for r in rows}
+    valid = [r for r in rows if why[r["signal"]] is None]
+    invalid = [s for s, w in why.items() if w is not None]
+    for s in invalid:
+        print(f"  S{s:3d} screened out: {why[s]}", flush=True)
+    # The warm-up is the session's first physical drops, whether or not their
+    # captures pass the screen; with every capture valid this is valid[warmup:].
+    post = [r for r in rows[warmup:] if why[r["signal"]] is None]
+    stab = post if len(post) >= 3 else valid
 
     metrics = {k: agg([r[k] for r in stab]) for k in METRIC_KEYS}
     ring_ok = [r for r in stab if r.get("ring_r2", 0) >= RING_R2_MIN]
@@ -225,7 +255,8 @@ def analyze_specimen(spec_id: str, folder: Path, scratch: Path, warmup: int,
 
     return {"folder": folder.name, "n_captures": len(rows),
             "n_valid": len(valid), "invalid_signals": invalid,
-            "warmup_discarded": min(warmup, max(0, len(valid) - 3)),
+            "screened": {str(s): why[s] for s in invalid},
+            "warmup_discarded": min(warmup, len(rows)) if stab is post else 0,
             "pauses": pauses(valid),
             "event_first": valid[0]["event_time"] if valid else None,
             "event_last": valid[-1]["event_time"] if valid else None,

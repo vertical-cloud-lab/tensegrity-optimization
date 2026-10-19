@@ -80,6 +80,20 @@ settles").
   its healthy siblings (1.033, 1.021); the article-level re-seat is
   still open. For BO, quote the screened per-design means and carry
   every unhealthy session's flag.
+- **10-19 update: replicate study plate 1 (`1sne21`–`1sne83`, corny2 /
+  corny7 / corny8 × 3 copies; `data/drop-tests/1sne-checkin/`).** The seat
+  gauge now has a drop-level calibration: inside knocking sessions T180
+  rises +0.092 ± 0.008 per unit of per-drop gauge (t = 11.9, 72 drops).
+  All six corny7/corny8 copies knock (gauge 1.16–2.01), and only the
+  corny2 copies are design-grade (1.063 / 1.069 / 1.077 vs 1.085; article
+  sd 0.0072). **No corny7 drop came near 0.803** (24 valid drops,
+  0.884–0.998; cleanest copy 0.900–0.910). The interim corny7 − corny8
+  gap is about −0.03 under every reading, against −0.150 on the first
+  articles. That points to the plan's "collapses" branch, but **do not
+  apply the decision rule or feed the corny7/corny8 copies to the BO**
+  until they are re-run on a healthy seat. Under the plan's artifact rule
+  that re-run should include the original corny7 article in the same
+  session.
 
 ### Other conventions (pointers, not duplicates)
 
@@ -87,6 +101,11 @@ settles").
   `scripts/analysis/drop_test_abc123_blind_analysis.py`; use the **tail
   baseline** for sessions from 08-17 on (mat contact precedes the 2 ms
   pre-trigger window).
+- Capture plausibility screen (`screen_reason` in
+  `scripts/analysis/drop_test_campaign_analysis.py`, added 10-19): a
+  capture can clear the 150 G trigger and still hold no impact (the
+  `1sne` batch had 56). Screen every new batch with it, and report the
+  screened count and reasons in the findings.
 - Δv rig-health bars, warm-up discard, and dataset index:
   `docs/drop-test-speed-decay-analysis.md`, `data/drop-tests/README.md`.
 - T3 specimen IDs are case-insensitive; treat as lowercase.
