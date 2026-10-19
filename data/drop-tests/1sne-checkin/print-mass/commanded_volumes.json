@@ -1,0 +1,269 @@
+{
+ "slicer": "Bambu Studio v02.07.01.62 AppImage CLI (--slice 0 --debug 1)",
+ "units": "cm3 of 1.75 mm filament fed (E x filament area); the flow ratio is already in E",
+ "round3_patched_keys": [
+  "extruder_ams_count",
+  "extruder_nozzle_stats",
+  "filament_map",
+  "filament_map_mode",
+  "flush_multiplier",
+  "flush_volumes_matrix",
+  "flush_volumes_vector",
+  "nozzle_volume_type"
+ ],
+ "projects": {
+  "round1": {
+   "project": "t3-prism-bo-round1.H2D-MM-PLAstruts-TPUcables_manual-supports.3mf",
+   "sha256_12": "4a7bc1a0311c",
+   "gcode": "plate_1.gcode",
+   "objects": {
+    "Specimen 01": {
+     "trial": 11,
+     "pla_support_cm3": 9.16199,
+     "pla_brim_cm3": 0.02034,
+     "pla_article_cm3": 10.85987,
+     "tpu_article_cm3": 5.48332
+    },
+    "Specimen 03": {
+     "trial": 13,
+     "pla_support_cm3": 9.91314,
+     "pla_brim_cm3": 0.02229,
+     "pla_article_cm3": 12.28301,
+     "tpu_article_cm3": 4.23641
+    },
+    "Specimen 06": {
+     "trial": 16,
+     "pla_support_cm3": 5.88061,
+     "pla_brim_cm3": 0.01494,
+     "pla_article_cm3": 11.04229,
+     "tpu_article_cm3": 4.82666
+    },
+    "Specimen 02": {
+     "trial": 12,
+     "pla_support_cm3": 8.3095,
+     "pla_brim_cm3": 0.01127,
+     "pla_article_cm3": 12.8599,
+     "tpu_article_cm3": 2.62629
+    },
+    "Specimen 08": {
+     "trial": 18,
+     "pla_support_cm3": 8.48635,
+     "pla_brim_cm3": 0.0215,
+     "pla_article_cm3": 11.44033,
+     "tpu_article_cm3": 8.53202
+    },
+    "Specimen 04": {
+     "trial": 14,
+     "pla_support_cm3": 6.9085,
+     "pla_brim_cm3": 0.01477,
+     "pla_article_cm3": 11.06378,
+     "tpu_article_cm3": 5.21003
+    },
+    "Specimen 00": {
+     "trial": 10,
+     "pla_support_cm3": 7.23203,
+     "pla_brim_cm3": 0.01189,
+     "pla_article_cm3": 13.03497,
+     "tpu_article_cm3": 2.39335
+    },
+    "Specimen 07": {
+     "trial": 17,
+     "pla_support_cm3": 10.85209,
+     "pla_brim_cm3": 0.00593,
+     "pla_article_cm3": 11.76677,
+     "tpu_article_cm3": 5.1696
+    },
+    "Specimen 05": {
+     "trial": 15,
+     "pla_support_cm3": 10.8764,
+     "pla_brim_cm3": 0.01102,
+     "pla_article_cm3": 12.525,
+     "tpu_article_cm3": 3.42897
+    }
+   }
+  },
+  "round3": {
+   "project": "t3-prism-bo-round3.H2D-MM-PLAstruts-TPUcables.3mf",
+   "sha256_12": "980a9ce0e973",
+   "gcode": "plate_1.gcode",
+   "objects": {
+    "Trial 29": {
+     "trial": 29,
+     "pla_brim_cm3": 0.02846,
+     "pla_article_cm3": 11.49242,
+     "tpu_article_cm3": 6.12901
+    },
+    "Trial 36": {
+     "trial": 36,
+     "pla_brim_cm3": 0.02963,
+     "pla_article_cm3": 13.00007,
+     "tpu_article_cm3": 3.94564
+    },
+    "Trial 33": {
+     "trial": 33,
+     "pla_brim_cm3": 0.03,
+     "pla_article_cm3": 9.87019,
+     "tpu_article_cm3": 7.46435
+    },
+    "Trial 31": {
+     "trial": 31,
+     "pla_brim_cm3": 0.02885,
+     "pla_article_cm3": 12.15893,
+     "tpu_article_cm3": 5.46478
+    },
+    "Trial 34": {
+     "trial": 34,
+     "pla_brim_cm3": 0.02964,
+     "pla_article_cm3": 10.5725,
+     "tpu_article_cm3": 6.70013
+    },
+    "Trial 28": {
+     "trial": 28,
+     "pla_brim_cm3": 0.03004,
+     "pla_article_cm3": 9.9078,
+     "tpu_article_cm3": 7.89088
+    },
+    "Trial 30": {
+     "trial": 30,
+     "pla_brim_cm3": 0.02998,
+     "pla_article_cm3": 9.89161,
+     "tpu_article_cm3": 7.48312
+    },
+    "Trial 35": {
+     "trial": 35,
+     "pla_brim_cm3": 0.02946,
+     "pla_article_cm3": 13.33486,
+     "tpu_article_cm3": 3.69367
+    },
+    "Trial 32": {
+     "trial": 32,
+     "pla_brim_cm3": 0.02881,
+     "pla_article_cm3": 11.29981,
+     "tpu_article_cm3": 6.48303
+    }
+   }
+  },
+  "round4": {
+   "project": "t3-prism-bo-round4.H2D-MM-PLAstruts-TPUcables.3mf",
+   "sha256_12": "feb81e7efced",
+   "gcode": "plate_1.gcode",
+   "objects": {
+    "Trial 41": {
+     "trial": 41,
+     "pla_brim_cm3": 0.0166,
+     "pla_article_cm3": 13.87838,
+     "tpu_article_cm3": 3.08862
+    },
+    "Trial 45": {
+     "trial": 45,
+     "pla_brim_cm3": 0.02907,
+     "pla_article_cm3": 11.13625,
+     "tpu_article_cm3": 6.63865
+    },
+    "Trial 38": {
+     "trial": 38,
+     "pla_brim_cm3": 0.0287,
+     "pla_article_cm3": 12.33321,
+     "tpu_article_cm3": 5.47816
+    },
+    "Trial 40": {
+     "trial": 40,
+     "pla_brim_cm3": 0.02939,
+     "pla_article_cm3": 10.52749,
+     "tpu_article_cm3": 7.74777
+    },
+    "Trial 44": {
+     "trial": 44,
+     "pla_brim_cm3": 0.02938,
+     "pla_article_cm3": 10.62404,
+     "tpu_article_cm3": 7.72002
+    },
+    "Trial 42": {
+     "trial": 42,
+     "pla_brim_cm3": 0.02853,
+     "pla_article_cm3": 12.70475,
+     "tpu_article_cm3": 5.06726
+    },
+    "Trial 37": {
+     "trial": 37,
+     "pla_brim_cm3": 0.02853,
+     "pla_article_cm3": 13.76907,
+     "tpu_article_cm3": 3.29532
+    },
+    "Trial 39": {
+     "trial": 39,
+     "pla_brim_cm3": 0.02845,
+     "pla_article_cm3": 13.69157,
+     "tpu_article_cm3": 3.42569
+    },
+    "Trial 43": {
+     "trial": 43,
+     "pla_brim_cm3": 0.02878,
+     "pla_article_cm3": 12.97971,
+     "tpu_article_cm3": 4.02503
+    }
+   }
+  },
+  "plate1": {
+   "project": "t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf",
+   "sha256_12": "ec1976b6bf8c",
+   "gcode": "plate_1.gcode",
+   "objects": {
+    "1sne21": {
+     "trial": 38,
+     "pla_brim_cm3": 0.02869,
+     "pla_article_cm3": 12.3295,
+     "tpu_article_cm3": 5.47714
+    },
+    "1sne81": {
+     "trial": 39,
+     "pla_brim_cm3": 0.02845,
+     "pla_article_cm3": 13.69214,
+     "tpu_article_cm3": 3.42618
+    },
+    "1sne71": {
+     "trial": 37,
+     "pla_brim_cm3": 0.02853,
+     "pla_article_cm3": 13.76763,
+     "tpu_article_cm3": 3.29565
+    },
+    "1sne82": {
+     "trial": 39,
+     "pla_brim_cm3": 0.02845,
+     "pla_article_cm3": 13.69157,
+     "tpu_article_cm3": 3.42586
+    },
+    "1sne22": {
+     "trial": 38,
+     "pla_brim_cm3": 0.02869,
+     "pla_article_cm3": 12.333,
+     "tpu_article_cm3": 5.47851
+    },
+    "1sne72": {
+     "trial": 37,
+     "pla_brim_cm3": 0.02853,
+     "pla_article_cm3": 13.76975,
+     "tpu_article_cm3": 3.29524
+    },
+    "1sne83": {
+     "trial": 39,
+     "pla_brim_cm3": 0.02844,
+     "pla_article_cm3": 13.69121,
+     "tpu_article_cm3": 3.4261
+    },
+    "1sne73": {
+     "trial": 37,
+     "pla_brim_cm3": 0.02853,
+     "pla_article_cm3": 13.76779,
+     "tpu_article_cm3": 3.2948
+    },
+    "1sne23": {
+     "trial": 38,
+     "pla_brim_cm3": 0.02869,
+     "pla_article_cm3": 12.33357,
+     "tpu_article_cm3": 5.47804
+    }
+   }
+  }
+ }
+}

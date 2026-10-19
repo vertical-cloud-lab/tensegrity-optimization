@@ -494,3 +494,27 @@ with figures and `ch5_replicates.json` in
 - **Article spread:** corny2's copies agree to SD 0.0072. The corny7 and
   corny8 copies' scatter is mostly the knocking seat. corny7's first article
   (0.803) remains the outlier against its cleanest copy (0.904).
+
+## Follow-up (10-19): why the copies weigh more
+
+Written after @me-madsen asked why every copy is 0.5–0.8 g heavier than
+its first article, and whether black and white PLA differ. The full
+write-up is [`print-mass-and-pla-colour.md`](print-mass-and-pla-colour.md),
+with inputs in [`print-mass/`](print-mass/) and the figure in
+[`figures/print-mass/`](figures/print-mass/).
+
+- **The print models are identical.** Meshes, transforms, infill and all
+  556 settings match, and the lab's Bambu Studio slices both projects to
+  the same PLA and TPU per article (within 0.03 %).
+- **The extra mass is a print-batch effect in the strut PLA.** Per
+  commanded cm³, the four black batches put 3.8 % more PLA on the scale
+  than the four white ones (1.196–1.221 vs 1.151–1.167 g/cm³). On round 3,
+  the same nine designs reprinted white → white changed only the TPU;
+  white → black changed the PLA. Of each copy's gain, 70–80 % is PLA.
+- **Not density.** Nothing per colour is measured anywhere, and pigment
+  would make white the denser one. The likely carrier is the spool's grams
+  per metre (diameter tolerance ±0.03 mm) or the printing-time preset:
+  weigh 1 m of each spool.
+- **Shock:** the black round-3 reprint sits −0.003 in T from the white
+  first print. corny7 and corny8 gained the same mass from the same
+  material split, so the colour switch does not explain corny7.

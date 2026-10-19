@@ -1,0 +1,539 @@
+{
+ "batches": {
+  "r2d2": {
+   "strut_pla": "white",
+   "print_log_date": "2026-08-24",
+   "n": 9,
+   "designs": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "recipe": "round 1: PLA 220 C 30 mm3/s, TPU flow ratio 1.1, lab's support-painted file",
+   "rho_pla": 1.1510883391194926,
+   "rho_pla_se": 0.006727657659126429,
+   "rho_tpu": 1.2226701239493585,
+   "rho_tpu_se": 0.01610765849256628,
+   "resid_sd_g": 0.09509243234578153,
+   "mass_over_ideal": 0.9511377418472708,
+   "residuals_g": {
+    "r2d2c1": 0.061,
+    "r2d2c2": -0.054,
+    "r2d2c3": 0.018,
+    "r2d2c4": 0.125,
+    "r2d2c5": -0.131,
+    "r2d2c6": 0.004,
+    "r2d2c7": -0.1,
+    "r2d2c8": 0.115,
+    "r2d2c9": -0.021
+   }
+  },
+  "drran": {
+   "strut_pla": "white",
+   "print_log_date": "2026-09-02",
+   "n": 9,
+   "designs": [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36
+   ],
+   "recipe": "round 3: PLA 217 C 20.5 mm3/s, TPU 244 C 3.6 mm3/s",
+   "rho_pla": 1.162639115727582,
+   "rho_pla_se": 0.0068985485322382726,
+   "rho_tpu": 1.054850197952914,
+   "rho_tpu_se": 0.012423794406584655,
+   "resid_sd_g": 0.07797390525416109,
+   "mass_over_ideal": 0.9147456546620363,
+   "residuals_g": {
+    "drran1": 0.034,
+    "drran2": -0.019,
+    "drran3": 0.019,
+    "drran4": 0.093,
+    "drran5": 0.037,
+    "drran6": -0.12,
+    "drran7": 0.084,
+    "drran8": -0.08,
+    "drran9": -0.054
+   }
+  },
+  "2dran": {
+   "strut_pla": "white",
+   "print_log_date": "2026-09-05",
+   "n": 9,
+   "designs": [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36
+   ],
+   "recipe": "round 3 (same file)",
+   "rho_pla": 1.1644655619546918,
+   "rho_pla_se": 0.006276372142999371,
+   "rho_tpu": 1.0947387501839294,
+   "rho_tpu_se": 0.011303299057684454,
+   "resid_sd_g": 0.0709414805927737,
+   "mass_over_ideal": 0.9271449407024303,
+   "residuals_g": {
+    "2dran1": 0.022,
+    "2dran2": -0.015,
+    "2dran3": 0.009,
+    "2dran4": 0.098,
+    "2dran5": 0.044,
+    "2dran6": -0.106,
+    "2dran7": 0.065,
+    "2dran8": -0.062,
+    "2dran9": -0.061
+   }
+  },
+  "corny": {
+   "strut_pla": "white",
+   "print_log_date": "2026-09-11",
+   "n": 9,
+   "designs": [
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+   ],
+   "recipe": "round 4: PLA 226 C 29.5 mm3/s, TPU 236 C 2.6 mm3/s",
+   "rho_pla": 1.1671285512421699,
+   "rho_pla_se": 0.003136298238032305,
+   "rho_tpu": 1.0662108953437996,
+   "rho_tpu_se": 0.007170368116008371,
+   "resid_sd_g": 0.048706440867703156,
+   "mass_over_ideal": 0.9238892752167481,
+   "residuals_g": {
+    "corny1": -0.031,
+    "corny2": -0.025,
+    "corny3": 0.074,
+    "corny4": -0.071,
+    "corny5": 0.032,
+    "corny6": -0.041,
+    "corny7": 0.036,
+    "corny8": 0.008,
+    "corny9": 0.019
+   }
+  },
+  "dran3": {
+   "strut_pla": "black",
+   "print_log_date": "2026-09-29",
+   "n": 9,
+   "designs": [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36
+   ],
+   "recipe": "round 3 (same file)",
+   "rho_pla": 1.2213438399031031,
+   "rho_pla_se": 0.0063302340712732925,
+   "rho_tpu": 1.0251515284938777,
+   "rho_tpu_se": 0.011400300553012093,
+   "resid_sd_g": 0.07155027893236798,
+   "mass_over_ideal": 0.9371577532789827,
+   "residuals_g": {
+    "dran31": 0.008,
+    "dran32": 0.003,
+    "dran33": 0.008,
+    "dran34": 0.091,
+    "dran35": -0.02,
+    "dran36": -0.061,
+    "dran37": 0.113,
+    "dran38": -0.073,
+    "dran39": -0.072
+   }
+  },
+  "1sne": {
+   "strut_pla": "black",
+   "print_log_date": "2026-10-17",
+   "n": 9,
+   "designs": [
+    37,
+    38,
+    39
+   ],
+   "recipe": "round 4 (same file)",
+   "rho_pla": 1.1983935016343565,
+   "rho_pla_se": 0.0076445259135387396,
+   "rho_tpu": 1.1283245640307413,
+   "rho_tpu_se": 0.02424540336038371,
+   "resid_sd_g": 0.08730814747157699,
+   "mass_over_ideal": 0.9586300433321319,
+   "residuals_g": {
+    "1sne21": -0.041,
+    "1sne22": -0.071,
+    "1sne23": 0.119,
+    "1sne81": -0.163,
+    "1sne82": 0.027,
+    "1sne83": 0.027,
+    "1sne71": 0.051,
+    "1sne72": 0.011,
+    "1sne73": 0.041
+   }
+  },
+  "2sne": {
+   "strut_pla": "black",
+   "print_log_date": "2026-10-17",
+   "n": 9,
+   "designs": [
+    37,
+    38,
+    39
+   ],
+   "recipe": "round 4 (same file, same gcode as 1sne)",
+   "rho_pla": 1.207263232636729,
+   "rho_pla_se": 0.003122103320630169,
+   "rho_tpu": 1.0649644691964955,
+   "rho_tpu_se": 0.00990207309094345,
+   "resid_sd_g": 0.03565754897322285,
+   "mass_over_ideal": 0.9520783300830621,
+   "residuals_g": {
+    "2sne21": 0.017,
+    "2sne22": -0.053,
+    "2sne23": 0.037,
+    "2sne71": -0.032,
+    "2sne72": -0.022,
+    "2sne73": 0.048,
+    "2sne81": -0.018,
+    "2sne82": 0.012,
+    "2sne83": 0.012
+   }
+  },
+  "3sne": {
+   "strut_pla": "black",
+   "print_log_date": "2026-10-17",
+   "n": 9,
+   "designs": [
+    37,
+    38,
+    39
+   ],
+   "recipe": "round 4 (same file, same gcode as 1sne)",
+   "rho_pla": 1.195538394765076,
+   "rho_pla_se": 0.003851266499306347,
+   "rho_tpu": 1.100752902634477,
+   "rho_tpu_se": 0.012214689410450402,
+   "resid_sd_g": 0.04398532325965125,
+   "mass_over_ideal": 0.9516103505652715,
+   "residuals_g": {
+    "3sne21": 0.025,
+    "3sne22": -0.055,
+    "3sne23": 0.025,
+    "3sne71": -0.079,
+    "3sne72": 0.001,
+    "3sne73": 0.001,
+    "3sne81": 0.05,
+    "3sne82": 0.02,
+    "3sne83": 0.01
+   }
+  }
+ },
+ "steps": {
+  "drran->2dran": {
+   "mean_g": 0.2655555555555556,
+   "d_rho_pla": 0.0018264462271096146,
+   "d_rho_pla_se": 0.0011803452250196004,
+   "d_rho_tpu": 0.0398885522310152,
+   "d_rho_tpu_se": 0.0021257176543598923,
+   "contrast_pla_minus_tpu": -0.03806210600390559,
+   "resid_sd_g": 0.013341375553535184,
+   "corr_pla_share": -0.9798492022631609,
+   "per_design": {
+    "t28": {
+     "pla_share": 0.5567,
+     "delta_g": 0.34
+    },
+    "t29": {
+     "pla_share": 0.6522,
+     "delta_g": 0.27
+    },
+    "t30": {
+     "pla_share": 0.5693,
+     "delta_g": 0.31
+    },
+    "t31": {
+     "pla_share": 0.6899,
+     "delta_g": 0.23
+    },
+    "t32": {
+     "pla_share": 0.6354,
+     "delta_g": 0.26
+    },
+    "t33": {
+     "pla_share": 0.5694,
+     "delta_g": 0.32
+    },
+    "t34": {
+     "pla_share": 0.6121,
+     "delta_g": 0.3
+    },
+    "t35": {
+     "pla_share": 0.7831,
+     "delta_g": 0.19
+    },
+    "t36": {
+     "pla_share": 0.7672,
+     "delta_g": 0.17
+    }
+   }
+  },
+  "2dran->dran3": {
+   "mean_g": 0.2144444444444448,
+   "d_rho_pla": 0.056878277948411875,
+   "d_rho_pla_se": 0.0032391330283311967,
+   "d_rho_tpu": -0.06958722169005176,
+   "d_rho_tpu_se": 0.005833447805941273,
+   "contrast_pla_minus_tpu": 0.12646549963846362,
+   "resid_sd_g": 0.03661173806003122,
+   "corr_pla_share": 0.9806588528924753,
+   "per_design": {
+    "t28": {
+     "pla_share": 0.5567,
+     "delta_g": -0.05
+    },
+    "t29": {
+     "pla_share": 0.6522,
+     "delta_g": 0.22
+    },
+    "t30": {
+     "pla_share": 0.5693,
+     "delta_g": 0.03
+    },
+    "t31": {
+     "pla_share": 0.6899,
+     "delta_g": 0.31
+    },
+    "t32": {
+     "pla_share": 0.6354,
+     "delta_g": 0.24
+    },
+    "t33": {
+     "pla_share": 0.5694,
+     "delta_g": 0.06
+    },
+    "t34": {
+     "pla_share": 0.6121,
+     "delta_g": 0.18
+    },
+    "t35": {
+     "pla_share": 0.7831,
+     "delta_g": 0.49
+    },
+    "t36": {
+     "pla_share": 0.7672,
+     "delta_g": 0.45
+    }
+   }
+  },
+  "drran->dran3": {
+   "mean_g": 0.4800000000000004,
+   "d_rho_pla": 0.05870472417552148,
+   "d_rho_pla_se": 0.003213108255399705,
+   "d_rho_tpu": -0.029698669459036545,
+   "d_rho_tpu_se": 0.0057865790440752175,
+   "contrast_pla_minus_tpu": 0.08840339363455803,
+   "resid_sd_g": 0.0363175815183561,
+   "corr_pla_share": 0.9627880322455336,
+   "per_design": {
+    "t28": {
+     "pla_share": 0.5567,
+     "delta_g": 0.29
+    },
+    "t29": {
+     "pla_share": 0.6522,
+     "delta_g": 0.49
+    },
+    "t30": {
+     "pla_share": 0.5693,
+     "delta_g": 0.34
+    },
+    "t31": {
+     "pla_share": 0.6899,
+     "delta_g": 0.54
+    },
+    "t32": {
+     "pla_share": 0.6354,
+     "delta_g": 0.5
+    },
+    "t33": {
+     "pla_share": 0.5694,
+     "delta_g": 0.38
+    },
+    "t34": {
+     "pla_share": 0.6121,
+     "delta_g": 0.48
+    },
+    "t35": {
+     "pla_share": 0.7831,
+     "delta_g": 0.68
+    },
+    "t36": {
+     "pla_share": 0.7672,
+     "delta_g": 0.62
+    }
+   }
+  }
+ },
+ "label_sensitivity": {
+  "label +0.0 g": {
+   "d_rho_pla_pct": 4.88449635667499,
+   "d_rho_tpu_pct": -6.35651397909869
+  },
+  "label +0.1 g": {
+   "d_rho_pla_pct": 4.3696019182593915,
+   "d_rho_tpu_pct": -6.837749830671161
+  },
+  "label +0.2 g": {
+   "d_rho_pla_pct": 3.8547074798437926,
+   "d_rho_tpu_pct": -7.318985682243634
+  }
+ },
+ "first_vs_copies": {
+  "corny2": {
+   "trial": 38,
+   "first_g": 20.21,
+   "copies_mean_g": 20.82,
+   "copies_sd_g": 0.12539936203984417,
+   "gain_g": 0.6099999999999994,
+   "gain_pct": 3.0183077684314608,
+   "commanded_pla_cm3": 12.33321,
+   "commanded_tpu_cm3": 5.47816,
+   "explained_by_pla_g": 0.41032373966124236,
+   "explained_by_tpu_g": 0.17422237868348223,
+   "first_resid_vs_corny_fit_g": -0.025
+  },
+  "corny7": {
+   "trial": 37,
+   "first_g": 19.62,
+   "copies_mean_g": 20.14888888888889,
+   "copies_sd_g": 0.08992280640144128,
+   "gain_g": 0.5288888888888899,
+   "gain_pct": 2.695662022879164,
+   "commanded_pla_cm3": 13.76907,
+   "commanded_tpu_cm3": 3.29532,
+   "explained_by_pla_g": 0.458094550733947,
+   "explained_by_tpu_g": 0.10480133638361286,
+   "first_resid_vs_corny_fit_g": 0.036
+  },
+  "corny8": {
+   "trial": 39,
+   "first_g": 19.64,
+   "copies_mean_g": 20.194444444444446,
+   "copies_sd_g": 0.06502136401043765,
+   "gain_g": 0.5544444444444458,
+   "gain_pct": 2.823036886173358,
+   "commanded_pla_cm3": 13.69157,
+   "commanded_tpu_cm3": 3.42569,
+   "explained_by_pla_g": 0.45551613928844775,
+   "explained_by_tpu_g": 0.10894750435040565,
+   "first_resid_vs_corny_fit_g": 0.008
+  }
+ },
+ "white_batches": {
+  "n": 4,
+  "rho_pla_mean": 1.161330392010984,
+  "rho_pla_sd": 0.007072490043462003,
+  "rho_tpu_mean": 1.1096174918575004,
+  "rho_tpu_sd": 0.07721369412053895
+ },
+ "black_batches": {
+  "n": 4,
+  "rho_pla_mean": 1.2056347422348161,
+  "rho_pla_sd": 0.011601717232151107,
+  "rho_tpu_mean": 1.0797983660888977,
+  "rho_tpu_sd": 0.04472212668125222
+ },
+ "pla_step_white_to_black": {
+  "delta": 0.044304350223832056,
+  "pct": 3.8149651923871306,
+  "welch_t": 6.5213429981209785
+ },
+ "copies_pooled_fit": {
+  "rho_pla": 1.2003983763453865,
+  "rho_pla_se": 0.004789403465092298,
+  "rho_tpu": 1.0980139786205718,
+  "rho_tpu_se": 0.015190087675826639
+ },
+ "print_model_check": [
+  {
+   "a": "t3-prism-bo-round4.H2D-MM-PLAstruts-TPUcables.3mf",
+   "b": "t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf",
+   "parts_compared": 18,
+   "all_parts_identical": true,
+   "project_keys": 556,
+   "project_keys_differing": [],
+   "filament_density": [
+    "1.26",
+    "1.18"
+   ],
+   "filament_flow_ratio": [
+    "0.98",
+    "1",
+    "1",
+    "1.03"
+   ],
+   "filament_colour_in_file": [
+    "#00AE42",
+    "#76D9F4"
+   ],
+   "malformed_matrix_strings": {
+    "a": 0,
+    "b": 18
+   }
+  },
+  {
+   "a": "t3-prism-bo-round3.H2D-MM-PLAstruts-TPUcables.3mf",
+   "b": "t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf",
+   "parts_compared": 18,
+   "all_parts_identical": true,
+   "project_keys": 556,
+   "project_keys_differing": [],
+   "filament_density": [
+    "1.26",
+    "1.18"
+   ],
+   "filament_flow_ratio": [
+    "0.98",
+    "1",
+    "1",
+    "1.03"
+   ],
+   "filament_colour_in_file": [
+    "#00AE42",
+    "#76D9F4"
+   ],
+   "malformed_matrix_strings": {
+    "a": 0,
+    "b": 0
+   }
+  }
+ ],
+ "plate1_vs_round4_commanded_max_abs_pct": 0.030081381894897508
+}

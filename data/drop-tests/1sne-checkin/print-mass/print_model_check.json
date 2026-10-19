@@ -1,0 +1,598 @@
+[
+ {
+  "a": "t3-prism-bo-round4.H2D-MM-PLAstruts-TPUcables.3mf",
+  "b": "t3-prism-replicate-sne-plate1.H2D-MM-PLAstruts-TPUcables.3mf",
+  "parts_compared": 18,
+  "all_parts_identical": true,
+  "project_keys": 556,
+  "project_keys_differing": [],
+  "filament_density": [
+   "1.26",
+   "1.18"
+  ],
+  "filament_flow_ratio": [
+   "0.98",
+   "1",
+   "1",
+   "1.03"
+  ],
+  "filament_colour_in_file": [
+   "#00AE42",
+   "#76D9F4"
+  ],
+  "malformed_matrix_strings": {
+   "a": 0,
+   "b": 18
+  },
+  "parts": [
+   {
+    "part": "t37-cables",
+    "object_a": "Trial 37",
+    "object_b": "1sne71",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 3375.674,
+    "sha256": "bbb8278b0ab1bd81",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "21%"
+    }
+   },
+   {
+    "part": "t37-cables",
+    "object_a": "Trial 37",
+    "object_b": "1sne72",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 3375.674,
+    "sha256": "bbb8278b0ab1bd81",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "21%"
+    }
+   },
+   {
+    "part": "t37-cables",
+    "object_a": "Trial 37",
+    "object_b": "1sne73",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 3375.674,
+    "sha256": "bbb8278b0ab1bd81",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "21%"
+    }
+   },
+   {
+    "part": "t37-struts",
+    "object_a": "Trial 37",
+    "object_b": "1sne71",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 21826.036,
+    "sha256": "67722863e6838754",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "22%"
+    }
+   },
+   {
+    "part": "t37-struts",
+    "object_a": "Trial 37",
+    "object_b": "1sne72",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 21826.036,
+    "sha256": "67722863e6838754",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "22%"
+    }
+   },
+   {
+    "part": "t37-struts",
+    "object_a": "Trial 37",
+    "object_b": "1sne73",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 21826.036,
+    "sha256": "67722863e6838754",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "22%"
+    }
+   },
+   {
+    "part": "t38-cables",
+    "object_a": "Trial 38",
+    "object_b": "1sne21",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 5920.377,
+    "sha256": "75857f3f1ec3c4d7",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "34%"
+    }
+   },
+   {
+    "part": "t38-cables",
+    "object_a": "Trial 38",
+    "object_b": "1sne22",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 5920.377,
+    "sha256": "75857f3f1ec3c4d7",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "34%"
+    }
+   },
+   {
+    "part": "t38-cables",
+    "object_a": "Trial 38",
+    "object_b": "1sne23",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 5920.377,
+    "sha256": "75857f3f1ec3c4d7",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "34%"
+    }
+   },
+   {
+    "part": "t38-struts",
+    "object_a": "Trial 38",
+    "object_b": "1sne21",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 19170.53,
+    "sha256": "409c7a2bd5cc097d",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "18%"
+    }
+   },
+   {
+    "part": "t38-struts",
+    "object_a": "Trial 38",
+    "object_b": "1sne22",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 19170.53,
+    "sha256": "409c7a2bd5cc097d",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "18%"
+    }
+   },
+   {
+    "part": "t38-struts",
+    "object_a": "Trial 38",
+    "object_b": "1sne23",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 19170.53,
+    "sha256": "409c7a2bd5cc097d",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "18%"
+    }
+   },
+   {
+    "part": "t39-cables",
+    "object_a": "Trial 39",
+    "object_b": "1sne81",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 3485.637,
+    "sha256": "3d8f7df1bf70accf",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "34%"
+    }
+   },
+   {
+    "part": "t39-cables",
+    "object_a": "Trial 39",
+    "object_b": "1sne82",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 3485.637,
+    "sha256": "3d8f7df1bf70accf",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "34%"
+    }
+   },
+   {
+    "part": "t39-cables",
+    "object_a": "Trial 39",
+    "object_b": "1sne83",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 3485.637,
+    "sha256": "3d8f7df1bf70accf",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "34%"
+    }
+   },
+   {
+    "part": "t39-struts",
+    "object_a": "Trial 39",
+    "object_b": "1sne81",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 21749.507,
+    "sha256": "9748135060a713d5",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "21%"
+    }
+   },
+   {
+    "part": "t39-struts",
+    "object_a": "Trial 39",
+    "object_b": "1sne82",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 21749.507,
+    "sha256": "9748135060a713d5",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "21%"
+    }
+   },
+   {
+    "part": "t39-struts",
+    "object_a": "Trial 39",
+    "object_b": "1sne83",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 21749.507,
+    "sha256": "9748135060a713d5",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "21%"
+    }
+   }
+  ]
+ },
+ {
+  "a": "t3-prism-bo-round3.H2D-MM-PLAstruts-TPUcables.3mf",
+  "b": "t3-prism-dran3.H2D-MM-PLAstruts-TPUcables.3mf",
+  "parts_compared": 18,
+  "all_parts_identical": true,
+  "project_keys": 556,
+  "project_keys_differing": [],
+  "filament_density": [
+   "1.26",
+   "1.18"
+  ],
+  "filament_flow_ratio": [
+   "0.98",
+   "1",
+   "1",
+   "1.03"
+  ],
+  "filament_colour_in_file": [
+   "#00AE42",
+   "#76D9F4"
+  ],
+  "malformed_matrix_strings": {
+   "a": 0,
+   "b": 0
+  },
+  "parts": [
+   {
+    "part": "t28-cables",
+    "object_a": "Trial 28",
+    "object_b": "dran35",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 9140.264,
+    "sha256": "67021254c0f4ad31",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "29%"
+    }
+   },
+   {
+    "part": "t28-struts",
+    "object_a": "Trial 28",
+    "object_b": "dran35",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 12136.722,
+    "sha256": "ec52f42c2be32e56",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "21%"
+    }
+   },
+   {
+    "part": "t29-cables",
+    "object_a": "Trial 29",
+    "object_b": "dran34",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 6563.165,
+    "sha256": "04b550c13d0dc39d",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "31%"
+    }
+   },
+   {
+    "part": "t29-struts",
+    "object_a": "Trial 29",
+    "object_b": "dran34",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 19654.769,
+    "sha256": "8723b4ecfc81e21b",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "13%"
+    }
+   },
+   {
+    "part": "t30-cables",
+    "object_a": "Trial 30",
+    "object_b": "dran39",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 8890.796,
+    "sha256": "0ea5d4c581f6b590",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "18%"
+    }
+   },
+   {
+    "part": "t30-struts",
+    "object_a": "Trial 30",
+    "object_b": "dran39",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 11962.381,
+    "sha256": "de18b2eece608f73",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "31%"
+    }
+   },
+   {
+    "part": "t31-cables",
+    "object_a": "Trial 31",
+    "object_b": "dran33",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 6079.552,
+    "sha256": "2baf81991e9a5b52",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "21%"
+    }
+   },
+   {
+    "part": "t31-struts",
+    "object_a": "Trial 31",
+    "object_b": "dran33",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 19765.368,
+    "sha256": "6c0e4e7f4853b91a",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "18%"
+    }
+   },
+   {
+    "part": "t32-cables",
+    "object_a": "Trial 32",
+    "object_b": "dran37",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 7301.841,
+    "sha256": "4ebe7f5b4c3d7c57",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "13%"
+    }
+   },
+   {
+    "part": "t32-struts",
+    "object_a": "Trial 32",
+    "object_b": "dran37",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 16948.476,
+    "sha256": "296764fc1f198ea7",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "24%"
+    }
+   },
+   {
+    "part": "t33-cables",
+    "object_a": "Trial 33",
+    "object_b": "dran32",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 8964.586,
+    "sha256": "18c575c3226d727f",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "16%"
+    }
+   },
+   {
+    "part": "t33-struts",
+    "object_a": "Trial 33",
+    "object_b": "dran32",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 12013.983,
+    "sha256": "a15bffcf3c8baf53",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "29%"
+    }
+   },
+   {
+    "part": "t34-cables",
+    "object_a": "Trial 34",
+    "object_b": "dran36",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 7551.114,
+    "sha256": "39c9f84dd9ea6c2e",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "34%"
+    }
+   },
+   {
+    "part": "t34-struts",
+    "object_a": "Trial 34",
+    "object_b": "dran36",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 17654.527,
+    "sha256": "7857c290e5189f39",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "16%"
+    }
+   },
+   {
+    "part": "t35-cables",
+    "object_a": "Trial 35",
+    "object_b": "dran38",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 4008.657,
+    "sha256": "4e03978dc2f709d7",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "24%"
+    }
+   },
+   {
+    "part": "t35-struts",
+    "object_a": "Trial 35",
+    "object_b": "dran38",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 20383.989,
+    "sha256": "262524d3cecef50a",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "26%"
+    }
+   },
+   {
+    "part": "t36-cables",
+    "object_a": "Trial 36",
+    "object_b": "dran31",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 4347.554,
+    "sha256": "28873234d2ef71d9",
+    "settings": {
+     "extruder": "2",
+     "sparse_infill_density": "26%"
+    }
+   },
+   {
+    "part": "t36-struts",
+    "object_a": "Trial 36",
+    "object_b": "dran31",
+    "mesh": true,
+    "part_settings": true,
+    "object_settings": true,
+    "no_scale_or_rotation": true,
+    "volume_mm3": 18420.664,
+    "sha256": "a6b12e5d25335f0f",
+    "settings": {
+     "extruder": "1",
+     "sparse_infill_density": "34%"
+    }
+   }
+  ]
+ }
+]

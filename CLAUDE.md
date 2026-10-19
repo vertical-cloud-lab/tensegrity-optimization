@@ -97,12 +97,22 @@ settles").
 - **10-19 follow-up (`1sne-checkin/ch5-fault-and-replicates.md`).** Two
   points for later analyses:
   - **Strut PLA colour is an unlogged print-batch variable.** It is white
-    on drran, 2dran and corny (the first articles) and black on dran3 and
-    on all three replicate plates (#98 photos; no file records it). The
-    slicer projects of the first articles and plate 1 are otherwise
-    identical (556/556 keys; PLA 226 °C / TPU 236 °C). dran3 showed no
-    colour offset on the round-3 designs (−0.003). When comparing first
-    articles with replicates, name the colour change as a confound.
+    on every batch through corny (Sobol, r2d2, drran, 2dran, corny) and
+    black on dran3 and on all three replicate plates (#98 photos; no file
+    records it). The slicer projects of the first articles and plate 1 are
+    otherwise identical (556/556 keys; PLA 226 °C / TPU 236 °C). dran3
+    showed no colour offset on the round-3 designs (−0.003). When
+    comparing first articles with replicates, name the colour change as a
+    confound.
+  - **The colour switch moved mass (10-19, `1sne-checkin/print-mass-and-pla-colour.md`).**
+    Meshes, settings and the slicer's per-article PLA/TPU are identical
+    (≤ 0.03 %), yet per commanded cm³ the black strut PLA puts 3.8 % more
+    mass on the scale (4 white batches 1.151–1.167, 4 black 1.196–1.221
+    g/cm³). The TPU term moves job to job (up to ~7 %) with no colour
+    pattern. So black articles of a design weigh ~2.5–3 % more. Quote the
+    strut colour with any mass, per-gram objective or printed-mass target,
+    and give the mass model a colour term before fitting across colours.
+    Print-key masses include the label.
   - **The 10-17 CH5 fault (17:18–18:17) was intermittent.** The bad
     triggers fired during the fall. CH5 was healthy for every capture
     outside that hour. The cable broke completely afterwards, so check the

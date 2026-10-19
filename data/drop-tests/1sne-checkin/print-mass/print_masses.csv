@@ -1,0 +1,73 @@
+article,batch,print_log_date,strut_pla,trial,mass_g_with_label,defects_logged,source
+r2d2c1,r2d2,2026-08-24,white,13,19.38,TPU string detached on two top tendons; odd foot support,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c2,r2d2,2026-08-24,white,12,17.96,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c3,r2d2,2026-08-24,white,16,18.63,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c4,r2d2,2026-08-24,white,11,19.33,spaghetti string on one top tendon; TPU piece ~1/4 detached,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c5,r2d2,2026-08-24,white,18,23.47,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c6,r2d2,2026-08-24,white,14,19.11,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c7,r2d2,2026-08-24,white,15,18.51,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c8,r2d2,2026-08-24,white,17,19.98,spaghetti string on two bottom tendons,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+r2d2c9,r2d2,2026-08-24,white,10,17.91,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5399475414
+drran1,drran,2026-09-02,white,36,19.31,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran2,drran,2026-09-02,white,33,19.33,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran3,drran,2026-09-02,white,31,19.92,tiny bubbles on the diagonal tendons,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran4,drran,2026-09-02,white,29,19.92,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran5,drran,2026-09-02,white,28,19.88,tiny bubbles on the diagonal tendons,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran6,drran,2026-09-02,white,34,19.24,tiny bubbles on the diagonal tendons,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran7,drran,2026-09-02,white,32,20.06,tiny bubbles on the diagonal tendons,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran8,drran,2026-09-02,white,35,19.32,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+drran9,drran,2026-09-02,white,30,19.34,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5512999202
+2dran1,2dran,2026-09-05,white,36,19.48,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran2,2dran,2026-09-05,white,33,19.65,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran3,2dran,2026-09-05,white,31,20.15,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran4,2dran,2026-09-05,white,29,20.19,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran5,2dran,2026-09-05,white,28,20.22,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran6,2dran,2026-09-05,white,34,19.54,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran7,2dran,2026-09-05,white,32,20.32,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran8,2dran,2026-09-05,white,35,19.51,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+2dran9,2dran,2026-09-05,white,30,19.65,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5554276602
+corny1,corny,2026-09-11,white,42,20.20,TPU mixed into one layer of a PLA strut,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny2,corny,2026-09-11,white,38,20.21,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny3,corny,2026-09-11,white,45,20.15,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny4,corny,2026-09-11,white,44,20.56,many small pores on the TPU diagonal tendons,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny5,corny,2026-09-11,white,40,20.58,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny6,corny,2026-09-11,white,41,19.45,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny7,corny,2026-09-11,white,37,19.62,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny8,corny,2026-09-11,white,39,19.64,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+corny9,corny,2026-09-11,white,43,19.46,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5637649574
+dran31,dran3,2026-09-29,black,36,19.93,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran32,dran3,2026-09-29,black,33,19.71,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran33,dran3,2026-09-29,black,31,20.46,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran34,dran3,2026-09-29,black,29,20.41,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran35,dran3,2026-09-29,black,28,20.17,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran36,dran3,2026-09-29,black,34,19.72,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran37,dran3,2026-09-29,black,32,20.56,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran38,dran3,2026-09-29,black,35,20.00,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+dran39,dran3,2026-09-29,black,30,19.68,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-5881129656
+1sne21,1sne,2026-10-17,black,38,20.92,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne22,1sne,2026-10-17,black,38,20.89,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne23,1sne,2026-10-17,black,38,21.08,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne81,1sne,2026-10-17,black,39,20.11,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne82,1sne,2026-10-17,black,39,20.30,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne83,1sne,2026-10-17,black,39,20.30,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne71,1sne,2026-10-17,black,37,20.27,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne72,1sne,2026-10-17,black,37,20.23,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+1sne73,1sne,2026-10-17,black,37,20.26,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6240858848
+2sne21,2sne,2026-10-17,black,38,20.74,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne22,2sne,2026-10-17,black,38,20.67,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne23,2sne,2026-10-17,black,38,20.76,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne71,2sne,2026-10-17,black,37,20.10,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne72,2sne,2026-10-17,black,37,20.11,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne73,2sne,2026-10-17,black,37,20.18,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne81,2sne,2026-10-17,black,39,20.16,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne82,2sne,2026-10-17,black,39,20.19,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+2sne83,2sne,2026-10-17,black,39,20.19,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241852209
+3sne21,3sne,2026-10-17,black,38,20.80,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne22,3sne,2026-10-17,black,38,20.72,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne23,3sne,2026-10-17,black,38,20.80,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne71,3sne,2026-10-17,black,37,20.01,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne72,3sne,2026-10-17,black,37,20.09,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne73,3sne,2026-10-17,black,37,20.09,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne81,3sne,2026-10-17,black,39,20.19,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne82,3sne,2026-10-17,black,39,20.16,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
+3sne83,3sne,2026-10-17,black,39,20.15,,https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/98#issuecomment-6241963239
