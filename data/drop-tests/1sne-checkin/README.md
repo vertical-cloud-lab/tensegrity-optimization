@@ -51,6 +51,10 @@ weigh about the same.
     (Box ids in `../corny-checkin/raw/`).
   - `scripts/analysis/drop_test_1sne_video_frames.py --mp4 …` writes
     `16_video_identity_montage.jpg` and `video_pairing.json`.
+  - `scripts/analysis/drop_test_corny_1sne_video_comparison.py --mp4 … --daq …`
+    writes the side-by-side videos with the first articles
+    (`video/compare/`) and `figures/video-compare/` (see "Side by side with
+    the first articles").
 
 ## Headline
 
@@ -312,6 +316,116 @@ Pre-registered endpoints, as far as plate 1 can take them:
 - **Identity:** the carriage label matches the clip name in all 27 rest
   frames. The specimen is upright and the sensor seated in every frame,
   including the seven clips paired to mistimed captures.
+
+## Side by side with the first articles (`video/compare/`, `figures/video-compare/`)
+
+Requested by @me-madsen on PR #86 (10-19): the slo-mo of the original corny
+drops next to the same designs' plate-1 copies (corny7 with `1sne71`–`73`,
+and so on), each drop matched as well as possible, with the acceleration
+traces aligned to the video.
+
+- **Outputs:**
+  - `video/compare/corny2_vs_1sne2x.mp4`, `corny7_vs_1sne7x.mp4` and
+    `corny8_vs_1sne8x.mp4` (5.6–5.9 MB each): one video per design.
+    - Four columns: the first article, then copies 1–3. Filmed drops 1, 10
+      and 20 play in sequence, 64× slower than real time.
+    - Under each clip is its acceleration record: the CH5 base input, plus
+      the top-vertex resultant at CFC-180 and CFC-1000. There is a full −35
+      to +95 ms panel and a −3 to +8 ms zoom, each with a cursor that moves
+      with the video.
+  - `video/compare/corny7_vs_1sne7x_drop10_preview.gif`: a looping preview
+    of corny7's drop-10 comparison.
+  - `figures/video-compare/24_video_compare_corny2.jpg`, `25_…_corny7.jpg`
+    and `26_…_corny8.jpg`: drop 10 as six synced frames per article, next
+    to that article's trace.
+  - `figures/video-compare/27_video_sync_check.png` and
+    `video_comparison.json`: pairing, sync, scale and labels for every clip.
+- **Script:** `scripts/analysis/drop_test_corny_1sne_video_comparison.py
+  --mp4 DIR --daq DIR --ffmpeg PATH --procs 4` (18 min on a 4-core runner).
+  - `--mp4` holds the nine `corny{2,7,8}-{1st,10th,20th}.MP4` clips (ids in
+    `../corny-checkin/video/box-ids.json`) and the 27 `1sne*` clips
+    (`video/box-ids.json`), about 17 GB.
+  - `--daq` holds the captures of the 12 sessions, saved as
+    `<session>_Signal<k>.csv` (ids in each `raw/<session>/box-ids.json`).
+  - The series tables, `capture_census.json` and `video_pairing.json` are
+    read from the branch.
+- **How each drop is matched:**
+  - *Same drop:* both batches filmed drops 1, 10 and 20. Clips pair to
+    captures by MP4 header time at a constant camera offset per batch; the
+    1sne pairing reproduces `video_pairing.json`.
+  - *Same instant:* t = 0 is the CH5 CFC-180 peak in every panel.
+    - CH5 rides on the carriage, so CH5 integrated twice is the carriage's
+      own path through the impact. Fitting that path to the carriage tracked
+      frame by frame syncs **23 of 36 clips** to a residual rms of
+      **0.10–0.28 mm** over the 33 frames around impact (one frame =
+      1.04 ms).
+    - The other 13 clips have no usable capture. They are placed by their
+      lowest carriage point, which trails the CH5 peak by 1.07 ms (sd
+      0.13 ms across the 23 fits).
+  - *Same picture:* every panel shows the same 140 × 210 mm window at the
+    plate, with the plate at the same height at t = 0. The scale comes from
+    the same fit: 4.10 / 3.59 / 2.94 px/mm on the three filming days (09-12,
+    09-14, 10-17), which used three different camera set-ups.
+  - *Same impact:* the fitted arrival speed is 4.62–4.82 m/s on the first
+    articles and 4.60–4.88 m/s on the copies.
+- **Which drops have their own record** (*italic* = stand-in, drawn dashed:
+  the nearest usable drop of the same session):
+
+  | design | first article (1 / 10 / 20) | copy 1 | copy 2 | copy 3 |
+  |---|---|---|---|---|
+  | corny2 | S1 / S10 / S20 | S1 / S10 / S20 | S1 / S10 (knock) / *S17* | *S5* / *S14* / S20 |
+  | corny7 | S1 / S11 / *S20* | *S13* / *S13* / *S14* | *S5* / *S6* / *S6* | S1 / S11 (knock) / *S20* |
+  | corny8 | S1 / S10 / S20 | S1 (knock) / S10 (knock) / S20 | S1 / S10 / *S20* | S4 (knock) / S10 / *S20* |
+
+  - Seven filmed drops landed on captures with no impact (the 17:18–18:17
+    CH5-fault hour). Six weren't captured at all: the missing `1sne72`
+    events, and clips filmed after a session's last capture.
+  - **corny7 is the thin spot:** none of the six clips from `1sne71` and
+    `1sne72` has its own record. Three clips filmed a neighbouring drop:
+    `corny7-10th` and `1sne73-10` filmed drop 11, and `1sne83-1` filmed
+    drop 4.
+- **What the side by side shows:**
+  1. **The struts are a different colour.** All three first articles have
+     white PLA struts. All nine copies have black struts, with a white band
+     on one strut that looks like the ID sticker. This is the print-batch
+     confound named in the follow-up below; on its own it explains nothing
+     (dran3 showed no colour offset).
+  2. **corny7 and corny8 fold and snap back, and the motion is the same on
+     the originals and the copies.**
+     - Within about 5–10 ms of impact, the top triangle sags and twists and
+       the side cables go visibly slack (S-shaped).
+     - The structure stays folded, then snaps upright 40–55 ms after impact.
+       The feet stay on the plate, as far as the ~0.4 mm/px video can tell.
+     - The snap-back lands on the top sensor's largest CFC-180 burst 25–70 ms
+       after impact (`snap_burst_ms` in the json):
+
+       | snap-back | first article | copy 1 | copy 2 | copy 3 |
+       |---|--:|--:|--:|--:|
+       | corny7 | 41.5–42.8 ms | ~53 ms ¹ | 51–54 ms ¹ | 39.7–41.6 ms |
+       | corny8 | 39.3–40.8 ms | 39.0–43.0 ms | 48.1–49.6 ms | 50.3–53.6 ms |
+
+       ¹ From stand-in drops. The films of the filmed drops agree: still
+       folded at +42 ms, upright by about +55 ms.
+     - **For corny7, nothing in the gross motion separates the 0.803 article
+       from its copies.** corny7 and `1sne73` fold and re-erect on the same
+       schedule (~41 ms), but their T180s differ (0.80 vs 0.91–0.92). The
+       difference is in the impact pulse itself, which 1 ms frames can't
+       resolve. The traces show it: corny7's top-vertex peak sits clearly
+       under CH5's, while `1sne73`'s matches it. What does vary between
+       copies is how long they stay folded (about 40 vs about 50 ms), and
+       that doesn't line up with first article vs copy.
+  3. **On this family the secondary burst is the cables re-tensioning, not a
+     hop landing.** Keep that in mind when reading `t_second` / `e_rebound`.
+     The snap-back burst is also measurable on the knocking copies, where
+     the hop detector sits at its 15 ms floor (`1sne71`, `72`, `81`, `83`),
+     and on corny8's original, where it sits at its 70 ms cap.
+  4. **corny2 doesn't fold.** The tall design stays upright with taut cables
+     on all four articles.
+  5. **The seat knock isn't visible.** It lasts ~0.1 ms, far shorter than
+     one frame.
+- **Standing checks:** the T-drift watch flags none of the 12 sessions
+  (`1sne71`/`1sne72` have too few valid drops to fit a slope), and every
+  trace drawn holds a screened impact (`valid` or `knock` class).
 
 ## What this batch needs from the lab
 

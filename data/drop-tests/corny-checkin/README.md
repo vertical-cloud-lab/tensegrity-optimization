@@ -41,7 +41,12 @@ fingerprint comparison below concluded from the T data alone.
   and the three `-20th` clips started after the session's final drop;
   verify against the MP4 content if those specific clips matter, and
   start the clip a beat *before* the target drop in future sessions.
-  MP4s not analyzed this pass.
+  The corny2/7/8 clips are compared side by side with their plate-1
+  copies, with synced acceleration traces, in
+  [`../1sne-checkin/`](../1sne-checkin/README.md) ("Side by side with the
+  first articles": `video/compare/`, `figures/video-compare/`). There the
+  header-time pairing puts `corny7-10th` on drop 11 and `corny7-20th`
+  0.9 min after the final capture, as noted above.
 - Analysis: the standing campaign pipeline
   (`scripts/analysis/drop_test_campaign_analysis.py`, tail baseline,
   2-drop warm-up discard, standing T-drift watch) on the nine-session

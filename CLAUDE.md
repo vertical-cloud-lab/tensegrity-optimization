@@ -108,6 +108,13 @@ settles").
     outside that hour. The cable broke completely afterwards, so check the
     first batch on the replacement cable with the live check (TP4 CH4
     ≥ 150 G, CH5 Δv ≈ 205–225 in/s) before using it.
+- **10-19 video side by side (`1sne-checkin/video/compare/`).** On the
+  wide, high-twist designs (corny7, corny8) the top triangle sags and
+  twists at impact, the side cables go slack, and the structure snaps back
+  upright 40–55 ms later with the feet on the plate. That snap-back is the
+  top vertex's secondary burst, so on this family read `t_second` /
+  `e_rebound` as cable re-tensioning, not a hop landing. corny2 (tall) does
+  not fold. The motion is the same on the first articles and the copies.
 
 ### Other conventions (pointers, not duplicates)
 
