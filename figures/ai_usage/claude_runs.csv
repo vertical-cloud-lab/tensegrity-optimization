@@ -1,0 +1,269 @@
+run_id,date_utc,workflow,model,trigger_actor,cost_usd,minutes,num_turns,conclusion,title
+28405053309,2026-06-29T21:51:29Z,claude-code,claude-opus-4-8,sgbaird,2.3659,5.6,20,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28406639692,2026-06-29T22:23:36Z,claude-code,claude-opus-4-8,sgbaird,2.9607,8.5,37,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28421203004,2026-06-30T04:53:21Z,claude-code,claude-opus-4-8,sgbaird,2.4257,4.8,19,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28422132352,2026-06-30T05:18:37Z,claude-code,claude-opus-4-8,sgbaird,5.5233,19.1,58,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28460342659,2026-06-30T16:35:57Z,claude-code,claude-opus-4-8,sgbaird,3.8481,7.0,41,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28483836098,2026-07-01T00:00:48Z,claude-code,claude-opus-4-8,sgbaird,8.7047,23.8,68,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28484093728,2026-07-01T00:07:08Z,claude-code,claude-opus-4-8,ctrhjk,5.4268,33.2,39,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28487034892,2026-07-01T01:24:40Z,claude-code,claude-opus-4-8,sgbaird,0,0.0,1,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28490829398,2026-07-01T03:11:02Z,claude-code,claude-opus-4-8,ctrhjk,9.648,24.9,80,success,Claude Code
+28491264861,2026-07-01T03:23:26Z,claude-code,claude-opus-4-8,ctrhjk,3.5698,8.6,27,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28530426193,2026-07-01T15:54:49Z,claude-code,claude-opus-4-8,ctrhjk,2.0565,2.4,14,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28532608788,2026-07-01T16:32:17Z,claude-code,claude-opus-4-8,sgbaird,3.2163,6.6,25,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28533545941,2026-07-01T16:48:53Z,claude-code,claude-opus-4-8,ctrhjk,1.4502,0.8,5,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28536412638,2026-07-01T17:39:58Z,claude-code,claude-opus-4-8,achris0520,10.2401,86.9,79,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28536992175,2026-07-01T17:50:36Z,claude-code,claude-opus-4-8,sgbaird,3.4469,7.6,30,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28540156018,2026-07-01T18:47:39Z,claude-code,claude-opus-4-8,sgbaird,0.8358,1.9,12,success,Create abstract for TMS 2027
+28540253032,2026-07-01T18:49:24Z,claude-code,claude-opus-4-8,sgbaird,0.8,1.7,15,success,Create abstract for TMS 2027
+28541096073,2026-07-01T19:04:33Z,claude-code,claude-opus-4-8,ctrhjk,1.1317,2.5,15,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28541515819,2026-07-01T19:12:09Z,claude-code,claude-opus-4-8,ctrhjk,0.8012,2.0,13,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28541697914,2026-07-01T19:15:21Z,claude-code,claude-opus-4-8,sgbaird,0.7604,1.7,10,success,Create abstract for TMS 2027
+28542265245,2026-07-01T19:25:22Z,claude-code,claude-opus-4-8,ctrhjk,0.9715,3.6,13,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28542425631,2026-07-01T19:28:14Z,claude-code,claude-opus-4-8,sgbaird,0.8759,1.9,13,success,Create abstract for TMS 2027
+28542685516,2026-07-01T19:32:53Z,claude-code,claude-opus-4-8,sgbaird,1.1868,2.8,18,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28544288428,2026-07-01T20:02:17Z,claude-code,claude-opus-4-8,ctrhjk,1.0916,1.6,8,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28544456881,2026-07-01T20:05:24Z,claude-code,claude-opus-4-8,sgbaird,1.4173,3.0,22,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28545190162,2026-07-01T20:18:49Z,claude-code,claude-opus-4-8,ctrhjk,1.4268,13.1,21,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28545962157,2026-07-01T20:33:08Z,claude-code,claude-opus-4-8,sgbaird,2.9,8.5,19,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28546246112,2026-07-01T20:38:20Z,claude-code,claude-opus-4-8,sgbaird,2.1516,5.5,24,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28546827301,2026-07-01T20:48:50Z,claude-code,claude-opus-4-8,sgbaird,1.3132,3.1,13,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28547431868,2026-07-01T20:59:50Z,claude-code,claude-opus-4-8,sgbaird,1.4103,5.1,26,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28547730136,2026-07-01T21:05:14Z,claude-code,claude-opus-4-8,ctrhjk,1.6908,3.2,18,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28548623868,2026-07-01T21:22:28Z,claude-code,claude-opus-4-8,sgbaird,1.4852,4.8,25,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28549827268,2026-07-01T21:45:50Z,claude-code,claude-opus-4-8,sgbaird,1.5868,5.1,19,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28550630678,2026-07-01T22:01:49Z,claude-code,claude-fable-5,sgbaird,2.2054,3.6,16,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28551306787,2026-07-01T22:15:28Z,claude-code,claude-fable-5,sgbaird,1.6933,2.3,13,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28551344472,2026-07-01T22:16:15Z,claude-code-review,claude-sonnet-5,sgbaird,0.2122,0.4,5,success,Record Edison mock-reviewer submission for TMS 2027 symposium 105
+28552394768,2026-07-01T22:38:37Z,claude-code,claude-fable-5,sgbaird,2.7637,5.7,30,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28552499368,2026-07-01T22:40:56Z,claude-code,claude-fable-5,sgbaird,3.2465,4.6,24,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28552831596,2026-07-01T22:48:19Z,claude-code,claude-fable-5,sgbaird,1.7918,4.7,17,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28553263444,2026-07-01T22:58:04Z,claude-code,claude-fable-5,sgbaird,3.0931,11.3,26,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28553539254,2026-07-01T23:04:14Z,claude-code,claude-fable-5,sgbaird,2.7031,2.9,13,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28554328135,2026-07-01T23:22:23Z,claude-code,claude-fable-5,sgbaird,1.6018,3.5,10,success,Explore tensegrity crutch-tip impact-absorber and industry partners via Edison l
+28556257700,2026-07-02T00:10:35Z,claude-code,claude-fable-5,sgbaird,3.3077,2.5,14,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28556710107,2026-07-02T00:22:27Z,claude-code,claude-fable-5,sgbaird,2.831,3.3,15,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28556940765,2026-07-02T00:28:36Z,claude-code,claude-fable-5,sgbaird,2.1906,1.5,11,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28557774192,2026-07-02T00:52:58Z,claude-code,claude-fable-5,sgbaird,2.0367,2.3,6,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28559099453,2026-07-02T01:30:40Z,claude-code,claude-fable-5,sgbaird,5.1878,11.6,22,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28559649890,2026-07-02T01:46:31Z,claude-code,claude-fable-5,sgbaird,2.8512,4.1,14,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+28560458026,2026-07-02T02:09:37Z,claude-code,claude-fable-5,ctrhjk,7.192,11.0,24,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28565878289,2026-07-02T04:40:40Z,claude-code,claude-fable-5,sgbaird,6.7285,7.3,27,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28624545648,2026-07-02T22:05:26Z,claude-code,claude-fable-5,ctrhjk,7.6753,8.4,24,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28639797558,2026-07-03T05:08:42Z,claude-code,claude-fable-5,ctrhjk,8.3901,9.1,20,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28815520214,2026-07-06T18:52:24Z,claude-code,claude-fable-5,sgbaird,9.9716,10.2,44,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28823447530,2026-07-06T21:09:15Z,claude-code,claude-fable-5,ctrhjk,8.8526,9.8,27,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28824344475,2026-07-06T21:25:32Z,claude-code,claude-fable-5,sgbaird,11.9802,12.3,59,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28825938812,2026-07-06T21:55:26Z,claude-code,claude-fable-5,ctrhjk,6.7561,4.9,34,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28827767776,2026-07-06T22:32:01Z,claude-code,claude-fable-5,ctrhjk,5.6486,3.0,21,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28828795225,2026-07-06T22:53:42Z,claude-code,claude-fable-5,ctrhjk,8.4509,7.6,19,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28845719572,2026-07-07T06:14:46Z,claude-code,claude-fable-5,achris0520,11.7106,11.7,60,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+28956216499,2026-07-08T15:50:40Z,claude-code,claude-fable-5,ctrhjk,5.1747,3.9,8,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28972582055,2026-07-08T20:14:05Z,claude-code,claude-fable-5,ctrhjk,11.1306,12.0,31,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+28974368598,2026-07-08T20:43:34Z,claude-code,claude-fable-5,ctrhjk,4.3603,1.3,3,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29037711539,2026-07-09T17:37:42Z,claude-code,claude-fable-5,sgbaird,4.3376,3.5,15,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+29045122666,2026-07-09T19:39:33Z,claude-code,claude-fable-5,sgbaird,7.6567,6.3,28,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+29164393064,2026-07-11T18:57:13Z,claude-code,claude-fable-5,sgbaird,2.1928,1.1,9,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+29273166305,2026-07-13T18:06:56Z,claude-code,claude-fable-5,ctrhjk,8.6711,11.8,27,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29280899637,2026-07-13T20:03:52Z,claude-code,claude-fable-5,ctrhjk,6.3876,6.4,17,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29289734434,2026-07-13T22:23:49Z,claude-code,claude-opus-4-8,sgbaird,0.1641,0.2,3,success,claude ping test
+29291841457,2026-07-13T23:03:14Z,claude-code-review,claude-sonnet-5,sgbaird,0.2727,0.5,9,success,Add dummy commit message to tmp.txt
+29291847653,2026-07-13T23:03:21Z,claude-code,claude-opus-4-8,sgbaird,0.1837,0.3,4,success,Add dummy commit message to tmp.txt
+29292428861,2026-07-13T23:14:27Z,claude-code,claude-fable-5,sgbaird,0.7662,1.4,9,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29301657041,2026-07-14T02:40:51Z,claude-code,claude-fable-5,sgbaird,4.5059,8.4,32,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29302177205,2026-07-14T02:53:52Z,claude-code,claude-fable-5,sgbaird,2.9096,5.5,24,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29365128405,2026-07-14T20:17:23Z,claude-code,claude-fable-5,ctrhjk,2.566,4.2,17,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29368194341,2026-07-14T21:04:52Z,claude-code,claude-fable-5,ctrhjk,4.2912,7.4,23,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29377416707,2026-07-14T23:52:36Z,claude-code,claude-fable-5,ctrhjk,1.9376,2.7,12,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29378641221,2026-07-15T00:17:49Z,claude-code,claude-fable-5,sgbaird,7.2458,10.7,43,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29438037573,2026-07-15T17:49:03Z,claude-code,claude-fable-5,ctrhjk,6.7327,11.7,31,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29447783977,2026-07-15T20:18:21Z,claude-code,claude-fable-5,sgbaird,1.0659,2.2,12,success,IDETC Presentation Preparation
+29528810906,2026-07-16T19:38:34Z,claude-code-review,claude-sonnet-5,me-madsen,0.2081,0.5,17,success,IDETC presentation prep: Doumont template and video notes
+29535699958,2026-07-16T21:21:05Z,claude-code,claude-fable-5,ctrhjk,5.6384,12.0,30,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29613250614,2026-07-17T21:00:54Z,claude-code,claude-fable-5,me-madsen,1.6189,2.3,17,success,IDETC presentation prep: Doumont template and video notes
+29618557171,2026-07-17T22:40:05Z,claude-code,claude-fable-5,me-madsen,0.9377,0.7,4,success,Scaffold Bayesian-optimization script with honegumi + customized tensegrity camp
+29619367711,2026-07-17T22:57:34Z,claude-code,claude-fable-5,sgbaird,5.4788,6.5,37,success,Defining the Search Space for T3 Optimization Campaign (Parameters/Constraints)
+29651825945,2026-07-18T16:22:23Z,claude-code,claude-fable-5,sgbaird,2.1976,3.6,21,success,IDETC presentation prep: Doumont template and video notes
+29653040489,2026-07-18T16:59:30Z,claude-code,claude-fable-5,sgbaird,2.0686,4.0,17,success,IDETC presentation prep: Doumont template and video notes
+29654186585,2026-07-18T17:34:48Z,claude-code,claude-fable-5,sgbaird,1.6874,2.8,18,success,IDETC presentation prep: Doumont template and video notes
+29654730309,2026-07-18T17:51:36Z,claude-code,claude-fable-5,sgbaird,1.9764,3.1,21,success,IDETC presentation prep: Doumont template and video notes
+29658564145,2026-07-18T19:50:41Z,claude-code,claude-fable-5,sgbaird,2.3151,3.3,23,success,IDETC presentation prep: Doumont template and video notes
+29658605332,2026-07-18T19:52:01Z,claude-code,claude-fable-5,sgbaird,0.7331,0.7,5,success,IDETC presentation prep: Doumont template and video notes
+29661999824,2026-07-18T21:39:28Z,claude-code,claude-fable-5,sgbaird,1.3854,2.0,9,success,IDETC presentation prep: Doumont template and video notes
+29664673459,2026-07-18T23:07:37Z,claude-code,claude-fable-5,sgbaird,1.3784,2.0,11,success,IDETC presentation prep: Doumont template and video notes
+29664735112,2026-07-18T23:09:44Z,claude-code,claude-fable-5,sgbaird,2.3141,3.3,9,success,IDETC presentation prep: Doumont template and video notes
+29847382779,2026-07-21T16:10:17Z,claude-code,claude-fable-5,ctrhjk,6.5238,9.7,40,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29849137810,2026-07-21T16:33:38Z,claude-code,claude-fable-5,ctrhjk,1.1796,1.1,10,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29849281295,2026-07-21T16:35:29Z,claude-code,claude-fable-5,me-madsen,3.7106,4.7,32,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29852009117,2026-07-21T17:13:18Z,claude-code,claude-fable-5,ctrhjk,4.9492,8.9,43,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29863882604,2026-07-21T20:00:03Z,claude-code,claude-fable-5,sgbaird,15.3462,30.1,71,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29873025185,2026-07-21T22:14:05Z,claude-code,claude-fable-5,sgbaird,3.6338,5.0,32,success,IDETC presentation prep: Doumont template and video notes
+29875632057,2026-07-21T22:59:26Z,claude-code,claude-fable-5,sgbaird,4.1604,6.0,37,success,IDETC presentation prep: Doumont template and video notes
+29875639967,2026-07-21T22:59:35Z,claude-code,claude-fable-5,me-madsen,4.8037,7.1,26,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29876073101,2026-07-21T23:07:03Z,claude-code,claude-fable-5,me-madsen,9.8926,19.1,49,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29878490948,2026-07-21T23:52:24Z,claude-code,claude-fable-5,me-madsen,3.1072,3.2,15,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+29878590836,2026-07-21T23:54:18Z,claude-code,claude-fable-5,me-madsen,5.0682,5.6,39,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29932022331,2026-07-22T15:09:26Z,claude-code,claude-fable-5,sgbaird,2.4889,3.6,13,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29942441841,2026-07-22T17:27:58Z,claude-code,claude-fable-5,me-madsen,2.6293,2.2,13,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29944254549,2026-07-22T17:53:00Z,claude-code,claude-fable-5,me-madsen,1.7279,1.6,8,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29957593838,2026-07-22T21:02:02Z,claude-code,claude-fable-5,me-madsen,5.001,6.4,37,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+29963878606,2026-07-22T22:44:14Z,claude-code,claude-fable-5,me-madsen,3.2782,5.0,25,success,IDETC presentation prep: Doumont template and video notes
+29979368626,2026-07-23T04:22:04Z,claude-code,claude-fable-5,sgbaird,16.2414,26.4,77,success,Replace manual support painting with general-purpose Bambu Studio PLA recipe + m
+29979717112,2026-07-23T04:30:31Z,claude-code,claude-fable-5,sgbaird,4.2381,19.2,26,success,Replace manual support painting with general-purpose Bambu Studio PLA recipe + m
+29981270555,2026-07-23T05:06:40Z,claude-code,claude-fable-5,sgbaird,6.8403,16.4,38,success,Replace manual support painting with general-purpose Bambu Studio PLA recipe + m
+30027187803,2026-07-23T16:55:21Z,claude-code,claude-fable-5,me-madsen,2.3829,4.8,20,success,Possibilities for activating pre-tensioning in additively manufactured tensegrit
+30038953940,2026-07-23T19:40:50Z,claude-code,claude-fable-5,sgbaird,2.1313,1.2,9,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30039719412,2026-07-23T19:52:01Z,claude-code,claude-fable-5,sgbaird,1.6287,2.5,14,success,alternatives to felt stack
+30065641777,2026-07-24T04:00:14Z,claude-code,claude-fable-5,sgbaird,1.4703,2.5,14,success,Is a high speed RPi cam a thing?
+30066582635,2026-07-24T04:21:27Z,claude-code,claude-fable-5,sgbaird,2.4943,6.6,21,success,Is a high speed RPi cam a thing?
+30068803847,2026-07-24T05:12:17Z,claude-code,claude-fable-5,sgbaird,8.8559,17.9,52,success,Is a high speed RPi cam a thing?
+30099190158,2026-07-24T14:00:20Z,claude-code,claude-fable-5,sgbaird,5.7922,18.0,36,success,Is a high speed RPi cam a thing?
+30151689796,2026-07-25T08:46:23Z,claude-code,claude-fable-5,sgbaird,6.9761,10.7,59,success,Is a high speed RPi cam a thing?
+30152538347,2026-07-25T09:16:36Z,claude-code,claude-fable-5,sgbaird,6.0256,11.0,45,success,alternatives to felt stack
+30166983232,2026-07-25T17:07:00Z,claude-code,claude-fable-5,sgbaird,1.7349,2.7,15,success,alternatives to felt stack
+30167029193,2026-07-25T17:08:27Z,claude-code,claude-fable-5,sgbaird,1.082,2.8,7,success,alternatives to felt stack
+30167187383,2026-07-25T17:13:10Z,claude-code,claude-fable-5,sgbaird,1.92,5.0,14,success,alternatives to felt stack
+30170587421,2026-07-25T18:55:27Z,claude-code,claude-fable-5,sgbaird,13.5702,23.2,60,success,Is a high speed RPi cam a thing?
+30172044594,2026-07-25T19:39:37Z,claude-code,claude-fable-5,sgbaird,5.9483,11.4,38,success,Is a high speed RPi cam a thing?
+30172894992,2026-07-25T20:05:33Z,claude-code,claude-fable-5,sgbaird,28.3928,36.4,112,success,Replace manual support painting with general-purpose Bambu Studio PLA recipe + m
+30181833128,2026-07-26T00:49:43Z,claude-code,claude-fable-5,sgbaird,2.089,1.5,6,success,Replace manual support painting with general-purpose Bambu Studio PLA recipe + m
+30184512534,2026-07-26T02:24:48Z,claude-code,claude-fable-5,sgbaird,4.2694,14.3,28,success,IDETC presentation prep: Doumont template and video notes
+30186640768,2026-07-26T03:44:13Z,claude-code,claude-fable-5,sgbaird,42.3217,26.5,55,success,IDETC presentation prep: Doumont template and video notes
+30384106357,2026-07-28T17:42:28Z,claude-code,claude-fable-5,me-madsen,7.335,9.1,28,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30387652019,2026-07-28T18:29:21Z,claude-code,claude-fable-5,me-madsen,1.6133,4.7,16,success,Defining the Search Space for T3 Optimization Campaign (Parameters/Constraints)
+30478978425,2026-07-29T18:14:03Z,claude-code,claude-fable-5,me-madsen,8.3561,11.5,43,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30482350493,2026-07-29T18:58:46Z,claude-code,claude-fable-5,me-madsen,1.4641,1.6,3,success,alternatives to felt stack
+30557576119,2026-07-30T15:37:14Z,claude-code,claude-fable-5,sgbaird,32.1829,69.8,102,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+30564292281,2026-07-30T17:03:38Z,claude-code,claude-fable-5,sgbaird,0.6743,0.9,7,success,Order USB wifi adapter for drop tower
+30564938213,2026-07-30T17:12:24Z,claude-code,claude-fable-5,sgbaird,1.6368,2.4,18,success,Wi-Fi connection for high speed camera
+30568215488,2026-07-30T17:56:36Z,claude-code,claude-fable-5,me-madsen,10.8582,12.0,49,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30569554376,2026-07-30T18:14:43Z,claude-code,claude-fable-5,sgbaird,1.2137,0.7,4,success,alternatives to felt stack
+30577076840,2026-07-30T19:57:43Z,claude-code,claude-fable-5,me-madsen,0.0039,0.0,1,failure,Order Replacement Kleintool Guide Rod Locking Pin for Drop Tower
+30580734244,2026-07-30T20:47:58Z,claude-code,claude-fable-5,me-madsen,0,0.0,1,failure,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30581317291,2026-07-30T20:56:09Z,claude-code,claude-fable-5,me-madsen,0,0.0,1,failure,Claude Code
+30589401504,2026-07-30T23:05:44Z,claude-code,claude-opus-5,sgbaird,11.9862,27.7,97,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30592102790,2026-07-30T23:57:35Z,claude-code,claude-opus-5,sgbaird,6.6295,11.2,60,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30593181458,2026-07-31T00:18:53Z,claude-code,claude-opus-5,sgbaird,7.1099,30.5,70,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30593316040,2026-07-31T00:21:41Z,claude-code,claude-opus-5,sgbaird,18.6606,150.7,138,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30594829994,2026-07-31T00:53:28Z,claude-code,claude-opus-5,sgbaird,1.8739,5.2,30,success,Wi-Fi connection for high speed camera
+30605798311,2026-07-31T05:04:37Z,claude-code,claude-opus-5,sgbaird,1.0916,1.7,12,success,Tensegrity-like Lattice Structures Abstract for TMS 2027
+30653315442,2026-07-31T17:58:45Z,claude-code,claude-opus-5,sgbaird,7.3051,32.4,72,success,Better understanding the drop tower analysis
+30653900532,2026-07-31T18:07:20Z,claude-code,claude-opus-5,sgbaird,6.0568,18.4,77,success,IDETC presentation prep: Doumont template and video notes
+30655565377,2026-07-31T18:32:36Z,claude-code,claude-opus-5,sgbaird,8.5918,34.6,95,success,IDETC presentation prep: Doumont template and video notes
+30655932082,2026-07-31T18:38:09Z,claude-code,claude-opus-5,sgbaird,18.0097,37.5,144,success,IDETC presentation prep: Doumont template and video notes
+30656282772,2026-07-31T18:43:20Z,claude-code,claude-opus-5,sgbaird,8.203,37.8,100,success,IDETC presentation prep: Doumont template and video notes
+30656532783,2026-07-31T18:46:59Z,claude-code,claude-opus-5,sgbaird,5.4785,11.7,69,success,IDETC presentation prep: Doumont template and video notes
+30855956518,2026-08-03T21:45:23Z,claude-code,claude-opus-5,me-madsen,20.2936,170.9,147,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30856183775,2026-08-03T21:48:46Z,claude-code,claude-opus-5,me-madsen,1.3744,1.3,8,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30861453719,2026-08-03T23:12:25Z,claude-code,claude-opus-5,me-madsen,2.2108,4.2,17,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30862417942,2026-08-03T23:29:14Z,claude-code,claude-opus-5,me-madsen,2.4273,3.6,19,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30863616438,2026-08-03T23:50:29Z,claude-code,claude-opus-5,me-madsen,2.6056,4.8,17,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+30930946609,2026-08-04T16:49:00Z,claude-code,claude-opus-5,achris0520,3.3658,8.7,31,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+30942313609,2026-08-04T19:13:50Z,claude-code,claude-opus-5,me-madsen,2.5837,6.8,43,success,Order Replacement Kleintool Guide Rod Locking Pin for Drop Tower
+30947327762,2026-08-04T20:19:30Z,claude-code,claude-opus-5,me-madsen,1.194,1.9,9,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+30948276923,2026-08-04T20:31:51Z,claude-code,claude-opus-5,achris0520,0.919,0.8,5,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+30960571864,2026-08-04T23:36:42Z,claude-code,claude-opus-5,sgbaird,11.5822,33.6,82,success,attempt onshape feature tree api
+30966989826,2026-08-05T01:38:35Z,claude-code,claude-opus-5,me-madsen,1.1433,3.2,17,success,attempt onshape feature tree api
+30967351172,2026-08-05T01:45:45Z,claude-code,claude-opus-5,sgbaird,1.0949,2.9,21,success,attempt onshape feature tree api
+30967493489,2026-08-05T01:48:40Z,claude-code,claude-opus-5,sgbaird,6.0002,20.9,71,success,attempt onshape feature tree api
+31062091866,2026-08-06T01:12:57Z,claude-code,claude-opus-5,me-madsen,12.1215,25.6,71,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+31067453784,2026-08-06T03:05:32Z,claude-code,claude-opus-5,sgbaird,7.5662,21.6,69,success,attempt onshape feature tree api
+31068180912,2026-08-06T03:20:50Z,claude-code,claude-opus-5,sgbaird,0.6318,2.1,10,success,Order USB wifi adapter for drop tower
+31068385897,2026-08-06T03:25:16Z,claude-code,claude-opus-5,sgbaird,4.2134,9.5,59,success,IDETC presentation prep: Doumont template and video notes
+31068413681,2026-08-06T03:25:52Z,claude-code,claude-opus-5,sgbaird,1.5289,4.9,25,success,Better understanding the drop tower analysis
+31130796623,2026-08-06T23:22:57Z,claude-code,claude-fable-5,me-madsen,1.5684,1.8,14,success,Diagnosing issue with H2D printing nozzle
+31131936364,2026-08-06T23:39:45Z,claude-code,claude-fable-5,me-madsen,6.3734,5.6,23,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+31132401957,2026-08-06T23:48:44Z,claude-code,claude-fable-5,me-madsen,4.8031,9.2,24,success,Better understanding the drop tower analysis
+31142489676,2026-08-07T02:50:48Z,claude-code-review,claude-sonnet-5,sgbaird,0.7718,1.7,18,success,Energy-absorption measurability review + drop-tower metrics primer
+31142504300,2026-08-07T02:51:05Z,claude-code,claude-fable-5,sgbaird,3.8619,5.8,31,success,Energy-absorption measurability review + drop-tower metrics primer
+31200340597,2026-08-07T17:01:18Z,claude-code,claude-fable-5,sgbaird,3.0682,5.9,18,success,Energy-absorption measurability review + drop-tower metrics primer
+31214782899,2026-08-07T20:11:39Z,claude-code,claude-fable-5,sgbaird,1.2667,2.5,9,success,Energy-absorption measurability review + drop-tower metrics primer
+31432573545,2026-08-10T21:10:10Z,claude-code,claude-fable-5,me-madsen,2.056,3.5,18,success,Order Replacement Kleintool Guide Rod Locking Pin for Drop Tower
+31435518809,2026-08-10T21:48:21Z,claude-code,claude-fable-5,me-madsen,10.1031,8.4,42,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+31489396102,2026-08-11T12:03:08Z,claude-code,claude-fable-5,sgbaird,5.1778,3.2,18,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+31490645701,2026-08-11T12:19:16Z,claude-code,claude-fable-5,sgbaird,2.1069,4.2,11,success,Energy-absorption measurability review + drop-tower metrics primer
+31548998529,2026-08-12T00:06:18Z,claude-code,claude-fable-5,me-madsen,2.6784,0.7,4,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+31632833289,2026-08-12T19:28:37Z,claude-code,claude-fable-5,me-madsen,11.8004,11.2,41,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+31696660173,2026-08-13T11:42:03Z,claude-code,claude-fable-5,sgbaird,1.4338,2.1,4,success,Energy-absorption measurability review + drop-tower metrics primer
+31737082910,2026-08-13T19:41:18Z,claude-code,claude-fable-5,sgbaird,2.7716,2.4,8,success,IDETC presentation prep: Doumont template and video notes
+31747470949,2026-08-13T21:51:18Z,claude-code,claude-fable-5,sgbaird,2.7066,1.8,9,success,IDETC presentation prep: Doumont template and video notes
+31748273090,2026-08-13T22:02:24Z,claude-code,claude-fable-5,sgbaird,4.26,3.1,18,success,IDETC presentation prep: Doumont template and video notes
+32044855873,2026-08-17T16:16:02Z,claude-code,claude-fable-5,sgbaird,5.4979,1.5,17,success,Where are we at on this project?
+32047499002,2026-08-17T16:50:26Z,claude-code,claude-fable-5,sgbaird,2.298,2.7,21,success,T-3_01 Prints
+32047832131,2026-08-17T16:54:29Z,claude-code,claude-fable-5,sgbaird,5.8983,9.0,34,success,Better understanding the drop tower analysis
+32048292238,2026-08-17T16:59:58Z,claude-code,claude-fable-5,sgbaird,11.8709,22.7,70,success,Better understanding the drop tower analysis
+32048339037,2026-08-17T17:00:28Z,claude-code,claude-fable-5,sgbaird,1.0446,1.5,8,success,Diagnosing issue with H2D printing nozzle
+32057525726,2026-08-17T18:56:05Z,claude-code,claude-fable-5,sgbaird,1.1883,0.8,4,success,Diagnosing issue with H2D printing nozzle
+32076854546,2026-08-17T22:37:48Z,claude-code-review,claude-sonnet-5,sgbaird,6.8958,11.2,14,success,IDETC teaching slides: plain-language drop-test explainers (#94)
+32076959401,2026-08-17T22:39:12Z,claude-code,claude-fable-5,sgbaird,1.9564,2.6,16,success,IDETC teaching slides: plain-language drop-test explainers (#94)
+32077590813,2026-08-17T22:47:22Z,claude-code,claude-fable-5,sgbaird,18.6998,43.0,74,success,IDETC teaching slides: plain-language drop-test explainers (#94)
+32179074100,2026-08-18T19:52:33Z,claude-code,claude-fable-5,sgbaird,9.6255,16.9,41,success,IDETC presentation prep: Doumont template and video notes
+32185386991,2026-08-18T21:00:11Z,claude-code,claude-fable-5,sgbaird,26.9779,81.8,171,success,IDETC presentation prep: Doumont template and video notes
+32194881715,2026-08-18T22:54:55Z,claude-code,claude-fable-5,sgbaird,39.6595,47.9,121,success,IDETC presentation prep: Doumont template and video notes
+32195973039,2026-08-18T23:09:41Z,claude-code,claude-fable-5,me-madsen,3.5469,5.8,32,success,Defining the Search Space for T3 Optimization Campaign (Parameters/Constraints)
+32196036369,2026-08-18T23:10:32Z,claude-code,claude-fable-5,me-madsen,4.2644,1.9,15,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+32210780444,2026-08-19T03:03:46Z,claude-code,claude-fable-5,sgbaird,11.1341,9.1,41,success,IDETC presentation prep: Doumont template and video notes
+32282692250,2026-08-19T17:37:42Z,claude-code,claude-fable-5,sgbaird,13.2371,25.1,50,success,IDETC presentation prep: Doumont template and video notes
+32283730302,2026-08-19T17:48:25Z,claude-code,claude-fable-5,sgbaird,14.3946,25.4,43,success,IDETC presentation prep: Doumont template and video notes
+32294672348,2026-08-19T19:44:17Z,claude-code,claude-fable-5,me-madsen,14.935,13.9,57,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+32310321607,2026-08-19T22:46:07Z,claude-code,claude-fable-5,me-madsen,9.6671,6.8,34,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+32400136365,2026-08-20T17:53:37Z,claude-code,claude-fable-5,sgbaird,3.2394,4.9,32,success,Add reference STL models for canonical tensegrity structures + Edison literature
+32402099738,2026-08-20T18:14:35Z,claude-code,claude-fable-5,sgbaird,6.9862,6.1,28,success,IDETC presentation prep: Doumont template and video notes
+32404422687,2026-08-20T18:39:50Z,claude-code,claude-fable-5,sgbaird,4.3804,3.4,17,success,"How many ""drops"" have been run on the drop tower in the context of this reposito"
+32406586612,2026-08-20T19:03:24Z,claude-code,claude-fable-5,sgbaird,0.6683,0.4,3,success,"How many ""drops"" have been run on the drop tower in the context of this reposito"
+32409227460,2026-08-20T19:32:35Z,claude-code,claude-fable-5,me-madsen,15.744,22.5,85,success,IDETC presentation prep: Doumont template and video notes
+32414390445,2026-08-20T20:29:48Z,claude-code,claude-fable-5,me-madsen,6.8149,4.5,29,success,IDETC presentation prep: Doumont template and video notes
+32420380372,2026-08-20T21:38:02Z,claude-code,claude-fable-5,me-madsen,5.9671,3.7,20,success,IDETC presentation prep: Doumont template and video notes
+32421259907,2026-08-20T21:48:44Z,claude-code,claude-fable-5,me-madsen,9.7759,5.7,41,success,IDETC presentation prep: Doumont template and video notes
+32422521420,2026-08-20T22:04:07Z,claude-code,claude-fable-5,me-madsen,21.0736,30.0,69,success,IDETC presentation prep: Doumont template and video notes
+32428357139,2026-08-20T23:22:11Z,claude-code,claude-fable-5,me-madsen,15.4948,13.6,56,success,IDETC presentation prep: Doumont template and video notes
+32430384176,2026-08-20T23:51:50Z,claude-code,claude-fable-5,me-madsen,10.4131,20.0,55,success,IDETC teaching slides: plain-language drop-test explainers (#94)
+32434892482,2026-08-21T01:02:38Z,claude-code,claude-fable-5,me-madsen,3.6043,4.4,29,success,T-3_01 Prints
+32438171407,2026-08-21T01:58:21Z,claude-code,claude-fable-5,me-madsen,23.6624,23.0,80,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+32441602096,2026-08-21T02:56:39Z,claude-code,claude-fable-5,sgbaird,6.1744,3.9,18,success,"Add drop-test protocol, Edison synthesis, and first-data analysis"
+32441846161,2026-08-21T03:00:49Z,claude-code-review,claude-sonnet-5,sgbaird,4.4288,9.0,18,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32441868924,2026-08-21T03:01:11Z,claude-code,claude-fable-5,sgbaird,1.1569,1.1,8,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32442217813,2026-08-21T03:06:49Z,claude-code,claude-fable-5,sgbaird,7.4746,15.6,46,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32451653004,2026-08-21T05:44:17Z,claude-code,claude-fable-5,sgbaird,5.5519,19.7,37,failure,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32451773992,2026-08-21T05:46:08Z,claude-code,claude-fable-5,sgbaird,4.9165,14.9,34,failure,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32452057990,2026-08-21T05:50:44Z,claude-code,claude-fable-5,sgbaird,9.2709,9.7,35,failure,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32505022398,2026-08-21T16:50:35Z,claude-code,claude-fable-5,sgbaird,0,0.0,1,failure,Add reference STL models for canonical tensegrity structures + Edison literature
+32506536415,2026-08-21T17:07:52Z,claude-code,claude-opus-5,sgbaird,2.6722,4.9,38,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32506823424,2026-08-21T17:11:06Z,claude-code,claude-opus-5,sgbaird,1.2492,2.9,19,success,IDETC teaching slides: plain-language drop-test explainers (#94)
+32506872351,2026-08-21T17:11:40Z,claude-code,claude-opus-5,sgbaird,10.5177,42.7,75,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32507679930,2026-08-21T17:20:49Z,claude-code,claude-opus-5,sgbaird,0.6778,1.1,11,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32508007938,2026-08-21T17:24:36Z,claude-code,claude-opus-5,sgbaird,1.4871,3.7,20,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32508463937,2026-08-21T17:29:57Z,claude-code,claude-opus-5,sgbaird,3.2861,7.5,37,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32509054429,2026-08-21T17:36:40Z,claude-code,claude-opus-5,sgbaird,6.4636,23.1,85,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32509444902,2026-08-21T17:41:16Z,claude-code,claude-opus-5,sgbaird,2.6876,7.5,34,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32509732945,2026-08-21T17:44:36Z,claude-code,claude-opus-5,sgbaird,4.027,42.3,42,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+32509821551,2026-08-21T17:45:37Z,claude-code,claude-opus-5,sgbaird,1.2454,3.1,18,success,Add reference STL models for canonical tensegrity structures + Edison literature
+32510009623,2026-08-21T17:47:48Z,claude-code,claude-opus-5,sgbaird,7.8603,25.8,69,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32513318099,2026-08-21T18:26:00Z,claude-code,claude-opus-5,sgbaird,2.4584,5.8,29,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32522216773,2026-08-21T20:10:31Z,claude-code,claude-opus-5,sgbaird,3.2199,6.1,32,success,Add T3-prism (3-strut tensegrity) parametric CAD with Bambu PETG `.gcode.3mf` sl
+32522545227,2026-08-21T20:14:24Z,claude-code,claude-opus-5,sgbaird,7.6387,15.1,70,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32523806553,2026-08-21T20:29:25Z,claude-code,claude-opus-5,sgbaird,5.5799,34.8,52,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32525538386,2026-08-21T20:49:53Z,claude-code,claude-opus-5,me-madsen,5.8103,18.6,68,success,Replace manual support painting with general-purpose Bambu Studio PLA recipe + m
+32535638312,2026-08-21T23:06:22Z,claude-code,claude-opus-5,sgbaird,5.1918,51.9,48,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32537064697,2026-08-21T23:29:54Z,claude-code,claude-opus-5,sgbaird,2.5933,4.8,30,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32537527263,2026-08-21T23:37:20Z,claude-code,claude-opus-5,sgbaird,3.6689,6.9,41,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32538388144,2026-08-21T23:51:56Z,claude-code,claude-opus-5,sgbaird,3.5477,6.3,47,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32546871485,2026-08-22T02:40:05Z,claude-code,claude-opus-5,sgbaird,13.1113,96.3,106,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32547218775,2026-08-22T02:47:39Z,claude-code,claude-opus-5,sgbaird,2.529,3.9,20,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32547292020,2026-08-22T02:49:19Z,claude-code,claude-opus-5,sgbaird,5.8363,13.1,73,success,Add reference STL models for canonical tensegrity structures + Edison literature
+32548388852,2026-08-22T03:13:31Z,claude-code,claude-opus-5,sgbaird,1.9307,3.4,19,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32587705182,2026-08-22T17:25:54Z,claude-code,claude-fable-5,sgbaird,118.9826,135.3,320,success,ASME Journal of Mechanical Design - T3 prism optimization manuscript
+32599001244,2026-08-22T21:14:09Z,claude-code,claude-fable-5,sgbaird,48.8526,89.9,239,success,ASME Journal of Mechanical Design - T3 prism optimization manuscript
+32599569517,2026-08-22T21:25:58Z,claude-code,claude-fable-5,sgbaird,31.6765,50.7,107,success,Add reference STL models for canonical tensegrity structures + Edison literature
+32606061933,2026-08-22T23:45:14Z,claude-code,claude-fable-5,me-madsen,6.7842,9.3,43,success,Energy-absorption measurability review + drop-tower metrics primer
+32606325608,2026-08-22T23:51:14Z,claude-code,claude-fable-5,me-madsen,5.6964,7.3,43,success,IDETC teaching slides: plain-language drop-test explainers (#94)
+32611021740,2026-08-23T01:45:49Z,claude-code-review,claude-sonnet-5,sgbaird,2.3701,9.6,43,success,ASME Journal of Mechanical Design - T3 prism optimization manuscript
+32611272327,2026-08-23T01:48:56Z,claude-code,claude-fable-5,sgbaird,19.6105,20.7,103,success,ASME Journal of Mechanical Design - T3 prism optimization manuscript
+32670383429,2026-08-23T22:22:30Z,claude-code,claude-fable-5,me-madsen,3.3796,3.8,21,success,Energy-absorption measurability review + drop-tower metrics primer
+32750818575,2026-08-24T16:26:13Z,claude-code,claude-fable-5,sgbaird,7.6189,6.9,38,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32751873330,2026-08-24T16:37:11Z,claude-code,claude-fable-5,sgbaird,11.0998,9.6,31,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
+32752586510,2026-08-24T16:44:36Z,claude-code,claude-fable-5,sgbaird,31.7976,52.0,115,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32764684881,2026-08-24T18:50:30Z,claude-code,claude-fable-5,sgbaird,4.4957,2.8,13,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32764849381,2026-08-24T18:52:14Z,claude-code,claude-fable-5,sgbaird,4.3443,3.8,11,success,"Add runnable tensegrity simulation demos (MuJoCo, PyBullet, PyChrono, Newton, Di"
+32765981976,2026-08-24T19:03:53Z,claude-code,claude-fable-5,sgbaird,5.2669,9.5,30,success,"For all AI pings (claude, copilot) throughout the entire repository, what would "
+32767358889,2026-08-24T19:18:05Z,claude-code,claude-fable-5,sgbaird,3.4777,3.7,14,success,Add T-3_01 Sobol batch print key (ID-to-spec mapping + as-printed .3mf)
