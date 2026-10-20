@@ -1,0 +1,316 @@
+Question: For a Bayesian-optimization-driven, multi-material FDM 3D-printed
+tensegrity-inspired energy-absorbing structure made from TPU (flexible tension
+elements) + PETG (rigid compression struts) -- NOT PLA -- enumerate and
+recommend, with literature citations:
+
+(A) BASE / SEED UNIT-CELL TOPOLOGIES suitable as the starting design family
+    (e.g., 3-bar / 4-bar prism, octahedron, icosahedron, expanded octahedron,
+    truncated tetrahedron, "tensegrity-inspired" Pajunen-style cells, stacked
+    prisms, lattice tilings of these). For each, note manufacturability with
+    multi-material FDM and reported energy-absorption performance.
+
+(B) DESIGN VARIABLES that are normally swept in BO of these structures,
+    grouped as:
+      1. Geometric/topological (strut length L, strut diameter D, slenderness
+         L/D, cable/skin cross-section, prestress level, twist angle, cell
+         tiling Nx*Ny*Nz, relative density, member connectivity).
+      2. Material/print-parameter (PETG vs TPU layer height, infill % and
+         pattern for PETG struts, TPU shore hardness e.g. 85A/95A, TPU wall
+         count / infill, print temperature, print speed, bed adhesion,
+         interface wrapping thickness following Ye et al. 2023 /
+         Khatri 2024).
+      3. Loading/test variables (drop height, impactor mass, quasi-static
+         strain rate) -- treat as fixed conditions, not BO variables.
+
+(C) Specifically address PETG-vs-PLA differences relevant to BO bounds and
+    constraints: PETG is tougher, less brittle, has lower stiffness and lower
+    glass-transition temperature than PLA; how does this shift sensible
+    variable ranges (e.g., strut slenderness, infill, layer adhesion, allowed
+    impact energy before brittle fracture)?
+
+(D) Recommend reasonable numeric BOUNDS for each continuous variable and
+    CATEGORIES for each categorical variable, suitable for a BoTorch/Ax
+    search space for an undergraduate-led campaign of ~50-100 specimens.
+
+(E) Recommended PRIMARY OBJECTIVES (peak transmitted force, specific energy
+    absorption SEA, compaction efficiency, plateau stress) and any
+    constraints (max specimen mass, max print time, min cycle durability).
+
+Return a structured answer with tables where helpful. Cite peer-reviewed
+sources for the structures, the PETG/TPU mechanical data, and prior BO
+campaigns on architected/lattice/tensegrity energy absorbers.
+
+# Bayesian-Optimization-Driven Multi-Material FDM Tensegrity-Inspired Energy Absorbers: Design Framework for PETG + TPU
+
+## (A) Base / Seed Unit-Cell Topologies
+
+The following table enumerates candidate tensegrity and tensegrity-inspired unit-cell topologies suitable as starting design families, with assessment of manufacturability and energy-absorption evidence.
+
+| Topology Name | Members (bars/cables) | Key Reference | Reported EA Performance | Multi-Material FDM Manufacturability | Recommended Priority |
+|---|---:|---|---|---|---|
+| T3 / 3-bar prism | 3 / 9 (classical T3 prism) | Zhang et al. 2018; review coverage in Micheletti & Podio-Guidugli 2022 | T3 prism with metal-rubber insert showed increased energy absorption and tunable nonlinearity under static/dynamic loading versus prism alone; useful proof of concept, but not polymer FDM-specific (micheletti2022seventyyearsof pages 23-24) | Good for PETG struts + TPU tendons in principle; simple member count and clear load path, but needs careful joint design and twist-control during print/assembly | **Medium** |
+| 4-strut simplex | 4 / 12 (simplex-type tensegrity module) | Al Sabouni-Zawadzka et al. 2024 | Experimental uniaxial compression on printed modules showed tensegrity-like response, post-critical strut behavior, and strong dependence on parent-material elongation-at-break; useful as a mechanically validated seed cell, though published tests were not multi-material FDM (sabounizawadzka2024experimentalinvestigationson pages 1-3, sabounizawadzka2024experimentalinvestigationsona pages 6-11) | Moderate: topology is compact and experimentally validated, but printed rigid joints and manufacturing inaccuracies strongly affect behavior; FDM feasible if joints are thickened and TPU paths are simplified | **High** |
+| Truncated octahedron (Pajunen-style) | 12 / 36 in Pajunen-inspired printable cell; optimized lattice unit also treated as 12 bars + 36 cables equivalent | Pajunen et al. 2019; Zhang et al. 2021 | Best-supported option: high elastic strain-energy absorption, post-buckling stability, reusable impact response, low relative density, and optimized strain-energy storage under stress/volume constraints; specifically proposed as a tessellatable manufacturable unit cell (pajunen2019designandimpact pages 1-2, pajunen2019designandimpact pages 8-9, zhang2021optimizationforenergy pages 1-2) | **Excellent**: tessellation-friendly faces, strongest literature base, already adapted to printable tensegrity-inspired geometry; very suitable for dual-extrusion PETG+TPU and BO campaigns | **Very High / Best seed family** |
+| Truncated tetrahedron | Varies by formulation; regular tensegrity versions reported in the broader tensegrity literature | Zhang & Ohsaki / broader tensegrity topology literature cited in reviews | Strong theoretical/form-finding literature, but little direct polymer energy-absorption evidence found here relative to truncated octahedron; better treated as a secondary exploratory topology (micheletti2022seventyyearsof pages 20-21, liu2019tensegritytopologyoptimization pages 22-22) | Moderate-to-low: printable, but less experimentally validated for energy absorption and less straightforward as an undergrad BO baseline than truncated octahedra or simplex cells | **Low-Medium** |
+| Expanded / regular octahedron | Varies by realization; octahedral families common in lattice literature | General lattice/tensegrity review evidence; truncated-octahedral work is much better supported than regular octahedral tensegrity here | Octet/octahedral families are widely used in energy-absorbing lattices, but direct tensegrity-specific polymer EA evidence in the gathered set is sparse compared with Pajunen-style truncated octahedra (bustihan2026recentadvancesin pages 19-21, micheletti2022seventyyearsof pages 23-24) | Good geometric simplicity for FDM, but weaker direct evidence base for tensegrity-inspired PETG+TPU energy absorbers | **Medium** |
+| Icosahedron tensegrity | Varies by module; icosahedral and truncated-icosahedral modules appear in tensegrity form-finding/stability literature | Micheletti & Podio-Guidugli 2022 review and cited foundational studies | Attractive isotropic tensegrity family, but little direct reported 3D-printed polymer compression/impact EA evidence in the gathered sources; best regarded as a later-stage topology screen (micheletti2022seventyyearsof pages 20-21) | Fair in theory, but node complexity and support burden are higher for multi-material FDM; not ideal as first BO seed family | **Low** |
+| Stacked prism columns | Repeated T3/Tn prisms in columnar chains | Prism-chain and beam literature summarized in tensegrity review | Literature supports tunable softening–stiffening and wave/impact behavior in stacked prism systems; useful for 1D impact columns and sequential collapse studies, but less directly validated here as reusable polymer EA lattices than truncated octahedra (micheletti2022seventyyearsof pages 23-24, pajunen2019designandimpact pages 9-9) | Good for simple specimen fabrication and drop-tower testing; easier than full 3D lattices, though less space-filling and less scalable to panel cores | **High for pilot tests; Medium overall** |
+| 2D/3D lattice tilings of truncated octahedra | Repeated unit-cell assembly | Pajunen et al. 2019; Zhang et al. 2021 | Most promising system-level extension: Pajunen explicitly proposes tessellation into multidimensional lattices, and Zhang optimizes 3D lattices of truncated-octahedral units for stored strain energy/energy absorption (pajunen2019designandimpact pages 8-9, zhang2021optimizationforenergy pages 1-2) | **Excellent**: natural next step after single-cell screening; compatible with BO over tiling counts, relative density, and graded TPU/PETG layouts | **Very High** |
+
+
+*Table: This table compares candidate seed unit-cell families for tensegrity-inspired energy absorbers, emphasizing energy-absorption evidence and manufacturability for PETG+TPU multi-material FDM. It is useful for selecting a practical starting topology family before defining a Bayesian optimization search space.*
+
+**Recommended primary seed family:** The **truncated octahedron tensegrity** (Pajunen-style) is the strongest candidate. Pajunen et al. demonstrated a single-material, 3D-printable tensegrity-inspired structure based on a truncated octahedron (12 struts, 36 cables) that exhibited high elastic strain energy absorption, post-buckling stability, resilience under severe deformation, load-limitation, and reusability under repeated impacts (pajunen2019designandimpact pages 1-2). The spherically-jointed variant achieved the lowest energy absorption metric Wmin at ultra-low relative density, placing it in a favorable target region (Wmin < 0.21, ρ*/ρs < 0.1) (pajunen2019designandimpact pages 8-9). Zhang et al. subsequently formulated optimization of 3D tensegrity lattices with truncated octahedral units (24 nodes, 12 bars, 24 cutting cables, 12 edge cables per unit) to maximize stored strain energy, explicitly leveraging bar buckling (zhang2021optimizationforenergy pages 1-2).
+
+The **4-strut simplex module** is the second-best-supported option, with Sabouni-Zawadzka et al. providing experimental uniaxial compression data on 3D-printed modules across multiple AM techniques, parent materials, and cell sizes (20–50 mm edge), using 3.0 mm strut diameter and 0.95 mm cable diameter (sabounizawadzka2024experimentalinvestigationson pages 1-3, sabounizawadzka2024experimentalinvestigationsona pages 6-11). Key findings: elongation at break of the parent material strongly governs module ductility, and post-critical buckling behavior of struts was clearly observed (sabounizawadzka2024experimentalinvestigationsona pages 1-3).
+
+The **T3 (3-bar) prism** has been studied as a metamaterial building block with metal rubber inserts, demonstrating increased energy absorption and tunable nonlinearity under quasi-static, vibration, and impact loading (micheletti2022seventyyearsof pages 23-24). **Stacked prism columns** are practical for pilot drop-tower testing, and **2D/3D lattice tilings** of truncated octahedra represent the natural system-level extension (pajunen2019designandimpact pages 8-9, zhang2021optimizationforenergy pages 1-2).
+
+For **multi-material FDM manufacturability** with PETG (rigid struts) + TPU (flexible tension elements), the truncated octahedron is especially suitable because its tessellation-friendly faces enable systematic tiling, and the distinct compression/tension member roles map naturally to a dual-extrusion PETG/TPU workflow (pajunen2019designandimpact pages 1-2).
+
+---
+
+## (B) Design Variables for BO
+
+The following table provides a comprehensive enumeration of design variables grouped into geometric/topological, material/print-parameter, and loading/test categories, with recommended bounds suitable for a BoTorch/Ax search space.
+
+| Variable | Group | Type | Recommended Bounds/Categories | Rationale/Source |
+|---|---|---|---|---|
+| Strut diameter `D_PETG` | Geometric/Topological | Continuous | 1.5–5.0 mm | Conservative FDM range for 0.4 mm nozzle and undergraduate campaign; Pajunen’s tensegrity-inspired truncated-octahedron used strut diameters around 3.05 mm, with later geometry variants down to 2.6 mm; strut diameter is a standard lattice/EA optimization variable (pajunen2019designandimpact pages 3-4, pajunen2019designandimpact pages 2-3, bustihan2026recentadvancesin pages 6-7) |
+| Cable/skin diameter `D_TPU` | Geometric/Topological | Continuous | 1.0–3.0 mm | Pajunen-style cable diameters were ~1.37–1.8 mm; lower bound keeps TPU roads manufacturable and bonded, upper bound avoids over-stiffening tension network (pajunen2019designandimpact pages 3-4, pajunen2019designandimpact pages 2-3) |
+| Slenderness `L/D` | Geometric/Topological | Continuous | 8–25 | Captures elastic buckling-to-crushing transition while avoiding extremely fragile PETG struts; informed by Pajunen member lengths/diameters and PETG’s lower modulus than PLA (pajunen2019designandimpact pages 2-3, martins2024mechanicalpropertiesof pages 4-6, bustihan2026recentadvancesin pages 6-7) |
+| Twist angle `α` | Geometric/Topological | Continuous | 10°–45° | Meaningful for prism/stacked-prism families and twisted energy absorbers; broad enough to capture stiffness-collapse mode shifts without self-intersection (micheletti2022seventyyearsof pages 23-24, bustihan2025reusable3dprintedthermoplastic pages 7-9) |
+| Prestress level | Geometric/Topological | Continuous | 0–5% tensile prestrain | Pajunen reported 2% prestress as an effective tuning level; Zhang/Ohsaki-type tensegrity optimization treats prestress as a key design variable, but 0–5% is safer for PETG/TPU undergraduate fabrication than higher values (pajunen2019designandimpact pages 3-4, zhang2021optimizationforenergy pages 1-2) |
+| Cell tiling `N_x × N_y × N_z` | Geometric/Topological | Categorical/Ordinal | {1×1×1, 1×1×2, 2×2×1, 2×2×2, 3×3×2, 3×3×3} | Keeps specimen count and print time manageable while allowing single-cell vs lattice effects; BO on architected materials often includes discrete topological layout variables (vangelatos2021strengththroughdefects pages 1-2, vangelatos2021strengththroughdefects pages 2-3) |
+| Relative density `ρ*/ρ_s` | Geometric/Topological | Continuous/Derived | 0.05–0.30 | Covers ultralight to moderately dense polymer lattices; Pajunen targets low relative density, while stochastic lattice studies report useful SEA around 10–25% density (pajunen2019designandimpact pages 8-9, cronau2025energyabsorptionof pages 1-2, cronau2025energyabsorptionof pages 11-11) |
+| Unit-cell topology | Geometric/Topological | Categorical | {Truncated octahedron, 4-strut simplex, T3 prism, Stacked prism} | These are the most defensible seed families for BO: strongest support for truncated octahedron; experimental support for 4-strut simplex; T3 prism established in tensegrity metamaterials; stacked prisms are practical for columnar absorbers (pajunen2019designandimpact pages 1-2, zhang2021optimizationforenergy pages 1-2, sabounizawadzka2024experimentalinvestigationson pages 1-3, micheletti2022seventyyearsof pages 23-24) |
+| PETG layer height | Material/Print | Continuous | 0.15–0.30 mm | Lies inside reported FDM range where layer height strongly affects strength and print time; 0.15–0.30 mm is realistic for PETG campaign printing (bustihan2026recentadvancesin pages 6-7, hsueh2021effectofprinting pages 2-3) |
+| PETG infill % | Material/Print | Continuous | 40–100% | Infill percentage is among the most influential FDM parameters; lower bound avoids overly weak PETG struts, upper bound allows near-solid compression members (hsueh2021effectofprinting pages 2-3, bembenek2022researchonthe pages 2-3) |
+| PETG infill pattern | Material/Print | Categorical | {Rectilinear, Grid, Gyroid} | Common slicer choices with distinct anisotropy and crush behavior; pattern is a standard AM variable in lattice/property studies (bustihan2026recentadvancesin pages 6-7, hsueh2021effectofprinting pages 2-3) |
+| PETG print temperature | Material/Print | Continuous | 230–250 °C | PETG typically requires >230 °C for good fusion; higher temperatures reduce porosity but too high can degrade dimensional fidelity; this range is well-supported for mechanical optimization (hsueh2021effectofprinting pages 2-3, hsueh2021effectofprinting pages 6-8) |
+| PETG print speed | Material/Print | Continuous | 30–60 mm/s | Reflects common PETG processing window and tradeoff between bonding and throughput; slower speeds often improve PETG bonding (hsueh2021effectofprinting pages 6-8, bustihan2026recentadvancesin pages 6-7) |
+| TPU Shore hardness | Material/Print | Categorical | {85A, 95A} | These grades are directly supported in energy-absorbing TPU studies; 95A gives higher stress/plateau stability, 85A offers a softer compromise (bustihan2025reusable3dprintedthermoplastic pages 7-9, bustihan2025reusable3dprintedthermoplastic pages 2-4) |
+| TPU layer height | Material/Print | Continuous | 0.15–0.25 mm | Matches practical TPU FDM windows and avoids overly tall layers that can impair bead fusion in flexible members (khatri2024energyabsorptionof pages 3-5, leoncalero20213dprintingof pages 10-12) |
+| TPU wall count | Material/Print | Ordinal | 2–5 | Wall count materially changes effective stiffness and durability of flexible tendons/skins; compatible with common slicers and small DOE/BO budgets (bustihan2026recentadvancesin pages 6-7, khatri2024energyabsorptionof pages 3-5) |
+| TPU infill % | Material/Print | Continuous | 50–100% | TPU energy-absorption studies found strong dependence on infill density, with many optima near 50%; full infill remains useful for durable tendons/skins (leoncalero20213dprintingof pages 1-2, leoncalero20213dprintingof pages 10-12) |
+| TPU infill pattern | Material/Print | Categorical | {Honeycomb, Gyroid, Grid} | Honeycomb at ~50% gave optimal SEA/SDC in León-Calero et al.; gyroid/grid are natural comparators with different damping/compliance (leoncalero20213dprintingof pages 1-2, leoncalero20213dprintingof pages 4-5) |
+| TPU print temperature | Material/Print | Continuous | 215–235 °C | Supported by TPU 70A/85A/95A studies and technical ranges; upper limit stays below degradation concerns while covering good interlayer adhesion (bustihan2025reusable3dprintedthermoplastic pages 7-9, leoncalero20213dprintingof pages 10-12, leoncalero20213dprintingof pages 8-10) |
+| TPU print speed | Material/Print | Continuous | 15–30 mm/s | Flexible filaments generally require lower speed; Khatri used ~25 mm/s for TPU, and softer TPUs may need still slower extrusion (khatri2024energyabsorptionof pages 3-5, leoncalero20213dprintingof pages 10-12) |
+| Interface wrapping thickness | Material/Print | Continuous | 0.4–2.0 mm | Practical one-to-five-road overlap/interlock thickness for multimaterial joints; motivated by need to strengthen rigid/flexible interfaces in multimaterial FDM, even though direct PETG/TPU tensegrity data are sparse (khatri2024energyabsorptionof pages 1-3, khatri2024energyabsorptionof pages 3-5, bustihan2025reusable3dprintedthermoplastic pages 24-25) |
+| Build orientation | Material/Print | Categorical | {Vertical axis aligned with load, Horizontal, 45°} | Orientation strongly affects anisotropy, porosity, and interlayer failure in PETG/PLA and lattice performance; should be categorical if specimen count permits (martins2024mechanicalpropertiesof pages 4-6, bembenek2022researchonthe pages 2-3, martins2024mechanicalpropertiesof pages 9-14) |
+| Drop height | Loading/Test | Fixed | Fixed per campaign, e.g. 0.25–1.0 m equivalent | Treat as a controlled condition, not a BO variable, to keep comparisons meaningful; impact studies in tensegrity/lattice structures use fixed impact energy conditions (pajunen2019designandimpact pages 7-8, khatri2024energyabsorptionof pages 1-3) |
+| Impactor mass | Loading/Test | Fixed | Fixed per campaign, e.g. 2–10 kg equivalent | Must remain fixed so transmitted-force and SEA comparisons are interpretable across BO trials (pajunen2019designandimpact pages 7-8, khatri2024energyabsorptionof pages 1-3) |
+| Quasi-static strain rate | Loading/Test | Fixed | 0.001–0.01 s⁻¹ | Appropriate laboratory compression window; Khatri used ~0.13 s⁻¹ engineering strain rate for honeycombs, but a lower quasi-static range is preferable for controlled BO screening (khatri2024energyabsorptionof pages 3-5, gorguluarslan2022multiobjectivedesignoptimization pages 5-6) |
+
+
+*Table: This table summarizes a practical BoTorch/Ax search space for a multi-material PETG+TPU tensegrity-inspired energy-absorbing campaign. It groups recommended variables, bounds, and categories by geometry, material/print settings, and fixed test conditions, with literature-based rationale.*
+
+### B1. Geometric/Topological Variables
+
+Key geometric variables identified from the tensegrity and lattice energy-absorption literature include strut diameter, cable/skin cross-section, slenderness ratio L/D, twist angle, prestress level, cell tiling array, relative density, and unit-cell topology. Pajunen et al. used strut diameters of 2.6–3.32 mm, cable diameters of 1.37–1.8 mm, and 2% prestress as design knobs, noting that member diameter ratios (ds/dc = 1.44–2.23) control stiffness and buckling onset (pajunen2019designandimpact pages 3-4, pajunen2019designandimpact pages 2-3). Zhang et al. treated cross-sectional areas of cables and bars and prestress levels (force density parameters) as explicit optimization variables (zhang2021optimizationforenergy pages 1-2, ohsaki2019optimizationoftensegrity pages 1-3). Cronau & Engstler found that strut diameter and seed-point density (controlling relative density, tested at 10–25%) were primary drivers of specific energy absorption in lattice structures, with 25% density yielding highest SEA (cronau2025energyabsorptionof pages 1-2).
+
+### B2. Material/Print-Parameter Variables
+
+For **PETG struts**: layer height (0.15–0.30 mm), infill percentage (40–100%), infill pattern (rectilinear/grid/gyroid), and print temperature (230–250°C) are the most influential FDM parameters (bustihan2026recentadvancesin pages 4-6, bustihan2026recentadvancesin pages 6-7, hsueh2021effectofprinting pages 6-8). PETG requires temperatures above ~230°C for adequate fusion, with porosity decreasing at higher temperatures (hsueh2021effectofprinting pages 2-3). Print speed for PETG (30–60 mm/s) trades off bonding quality against throughput (hsueh2021effectofprinting pages 6-8).
+
+For **TPU tension elements**: shore hardness (85A vs 95A) is a key categorical variable. TPU 95A provides higher modulus (~39 MPa) and stress resistance with optimal breaking force at 215°C print temperature, while TPU 85A (NinjaFlex) is intermediate in stiffness with a recommended range of 220–225°C (bustihan2025reusable3dprintedthermoplastic pages 7-9, bustihan2025reusable3dprintedthermoplastic pages 2-4). Lower-hardness TPUs require significantly slower print speeds (as low as 8–15 mm/s for 82A–85A grades) (leoncalero20213dprintingof pages 10-12). Infill density and pattern strongly affect TPU energy absorption; León-Calero et al. found that honeycomb pattern at 50% infill produced optimal specific energy absorption (SEA) and specific damping capacity (SDC) (leoncalero20213dprintingof pages 1-2). Wall count (2–5 perimeters) affects effective stiffness and durability of flexible elements.
+
+For **multi-material interfaces**: Khatri & Egan demonstrated that TPU band height (0–12 mm, in 3 mm increments) in rigid/flexible honeycomb structures strongly controls energy absorption and failure mode, with hexagonal honeycombs showing 66% higher energy absorption than square ones at matched band thickness (khatri2024energyabsorptionof pages 1-3, khatri2024energyabsorptionof pages 3-5, khatri2024energyabsorptionof pages 10-11). Interface wrapping thickness (0.4–2.0 mm) should be included as a continuous BO variable to strengthen PETG/TPU joints.
+
+### B3. Loading/Test Variables (Fixed Conditions)
+
+Drop height, impactor mass, and quasi-static strain rate should be treated as fixed experimental conditions, not BO variables, to maintain comparability across the campaign (pajunen2019designandimpact pages 7-8, khatri2024energyabsorptionof pages 3-5).
+
+---
+
+## (C) PETG-vs-PLA Differences Relevant to BO Bounds
+
+The following table summarizes key property differences and their implications for search-space design.
+
+| Property | PLA (FDM printed) | PETG (FDM printed) | Shift Direction for PETG | Implication for BO Variable Ranges |
+|---|---|---|---|---|
+| Tensile strength | ~55 MPa | ~37 MPa | Lower | PETG compression struts should be allowed to be somewhat stockier than PLA for equal load capacity; cap slenderness more conservatively and avoid very low PETG infill when screening impact specimens (martins2024mechanicalpropertiesof pages 4-6) |
+| Young's modulus | ~2350 MPa | ~1200 MPa | ~50% lower | Euler buckling load is lower for the same geometry, so reduce practical upper bound on `L/D` from roughly PLA-like ~30 to ~25 for PETG, and raise PETG infill/perimeter lower bounds to recover stiffness (martins2024mechanicalpropertiesof pages 4-6) |
+| Elongation at break | ~4.3% | ~6.5% | Higher | PETG can tolerate more deformation before fracture, so strain-to-failure and allowable crush stroke can be set less conservatively than for PLA; this supports modestly broader deformation-space exploration before catastrophic breakage (martins2024mechanicalpropertiesof pages 4-6) |
+| Glass transition `T_g` | ~69.3 °C | ~73.5 °C | Slightly higher | PETG is somewhat safer for warm-service testing, but still needs elevated bed temperatures for reliable printing; set bed-temperature/process windows higher than PLA and avoid long dwell times near `T_g` in environmental tests (martins2024mechanicalpropertiesof pages 8-9) |
+| Thermal decomposition `T_d` | ~357.6 °C | ~419.3 °C | Higher | PETG has a wider thermal processing safety margin; BO bounds for nozzle temperature can safely shift upward relative to PLA, though adhesion/oozing tradeoffs still constrain the upper end (martins2024mechanicalpropertiesof pages 8-9) |
+| Impact toughness / fracture mode | More brittle; lower ductility | More ductile; better damage tolerance in practice | Higher toughness / ductility | PETG allows a less restrictive upper bound on impact energy before brittle fracture than PLA, but because modulus and strength are lower, peak-energy limits should still scale with strut geometry and relative density rather than be relaxed unconditionally (martins2024mechanicalpropertiesof pages 4-6, hsueh2021effectofprinting pages 2-3) |
+| Layer adhesion / print temperature | Good fusion commonly around ~190–220 °C | Typically needs ~230–250 °C; slower printing often helps | Requires higher temperature | Shift PETG print-temperature BO bounds upward and PETG speed bounds downward/moderate versus PLA; include temperature-speed interaction because PETG benefits more from slower deposition for better fusion and lower porosity (hsueh2021effectofprinting pages 6-8, hsueh2021effectofprinting pages 2-3) |
+| Porosity at nominal 100% infill | ~9.3% total porosity | ~12% total porosity | Higher | Since PETG prints can retain more voidage, use a higher PETG infill lower bound (about 40% rather than a PLA-like 20%), and consider wall count / orientation as active BO variables because effective cross-section is reduced by voids (martins2024mechanicalpropertiesof pages 9-14) |
+| Infill sensitivity | Strong dependence of strength on infill | Also strong; PETG specific tensile strength can deteriorate more with mass increase | Different tradeoff | For PETG, BO should optimize strength-to-weight or SEA rather than absolute load alone; avoid assuming that higher infill is always better, and search infill jointly with wall count and topology (bembenek2022researchonthe pages 2-3) |
+| Anisotropy / build-orientation sensitivity | Anisotropic | Anisotropic, with notable sensitivity to orientation and air-gap effects | Slightly higher practical sensitivity | Build orientation should be explicitly included as a categorical BO variable for PETG tensegrity struts; orientation-dependent porosity and bead geometry can materially alter failure mode and effective stiffness (bembenek2022researchonthe pages 2-3, martins2024mechanicalpropertiesof pages 9-14) |
+
+
+*Table: This table compares FDM-printed PLA and PETG properties most relevant to Bayesian optimization bounds for PETG+TPU tensegrity absorbers. It translates literature property differences into practical search-space implications for slenderness, infill, temperature, impact limits, and orientation.*
+
+**Quantitative summary:** FDM-printed PLA exhibits tensile strength ~55 MPa, Young's modulus ~2350 MPa, and elongation at break ~4.3%, while PETG shows ~37 MPa, ~1200 MPa, and ~6.5% respectively (martins2024mechanicalpropertiesof pages 4-6). Thermal analysis reveals PLA Tg ≈ 69.3°C and PETG Tg ≈ 73.5°C, with PETG showing higher thermal decomposition temperature (~419°C vs ~358°C for PLA) (martins2024mechanicalpropertiesof pages 8-9).
+
+**Critical implications for BO bounds:**
+
+1. **Strut slenderness (L/D):** PETG's ~50% lower Young's modulus means Euler buckling loads are substantially reduced for the same geometry. The practical upper bound on L/D should be reduced from ~30 (appropriate for PLA) to ~25 for PETG struts to avoid premature elastic buckling (martins2024mechanicalpropertiesof pages 4-6, pajunen2019designandimpact pages 2-3).
+
+2. **Infill percentage:** PETG prints retain more porosity (~12% vs ~9.3% for PLA at nominal 100% infill) (martins2024mechanicalpropertiesof pages 9-14), so the infill lower bound should be set higher (~40% vs ~20% for PLA) to ensure adequate effective cross-section in compression struts.
+
+3. **Layer adhesion and print temperature:** PETG requires 230–250°C for adequate fusion versus 190–220°C for PLA. Slower print speeds improve PETG bonding, and the interaction between temperature and speed is more critical than for PLA (hsueh2021effectofprinting pages 6-8, hsueh2021effectofprinting pages 2-3).
+
+4. **Impact energy before brittle fracture:** PETG's higher elongation at break (~6.5% vs ~4.3%) and greater ductility mean the allowable impact energy before catastrophic brittle fracture can be somewhat relaxed compared to PLA, but the lower modulus and strength mean this advantage is geometry-dependent (martins2024mechanicalpropertiesof pages 4-6).
+
+5. **Build orientation sensitivity:** PETG shows notable anisotropy and air-gap effects that reduce effective modulus and strength depending on orientation. Build orientation should be explicitly included as a categorical BO variable (bembenek2022researchonthe pages 2-3, martins2024mechanicalpropertiesof pages 9-14).
+
+---
+
+## (D) Recommended Numeric Bounds for BoTorch/Ax Search Space
+
+Based on the evidence, for a campaign of ~50–100 specimens:
+
+**Continuous variables:**
+- PETG strut diameter D_PETG: [1.5, 5.0] mm
+- TPU cable/skin diameter D_TPU: [1.0, 3.0] mm
+- Slenderness L/D: [8, 25]
+- Twist angle α: [10°, 45°]
+- Prestress level: [0%, 5%] tensile prestrain
+- Relative density ρ*/ρs: [0.05, 0.30] (derived)
+- PETG layer height: [0.15, 0.30] mm
+- PETG infill: [40%, 100%]
+- PETG print temperature: [230, 250] °C
+- PETG print speed: [30, 60] mm/s
+- TPU layer height: [0.15, 0.25] mm
+- TPU infill: [50%, 100%]
+- TPU print temperature: [215, 235] °C
+- TPU print speed: [15, 30] mm/s
+- Interface wrapping thickness: [0.4, 2.0] mm
+
+**Categorical variables:**
+- Unit-cell topology: {Truncated octahedron, 4-strut simplex, T3 prism, Stacked prism}
+- TPU shore hardness: {85A, 95A}
+- PETG infill pattern: {Rectilinear, Grid, Gyroid}
+- TPU infill pattern: {Honeycomb, Gyroid, Grid}
+- Cell tiling Nx×Ny×Nz: {1×1×1, 1×1×2, 2×2×1, 2×2×2, 3×3×2}
+- Build orientation: {Vertical (load-aligned), Horizontal, 45°}
+
+**Practical BO guidance:** Vangelatos et al. demonstrated that BO on architected lattices with 17 categorical design variables can find optima within ~250 evaluations starting from 50 random initial samples, using an EMCS framework with GP surrogate models (vangelatos2021strengththroughdefects pages 2-3, vangelatos2021strengththroughdefects pages 5-6, vangelatos2021strengththroughdefects pages 7-9). For a physically-tested campaign of 50–100 specimens, a Sobol/LHS initial batch of ~15–25 specimens followed by sequential BO iterations is recommended. The mixed continuous+categorical search space is well-handled by BoTorch's Mixed Optimization (SAASBO or multi-task GP with categorical kernels).
+
+---
+
+## (E) Recommended Primary Objectives and Constraints
+
+| Metric | Role (Objective/Constraint) | Definition | Target Direction | Rationale/Source |
+|---|---|---|---|---|
+| Specific Energy Absorption (SEA) | Primary objective | Total absorbed energy divided by specimen mass (J/g) | Maximize | Most common crashworthiness metric for lattices and cellular absorbers; normalizes for mass and allows fair comparison across relative densities and topologies (cronau2025energyabsorptionof pages 11-11, leoncalero20213dprintingof pages 1-2, gorguluarslan2022multiobjectivedesignoptimization pages 5-6) |
+| Peak Transmitted Force ($F_{peak}$) | Primary objective or hard constraint | Maximum force measured at the support/base plate during impact or compression | Minimize | Critical for protection applications because lower peak force corresponds to better load limitation and lower injury/equipment risk; also complements SEA when highly absorptive designs still spike early load (pajunen2019designandimpact pages 7-8, khatri2024energyabsorptionof pages 1-3, khatri2024energyabsorptionof pages 10-11) |
+| Energy Absorption Efficiency (EAE, or EAEm) | Secondary objective | Ratio of absorbed energy to the energy/stroke available before densification; often interpreted as how efficiently the crush plateau is used | Maximize | Captures whether the structure absorbs energy progressively rather than through a sharp initial peak; used explicitly in additively manufactured lattice optimization studies (bates20163dprintedpolyurethane pages 16-18, gorguluarslan2022multiobjectivedesignoptimization pages 5-6) |
+| Crush Stress Efficiency (CSE) | Secondary objective | Plateau stress divided by peak stress | Maximize | High CSE indicates a flatter, more useful stress plateau and more uniform dissipation; Gorguluarslan uses CSE jointly with energy-absorption efficiency in multi-objective optimization (gorguluarslan2022multiobjectivedesignoptimization pages 5-6) |
+| Plateau Stress ($\sigma_{pl}$) | Informational metric or application-tuned objective | Mean stress over the post-yield/pre-densification plateau region | Application-dependent; often target a band | Determines force-transmission level during sustained crushing; should be high enough to absorb energy but not so high that transmitted loads become unacceptable (gorguluarslan2022multiobjectivedesignoptimization pages 5-6, khatri2024energyabsorptionof pages 10-11) |
+| Compaction strain ($\varepsilon_d$) | Informational metric or secondary objective | Strain at onset of densification/compaction | Generally maximize | Higher compaction strain gives more usable stroke before densification, improving practical absorber stroke utilization (gorguluarslan2022multiobjectivedesignoptimization pages 5-6, bates20163dprintedpolyurethane pages 16-18) |
+| Specimen mass | Constraint | Total printed mass of one specimen | Keep below threshold, e.g. $\leq$ 50 g | Keeps the campaign practical, preserves fair specific-property comparisons, and limits the optimizer from trivially improving absolute energy absorption by adding material (cronau2025energyabsorptionof pages 11-11, gorguluarslan2022multiobjectivedesignoptimization pages 5-6) |
+| Print time | Constraint | Total print duration per specimen | Keep below threshold, e.g. $\leq$ 4 h | Essential for a 50-100 specimen undergraduate BO campaign; printability/time are standard AM-side constraints in design-of-experiments and optimization workflows (bustihan2026recentadvancesin pages 6-7, vangelatos2021strengththroughdefects pages 2-3) |
+| Cycle durability | Constraint | Number of compression/impact cycles before a chosen degradation limit, e.g. 10% strength-loss or SEA-loss threshold | Keep above threshold, e.g. $\geq$ 3 cycles | Important for reusable absorbers; TPU-based absorbers show recoverability while cyclic softening and PETG strut damage can limit reuse (pajunen2019designandimpact pages 7-8, bates20163dprintedpolyurethane pages 16-18, bustihan2025reusable3dprintedthermoplastic pages 7-9) |
+| $W_{min}$ (cushion factor $\times$ relative density) | Alternative primary objective | Pajunen-style efficiency metric combining cushion factor and relative density | Minimize | Useful for benchmarking against foams and other polymer absorbers; Pajunen identifies favorable designs in the region $W_{min} < 0.21$ and $\rho^*/\rho_s < 0.1$ (pajunen2019designandimpact pages 8-9) |
+
+
+*Table: This table summarizes recommended primary objectives, secondary metrics, and practical constraints for a Bayesian-optimization campaign on PETG+TPU tensegrity-inspired energy absorbers. It is useful for turning the literature into a measurable Ax/BoTorch optimization problem.*
+
+**Primary objectives (multi-objective BO):**
+
+1. **Maximize Specific Energy Absorption (SEA):** The most widely used crashworthiness metric, computed as total absorbed energy divided by specimen mass (J/g). This normalizes for mass and allows fair comparison across relative densities and topologies (leoncalero20213dprintingof pages 1-2, gorguluarslan2022multiobjectivedesignoptimization pages 5-6).
+
+2. **Minimize Peak Transmitted Force (F_peak):** Critical for protective applications; lower peak force corresponds to better load limitation. Alternatively, this can be treated as a hard constraint (F_peak ≤ threshold) (pajunen2019designandimpact pages 7-8, khatri2024energyabsorptionof pages 1-3).
+
+**Secondary objectives:**
+
+3. **Maximize Energy Absorption Efficiency (EAE):** Captures how efficiently the crush plateau is exploited before densification. Gorguluarslan used EAEm jointly with CSE in multi-objective lattice optimization (gorguluarslan2022multiobjectivedesignoptimization pages 5-6). Pajunen used Wmin = cushion factor × relative density, targeting Wmin < 0.21 at ρ*/ρs < 0.1 (pajunen2019designandimpact pages 8-9).
+
+4. **Maximize Crush Stress Efficiency (CSE):** Plateau stress / peak stress; higher CSE indicates a flatter, more uniform stress plateau (gorguluarslan2022multiobjectivedesignoptimization pages 5-6).
+
+**Constraints:**
+
+- **Maximum specimen mass:** ≤ 50 g (keeps campaign practical and enables specific-property comparisons)
+- **Maximum print time:** ≤ 4 hours per specimen (ensures 50–100 specimens fit an undergraduate semester timeline) (bustihan2026recentadvancesin pages 6-7)
+- **Minimum cycle durability:** ≥ 3 compression cycles to <10% SEA loss (important for reusable absorbers; TPU enables elastic recovery with ~24.5% energy drop from cycle 1→2 then convergence, while PETG strut fracture limits reuse) (bates20163dprintedpolyurethane pages 16-18, bustihan2025reusable3dprintedthermoplastic pages 7-9)
+- **Minimum printability:** no print failures (enforced by excluding non-manufacturable designs via geometry constraints on minimum overhang angle, minimum feature size ≥ 1.0 mm, and bridging distance limits)
+
+**Recommended BO formulation:** A multi-objective formulation maximizing SEA while minimizing F_peak, subject to mass, print-time, and durability constraints, is the most practical starting point. This can be implemented in BoTorch using `qNoisyExpectedHypervolumeImprovement` (qNEHVI) as the acquisition function for Pareto-optimal design discovery with noisy experimental observations.
+
+References
+
+1. (micheletti2022seventyyearsof pages 23-24): Andrea Micheletti and Paolo Podio-Guidugli. Seventy years of tensegrities (and counting). Archive of Applied Mechanics, 92:2525-2548, Jul 2022. URL: https://doi.org/10.1007/s00419-022-02192-4, doi:10.1007/s00419-022-02192-4. This article has 75 citations and is from a peer-reviewed journal.
+
+2. (sabounizawadzka2024experimentalinvestigationson pages 1-3): Anna Al Sabouni-Zawadzka, Wojciech Gilewski, and Adam Zawadzki. Experimental investigations on mechanical propertiesof 3d-printed tensegrity-inspired metamaterialsbased on 4-strut simplex module. Archives of Civil Engineering, pages 343-357, Jun 2024. URL: https://doi.org/10.24425/ace.2024.150987, doi:10.24425/ace.2024.150987. This article has 0 citations.
+
+3. (sabounizawadzka2024experimentalinvestigationsona pages 6-11): A Al Sabouni-Zawadzka and W Gilewski. Experimental investigations on mechanical properties of 3d-printed tensegrity-inspired metamaterials based on 4-strut simplex module. Unknown journal, 2024.
+
+4. (pajunen2019designandimpact pages 1-2): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 98 citations and is from a highest quality peer-reviewed journal.
+
+5. (pajunen2019designandimpact pages 8-9): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 98 citations and is from a highest quality peer-reviewed journal.
+
+6. (zhang2021optimizationforenergy pages 1-2): Jingyao Zhang, Makoto Ohsaki, Julian J. Rimoli, and Kosuke Kogiso. Optimization for energy absorption of 3-dimensional tensegrity lattice with truncated octahedral units. Composite Structures, 267:113903, Jul 2021. URL: https://doi.org/10.1016/j.compstruct.2021.113903, doi:10.1016/j.compstruct.2021.113903. This article has 33 citations and is from a domain leading peer-reviewed journal.
+
+7. (micheletti2022seventyyearsof pages 20-21): Andrea Micheletti and Paolo Podio-Guidugli. Seventy years of tensegrities (and counting). Archive of Applied Mechanics, 92:2525-2548, Jul 2022. URL: https://doi.org/10.1007/s00419-022-02192-4, doi:10.1007/s00419-022-02192-4. This article has 75 citations and is from a peer-reviewed journal.
+
+8. (liu2019tensegritytopologyoptimization pages 22-22): Ke Liu and Glaucio H. Paulino. Tensegrity topology optimization by force maximization on arbitrary ground structures. Structural and Multidisciplinary Optimization, 59:2041-2062, Jan 2019. URL: https://doi.org/10.1007/s00158-018-2172-3, doi:10.1007/s00158-018-2172-3. This article has 65 citations and is from a domain leading peer-reviewed journal.
+
+9. (bustihan2026recentadvancesin pages 19-21): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18:1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 0 citations.
+
+10. (pajunen2019designandimpact pages 9-9): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 98 citations and is from a highest quality peer-reviewed journal.
+
+11. (sabounizawadzka2024experimentalinvestigationsona pages 1-3): A Al Sabouni-Zawadzka and W Gilewski. Experimental investigations on mechanical properties of 3d-printed tensegrity-inspired metamaterials based on 4-strut simplex module. Unknown journal, 2024.
+
+12. (pajunen2019designandimpact pages 3-4): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 98 citations and is from a highest quality peer-reviewed journal.
+
+13. (pajunen2019designandimpact pages 2-3): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 98 citations and is from a highest quality peer-reviewed journal.
+
+14. (bustihan2026recentadvancesin pages 6-7): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18:1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 0 citations.
+
+15. (martins2024mechanicalpropertiesof pages 4-6): Rui F. Martins, Ricardo Branco, Miguel Martins, Wojciech Macek, Zbigniew Marciniak, Rui Silva, Daniela Trindade, Carla Moura, Margarida Franco, and Cândida Malça. Mechanical properties of additively manufactured polymeric materials—pla and petg—for biomechanical applications. Polymers, 16:1868, Jun 2024. URL: https://doi.org/10.3390/polym16131868, doi:10.3390/polym16131868. This article has 36 citations.
+
+16. (bustihan2025reusable3dprintedthermoplastic pages 7-9): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17:3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 3 citations.
+
+17. (vangelatos2021strengththroughdefects pages 1-2): Zacharias Vangelatos, Haris Moazam Sheikh, Philip S. Marcus, Costas P. Grigoropoulos, Victor Z. Lopez, George Flamourakis, and Maria Farsari. Strength through defects: a novel bayesian approach for the optimization of architected materials. Science Advances, Oct 2021. URL: https://doi.org/10.1126/sciadv.abk2218, doi:10.1126/sciadv.abk2218. This article has 124 citations and is from a highest quality peer-reviewed journal.
+
+18. (vangelatos2021strengththroughdefects pages 2-3): Zacharias Vangelatos, Haris Moazam Sheikh, Philip S. Marcus, Costas P. Grigoropoulos, Victor Z. Lopez, George Flamourakis, and Maria Farsari. Strength through defects: a novel bayesian approach for the optimization of architected materials. Science Advances, Oct 2021. URL: https://doi.org/10.1126/sciadv.abk2218, doi:10.1126/sciadv.abk2218. This article has 124 citations and is from a highest quality peer-reviewed journal.
+
+19. (cronau2025energyabsorptionof pages 1-2): J. Cronau and F. Engstler. Energy absorption of 3d printed stochastic lattice structures under impact loading – design parameters, manufacturing, and testing. Progress in Additive Manufacturing, 10:3145-3156, Apr 2025. URL: https://doi.org/10.1007/s40964-025-01094-5, doi:10.1007/s40964-025-01094-5. This article has 16 citations and is from a peer-reviewed journal.
+
+20. (cronau2025energyabsorptionof pages 11-11): J. Cronau and F. Engstler. Energy absorption of 3d printed stochastic lattice structures under impact loading – design parameters, manufacturing, and testing. Progress in Additive Manufacturing, 10:3145-3156, Apr 2025. URL: https://doi.org/10.1007/s40964-025-01094-5, doi:10.1007/s40964-025-01094-5. This article has 16 citations and is from a peer-reviewed journal.
+
+21. (hsueh2021effectofprinting pages 2-3): Ming-Hsien Hsueh, Chao-Jung Lai, Shi-Hao Wang, Yu-Shan Zeng, Chia-Hsin Hsieh, Chieh-Yu Pan, and Wen-Chen Huang. Effect of printing parameters on the thermal and mechanical properties of 3d-printed pla and petg, using fused deposition modeling. Polymers, 13:1758, May 2021. URL: https://doi.org/10.3390/polym13111758, doi:10.3390/polym13111758. This article has 407 citations.
+
+22. (bembenek2022researchonthe pages 2-3): Michał Bembenek, Łukasz Kowalski, and Agnieszka Kosoń-Schab. Research on the influence of processing parameters on the specific tensile strength of fdm additive manufactured pet-g and pla materials. Polymers, 14:2446, Jun 2022. URL: https://doi.org/10.3390/polym14122446, doi:10.3390/polym14122446. This article has 69 citations.
+
+23. (hsueh2021effectofprinting pages 6-8): Ming-Hsien Hsueh, Chao-Jung Lai, Shi-Hao Wang, Yu-Shan Zeng, Chia-Hsin Hsieh, Chieh-Yu Pan, and Wen-Chen Huang. Effect of printing parameters on the thermal and mechanical properties of 3d-printed pla and petg, using fused deposition modeling. Polymers, 13:1758, May 2021. URL: https://doi.org/10.3390/polym13111758, doi:10.3390/polym13111758. This article has 407 citations.
+
+24. (bustihan2025reusable3dprintedthermoplastic pages 2-4): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17:3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 3 citations.
+
+25. (khatri2024energyabsorptionof pages 3-5): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 29 citations and is from a peer-reviewed journal.
+
+26. (leoncalero20213dprintingof pages 10-12): Marina León-Calero, Sara Catherine Reyburn Valés, Ángel Marcos-Fernández, and Juan Rodríguez-Hernandez. 3d printing of thermoplastic elastomers: role of the chemical composition and printing parameters in the production of parts with controlled energy absorption and damping capacity. Polymers, 13:3551, Oct 2021. URL: https://doi.org/10.3390/polym13203551, doi:10.3390/polym13203551. This article has 110 citations.
+
+27. (leoncalero20213dprintingof pages 1-2): Marina León-Calero, Sara Catherine Reyburn Valés, Ángel Marcos-Fernández, and Juan Rodríguez-Hernandez. 3d printing of thermoplastic elastomers: role of the chemical composition and printing parameters in the production of parts with controlled energy absorption and damping capacity. Polymers, 13:3551, Oct 2021. URL: https://doi.org/10.3390/polym13203551, doi:10.3390/polym13203551. This article has 110 citations.
+
+28. (leoncalero20213dprintingof pages 4-5): Marina León-Calero, Sara Catherine Reyburn Valés, Ángel Marcos-Fernández, and Juan Rodríguez-Hernandez. 3d printing of thermoplastic elastomers: role of the chemical composition and printing parameters in the production of parts with controlled energy absorption and damping capacity. Polymers, 13:3551, Oct 2021. URL: https://doi.org/10.3390/polym13203551, doi:10.3390/polym13203551. This article has 110 citations.
+
+29. (leoncalero20213dprintingof pages 8-10): Marina León-Calero, Sara Catherine Reyburn Valés, Ángel Marcos-Fernández, and Juan Rodríguez-Hernandez. 3d printing of thermoplastic elastomers: role of the chemical composition and printing parameters in the production of parts with controlled energy absorption and damping capacity. Polymers, 13:3551, Oct 2021. URL: https://doi.org/10.3390/polym13203551, doi:10.3390/polym13203551. This article has 110 citations.
+
+30. (khatri2024energyabsorptionof pages 1-3): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 29 citations and is from a peer-reviewed journal.
+
+31. (bustihan2025reusable3dprintedthermoplastic pages 24-25): Alin Bustihan, Razvan Hirian, and Ioan Botiz. Reusable 3d-printed thermoplastic polyurethane honeycombs for mechanical energy absorption. Polymers, 17:3035, Nov 2025. URL: https://doi.org/10.3390/polym17223035, doi:10.3390/polym17223035. This article has 3 citations.
+
+32. (martins2024mechanicalpropertiesof pages 9-14): Rui F. Martins, Ricardo Branco, Miguel Martins, Wojciech Macek, Zbigniew Marciniak, Rui Silva, Daniela Trindade, Carla Moura, Margarida Franco, and Cândida Malça. Mechanical properties of additively manufactured polymeric materials—pla and petg—for biomechanical applications. Polymers, 16:1868, Jun 2024. URL: https://doi.org/10.3390/polym16131868, doi:10.3390/polym16131868. This article has 36 citations.
+
+33. (pajunen2019designandimpact pages 7-8): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 98 citations and is from a highest quality peer-reviewed journal.
+
+34. (gorguluarslan2022multiobjectivedesignoptimization pages 5-6): Recep M Gorguluarslan. Multi-objective design optimization of additively manufactured lattice structures for improved energy absorption performance. Proceedings of the Institution of Mechanical Engineers, Part C: Journal of Mechanical Engineering Science, 236:3-15, May 2022. URL: https://doi.org/10.1177/0954406221995542, doi:10.1177/0954406221995542. This article has 18 citations.
+
+35. (ohsaki2019optimizationoftensegrity pages 1-3): M Ohsaki, J Zhang, and K Kogiso. Optimization of tensegrity lattice with truncated octahedral units. Unknown journal, 2019.
+
+36. (bustihan2026recentadvancesin pages 4-6): Alin Bustihan and Ioan Botiz. Recent advances in additively manufactured polymeric structures for mechanical energy absorption. Polymers, 18:1019, Apr 2026. URL: https://doi.org/10.3390/polym18091019, doi:10.3390/polym18091019. This article has 0 citations.
+
+37. (khatri2024energyabsorptionof pages 10-11): Nava Raj Khatri and Paul F. Egan. Energy absorption of 3d printed abs and tpu multimaterial honeycomb structures. 3D Printing and Additive Manufacturing, 11:e840-e850, Apr 2024. URL: https://doi.org/10.1089/3dp.2022.0196, doi:10.1089/3dp.2022.0196. This article has 29 citations and is from a peer-reviewed journal.
+
+38. (martins2024mechanicalpropertiesof pages 8-9): Rui F. Martins, Ricardo Branco, Miguel Martins, Wojciech Macek, Zbigniew Marciniak, Rui Silva, Daniela Trindade, Carla Moura, Margarida Franco, and Cândida Malça. Mechanical properties of additively manufactured polymeric materials—pla and petg—for biomechanical applications. Polymers, 16:1868, Jun 2024. URL: https://doi.org/10.3390/polym16131868, doi:10.3390/polym16131868. This article has 36 citations.
+
+39. (vangelatos2021strengththroughdefects pages 5-6): Zacharias Vangelatos, Haris Moazam Sheikh, Philip S. Marcus, Costas P. Grigoropoulos, Victor Z. Lopez, George Flamourakis, and Maria Farsari. Strength through defects: a novel bayesian approach for the optimization of architected materials. Science Advances, Oct 2021. URL: https://doi.org/10.1126/sciadv.abk2218, doi:10.1126/sciadv.abk2218. This article has 124 citations and is from a highest quality peer-reviewed journal.
+
+40. (vangelatos2021strengththroughdefects pages 7-9): Zacharias Vangelatos, Haris Moazam Sheikh, Philip S. Marcus, Costas P. Grigoropoulos, Victor Z. Lopez, George Flamourakis, and Maria Farsari. Strength through defects: a novel bayesian approach for the optimization of architected materials. Science Advances, Oct 2021. URL: https://doi.org/10.1126/sciadv.abk2218, doi:10.1126/sciadv.abk2218. This article has 124 citations and is from a highest quality peer-reviewed journal.
+
+41. (bates20163dprintedpolyurethane pages 16-18): Simon R.G. Bates, Ian R. Farrow, and Richard S. Trask. 3d printed polyurethane honeycombs for repeated tailored energy absorption. Materials & Design, 112:172-183, Dec 2016. URL: https://doi.org/10.1016/j.matdes.2016.08.062, doi:10.1016/j.matdes.2016.08.062. This article has 388 citations and is from a highest quality peer-reviewed journal.
