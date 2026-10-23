@@ -9,7 +9,7 @@ SECTIONS = sections/coverpage.tex sections/budget.tex sections/biosketch.tex
 # Journal manuscript (ASME JMD scaffold) lives in manuscript/
 MANU_DIR = manuscript
 
-.PHONY: all clean distclean manuscript manuscript-todos manuscript-all manuscript-si clean-manuscript distclean-manuscript
+.PHONY: all clean distclean manuscript manuscript-todos manuscript-all manuscript-si manuscript-docx clean-manuscript distclean-manuscript
 
 all: $(MAIN).pdf
 
@@ -30,6 +30,12 @@ manuscript:        $(MANU_DIR)/manuscript.pdf
 manuscript-todos:  $(MANU_DIR)/manuscript-todos.pdf
 manuscript-si:     $(MANU_DIR)/supplementary.pdf
 manuscript-all:    manuscript manuscript-todos manuscript-si
+manuscript-docx:   $(MANU_DIR)/manuscript.docx
+
+# Editable Word version of manuscript.pdf (pandoc + scripts/docx/; see the
+# docstring of build_manuscript_docx.py for requirements).
+$(MANU_DIR)/manuscript.docx: $(MANU_DIR)/manuscript.pdf scripts/docx/build_manuscript_docx.py scripts/docx/docx_filter.lua
+	python3 scripts/docx/build_manuscript_docx.py
 
 $(MANU_DIR)/supplementary.pdf: $(MANU_DIR)/supplementary.tex
 	cd $(MANU_DIR) && $(TEX) supplementary
