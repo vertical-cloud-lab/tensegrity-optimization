@@ -1,0 +1,287 @@
+[
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 908,
+  "rect": [
+   227.8,
+   235.7,
+   260.6,
+   248.5
+  ],
+  "author": "",
+  "subject": "",
+  "content": "Change to 'scaled.' We've only scaled it once.",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 924,
+  "highlighted": "rescaled"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 909,
+  "rect": [
+   337.5,
+   235.7,
+   366.5,
+   248.5
+  ],
+  "author": "",
+  "subject": "",
+  "content": "change to '3D printed'",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 926,
+  "highlighted": "printed"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 910,
+  "rect": [
+   227.8,
+   235.7,
+   552.2,
+   258.4
+  ],
+  "author": "",
+  "subject": "",
+  "content": "",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 0,
+  "highlighted": "seed | article"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 911,
+  "rect": [
+   227.8,
+   245.7,
+   552.2,
+   268.4
+  ],
+  "author": "",
+  "subject": "",
+  "content": "(measured as a ratio of filtered top-to-base peak accelerations)",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 929,
+  "highlighted": "the top-to-base | ratio of filtered peak accelerations)"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 912,
+  "rect": [
+   381.3,
+   255.7,
+   469.3,
+   268.4
+  ],
+  "author": "",
+  "subject": "",
+  "content": "mgh(v_2/v_1)\n\nchange to m(v_2/v_1)\n\nNot a velocity loss index. Consider changing to mass-weighted velocity loss index.... maybe avoid velocity loss?",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 931,
+  "highlighted": "high velocity loss index"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 913,
+  "rect": [
+   378.4,
+   265.6,
+   436.6,
+   278.3
+  ],
+  "author": "",
+  "subject": "",
+  "content": "confusing... thought this was about other people's papers and what they report\n\nconsider changing to '3D printed specimens'",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 933,
+  "highlighted": "printed articles"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 914,
+  "rect": [
+   78.2,
+   70.7,
+   198.8,
+   361.3
+  ],
+  "author": "",
+  "subject": "",
+  "content": "Why are our addresses here? Is this standard?",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 935,
+  "highlighted": "Marcus E. Madsen | * | * | Department of Mechanical Engineering, | Department of Mechanical Engineering, | Brigham Young University, | Brigham Young University, | Provo, UT 84602, USA | Provo, UT 84602, USA | Audrey K. Christiansen | Audrey K. Christiansen | * | * | Department of Mechanical Engineering, | Department of Mechanical Engineering, | Brigham Young University, | Brigham Young University, | Provo, UT 84602, USA | Provo, UT 84602, USA | Jinkwan Han | Jinkwan Han | * | * | Department of Mechanical Engineering, | Department of Mechanical Engineering, | Brigham Young University, | Brigham Young University, | Provo, UT 84602, USA | Provo, UT 84602, USA | Jeffrey R. Hill | Jeffrey R. Hill | \u2020\u2021 | \u2020\u2021 | 1 | 1 | Department of Mechanical Engineering, | Department of Mechanical Engineering, | Brigham Young University, | Brigham Young University, | Provo, UT 84602, USA | Provo, UT 84602, USA | email: jeff.hill@byu.edu | email: jeff.hill@byu.edu | Sterling G. Baird | Sterling G. Baird | \u2020\u2021 | \u2020\u2021 | 1 | 1 | Department of Mechanical Engineering, | Department of Mechanical Engineering, | Brigham Young University, | Brigham Young University, | Provo, UT 84602, USA | Provo, UT 84602, USA | email: sterling.baird@byu.edu"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 915,
+  "rect": [
+   243.8,
+   295.5,
+   268.4,
+   308.2
+  ],
+  "author": "",
+  "subject": "",
+  "content": "was there a batch after this or can we call it the final batch?\nchange to 'final'",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 937,
+  "highlighted": "fourth"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 916,
+  "rect": [
+   329.1,
+   305.5,
+   354.7,
+   318.2
+  ],
+  "author": "",
+  "subject": "",
+  "content": "specimen",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 939,
+  "highlighted": "article."
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 917,
+  "rect": [
+   227.8,
+   305.5,
+   552.2,
+   338.1
+  ],
+  "author": "",
+  "subject": "",
+  "content": "Three sets of one specimen batch were printed to compare the precision in our ability to fabricate consistent models. The scatter in transmissibility was near one percent and a seating check flagged both large outliers, so we treat single-print extremes as provisional until replicated.",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 941,
+  "highlighted": "Three prints of one batch put the print-to-print scatter | in transmissibility near one percent, and a seating check flagged both large outliers, so we | in transmissibility near one percent, and a seating check flagged both large outliers, so we | treat single-print extremes as provisional until replicated."
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 918,
+  "rect": [
+   242.3,
+   215.8,
+   245.6,
+   228.5
+  ],
+  "author": "",
+  "subject": "",
+  "content": "(PLA)",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 943,
+  "highlighted": "d"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 919,
+  "rect": [
+   358.5,
+   215.8,
+   362.0,
+   228.5
+  ],
+  "author": "",
+  "subject": "",
+  "content": "(TPU)",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 945,
+  "highlighted": "."
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 920,
+  "rect": [
+   463.0,
+   275.6,
+   490.8,
+   288.3
+  ],
+  "author": "",
+  "subject": "",
+  "content": "specimen",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 947,
+  "highlighted": "articles"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 921,
+  "rect": [
+   133.2,
+   613.6,
+   274.4,
+   626.3
+  ],
+  "author": "",
+  "subject": "",
+  "content": "",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 0,
+  "highlighted": "property, that no two rigid bars touch,"
+ },
+ {
+  "page": 1,
+  "type": "Highlight",
+  "xref": 922,
+  "rect": [
+   133.2,
+   613.6,
+   300.2,
+   626.3
+  ],
+  "author": "",
+  "subject": "",
+  "content": "\"trait is no two rigid members contact one another, yielding...\"",
+  "created": "D:20261023175205",
+  "modified": "",
+  "irt": 0,
+  "popup": 950,
+  "highlighted": "property, that no two rigid bars touch, yields"
+ }
+]
