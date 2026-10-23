@@ -1,0 +1,36 @@
+design,label,batch,n_prints,prints,m_g,t180,e,E_reb_mJ,me_g,me2_mg,front_E_reb_mJ,front_me_g,front_me2_mg,front_e,p_front_me,p_front_me2
+corny7,corny7,4,1,corny7,19.62,0.80311,0.031943,9.3666,0.62672,20.019,True,True,True,True,1,1
+corny9,corny9,4,1,corny9,19.46,0.87658,0.062213,18.094,1.2107,75.318,False,False,False,False,0.10955,0.1084
+6lhxfy,6lhxfy,1,1,6lhxfy,18.5,0.89308,0.050376,13.928,0.93196,46.949,False,False,False,False,0.1995,0.1847
+corny6,corny6,4,1,corny6,19.45,0.9106,0.019699,5.7263,0.38315,7.5478,True,True,True,True,0.786,0.7862
+r2d2c7,r2d2c7,2,1,r2d2c7,18.51,0.94838,0.043979,12.166,0.81406,35.802,False,False,False,False,0.0515,0.047
+corny8,corny8,4,1,corny8,19.64,0.95353,0.059758,17.54,1.1736,70.134,False,False,False,False,0.00905,0.0093
+r2d2c1,r2d2c1,2,1,r2d2c1,19.38,0.99415,0.020595,5.9652,0.39913,8.2202,False,False,False,False,0.3951,0.3924
+drran8,drran8 x3,3,3,drran8 2dran8 dran38,19.61,0.9957,0.033523,9.8059,0.65611,22.359,False,False,False,False,0.0284,0.0293
+6nheas,6nheas,1,1,6nheas,21.73,0.99701,0.040246,13.07,0.87454,35.197,False,False,False,False,0.02075,0.0262
+bpx68c,bpx68c,1,1,bpx68c,20.23,1.0111,0.020442,6.1804,0.41354,8.4534,False,False,False,False,0.24315,0.2522
+ajhby6,ajhby6,1,1,ajhby6,20.53,1.0127,0.01988,6.0997,0.40814,8.1138,False,False,False,False,0.2386,0.25125
+9hhbkp,9hhbkp,1,1,9hhbkp,21.62,1.0183,0.021501,6.9474,0.46486,9.995,False,False,False,False,0.1411,0.1619
+nvxsrv,nvxsrv,1,1,nvxsrv,20.66,1.0275,0.026564,8.202,0.5488,14.578,False,False,False,False,0.0537,0.05735
+drran4,drran4 x3,3,3,drran4 2dran4 dran34,20.173,1.0326,0.039445,11.917,0.79736,32.941,False,False,False,False,0.0002,0.00015
+autv5r,autv5r,1,1,autv5r,22.04,1.0404,0.02681,8.8309,0.59088,15.841,False,False,False,False,0.02515,0.03225
+r2d2c2,r2d2c2,2,1,r2d2c2,17.96,1.0411,0.020954,5.6245,0.37634,7.886,True,True,False,False,0.16775,0.14045
+drran3,drran3 x3,3,3,drran3 2dran3 dran33,20.177,1.0429,0.022788,6.8816,0.46045,11.484,False,False,False,False,0.0208,0.0213
+drran9,drran9 x3,3,3,drran9 2dran9 dran39,19.557,1.0438,0.0307,8.9914,0.60162,22.814,False,False,False,False,0.00145,0.00105
+drran1,drran1 x3,3,3,drran1 2dran1 dran31,19.573,1.0442,0.040086,11.69,0.78217,36.378,False,False,False,False,5e-05,0
+corny1,corny1,4,1,corny1,20.2,1.0459,0.028695,8.663,0.57965,16.633,False,False,False,False,0.02255,0.0223
+corny4,corny4,4,1,corny4,20.56,1.0475,0.014038,4.3135,0.28862,4.0515,True,True,True,True,0.32735,0.34455
+r2d2c9,r2d2c9,2,1,r2d2c9,17.91,1.053,0.021823,5.8413,0.39085,8.5293,False,False,False,False,0.1021,0.08325
+drran2,drran2 x3,3,3,drran2 2dran2 dran32,19.563,1.0544,0.02379,6.9262,0.46344,13.759,False,False,False,False,0.00715,0.007
+r2d2c6,r2d2c6,2,1,r2d2c6,19.11,1.0548,0.014238,4.0664,0.27209,3.874,True,True,True,False,0.33475,0.3195
+drran6,drran6 x3,3,3,drran6 2dran6 dran36,19.5,1.0561,0.022044,6.4334,0.43046,9.8304,False,False,False,False,0.0115,0.011
+bag26v,bag26v,1,1,bag26v,21.42,1.0616,0.024098,7.7145,0.51618,12.439,False,False,False,False,0.0208,0.02565
+r2d2c8,r2d2c8,2,1,r2d2c8,19.98,1.0704,0.026431,7.8926,0.5281,13.958,False,False,False,False,0.014,0.01405
+corny3,corny3,4,1,corny3,20.15,1.0705,0.029061,8.7516,0.58557,17.017,False,False,False,False,0.0074,0.0078
+corny2,corny2,4,1,corny2,20.21,1.0846,0.030539,9.2242,0.6172,18.849,False,False,False,False,0.004,0.00425
+corny5,corny5,4,1,corny5,20.58,1.0876,0.027562,8.4775,0.56723,15.634,False,False,False,False,0.0083,0.0094
+drran5,drran5 x3,3,3,drran5 2dran5 dran35,20.09,1.0885,0.019075,5.7299,0.38339,7.5642,False,False,False,False,0.0143,0.0158
+drran7,drran7 x3,3,3,drran7 2dran7 dran37,20.313,1.1082,0.033602,10.211,0.68326,23.419,False,False,False,False,0,0
+r2d2c5,r2d2c5,2,1,r2d2c5,23.47,1.1516,0.019118,6.7061,0.44871,8.5787,False,False,False,False,0.03175,0.04725
+r2d2c4,r2d2c4,2,1,r2d2c4,19.33,1.1847,0.022302,6.443,0.4311,9.6146,False,False,False,False,0.035,0.0332
+r2d2c3,r2d2c3,2,1,r2d2c3,18.63,1.3337,0.020082,5.5915,0.37413,7.5134,False,False,False,False,0.06825,0.05865

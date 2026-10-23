@@ -1,0 +1,493 @@
+"""Pareto fronts with the mass-weighted rebound index as m*e and as m*e^2.
+
+Question (PR #97, me-madsen, 2026-10-23): how do the tested specimens sit
+on the Pareto front if the mass-weighted index is computed as m*e, and again
+as m*e^2, where e is the usual rebound coefficient
+e = g * t_second / (2 * dv)? Compare both against the current front.
+
+The current BO objective (PR #102, ``bo/t3_prism_bo_campaign.py``) is
+E_reb = e * m * g * h in mJ per drop, both objectives minimized. m*e is that
+objective divided by the constant g*h = 14.95 m^2/s^2, so its front is the
+current front by construction. m*e^2 is the one that can differ.
+
+Inputs (``data/bo-campaign-snapshot/``, verbatim copies, see its README):
+the five campaign summaries the BO fits on (PR #102 at 65ff978) and the third
+print of the batch-3 designs (dran31-39, PR #86 at 64e468e), 53 articles in
+all. ``amdjwm`` has no weighed mass and is skipped, as in the BO script.
+
+Conventions follow PR #102 and the manuscript (PR #76):
+
+* t180 and e are each article's stabilized session means.
+* m is the article's own weighed mass in grams.
+* Design-level points: the batch-3 designs (trials 28 to 36) were printed
+  three times (drranN, 2dranN, dran3N). Each print's index is computed with
+  its own mass, then the design plots at the mean of its prints, the same
+  way ``aggregate_repeats`` treats E_reb. Every other article is its own
+  design.
+* SEM, as in the BO loaders: e_sem = e_sd / sqrt(n_valid), folded in
+  quadrature with the 0.457 g print-to-print mass scatter. For m*e^2 the
+  relative e term doubles.
+
+Robustness checks printed to stdout: every article as its own point, first
+prints only, and batch-3 design means over health-screened sessions only
+(seat gauge t1000/t180 < 1.145 and no drift flag). A Monte Carlo pass
+redraws every design with the print-to-print scatter measured from the
+batch-3 triplicates and reports how often each design lands on the front.
+
+Usage (from the repo root)::
+
+    pip install pandas matplotlib scipy
+    python scripts/analysis/pareto_rebound_index_variants.py
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy.stats import spearmanr
+
+REPO = Path(__file__).resolve().parents[2]
+DATA = REPO / "data" / "bo-campaign-snapshot"
+OUT_DIR = REPO / "docs" / "figures"
+OUT_PNG = OUT_DIR / "pareto_rebound_index_variants.png"
+OUT_KNEE = OUT_DIR / "pareto_rebound_index_variants_knee.png"
+OUT_ARTICLES = OUT_DIR / "pareto_rebound_index_variants_articles.csv"
+OUT_DESIGNS = OUT_DIR / "pareto_rebound_index_variants_designs.csv"
+
+G = 9.80665          # m/s^2, as in the BO script
+H = 1.524            # m, 60 in drop
+MASS_SD_G = 0.457    # print-to-print mass sd, spec-08 triplicate (BO script)
+GAUGE_MAX = 1.145    # seat-gauge screen used by the three-print analysis
+
+# (file stem, physical batch, print number within the batch)
+SOURCES = [
+    ("t3-prism-bo-batch-drop-results", 1, 1),
+    ("t3-prism-bo-round1-drop-results", 2, 1),
+    ("t3-prism-bo-round3-drop-results", 3, 1),
+    ("t3-prism-bo-round3-reprint-drop-results", 3, 2),
+    ("t3-prism-bo-round3-third-print-drop-results", 3, 3),
+    ("t3-prism-bo-round4-drop-results", 4, 1),
+]
+
+# reprints of a batch-3 design share the first print's label (2dranN and
+# dran3N are drranN's design), the same keys as REPRINT_PREFIX in PR #102
+REPRINT_PREFIX = {"2dran": "drran", "dran3": "drran"}
+
+# Monte Carlo noise, per print: pooled within-design sd over the screened
+# batch-3 triplicates (21 sessions, 12 dof), computed below and rounded
+MC_DRAWS = 20000
+MC_SEED = 0
+
+# figure styling, matching the PR #102 Pareto panels
+INK = "#0b0b0b"
+FRONT_BLUE = "#2a78d6"
+REF_GRAY = "#8d8c88"     # the current front, drawn for reference in panel B
+LABEL_GRAY = "#83827d"
+FIG_RC = {
+    "font.family": "sans-serif",
+    "font.sans-serif": [
+        "Source Sans Pro", "Source Sans 3", "Open Sans", "Lato",
+        "Helvetica", "Arial", "Liberation Sans", "DejaVu Sans",
+    ],
+    "font.size": 17,
+    "axes.labelsize": 18,
+    "axes.labelcolor": INK,
+    "xtick.labelsize": 16,
+    "ytick.labelsize": 16,
+    "text.color": INK,
+    "xtick.color": INK,
+    "ytick.color": INK,
+    "axes.edgecolor": "#4a4a47",
+    "axes.linewidth": 1.4,
+    "xtick.major.size": 5,
+    "ytick.major.size": 5,
+    "xtick.major.width": 1.4,
+    "ytick.major.width": 1.4,
+}
+ARROW_DOWN = "↓"
+
+
+def design_of(specimen: str) -> str:
+    for prefix, base in REPRINT_PREFIX.items():
+        if specimen.startswith(prefix):
+            return base + specimen[len(prefix):]
+    return specimen
+
+
+def load_articles() -> pd.DataFrame:
+    frames = []
+    for stem, batch, print_no in SOURCES:
+        d = pd.read_csv(DATA / f"{stem}.csv")
+        d["batch"], d["print_no"], d["source"] = batch, print_no, stem
+        frames.append(d)
+    a = pd.concat(frames, ignore_index=True)
+    skipped = a.loc[a["mass_g"].isna(), "specimen"].tolist()
+    if skipped:
+        print(f"Skipped (no weighed mass): {', '.join(skipped)}")
+    a = a[a["mass_g"].notna()].copy()
+
+    n = a["n_valid"].astype(float)
+    a["design"] = a["specimen"].map(design_of)
+    a["m_g"] = a["mass_g"].astype(float)
+    a["e"] = a["e_rebound_mean"].astype(float)
+    a["e_sem"] = a["e_rebound_sd"].astype(float) / np.sqrt(n)
+    a["t180"] = a["t180_mean"].astype(float)
+    a["t180_sem"] = a["t180_sd"].astype(float) / np.sqrt(n)
+    a["E_reb_mJ"] = a["e"] * a["m_g"] * G * H
+    a["me_g"] = a["m_g"] * a["e"]
+    a["me2_mg"] = a["m_g"] * a["e"] ** 2 * 1000.0
+    rel_m = MASS_SD_G / a["m_g"]
+    a["me_sem_g"] = a["me_g"] * np.hypot(a["e_sem"] / a["e"], rel_m)
+    a["me2_sem_mg"] = a["me2_mg"] * np.hypot(2 * a["e_sem"] / a["e"], rel_m)
+    a["gauge"] = a["t1000_mean"] / a["t180_mean"]
+    a["drift"] = a["t_drift_flag"].astype(str).eq("True")
+    a["screened"] = ~((a["batch"] == 3) & ((a["gauge"] >= GAUGE_MAX) | a["drift"]))
+    return a
+
+
+def pareto_mask(xs, ys) -> np.ndarray:
+    """Non-dominated mask, both objectives minimized (as in PR #102)."""
+    xs, ys = np.asarray(xs, float), np.asarray(ys, float)
+    return np.array([
+        not np.any((xs <= x) & (ys <= y) & ((xs < x) | (ys < y)))
+        for x, y in zip(xs, ys)
+    ])
+
+
+def design_means(a: pd.DataFrame) -> pd.DataFrame:
+    g = a.groupby("design", sort=False)
+    d = g.agg(
+        batch=("batch", "first"),
+        n_prints=("specimen", "size"),
+        prints=("specimen", lambda s: " ".join(s)),
+        m_g=("m_g", "mean"),
+        e=("e", "mean"),
+        t180=("t180", "mean"),
+        E_reb_mJ=("E_reb_mJ", "mean"),
+        me_g=("me_g", "mean"),
+        me2_mg=("me2_mg", "mean"),
+    ).reset_index()
+    d["label"] = [
+        f"{k} x{n}" if n > 1 else k for k, n in zip(d["design"], d["n_prints"])
+    ]
+    return d
+
+
+def fronts(frame: pd.DataFrame, key: str) -> dict[str, list[str]]:
+    out = {}
+    for col in ("E_reb_mJ", "me_g", "me2_mg", "e"):
+        mask = pareto_mask(frame["t180"], frame[col])
+        out[col] = frame[mask].sort_values("t180")[key].tolist()
+    return out
+
+
+def pooled_print_sd(a: pd.DataFrame) -> tuple[float, float, int]:
+    """Within-design sd of t180 and ln(e) over the screened batch-3 prints."""
+    b3 = a[(a["batch"] == 3) & a["screened"]]
+    ss_t = ss_e = 0.0
+    dof = 0
+    for _, grp in b3.groupby("design"):
+        if len(grp) < 2:
+            continue
+        ss_t += float(((grp["t180"] - grp["t180"].mean()) ** 2).sum())
+        lne = np.log(grp["e"])
+        ss_e += float(((lne - lne.mean()) ** 2).sum())
+        dof += len(grp) - 1
+    return np.sqrt(ss_t / dof), np.sqrt(ss_e / dof), dof
+
+
+def front_probability(d: pd.DataFrame, sd_t: float, sd_lne: float,
+                      power: int) -> np.ndarray:
+    """Share of redraws in which each design is non-dominated.
+
+    Every design is redrawn as if reprinted: t180, ln(e) and mass get the
+    per-print scatter, divided by sqrt(prints) for the triplicated designs.
+    """
+    rng = np.random.default_rng(MC_SEED)
+    k = d["n_prints"].to_numpy(float)
+    shape = (MC_DRAWS, len(d))
+    t = d["t180"].to_numpy() + rng.standard_normal(shape) * sd_t / np.sqrt(k)
+    e = np.exp(np.log(d["e"].to_numpy())
+               + rng.standard_normal(shape) * sd_lne / np.sqrt(k))
+    m = d["m_g"].to_numpy() + rng.standard_normal(shape) * MASS_SD_G / np.sqrt(k)
+    y = m * e ** power
+    # 2-D front per draw: sort by t180, keep points below the running minimum
+    order = np.argsort(t, axis=1)
+    ys = np.take_along_axis(y, order, axis=1)
+    run_min = np.minimum.accumulate(ys, axis=1)
+    prev = np.concatenate([np.full((MC_DRAWS, 1), np.inf), run_min[:, :-1]], axis=1)
+    on = np.zeros(shape, dtype=bool)
+    np.put_along_axis(on, order, ys < prev, axis=1)
+    return on.mean(axis=0)
+
+
+def _style(ax, xlim, ylim, xticks, yticks, ylabel, xfmt="{:.1f}"):
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+    ax.set_xticks(xticks)
+    ax.set_xticklabels([xfmt.format(v) for v in xticks])
+    ax.set_yticks(yticks)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_position(("outward", 10))
+    ax.spines["bottom"].set_bounds(xticks[0], xticks[-1])
+    ax.spines["left"].set_bounds(yticks[0], yticks[-1])
+    ax.set_xlabel(f"Transmissibility t180 ({ARROW_DOWN} is better)", labelpad=8)
+    ax.set_ylabel(ylabel, rotation=0, ha="left", va="bottom")
+    ax.yaxis.set_label_coords(-0.07, 1.03)
+
+
+def _label(ax, text, xy, offset, color=INK, ha="left", leader=False, size=15):
+    """Point label in points relative to the marker, optional thin leader."""
+    arrow = (dict(arrowstyle="-", color=LABEL_GRAY, lw=1.0, shrinkA=2, shrinkB=7)
+             if leader else None)
+    ax.annotate(text, xy=xy, xytext=offset, textcoords="offset points",
+                color=color, ha=ha, va="center", fontsize=size, zorder=6,
+                arrowprops=arrow)
+
+
+def _points(ax, d, col, on, gray=()):
+    """Open circles for everything, filled blue for the front, gray rings."""
+    is_gray = d["design"].isin(gray).to_numpy()
+    plain = ~on & ~is_gray
+    ax.scatter(d.loc[plain, "t180"], d.loc[plain, col], s=90, fc="none",
+               ec=INK, lw=1.6, zorder=3)
+    ax.scatter(d.loc[is_gray, "t180"], d.loc[is_gray, col], s=120, fc="white",
+               ec=REF_GRAY, lw=2.6, zorder=4)
+    front = d[on].sort_values("t180")
+    ax.plot(front["t180"], front[col], color=FRONT_BLUE, lw=2.8, zorder=2)
+    ax.scatter(front["t180"], front[col], s=120, fc=FRONT_BLUE, ec=INK,
+               lw=1.8, zorder=5)
+    return front
+
+
+# label offsets in points, per panel column, for the overview figure;
+# corny4 and r2d2c6 nearly coincide at this scale and share one label
+OVERVIEW_LABELS = {
+    "me_g": {
+        "corny7": ((10, 10), False), "corny6": ((-10, -18), False),
+        "r2d2c2": ((-30, -40), True), "corny4": ((14, -26), True),
+    },
+    "me2_mg": {
+        "corny7": ((10, 10), False), "corny6": ((-10, -22), False),
+        "r2d2c2": ((-50, 88), True), "corny4": ((14, -18), True),
+    },
+}
+
+
+def _legend(fig, with_line=False):
+    """One legend above both panels (the same symbols in each)."""
+    from matplotlib.lines import Line2D
+    handles = [
+        Line2D([], [], color=FRONT_BLUE, lw=2.8, marker="o", ms=10,
+               mfc=FRONT_BLUE, mec=INK, mew=1.6),
+        Line2D([], [], ls="none", marker="o", ms=9, mfc="none", mec=INK, mew=1.6),
+        Line2D([], [], ls="none", marker="o", ms=10, mfc="white", mec=REF_GRAY,
+               mew=2.4),
+    ]
+    labels = ["Pareto front", "Other designs",
+              "On the current front, not on the m·e² front"]
+    if with_line:
+        handles.append(Line2D([], [], color=REF_GRAY, lw=2.0))
+        labels.append("Current front's members, joined")
+    fig.legend(handles, labels, loc="lower center", bbox_to_anchor=(0.5, 1.0),
+               ncol=len(handles), frameon=False, fontsize=15,
+               handlelength=2.2, columnspacing=1.8)
+
+
+def render_overview(d: pd.DataFrame) -> None:
+    """All 35 designs: the m*e panel (current front) next to the m*e^2 panel."""
+    current = d.loc[d["front_E_reb_mJ"], "design"].tolist()
+    xlim, xticks = (0.78, 1.35), np.arange(0.8, 1.31, 0.1)
+    panels = [
+        ("me_g", "front_me_g", "m·e (g)", (-0.03, 1.3),
+         np.arange(0.0, 1.21, 0.4), "Current index, m·e"),
+        ("me2_mg", "front_me2_mg", "m·e² (mg)", (-2.5, 80.0),
+         np.arange(0, 81, 20), "Squared, m·e²"),
+    ]
+    with plt.rc_context(FIG_RC):
+        fig, axes = plt.subplots(1, 2, figsize=(15.0, 6.8), dpi=300)
+        for ax, (col, fcol, ylabel, ylim, yticks, title) in zip(axes, panels):
+            on = d[fcol].to_numpy()
+            gray = [k for k in current if k not in set(d.loc[on, "design"])]
+            front = _points(ax, d, col, on, gray=gray)
+            for _, r in d[on | d["design"].isin(gray)].iterrows():
+                if r["design"] == "r2d2c6":
+                    continue  # labeled together with corny4
+                (dx, dy), leader = OVERVIEW_LABELS[col][r["design"]]
+                text = "corny4 and r2d2c6" if r["design"] == "corny4" else r["label"]
+                xy = (r["t180"], r[col])
+                if r["design"] == "corny4":
+                    pair = d[d["design"].isin(["corny4", "r2d2c6"])]
+                    xy = (pair["t180"].mean(), pair[col].mean())
+                _label(ax, text, xy, (dx, dy),
+                       color=REF_GRAY if r["design"] in gray else INK,
+                       ha="right" if dx < 0 else "left", leader=leader)
+            _style(ax, xlim, ylim, xticks, yticks,
+                   f"{ylabel}, {ARROW_DOWN} is better")
+            ax.text(1.0, 1.03, title, transform=ax.transAxes, ha="right",
+                    va="bottom", fontsize=18, fontweight="semibold")
+        fig.text(
+            0.5, -0.07,
+            "35 designs from 53 tested articles. The nine batch-3 designs were "
+            "printed three times and plot at the mean of their prints.\n"
+            "m·e is the current objective divided by the constant g·h, so the "
+            "left panel is the current front.",
+            ha="center", va="top", fontsize=13, color=LABEL_GRAY,
+            linespacing=1.4,
+        )
+        _legend(fig)
+        fig.subplots_adjust(wspace=0.30)
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        fig.savefig(OUT_PNG, dpi=300, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+
+def render_knee(d: pd.DataFrame) -> None:
+    """Zoom on the knee: why r2d2c2 is on one front and not the other."""
+    current = d.loc[d["front_E_reb_mJ"], "design"].tolist()
+    c6 = d.set_index("design").loc["corny6"]
+    c2 = d.set_index("design").loc["r2d2c2"]
+    xlim, xticks = (0.885, 1.075), np.arange(0.90, 1.051, 0.05)
+    panels = [
+        ("me_g", "front_me_g", "m·e (g)", (0.255, 0.48),
+         np.arange(0.26, 0.461, 0.04), "Current index, m·e", "{:.2f}"),
+        ("me2_mg", "front_me2_mg", "m·e² (mg)", (3.2, 12.0),
+         np.arange(4.0, 12.01, 2.0), "Squared, m·e²", "{:.0f}"),
+    ]
+    labels = {
+        "me_g": {"corny6": ((-10, -16), False), "r2d2c2": ((10, -14), False),
+                 "corny4": ((12, 6), False), "r2d2c6": ((12, -6), False),
+                 "r2d2c1": ((-8, 14), False)},
+        "me2_mg": {"corny6": ((-10, -16), False), "r2d2c2": ((10, -12), False),
+                   "corny4": ((12, 6), False), "r2d2c6": ((12, -6), False),
+                   "r2d2c1": ((-8, 16), False)},
+    }
+    with plt.rc_context(FIG_RC):
+        fig, axes = plt.subplots(1, 2, figsize=(15.0, 6.8), dpi=300)
+        for ax, (col, fcol, ylabel, ylim, yticks, title, yfmt) in zip(axes, panels):
+            on = d[fcol].to_numpy()
+            gray = [k for k in current if k not in set(d.loc[on, "design"])]
+            # everything up and to the right of corny6 is dominated by it
+            ax.add_patch(plt.Rectangle(
+                (c6["t180"], c6[col]), xlim[1] - c6["t180"], ylim[1] - c6[col],
+                fc="#efeeec", ec="none", zorder=0))
+            ax.text(c6["t180"] + 0.004, ylim[1] - 0.03 * (ylim[1] - ylim[0]),
+                    "Dominated by corny6\n(higher t180 and higher index)",
+                    ha="left", va="top", fontsize=13, color=LABEL_GRAY)
+            if gray:
+                ref = d[d["design"].isin(current)].sort_values("t180")
+                ax.plot(ref["t180"], ref[col], color=REF_GRAY, lw=2.0, zorder=1.5)
+            _points(ax, d, col, on, gray=gray)
+            for key, ((dx, dy), leader) in labels[col].items():
+                r = d.set_index("design").loc[key]
+                is_gray = key in gray
+                _label(ax, key, (r["t180"], r[col]), (dx, dy),
+                       color=REF_GRAY if is_gray else INK,
+                       ha="right" if dx < 0 else "left", leader=leader)
+            ratio = c2[col] / c6[col] - 1
+            note = (f"r2d2c2 sits {abs(ratio):.1%} below corny6,\nso it stays on the front"
+                    if ratio < 0 else
+                    f"r2d2c2 sits {ratio:.1%} above corny6,\nso corny6 dominates it")
+            ax.annotate(note, xy=(c2["t180"], c2[col]),
+                        xytext=(0.08, 0.20 if ratio < 0 else 0.16),
+                        textcoords="axes fraction", ha="left", va="center",
+                        fontsize=14, color=INK,
+                        arrowprops=dict(arrowstyle="-", color=LABEL_GRAY, lw=1.0,
+                                        shrinkA=4, shrinkB=8))
+            _style(ax, xlim, ylim, xticks, yticks,
+                   f"{ylabel}, {ARROW_DOWN} is better", xfmt="{:.2f}")
+            ax.set_yticklabels([yfmt.format(v) for v in yticks])
+            ax.text(1.0, 1.03, title, transform=ax.transAxes, ha="right",
+                    va="bottom", fontsize=18, fontweight="semibold")
+        fig.text(
+            0.5, -0.07,
+            "Zoom on the low-rebound end of both fronts. r2d2c2 (17.96 g) is "
+            "lighter than corny6 (19.45 g), but its e is higher.\n"
+            "With m·e the mass advantage wins; with m·e² e counts twice and "
+            "corny6 wins. The shaded box is everything corny6 dominates.",
+            ha="center", va="top", fontsize=13, color=LABEL_GRAY,
+            linespacing=1.4,
+        )
+        _legend(fig, with_line=True)
+        fig.subplots_adjust(wspace=0.30)
+        fig.savefig(OUT_KNEE, dpi=300, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+
+def main() -> int:
+    a = load_articles()
+    d = design_means(a)
+    print(f"{len(a)} articles, {len(d)} designs")
+
+    for col in ("E_reb_mJ", "me_g", "me2_mg", "e"):
+        d[f"front_{col}"] = pareto_mask(d["t180"], d[col])
+    f = fronts(d, "design")
+    print("\nDesign-mean fronts (all prints), sorted by t180:")
+    for col, name in [("E_reb_mJ", "current E_reb = m*e*g*h"), ("me_g", "m*e"),
+                      ("me2_mg", "m*e^2"), ("e", "e alone (1 - VLI)")]:
+        print(f"  {name:24s} {', '.join(f[col])}")
+    assert f["me_g"] == f["E_reb_mJ"], "m*e must reproduce the current front"
+
+    print("\nRobustness:")
+    for name, frame, key in [
+        ("every article", a, "specimen"),
+        ("first prints only", a[a["print_no"] == 1], "specimen"),
+        ("screened design means", design_means(a[a["screened"]]), "design"),
+    ]:
+        fr = fronts(frame, key)
+        print(f"  {name}:")
+        for col in ("me_g", "me2_mg"):
+            print(f"    {col:7s} {', '.join(fr[col])}")
+
+    rho = spearmanr(d["me_g"], d["me2_mg"]).statistic
+    flips = sum(
+        1
+        for i in range(len(d)) for j in range(i + 1, len(d))
+        if np.sign(d["me_g"].iat[i] - d["me_g"].iat[j])
+        != np.sign(d["me2_mg"].iat[i] - d["me2_mg"].iat[j])
+    )
+    print(f"\nSpearman rho(m*e, m*e^2) over designs: {rho:.3f}; "
+          f"{flips} of {len(d) * (len(d) - 1) // 2} design pairs swap order")
+
+    sd_t, sd_lne, dof = pooled_print_sd(a)
+    print(f"\nPrint-to-print scatter (screened batch-3 triplicates, {dof} dof): "
+          f"t180 sd {sd_t:.4f}, ln(e) sd {sd_lne:.3f}")
+    d["p_front_me"] = front_probability(d, sd_t, sd_lne, power=1)
+    d["p_front_me2"] = front_probability(d, sd_t, sd_lne, power=2)
+    show = d[(d["p_front_me"] >= 0.1) | (d["p_front_me2"] >= 0.1)
+             | d["front_me_g"] | d["front_me2_mg"]].sort_values("t180")
+    print("Share of redraws on the front:")
+    for _, r in show.iterrows():
+        print(f"  {r['label']:10s} t180 {r['t180']:.3f}  m*e {r['p_front_me']:.2f}"
+              f"  m*e^2 {r['p_front_me2']:.2f}")
+
+    article_cols = [
+        "specimen", "design", "batch", "print_no", "m_g", "t180", "t180_sem",
+        "e", "e_sem", "E_reb_mJ", "me_g", "me_sem_g", "me2_mg", "me2_sem_mg",
+        "gauge", "drift", "screened", "source",
+    ]
+    a[article_cols].to_csv(OUT_ARTICLES, index=False, float_format="%.5g")
+    design_cols = [
+        "design", "label", "batch", "n_prints", "prints", "m_g", "t180", "e",
+        "E_reb_mJ", "me_g", "me2_mg", "front_E_reb_mJ", "front_me_g",
+        "front_me2_mg", "front_e", "p_front_me", "p_front_me2",
+    ]
+    d.sort_values("t180")[design_cols].to_csv(OUT_DESIGNS, index=False,
+                                              float_format="%.5g")
+    render_overview(d)
+    render_knee(d)
+    print(f"\nWrote {OUT_PNG.relative_to(REPO)}, {OUT_KNEE.relative_to(REPO)}, "
+          f"{OUT_ARTICLES.relative_to(REPO)}, {OUT_DESIGNS.relative_to(REPO)}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
