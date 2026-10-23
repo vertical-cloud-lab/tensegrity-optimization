@@ -33,6 +33,15 @@ prints only, and batch-3 design means over health-screened sessions only
 (seat gauge t1000/t180 < 1.145 and no drift flag). A Monte Carlo pass
 redraws every design with the print-to-print scatter measured from the
 batch-3 triplicates and reports how often each design lands on the front.
+Ranking changes (PR #97 follow-up): every design's and article's rank on
+the index alone and its Pareto layer (non-dominated sorting depth) under
+both forms, printed and written to the CSVs, with a slope chart of the
+design ranks.
+
+Outputs (``docs/figures/``): ``pareto_rebound_index_variants.png`` (all
+designs, both fronts), ``..._knee.png`` (zoom where the fronts differ),
+``..._ranks.png`` (rank under m*e against rank under m*e^2), and the
+per-article and per-design CSVs.
 
 Usage (from the repo root)::
 
@@ -57,6 +66,7 @@ DATA = REPO / "data" / "bo-campaign-snapshot"
 OUT_DIR = REPO / "docs" / "figures"
 OUT_PNG = OUT_DIR / "pareto_rebound_index_variants.png"
 OUT_KNEE = OUT_DIR / "pareto_rebound_index_variants_knee.png"
+OUT_RANKS = OUT_DIR / "pareto_rebound_index_variants_ranks.png"
 OUT_ARTICLES = OUT_DIR / "pareto_rebound_index_variants_articles.csv"
 OUT_DESIGNS = OUT_DIR / "pareto_rebound_index_variants_designs.csv"
 
@@ -158,6 +168,44 @@ def pareto_mask(xs, ys) -> np.ndarray:
         not np.any((xs <= x) & (ys <= y) & ((xs < x) | (ys < y)))
         for x, y in zip(xs, ys)
     ])
+
+
+def pareto_layers(xs, ys) -> np.ndarray:
+    """Non-dominated sorting depth: 1 = the front, 2 = the front once layer 1
+    is removed, and so on (both objectives minimized)."""
+    xs, ys = np.asarray(xs, float), np.asarray(ys, float)
+    layer = np.zeros(len(xs), dtype=int)
+    left = np.ones(len(xs), dtype=bool)
+    k = 0
+    while left.any():
+        k += 1
+        idx = np.flatnonzero(left)
+        on = pareto_mask(xs[idx], ys[idx])
+        layer[idx[on]] = k
+        left[idx[on]] = False
+    return layer
+
+
+def add_ranks(frame: pd.DataFrame) -> pd.DataFrame:
+    """Index rank (1 = lowest index) and Pareto layer under both forms."""
+    frame = frame.copy()
+    for col, tag in (("me_g", "me"), ("me2_mg", "me2")):
+        frame[f"rank_{tag}"] = frame[col].rank(method="min").astype(int)
+        frame[f"layer_{tag}"] = pareto_layers(frame["t180"], frame[col])
+    frame["rank_shift"] = frame["rank_me2"] - frame["rank_me"]
+    frame["layer_shift"] = frame["layer_me2"] - frame["layer_me"]
+    return frame
+
+
+def print_rank_changes(frame: pd.DataFrame, key: str, what: str) -> None:
+    moved = frame[(frame["rank_shift"] != 0) | (frame["layer_shift"] != 0)]
+    print(f"\n{what}: {int((frame['rank_shift'] != 0).sum())} of {len(frame)} "
+          f"change index rank (largest shift {int(frame['rank_shift'].abs().max())} "
+          f"places); {int((frame['layer_shift'] != 0).sum())} change Pareto layer")
+    for _, r in moved.sort_values("rank_me").iterrows():
+        print(f"  {r[key]:8s} m {r['m_g']:6.2f} g  e {r['e']:.4f}  "
+              f"rank {r['rank_me']:2d} -> {r['rank_me2']:2d}  "
+              f"layer {r['layer_me']} -> {r['layer_me2']}")
 
 
 def design_means(a: pd.DataFrame) -> pd.DataFrame:
@@ -422,6 +470,56 @@ def render_knee(d: pd.DataFrame) -> None:
         plt.close(fig)
 
 
+def render_ranks(d: pd.DataFrame) -> None:
+    """Slope chart: each design's index rank under m*e (left) and m*e^2 (right)."""
+    d = d.sort_values("rank_me")
+    n = len(d)
+    light, mid = "#cfcecb", REF_GRAY
+    with plt.rc_context(FIG_RC):
+        fig, ax = plt.subplots(figsize=(8.0, 11.5), dpi=300)
+        for _, r in d.iterrows():
+            shift = abs(int(r["rank_shift"]))
+            color = light if shift == 0 else (mid if shift == 1 else INK)
+            lw = 1.4 if shift == 0 else (1.8 if shift == 1 else 2.6)
+            y0, y1 = r["rank_me"], r["rank_me2"]
+            ax.plot([0, 1], [y0, y1], color=color, lw=lw, zorder=2 + shift)
+            for x, y, on in ((0, y0, r["front_me_g"]), (1, y1, r["front_me2_mg"])):
+                ax.scatter([x], [y], s=60, zorder=6,
+                           fc=FRONT_BLUE if on else "white",
+                           ec=INK if on else color, lw=1.4)
+            text_color = LABEL_GRAY if shift == 0 else INK
+            weight = "semibold" if shift >= 2 else "normal"
+            ax.text(-0.05, y0, r["label"], ha="right", va="center", fontsize=12,
+                    color=text_color, fontweight=weight)
+            ax.text(1.05, y1, r["label"], ha="left", va="center", fontsize=12,
+                    color=text_color, fontweight=weight)
+        # rows sit at their rank on both sides, so one rank column serves both
+        for k in range(1, n + 1):
+            ax.text(-0.50, k, str(k), ha="right", va="center", fontsize=11,
+                    color=LABEL_GRAY)
+        ax.text(-0.50, 0.0, "rank", ha="right", va="bottom", fontsize=12,
+                color=LABEL_GRAY)
+        ax.set_xlim(-0.58, 1.55)
+        ax.set_ylim(n + 0.8, 0.2)
+        ax.axis("off")
+        ax.text(0, 0.0, "m·e", ha="center", va="bottom", fontsize=17,
+                fontweight="semibold")
+        ax.text(1, 0.0, "m·e²", ha="center", va="bottom", fontsize=17,
+                fontweight="semibold")
+        n_moved = int((d["rank_shift"] != 0).sum())
+        n_big = int((d["rank_shift"].abs() >= 2).sum())
+        fig.text(
+            0.5, 0.06,
+            f"Rank by the rebound index alone, 1 = lowest. {n_moved} of {n} "
+            f"designs move, {n_big} by 2 or 3 places (dark lines).\n"
+            "Filled blue: on that version's Pareto front against t180.",
+            ha="center", va="top", fontsize=12, color=LABEL_GRAY,
+            linespacing=1.4,
+        )
+        fig.savefig(OUT_RANKS, dpi=300, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+
 def main() -> int:
     a = load_articles()
     d = design_means(a)
@@ -457,6 +555,11 @@ def main() -> int:
     print(f"\nSpearman rho(m*e, m*e^2) over designs: {rho:.3f}; "
           f"{flips} of {len(d) * (len(d) - 1) // 2} design pairs swap order")
 
+    d = add_ranks(d)
+    a = add_ranks(a)
+    print_rank_changes(d, "label", "Designs")
+    print_rank_changes(a, "specimen", "Articles (every print its own point)")
+
     sd_t, sd_lne, dof = pooled_print_sd(a)
     print(f"\nPrint-to-print scatter (screened batch-3 triplicates, {dof} dof): "
           f"t180 sd {sd_t:.4f}, ln(e) sd {sd_lne:.3f}")
@@ -472,19 +575,23 @@ def main() -> int:
     article_cols = [
         "specimen", "design", "batch", "print_no", "m_g", "t180", "t180_sem",
         "e", "e_sem", "E_reb_mJ", "me_g", "me_sem_g", "me2_mg", "me2_sem_mg",
-        "gauge", "drift", "screened", "source",
+        "gauge", "drift", "screened", "rank_me", "rank_me2", "layer_me",
+        "layer_me2", "source",
     ]
     a[article_cols].to_csv(OUT_ARTICLES, index=False, float_format="%.5g")
     design_cols = [
         "design", "label", "batch", "n_prints", "prints", "m_g", "t180", "e",
         "E_reb_mJ", "me_g", "me2_mg", "front_E_reb_mJ", "front_me_g",
-        "front_me2_mg", "front_e", "p_front_me", "p_front_me2",
+        "front_me2_mg", "front_e", "rank_me", "rank_me2", "layer_me",
+        "layer_me2", "p_front_me", "p_front_me2",
     ]
     d.sort_values("t180")[design_cols].to_csv(OUT_DESIGNS, index=False,
                                               float_format="%.5g")
     render_overview(d)
     render_knee(d)
+    render_ranks(d)
     print(f"\nWrote {OUT_PNG.relative_to(REPO)}, {OUT_KNEE.relative_to(REPO)}, "
+          f"{OUT_RANKS.relative_to(REPO)}, "
           f"{OUT_ARTICLES.relative_to(REPO)}, {OUT_DESIGNS.relative_to(REPO)}")
     return 0
 
