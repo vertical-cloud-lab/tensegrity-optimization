@@ -905,6 +905,42 @@ def _field_runs(instr, cached, rpr=""):
     )
 
 
+# Word rejects a file whose property elements are out of schema order (it
+# reports "unreadable content"), so every property block is put back in the
+# order of the WordprocessingML schema before saving.
+_ORDER = {
+    "pPr": "pStyle keepNext keepLines pageBreakBefore framePr widowControl numPr suppressLineNumbers pBdr shd "
+    "tabs suppressAutoHyphens kinsoku wordWrap overflowPunct topLinePunct autoSpaceDE autoSpaceDN bidi "
+    "adjustRightInd snapToGrid spacing ind contextualSpacing mirrorIndents suppressOverlap jc textDirection "
+    "textAlignment textboxTightWrap outlineLvl divId cnfStyle rPr sectPr pPrChange",
+    "rPr": "ins del moveFrom moveTo rStyle rFonts b bCs i iCs caps smallCaps strike dstrike outline shadow emboss "
+    "imprint noProof snapToGrid vanish webHidden color spacing w kern position sz szCs highlight u effect bdr shd "
+    "fitText vertAlign rtl cs em lang eastAsianLayout specVanish oMath rPrChange",
+    "tblPr": "tblStyle tblpPr tblOverlap bidiVisual tblStyleRowBandSize tblStyleColBandSize tblW jc tblCellSpacing "
+    "tblInd tblBorders shd tblLayout tblCellMar tblLook tblCaption tblDescription tblPrChange",
+    "tcPr": "cnfStyle tcW gridSpan hMerge vMerge tcBorders shd noWrap tcMar textDirection tcFitText vAlign hideMark "
+    "headers cellIns cellDel cellMerge tcPrChange",
+    "sectPr": "headerReference footerReference footnotePr endnotePr type pgSz pgMar paperSrc pgBorders lnNumType "
+    "pgNumType cols formProt vAlign noEndnote titlePg textDirection bidi rtlGutter docGrid printerSettings sectPrChange",
+}
+_RANK = {k: {t: i for i, t in enumerate(v.split())} for k, v in _ORDER.items()}
+_RANK["sectPr"]["footerReference"] = _RANK["sectPr"]["headerReference"]
+
+
+def fix_order(root):
+    for tag, rank in _RANK.items():
+        for el in root.iter(w(tag)):
+            kids = list(el)
+            if len(kids) < 2:
+                continue
+            ordered = sorted(kids, key=lambda c: rank.get(c.tag.split("}")[-1], 999) if isinstance(c.tag, str) else 999)
+            if ordered != kids:
+                for c in kids:
+                    el.remove(c)
+                for c in ordered:
+                    el.append(c)
+
+
 def size_table(tbl, avail_tw: int):
     gcs = tbl.find(w("tblGrid")).findall(w("gridCol"))
     n = len(gcs)
@@ -1304,7 +1340,23 @@ def postprocess(raw_docx: Path, out_docx: Path, meta: dict, labels: dict, date_s
     # ---- settings: automatic hyphenation (LaTeX hyphenates too) ------------
     st = d.settings.element
     if st.find(w("autoHyphenation")) is None:
-        st.append(_el('<w:autoHyphenation w:val="true"/>'))
+        tab = st.find(w("defaultTabStop"))
+        hyph = _el('<w:autoHyphenation w:val="true"/>')
+        if tab is not None:
+            tab.addnext(hyph)
+        else:
+            st.insert(0, hyph)
+
+    # one footnote numbering for the whole document (pandoc restarts per section)
+    for sp in body.iter(w("sectPr")):
+        for fp in sp.findall(w("footnotePr")):
+            sp.remove(fp)
+
+    fix_order(body)
+    fix_order(d.styles.element)
+    for s_ in d.sections:
+        for part in (s_.footer, s_.even_page_footer):
+            fix_order(part._element)
 
     cp = d.core_properties
     cp.title = meta["title"]
