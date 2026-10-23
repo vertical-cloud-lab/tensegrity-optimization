@@ -333,7 +333,7 @@ def preprocess(body_tex: str, work: Path, labels: dict, cites: dict, bbl: str, p
 
     # -- todo notes vanish in manuscript.pdf ([disable] option) ----------------
     body = remove_commands(body, "todo", 1, nopt=1)
-    body = remove_commands(body, "listoftodos", 0, nopt=0)
+    body = remove_commands(body, "listoftodos", 0, nopt=1)
 
     # -- title block --------------------------------------------------------
     authors = []
@@ -919,6 +919,19 @@ def size_table(tbl, avail_tw: int):
             if span == 1 and col < n:
                 nat[col] = max(nat[col], round(len(text) * 82) + 200)
             col += span
+    # a spanning cell (\multicolumn) needs its columns wide enough together
+    for tr in rows:
+        col = 0
+        for tc in tr.findall(w("tc")):
+            gs = tc.find(w("tcPr") + "/" + w("gridSpan"))
+            span = int(gs.get(w("val"))) if gs is not None else 1
+            if span > 1 and col + span <= n:
+                need = round(len("".join(t.text or "" for t in tc.iter(w("t")))) * 82) + 200
+                have = sum(nat[col : col + span])
+                if need > have:
+                    for c in range(col, col + span):
+                        nat[c] += -(-(need - have) // span)
+            col += span
     total = sum(nat)
     if total > avail_tw:
         nat = [max(300, round(x * avail_tw / total)) for x in nat]
@@ -1265,6 +1278,12 @@ def postprocess(raw_docx: Path, out_docx: Path, meta: dict, labels: dict, date_s
                 tcw.set(w("w"), str(avail))
             continue
         size_table(tbl, avail)
+
+    # ---- list items (pandoc leaves them in Normal): justified body text ----
+    for p in body.iter(w("p")):
+        ppr = p.find(w("pPr"))
+        if ppr is not None and ppr.find(w("numPr")) is not None and ppr.find(w("pStyle")) is None:
+            ppr.insert(0, _el('<w:pStyle w:val="Compact"/>'))
 
     # ---- lines holding an inline Word equation may grow rather than clip ---
     for p in body.iter(w("p")):

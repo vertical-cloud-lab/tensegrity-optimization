@@ -113,6 +113,32 @@ A LaTeX distribution (MiKTeX or TeX Live) with `pdflatex` and `bibtex` is
 required; MiKTeX will install `asmejour` and `todonotes` automatically the
 first time you build.
 
+### Word version (`manuscript.docx`)
+
+`manuscript.docx` is an editable Word copy of `manuscript.pdf`, generated
+from the same source by `scripts/docx/build_manuscript_docx.py`
+(`make manuscript-docx`). It is a one-way export: edits made in Word do not
+flow back into `manuscript-body.tex`, so carry them back by hand and rerun
+the script after the LaTeX changes.
+
+It keeps the PDF's figure, table, equation, section and citation numbers
+(read from the LaTeX `.aux` file), the reference list (from the `.bbl`),
+Word equations and tables, the page size, fonts and two columns, the
+footers, and the violet placeholder text. Known differences from the PDF:
+
+- Word draws the right column's line numbers in the gutter, so the gutter is
+  24 pt instead of 12 pt, and the abstract is not line-numbered.
+- Wide figures and tables sit where they are first cited, between
+  full-width section breaks, instead of floating to the top of a page.
+- Cross-reference and citation numbers are plain text (linked to their
+  targets), so they do not renumber if figures or references are added in
+  Word.
+
+Requirements: TeX Live with `asmejour`, pandoc 3.1 or newer, and
+`pip install python-docx lxml pymupdf`. LibreOffice is optional; when it is
+installed, the script uses it to fill in the page numbers of the lists of
+figures and tables.
+
 ## Files
 
 ```
@@ -122,6 +148,7 @@ manuscript/
 ├── manuscript-todos.tex  # Wrapper -- todonotes enabled (review build)
 ├── manuscript.pdf        # Built output, todos hidden
 ├── manuscript-todos.pdf  # Built output, todos visible
+├── manuscript.docx       # Editable Word copy of manuscript.pdf (generated)
 ├── references.bib        # Curated BibTeX database used by the asmejour
 │                         #   build (proposal + Edison literature PRs)
 ├── references-full.bib   # MASTER synthesized library (every Edison query +
