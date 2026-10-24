@@ -218,8 +218,7 @@ robots developed for planetary landing~\citep{agogino2018superball,
 caluwaerts2014superball, sabelhaus2015system, vespignani2018design,
 deitrich2022titan}. Recent work has shown that \emph{tensegrity-inspired}
 unit cells can be directly 3D-printed and exhibit load-limiting plateaus
-under drop-weight impact~\citep{pajunen2019design}, opening a path
-toward additively manufactured architected absorbers. Throughout, we use
+under drop-weight impact~\citep{pajunen2019design}. Throughout, we use
 \emph{tensegrity-inspired} for printable cells that borrow the separated
 compression-member and tension-network geometry of tensegrity while
 relaxing defining mechanical conditions of classical tensegrity. In the
@@ -228,20 +227,20 @@ the rigid struts may share printed junctions, and no pretension is activated or 
 We therefore do not claim classical tensegrity, prestress-stabilized
 behavior, or equivalence to an ideal cable-strut prism.
 
-Multi-material fused-deposition modeling (FDM) that pairs a rigid polymer
+Multi-material fused-deposition modeling (FDM) can pair a rigid polymer
 such as polylactic acid (PLA) with a soft, rate-dependent elastomer such as
-thermoplastic polyurethane (TPU) has been used to fabricate rigid-soft
-architected energy absorbers on a single platform: thick-panel
+thermoplastic polyurethane (TPU) on a single platform. It has been used to
+fabricate rigid-soft architected energy absorbers, including thick-panel
 origami metamaterials with PLA panels and TPU hinges~\citep{ye2023multimaterial}
-and ABS/TPU honeycombs with tunable stiff/flexible
-proportions~\citep{khatri2024energy}. The same rigid-soft co-printing
-capability makes it possible to rapidly fabricate diverse tensegrity-inspired
-geometries, which adopt a discrete-compression/continuous-tension topology
-rather than an origami or honeycomb one. Although extruded TPU does not behave
-as an idealized
+and honeycombs of acrylonitrile butadiene styrene (ABS) and TPU with tunable
+stiff/flexible proportions~\citep{khatri2024energy}. The same rigid-soft
+co-printing capability makes it possible to fabricate diverse
+tensegrity-inspired geometries, which adopt a
+discrete-compression/continuous-tension topology rather than an origami or
+honeycomb one. Although extruded TPU does not behave as an idealized
 inextensible cable, its rate-dependent damping is a desirable property
 for impact-absorption applications and complements the elastic stiffness
-of the PLA compression members rather than competing with it.
+of the PLA compression members.
 
 Designing such architected absorbers is a
 \emph{design-of-experiments} problem. Strut geometry, tension-element
@@ -395,13 +394,13 @@ jackson2014honeycomb}. Pajunen et~al.~\cite{pajunen2019design} directly
 3D-printed truncated-tetrahedral tensegrity-inspired unit cells and
 measured load-limiting plateaus, which motivates the present
 focus on additively manufactured PLA/TPU composites.
-More recent work on dynamically loaded additively-manufactured
-energy-absorbing lattices~\cite{davami2019dynamicenergyabsorption}, together
-with Intrigila et~al.'s bistable tensegrity-like unit cell for lattice
-metamaterials~\cite{intrigila2022fabricationandexperimental} as the closest
-published analog, confirms that this architecture class also responds favorably
-under impact and quasi-static loading, although neither study employed
-multi-material FDM or closed-loop design optimization.
+Davami et~al.\ measured the dynamic energy absorption of additively
+manufactured, shape-recovering lattices~\cite{davami2019dynamicenergyabsorption},
+and Intrigila et~al.\ fabricated and characterized a bistable
+tensegrity-like unit cell for lattice
+metamaterials~\cite{intrigila2022fabricationandexperimental}, the closest
+published analog to the present cells. Neither study used multi-material
+FDM or closed-loop design optimization.
 Table~\ref{tab:novelty} compares the present work with selected
 prior efforts spanning the three elements combined here (impact-tested
 printed tensegrity-inspired structures, rigid-flexible fabrication,
@@ -454,8 +453,8 @@ optimization loop.
 
 Multi-material rigid-soft FDM enables stiff/compliant combinations on a
 single platform with tunable energy absorption, demonstrated for thick-panel
-origami with PLA (or ABS/CFRP) panels and TPU hinges~\cite{ye2023multimaterial}
-and for ABS-TPU honeycombs~\cite{khatri2024energy}. Neither study is itself a
+origami whose PLA panels are joined by TPU hinges~\cite{ye2023multimaterial}
+and for ABS/TPU honeycombs~\cite{khatri2024energy}. Neither study is itself a
 tensegrity, but both establish the rigid-soft co-printing route we adopt. Ye
 et~al.~\cite{ye2023multimaterial}
 introduced a \emph{wrapping-based} strategy in which rigid cores are
@@ -507,8 +506,7 @@ optimizing expensive black-box functions using a Gaussian-process
 surrogate~\citep{shahriari2016taking, frazier2018tutorial}. Modern
 implementations such as BoTorch~\citep{balandat2020botorch} and the Ax
 platform built atop it~\citep{pmlr-v293-olson25a} support
-parallel batched evaluations and a wide variety of acquisition
-functions. Recent algorithmic advances include log expected improvement
+parallel batched evaluations and many acquisition functions. Recent algorithmic advances include log expected improvement
 (log-EI) for numerical robustness~\citep{ament2023logei}, noisy expected
 hypervolume improvement (qNEHVI) for multi-objective
 settings~\citep{daulton2021nehvi},
@@ -785,11 +783,11 @@ cables converging at a given strut end are joined within the strut,
 which acts as a rigid cage housing the junction, and the individual
 tendons then exit through discrete outlets. This keeps the soft-rigid
 interface in internal, compression-dominated pockets rather than at an
-exposed overmolded surface. This construction effectively inverts the
-material roles of Ye et~al.'s soft-skin-over-rigid-core
-wrapping~\cite{ye2023multimaterial}: here a soft TPU core is captured within
-a rigid PLA shell, so we cite that work only as a multi-material co-printing
-precedent rather than as validation of the present junction. \todo{Quantitatively
+exposed overmolded surface. This construction inverts the material roles
+of the wrapping strategy of Ye et~al.~\cite{ye2023multimaterial}, in which
+a soft skin covers a rigid core. Here a rigid PLA shell captures a soft TPU
+core, so that work is a precedent for multi-material co-printing but does
+not validate the present junction. \todo{Quantitatively
 verify the internal-anchoring junction strength against the PR~\#39 / PR~\#35
 joint pull-out studies before making any cyclic-durability claim.} \todo{Document slicer profile
 (layer height, infill, print speed, nozzle temperatures, retraction
@@ -881,10 +879,10 @@ objectives.
   \centering
   \includegraphics[width=\textwidth]{../figures/fab-workflow.pdf}
   \caption{Fabrication and characterization workflow for the multi-material
-    tensegrity-inspired unit cells: design parameters drive parametric CAD,
-    slicing with manually generated TPU supports, a single multi-material
-    print on the Bambu Lab~H2D, post-processing and inspection, and
-    mechanical testing. Node photographs are representative examples
+    tensegrity-inspired unit cells. The steps are parametric CAD from the
+    design parameters, slicing with manually painted supports along the TPU
+    tendons, a single multi-material print on the Bambu Lab~H2D,
+    post-processing and inspection, and mechanical testing. Node photographs are representative examples
     from the project's build history. They show the OpenSCAD $T_3$-prism render
     (CAD), the dual-nozzle Bambu Studio slice with PLA on the left extruder
     and TPU on the right (slicing), an in-progress H2D print of the prism
