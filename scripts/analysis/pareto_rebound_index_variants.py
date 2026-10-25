@@ -36,12 +36,17 @@ batch-3 triplicates and reports how often each design lands on the front.
 Ranking changes (PR #97 follow-up): every design's and article's rank on
 the index alone and its Pareto layer (non-dominated sorting depth) under
 both forms, printed and written to the CSVs, with a slope chart of the
-design ranks.
+design ranks. Every pair of designs, and of articles, that the two forms
+put in opposite order is listed with its cause and batches, and the ranks
+are compared against e alone (no mass weight, the manuscript's VLI) for
+scale.
 
 Outputs (``docs/figures/``): ``pareto_rebound_index_variants.png`` (all
 designs, both fronts), ``..._knee.png`` (zoom where the fronts differ),
-``..._ranks.png`` (rank under m*e against rank under m*e^2), and the
-per-article and per-design CSVs.
+``..._ranks.png`` (rank under m*e against rank under m*e^2),
+``..._swap_zone.png`` (every pair of articles, and the band where the two
+forms disagree), the per-article and per-design CSVs, and ``..._swaps.csv``
+(every pair that swaps order).
 
 Usage (from the repo root)::
 
@@ -59,7 +64,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr
+from scipy.stats import kendalltau, spearmanr
 
 REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "bo-campaign-snapshot"
@@ -67,8 +72,10 @@ OUT_DIR = REPO / "docs" / "figures"
 OUT_PNG = OUT_DIR / "pareto_rebound_index_variants.png"
 OUT_KNEE = OUT_DIR / "pareto_rebound_index_variants_knee.png"
 OUT_RANKS = OUT_DIR / "pareto_rebound_index_variants_ranks.png"
+OUT_ZONE = OUT_DIR / "pareto_rebound_index_variants_swap_zone.png"
 OUT_ARTICLES = OUT_DIR / "pareto_rebound_index_variants_articles.csv"
 OUT_DESIGNS = OUT_DIR / "pareto_rebound_index_variants_designs.csv"
+OUT_SWAPS = OUT_DIR / "pareto_rebound_index_variants_swaps.csv"
 
 G = 9.80665          # m/s^2, as in the BO script
 H = 1.524            # m, 60 in drop
@@ -206,6 +213,58 @@ def print_rank_changes(frame: pd.DataFrame, key: str, what: str) -> None:
         print(f"  {r[key]:8s} m {r['m_g']:6.2f} g  e {r['e']:.4f}  "
               f"rank {r['rank_me']:2d} -> {r['rank_me2']:2d}  "
               f"layer {r['layer_me']} -> {r['layer_me2']}")
+
+
+def swapped_pairs(frame: pd.DataFrame, key: str, level: str) -> pd.DataFrame:
+    """Every pair that m*e and m*e^2 put in opposite order.
+
+    ``a`` is the member m*e ranks better (lower), ``b`` the one m*e^2 ranks
+    better. Two single prints swap exactly when the lighter one is bouncier
+    by a factor between sqrt(mass ratio) and the mass ratio. A design mean
+    can also swap because averaging m*e^2 over prints that bounce
+    differently weights the bounciest print more than averaging m*e does.
+    ``cause`` is "mass against bounce" if the pair still swaps with each
+    design scored at its mean mass and mean e, else "print averaging".
+    """
+    f = frame.reset_index(drop=True)
+    rows = []
+    for i in range(len(f)):
+        for j in range(i + 1, len(f)):
+            p, q = f.iloc[i], f.iloc[j]
+            if np.sign(p["me_g"] - q["me_g"]) == np.sign(p["me2_mg"] - q["me2_mg"]):
+                continue
+            a, b = (p, q) if p["me_g"] < q["me_g"] else (q, p)
+            plain = (np.sign(a["m_g"] * a["e"] - b["m_g"] * b["e"])
+                     != np.sign(a["m_g"] * a["e"] ** 2 - b["m_g"] * b["e"] ** 2))
+            rows.append({
+                "level": level, "a": a[key], "b": b[key],
+                "batch_a": a["batch"], "batch_b": b["batch"],
+                "m_a_g": a["m_g"], "m_b_g": b["m_g"], "e_a": a["e"], "e_b": b["e"],
+                "me_a_g": a["me_g"], "me_b_g": b["me_g"],
+                "me2_a_mg": a["me2_mg"], "me2_b_mg": b["me2_mg"],
+                # how far the loser sits above the winner under each form
+                "gap_me_pct": 100 * (b["me_g"] / a["me_g"] - 1),
+                "gap_me2_pct": 100 * (a["me2_mg"] / b["me2_mg"] - 1),
+                "cause": "mass against bounce" if plain else "print averaging",
+            })
+    return pd.DataFrame(rows).sort_values("me_a_g", ignore_index=True)
+
+
+def print_swaps(sw: pd.DataFrame, frame: pd.DataFrame, what: str) -> None:
+    n = len(frame)
+    same = sw["batch_a"] == sw["batch_b"]
+    print(f"\n{what}: {len(sw)} of {n * (n - 1) // 2} pairs swap order, "
+          f"{int(same.sum())} within a batch and {int((~same).sum())} across "
+          f"batches; {sw['cause'].value_counts().to_dict()}")
+    for b, grp in frame.groupby("batch"):
+        k = int(((sw["batch_a"] == b) & (sw["batch_b"] == b)).sum())
+        print(f"  batch {b}: {k} of {len(grp) * (len(grp) - 1) // 2} "
+              f"within-batch pairs swap")
+    for _, r in sw.sort_values("me_a_g").iterrows():
+        print(f"  {r['a']:8s} ({r['m_a_g']:5.2f} g, e {r['e_a']:.4f}) lower m*e by "
+              f"{r['gap_me_pct']:4.1f}%;  {r['b']:8s} ({r['m_b_g']:5.2f} g, "
+              f"e {r['e_b']:.4f}) lower m*e^2 by {r['gap_me2_pct']:4.1f}%  "
+              f"[{r['cause']}]")
 
 
 def design_means(a: pd.DataFrame) -> pd.DataFrame:
@@ -520,6 +579,99 @@ def render_ranks(d: pd.DataFrame) -> None:
         plt.close(fig)
 
 
+def render_swap_zone(a: pd.DataFrame, n_swaps: int) -> None:
+    """Every pair of articles: mass ratio against e ratio, with the band in
+    which m*e and m*e^2 disagree on which print of the pair is better."""
+    m, e = a["m_g"].to_numpy(), a["e"].to_numpy()
+    names = a["specimen"].to_numpy()
+    i, j = np.triu_indices(len(a), k=1)
+    n_equal = int((m[i] == m[j]).sum())   # equal masses: same order under both
+    i, j = i[m[i] != m[j]], j[m[i] != m[j]]
+    light, heavy = np.where(m[i] < m[j], i, j), np.where(m[i] < m[j], j, i)
+    x, y = m[heavy] / m[light], e[light] / e[heavy]
+    flip = (y > np.sqrt(x)) & (y < x)
+    assert flip.sum() == n_swaps, "band must hold exactly the swapped pairs"
+    # the pair whose swap takes r2d2c2 off the design-mean front
+    named = frozenset(("r2d2c2", "corny6"))
+    backing = dict(fc="white", ec="none", alpha=0.85, pad=2.0)
+    with plt.rc_context(FIG_RC):
+        fig, ax = plt.subplots(figsize=(10.0, 7.4), dpi=300)
+        xx = np.linspace(1.0, 1.32, 200)
+        ax.fill_between(xx, np.sqrt(xx), xx, color=FRONT_BLUE, alpha=0.14, lw=0,
+                        zorder=1)
+        for edge in (np.sqrt(xx), xx):
+            ax.plot(xx, edge, color=FRONT_BLUE, lw=1.4, zorder=2)
+        ax.scatter(x[~flip], y[~flip], s=16, fc=REF_GRAY, ec="none", alpha=0.45,
+                   zorder=3)
+        ax.scatter(x[flip], y[flip], s=80, fc=FRONT_BLUE, ec="white", lw=1.6,
+                   zorder=5)
+        for k in np.flatnonzero(flip):
+            if frozenset((names[light[k]], names[heavy[k]])) == named:
+                ax.annotate("r2d2c2 and corny6", xy=(x[k], y[k]),
+                            xytext=(-14, 46), textcoords="offset points",
+                            ha="right", va="center", fontsize=14, color=INK,
+                            zorder=6, bbox=backing,
+                            arrowprops=dict(arrowstyle="-", color=LABEL_GRAY,
+                                            lw=1.0, shrinkA=2, shrinkB=7))
+        ax.annotate("Inside the band the order flips:\nm·e ranks the lighter "
+                    "print better,\nm·e² ranks the heavier one better",
+                    xy=(1.285, 1.207), xytext=(1.205, 1.78), ha="left",
+                    va="center", fontsize=14, color=INK, zorder=6, bbox=backing,
+                    arrowprops=dict(arrowstyle="-", color=LABEL_GRAY, lw=1.0,
+                                    shrinkA=4, shrinkB=4))
+        ax.text(1.205, 3.7, "Above the band, the heavier print\nranks better "
+                "under both", ha="left", va="center", fontsize=14,
+                color=LABEL_GRAY, zorder=6, bbox=backing)
+        ax.text(1.205, 0.30, "Below the band, the lighter print\nranks better "
+                "under both", ha="left", va="center", fontsize=14,
+                color=LABEL_GRAY, zorder=6, bbox=backing)
+        ax.set_yscale("log")
+        ax.set_xlim(0.995, 1.325)
+        ax.set_ylim(0.2, 5.0)
+        xticks, yticks = [1.0, 1.1, 1.2, 1.3], [0.25, 0.5, 1, 2, 4]
+        ax.set_xticks(xticks)
+        ax.set_xticklabels([f"{v:.1f}" for v in xticks])
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(["0.25", "0.5", "1", "2", "4"])
+        from matplotlib.ticker import NullLocator
+        ax.yaxis.set_minor_locator(NullLocator())
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+        for side in ("left", "bottom"):
+            ax.spines[side].set_position(("outward", 10))
+        ax.spines["bottom"].set_bounds(xticks[0], xticks[-1])
+        ax.spines["left"].set_bounds(yticks[0], yticks[-1])
+        ax.set_xlabel("Mass ratio, heavier print ÷ lighter print", labelpad=8)
+        ax.set_ylabel("e ratio, lighter print ÷ heavier print", rotation=0,
+                      ha="left", va="bottom")
+        ax.yaxis.set_label_coords(-0.09, 1.03)
+        from matplotlib.lines import Line2D
+        handles = [
+            Line2D([], [], ls="none", marker="o", ms=9, mfc=FRONT_BLUE,
+                   mec="white", mew=1.4),
+            Line2D([], [], ls="none", marker="o", ms=5, mfc=REF_GRAY, mec="none",
+                   alpha=0.6),
+        ]
+        labels = [f"Pair that m·e and m·e² put in opposite order ({n_swaps})",
+                  f"Pair in the same order under both ({len(x) - n_swaps:,})"]
+        fig.legend(handles, labels, loc="lower center", bbox_to_anchor=(0.5, 1.0),
+                   ncol=2, frameon=False, fontsize=15, handlelength=1.2,
+                   columnspacing=1.8)
+        fig.text(
+            0.5, -0.04,
+            f"Each dot is one pair of the {len(a)} tested prints "
+            f"({n_equal} pairs with identical masses always keep their order "
+            "and are left out).\nA pair swaps only if the lighter print's e is "
+            "higher by a factor between √(mass ratio) and the mass ratio.\n"
+            "The prints weigh 17.9 to 23.5 g, so the band stays close to an "
+            "e ratio of 1.",
+            ha="center", va="top", fontsize=13, color=LABEL_GRAY,
+            linespacing=1.4,
+        )
+        fig.savefig(OUT_ZONE, dpi=300, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+
+
 def main() -> int:
     a = load_articles()
     d = design_means(a)
@@ -545,20 +697,33 @@ def main() -> int:
         for col in ("me_g", "me2_mg"):
             print(f"    {col:7s} {', '.join(fr[col])}")
 
-    rho = spearmanr(d["me_g"], d["me2_mg"]).statistic
-    flips = sum(
-        1
-        for i in range(len(d)) for j in range(i + 1, len(d))
-        if np.sign(d["me_g"].iat[i] - d["me_g"].iat[j])
-        != np.sign(d["me2_mg"].iat[i] - d["me2_mg"].iat[j])
-    )
-    print(f"\nSpearman rho(m*e, m*e^2) over designs: {rho:.3f}; "
-          f"{flips} of {len(d) * (len(d) - 1) // 2} design pairs swap order")
+    sw_d = swapped_pairs(d, "design", "design")
+    sw_a = swapped_pairs(a, "specimen", "article")
+    for name, frame, sw in (("designs", d, sw_d), ("articles", a, sw_a)):
+        rho = spearmanr(frame["me_g"], frame["me2_mg"]).statistic
+        tau = kendalltau(frame["me_g"], frame["me2_mg"]).statistic
+        n = len(frame)
+        print(f"\nm*e against m*e^2 over {name}: Spearman rho {rho:.3f}, Kendall "
+              f"tau {tau:.3f}; {len(sw)} of {n * (n - 1) // 2} pairs swap order")
 
     d = add_ranks(d)
     a = add_ranks(a)
     print_rank_changes(d, "label", "Designs")
     print_rank_changes(a, "specimen", "Articles (every print its own point)")
+    print_swaps(sw_d, d, "Design pairs")
+    print_swaps(sw_a, a, "Article pairs")
+
+    # for scale: ranking by e alone (no mass weight, the manuscript's VLI)
+    print("\nRank by e alone, against each mass-weighted form:")
+    for name, frame in (("designs", d), ("articles", a)):
+        rank_e = frame["e"].rank(method="min").astype(int)
+        layer_e = pareto_layers(frame["t180"], frame["e"])
+        for tag, col in (("m*e", "me"), ("m*e^2", "me2")):
+            shift = rank_e - frame[f"rank_{col}"]
+            print(f"  {name}, e alone vs {tag}: {int((shift != 0).sum())} of "
+                  f"{len(frame)} change rank (largest shift "
+                  f"{int(shift.abs().max())} places), "
+                  f"{int((layer_e != frame[f'layer_{col}']).sum())} change layer")
 
     sd_t, sd_lne, dof = pooled_print_sd(a)
     print(f"\nPrint-to-print scatter (screened batch-3 triplicates, {dof} dof): "
@@ -587,12 +752,16 @@ def main() -> int:
     ]
     d.sort_values("t180")[design_cols].to_csv(OUT_DESIGNS, index=False,
                                               float_format="%.5g")
+    pd.concat([sw_d, sw_a], ignore_index=True).to_csv(
+        OUT_SWAPS, index=False, float_format="%.5g")
     render_overview(d)
     render_knee(d)
     render_ranks(d)
+    render_swap_zone(a, len(sw_a))
     print(f"\nWrote {OUT_PNG.relative_to(REPO)}, {OUT_KNEE.relative_to(REPO)}, "
-          f"{OUT_RANKS.relative_to(REPO)}, "
-          f"{OUT_ARTICLES.relative_to(REPO)}, {OUT_DESIGNS.relative_to(REPO)}")
+          f"{OUT_RANKS.relative_to(REPO)}, {OUT_ZONE.relative_to(REPO)}, "
+          f"{OUT_ARTICLES.relative_to(REPO)}, {OUT_DESIGNS.relative_to(REPO)}, "
+          f"{OUT_SWAPS.relative_to(REPO)}")
     return 0
 
 
