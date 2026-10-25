@@ -101,13 +101,25 @@ make manuscript
 # Review PDF (todonotes enabled, with \listoftodos): manuscript/manuscript-todos.pdf
 make manuscript-todos
 
-# Both at once
+# Supplementary Information (its own reference list): manuscript/supplementary.pdf
+make manuscript-si
+
+# Both manuscript builds plus the SI
 make manuscript-all
 
 # Clean intermediates / output
 make clean-manuscript
 make distclean-manuscript
 ```
+
+**Build the SI before the manuscript** (the Makefile does this). The main
+text cites SI sections, tables and figures by their S-numbers through the
+`xr` package, which reads `supplementary.aux`; the `\siref{}` macro in
+`manuscript-body.tex` prints those numbers without a hyperlink. The SI
+carries its own `natbib`/`unsrtnat` reference list, numbered independently
+of the main text, because several tables moved there for length cite
+literature. If an S-number prints as `??`, rebuild the SI and then the
+manuscript again.
 
 A LaTeX distribution (MiKTeX or TeX Live) with `pdflatex` and `bibtex` is
 required; MiKTeX will install `asmejour` and `todonotes` automatically the

@@ -1398,6 +1398,11 @@ def build_latex(work: Path) -> Path:
     shutil.copytree(MANU, mdir, ignore=shutil.ignore_patterns("*.pdf", "*.docx", "preview", "data"))
     shutil.copytree(REPO / "figures", build / "figures")
     steps = [
+        # The SI goes first: the main text reads its section/table/figure
+        # numbers from supplementary.aux through the xr package.
+        ["pdflatex", "-interaction=nonstopmode", "supplementary"],
+        ["bibtex", "supplementary"],
+        ["pdflatex", "-interaction=nonstopmode", "supplementary"],
         ["pdflatex", "-interaction=nonstopmode", "manuscript"],
         ["bibtex", "manuscript"],
         ["pdflatex", "-interaction=nonstopmode", "manuscript"],
@@ -1427,7 +1432,15 @@ def main():
     labels, cites = parse_aux((mdir / "manuscript.aux").read_text())
     bbl = (mdir / "manuscript.bbl").read_text()
 
-    tex, meta = preprocess((MANU / "manuscript-body.tex").read_text(), work, labels, cites, bbl, Path(args.pdf))
+    # \siref{key} prints an SI number (S1, Table S2, ...) resolved by the xr
+    # package from supplementary.aux. Pandoc cannot do that, so substitute
+    # the numbers here, as plain text, before preprocessing.
+    si_aux = mdir / "supplementary.aux"
+    si_labels = parse_aux(si_aux.read_text())[0] if si_aux.exists() else {}
+    body_src = (MANU / "manuscript-body.tex").read_text()
+    body_src = re.sub(r"\\siref\{([^}]*)\}", lambda mm: si_labels.get(mm.group(1), "??"), body_src)
+
+    tex, meta = preprocess(body_src, work, labels, cites, bbl, Path(args.pdf))
     (work / "manuscript-docx.tex").write_text(tex)
     aux_json = work / "aux.json"
     aux_json.write_text(json.dumps({

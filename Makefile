@@ -37,17 +37,23 @@ manuscript-docx:   $(MANU_DIR)/manuscript.docx
 $(MANU_DIR)/manuscript.docx: $(MANU_DIR)/manuscript.pdf scripts/docx/build_manuscript_docx.py scripts/docx/docx_filter.lua
 	python3 scripts/docx/build_manuscript_docx.py
 
-$(MANU_DIR)/supplementary.pdf: $(MANU_DIR)/supplementary.tex
+# The SI has its own reference list (natbib/unsrtnat), so it needs a bibtex
+# pass. Build it BEFORE the manuscript: the main text cross-references SI
+# section, table and figure numbers through the xr package, which reads
+# supplementary.aux.
+$(MANU_DIR)/supplementary.pdf: $(MANU_DIR)/supplementary.tex $(MANU_DIR)/references.bib
+	cd $(MANU_DIR) && $(TEX) supplementary
+	cd $(MANU_DIR) && $(BIB) supplementary
 	cd $(MANU_DIR) && $(TEX) supplementary
 	cd $(MANU_DIR) && $(TEX) supplementary
 
-$(MANU_DIR)/manuscript.pdf: $(MANU_DIR)/manuscript.tex $(MANU_BODY)
+$(MANU_DIR)/manuscript.pdf: $(MANU_DIR)/manuscript.tex $(MANU_BODY) $(MANU_DIR)/supplementary.pdf
 	cd $(MANU_DIR) && $(TEX) manuscript
 	cd $(MANU_DIR) && $(BIB) manuscript
 	cd $(MANU_DIR) && $(TEX) manuscript
 	cd $(MANU_DIR) && $(TEX) manuscript
 
-$(MANU_DIR)/manuscript-todos.pdf: $(MANU_DIR)/manuscript-todos.tex $(MANU_BODY)
+$(MANU_DIR)/manuscript-todos.pdf: $(MANU_DIR)/manuscript-todos.tex $(MANU_BODY) $(MANU_DIR)/supplementary.pdf
 	cd $(MANU_DIR) && $(TEX) manuscript-todos
 	cd $(MANU_DIR) && $(BIB) manuscript-todos
 	cd $(MANU_DIR) && $(TEX) manuscript-todos

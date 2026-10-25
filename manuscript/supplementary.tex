@@ -17,9 +17,13 @@
 \usepackage{siunitx}
 \usepackage{amsmath}
 \usepackage{xcolor}
-\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black]{hyperref}
+\usepackage{subcaption}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
 % Let TeX loosen a line rather than push a long file path into the margin.
 \setlength{\emergencystretch}{3em}
+% House style: no en dashes anywhere, including ranges (as in the main text).
+\sisetup{range-phrase = { to }, range-units = single}
 
 % Synthetic-placeholder (dummy) data convention, matching the main text:
 % any stand-in value is typeset in violet. None remain as of 2026-09-15.
@@ -53,10 +57,114 @@
 \end{center}
 
 This Supplementary Information collects the detailed design-, fabrication-,
-test-, and analysis-development records supporting the main manuscript. Unlike
+test-, and analysis-development records supporting the main manuscript,
+together with the tables and figures moved out of the main text to meet the
+journal's length limit (the main text cites them by their S-numbers). Unlike
 the main text, the SI references the project's development history directly,
 including specific pull requests (PRs) and issues in the project repository
-(\href{\repo}{\repo}).
+(\href{\repo}{\repo}). Citations use the reference list at the end of this
+document, which is numbered independently of the main text.
+
+% -----------------------------------------------------------------------------
+\section{Positioning Against Prior Work}
+\label{si:novelty}
+% -----------------------------------------------------------------------------
+Table~\ref{tab:si-novelty} positions the present campaign against selected
+prior efforts spanning the three elements it combines: impact-tested printed
+tensegrity-inspired structures, rigid-flexible additive fabrication, and
+Bayesian optimization (BO) of architected materials. The main text
+(Section~2) discusses each of these studies. None of them combines a
+multi-material fused-deposition-modeling (FDM) tensegrity-inspired
+architecture with an experiment-driven optimization loop.
+
+\begin{table}[ht]
+  \centering
+  \caption{Positioning of this work against selected prior efforts
+    spanning the elements combined here. The present campaign uses
+    physical drop measurements of the transmissibility ($t_{180}$)
+    and a mass-weighted form of the velocity loss index
+    ($E_{\mathrm{reb}}$, Eq.~(1) of the main text)
+    as its BO responses. It does not optimize specific energy
+    absorption or crush energy.}
+  \label{tab:si-novelty}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{@{}llllll@{}}
+    \toprule
+    Study & Architecture & Fabrication & Optimization & Response optimized & Ground truth \\
+    \midrule
+    Pajunen et~al.\ 2019~\cite{pajunen2019design}
+      & Truncated-tetrahedral & Single-material & None & n/a & Experiment \\
+      & tensegrity-inspired & 3D print & (single condition) & & (drop impact) \\[2pt]
+    Intrigila et~al.\ 2022~\cite{intrigila2022fabricationandexperimental}
+      & Bistable tensegrity-like & Single-material & None & n/a & Experiment \\
+      & lattice unit cell & 3D print & & & (quasi-static compr.) \\[2pt]
+    Mo et~al.\ 2023~\cite{mo2023accelerated}
+      & Architected lattices & n/a (simulation) & Multifidelity BO & Simulated response & Simulation \\
+      & & & & metric & (+ sparse high-fid.) \\[2pt]
+    Almeida 2025~\cite{almeida2025highstrainrate};
+      & Tensegrity-inspired & Additive & None reported & n/a & Experiment \\
+    \ \ Davami 2025~\cite{davami2025dynamicanalysis}
+      & structures & manufacturing & & & (high-rate/dynamic) \\[2pt]
+    Wang et~al.\ 2026~\cite{wang2026integrated}
+      & Tensegrity-inspired & Integrated & None reported & n/a & Physical \\
+      & rigid-flexible metamat. & dual-material & & & validation \\[2pt]
+    \textbf{This work}
+      & Tensegrity-inspired & Multi-material & Experiment-driven & $t_{180}$; provisional & Physical \\
+      & $T_3$-prism cell (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & $E_{\mathrm{reb}}$ & experiment \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Printability Screens and As-Built Resolution}
+\label{si:printability}
+% -----------------------------------------------------------------------------
+The constant-mass projection of the main text (Section~3.1) rescales every
+candidate design before printing. This section records the two printability
+screens applied to the projected designs and what the print record shows
+about them, and the as-built scatter in mass.
+
+\paragraph{Printability screens.} We also checked each projected design against two printability
+limits. Both were recorded as warnings, and neither was used to reject
+or change a design. The first compares $\pi R^2 H$ with
+\SI{250}{cm^3}, where $R$ is the radius of the circle through the
+joint centers and $H$ is the height between joint centers. The
+\SI{250}{cm^3} value is a placeholder size limit carried over from an
+earlier simulation study. It is not the printer's build volume, and
+because it is measured to the joint centers it undercounts the printed
+part. Seven printed articles (five designs) exceeded it. The second
+limit is a \SI{3.0}{mm} minimum on the printed TPU cable diameter,
+adopted after the thin, unsupported top cables of early PETG test
+prints failed. Because the projection rescales the whole cell, a
+design at the \SI{3.0}{mm} lower bound of the cable variable can print
+thinner. Nine articles printed with cables of 2.51 to \SI{2.78}{mm},
+including all four batch-4 articles that reduced the peak shock
+(main text, Section~4.2). With hand-painted tendon supports
+(Section~\ref{si:supports}), all nine printed. One had
+stringing, one had a slight tendon indent, and seven had no logged
+defect. The most common tendon defect was a TPU strand that did not
+fuse to the tendon and came away from it. It was logged on five
+articles, all with cables of 3.28 to \SI{4.23}{mm}. The \SI{3.0}{mm}
+value is therefore a conservative rule for this workflow. Our prints
+do not show that thinner cables cause more defects.
+
+\paragraph{As-built resolution.} The nozzle diameter, the slicer line width,
+and support interaction discretize the as-built cross-sections, so the
+effective search granularity is coarser than the nominal continuous box.
+The \SI{3.0}{mm}
+lower bound on the TPU cable diameter is likewise a limit of this
+workflow. It is the printability minimum described above, set by
+printing unsupported cables and by the slicer's auto-support
+detection on this H2D printer. Two sets of repeated prints bound the
+fabrication scatter in mass. One seed design printed three times has a
+mass standard deviation of \SI{0.457}{g}, the value used in the
+observation noise model (main text, Section~3.4). The batch-3
+plate, also printed three times, averaged 19.59, 19.86, and
+\SI{20.07}{g} per print, so its second and third prints ran
+\SI{0.27}{g} and \SI{0.48}{g} heavier article for article. That is a
+per-print flow offset rather than random scatter.
 
 % -----------------------------------------------------------------------------
 \section{Joint-Design Study}
@@ -113,6 +221,61 @@ ray-cast against the printable mesh underside. The narrowing-pillar
 workflow is documented in
 \href{\repo/pull/66}{PR~\#66}, and the H2D multi-part material assignment fix
 in \href{\repo/pull/64}{PR~\#64}.
+
+% -----------------------------------------------------------------------------
+\section{Print Parameters and Process Control}
+\label{si:process}
+% -----------------------------------------------------------------------------
+Table~\ref{tab:si-print-params} lists the multi-material print parameters,
+transcribed from the archived as-printed Bambu Studio project. The joint
+geometry is described in Section~\ref{si:joints} and the support strategy in
+Section~\ref{si:supports}.
+
+\paragraph{Moisture and nozzle management.} TPU is hygroscopic, so we
+feed the soft filament from a heated dry box held near \SI{8}{\percent}
+relative humidity, logged per print. Midway through the seed batch the
+TPU extruder developed a progressive drop in flow (a partial clog,
+compounded by a stray PLA fragment found inside the extruder). We
+resolved it by performing a cold pull and moving the TPU to a dedicated
+high-flow \SI{0.6}{mm} nozzle, after which print quality was restored.
+We identify the affected and post-fix articles in the print key so
+that any nozzle-related covariate can be checked against the measured
+objectives.
+
+\begin{table}[ht]
+  \centering
+  \caption{Multi-material print parameters on the Bambu Lab~H2D,
+    transcribed from the archived as-printed Bambu Studio project
+    (\texttt{t3-prism-bo-batch.\allowbreak H2D-MM-\allowbreak PLAstruts-\allowbreak
+    TPUcables.\allowbreak as-printed.3mf}, Bambu Studio 2.7.1). Filaments are Bambu Lab PLA Basic (struts,
+    support material) and Bambu Lab TPU~85A (tendons). The print
+    profile is ``0.30\,mm Standard @BBL H2D 0.6 nozzle.'' The
+    reporting structure follows the methods section of Ye
+    et~al.~\cite{ye2023multimaterial}.}
+  \label{tab:si-print-params}
+  \small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    Parameter & PLA (struts) & TPU 85A (tendons) \\
+    \midrule
+    Nozzle                             & \SI{0.6}{mm} & 0.4 then \SI{0.6}{mm} HF\textsuperscript{a} \\
+    Nozzle temperature (\textdegree C) & 220 & 220 \\
+    Bed temperature, profile (\textdegree C) & 55 & 35 \\
+    Layer height / line width (mm)     & \multicolumn{2}{c}{0.30 / 0.62} \\
+    Infill                             & 15\% grid, 2 walls & near-solid \\
+    Outer / inner wall speed (mm/s)    & \multicolumn{2}{c}{200 / 300 (profile)} \\
+    Filament drying                    & n/a & dry box, $\sim$8\% RH \\
+    Build-plate type                   & \multicolumn{2}{c}{Textured PEI} \\
+    Build orientation                  & \multicolumn{2}{c}{Upright (main text, Fig.~3)} \\
+    Supports                           & \multicolumn{2}{c}{Manual painted tree supports, PLA} \\
+    \bottomrule
+  \end{tabular}\\[2pt]
+  {\footnotesize \textsuperscript{a}The TPU side ran a standard
+  \SI{0.4}{mm} nozzle until the mid-batch clog, then a dedicated
+  high-flow (HF) \SI{0.6}{mm} nozzle. Affected articles are flagged in
+  the print key.}
+\end{table}
 
 % -----------------------------------------------------------------------------
 \section{As-Printed Campaign Record (Print Key)}
@@ -175,7 +338,7 @@ articles (dran31 to dran39, printed 2026-09-28) weighed 19.68 to
 \SI{20.56}{g} (mean \SI{20.07}{g}), and the print log notes no
 defects. The lab record confirms each 2dran$N$ and dran3$N$ as a
 re-print of drran$N$ at the same Ax trial, so the three prints pair
-article for article (tabulated in the main-text Results). The nine
+article for article (Table~\ref{tab:si-round3-repeatability}). The nine
 second-print articles entered the surrogate fit as distinct completed
 trials at their own weighed masses and per-session standard errors.
 The third print was drop-tested on \mbox{2026-09-28}, \mbox{2026-09-29}, and
@@ -257,7 +420,12 @@ The three prints of batch 3 also showed that the error budget is
 dominated by seating and print variation rather than session length. We record
 three high-speed video clips (\SI{959}{fps}) per specimen. From
 batch 4 on, we film them at drops 1, 10, and 20 so that clips pair
-deterministically with captures. Testing takes roughly \SI{42}{s} per
+deterministically with captures. The camera cannot resolve the
+millisecond-scale impact pulse (one to two frames), so the
+accelerometer channels produce the objectives and the video
+documents the post-impact rebound and recovery. Synchronized
+laser-Doppler vibrometry is reserved for follow-up characterization
+of selected designs. Testing takes roughly \SI{42}{s} per
 drop, so about
 ninety minutes per seed article and fifteen per later-batch article.
 Capture settings:
@@ -418,6 +586,37 @@ worst-predicted in-sample designs in nominal triplicate and test whether the
 predicted ordering survives print-to-print and seating variation.
 
 % -----------------------------------------------------------------------------
+\section{Planned Quasi-Static Extension}
+\label{si:quasistatic}
+% -----------------------------------------------------------------------------
+The drop test loads the
+specimens in their elastic regime. The crush lasts 1 to \SI{3}{ms} and
+the article recovers, so crush-energy metrics such as specific energy
+absorption (SEA) and compaction efficiency are not recoverable from
+these captures by any reprocessing. We plan a quasi-static compression
+campaign on a benchtop load frame (BYU CB~123 Instron, with a
+low-range load cell appropriate to the expected cell stiffness)
+to supply the complementary crush metrics
+\begin{equation}
+  \mathrm{SEA} \;=\; \frac{1}{m}\!\int_{0}^{\delta_d}\! F(\delta)\,
+  \mathrm{d}\delta,
+  \qquad
+  \eta_c \;=\; \frac{\int_{0}^{\delta_d}\! F(\delta)\,\mathrm{d}\delta}{F_{\max}\,\delta_d},
+\end{equation}
+with the densification displacement $\delta_d$ taken at the maximum of
+the energy-absorption efficiency curve and $F_{\max}$ the peak force
+within $[0,\delta_d]$. We follow the standard cellular-solid
+treatments~\citep{gibson1997cellular, avalle2001characterization,
+tan2005dynamic, michailidis2011establishment} and mirror the
+quasi-static protocol of Pajunen et~al.~\citep{pajunen2019design}.
+These metrics will be reported as a complementary characterization of
+selected designs rather than as objectives of the drop-tower campaign.
+Slip resistance and traction at the specimen-to-floor interface,
+governed by the tip geometry rather than the internal architecture,
+follow ISO 11334-4~\citep{iso11334-4} for walking-aid tips and are out
+of scope for the present axial-impact study.
+
+% -----------------------------------------------------------------------------
 \section{Printed-Mass Model}
 \label{si:mass}
 % -----------------------------------------------------------------------------
@@ -463,6 +662,51 @@ Both are archived with the manuscript data
 \texttt{round3-candidate-constant-printed-mass.csv}).
 
 % -----------------------------------------------------------------------------
+\section{Replicate Rank-Stability Study Plan}
+\label{si:rankstability}
+% -----------------------------------------------------------------------------
+The main text (Section~3.5) describes the planned replicate study: from the
+campaign's in-sample designs, ranked by the current posterior's predictions,
+the best-predicted, the worst-predicted, and one mid-pack
+(``run-of-the-mill'') design will each be re-printed as a nominal three fresh
+articles and drop-tested under the standard protocol, including the
+between-seat replication rule. The repeat count is provisional and will be
+fixed when the print is scheduled. With three designs the exact permutation
+floor for a Spearman rank correlation is $p = 1/6$, so no significance claim
+is available at this size. Instead, the primary readout is the separation of
+the three designs' repeat clusters relative to the within-design
+(print-to-print plus seat-to-seat) scatter, reported alongside $\rho_s$
+between the predicted and measured orderings of each repeat. Clean
+separation would support treating the campaign's rankings as design
+properties. Overlapping clusters would measure the ranking noise floor that
+the three batch-3 prints could only bound. Table~\ref{tab:si-rank-stability}
+gives the reporting format. We will add entries and design IDs once the
+repeat articles are printed and tested.
+
+\begin{table}[ht]
+  \centering
+  \caption{\emph{Placeholder (data pending).} Planned replicate
+    rank-stability study: the best-, mid-, and worst-predicted
+    in-sample designs, each re-printed as a nominal three fresh
+    articles and drop-tested under the standard protocol. Entries
+    will record each repeat's stabilized $t_{180}$, the
+    within-design scatter, and the measured rank of each design's
+    repeat cluster against its predicted rank.}
+  \label{tab:si-rank-stability}
+  \small
+  \begin{tabular}{@{}llcccc@{}}
+    \toprule
+    Tier & Design & {Pred.\ $t_{180}$} &
+    \multicolumn{3}{c}{$t_{180}$ (repeats 1 / 2 / 3)} \\
+    \midrule
+    Best  & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
+    Mid   & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
+    Worst & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
 \section{Metal-Analog Validation Plan}
 \label{si:metal-validation}
 % -----------------------------------------------------------------------------
@@ -476,14 +720,52 @@ selected designs will deliberately span the predicted performance range.
 Representatives the surrogate predicts to be worst-, mid-, and
 best-performing will each be built in both material systems and
 characterized under the identical drop protocol of
-Section~\ref{si:drop}. The main-text metal-analog table and figure will
-report the measured PLA/TPU ranking and the hollow-aluminum/stainless-steel
-ranking on the primary campaign metric $t_{180}$, with the velocity loss
-index and, later, quasi-static specific energy absorption (SEA) as
-secondary rankings. Agreement between the two primary rankings would be
-preliminary evidence consistent with transfer beyond the as-printed
-polymers. Disagreement would not isolate which material or joint
-difference caused the change.
+Section~\ref{si:drop}. We treat this as a planned, exploratory comparison
+rather than a preregistered validation. The deformation modes, joint
+compliance, friction, pretension behavior, and strain-rate sensitivity all
+differ between the PLA/TPU and aluminum/steel systems, so agreement is not
+expected a priori. The protocol details that would let the comparison
+distinguish geometric rank transfer from material-system and mass confounds
+remain to be fixed and will be tabulated before any metal article is built.
+They are the aluminum alloy and temper, tube wall thickness, cable
+construction, joint hardware and torque, article and payload masses,
+replicate count, and tie-handling rules. The intended rank statistic is the
+Spearman rank-correlation coefficient $\rho_s$ between the two material
+systems' orderings of the primary campaign metric ($t_{180}$ under the
+identical drop protocol), reported with an exact permutation test.
+Table~\ref{tab:si-metal-validation} and Fig.~\ref{fig:si-metal-validation}
+will report the measured PLA/TPU ranking and the
+hollow-aluminum/stainless-steel ranking on $t_{180}$, with the velocity
+loss index and, later, quasi-static specific energy absorption (SEA,
+Section~\ref{si:quasistatic}) as secondary rankings. Agreement between the
+two primary rankings would be preliminary evidence consistent with transfer
+beyond the as-printed polymers. Disagreement would not isolate which
+material or joint difference caused the change.
+
+\begin{table}[ht]
+  \centering
+  \caption{\emph{Placeholder (data pending).} Planned rank-ordering
+    validation: representative $T_3$-prism designs predicted to be
+    worst-, mid-, and best-performing, each fabricated as a printed
+    PLA/TPU specimen and as a hollow-aluminum-rod / stainless-steel-cable
+    metal analog. Entries will record the measured performance metric
+    ($t_{180}$ under the identical drop protocol, with the velocity
+    loss index secondary) and the resulting rank within each
+    material system.}
+  \label{tab:si-metal-validation}
+  \begin{tabular}{@{}llcc@{}}
+    \toprule
+    Predicted tier & Design ID & PLA/TPU (rank) & Al/SS (rank) \\
+    \midrule
+    Worst    & \textit{D-w1} & \textit{-} & \textit{-} \\
+    Worst    & \textit{D-w2} & \textit{-} & \textit{-} \\
+    Mediocre & \textit{D-m1} & \textit{-} & \textit{-} \\
+    Mediocre & \textit{D-m2} & \textit{-} & \textit{-} \\
+    Best     & \textit{D-b1} & \textit{-} & \textit{-} \\
+    Best     & \textit{D-b2} & \textit{-} & \textit{-} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \begin{figure}[ht]
   \centering
@@ -496,5 +778,97 @@ difference caused the change.
     PLA/TPU equivalents for each predicted performance tier.}
   \label{fig:si-metal-validation}
 \end{figure}
+
+% -----------------------------------------------------------------------------
+\section{Batch-3 Three-Print Repeatability Table}
+\label{si:threeprint}
+% -----------------------------------------------------------------------------
+Table~\ref{tab:si-round3-repeatability} tabulates the stabilized
+transmissibility of every batch-3 article over the three prints of the plate,
+the data behind the three-print figure and the replication findings of the
+main text (Section~4.2). The seat gauge and the drift flag used to screen the
+sessions are defined in Section~\ref{si:drop}.
+
+\begin{table}[ht]
+  \centering
+  \caption{Batch-3 repeatability as stabilized $t_{180}$ over three
+    prints of the same nine designs, under the protocol of
+    the main-text results tables (CFC-180, stabilized means). Articles drran$N$, 2dran$N$, and
+    dran3$N$ are prints 1, 2, and 3. ``Pred.'' is the posterior-mean
+    $t_{180}$ archived before any batch-3 article was tested. ``Mean''
+    averages the prints that pass the health screen, a seat gauge (the
+    ratio of CFC-1000 to CFC-180 transmissibility) below 1.15 and no
+    drift flag. $\S$ marks a failed seat gauge and $\dagger$ a
+    transmissibility-drift flag. $E_{\mathrm{reb}}$ is listed for
+    prints 1, 2, and 3.}
+  \label{tab:si-round3-repeatability}
+  \small
+  \begin{tabular}{@{}cccccccc@{}}
+    \toprule
+    Trial & $N$ & Pred. & Print 1 & Print 2 & Print 3 & Mean &
+    $E_{\mathrm{reb}}$ (mJ) \\
+    \midrule
+    28 & 5 & 1.059 & 1.0373 & 1.0604 & 1.1679$^{\S}$ & 1.0489 & 5.0 / 5.0 / 7.2 \\
+    29 & 4 & 1.032 & 1.0344 & 1.0433 & 1.0201 & 1.0326 & 9.1 / 11.2 / 15.5 \\
+    30 & 9 & 1.058 & 1.0425 & 1.0451 & 1.0438 & 1.0438 & 5.2 / 15.1 / 6.7 \\
+    31 & 3 & 1.043 & 1.0389 & 1.0533 & 1.0366 & 1.0429 & 4.2 / 9.4 / 7.0 \\
+    32 & 7 & 1.020 & 1.2513$^{\S}$ & 1.0286 & 1.0448 & 1.0367 & 8.2 / 11.6 / 10.8 \\
+    33 & 2 & 1.056 & 1.0345 & 1.0900$^{\S}$ & 1.0386 & 1.0366 & 11.8 / 4.5 / 4.5 \\
+    34 & 6 & 1.065 & 1.0471 & 1.0859$^{\dagger}$ & 1.0353 & 1.0412 & 4.8 / 7.7 / 6.8 \\
+    35 & 8 & 1.039 & 0.9804$^{\dagger}$ & 1.0109 & 0.9958 & 1.0033 & 11.2 / 9.9 / 8.3 \\
+    36 & 1 & 1.051 & 1.0326 & 1.0791$^{\S}$ & 1.0209 & 1.0267 & 18.1 / 7.3 / 9.6 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Surrogate Diagnostic Figures}
+\label{si:surrogate}
+% -----------------------------------------------------------------------------
+Figures~\ref{fig:si-sensitivity} and~\ref{fig:si-logocv} are the surrogate
+diagnostics discussed in the main text (Section~4.3): the seed-state
+length-scale diagnostics of the sparse axis-aligned subspace model (SAASBO)
+and the leave-one-design-out cross-validation of the surrogate over the full
+44-article record. The cross-validation runner, its fold-level records, and
+the reliability-ceiling analysis of the reprint pairs are archived with the
+campaign code and the manuscript data
+(\texttt{t3-prism-bo-round5-logocv.csv},
+\texttt{scripts/\allowbreak figures/\allowbreak reprint\_reliability\_ceiling.py}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\linewidth]{../figures/bo/t3-prism-bo-round1-feature-importance.png}
+  \caption{Seed-state SAASBO length-scale diagnostics per objective
+    for the five design variables plus printed mass. Bars are median
+    normalized inverse length scales over MCMC draws, and whiskers
+    are interquartile ranges. The horizontal axis, labeled ``share of model
+    sensitivity'' in the plot, is this normalized inverse-length-scale
+    diagnostic. No input separates decisively from the equal-share
+    line (dashed) at seven mapped articles, and these prior-sensitive
+    model diagnostics are not evidence of variable relevance.}
+  \label{fig:si-sensitivity}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\linewidth]{../figures/bo/t3-prism-bo-round5-logocv.png}
+  \caption{Leave-one-design-out cross-validation of the SAASBO
+    surrogate over the full 44-article record (35 design folds, one
+    full NUTS refit per fold). Each batch-3 reprint pair is held out
+    together so neither print leaks into the other's prediction.
+    Vertical bars are one posterior standard deviation of
+    the held-out prediction, horizontal bars are the ingested
+    standard error, and the dashed line is parity. Held-out
+    $t_{180}$ predictions stay close to the pooled mean (MAPE 5.0\%, rank
+    correlation $+0.08$), and the $E_{\mathrm{reb}}$ ordering is anti-correlated
+    ($-0.38$). Design-level held-out skill is near zero on
+    transmissibility and absent on the mass-weighted velocity-loss
+    objective.}
+  \label{fig:si-logocv}
+\end{figure}
+
+\clearpage
+\bibliographystyle{unsrtnat}
+\bibliography{references}
 
 \end{document}
