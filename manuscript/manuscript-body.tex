@@ -778,6 +778,23 @@ references.}
   supply filament lot numbers and drying duration, which the slicer
   archive does not record.}
 
+Figure~\ref{fig:print-timelapse} shows a full plate printing upright,
+with the painted supports rising beside the tendons.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{../figures/photos/print-timelapse-plate1.jpg}
+  \caption{Three frames from the build-chamber camera timelapse of
+    replicate plate~1 on the Bambu Lab~H2D
+    (\url{https://youtu.be/EmCLms7-Bd8}). The nine specimens print
+    upright, with the prism axis normal to the build plate, beside a
+    prime tower. (a)~First layers, with the bottom TPU tendons and
+    the strut-end housings. (b)~Mid-height, with the struts and the
+    painted PLA supports partly built. (c)~Final layers, with the top
+    tendons complete. Frames are cropped and down-scaled only.}
+  \label{fig:print-timelapse}
+\end{figure*}%
+
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{../figures/fab-workflow.pdf}
@@ -1121,7 +1138,7 @@ design signal separating neighboring designs. To test whether the
 measured ordering survives fabrication and seating variation, we
 re-printed three batch-4 designs chosen before any replicate was
 printed. Trial~37 (corny7) was the batch-4 best-predicted design and
-had the lowest transmissibility measured in the campaign. Trial~39
+measured $t_{180} = 0.803$, the lowest value of the campaign. Trial~39
 (corny8) is its near twin in design space, differing mainly in TPU
 infill, yet it measured 0.150 higher. Trial~38 (corny2) comes from the
 tall, low-twist family at the far end of the batch-4 ranking. Each of
@@ -1248,7 +1265,8 @@ constant-mass box spans aspect ratio, member sizing, and twist.
     fit and from all mass-dependent quantities. No accepted $f_n$
     estimate is available for \textit{bag26v} or \textit{ajhby6}.
     Specs 03 and 06 were printed but have no drop sessions in the
-    campaign record.}
+    campaign record. All specimens were printed upright
+    (Fig.~\ref{fig:print-timelapse}).}
   \label{tab:seed-results}
   \small
   \begin{tabular}{@{}llS[table-format=2.2]S[table-format=1.4]@{\,$\pm$\,}S[table-format=1.4]S[table-format=2.1]S[table-format=3.0]@{}}
@@ -1728,9 +1746,8 @@ planned follow-on work. Sensitivity to
 print-process covariates (the print key logs defects, humidity, and
 the mid-batch nozzle change for this purpose) and transfer to
 other material pairs likewise remain open. In the future we plan
-the re-seat confirmations of the batch-4 attenuators, completion of
-the replicate rank-stability study of
-Section~\ref{sec:methods:rankstability}, the
+the re-seat confirmations of the batch-4 attenuators, the remaining
+replicate drop tests (Section~\ref{sec:methods:rankstability}), the
 metal-analog rank-transfer comparison (Supplementary Information,
 Section~\siref{si:metal-validation}), quasi-static testing as an
 extension of the characterization
