@@ -1439,6 +1439,13 @@ def main():
     si_labels = parse_aux(si_aux.read_text())[0] if si_aux.exists() else {}
     body_src = (MANU / "manuscript-body.tex").read_text()
     body_src = re.sub(r"\\siref\{([^}]*)\}", lambda mm: si_labels.get(mm.group(1), "??"), body_src)
+    # Generated tables (manuscript/tables/*.tex) are \input by the body; inline
+    # them so the tabular passes below see them like any hand-typed table.
+    body_src = re.sub(
+        r"\\input\{(tables/[^}]*?)(?:\.tex)?\}",
+        lambda mm: (MANU / (mm.group(1) + ".tex")).read_text(),
+        body_src,
+    )
 
     tex, meta = preprocess(body_src, work, labels, cites, bbl, Path(args.pdf))
     (work / "manuscript-docx.tex").write_text(tex)
