@@ -85,3 +85,26 @@ against the frozen predictions (0.75, which uses design means adjusted
 for the offset between prints; plain screened means give 0.55). The
 third print is not in the surrogate fit or the round-5 LOGO-CV files
 above, which predate it.
+
+## Rebound-index comparison and drop-count replay (added 2026-10-27)
+
+- `pareto_rebound_index_variants_articles.csv`,
+  `pareto_rebound_index_variants_designs.csv` and
+  `pareto_rebound_index_variants_swaps.csv`: the comparison of the
+  mass-weighted rebound computed with e (the campaign's E_reb, or m·e)
+  and with e² (m·e²), for all 53 tested specimens and 35 designs. They
+  come from `scripts/analysis/pareto_rebound_index_variants.py`, copied
+  from PR #97 (`claude/issue-94-20260806-2349` at `6b99201`) with only
+  its input and output paths changed. Its inputs are the drop-results
+  snapshots in this directory, byte-identical to the
+  `data/bo-campaign-snapshot/` copies it read on PR #97, and the three
+  CSVs regenerate byte-identical to the PR #97 outputs. The script's
+  figures go to `figures/analysis/pareto_rebound_index_variants*.png`.
+  The manuscript's Methods paragraph on e versus e² quotes these files.
+- `t3-prism-drop-count-sensitivity.csv`: the seed-session truncation
+  replay (first 10, 20, 30 and 50 stabilized drops against the full
+  session), copied verbatim from `bo/t3-prism-drop-count-sensitivity.csv`
+  on `claude/issue-98-20260821-0103` (written by
+  `bo/t3_prism_drop_count_sensitivity.py` there, commit `1bd2dd8`). The
+  Methods quote its worst twenty-drop shift (+0.0078, bag26v) and the
+  ranking check.

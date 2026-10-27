@@ -12,7 +12,11 @@ render upright when embedded by `pdflatex` (which ignores EXIF orientation).
 | `printing-in-progress.jpg`  | Fig.~3 "Dual-Extrusion FDM" node | PR #35 comment 4519769283 (Bambu Lab H2D mid-print of the T3-prism batch) |
 | `printed-specimen.jpg`      | Fig.~2(b) (printed-prototypes, with callouts) and Fig.~3 "Post-Processing" node | PR #35 comment 4634008108 (single as-printed T3 prism on the workbench) |
 | `printed-batch.jpg`         | (reserve; not currently placed) | PR #35 comment 4634008108 (printed batch) |
-| `drop-tower.jpg`            | Fig.~3 "Dynamic \& Static Testing" node | PR #36 comment 4509083060 (bungee-assisted drop-tower base plate + accelerometer) |
+| `drop-tower.jpg`            | Fig.~3 "Dynamic \& Static Testing" node | PR #36 comment 4509083060 (Lansmont Model 23 drop-tower base plate + accelerometer; the campaign drops were free-fall, without bungee assist) |
+
+On the Bambu Lab H2D, the hard material (PLA) prints from the left nozzle and
+the soft material (TPU) from the right nozzle, as in the `multimaterial-slice.png`
+slice and the `printing-in-progress.jpg` frame.
 
 (Figure numbers are for the current `manuscript.pdf`; Fig.~3 is the
 fabrication/characterization workflow diagram, `figures/fab-workflow.tex`.)
