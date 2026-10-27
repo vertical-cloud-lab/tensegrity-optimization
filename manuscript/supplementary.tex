@@ -267,7 +267,7 @@ objectives.
     Outer / inner wall speed (mm/s)    & \multicolumn{2}{c}{200 / 300 (profile)} \\
     Filament drying                    & n/a & dry box, $\sim$8\% RH \\
     Build-plate type                   & \multicolumn{2}{c}{Textured PEI} \\
-    Build orientation                  & \multicolumn{2}{c}{Upright (main text, Fig.~3)} \\
+    Build orientation                  & \multicolumn{2}{c}{Upright (main-text print timelapse figure)} \\
     Supports                           & \multicolumn{2}{c}{Manual painted tree supports, PLA} \\
     \bottomrule
   \end{tabular}\\[2pt]
@@ -579,11 +579,11 @@ replication rule. The velocity loss index remains a
 candidate constraint, and the
 surrogate continues to ingest per-session standard errors, with the
 replication evidence carried as an interpretation bound rather than
-as an inflated noise term. We plan to act on the reserved-replicate
-recommendation through the replicate rank-stability study of the
-main-text Methods. That study will re-print the best-, mid-, and
-worst-predicted in-sample designs in nominal triplicate and test whether the
-predicted ordering survives print-to-print and seating variation.
+as an inflated noise term. We acted on the reserved-replicate
+recommendation with the replicate rank-stability study of
+Section~\ref{si:rankstability}, which re-printed three batch-4 designs
+nine times each to test whether the measured ordering survives
+print-to-print and seating variation. Its drop tests are not complete.
 
 % -----------------------------------------------------------------------------
 \section{Planned Quasi-Static Extension}
@@ -662,49 +662,58 @@ Both are archived with the manuscript data
 \texttt{round3-candidate-constant-printed-mass.csv}).
 
 % -----------------------------------------------------------------------------
-\section{Replicate Rank-Stability Study Plan}
+\section{Replicate Rank-Stability Study}
 \label{si:rankstability}
 % -----------------------------------------------------------------------------
-The main text (Section~3.5) describes the planned replicate study: from the
-campaign's in-sample designs, ranked by the current posterior's predictions,
-the best-predicted, the worst-predicted, and one mid-pack
-(``run-of-the-mill'') design will each be re-printed as a nominal three fresh
-articles and drop-tested under the standard protocol, including the
-between-seat replication rule. The repeat count is provisional and will be
-fixed when the print is scheduled. With three designs the exact permutation
-floor for a Spearman rank correlation is $p = 1/6$, so no significance claim
-is available at this size. Instead, the primary readout is the separation of
-the three designs' repeat clusters relative to the within-design
-(print-to-print plus seat-to-seat) scatter, reported alongside $\rho_s$
-between the predicted and measured orderings of each repeat. Clean
-separation would support treating the campaign's rankings as design
-properties. Overlapping clusters would measure the ranking noise floor that
-the three batch-3 prints could only bound. Table~\ref{tab:si-rank-stability}
-gives the reporting format. We will add entries and design IDs once the
-repeat articles are printed and tested.
+The replicate study re-prints three batch-4 designs that the lab chose on
+2026-09-28, before any replicate was printed. Trial~37 (corny7) had the
+lowest transmissibility measured in the campaign. Trial~39 (corny8) is its
+near twin, differing mainly in TPU infill (34 against 21\%). Trial~38
+(corny2) comes from the tall, low-twist family at the far end of the
+batch-4 ranking. All three come from one batch, so one set of filament
+settings (PLA at \SI{226}{\celsius}, TPU at \SI{236}{\celsius})
+reproduces every design's original process point on a single plate. Each
+plate holds three copies of each design in a $3 \times 3$ layout, and all
+three plates print the same G-code file. A specimen ID joins the plate
+number, the letters ``sne'', the last digit of the design's batch-4 ID,
+and the copy number, which gives the plate row (1 back, 2 middle,
+3 front). For example, 1sne73 is the front-row corny7 copy on
+plate~1. The replicate print key in the repository maps every ID to
+its trial, plate position, and per-part infills.
 
-\begin{table}[ht]
-  \centering
-  \caption{\emph{Placeholder (data pending).} Planned replicate
-    rank-stability study: the best-, mid-, and worst-predicted
-    in-sample designs, each re-printed as a nominal three fresh
-    articles and drop-tested under the standard protocol. Entries
-    will record each repeat's stabilized $t_{180}$, the
-    within-design scatter, and the measured rank of each design's
-    repeat cluster against its predicted rank.}
-  \label{tab:si-rank-stability}
-  \small
-  \begin{tabular}{@{}llcccc@{}}
-    \toprule
-    Tier & Design & {Pred.\ $t_{180}$} &
-    \multicolumn{3}{c}{$t_{180}$ (repeats 1 / 2 / 3)} \\
-    \midrule
-    Best  & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
-    Mid   & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
-    Worst & \textit{TBD} & \textit{-} & \textit{-} & \textit{-} & \textit{-} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+The weighed masses of the 27 specimens are in the print log, which notes
+no defects on any of them. The photographs do show loose, light-colored
+strands on some TPU tendons of the plate-2 and plate-3 copies. The plate-1 copies weigh 0.5 to \SI{0.9}{g}
+more than the batch-4 specimens of the same designs. The corny7 copies
+weigh 20.23 to \SI{20.27}{g} against \SI{19.62}{g}, the corny8 copies
+20.11 to \SI{20.30}{g} against \SI{19.64}{g}, and the corny2 copies
+20.89 to \SI{21.08}{g} against \SI{20.21}{g}. The plate-2 and
+plate-3 copies are up to \SI{0.4}{g} lighter than those on plate~1. The replicate struts were
+printed in black PLA and the batch-4 struts in white PLA.
+
+We drop-tested the nine plate-1 specimens on 2026-10-17, in one evening
+of 20-drop sessions under the standard protocol, and two faults affected
+the recording. From 17:18 to 18:17, an intermittent fault on the
+base-input channel (CH5), which also triggers the acquisition, set off
+the trigger away from the impact. Of the 70 captures in that hour, 56
+are mistimed and contain no impact. The channel was healthy before and
+after that hour. Separately, every session on the six corny7 and corny8
+copies showed a knocking top-vertex sensor. The knock is a spike of
+about \SI{0.1}{ms} at impact onset, up to \SI{3500}{g}, that reads the
+transmissibility high and fails the seat gauge of Section~\ref{si:drop}.
+In the three corny2 sessions the knock appeared on only two drops. On 2026-10-19 the
+input-channel instrumentation failed and drop testing stopped, with
+plates~2 and~3 printed and weighed but untested. Because the plate-1
+record carries both faults and the instrument that recorded it later
+failed, we withhold it until the repeats are complete on repaired
+instrumentation.
+% TODO (lab): confirm what failed on 2026-10-19. Issue #115 reports the
+% 10,000 g single-axis base accelerometer, while the plate-1 check-in on the
+% drop-test branch (data/drop-tests/1sne-checkin) reports the CH5 cable.
+% The SI does not load todonotes; the same question is a \todo in main-text
+% Section 3.5 (sec:methods:rankstability), shown in manuscript-todos.pdf.
+The raw captures, the capture census, and the fault analysis are
+archived with the drop-test data.
 
 % -----------------------------------------------------------------------------
 \section{Metal-Analog Validation Plan}
@@ -733,51 +742,13 @@ replicate count, and tie-handling rules. The intended rank statistic is the
 Spearman rank-correlation coefficient $\rho_s$ between the two material
 systems' orderings of the primary campaign metric ($t_{180}$ under the
 identical drop protocol), reported with an exact permutation test.
-Table~\ref{tab:si-metal-validation} and Fig.~\ref{fig:si-metal-validation}
-will report the measured PLA/TPU ranking and the
-hollow-aluminum/stainless-steel ranking on $t_{180}$, with the velocity
-loss index and, later, quasi-static specific energy absorption (SEA,
-Section~\ref{si:quasistatic}) as secondary rankings. Agreement between the
+Mass-weighted rebound $E_{\mathrm{reb}}$ and, later, quasi-static specific
+energy absorption (SEA, Section~\ref{si:quasistatic}) would give secondary
+rankings. Agreement between the
 two primary rankings would be preliminary evidence consistent with transfer
 beyond the as-printed polymers. Disagreement would not isolate which
 material or joint difference caused the change.
 
-\begin{table}[ht]
-  \centering
-  \caption{\emph{Placeholder (data pending).} Planned rank-ordering
-    validation: representative $T_3$-prism designs predicted to be
-    worst-, mid-, and best-performing, each fabricated as a printed
-    PLA/TPU specimen and as a hollow-aluminum-rod / stainless-steel-cable
-    metal analog. Entries will record the measured performance metric
-    ($t_{180}$ under the identical drop protocol, with the velocity
-    loss index secondary) and the resulting rank within each
-    material system.}
-  \label{tab:si-metal-validation}
-  \begin{tabular}{@{}llcc@{}}
-    \toprule
-    Predicted tier & Design ID & PLA/TPU (rank) & Al/SS (rank) \\
-    \midrule
-    Worst    & \textit{D-w1} & \textit{-} & \textit{-} \\
-    Worst    & \textit{D-w2} & \textit{-} & \textit{-} \\
-    Mediocre & \textit{D-m1} & \textit{-} & \textit{-} \\
-    Mediocre & \textit{D-m2} & \textit{-} & \textit{-} \\
-    Best     & \textit{D-b1} & \textit{-} & \textit{-} \\
-    Best     & \textit{D-b2} & \textit{-} & \textit{-} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\begin{figure}[ht]
-  \centering
-  \fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering\itshape
-    Placeholder: assembled metal-analog specimens (hollow aluminum rods +
-    stainless-steel threaded cables) beside their printed PLA/TPU
-    equivalents for the worst/mid/best predicted tiers (photographs pending
-    fabrication).}}
-  \caption{Metal-analog validation specimens alongside their printed
-    PLA/TPU equivalents for each predicted performance tier.}
-  \label{fig:si-metal-validation}
-\end{figure}
 
 % -----------------------------------------------------------------------------
 \section{Batch-3 Three-Print Repeatability Table}

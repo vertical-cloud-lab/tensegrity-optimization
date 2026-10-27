@@ -85,3 +85,28 @@ against the frozen predictions (0.75, which uses design means adjusted
 for the offset between prints; plain screened means give 0.55). The
 third print is not in the surrogate fit or the round-5 LOGO-CV files
 above, which predate it.
+
+## Transmissibility trace capture (added 2026-10-27)
+
+- `57vqhX_Signal50.csv` is `git show origin/main:57vqhX_Signal50.csv`, the
+  TP4 time-domain export of event 50 of session
+  `57vqhX 60 in - 4 felt 1 crdbrd` (2026-07-28). The specimen is 57vqhx,
+  the first of the five prints in the pre-campaign print-defect study
+  (`data/drop-tests/print-defects/` on `copilot/add-drop-test-protocol-again`),
+  dropped from 60 in onto the earlier stack of four felt pads and one
+  cardboard sheet, not the campaign polyurethane surface. It is the same
+  capture as the trace figure on hidden slide 25 of the group deck.
+  Channels: CH2 to CH4 are the triaxial top-vertex accelerometer, CH5 the
+  single-axis base-plate accelerometer (input and trigger), all in G, at
+  1.25 MHz over a 20 ms record.
+
+`scripts/figures/build_transmissibility_trace_figure.py` reads it and
+writes `figures/analysis/transmissibility-trace-57vqhX-drop50.{pdf,png,json}`
+(the main-text `fig:transmissibility-trace`). It uses the corrected
+SAE J211/1 filter the manuscript describes (`butter(2, 2.0775*CFC)` run
+forward and backward, the recipe of the deck's own
+`make_teaching_figures.py`, commit `90a0658` on
+`claude/issue-94-20260817-1700`) and gets t180 = 1.045 (588 / 563 G) and a
+CFC-1000 ratio of 1.287 (2394 / 1861 G), matching the deck. The JSON also
+records the same ratios under the older single-pass 1.65*CFC corner
+(t180 1.045, CFC-1000 ratio 1.204).

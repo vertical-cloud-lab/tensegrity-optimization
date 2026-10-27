@@ -193,9 +193,9 @@ article. After the conclusion of the campaign, several specimens were reprinted 
   batch-4 record article and of
   the third-print outlier dran35, the entry of the third print into the
   surrogate fit, and any batches beyond the fourth. Also pending are the
-  replicate rank-stability study (best-, mid-, and worst-predicted
-  in-sample designs in nominal triplicate), the quasi-static crush
-  campaign, the metal-analog comparison, and the archival (Zenodo) code
+  drop tests of the replicate rank-stability study (27 specimens of
+  three batch-4 designs, printed, with the plate-1 record withheld),
+  the quasi-static crush campaign, the metal-analog comparison, and the archival (Zenodo) code
   release. Tables and figures moved from the main text for length are in
   the Supplementary Information, which the main text cites by S-number.}}}
 \end{center}
@@ -369,7 +369,7 @@ Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
 emphasis on multi-objective and noise-robust acquisition functions.
 Section~\ref{sec:methods} introduces the design parameterization,
 fabrication workflow, drop-tower protocol and objectives, BO loop,
-and the planned replicate rank-stability study.
+and the replicate rank-stability study.
 Section~\ref{sec:results} reports all four measured batches, the
 surrogate audits, and the replication findings, and
 Section~\ref{sec:discussion} discusses the
@@ -778,6 +778,23 @@ references.}
   supply filament lot numbers and drying duration, which the slicer
   archive does not record.}
 
+Figure~\ref{fig:print-timelapse} shows a full plate printing upright,
+with the painted supports rising beside the tendons.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{../figures/photos/print-timelapse-plate1.jpg}
+  \caption{Three frames from the build-chamber camera timelapse of
+    replicate plate~1 on the Bambu Lab~H2D
+    (\url{https://youtu.be/EmCLms7-Bd8}). The nine specimens print
+    upright, with the prism axis normal to the build plate, beside a
+    prime tower. (a)~First layers, with the bottom TPU tendons and
+    the strut-end housings. (b)~Mid-height, with the struts and the
+    painted PLA supports partly built. (c)~Final layers, with the top
+    tendons complete. Frames are cropped and down-scaled only.}
+  \label{fig:print-timelapse}
+\end{figure*}%
+
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{../figures/fab-workflow.pdf}
@@ -834,6 +851,28 @@ the passband by roughly 20\%, which we identified and corrected before
 the campaign. All reported numbers use the corrected filter. CFC-180
 is the reporting class for peak metrics, with CFC-1000 retained as a
 higher-bandwidth diagnostic.
+Figure~\ref{fig:transmissibility-trace} shows both channels of one
+drop at both filter classes.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../figures/analysis/transmissibility-trace-57vqhX-drop50.pdf}
+  \caption{Base-plate input and top-vertex response for one
+    commissioning drop, shown to illustrate the transmissibility
+    definition. The specimen is 57vqhx from the pre-campaign
+    print-defect study (2026-07-28, event 50 of its session), dropped
+    from \SI{60}{in} onto the earlier stack of four felt pads and one
+    cardboard sheet. Campaign drops land on the polyurethane surface
+    instead. Both channels are low-pass filtered with the SAE~J211/1
+    CFC filter, and the top-vertex trace is the magnitude of the three
+    filtered axes. The zero-phase CFC-180 filter spreads the
+    sub-millisecond pulse in both directions in time, so its traces
+    are already nonzero at impact onset. (a)~At CFC-180, the reporting
+    class, the peak ratio
+    gives $t_{180} = 588/563 = 1.045$. (b)~At CFC-1000, the diagnostic
+    class, the same drop gives $2394/1861 = 1.287$.}
+  \label{fig:transmissibility-trace}
+\end{figure}
 
 \paragraph{Per-article objectives and session protocol} Session
 length changed as our understanding of the measurement noise improved,
@@ -1115,33 +1154,60 @@ repository snapshot is published.}
 \label{sec:methods:rankstability}
 
 Repeated prints of the batch-3 designs
-(Section~\ref{sec:results:batches}) showed that a single article's
+(Section~\ref{sec:results:batches}) showed that a single specimen's
 measurement can move between seatings and prints by more than the
-design signal separating neighboring designs, which bounds any claim
-that one design outranks another. We plan a replicate study to
-quantify this bound. Among the campaign's in-sample designs, ranked by
-the current posterior's predictions, we will select the best-predicted
-design, the worst-predicted design, and one mid-pack
-(``run-of-the-mill'') design, print a nominal three fresh articles of
-each, and drop-test every article under the standard protocol of
-Section~\ref{sec:methods:testing}, including the between-seat
-replication rule. The question is whether the predicted ordering
-survives fabrication and seating variation. With three designs no
-significance claim is available, so the primary readout is the
-separation of the three repeat clusters relative to the within-design
-(print-to-print plus seat-to-seat) scatter, reported alongside the
-Spearman rank correlation between the predicted and measured
-orderings. The reporting format and the statistical floor are given
-in the Supplementary Information (Section~\siref{si:rankstability}).
+design signal separating neighboring designs. To test whether the
+measured ordering survives fabrication and seating variation, we
+re-printed three batch-4 designs chosen before any replicate was
+printed. Trial~37 (corny7) was the batch-4 best-predicted design and
+measured $t_{180} = 0.803$, the lowest value of the campaign. Trial~39
+(corny8) is its near twin in design space, differing mainly in TPU
+infill, yet it measured 0.150 higher. Trial~38 (corny2) comes from the
+tall, low-twist family at the far end of the batch-4 ranking. Each of
+three plates carries three copies of each design, printed from one
+G-code file at the batch-4 filament settings, for 27 specimens in
+total (Fig.~\ref{fig:replicate-specimens}).
+
+We drop-tested plate~1 on 2026-10-17 under the standard protocol of
+Section~\ref{sec:methods:testing}, and the session recorded two
+instrument faults. For about an hour an intermittent fault on the
+base-input channel, which also triggers the acquisition, set off the
+trigger away from the impact, so 56 captures were mistimed and hold
+no impact. The top-vertex accelerometer also knocked at impact onset
+in every session on the corny7 and corny8 copies, a spike that reads
+the transmissibility high and fails the seat gauge. On 2026-10-19 the
+input-channel instrumentation failed and drop testing stopped.
+Plates~2 and~3 were printed and weighed but have not been tested. We
+withhold the replicate record until the repeats are complete on
+repaired instrumentation, so no replicate value appears in this paper.
+The Supplementary Information gives the plate layout, the weighed
+masses, and the fault record (Section~\siref{si:rankstability}).
+\todo{Lab to confirm what failed on 2026-10-19. Issue~\#115 reports
+  that the \SI{10000}{g} single-axis base accelerometer broke, while
+  the plate-1 check-in on the drop-test branch
+  (\texttt{data/drop-tests/1sne-checkin}) reports that the CH5 cable
+  broke. The text says ``input-channel instrumentation'' until this is
+  settled.}
 We also plan a metal-analog comparison in which worst-, mid-, and
 best-predicted designs are rebuilt from hollow aluminum rods and
 stainless-steel threaded cables and ranked against their PLA/TPU
 equivalents (Section~\siref{si:metal-validation}).
-\todo[inline,color=orange!30]{Populate Table~\siref{tab:si-rank-stability}
-  of the Supplementary Information once the repeat articles of the
-  best-, mid-, and worst-predicted in-sample designs are printed and
-  drop-tested; fix the repeat count (nominally three) and the design
-  IDs when the print is scheduled.}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../figures/photos/replicate-specimens-panel.jpg}
+  \caption{Specimens of the three replicate-study designs, as
+    photographed for the print log. Rows are trials 37 (corny7),
+    39 (corny8), and 38 (corny2). The first column is the batch-4
+    specimen (print log of 2026-09-11), and the other three are the
+    front-row copy from replicate plates 1 to 3 (print log of
+    2026-10-17). Labels give the specimen ID and weighed mass. The
+    batch-4 struts are white PLA and the replicate struts black PLA.
+    Camera distance varies between photographs, so apparent size is not
+    comparable across cells. The replicate drop tests are not complete,
+    so the figure reports no measured values.}
+  \label{fig:replicate-specimens}
+\end{figure}
 
 % =============================================================================
 \section{Results}
@@ -1221,7 +1287,8 @@ constant-mass box spans aspect ratio, member sizing, and twist.
     fit and from all mass-dependent quantities. No accepted $f_n$
     estimate is available for \textit{bag26v} or \textit{ajhby6}.
     Specs 03 and 06 were printed but have no drop sessions in the
-    campaign record.}
+    campaign record. All specimens were printed upright
+    (Fig.~\ref{fig:print-timelapse}).}
   \label{tab:seed-results}
   \small
   \begin{tabular}{@{}llS[table-format=2.2]S[table-format=1.4]@{\,$\pm$\,}S[table-format=1.4]S[table-format=2.1]S[table-format=3.0]@{}}
@@ -1572,12 +1639,12 @@ none of their values appear in this section. The batch-4 attenuators
 re-seats. The third print of the batch-3 designs has not yet entered
 the surrogate fit or its cross-validation. A fifth batch has been
 generated, regenerated once the second print entered the fit, and
-staged for printing, but nothing from it appears here. The replicate
-rank-stability study of Section~\ref{sec:methods:rankstability}
-(best-, mid-, and worst-predicted in-sample designs re-printed in
-nominal triplicate), the quasi-static crush campaign, and the
-metal-analog comparison (Supplementary Information,
-Section~\siref{si:metal-validation}) have not yet run.
+staged for printing, but nothing from it appears here. The 27
+specimens of the replicate rank-stability study
+(Section~\ref{sec:methods:rankstability}) are printed, but their
+record is withheld until the repeats are complete. The quasi-static
+crush campaign and the metal-analog comparison (Supplementary
+Information, Section~\siref{si:metal-validation}) have not yet run.
 
 
 % =============================================================================
@@ -1701,8 +1768,8 @@ planned follow-on work. Sensitivity to
 print-process covariates (the print key logs defects, humidity, and
 the mid-batch nozzle change for this purpose) and transfer to
 other material pairs likewise remain open. In the future we plan
-the re-seat confirmations of the batch-4 attenuators, the replicate
-rank-stability study of Section~\ref{sec:methods:rankstability}, the
+the re-seat confirmations of the batch-4 attenuators, the remaining
+replicate drop tests (Section~\ref{sec:methods:rankstability}), the
 metal-analog rank-transfer comparison (Supplementary Information,
 Section~\siref{si:metal-validation}), quasi-static testing as an
 extension of the characterization
@@ -1747,8 +1814,9 @@ a design mapping, one seed design's official article assignment
 carries a recorded discrepancy, and two seed designs have no session
 record. All results come from a single printer, material pair, and
 cell topology. We plan to address these limits with the replication
-rule, the re-seat confirmations, the replicate rank-stability study
-(Section~\ref{sec:methods:rankstability}), and the metal-analog
+rule, the re-seat confirmations, the completed replicate
+rank-stability study (Section~\ref{sec:methods:rankstability}), and
+the metal-analog
 protocol (Supplementary Information,
 Section~\siref{si:metal-validation}).
 
