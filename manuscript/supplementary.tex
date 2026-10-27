@@ -82,7 +82,7 @@ architecture with an experiment-driven optimization loop.
   \caption{Positioning of this work against selected prior efforts
     spanning the elements combined here. The present campaign uses
     physical drop measurements of the transmissibility ($t_{180}$)
-    and a mass-weighted form of the velocity loss index
+    and the mass-weighted rebound
     ($E_{\mathrm{reb}}$, Eq.~(1) of the main text)
     as its BO responses. It does not optimize specific energy
     absorption or crush energy.}
@@ -121,14 +121,18 @@ architecture with an experiment-driven optimization loop.
 \section{Printability Screens and As-Built Resolution}
 \label{si:printability}
 % -----------------------------------------------------------------------------
-The constant-mass projection of the main text (Section~3.1) rescales every
+The constant-mass projection of the main text (Section~3.1) scales every
 candidate design before printing. This section records the two printability
 screens applied to the projected designs and what the print record shows
 about them, and the as-built scatter in mass.
 
 \paragraph{Printability screens.} We also checked each projected design against two printability
 limits. Both were recorded as warnings, and neither was used to reject
-or change a design. The first compares $\pi R^2 H$ with
+or change a design. The campaign code
+(\texttt{bo/\allowbreak t3\_prism\_bo\_campaign.py} on the campaign branch,
+\href{\repo/pull/102}{PR~\#102}) evaluates both on the as-printed
+geometry of every recommended design and flags it in the batch tables
+as ``envelope ${>}$ 250~cm$^3$'' or ``cable ${<}$ 3.0~mm''. The first compares $\pi R^2 H$ with
 \SI{250}{cm^3}, where $R$ is the radius of the circle through the
 joint centers and $H$ is the height between joint centers. The
 \SI{250}{cm^3} value is a placeholder size limit carried over from an
@@ -137,7 +141,7 @@ because it is measured to the joint centers it undercounts the printed
 part. Seven printed specimens (five designs) exceeded it. The second
 limit is a \SI{3.0}{mm} minimum on the printed TPU cable diameter,
 adopted after the thin, unsupported top cables of early PETG test
-prints failed. Because the projection rescales the whole cell, a
+prints failed. Because the projection scales the whole cell, a
 design at the \SI{3.0}{mm} lower bound of the cable variable can print
 thinner. Nine specimens printed with cables of 2.51 to \SI{2.78}{mm},
 including all four batch-4 specimens that reduced the peak shock
@@ -157,7 +161,7 @@ The \SI{3.0}{mm}
 lower bound on the TPU cable diameter is likewise a limit of this
 workflow. It is the printability minimum described above, set by
 printing unsupported cables and by the slicer's auto-support
-detection on this H2D printer. Two sets of repeated prints bound the
+detection on the H2D printer used in this study. Two sets of repeated prints bound the
 fabrication scatter in mass. One seed design printed three times has a
 mass standard deviation of \SI{0.457}{g}, the value used in the
 observation noise model (main text, Section~3.4). The batch-3
@@ -170,12 +174,16 @@ per-print flow offset rather than random scatter.
 \section{Joint-Design Study}
 \label{si:joints}
 % -----------------------------------------------------------------------------
-We developed and ranked the strut-to-cable junction through a five-design
-OpenSCAD study (anchor-bulb, dovetail, TPU-sleeve overmold, eyelet-loop, and
-TPU-rebar variants). The working prototype uses a dovetail joint (Design~B)
-with an anchor-bulb backup (Design~A) for sensitivity studies. A captive TPU
-core is routed inside the PLA shell so that the soft tendon is protected from
-layer-line failure at the transition.
+We developed the strut-to-cable junction through an OpenSCAD study of five
+candidate joints (Designs~A to E: anchor-bulb, dovetail, TPU-sleeve overmold,
+eyelet-loop, and TPU-rebar), followed by a sixth, captive-core design
+(Design~F). Every campaign specimen uses Design~F, a captive TPU core inside
+a PLA shell. At each strut end the tendons meet in a TPU core that is too
+large to pass back out through the shell's tendon bores, so the joint holds
+mechanically even though PLA and TPU bond weakly, and the shell keeps the
+soft tendon away from layer-line failure at the transition. The campaign CAD
+(\texttt{cad/t3-prism/t3-prism.scad} on the campaign branch) builds this
+joint with \texttt{use\_captive\_core = true}.
 
 Full results, renders, and the Phase-3/Phase-4 design reviews are documented in
 \href{\repo/pull/39}{PR~\#39} (joint design) and
@@ -191,10 +199,9 @@ Full results, renders, and the Phase-3/Phase-4 design reviews are documented in
     isometric, bottom row section views). The study renders use the
     polyethylene terephthalate glycol (PETG, orange) and TPU (cyan)
     material pair under which the joint family was first developed.
-    The working prototype adapts the
-    selected dovetail (B) with an anchor-bulb (A) backup to the
-    PLA/TPU pair of the main text, with the captive TPU core routed
-    inside the PLA shell.}
+    The campaign specimens use none of these five. They use the later
+    captive-core joint (Design~F), a TPU core inside a PLA shell, with
+    the PLA/TPU pair of the main text.}
   \label{fig:si-joints}
 \end{figure}
 
@@ -213,11 +220,13 @@ the cosmetic defects that we log per specimen in the print key
 specimens, a TPU strand that did not fuse to a bottom tendon and came away from
 it.
 
-In parallel, we developed an automated alternative. It combines a
-tensegrity-specific Bambu Studio recipe (support threshold angle lowered
-from \SI{40}{\degree} to \SI{10}{\degree}, support material matched to
-the rigid extruder) with manually generated narrowing pillars that
-ray-cast against the printable mesh underside. The narrowing-pillar
+In parallel, we built an automated alternative in software and archived
+it, but no campaign specimen used it. Every campaign specimen was printed
+with the manually painted supports described above. The alternative
+combines a tensegrity-specific Bambu Studio recipe (support threshold angle
+lowered from \SI{40}{\degree} to \SI{10}{\degree}, support material matched
+to the rigid extruder) with narrowing support pillars placed by ray-casting
+against the underside of the printable mesh. The narrowing-pillar
 workflow is documented in
 \href{\repo/pull/66}{PR~\#66}, and the H2D multi-part material assignment fix
 in \href{\repo/pull/64}{PR~\#64}.
@@ -232,8 +241,8 @@ geometry is described in Section~\ref{si:joints} and the support strategy in
 Section~\ref{si:supports}.
 
 \paragraph{Moisture and nozzle management.} TPU is hygroscopic, so we
-feed the soft filament from a heated dry box held near \SI{8}{\percent}
-relative humidity, logged per print. Midway through the seed batch the
+fed the soft filament from a heated dry box held near or below
+\SI{8}{\percent} relative humidity, logged per print. Midway through the seed batch the
 TPU extruder developed a progressive drop in flow (a partial clog,
 compounded by a stray PLA fragment found inside the extruder). We
 resolved it by performing a cold pull and moving the TPU to a dedicated
@@ -249,9 +258,7 @@ objectives.
     (\texttt{t3-prism-bo-batch.\allowbreak H2D-MM-\allowbreak PLAstruts-\allowbreak
     TPUcables.\allowbreak as-printed.3mf}, Bambu Studio 2.7.1). Filaments are Bambu Lab PLA Basic (struts,
     support material) and Bambu Lab TPU~85A (tendons). The print
-    profile is ``0.30\,mm Standard @BBL H2D 0.6 nozzle.'' The
-    reporting structure follows the methods section of Ye
-    et~al.~\cite{ye2023multimaterial}.}
+    profile is ``0.30\,mm Standard @BBL H2D 0.6 nozzle.''}
   \label{tab:si-print-params}
   \small
   \setlength{\tabcolsep}{3pt}
@@ -302,7 +309,7 @@ surrogate fit until identified.
   \centering
   \caption{Print key for the seed campaign (nine Sobol designs plus the S0
     reference). Masses weighed on a \SI{0.01}{g} scale. TPU fed from a heated
-    dry box near 8\% relative humidity where logged. The first five specimens
+    dry box near or below 8\% relative humidity where logged. The first five specimens
     (printed before the TPU nozzle fix) used the standard \SI{0.4}{mm} TPU
     nozzle, and the rest used the high-flow \SI{0.6}{mm} nozzle.}
   \label{tab:si-printkey}
@@ -558,24 +565,25 @@ archived with the manuscript data
 (\texttt{t3-prism-bo-round3-three-print.csv}, generated by
 \texttt{scripts/\allowbreak figures/\allowbreak round3\_three\_print\_analysis.py}).
 
-\paragraph{Objective provenance and adversarial review.} The objective stack
+\paragraph{Objective provenance and pre-registered review.} The objectives
 evolved through a measurability review
 (\href{\repo/pull/97}{PR~\#97}). Per-specimen crush energy in joules is not
 recoverable from this rig, because it has no falling-mass or displacement
 channel and the specimens stay elastic. The campaign responses are therefore the
-filtered peak-acceleration ratio and a provisional velocity loss index,
-optimized in a mass-weighted form, with quasi-static
+filtered peak-acceleration ratio and the mass-weighted rebound, built
+on a provisional rebound fraction, with quasi-static
 crush metrics deferred to a load-frame campaign. We pre-registered an
-adversarial review of the objective choices with an external AI referee
-(Edison ANALYSIS task \texttt{3e398131}, archived in the repository). It
+adversarial review of the objective choices, run with the Edison
+Scientific analysis agent (task \texttt{3e398131}, archived in the
+repository). It
 recommended accounting for specimen-level rather than per-drop noise, treating
-the velocity loss index as a candidate constraint pending a
+the rebound fraction as a candidate constraint pending a
 restrained-versus-unrestrained validation with synchronized video,
 and reserving print capacity for replicate specimens. The main text
 records how the campaign responded to these recommendations. We
 printed and tested the batch-3 plate three times, which measured
 the print-to-print scatter directly and produced the between-seat
-replication rule. The velocity loss index remains a
+replication rule. The rebound fraction remains a
 candidate constraint, and the
 surrogate continues to ingest per-session standard errors, with the
 replication evidence carried as an interpretation bound rather than
@@ -594,8 +602,8 @@ specimens in their elastic regime. The crush lasts 1 to \SI{3}{ms} and
 the specimen recovers, so crush-energy metrics such as specific energy
 absorption (SEA) and compaction efficiency are not recoverable from
 these captures by any reprocessing. We plan a quasi-static compression
-campaign on a benchtop load frame (BYU CB~123 Instron, with a
-low-range load cell appropriate to the expected cell stiffness)
+campaign on a benchtop load frame, with a low-range load cell
+appropriate to the expected cell stiffness,
 to supply the complementary crush metrics
 \begin{equation}
   \mathrm{SEA} \;=\; \frac{1}{m}\!\int_{0}^{\delta_d}\! F(\delta)\,
@@ -862,8 +870,7 @@ campaign code and the manuscript data
     $t_{180}$ predictions stay close to the pooled mean (MAPE 5.0\%, rank
     correlation $+0.08$), and the $E_{\mathrm{reb}}$ ordering is anti-correlated
     ($-0.38$). Design-level held-out skill is near zero on
-    transmissibility and absent on the mass-weighted velocity-loss
-    objective.}
+    transmissibility and absent on the mass-weighted rebound.}
   \label{fig:si-logocv}
 \end{figure}
 
