@@ -337,6 +337,12 @@ of the eventual application scale.
     (Section~\ref{sec:methods:testing}) flags the largest single-print
     errors, and we adopted a between-seat
     replication rule in response (Section~\ref{sec:results:batches}).
+  \item A simulation-only benchmark of multi-objective BO against
+    uninformed sampling at a matched budget
+    (Sections~\ref{sec:methods:sim} and~\ref{sec:results:sim}). On a
+    MuJoCo drop-tower model, BO reached 93\% of a best-known reference
+    hypervolume after 45 designs, against 77 to 79\% for four
+    uninformed sampling baselines, and finished ahead on all ten seeds.
 \end{enumerate}
 
 The completed evidence in this paper is restricted to single-cell,
@@ -369,9 +375,11 @@ Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
 emphasis on multi-objective and noise-robust acquisition functions.
 Section~\ref{sec:methods} introduces the design parameterization,
 fabrication workflow, drop-tower protocol and objectives, BO loop,
-and the planned replicate rank-stability study.
+the planned replicate rank-stability study, and the simulation-only
+campaign.
 Section~\ref{sec:results} reports all four measured batches, the
-surrogate audits, and the replication findings, and
+surrogate audits, the replication findings, and the simulated
+campaign, and
 Section~\ref{sec:discussion} discusses the
 implications and limitations of the approach. Section~\ref{sec:conclusions}
 concludes.
@@ -1143,6 +1151,31 @@ equivalents (Section~\siref{si:metal-validation}).
   drop-tested; fix the repeat count (nominally three) and the design
   IDs when the print is scheduled.}
 
+\subsection{Simulation-Only Campaign}
+\label{sec:methods:sim}
+
+To test the optimizer on a problem whose front can be mapped, we
+also ran a campaign entirely in simulation. The simulator is a
+MuJoCo~\citep{todorov2012mujoco} model of the drop tower with rigid
+PLA struts, tension-only TPU tendons, and an impact-surface contact
+calibrated once against the reference prism (S0). It reports $t_{180}$
+with the bench's CFC-180 filter. Printed mass is fixed at \SI{20.23}{g},
+and the search varies four shape ratios, with printed tendon diameter
+of at least \SI{3.0}{mm} and envelope volume $\pi R^2 H$ of at most
+\SI{250}{cm^3} as constraints. The two minimized objectives are
+$t_{180}$ and the envelope volume, the bulk a lander must stow. Each of
+ten seeds spends 45 simulated designs, a nine-design Sobol batch and
+then four batches of nine chosen by qNEHVI on a single-task GP in Ax.
+Random, Sobol, Latin hypercube~\citep{mckay1979lhs}, and
+compass-search~\citep{kolda2003directsearch} baselines run at the same
+budget and seeds and skip unprintable candidates without simulating
+them. Section~\siref{si:sim-campaign} of the Supplementary
+Information gives the simulator and scoring details.\todo{PR~\#33
+  (branch \texttt{copilot/\allowbreak explore-\allowbreak simulations-\allowbreak for-\allowbreak tensegrity}, pinned
+  at \texttt{94e53a8}) must be merged or tagged before submission so
+  the simulator and campaign code behind
+  Section~\ref{sec:results:sim} resolve from the archived repository.}
+
 % =============================================================================
 \section{Results}
 \label{sec:results}
@@ -1580,6 +1613,58 @@ metal-analog comparison (Supplementary Information,
 Section~\siref{si:metal-validation}) have not yet run.
 
 
+\subsection{Simulated Campaign}
+\label{sec:results:sim}
+
+Table~\ref{tab:sim-campaign} scores each run of the simulation-only
+campaign (Section~\ref{sec:methods:sim}) by its final hypervolume as a
+percentage of a best-known reference. That reference is the
+hypervolume of a 16,384-design reference sweep, a locally refined
+front, and every feasible design that any compared run evaluated. After 45 simulated
+designs, BO reached 93.0\% of this reference (seed range 90.0 to
+96.1\%), against 76.5 to 79.1\% for the four baselines. BO finished
+ahead of every baseline on all ten seeds, and no baseline seed reached
+the worst BO seed, so the one-sided exact Mann-Whitney $p$ is
+$5.4\times10^{-6}$, the smallest value ten runs against ten allow. The
+running hypervolume (Fig.~\siref{fig:si-sim-campaign} of the
+Supplementary Information) shows BO trailing the baselines during its
+Sobol batch and pulling ahead once the model chooses the designs.
+
+We chose this objective pair before running the campaign, by screening
+six candidate pairs for the one whose front a random 45-design batch
+covers least (Section~\siref{si:sim-campaign}). The result therefore
+shows that the optimizer finds a front that sampling misses when one
+exists, not that it will on every pair. The control pair, $t_{180}$
+with peak tendon strain, shows the other case. There a random batch
+already collects about 85\% of the pair's reference hypervolume, BO reached
+82.6\% against 77.4 to 79.8\%, and no comparison survives a four-way
+Bonferroni correction (smallest exact $p = 0.018$). The control's
+baselines also used an earlier protocol that charged unprintable
+draws, so the two pairs are not a controlled contrast. Because the
+simulated struts are rigid, the simulator keeps $t_{180}$ below about 1
+and does not reproduce the amplification measured on hardware
+(Section~\ref{sec:discussion}). The simulated campaign therefore tests
+the optimizer only.
+
+\begin{table}[t]
+  \centering
+  \caption{Simulation-only campaign: final hypervolume after 45
+    designs as a percentage of each objective pair's best-known
+    reference (mean $\pm$ sample standard deviation over ten seeds).
+    $p$ is the one-sided exact Mann-Whitney test that BO exceeds the
+    baseline, and Wins counts the seeds on which BO finished ahead of
+    the baseline run with the same seed index. LHS is Latin hypercube
+    sampling. The envelope-pair baselines skip unprintable candidates
+    without simulating them, and the strain control used the earlier
+    protocol that charged them. Generated by
+    \texttt{scripts/\allowbreak figures/\allowbreak sim\_campaign\_tables.py}
+    from the per-seed records.}
+  \label{tab:sim-campaign}
+  \footnotesize
+  \setlength{\tabcolsep}{3.5pt}
+  \input{tables/sim-campaign}
+\end{table}
+
 % =============================================================================
 \section{Discussion}
 \label{sec:discussion}
@@ -1791,6 +1876,10 @@ The workflow is a candidate for other experimentally evaluated
 architected structures whose constitutive response is difficult to
 calibrate from first principles, but transfer beyond this printer,
 material pair, topology, and axial impact condition remains untested.
+In a simulation-only benchmark, BO collected 93\% of the best-known
+hypervolume in 45 designs, where uninformed sampling collected 77 to
+79\%. On a control objective pair, where sampling alone covers most
+of the front, BO did not separate from the samplers.
 
 % =============================================================================
 % Back matter

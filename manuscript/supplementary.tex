@@ -867,6 +867,163 @@ campaign code and the manuscript data
   \label{fig:si-logocv}
 \end{figure}
 
+% -----------------------------------------------------------------------------
+\section{Simulation-Only Campaign}
+\label{si:sim-campaign}
+% -----------------------------------------------------------------------------
+This section gives the simulator, search space, objective-pair
+selection, optimizer, baselines, and scoring behind the simulated
+campaign of the main text (Sections~3.6 and~4.4). Every number here and
+in Table~\ref{tab:si-sim-campaign} and Fig.~\ref{fig:si-sim-campaign} is
+recomputed from the per-seed run records by
+\texttt{scripts/\allowbreak figures/\allowbreak sim\_campaign\_tables.py},
+which reads only the snapshot in \texttt{manuscript/\allowbreak data/\allowbreak sim/}.
+The snapshot is a verbatim copy of the simulation branch
+(\texttt{copilot/\allowbreak explore-simulations-for-tensegrity}, commit
+\texttt{94e53a8}) of the project repository (\url{\repo}), which also
+holds the simulator and campaign code.
+
+\paragraph{Simulator} The drop tower is modeled in
+MuJoCo~\cite{todorov2012mujoco}. The falling base-plate assembly is a
+\SI{2.0}{kg} carriage on a vertical slide joint that stands in for the
+guide rails, and it carries the base accelerometer site. The
+polyurethane impact surface is an explicit one-sided Hunt-Crossley
+contact on the carriage, $F = k\delta + \lambda\delta(-\dot{\delta})$
+for penetration $\delta > 0$ and zero otherwise, with
+$k = \SI{3.18e5}{N/m}$ and $\lambda = \SI{5.40e4}{N.s/m^2}$. These two
+constants were calibrated once against the measured input peak and
+restitution of the reference prism (S0) and then held fixed for every
+design. The specimen is three rigid PLA strut capsules, which carry
+its whole printed mass, joined by nine TPU tendons, with its three
+bottom vertices ball-anchored to the carriage. The tendons are springs
+that carry tension only, with zero force below the slack length, a
+linear force above it, 2\% prestrain, and a viscous damping ratio of
+0.02. A \SI{5}{g} mass at the top vertex
+stands for the accelerometer. Each drop starts at the measured campaign
+impact velocity of \SI{5.30}{m/s} (the \SI{60}{in} drop) and runs for
+\SI{40}{ms} at a \SI{20}{\micro s} time step. The simulator reports
+$t_{180}$ as the ratio of the CFC-180-filtered peak accelerations at
+the top vertex and the base. The model omits strut flexure, mount compliance, tendon
+hysteresis, and drift in the impact surface. Because the struts are
+rigid and cannot resonate, simulated $t_{180}$ stays below about 1,
+whereas most printed specimens measured above 1, so the simulator
+benchmarks the optimizer and is not a substitute for the drop tower.
+
+\paragraph{Search space and constraints} The search varies four
+scale-free shape ratios: $H/R \in [1.5, 4.4]$, $H/d_s \in [5.0, 18.3]$,
+$d_t/d_s \in [0.25, 0.92]$, and twist $\theta \in [40, 80]^\circ$. These
+are the extremes the five-variable box of the physical campaign can
+express. For each design, the printed-mass model
+(Section~\ref{si:mass}) solves in closed form for the overall scale at
+which the design prints at \SI{20.23}{g}, the weighed mass of S0, so
+mass never enters the search. The printed tendon diameter must be at
+least \SI{3.0}{mm} and the envelope volume $\pi R^2 H$ at most
+\SI{250}{cm^3}, the two printability screens of
+Section~\ref{si:printability}, given to the optimizer as outcome
+constraints.
+
+\paragraph{Choice of objective pair} Before the campaign, one scrambled
+Sobol sweep of 16,384 designs (seed 20260825, distinct from every
+campaign seed; 9,738 printable) priced six candidate objective pairs at
+once, since one simulation returns every candidate observable. For
+each pair, 2,000 random batches of 45 printable designs measured the
+fraction of the sweep's hypervolume that an uninformed batch collects.
+The rule, fixed before any campaign run, excluded the two existing
+pairs as controls, required the front to span a meaningful part of both
+objectives, and took the lowest such fraction. That selected $t_{180}$
+with envelope volume (80.0\% collected by a random batch), against
+84.6\% for the $t_{180}$ and peak-tendon-strain control. The selection
+favors pairs on which a model can help, which is why the main text
+reports the control pair alongside it.
+
+\paragraph{Optimizer and baselines} Each of ten seeds (0 to 9) ran
+Ax~0.5.0, starting from a nine-design scrambled Sobol batch seeded by
+the repeat's own seed. Four batches of nine followed from Ax's modular
+BoTorch model, a single-task GP with constrained noisy expected
+hypervolume improvement (qNEHVI)~\cite{daulton2021nehvi}, with the
+acquisition optimized from 8 restarts and 128 raw samples. No two seeds share a
+first batch. The baselines are uniform random sampling, scrambled
+Sobol, scrambled Latin hypercube sampling~\cite{mckay1979lhs}, and
+compass search~\cite{kolda2003directsearch}, each at the same 45-design
+budget and the same seeds. In the filtered mode reported in the main
+text, every baseline candidate passes the closed-form printability
+check before it is simulated, and compass search skips unprintable
+probes without charge. No baseline therefore spends budget on a design
+that cannot be printed. In the plain mode, unprintable draws are simulated,
+charged, and excluded from the front, as in the earlier strain-pair
+runs that serve as the control.
+
+\paragraph{Scoring} Both objectives are minimized. Each pair has one
+reference point, 1.05 times the componentwise worst value over the
+printable sweep: ($1.039$, \SI{262.4}{cm^3}) for the envelope pair and
+($1.039$, $0.247$) for the strain pair. A run's hypervolume is that of
+its feasible evaluations against this point. The denominator is a
+best-known reference hypervolume, the hypervolume of the union of the
+printable sweep, a Nelder-Mead refinement of the sweep's front, and
+every feasible evaluation of the compared runs. For the envelope pair
+this is \SI{87.09}{cm^3}, 1.35\% above the refined front alone
+(\SI{85.93}{cm^3}). BO's own evaluations account for 1.14 of the
+1.16~\si{cm^3} increase, so scoring against the refined front alone
+would raise BO to 94.2\% and the baselines to 77.5 to 80.2\%. Adding
+the plain-mode baseline evaluations to the union changes the
+denominator by less than 0.01\%. For the strain pair the best-known
+reference is 0.1\% above the refined front. The main test is the
+one-sided exact Mann-Whitney test on the ten final hypervolumes per
+method, whose floor at ten against ten is
+$1/\binom{20}{10} = 5.4\times10^{-6}$. We also report the paired exact
+Wilcoxon signed-rank test, with runs paired by seed index, whose floor
+at ten pairs is $9.8\times10^{-4}$. Every
+envelope-pair comparison, in both baseline modes, reaches both floors.
+On the strain pair, the Wilcoxon $p$ values run from 0.014 to 0.12 and
+BO wins 5 to 9 of the ten pairs.
+
+\paragraph{Audit} The script recomputes each run's hypervolume from its
+evaluations and checks it against the running value stored in the
+record (largest relative difference $2\times10^{-6}$, from rounding in
+the CSV files). It also checks the strain-pair rescoring against the
+committed per-seed values, that every run holds exactly 45
+evaluations, and that no two BO seeds drew the same first batch. An
+independent review of the campaign code and records (Edison analysis
+task \texttt{53cfc937}, archived with the snapshot) cross-checked the
+hypervolume routine against BoTorch's exact implementation and
+proposed the best-known denominator and the exact tests used here.
+
+\begin{table}[ht]
+  \centering
+  \caption{Simulation-only campaign, $t_{180}$ with envelope volume.
+    HV is the final hypervolume after 45 designs as a percentage of the
+    best-known reference (mean $\pm$ sample standard deviation), and
+    Range spans the ten seeds. Best $t_{180}$ and Min.\ envelope are
+    means over seeds of each run's best values. $p$ is the one-sided
+    exact Mann-Whitney test against BO, and Wins counts the seeds on
+    which BO finished ahead. In the Mode column, filtered baselines skip unprintable
+    candidates without simulating them, and plain baselines simulate
+    and charge them.}
+  \label{tab:si-sim-campaign}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \input{tables/si-sim-campaign}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/sim/sim-campaign.png}
+  \caption{Simulation-only campaign. (a) Running hypervolume of the
+    $t_{180}$ and envelope-volume pair, scaled to the best-known
+    reference and averaged over ten seeds (band: $\pm$ one standard
+    deviation for BO), with filtered baselines. BO's first
+    nine designs are an unfiltered Sobol batch, which is why it starts
+    below the baselines. (b) Final hypervolume of every seed for both
+    objective pairs (bar: mean). On the envelope pair every BO seed
+    finishes above every baseline seed; on the strain control the
+    distributions overlap. (c) Feasible evaluations of all seeds pooled
+    in objective space, with the printable reference sweep in light gray
+    and the refined reference front as a staircase. BO's evaluations
+    follow the front along its length, and some lie beyond it, which is
+    why the best-known reference includes them.}
+  \label{fig:si-sim-campaign}
+\end{figure}
+
 \clearpage
 \bibliographystyle{unsrtnat}
 \bibliography{references}
