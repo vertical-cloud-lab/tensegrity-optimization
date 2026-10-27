@@ -128,10 +128,10 @@ about them, and the as-built scatter in mass.
 
 \paragraph{Printability screens.} We also checked each projected design against two printability
 limits. Both were recorded as warnings, and neither was used to reject
-or change a design. The campaign code
+or change a design. The campaign code evaluates both on the as-printed
+geometry of every recommended design
 (\texttt{bo/\allowbreak t3\_prism\_bo\_campaign.py} on the campaign branch,
-\href{\repo/pull/102}{PR~\#102}) evaluates both on the as-printed
-geometry of every recommended design and flags it in the batch tables
+\href{\repo/pull/102}{PR~\#102}). It flags a design in the batch tables
 as ``envelope ${>}$ 250~cm$^3$'' or ``cable ${<}$ 3.0~mm''. The first compares $\pi R^2 H$ with
 \SI{250}{cm^3}, where $R$ is the radius of the circle through the
 joint centers and $H$ is the height between joint centers. The
@@ -179,9 +179,9 @@ candidate joints (Designs~A to E: anchor-bulb, dovetail, TPU-sleeve overmold,
 eyelet-loop, and TPU-rebar), followed by a sixth, captive-core design
 (Design~F). Every campaign specimen uses Design~F, a captive TPU core inside
 a PLA shell. At each strut end the tendons meet in a TPU core that is too
-large to pass back out through the shell's tendon bores, so the joint holds
-mechanically even though PLA and TPU bond weakly, and the shell keeps the
-soft tendon away from layer-line failure at the transition. The campaign CAD
+large to pass back out through the shell's tendon bores. The joint therefore
+holds mechanically even though PLA and TPU bond weakly, and the shell keeps
+the soft tendon away from layer-line failure at the transition. The campaign CAD
 (\texttt{cad/t3-prism/t3-prism.scad} on the campaign branch) builds this
 joint with \texttt{use\_captive\_core = true}.
 
