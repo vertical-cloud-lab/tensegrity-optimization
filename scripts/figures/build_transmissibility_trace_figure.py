@@ -168,7 +168,8 @@ def main() -> None:
     axes[1].set_xlim(max(WINDOW_MS[0], tm[0]), WINDOW_MS[1])
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT_DIR / f"{STEM}.pdf")
+    # No CreationDate, so a rerun reproduces the committed PDF byte for byte.
+    fig.savefig(OUT_DIR / f"{STEM}.pdf", metadata={"CreationDate": None})
     fig.savefig(OUT_DIR / f"{STEM}.png", dpi=200)
     plt.close(fig)
 
