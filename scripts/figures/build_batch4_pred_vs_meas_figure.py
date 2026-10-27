@@ -66,7 +66,8 @@ def main() -> int:
         out = REPO / "figures" / "bo" / "t3-prism-bo-round4-predicted-vs-actual"
         for ext in ("pdf", "png"):
             fig.savefig(f"{out}.{ext}", bbox_inches="tight", pad_inches=0.02,
-                        facecolor="white")
+                        facecolor="white",
+                        metadata={"CreationDate": None} if ext == "pdf" else None)
         plt.close(fig)
     for trial in sorted(preds):
         m = measured[trial]

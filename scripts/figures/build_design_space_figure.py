@@ -138,29 +138,29 @@ def initialize_drawing(ax):
     mid_ang = math.radians(90 + MID["twist"] / 2)
     ax.annotate(r"$\theta$", xy=(ox + 0.45 * R * math.cos(mid_ang),
                                  oy + 0.45 * R * math.sin(mid_ang)),
-                xytext=(ox - 1.3 * R, oy + 1.0 * R), fontsize=9, ha="center", va="center",
+                xytext=(ox - 0.8 * R, oy + 1.22 * R), fontsize=9, ha="center", va="center",
                 arrowprops=dict(arrowstyle="-", color=INK, lw=0.4, shrinkA=1, shrinkB=0))
     ax.set_aspect("equal")
     ax.axis("off")
     ax.set_xlim(umin - 16.0, ox + R + 3.0)
-    ax.set_ylim(vmin - 2.0, vmax + 2.0)
+    ax.set_ylim(vmin - 2.0, max(vmax, oy + 1.4 * R) + 2.0)
 
 
 def panel_b(ax, articles):
     by_id = {a["print_id"]: a for a in articles}
-    cell_w, cell_h = 92.0, 150.0
+    cell_w, cell_h = 92.0, 168.0
     for k, pid in enumerate(SPECIMENS):
         a = by_id[pid]
         row, col = divmod(k, 3)
         cx = (col + 0.5) * cell_w
-        base = (1 - row) * cell_h + 42.0
+        base = (1 - row) * cell_h + 50.0
         _, _, vmin, _ = draw_prism(ax, a["R"], a["H"], a["twist"], a["d_s"], a["d_t"],
                                    x0=cx, y0=base, azim=-20.0, elev=10.0)
         if a["batch"] == 1:
-            ident = "batch 1, reference" if a["spec"] == "S0" else f"batch 1, Sobol spec {a['spec']}"
+            ident = "batch 1, reference" if a["spec"] == "S0" else f"batch 1, spec {a['spec']}"
         else:
             ident = f"batch {a['batch']}, trial {a['trial']}"
-        values = (rf"$t_{{180}}$ {a['t180']:.3f}, "
+        values = (rf"$t_{{180}}$ {a['t180']:.3f}" "\n"
                   rf"$E_{{\mathrm{{reb}}}}$ {a['e_reb_mJ']:.1f} mJ")
         ax.text(cx, base + vmin - 2.5, f"{pid}\n{ident}\n{values}", ha="center",
                 va="top", fontsize=6.6, linespacing=1.25)
@@ -188,24 +188,30 @@ def main() -> int:
     with plt.rc_context(STYLE):
         fig = plt.figure(figsize=(7.0, 3.15))
         gs = fig.add_gridspec(1, 3, width_ratios=[2.35, 3.25, 1.4], wspace=0.04,
-                              left=0.0, right=1.0, top=0.94, bottom=0.0)
+                              left=0.0, right=1.0, top=0.93, bottom=0.0)
         axes = [fig.add_subplot(gs[0, i]) for i in range(3)]
         panel_a(axes[0])
         panel_b(axes[1], articles)
         panel_c(axes[2])
+        for ax in axes:
+            ax.set_anchor("N")  # top-align the equal-aspect panels
+        fig.canvas.draw()  # settle the equal-aspect boxes before reading them
         for ax, letter in zip(axes, "abc"):
-            ax.text(0.0, 1.0, f"({letter})", transform=ax.transAxes, ha="left",
-                    va="bottom", fontsize=9, fontweight="bold")
+            pos = ax.get_position()
+            fig.text(pos.x0, 0.985, f"({letter})", ha="left", va="top", fontsize=9,
+                     fontweight="bold")
         out = REPO / "figures" / "design-space"
         for ext in ("pdf", "png"):
             fig.savefig(f"{out}.{ext}", bbox_inches="tight", pad_inches=0.02,
-                        facecolor="white")
+                        facecolor="white",
+                        metadata={"CreationDate": None} if ext == "pdf" else None)
         plt.close(fig)
         # compact symbol-only version for the Initialize panel of fig:overview
         fig, ax = plt.subplots(figsize=(2.6, 1.3))
         initialize_drawing(ax)
         fig.savefig(REPO / "figures" / "photos" / "overview" / "initialize-design-space.pdf",
-                    bbox_inches="tight", pad_inches=0.01, facecolor="white")
+                    bbox_inches="tight", pad_inches=0.01, facecolor="white",
+                    metadata={"CreationDate": None})
         plt.close(fig)
     by_id = {a["print_id"]: a for a in articles}
     for pid in SPECIMENS:

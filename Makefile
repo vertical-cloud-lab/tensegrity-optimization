@@ -81,3 +81,40 @@ clean:
 
 distclean: clean
 	rm -f $(MAIN).pdf
+
+# --- Main-text figures (scripts/figures/; data from manuscript/data/) -------
+# Every target runs from committed files only. Needs matplotlib, numpy and
+# Pillow (figure-three-print also pandas and scipy), and pdflatex for the
+# TikZ source of figure-overview. figure-three-print also rewrites
+# manuscript/data/t3-prism-bo-round3-three-print-stats.json; expect
+# last-digit float differences across numpy versions.
+FIG_PY = python3
+FIG_SCRIPTS = scripts/figures
+
+.PHONY: figures figure-photos figure-overview figure-design-space \
+        figure-seed-designs figure-front-evolution figure-batch4 figure-three-print
+
+figures: figure-overview figure-design-space figure-seed-designs \
+         figure-front-evolution figure-batch4 figure-three-print
+
+figure-photos:
+	$(FIG_PY) $(FIG_SCRIPTS)/build_overview_photos.py
+
+figure-design-space: figure-photos
+	$(FIG_PY) $(FIG_SCRIPTS)/build_design_space_figure.py
+
+figure-overview: figure-design-space
+	cd figures && $(TEX) -interaction=nonstopmode overview-loop.tex
+	rm -f figures/overview-loop.aux figures/overview-loop.log
+
+figure-seed-designs:
+	$(FIG_PY) $(FIG_SCRIPTS)/build_seed_designs_figure.py
+
+figure-front-evolution:
+	$(FIG_PY) $(FIG_SCRIPTS)/build_front_evolution_figure.py
+
+figure-batch4:
+	$(FIG_PY) $(FIG_SCRIPTS)/build_batch4_pred_vs_meas_figure.py
+
+figure-three-print:
+	$(FIG_PY) $(FIG_SCRIPTS)/round3_three_print_analysis.py

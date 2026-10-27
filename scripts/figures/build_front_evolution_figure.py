@@ -93,7 +93,8 @@ def main() -> int:
         out = REPO / "figures" / "bo" / "t3-prism-bo-front-evolution"
         for ext in ("pdf", "png"):
             fig.savefig(f"{out}.{ext}", bbox_inches="tight", pad_inches=0.02,
-                        facecolor="white")
+                        facecolor="white",
+                        metadata={"CreationDate": None} if ext == "pdf" else None)
         plt.close(fig)
     print(f"wrote {out}.pdf and .png")
     return 1 if bad else 0

@@ -9,11 +9,11 @@
 \usetikzlibrary{arrows.meta,positioning,calc,fit}
 
 \newcommand{\pic}[2]{\includegraphics[height=#1]{photos/overview/#2}}
-\newcommand{\piccap}[1]{{\tiny\textcolor{black!70}{#1}}}
+\newcommand{\piccap}[1]{{\scriptsize\textcolor{black!70}{#1}}}
 
 \begin{document}
 \begin{tikzpicture}[
-  font=\sffamily\scriptsize,
+  font=\sffamily\footnotesize,
   frame/.style={draw=black!45, line width=0.6pt, inner sep=2.2pt,
                 text width=79mm, align=center},
   title/.style={anchor=north west, font=\sffamily\small, inner sep=0pt},
@@ -26,8 +26,7 @@
     \parbox[c]{79mm}{\raggedright\textbf{Initialize}
       \textcolor{black!55}{campaign}}\\[1pt]
     \pic{19mm}{initialize-design-space.pdf}\hspace{3mm}%
-    \parbox[b]{22mm}{\raggedright\piccap{five continuous geometry variables;
-      a Sobol seed batch of nine designs}}};
+    \parbox[b]{24mm}{\raggedright\piccap{five continuous geometry variables; a Sobol seed batch of nine designs}}};
 
   % ---- Design (proposal BO panel, unchanged) ------------------------------
   \node[frame, below=4mm of init] (design) {%
@@ -63,7 +62,7 @@
   \node[frame, below=4mm of test] (conclude) {%
     \parbox[c]{79mm}{\raggedright\textbf{Conclude}
       \textcolor{black!55}{campaign}\quad
-      {\tiny\textcolor{black!70}{report the final Pareto front}}}};
+      \piccap{report the final Pareto front}}};
 
   % ---- arrows ----------------------------------------------------------------
   \draw[flow] (init.south) -- (design.north);
