@@ -59,6 +59,15 @@ $(MANU_DIR)/manuscript-todos.pdf: $(MANU_DIR)/manuscript-todos.tex $(MANU_BODY) 
 	cd $(MANU_DIR) && $(TEX) manuscript-todos
 	cd $(MANU_DIR) && $(TEX) manuscript-todos
 
+# Simulation-only BO campaign (PR #33 snapshot under manuscript/data/sim/):
+# recomputes every quoted number and writes manuscript/tables/sim-campaign.tex,
+# manuscript/tables/si-sim-campaign.tex, figures/sim/sim-campaign.png and
+# manuscript/data/sim/sim-campaign-stats.json. Needs numpy, scipy, pandas,
+# matplotlib. Run it before the manuscript build if the snapshot changes.
+.PHONY: sim
+sim:
+	python3 scripts/figures/sim_campaign_tables.py
+
 clean-manuscript:
 	cd $(MANU_DIR) && rm -f \
 	      manuscript.aux manuscript.bbl manuscript.blg manuscript.log \
