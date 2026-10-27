@@ -771,12 +771,16 @@ as-printed slicer project (Section~\siref{si:process}).\todo{Cite the
 joint-design Phase-3 CAD review (Edison ANALYSIS \texttt{19e0c868}) and the
 Phase-4 vision review (\texttt{e9a1f4cc}) once both are integrated into the
 references.}
-\todo{@achris0520 to confirm the physical nozzle hardware (the
-  archived as-printed project records \SI{0.6}{mm} on both extruders,
-  consistent with the post-fix state; the TPU side ran \SI{0.4}{mm}
-  before the mid-batch nozzle change logged in the print key) and to
-  supply filament lot numbers and drying duration, which the slicer
-  archive does not record.}
+\todo{@achris0520 to confirm the physical nozzle hardware and the
+  TPU nozzle temperature of \SI{240}{\celsius} that the seed and
+  batch-2 slicer projects record (Table~\siref{tab:si-print-params}).
+  Both projects record \SI{0.6}{mm} nozzles on both extruders and a
+  TPU preset written for the \SI{0.4}{mm} nozzle. The seed project
+  records the right nozzle as TPU High Flow and the batch-2 project as
+  Standard. The TPU side ran \SI{0.4}{mm} before the mid-batch nozzle
+  change logged in the print key. Please also supply filament lot
+  numbers and drying duration, which the slicer archive does not
+  record.}
 
 \begin{figure*}[t]
   \centering
@@ -1111,9 +1115,10 @@ trust-region BO (TuRBO)~\citep{eriksson2019turbo} only if
 per-member-diameter extensions push the design space well beyond the
 present regime. We retain a single-objective log-Expected-Improvement
 run~\citep{ament2023logei} on $t_{180}$ as a baseline to
-quantify the benefit of the multi-objective formulation. We will
-archive the campaign code and recommended batches at a
-Zenodo-minted DOI mirroring the GitHub repository.\todo{Insert the
+quantify the benefit of the multi-objective formulation. The
+campaign code, the recommended batches, and the data behind every
+table and figure are in the project repository, which will be archived
+under a Zenodo DOI at acceptance (Data Availability Statement).\todo{Insert the
 Zenodo DOI and release version for the campaign code once the
 repository snapshot is published.}
 
@@ -1148,6 +1153,16 @@ equivalents (Section~\siref{si:metal-validation}).
   best-, mid-, and worst-predicted in-sample designs are printed and
   drop-tested; fix the repeat count (nominally three) and the design
   IDs when the print is scheduled.}
+
+\subsection{Use of AI Tools}
+\label{sec:methods:ai}
+
+We used AI tools under our direction throughout this study and
+reviewed and edited their output at every step. The Acknowledgment
+names each tool and model and what they were used for. The repository
+file \texttt{manuscript/AI-USE.md} is the full inventory, including
+every automated session run on this manuscript (Data Availability
+Statement).
 
 % =============================================================================
 \section{Results}
@@ -1792,6 +1807,27 @@ graduate co-mentor who supported day-to-day operations.
 NASA/Utah-Space-Grant-Consortium support per
 acknowledgment-text guidelines.}
 
+The authors used AI tools throughout this work, under their direction
+and with tightly coupled human-in-the-loop review and edits at every
+step, for text and figure generation, methodology, code, analysis, and
+testing. Claude Code (Anthropic) ran through the
+\texttt{anthropics/claude-code-action} GitHub Action from June to
+October 2026 and through its command-line interface from September to
+October 2026. Its models were Claude Opus 4.8, Claude Opus 5, Claude
+Opus 5.5, Claude Fable 5, and Claude Fable 5.1. GitHub Copilot ran as
+the Copilot coding agent from March to July 2026, mostly with Claude
+Opus 4.6, 4.7, and 4.8, and as the Copilot command-line interface and
+Copilot Autofix between March and June 2026. The Edison Scientific
+platform (data-analysis, literature, and precedent-search agents)
+produced mock peer reviews of earlier drafts, literature and reference
+checks, and the pre-registered review of the objective choices from
+May to September 2026. The faster-whisper speech-to-text model
+transcribed the co-authors' recorded reviews of the draft. The file
+\texttt{manuscript/AI-USE.md} in the project repository lists the
+tool, model, access route, and dates of each use. The manuscript has
+been reviewed in full by the human authors, who take responsibility
+for it.
+
 \section*{Funding Data}
 \begin{itemize}
   \item Brigham Young University Mentored Research Grant.
@@ -1801,6 +1837,28 @@ Grant Consortium award if applicable.}
 
 \section*{Conflict of Interest}
 The authors declare no conflict of interest.
+
+\section*{Data Availability Statement}
+% \providecommand so that a \repo defined in the preamble (if any) wins.
+\providecommand{\repo}{https://github.com/vertical-cloud-lab/tensegrity-optimization}
+The data and information that support the findings of this article are
+freely available at: \url{\repo}. The repository holds the data
+snapshot behind every table and figure of this paper, with the scripts
+that regenerate them from it. It also holds the Bayesian-optimization
+campaign code, with the experiment state, recommendations, and
+archived predictions of each round, and the slicer project of each
+printed batch. The remaining contents are the parametric CAD model of
+the $T_3$ prism, the joint-design study, the drop-test processing
+pipeline with the per-drop records of every session, the
+cross-validation fold records, and the exploratory simulation study.
+A Zenodo DOI will be minted at acceptance.
+\todo[inline]{Before submission, merge or tag the campaign, drop-test,
+  and simulation branches (\texttt{claude/issue-98-20260821-0103},
+  \texttt{copilot/add-drop-test-protocol-again}, and
+  \texttt{copilot/explore-simulations-for-tensegrity}) so that the
+  repository link resolves to the code and data listed here. The
+  repository also still has no LICENSE file. We suggest MIT for the
+  code and CC BY 4.0 for the data.}
 
 % Print the list of pending TODOs at the end -- the [disable] option
 % on todonotes hides this automatically in the clean wrapper.
