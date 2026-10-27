@@ -106,6 +106,7 @@ figure-design-space: figure-photos
 figure-overview: figure-design-space
 	cd figures && $(TEX) -interaction=nonstopmode overview-loop.tex
 	rm -f figures/overview-loop.aux figures/overview-loop.log
+	pdftoppm -png -r 200 -singlefile figures/overview-loop.pdf figures/overview-loop || true
 
 figure-seed-designs:
 	$(FIG_PY) $(FIG_SCRIPTS)/build_seed_designs_figure.py
