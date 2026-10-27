@@ -134,19 +134,19 @@ joint centers and $H$ is the height between joint centers. The
 \SI{250}{cm^3} value is a placeholder size limit carried over from an
 earlier simulation study. It is not the printer's build volume, and
 because it is measured to the joint centers it undercounts the printed
-part. Seven printed articles (five designs) exceeded it. The second
+part. Seven printed specimens (five designs) exceeded it. The second
 limit is a \SI{3.0}{mm} minimum on the printed TPU cable diameter,
 adopted after the thin, unsupported top cables of early PETG test
 prints failed. Because the projection rescales the whole cell, a
 design at the \SI{3.0}{mm} lower bound of the cable variable can print
-thinner. Nine articles printed with cables of 2.51 to \SI{2.78}{mm},
-including all four batch-4 articles that reduced the peak shock
+thinner. Nine specimens printed with cables of 2.51 to \SI{2.78}{mm},
+including all four batch-4 specimens that reduced the peak shock
 (main text, Section~4.2). With hand-painted tendon supports
 (Section~\ref{si:supports}), all nine printed. One had
 stringing, one had a slight tendon indent, and seven had no logged
 defect. The most common tendon defect was a TPU strand that did not
 fuse to the tendon and came away from it. It was logged on five
-articles, all with cables of 3.28 to \SI{4.23}{mm}. The \SI{3.0}{mm}
+specimens, all with cables of 3.28 to \SI{4.23}{mm}. The \SI{3.0}{mm}
 value is therefore a conservative rule for this workflow. Our prints
 do not show that thinner cables cause more defects.
 
@@ -163,7 +163,7 @@ mass standard deviation of \SI{0.457}{g}, the value used in the
 observation noise model (main text, Section~3.4). The batch-3
 plate, also printed three times, averaged 19.59, 19.86, and
 \SI{20.07}{g} per print, so its second and third prints ran
-\SI{0.27}{g} and \SI{0.48}{g} heavier article for article. That is a
+\SI{0.27}{g} and \SI{0.48}{g} heavier specimen for specimen. That is a
 per-print flow offset rather than random scatter.
 
 % -----------------------------------------------------------------------------
@@ -208,9 +208,9 @@ painted PLA edge supports manually in Bambu Studio along each tendon. We
 tightened the support-to-object XY clearance from \SI{0.35}{mm} to
 \SI{0.2}{mm} during tuning on the S0 reference prism
 (\href{\repo/issues/98}{issue~\#98}). Support removal is the leading source of
-the cosmetic defects that we log per article in the print key
+the cosmetic defects that we log per specimen in the print key
 (Section~\ref{si:printkey}). They are surface stringing and, on two seed
-articles, a TPU strand that did not fuse to a bottom tendon and came away from
+specimens, a TPU strand that did not fuse to a bottom tendon and came away from
 it.
 
 In parallel, we developed an automated alternative. It combines a
@@ -238,7 +238,7 @@ TPU extruder developed a progressive drop in flow (a partial clog,
 compounded by a stray PLA fragment found inside the extruder). We
 resolved it by performing a cold pull and moving the TPU to a dedicated
 high-flow \SI{0.6}{mm} nozzle, after which print quality was restored.
-We identify the affected and post-fix articles in the print key so
+We identify the affected and post-fix specimens in the print key so
 that any nozzle-related covariate can be checked against the measured
 objectives.
 
@@ -273,7 +273,7 @@ objectives.
   \end{tabular}\\[2pt]
   {\footnotesize \textsuperscript{a}The TPU side ran a standard
   \SI{0.4}{mm} nozzle until the mid-batch clog, then a dedicated
-  high-flow (HF) \SI{0.6}{mm} nozzle. Affected articles are flagged in
+  high-flow (HF) \SI{0.6}{mm} nozzle. Affected specimens are flagged in
   the print key.}
 \end{table}
 
@@ -282,19 +282,19 @@ objectives.
 \label{si:printkey}
 % -----------------------------------------------------------------------------
 Table~\ref{tab:si-printkey} is the print key for the seed campaign: every
-article's print identifier, its design, its weighed mass, and its logged
+specimen's print identifier, its design, its weighed mass, and its logged
 defects. The authoritative machine-readable key
 (\texttt{bo/t3-prism-bo-batch-print-key.csv}) and the as-printed slicer
 project (one specimen per named build plate) live at
 \href{\repo/pull/102}{PR~\#102}.
 Two entries deserve care. We printed design 08 three times. The plate label
 in the archived slicer project and a contemporaneous issue comment disagree on
-which article is the official one (\textit{dea4ls} versus \textit{bag26v}),
+which specimen is the official one (\textit{dea4ls} versus \textit{bag26v}),
 and pending confirmation we use \textit{bag26v} in the analysis. The
 triplicate prints of design 08 also supply the only print-to-print
 repeatability number for a seed design, a mass standard deviation of
 \SI{0.457}{g}. Three prints of a single geometry do not give a general
-process repeatability estimate. Separately, one tested article
+process repeatability estimate. Separately, one tested specimen
 (\textit{amdjwm}) has no confirmed design mapping and is excluded from the
 surrogate fit until identified.
 
@@ -302,14 +302,14 @@ surrogate fit until identified.
   \centering
   \caption{Print key for the seed campaign (nine Sobol designs plus the S0
     reference). Masses weighed on a \SI{0.01}{g} scale. TPU fed from a heated
-    dry box near 8\% relative humidity where logged. The first five articles
+    dry box near 8\% relative humidity where logged. The first five specimens
     (printed before the TPU nozzle fix) used the standard \SI{0.4}{mm} TPU
     nozzle, and the rest used the high-flow \SI{0.6}{mm} nozzle.}
   \label{tab:si-printkey}
   \small
   \begin{tabular}{@{}llS[table-format=2.2]l@{}}
     \toprule
-    Design & Article & {Mass (g)} & Logged defects \\
+    Design & Specimen & {Mass (g)} & Logged defects \\
     \midrule
     Spec 00 & 9hhbkp & 21.62 & none \\
     Spec 01 & 6lhxfy & 18.50 & slight strut misprint; divot on one top tendon \\
@@ -329,17 +329,17 @@ surrogate fit until identified.
 
 Table~\ref{tab:si-printkey-r2} is the corresponding logged key for
 the three model-recommended batches. Every batch-2 and batch-3
-article printed at about 11\% dry-box relative humidity and every
-batch-4 article at about 7\%. The batch-3 plate was printed three
-times. The second-print articles (2dran1 to 2dran9) weighed 19.48 to
+specimen printed at about 11\% dry-box relative humidity and every
+batch-4 specimen at about 7\%. The batch-3 plate was printed three
+times. The second-print specimens (2dran1 to 2dran9) weighed 19.48 to
 \SI{20.32}{g}, on average \SI{0.27}{g} heavier than the matching
-first-print articles, and were all logged defect-free. The third-print
-articles (dran31 to dran39, printed 2026-09-28) weighed 19.68 to
+first-print specimens, and were all logged defect-free. The third-print
+specimens (dran31 to dran39, printed 2026-09-28) weighed 19.68 to
 \SI{20.56}{g} (mean \SI{20.07}{g}), and the print log notes no
 defects. The lab record confirms each 2dran$N$ and dran3$N$ as a
 re-print of drran$N$ at the same Ax trial, so the three prints pair
-article for article (Table~\ref{tab:si-round3-repeatability}). The nine
-second-print articles entered the surrogate fit as distinct completed
+specimen for specimen (Table~\ref{tab:si-round3-repeatability}). The nine
+second-print specimens entered the surrogate fit as distinct completed
 trials at their own weighed masses and per-session standard errors.
 The third print was drop-tested on \mbox{2026-09-28}, \mbox{2026-09-29}, and
 \mbox{2026-10-02} (20 drops each, all captures clean) and has not yet entered
@@ -358,7 +358,7 @@ archived with the manuscript data.
   \small
   \begin{tabular}{@{}cclS[table-format=2.2]l@{}}
     \toprule
-    Batch & Trial & Article & {Mass (g)} & Logged defects \\
+    Batch & Trial & Specimen & {Mass (g)} & Logged defects \\
     \midrule
     2 & 10 & r2d2c9 & 17.91 & none \\
     2 & 11 & r2d2c4 & 19.33 & string on one top tendon; partial \\
@@ -407,9 +407,9 @@ development history behind the protocol in the main text.
 \paragraph{Protocol.} The drop height is \SI{60}{in}, with the specimen
 upright on the carriage plate. We discard the first two drops of each
 session as seating warm-up. Session length differs by batch. Seed sessions
-contribute 101 valid captures per article (103 for autv5r), the batch-2
-record lists 21 to 22 valid captures per article, and batch-3 and batch-4
-sessions recorded 20 drops per article. Exact per-session counts
+contribute 101 valid captures per specimen (103 for autv5r), the batch-2
+record lists 21 to 22 valid captures per specimen, and batch-3 and batch-4
+sessions recorded 20 drops per specimen. Exact per-session counts
 live in the archived per-drop records, whose two generations differ
 on whether the count is quoted before or after the warm-up discard.
 Section 3.3 of the main text justifies the shortening. The
@@ -427,7 +427,7 @@ documents the post-impact rebound and recovery. Synchronized
 laser-Doppler vibrometry is reserved for follow-up characterization
 of selected designs. Testing takes roughly \SI{42}{s} per
 drop, so about
-ninety minutes per seed article and fifteen per later-batch article.
+ninety minutes per seed specimen and fifteen per later-batch specimen.
 Capture settings:
 \SI{1.25}{MHz} sample rate, \SI{100}{ms} record, \SI{2}{ms} pre-trigger,
 \SI{150}{G} trigger on the base channel, AC-coupled ICP conditioning.
@@ -568,10 +568,10 @@ optimized in a mass-weighted form, with quasi-static
 crush metrics deferred to a load-frame campaign. We pre-registered an
 adversarial review of the objective choices with an external AI referee
 (Edison ANALYSIS task \texttt{3e398131}, archived in the repository). It
-recommended accounting for article-level rather than per-drop noise, treating
+recommended accounting for specimen-level rather than per-drop noise, treating
 the velocity loss index as a candidate constraint pending a
 restrained-versus-unrestrained validation with synchronized video,
-and reserving print capacity for replicate articles. The main text
+and reserving print capacity for replicate specimens. The main text
 records how the campaign responded to these recommendations. We
 printed and tested the batch-3 plate three times, which measured
 the print-to-print scatter directly and produced the between-seat
@@ -591,7 +591,7 @@ predicted ordering survives print-to-print and seating variation.
 % -----------------------------------------------------------------------------
 The drop test loads the
 specimens in their elastic regime. The crush lasts 1 to \SI{3}{ms} and
-the article recovers, so crush-energy metrics such as specific energy
+the specimen recovers, so crush-energy metrics such as specific energy
 absorption (SEA) and compaction efficiency are not recoverable from
 these captures by any reprocessing. We plan a quasi-static compression
 campaign on a benchtop load frame (BYU CB~123 Instron, with a
@@ -621,7 +621,7 @@ of scope for the present axial-impact study.
 \label{si:mass}
 % -----------------------------------------------------------------------------
 We projected the seed batch onto constant \emph{solid} CAD mass
-($m^{\star} = \SI{30.95}{g}$), yet the articles weigh
+($m^{\star} = \SI{30.95}{g}$), yet the specimens weigh
 \SIrange{18.50}{22.29}{g}. The gap arises because PLA struts print at
 partial infill (15\% grid, two walls) while thin TPU cables print near
 solid, and the PLA-to-TPU volume split swings widely across the design
@@ -641,14 +641,14 @@ uniform scale factor at which the predicted printed mass equals the
 target, and we print the design at that scale. Bisection is enough
 for this, because predicted mass rises monotonically with scale.
 Batches 3 and 4 used a target of \SI{20.23}{g}, the mass of the
-printed reference article. Batch mass CV
-fell from 5.5\% (tested seed articles) and 8.7\% (batch 2, still
+printed reference specimen. Batch mass CV
+fell from 5.5\% (tested seed specimens) and 8.7\% (batch 2, still
 solid-mass-projected) to 1.7\% (batch 3) and 2.3\% (batch 4). The
 weighings sit at or below the model's estimate as a per-print flow
 offset ($-0.52$, $-0.25$, and \SI{-0.04}{g} for the three prints of
 batch 3 and \SI{-0.26}{g} for batch 4). In a first test of the
 model's infill terms, regressing the print-averaged mass
-residuals of the eighteen batch-3 articles on the two commanded
+residuals of the eighteen batch-3 specimens on the two commanded
 infills gives slopes indistinguishable from zero over the realized
 13 to 34\% spread. We will recalibrate the session term with the
 accumulated weighings before the next batch's projection. Two batch-2
@@ -669,7 +669,7 @@ The main text (Section~3.5) describes the planned replicate study: from the
 campaign's in-sample designs, ranked by the current posterior's predictions,
 the best-predicted, the worst-predicted, and one mid-pack
 (``run-of-the-mill'') design will each be re-printed as a nominal three fresh
-articles and drop-tested under the standard protocol, including the
+specimens and drop-tested under the standard protocol, including the
 between-seat replication rule. The repeat count is provisional and will be
 fixed when the print is scheduled. With three designs the exact permutation
 floor for a Spearman rank correlation is $p = 1/6$, so no significance claim
@@ -681,14 +681,14 @@ separation would support treating the campaign's rankings as design
 properties. Overlapping clusters would measure the ranking noise floor that
 the three batch-3 prints could only bound. Table~\ref{tab:si-rank-stability}
 gives the reporting format. We will add entries and design IDs once the
-repeat articles are printed and tested.
+repeat specimens are printed and tested.
 
 \begin{table}[ht]
   \centering
   \caption{\emph{Placeholder (data pending).} Planned replicate
     rank-stability study: the best-, mid-, and worst-predicted
     in-sample designs, each re-printed as a nominal three fresh
-    articles and drop-tested under the standard protocol. Entries
+    specimens and drop-tested under the standard protocol. Entries
     will record each repeat's stabilized $t_{180}$, the
     within-design scatter, and the measured rank of each design's
     repeat cluster against its predicted rank.}
@@ -726,9 +726,9 @@ compliance, friction, pretension behavior, and strain-rate sensitivity all
 differ between the PLA/TPU and aluminum/steel systems, so agreement is not
 expected a priori. The protocol details that would let the comparison
 distinguish geometric rank transfer from material-system and mass confounds
-remain to be fixed and will be tabulated before any metal article is built.
+remain to be fixed and will be tabulated before any metal specimen is built.
 They are the aluminum alloy and temper, tube wall thickness, cable
-construction, joint hardware and torque, article and payload masses,
+construction, joint hardware and torque, specimen and payload masses,
 replicate count, and tie-handling rules. The intended rank statistic is the
 Spearman rank-correlation coefficient $\rho_s$ between the two material
 systems' orderings of the primary campaign metric ($t_{180}$ under the
@@ -784,7 +784,7 @@ material or joint difference caused the change.
 \label{si:threeprint}
 % -----------------------------------------------------------------------------
 Table~\ref{tab:si-round3-repeatability} tabulates the stabilized
-transmissibility of every batch-3 article over the three prints of the plate,
+transmissibility of every batch-3 specimen over the three prints of the plate,
 the data behind the three-print figure and the replication findings of the
 main text (Section~4.2). The seat gauge and the drift flag used to screen the
 sessions are defined in Section~\ref{si:drop}.
@@ -793,9 +793,9 @@ sessions are defined in Section~\ref{si:drop}.
   \centering
   \caption{Batch-3 repeatability as stabilized $t_{180}$ over three
     prints of the same nine designs, under the protocol of
-    the main-text results tables (CFC-180, stabilized means). Articles drran$N$, 2dran$N$, and
+    the main-text results tables (CFC-180, stabilized means). Specimens drran$N$, 2dran$N$, and
     dran3$N$ are prints 1, 2, and 3. ``Pred.'' is the posterior-mean
-    $t_{180}$ archived before any batch-3 article was tested. ``Mean''
+    $t_{180}$ archived before any batch-3 specimen was tested. ``Mean''
     averages the prints that pass the health screen, a seat gauge (the
     ratio of CFC-1000 to CFC-180 transmissibility) below 1.15 and no
     drift flag. $\S$ marks a failed seat gauge and $\dagger$ a
@@ -829,7 +829,7 @@ Figures~\ref{fig:si-sensitivity} and~\ref{fig:si-logocv} are the surrogate
 diagnostics discussed in the main text (Section~4.3): the seed-state
 length-scale diagnostics of the sparse axis-aligned subspace model (SAASBO)
 and the leave-one-design-out cross-validation of the surrogate over the full
-44-article record. The cross-validation runner, its fold-level records, and
+44-specimen record. The cross-validation runner, its fold-level records, and
 the reliability-ceiling analysis of the reprint pairs are archived with the
 campaign code and the manuscript data
 (\texttt{t3-prism-bo-round5-logocv.csv},
@@ -844,7 +844,7 @@ campaign code and the manuscript data
     are interquartile ranges. The horizontal axis, labeled ``share of model
     sensitivity'' in the plot, is this normalized inverse-length-scale
     diagnostic. No input separates decisively from the equal-share
-    line (dashed) at seven mapped articles, and these prior-sensitive
+    line (dashed) at seven mapped specimens, and these prior-sensitive
     model diagnostics are not evidence of variable relevance.}
   \label{fig:si-sensitivity}
 \end{figure}
@@ -853,7 +853,7 @@ campaign code and the manuscript data
   \centering
   \includegraphics[width=0.8\linewidth]{../figures/bo/t3-prism-bo-round5-logocv.png}
   \caption{Leave-one-design-out cross-validation of the SAASBO
-    surrogate over the full 44-article record (35 design folds, one
+    surrogate over the full 44-specimen record (35 design folds, one
     full NUTS refit per fold). Each batch-3 reprint pair is held out
     together so neither print leaks into the other's prediction.
     Vertical bars are one posterior standard deviation of
