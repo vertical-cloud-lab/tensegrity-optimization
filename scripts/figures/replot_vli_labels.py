@@ -11,8 +11,8 @@ against the previous PNGs is confined to the relabeled title strip.
 Usage:
     git worktree add /tmp/campaign <campaign commit>
     python scripts/figures/replot_vli_labels.py /tmp/campaign/bo \
-        manuscript/data/t3-prism-bo-round5-logocv.csv \
-        manuscript/data/t3-prism-bo-round5-logocv-diagnostics.json /tmp/out
+        manuscript/data/t3-prism-bo-round5-logocv-nuts64.csv \
+        manuscript/data/t3-prism-bo-round5-logocv-nuts64-diagnostics.json /tmp/out
 """
 import json
 import shutil

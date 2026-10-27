@@ -1014,6 +1014,12 @@ Bayesian sparse axis-aligned subspace model
 automatic relevance determination whose length scales carry strong
 sparsity-inducing priors and are marginalized by Markov-chain Monte
 Carlo with the No-U-Turn Sampler (NUTS) rather than point-estimated.
+Every fit that generated a batch, and every archived prediction, used
+the BoTorch default budget of 512 warmup steps and 256 samples,
+thinned to 16 retained draws. The leave-one-design-out
+cross-validation of Section~\ref{sec:results:audits} refits each fold
+at that same budget, and the per-specimen leave-one-out refits used 256
+warmup steps and 128 samples.
 Every refit in the
 campaign, through the batch-4 ingestion, uses this model with qNEHVI
 on top (Ax 0.4 for the early rounds, Ax~0.5.0 from the batch-3
@@ -1401,59 +1407,30 @@ Fig.~\ref{fig:front-evolution}. Their sessions (2026-09-28 to
 
 \begin{table*}[t]
   \centering
-  \caption{Model-recommended batch results under the protocol and
-    reporting conventions of Table~\ref{tab:seed-results} (CFC-180,
-    stabilized means $\pm$ one standard deviation, rows ordered by
-    $t_{180}$ within each batch). Each article received about twenty
+  \caption{Model-recommended batch results, one row per Ax trial in
+    ascending order, under the protocol and reporting conventions of
+    Table~\ref{tab:seed-results} (CFC-180, stabilized means $\pm$ one
+    standard deviation). The italic line above each batch gives its
+    mass basis and the filament settings of its print job, read from the
+    archived slicer project for batch 2 and from the design record for
+    batches 3 and 4. Columns $R$ to $d_t$ and the two infill densities
+    are the as-printed values after the constant-mass projection, and
+    batch 2 did not vary infill. Each specimen received about twenty
     drops against the seed batch's 101, and the archived per-drop
-    records give the exact per-session counts.
-    $E_{\mathrm{reb}}$ uses each article's weighed mass per
-    Eq.~\eqref{eq:objectives}. ``Pred.'' is the posterior-mean
-    $t_{180}$ archived when the batch was recommended, before any of
-    its articles were tested. Batch-2 articles were projected to
-    constant solid mass, and batches 3 and 4 to constant printed mass
-    (\SI{20.23}{g}). Flags follow the session record: $\dagger$
-    marks a transmissibility-drift-flagged session whose mean is
-    provisional, and $\ddagger$ marks the erratic corny6 session
-    (per-drop CV 2.0\%).}
+    records give the exact per-session counts. $m$ is the weighed
+    specimen mass, and $E_{\mathrm{reb}}$, the mass-weighted rebound of
+    Eq.~\eqref{eq:objectives} (lower is better), uses it. ``Pred.''\ is
+    the posterior-mean $t_{180}$ archived when the batch was recommended,
+    before any of its specimens were tested. $\dagger$ marks a
+    transmissibility-drift-flagged session whose mean is provisional,
+    and $\ddagger$ marks an erratic session (per-drop CV above 1.5\%
+    without a drift flag). The print key
+    (Table~\siref{tab:si-printkey-r2} of the Supplementary Information)
+    maps each trial to its specimen. The table is generated from the
+    archived data by \texttt{scripts/\allowbreak figures/\allowbreak
+    build\_batch\_results\_table.py}.}
   \label{tab:batch-results}
-  \small
-  \begin{tabular}{@{}clcS[table-format=2.2]S[table-format=1.4]@{\,$\pm$\,}S[table-format=1.4]S[table-format=2.1]S[table-format=1.3]@{}}
-    \toprule
-    Batch & Article & Trial & {Mass (g)} & \multicolumn{2}{c}{$t_{180}$} &
-    {$E_{\mathrm{reb}}$ (mJ)} & {Pred.\ $t_{180}$} \\
-    \midrule
-    2 & r2d2c7 & 15 & 18.51 & 0.9484 & 0.0008 & 12.2 & 0.905 \\
-    2 & r2d2c1 & 13 & 19.38 & 0.9942 & 0.0021 & 6.0 & 0.948 \\
-    2 & r2d2c2$^\dagger$ & 12 & 17.96 & 1.0411 & 0.0154 & 5.6 & 0.926 \\
-    2 & r2d2c9 & 10 & 17.91 & 1.0530 & 0.0035 & 5.8 & 0.873 \\
-    2 & r2d2c6 & 14 & 19.11 & 1.0548 & 0.0042 & 4.1 & 0.953 \\
-    2 & r2d2c8 & 17 & 19.98 & 1.0704 & 0.0116 & 7.9 & 0.955 \\
-    2 & r2d2c5 & 18 & 23.47 & 1.1516 & 0.0040 & 6.7 & 0.987 \\
-    2 & r2d2c4 & 11 & 19.33 & 1.1847 & 0.0076 & 6.4 & 0.885 \\
-    2 & r2d2c3 & 16 & 18.63 & 1.3337 & 0.0117 & 5.6 & 0.910 \\
-    \midrule
-    3 & drran8$^\dagger$ & 35 & 19.32 & 0.9804 & 0.0051 & 11.2 & 1.039 \\
-    3 & drran1 & 36 & 19.31 & 1.0326 & 0.0016 & 18.1 & 1.051 \\
-    3 & drran4 & 29 & 19.92 & 1.0344 & 0.0017 & 9.1 & 1.032 \\
-    3 & drran2 & 33 & 19.33 & 1.0345 & 0.0006 & 11.8 & 1.056 \\
-    3 & drran5 & 28 & 19.88 & 1.0373 & 0.0024 & 5.0 & 1.059 \\
-    3 & drran3 & 31 & 19.92 & 1.0389 & 0.0012 & 4.2 & 1.043 \\
-    3 & drran9 & 30 & 19.34 & 1.0425 & 0.0009 & 5.2 & 1.058 \\
-    3 & drran6 & 34 & 19.24 & 1.0471 & 0.0040 & 4.8 & 1.065 \\
-    3 & drran7 & 32 & 20.06 & 1.2513 & 0.0096 & 8.2 & 1.020 \\
-    \midrule
-    4 & corny7 & 37 & 19.62 & 0.8031 & 0.0025 & 9.4 & 0.934 \\
-    4 & corny9 & 43 & 19.46 & 0.8766 & 0.0036 & 18.1 & 0.942 \\
-    4 & corny6$^\ddagger$ & 41 & 19.45 & 0.9106 & 0.0181 & 5.7 & 0.943 \\
-    4 & corny8 & 39 & 19.64 & 0.9535 & 0.0025 & 17.5 & 0.954 \\
-    4 & corny1 & 42 & 20.20 & 1.0459 & 0.0029 & 8.7 & 1.010 \\
-    4 & corny4 & 44 & 20.56 & 1.0475 & 0.0025 & 4.3 & 1.013 \\
-    4 & corny3 & 45 & 20.15 & 1.0705 & 0.0013 & 8.8 & 1.004 \\
-    4 & corny2 & 38 & 20.21 & 1.0846 & 0.0030 & 9.2 & 1.008 \\
-    4 & corny5$^\dagger$ & 40 & 20.58 & 1.0876 & 0.0099 & 8.5 & 1.012 \\
-    \bottomrule
-  \end{tabular}
+  \input{tables/batch-results}
 \end{table*}
 
 \begin{figure*}[t]
@@ -1536,13 +1513,21 @@ Plain LOOCV also leaks once replicates exist. When one print of a
 repeated design is held out, its twin remains in training at nearly
 identical coordinates, so the fold tests interpolation rather than
 prediction. We re-audited the full record with leave-one-design-out
-folds (35 folds over 44 articles, each drran/2dran pair held out
-together, one full NUTS refit per fold). The $t_{180}$ MAPE is
-5.0\% with rank correlation $+0.08$. While the measurements span
-0.80 to 1.33, the held-out posterior stays near the pooled mean
-(Fig.~\siref{fig:si-logocv} of the Supplementary Information). The
-$E_{\mathrm{reb}}$ MAPE is 39.4\% with rank correlation $-0.38$. Held-out
-design-level $t_{180}$ skill is therefore near zero. Part of the
+folds (35 folds over 44 specimens, each drran/2dran pair held out
+together, one NUTS refit per fold at the full budget of
+Section~\ref{sec:methods:bo}). The $t_{180}$ MAPE is 4.8\% with
+Spearman rank correlation $\rho_s = +0.32$ (two-sided permutation
+$p = 0.036$). While the measurements span 0.80 to 1.33, the held-out
+predictions stay near the pooled mean, with about a third of the
+measured spread (Fig.~\siref{fig:si-logocv} of the Supplementary
+Information). The $E_{\mathrm{reb}}$ MAPE is 38.8\% with
+$\rho_s = -0.40$ ($p = 0.008$), so the held-out ordering of
+$E_{\mathrm{reb}}$ runs against the measured one. Held-out
+design-level $t_{180}$ skill is therefore weak but above chance. An
+earlier run of the same folds at a quarter of that NUTS budget gave
+$\rho_s = +0.08$ for $t_{180}$ (both runs are archived), so this
+ranking statistic depends on how fully each fold's posterior is
+sampled, and we quote the full-budget run. Part of the
 apparent $E_{\mathrm{reb}}$ skill of the earlier states came from the
 model fitting chance differences between prints, which matches the
 poor print-to-print repeatability of $E_{\mathrm{reb}}$ in
@@ -1742,7 +1727,9 @@ channels required for a force integral are not instrumented. The four
 filament axes carry one value per batch, so their effects are not
 identifiable. The
 held-out prediction skill of the surrogate declined as the input space
-grew (Section~\ref{sec:results:audits}). One tested seed article lacks
+grew, and over the full record it ranks held-out designs only weakly
+on $t_{180}$ ($\rho_s = +0.32$) and inversely on $E_{\mathrm{reb}}$
+($\rho_s = -0.40$; Section~\ref{sec:results:audits}). One tested seed article lacks
 a design mapping, one seed design's official article assignment
 carries a recorded discrepancy, and two seed designs have no session
 record. All results come from a single printer, material pair, and

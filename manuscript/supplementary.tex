@@ -853,17 +853,23 @@ campaign code and the manuscript data
   \centering
   \includegraphics[width=0.8\linewidth]{../figures/bo/t3-prism-bo-round5-logocv.png}
   \caption{Leave-one-design-out cross-validation of the SAASBO
-    surrogate over the full 44-article record (35 design folds, one
-    full NUTS refit per fold). Each batch-3 reprint pair is held out
-    together so neither print leaks into the other's prediction.
-    Vertical bars are one posterior standard deviation of
-    the held-out prediction, horizontal bars are the ingested
-    standard error, and the dashed line is parity. Held-out
-    $t_{180}$ predictions stay close to the pooled mean (MAPE 5.0\%, rank
-    correlation $+0.08$), and the $E_{\mathrm{reb}}$ ordering is anti-correlated
-    ($-0.38$). Design-level held-out skill is near zero on
-    transmissibility and absent on the mass-weighted velocity-loss
-    objective.}
+    surrogate over the full 44-specimen record (35 design folds, one
+    NUTS refit per fold at 256 samples after 512 warmup steps, the
+    budget of the generation fits). Each batch-3 reprint pair is held
+    out together so neither print leaks into the other's prediction.
+    Vertical bars are one posterior standard deviation of the held-out
+    prediction, horizontal bars are the ingested standard error, and
+    the dashed line is parity. Held-out $t_{180}$ predictions stay close
+    to the pooled mean (MAPE 4.8\%, Spearman $\rho_s = +0.32$,
+    two-sided permutation $p = 0.036$), and the ordering of the
+    mass-weighted rebound $E_{\mathrm{reb}}$ runs against the
+    measurements (MAPE 38.8\%, $\rho_s = -0.40$, $p = 0.008$).
+    Design-level held-out skill is weak on transmissibility and absent
+    on $E_{\mathrm{reb}}$. The folds, held-out predictions, and
+    diagnostics are archived as \texttt{t3-prism-bo-round5-logocv.csv}
+    and its \texttt{-diagnostics.json}, and the earlier run at 64
+    samples after 128 warmup steps under the suffix \texttt{-nuts64}
+    ($t_{180}$ $\rho_s = +0.08$, $E_{\mathrm{reb}}$ $\rho_s = -0.38$).}
   \label{fig:si-logocv}
 \end{figure}
 
