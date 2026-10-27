@@ -258,7 +258,7 @@ def main() -> None:
     marks = {"drran": "o", "2dran": "s", "dran3": "^"}
     names = {"drran": "print 1", "2dran": "print 2", "dran3": "print 3"}
     for ax, col, lab, tag in [(axes[0], "t180_mean", r"transmissibility $t_{180}$", "(a)"),
-                              (axes[1], "e_reb_mJ", r"$E_{\mathrm{reb}}$ (mJ per drop)", "(b)")]:
+                              (axes[1], "e_reb_mJ", r"$E_{\mathrm{reb}}$, mass-weighted rebound (mJ per drop)", "(b)")]:
         ax.set_title(tag, loc="left", fontsize=9)
         for k, (p, _) in enumerate(PRINTS):
             d = long[long.print_ == p].set_index("trial").reindex(order)
