@@ -677,16 +677,17 @@ plate holds three copies of each design in a $3 \times 3$ layout, and all
 three plates print the same G-code file. A specimen ID joins the plate
 number, the letters ``sne'', the last digit of the design's batch-4 ID,
 and the copy number, which gives the plate row (1 back, 2 middle,
-3 front). For example, 1sne73 is the front-row corny7 copy on plate~1. The replicate print key in the repository maps
-every ID to its trial, plate position, and per-part infills.
+3 front). For example, 1sne73 is the front-row corny7 copy on
+plate~1. The replicate print key in the repository maps every ID to
+its trial, plate position, and per-part infills.
 
 The weighed masses of the 27 specimens are in the print log, which notes
 no defects on any of them. The plate-1 copies weigh 0.5 to \SI{0.9}{g}
 more than the batch-4 specimens of the same designs. The corny7 copies
 weigh 20.23 to \SI{20.27}{g} against \SI{19.62}{g}, the corny8 copies
 20.11 to \SI{20.30}{g} against \SI{19.64}{g}, and the corny2 copies
-20.89 to \SI{21.08}{g} against \SI{20.21}{g}. The plate-2 and plate-3 copies are up to
-\SI{0.4}{g} lighter than those on plate~1. The replicate struts were
+20.89 to \SI{21.08}{g} against \SI{20.21}{g}. The plate-2 and
+plate-3 copies are up to \SI{0.4}{g} lighter than those on plate~1. The replicate struts were
 printed in black PLA and the batch-4 struts in white PLA.
 
 We drop-tested the nine plate-1 specimens on 2026-10-17, in one evening
@@ -704,10 +705,12 @@ input-channel instrumentation failed and drop testing stopped, with
 plates~2 and~3 printed and weighed but untested. Because the plate-1
 record carries both faults and the instrument that recorded it later
 failed, we withhold it until the repeats are complete on repaired
-instrumentation.\todo{Lab to confirm what failed on 2026-10-19:
-  issue~\#115 reports the \SI{10000}{g} single-axis base accelerometer,
-  while the plate-1 check-in on the drop-test branch
-  (\texttt{data/drop-tests/1sne-checkin}) reports the CH5 cable.}
+instrumentation.
+% TODO (lab): confirm what failed on 2026-10-19. Issue #115 reports the
+% 10,000 g single-axis base accelerometer, while the plate-1 check-in on the
+% drop-test branch (data/drop-tests/1sne-checkin) reports the CH5 cable.
+% The SI does not load todonotes; the same question is a \todo in main-text
+% Section 3.5 (sec:methods:rankstability), shown in manuscript-todos.pdf.
 The raw captures, the capture census, and the fault analysis are
 archived with the drop-test data.
 
