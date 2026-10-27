@@ -375,11 +375,10 @@ Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
 emphasis on multi-objective and noise-robust acquisition functions.
 Section~\ref{sec:methods} introduces the design parameterization,
 fabrication workflow, drop-tower protocol and objectives, BO loop,
-the planned replicate rank-stability study, and the simulation-only
-campaign.
+and the planned replicate rank-stability study.
 Section~\ref{sec:results} reports all four measured batches, the
-surrogate audits, the replication findings, and the simulated
-campaign, and
+surrogate audits, the replication findings, and the results of the
+simulation-only campaign of Section~\ref{sec:methods:sim}, and
 Section~\ref{sec:discussion} discusses the
 implications and limitations of the approach. Section~\ref{sec:conclusions}
 concludes.
@@ -1119,6 +1118,31 @@ Zenodo-minted DOI mirroring the GitHub repository.\todo{Insert the
 Zenodo DOI and release version for the campaign code once the
 repository snapshot is published.}
 
+\subsection{Simulation-Only Campaign}
+\label{sec:methods:sim}
+
+To test the optimizer on a problem whose front can be mapped, we
+also ran a campaign entirely in simulation. The simulator is a
+MuJoCo~\citep{todorov2012mujoco} model of the drop tower with rigid
+PLA struts, tension-only TPU tendons, and an impact-surface contact
+calibrated once against the reference prism (S0). It reports $t_{180}$
+with the bench's CFC-180 filter. Printed mass is fixed at \SI{20.23}{g},
+and the search varies four shape ratios, with printed tendon diameter
+of at least \SI{3.0}{mm} and envelope volume $\pi R^2 H$ of at most
+\SI{250}{cm^3} as constraints. The two minimized objectives are
+$t_{180}$ and the envelope volume, the bulk a lander must stow. Each of
+ten seeds spends 45 simulated designs, a nine-design Sobol batch and
+then four batches of nine chosen by qNEHVI on a single-task GP in Ax.
+Random, Sobol, Latin hypercube~\citep{mckay1979lhs}, and
+compass-search~\citep{kolda2003directsearch} baselines run at the same
+budget and seeds and skip unprintable candidates without simulating
+them. Section~\siref{si:sim-campaign} of the Supplementary
+Information gives the simulator and scoring details.\todo{PR~\#33
+  (branch \texttt{copilot/\allowbreak explore-\allowbreak simulations-\allowbreak for-\allowbreak tensegrity}, pinned
+  at \texttt{94e53a8}) must be merged or tagged before submission so
+  the simulator and campaign code behind
+  Section~\ref{sec:results:sim} resolve from the archived repository.}
+
 \subsection{Replicate Rank-Stability Study}
 \label{sec:methods:rankstability}
 
@@ -1150,31 +1174,6 @@ equivalents (Section~\siref{si:metal-validation}).
   best-, mid-, and worst-predicted in-sample designs are printed and
   drop-tested; fix the repeat count (nominally three) and the design
   IDs when the print is scheduled.}
-
-\subsection{Simulation-Only Campaign}
-\label{sec:methods:sim}
-
-To test the optimizer on a problem whose front can be mapped, we
-also ran a campaign entirely in simulation. The simulator is a
-MuJoCo~\citep{todorov2012mujoco} model of the drop tower with rigid
-PLA struts, tension-only TPU tendons, and an impact-surface contact
-calibrated once against the reference prism (S0). It reports $t_{180}$
-with the bench's CFC-180 filter. Printed mass is fixed at \SI{20.23}{g},
-and the search varies four shape ratios, with printed tendon diameter
-of at least \SI{3.0}{mm} and envelope volume $\pi R^2 H$ of at most
-\SI{250}{cm^3} as constraints. The two minimized objectives are
-$t_{180}$ and the envelope volume, the bulk a lander must stow. Each of
-ten seeds spends 45 simulated designs, a nine-design Sobol batch and
-then four batches of nine chosen by qNEHVI on a single-task GP in Ax.
-Random, Sobol, Latin hypercube~\citep{mckay1979lhs}, and
-compass-search~\citep{kolda2003directsearch} baselines run at the same
-budget and seeds and skip unprintable candidates without simulating
-them. Section~\siref{si:sim-campaign} of the Supplementary
-Information gives the simulator and scoring details.\todo{PR~\#33
-  (branch \texttt{copilot/\allowbreak explore-\allowbreak simulations-\allowbreak for-\allowbreak tensegrity}, pinned
-  at \texttt{94e53a8}) must be merged or tagged before submission so
-  the simulator and campaign code behind
-  Section~\ref{sec:results:sim} resolve from the archived repository.}
 
 % =============================================================================
 \section{Results}
