@@ -360,15 +360,15 @@ prototype design space.
     (Fig.~\ref{fig:design-space}). \emph{Design:} a Gaussian-process
     surrogate fitted to the noisy measurements recommends the next batch
     (Section~\ref{sec:methods:bo}). \emph{Make:} each batch is scaled to a
-    common mass, laid out as one build plate (the batch-4 plate is
-    shown), sliced with PLA supports painted by hand along the TPU tendons,
-    and printed in one multi-material job on a Bambu Lab~H2D, with the
-    hard material (PLA) from the left nozzle and the soft material (TPU)
-    from the right (Section~\ref{sec:methods:fabrication}). \emph{Test:}
-    the labeled specimens of a batch are drop-tested one at a time on the
-    carriage of a Lansmont Model~23 shock test system
+    common mass and laid out as one build plate. The plate is sliced with
+    PLA supports painted by hand along the TPU tendons and printed in one
+    dual-nozzle job, with the hard material (PLA) from the left nozzle and
+    the soft material (TPU) from the right
+    (Section~\ref{sec:methods:fabrication}). \emph{Test:} the labeled
+    specimens are drop-tested one at a time on the drop-tower carriage
     (Section~\ref{sec:methods:testing}). \emph{Conclude:} report the
-    final Pareto front and replicate the best designs.}
+    final Pareto front. The plate render is batch 4, the mid-print frame
+    is a later replicate plate, and the labeled specimens are batch 2.}
   \label{fig:overview}
 \end{figure}%
 \todo{Which specimen is on the Lansmont carriage in the Test photograph
@@ -1226,8 +1226,8 @@ constant-mass box spans aspect ratio, member sizing, and twist.
   \centering
   \includegraphics[width=\linewidth]{../figures/bo/fig-seed-designs.pdf}
   \caption{The nine Sobol seed designs at their printed geometry, drawn
-    to one millimeter scale with PLA struts in black, TPU tendons in
-    green, and square strut-end housings. Each drawing is labeled with
+    to one millimeter scale as in Fig.~\ref{fig:design-space}(b). Each
+    drawing is labeled with
     its Sobol spec and the ID of its printed specimen. Specs 03 and 06
     (asterisks) were printed but not drop-tested, and spec 08 is
     labeled with its tested specimen, bag26v.}

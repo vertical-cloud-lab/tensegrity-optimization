@@ -118,3 +118,10 @@ figure-batch4:
 
 figure-three-print:
 	$(FIG_PY) $(FIG_SCRIPTS)/round3_three_print_analysis.py
+
+# SI fig:si-sensitivity, relabeled with the campaign branch's own plotting
+# code; needs a checkout of claude/issue-98-20260821-0103 (e.g. a worktree).
+CAMPAIGN_BO ?= /tmp/campaign/bo
+.PHONY: figure-si-sensitivity
+figure-si-sensitivity:
+	$(FIG_PY) $(FIG_SCRIPTS)/relabel_seed_feature_importance.py $(CAMPAIGN_BO)
