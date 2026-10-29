@@ -82,8 +82,9 @@ architecture with an experiment-driven optimization loop.
   \caption{Positioning of this work against selected prior efforts
     spanning the elements combined here. The present campaign uses
     physical drop measurements of the transmissibility ($t_{180}$)
-    and the mass-weighted rebound
-    ($E_{\mathrm{reb}}$, Eq.~(1) of the main text)
+    and the mass-weighted rebound index
+    ($I_{\mathrm{reb}}$, Eq.~(1) of the main text, whose first-power
+    form $E_{\mathrm{reb}}$ recommended batches 2 to 4)
     as its BO responses. It does not optimize specific energy
     absorption or crush energy.}
   \label{tab:si-novelty}
@@ -112,7 +113,7 @@ architecture with an experiment-driven optimization loop.
       & rigid-flexible metamat. & dual-material & & & validation \\[2pt]
     \textbf{This work}
       & Tensegrity-inspired & Multi-material & Experiment-driven & $t_{180}$; provisional & Physical \\
-      & $T_3$-prism cell (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & $E_{\mathrm{reb}}$ & experiment \\
+      & $T_3$-prism cell (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & $I_{\mathrm{reb}}$ & experiment \\
     \bottomrule
   \end{tabular}}
 \end{table}
@@ -570,9 +571,10 @@ evolved through a measurability review
 (\href{\repo/pull/97}{PR~\#97}). Per-specimen crush energy in joules is not
 recoverable from this rig, because it has no falling-mass or displacement
 channel and the specimens stay elastic. The campaign responses are therefore the
-filtered peak-acceleration ratio and the mass-weighted rebound, built
-on a provisional rebound fraction, with quasi-static
-crush metrics deferred to a load-frame campaign. We pre-registered an
+filtered peak-acceleration ratio and the mass-weighted rebound index,
+built on the square of a provisional rebound fraction, with quasi-static
+crush metrics deferred to a load-frame campaign. Batches 2 to 4 were
+recommended under the first power of the rebound fraction. We pre-registered an
 adversarial review of the objective choices, run with the Edison
 Scientific analysis agent (task \texttt{3e398131}, archived in the
 repository). It
@@ -807,24 +809,24 @@ sessions are defined in Section~\ref{si:drop}.
     averages the prints that pass the health screen, a seat gauge (the
     ratio of CFC-1000 to CFC-180 transmissibility) below 1.15 and no
     drift flag. $\S$ marks a failed seat gauge and $\dagger$ a
-    transmissibility-drift flag. $E_{\mathrm{reb}}$ is listed for
+    transmissibility-drift flag. $I_{\mathrm{reb}}$ is listed for
     prints 1, 2, and 3.}
   \label{tab:si-round3-repeatability}
   \small
   \begin{tabular}{@{}cccccccc@{}}
     \toprule
     Trial & $N$ & Pred. & Print 1 & Print 2 & Print 3 & Mean &
-    $E_{\mathrm{reb}}$ (mJ) \\
+    $I_{\mathrm{reb}}$ (mg) \\
     \midrule
-    28 & 5 & 1.059 & 1.0373 & 1.0604 & 1.1679$^{\S}$ & 1.0489 & 5.0 / 5.0 / 7.2 \\
-    29 & 4 & 1.032 & 1.0344 & 1.0433 & 1.0201 & 1.0326 & 9.1 / 11.2 / 15.5 \\
-    30 & 9 & 1.058 & 1.0425 & 1.0451 & 1.0438 & 1.0438 & 5.2 / 15.1 / 6.7 \\
-    31 & 3 & 1.043 & 1.0389 & 1.0533 & 1.0366 & 1.0429 & 4.2 / 9.4 / 7.0 \\
-    32 & 7 & 1.020 & 1.2513$^{\S}$ & 1.0286 & 1.0448 & 1.0367 & 8.2 / 11.6 / 10.8 \\
-    33 & 2 & 1.056 & 1.0345 & 1.0900$^{\S}$ & 1.0386 & 1.0366 & 11.8 / 4.5 / 4.5 \\
-    34 & 6 & 1.065 & 1.0471 & 1.0859$^{\dagger}$ & 1.0353 & 1.0412 & 4.8 / 7.7 / 6.8 \\
-    35 & 8 & 1.039 & 0.9804$^{\dagger}$ & 1.0109 & 0.9958 & 1.0033 & 11.2 / 9.9 / 8.3 \\
-    36 & 1 & 1.051 & 1.0326 & 1.0791$^{\S}$ & 1.0209 & 1.0267 & 18.1 / 7.3 / 9.6 \\
+    28 & 5 & 1.059 & 1.0373 & 1.0604 & 1.1679$^{\S}$ & 1.0489 & 5.6 / 5.5 / 11.6 \\
+    29 & 4 & 1.032 & 1.0344 & 1.0433 & 1.0201 & 1.0326 & 18.6 / 27.8 / 52.5 \\
+    30 & 9 & 1.058 & 1.0425 & 1.0451 & 1.0438 & 1.0438 & 6.3 / 52.1 / 10.1 \\
+    31 & 3 & 1.043 & 1.0389 & 1.0533 & 1.0366 & 1.0429 & 4.0 / 19.8 / 10.7 \\
+    32 & 7 & 1.020 & 1.2513$^{\S}$ & 1.0286 & 1.0448 & 1.0367 & 14.9 / 29.8 / 25.5 \\
+    33 & 2 & 1.056 & 1.0345 & 1.0900$^{\S}$ & 1.0386 & 1.0366 & 32.0 / 4.6 / 4.7 \\
+    34 & 6 & 1.065 & 1.0471 & 1.0859$^{\dagger}$ & 1.0353 & 1.0412 & 5.3 / 13.7 / 10.5 \\
+    35 & 8 & 1.039 & 0.9804$^{\dagger}$ & 1.0109 & 0.9958 & 1.0033 & 29.2 / 22.5 / 15.4 \\
+    36 & 1 & 1.051 & 1.0326 & 1.0791$^{\S}$ & 1.0209 & 1.0267 & 75.9 / 12.4 / 20.8 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -868,9 +870,10 @@ campaign code and the manuscript data
     the held-out prediction, horizontal bars are the ingested
     standard error, and the dashed line is parity. Held-out
     $t_{180}$ predictions stay close to the pooled mean (MAPE 5.0\%, rank
-    correlation $+0.08$), and the $E_{\mathrm{reb}}$ ordering is anti-correlated
+    correlation $+0.08$), and the ordering of the rebound objective the
+    model was fit on, $E_{\mathrm{reb}}$, is anti-correlated
     ($-0.38$). Design-level held-out skill is near zero on
-    transmissibility and absent on the mass-weighted rebound.}
+    transmissibility and absent on the rebound objective.}
   \label{fig:si-logocv}
 \end{figure}
 
