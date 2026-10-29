@@ -1,0 +1,627 @@
+{
+  "protocol": {
+    "data": "round-5 snapshot, all 44 articles, nothing held out",
+    "nuts": "256 samples / 512 warmup (library default)",
+    "seed": "torch.manual_seed(10000) before each fit, the same state as the LOGO reruns' shared initial fit; repeat seeds 11 and 12 on two combinations quantify NUTS realization noise",
+    "campaign_code_commit": "bbf7a62",
+    "importance": "Ax feature_importances (normalized inverse median SAAS lengthscale over MCMC draws) + per-draw quantiles via per_draw_importances"
+  },
+  "fits": {
+    "shape-only|campaign|10000": {
+      "n_params": 5,
+      "fit_seconds": 54.7,
+      "metrics": {
+        "t180": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.864460019744365,
+            "spearman_insample": 0.876350740200633,
+            "rmse_insample": 0.03168781497629724,
+            "shrinkage_sd_pred_over_sd_obs": 0.9130013845368484,
+            "coverage_95_insample_pct": 56.81818181818182,
+            "median_posterior_sd": 0.0008706277325644554,
+            "sd_observed": 0.0870664215076167
+          },
+          "top_importances": [
+            {
+              "parameter": "strut_d_mm",
+              "importance": 0.5983,
+              "iqr": [
+                0.1536,
+                0.6984
+              ]
+            },
+            {
+              "parameter": "twist_deg",
+              "importance": 0.1647,
+              "iqr": [
+                0.0545,
+                0.2917
+              ]
+            },
+            {
+              "parameter": "cable_d_mm",
+              "importance": 0.0975,
+              "iqr": [
+                0.0551,
+                0.0851
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": 0.4527158241252758,
+            "spearman_p_perm": 0.00229,
+            "R2_oos_vs_fold_train_mean": 0.24129577897117516,
+            "shrinkage_sd_pred_over_sd_obs": 0.5068107048181435
+          }
+        },
+        "e_reb_mJ": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.5460792838299849,
+            "spearman_insample": 0.7371735106221802,
+            "rmse_insample": 2.4785395373400285,
+            "shrinkage_sd_pred_over_sd_obs": 0.839421680555946,
+            "coverage_95_insample_pct": 61.36363636363637,
+            "median_posterior_sd": 0.15630171702451484,
+            "sd_observed": 3.7213280775894506
+          },
+          "top_importances": [
+            {
+              "parameter": "H_mm",
+              "importance": 0.8178,
+              "iqr": [
+                0.2953,
+                0.9359
+              ]
+            },
+            {
+              "parameter": "strut_d_mm",
+              "importance": 0.0827,
+              "iqr": [
+                0.0171,
+                0.2842
+              ]
+            },
+            {
+              "parameter": "cable_d_mm",
+              "importance": 0.0416,
+              "iqr": [
+                0.0074,
+                0.0732
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": 0.04307215330746551,
+            "spearman_p_perm": 0.78155,
+            "R2_oos_vs_fold_train_mean": -0.31920963068719654,
+            "shrinkage_sd_pred_over_sd_obs": 0.5673133816470818
+          }
+        }
+      }
+    },
+    "shape-only|payload|10000": {
+      "n_params": 5,
+      "fit_seconds": 36.5,
+      "metrics": {
+        "tavg10ms": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.6210317541509831,
+            "spearman_insample": 0.9600546926753006,
+            "rmse_insample": 0.13648397161415426,
+            "shrinkage_sd_pred_over_sd_obs": 0.7293884575230224,
+            "coverage_95_insample_pct": 61.36363636363637,
+            "median_posterior_sd": 0.0022424359788752054,
+            "sd_observed": 0.22427060336716514
+          },
+          "top_importances": [
+            {
+              "parameter": "strut_d_mm",
+              "importance": 0.4517,
+              "iqr": [
+                0.2346,
+                0.5891
+              ]
+            },
+            {
+              "parameter": "H_mm",
+              "importance": 0.2046,
+              "iqr": [
+                0.0586,
+                0.177
+              ]
+            },
+            {
+              "parameter": "twist_deg",
+              "importance": 0.1891,
+              "iqr": [
+                0.0924,
+                0.2486
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": 0.45405522005464044,
+            "spearman_p_perm": 0.00195,
+            "R2_oos_vs_fold_train_mean": 0.21431960957677254,
+            "shrinkage_sd_pred_over_sd_obs": 0.419677345691079
+          }
+        },
+        "late_avg3ms_g": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9069806528677494,
+            "spearman_insample": 0.9438926310254703,
+            "rmse_insample": 5.424087402130344,
+            "shrinkage_sd_pred_over_sd_obs": 0.9430313300802231,
+            "coverage_95_insample_pct": 61.36363636363637,
+            "median_posterior_sd": 0.2352816824355335,
+            "sd_observed": 17.99004070264851
+          },
+          "top_importances": [
+            {
+              "parameter": "R_mm",
+              "importance": 0.3043,
+              "iqr": [
+                0.2423,
+                0.3355
+              ]
+            },
+            {
+              "parameter": "H_mm",
+              "importance": 0.2431,
+              "iqr": [
+                0.0783,
+                0.3146
+              ]
+            },
+            {
+              "parameter": "strut_d_mm",
+              "importance": 0.1937,
+              "iqr": [
+                0.1525,
+                0.2316
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": 0.630009548459606,
+            "spearman_p_perm": 0.0,
+            "R2_oos_vs_fold_train_mean": 0.4405433209448628,
+            "shrinkage_sd_pred_over_sd_obs": 0.708306994459504
+          }
+        }
+      }
+    },
+    "six-param|campaign|10000": {
+      "n_params": 6,
+      "fit_seconds": 49.0,
+      "metrics": {
+        "t180": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9964485891491196,
+            "spearman_insample": 0.9909440085083726,
+            "rmse_insample": 0.0051293111326106665,
+            "shrinkage_sd_pred_over_sd_obs": 0.9968397988377274,
+            "coverage_95_insample_pct": 95.45454545454545,
+            "median_posterior_sd": 0.0008706321874851776,
+            "sd_observed": 0.0870664215076167
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.5974,
+              "iqr": [
+                0.2773,
+                0.6606
+              ]
+            },
+            {
+              "parameter": "twist_deg",
+              "importance": 0.1343,
+              "iqr": [
+                0.0517,
+                0.183
+              ]
+            },
+            {
+              "parameter": "R_mm",
+              "importance": 0.0783,
+              "iqr": [
+                0.0174,
+                0.1652
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": 0.05285412262156448,
+            "spearman_p_perm": 0.73436,
+            "R2_oos_vs_fold_train_mean": 0.11818245797450977,
+            "shrinkage_sd_pred_over_sd_obs": 0.46991339130892534
+          }
+        },
+        "e_reb_mJ": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.8821833190699386,
+            "spearman_insample": 0.9465449810309331,
+            "rmse_insample": 1.2627263441332388,
+            "shrinkage_sd_pred_over_sd_obs": 0.9250850097771148,
+            "coverage_95_insample_pct": 95.45454545454545,
+            "median_posterior_sd": 0.18831576262655086,
+            "sd_observed": 3.7213280775894506
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.66,
+              "iqr": [
+                0.3589,
+                0.8804
+              ]
+            },
+            {
+              "parameter": "strut_d_mm",
+              "importance": 0.0998,
+              "iqr": [
+                0.041,
+                0.1147
+              ]
+            },
+            {
+              "parameter": "cable_d_mm",
+              "importance": 0.079,
+              "iqr": [
+                0.0211,
+                0.1098
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": -0.4157857646229739,
+            "spearman_p_perm": 0.00573,
+            "R2_oos_vs_fold_train_mean": -0.3733802038746623,
+            "shrinkage_sd_pred_over_sd_obs": 0.3658616169884202
+          }
+        }
+      }
+    },
+    "six-param|payload|10000": {
+      "n_params": 6,
+      "fit_seconds": 40.1,
+      "metrics": {
+        "tavg10ms": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9999494390425263,
+            "spearman_insample": 0.999541915416702,
+            "rmse_insample": 0.0015764778959134627,
+            "shrinkage_sd_pred_over_sd_obs": 0.997269873434372,
+            "coverage_95_insample_pct": 97.72727272727273,
+            "median_posterior_sd": 0.002242627516107905,
+            "sd_observed": 0.22427060336716514
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.9058,
+              "iqr": [
+                0.5996,
+                0.9553
+              ]
+            },
+            {
+              "parameter": "cable_d_mm",
+              "importance": 0.028,
+              "iqr": [
+                0.0099,
+                0.068
+              ]
+            },
+            {
+              "parameter": "strut_d_mm",
+              "importance": 0.0232,
+              "iqr": [
+                0.0128,
+                0.1105
+              ]
+            }
+          ],
+          "logo_heldout_article_level": null
+        },
+        "late_avg3ms_g": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9976835644006532,
+            "spearman_insample": 0.9980619478341207,
+            "rmse_insample": 0.8559534580068912,
+            "shrinkage_sd_pred_over_sd_obs": 1.000872635609377,
+            "coverage_95_insample_pct": 95.45454545454545,
+            "median_posterior_sd": 0.36343842105326263,
+            "sd_observed": 17.99004070264851
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.6151,
+              "iqr": [
+                0.4712,
+                0.6302
+              ]
+            },
+            {
+              "parameter": "cable_d_mm",
+              "importance": 0.0908,
+              "iqr": [
+                0.0463,
+                0.1351
+              ]
+            },
+            {
+              "parameter": "H_mm",
+              "importance": 0.0873,
+              "iqr": [
+                0.0629,
+                0.121
+              ]
+            }
+          ],
+          "logo_heldout_article_level": null
+        }
+      }
+    },
+    "twelve-param|campaign|10000": {
+      "n_params": 12,
+      "fit_seconds": 49.0,
+      "metrics": {
+        "t180": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9999993554765401,
+            "spearman_insample": 1.0,
+            "rmse_insample": 6.909998442375764e-05,
+            "shrinkage_sd_pred_over_sd_obs": 0.9995702991036967,
+            "coverage_95_insample_pct": 100.0,
+            "median_posterior_sd": 0.0008706360320109264,
+            "sd_observed": 0.0870664215076167
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.3902,
+              "iqr": [
+                0.2681,
+                0.5361
+              ]
+            },
+            {
+              "parameter": "strut_infill_pct",
+              "importance": 0.0787,
+              "iqr": [
+                0.0508,
+                0.0788
+              ]
+            },
+            {
+              "parameter": "tpu_nozzle_temp_C",
+              "importance": 0.0747,
+              "iqr": [
+                0.0237,
+                0.0863
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": 0.3179704016913319,
+            "spearman_p_perm": 0.03639,
+            "R2_oos_vs_fold_train_mean": 0.12374339488681452,
+            "shrinkage_sd_pred_over_sd_obs": 0.3186899278642777
+          }
+        },
+        "e_reb_mJ": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9987165408512578,
+            "spearman_insample": 0.9995771670190273,
+            "rmse_insample": 0.13179437481573272,
+            "shrinkage_sd_pred_over_sd_obs": 0.9778453635996107,
+            "coverage_95_insample_pct": 100.0,
+            "median_posterior_sd": 0.20097894031028857,
+            "sd_observed": 3.7213280775894506
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.1915,
+              "iqr": [
+                0.0801,
+                0.2769
+              ]
+            },
+            {
+              "parameter": "twist_deg",
+              "importance": 0.1066,
+              "iqr": [
+                0.0475,
+                0.1205
+              ]
+            },
+            {
+              "parameter": "tpu_nozzle_temp_C",
+              "importance": 0.0928,
+              "iqr": [
+                0.0342,
+                0.1147
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": -0.3981112797143728,
+            "spearman_p_perm": 0.00783,
+            "R2_oos_vs_fold_train_mean": -0.045705045940162004,
+            "shrinkage_sd_pred_over_sd_obs": 0.10935027655722696
+          }
+        }
+      }
+    },
+    "twelve-param|payload|10000": {
+      "n_params": 12,
+      "fit_seconds": 50.3,
+      "metrics": {
+        "tavg10ms": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9999401825622699,
+            "spearman_insample": 0.9995771670190273,
+            "rmse_insample": 0.0017147236747551426,
+            "shrinkage_sd_pred_over_sd_obs": 0.9967003352050253,
+            "coverage_95_insample_pct": 100.0,
+            "median_posterior_sd": 0.0022427286368899057,
+            "sd_observed": 0.22427060336716514
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.414,
+              "iqr": [
+                0.1632,
+                0.7375
+              ]
+            },
+            {
+              "parameter": "cable_d_mm",
+              "importance": 0.0866,
+              "iqr": [
+                0.0143,
+                0.1019
+              ]
+            },
+            {
+              "parameter": "tpu_nozzle_temp_C",
+              "importance": 0.085,
+              "iqr": [
+                0.012,
+                0.053
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": -0.07773353540891366,
+            "spearman_p_perm": 0.61518,
+            "R2_oos_vs_fold_train_mean": -0.050352612106487005,
+            "shrinkage_sd_pred_over_sd_obs": 0.17279685260858138
+          }
+        },
+        "late_avg3ms_g": {
+          "insample": {
+            "n": 44,
+            "r2_insample": 0.9999712530343094,
+            "spearman_insample": 1.0,
+            "rmse_insample": 0.0953533687324834,
+            "shrinkage_sd_pred_over_sd_obs": 0.9990062919432318,
+            "coverage_95_insample_pct": 100.0,
+            "median_posterior_sd": 0.37303610697743883,
+            "sd_observed": 17.99004070264851
+          },
+          "top_importances": [
+            {
+              "parameter": "mass_printed_g",
+              "importance": 0.5126,
+              "iqr": [
+                0.364,
+                0.5412
+              ]
+            },
+            {
+              "parameter": "R_mm",
+              "importance": 0.0709,
+              "iqr": [
+                0.0381,
+                0.092
+              ]
+            },
+            {
+              "parameter": "cable_d_mm",
+              "importance": 0.0657,
+              "iqr": [
+                0.036,
+                0.0763
+              ]
+            }
+          ],
+          "logo_heldout_article_level": {
+            "spearman_rho": 0.5575757575757575,
+            "spearman_p_perm": 0.0001,
+            "R2_oos_vs_fold_train_mean": 0.35266960634446465,
+            "shrinkage_sd_pred_over_sd_obs": 0.5264347440013618
+          }
+        }
+      }
+    }
+  },
+  "seed_repeats": {
+    "twelve-param|campaign": {
+      "seeds": [
+        11,
+        12
+      ],
+      "deltas_vs_seed_10000": {
+        "t180": {
+          "max_abs_importance_shift": 0.0557,
+          "insample_spearman_shift": [
+            0.0,
+            0.0
+          ],
+          "insample_r2_shift": [
+            -0.0,
+            -0.0
+          ]
+        },
+        "e_reb_mJ": {
+          "max_abs_importance_shift": 0.0705,
+          "insample_spearman_shift": [
+            0.0,
+            0.0
+          ],
+          "insample_r2_shift": [
+            0.0,
+            -0.0
+          ]
+        }
+      }
+    },
+    "shape-only|payload": {
+      "seeds": [
+        11,
+        12
+      ],
+      "deltas_vs_seed_10000": {
+        "tavg10ms": {
+          "max_abs_importance_shift": 0.0808,
+          "insample_spearman_shift": [
+            0.0,
+            0.0
+          ],
+          "insample_r2_shift": [
+            0.0,
+            -0.0
+          ]
+        },
+        "late_avg3ms_g": {
+          "max_abs_importance_shift": 0.1015,
+          "insample_spearman_shift": [
+            -0.0021,
+            0.0
+          ],
+          "insample_r2_shift": [
+            -0.0008,
+            0.0004
+          ]
+        }
+      }
+    }
+  }
+}
