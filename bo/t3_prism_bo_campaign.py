@@ -128,18 +128,32 @@ energy-absorption review (PR #97), adjusted for per-print mass:
   n = 7 designs that correlation is confounded with the geometry effect the
   campaign is trying to learn, and regressing it out would remove signal.
   The model sees mass through the ``mass_printed_g`` parameter instead.
-* ``e_reb_mJ``: absolute rebound energy returned to the payload per drop,
-  e_rebound * m_printed * g * h_drop (h = 60 in). The raw ``e_rebound`` is
-  a fraction of the impact energy, and at fixed drop height the impact
-  energy scales with the article's printed mass, so equal fractions on a
-  18.5 g and a 22.3 g article differ by ~20 percent in the millijoules the
-  payload actually receives. Minimizing the millijoules compares designs on
-  delivered energy and re-penalizes the grams a design adds. Its SEM folds
-  the print-to-print mass scatter (sd 0.457 g, from the spec-08 triplicate
-  dea4ls/bag26v/ghmj4y, all one design) in quadrature with the per-drop
-  SEM, so the n-of-1-article mass channel is now modeled. The remaining
-  ~2 percent t180 print floor is still not (no mass-free estimate of it
-  exists).
+* ``m_e2_mg`` (default from 2026-10-29): the mass-weighted rebound index
+  m_printed * e_rebound**2, in milligrams, where e_rebound = g * t_second /
+  (2 * dv) is the fraction of the impact *velocity* returned at the top
+  vertex. Squaring e turns that velocity fraction into the fraction of
+  kinetic energy it implies, so at fixed drop height m * e**2 * g * h is the
+  kinetic energy the whole article would carry at the hop speed: an upper
+  bound on the energy returned, since only the top-vertex subassembly
+  actually flies (Edison audit, PR #97 commit fb1917c). The index stops
+  short of that g * h factor and of any energy claim. Weighting by the
+  article's weighed mass still re-penalizes the grams a design adds, but
+  with half the leverage it had in the first-power form (ranking by m * e**2
+  is ranking by sqrt(m) * e). Its SEM folds the print-to-print mass scatter
+  (sd 0.457 g, from the spec-08 triplicate dea4ls/bag26v/ghmj4y, all one
+  design) in quadrature with the per-drop SEM, whose relative size doubles
+  under the square. The remaining ~2 percent t180 print floor is still not
+  modeled (no mass-free estimate of it exists).
+* ``e_reb_mJ`` (historical, ``--rebound-form me``): e_rebound * m_printed *
+  g * h_drop (h = 60 in), in mJ per drop. Batches 2 to 5 were generated
+  minimizing this first-power form, so every committed suggestions,
+  predictions and AxClient file through run 5 is in it, and the
+  ``--measured-roundN`` views (which compare against those predictions) and
+  ``--plot-only`` on those runs select it automatically. It is a ranking
+  score, not a measured energy: e_rebound is a fraction of the impact
+  velocity, and the returned kinetic energy scales as its square. PR #97
+  (commits 35c5995 to 6b99201) compares the two forms on every tested
+  article: same front except r2d2c2, Spearman rho 0.990 over designs.
 
 Printed mass was a tracking metric in the first version of this script
 (predicted per design). It is a BO *parameter* now: under a constant-printed-
@@ -242,9 +256,9 @@ from t3_prism_mass_model import (  # noqa: E402
     calibration_report,
 )
 
-# define these names as variables for reuse (Honegumi convention)
+# define these names as variables for reuse (Honegumi convention); obj2_name
+# is set below by the rebound form, once the constants it needs exist
 obj1_name = "t180"
-obj2_name = "e_reb_mJ"
 # Printed mass is a parameter, not a metric: the projection chooses it.
 mass_param = "mass_printed_g"
 
@@ -260,6 +274,67 @@ DROP_H_M = 1.524  # 60 in drop height (issue #98 campaign protocol)
 # (dea4ls 22.29 g, bag26v 21.42 g, ghmj4y 22.10 g), the only design printed
 # more than once. Used as the design-level mass noise everywhere.
 MASS_PRINT_SD_G = 0.457
+
+# ---- objective 2: the rebound form ----------------------------------------
+# Batches 2 to 5 were generated minimizing the first-power form "me"
+# (e_reb_mJ = e * m * g * h, in mJ). From 2026-10-29 (PR #97) the campaign
+# minimizes the squared form "me2" (m * e**2, in mg) instead: squaring the
+# velocity fraction e weights rebound the way kinetic energy scales, and
+# leaves the mass penalty at half its first-power leverage.
+# ``set_rebound_form`` switches the loaders, the axis labels, the units and
+# the hypervolume reference together. The module-level default stays "me" so
+# the scripts that import from here (diagnostics, replicate study) keep
+# reproducing their committed outputs, whose frozen predictions are all in
+# mJ; the campaign's own command line defaults to "me2" for new fits.
+REBOUND_FORMS = {
+    "me2": dict(
+        name="m_e2_mg", exponent=2, scale=1000.0, unit="mg",
+        # 6lhxfy (46.95 mg) was the worst article through batch 2 under the
+        # square, as its 13.93 mJ was under "me" when (1.35, 15 mJ) was set;
+        # 50 mg repeats that construction
+        hv_ref=(1.35, 50.0),
+        y_label="Mass-weighted rebound index m\u00b7e\u00b2\n"
+                "(mg, \u2193 is better)",
+        y_tick=10.0,
+        y_label_per_gram="Squared rebound fraction e\u00b2\n"
+                         "(mg/g, \u2193 is better)",
+        y_tick_per_gram=0.5,
+    ),
+    "me": dict(
+        name="e_reb_mJ", exponent=1, scale=G_M_S2 * DROP_H_M, unit="mJ",
+        hv_ref=(1.35, 15.0),
+        y_label="Rebound energy to payload\n(mJ per drop, \u2193 is better)",
+        y_tick=2.0,
+        y_label_per_gram="Rebound energy per gram\n"
+                         "(mJ/g per drop, \u2193 is better)",
+        y_tick_per_gram=0.1,
+    ),
+}
+REBOUND_FORM = "me"
+obj2_name = REBOUND_FORMS[REBOUND_FORM]["name"]
+
+
+def rebound_objective(e_mean, e_sem, mass_g):
+    """(value, SEM) of objective 2 for one session, in the active form.
+
+    value = scale * m * e**p, with p = 1 ("me", mJ) or 2 ("me2", mg). The
+    SEM folds the per-drop SEM of e, whose relative size p multiplies (delta
+    method), in quadrature with the design-level print-to-print mass
+    scatter; the ~2 percent t180 print floor remains unmodeled.
+    """
+    spec = REBOUND_FORMS[REBOUND_FORM]
+    p = spec["exponent"]
+    value = e_mean ** p * mass_g * spec["scale"]
+    sem = value * float(np.hypot(p * e_sem / e_mean, MASS_PRINT_SD_G / mass_g))
+    return value, sem
+
+
+def rebound_fraction(value, mass_g):
+    """Invert ``rebound_objective``: the e a value implies at a given mass."""
+    spec = REBOUND_FORMS[REBOUND_FORM]
+    ratio = np.clip(np.asarray(value, float) / (mass_g * spec["scale"]), 0.0, None)
+    return ratio ** (1.0 / spec["exponent"])
+
 
 # Shape half of the search space: identical to PARAMETERS in
 # bo/t3_prism_sobol_batch.py (PR #35), the space the printed Sobol batch was
@@ -532,18 +607,15 @@ def load_training_data(results_path: Path, design_path: Path,
             params = {name: float(base[name]) for name in PARAM_NAMES}
         n = float(row["n_valid"])
         mass_g = float(row["mass_g"])
-        # absolute rebound energy per drop, from the tested article's own
-        # measured mass: e_rebound * m * g * h  (grams * m/s^2 * m == mJ)
-        e_mean = float(row["e_rebound_mean"])
-        e_sem = float(row["e_rebound_sd"]) / np.sqrt(n)
-        e_reb_mJ = e_mean * mass_g * G_M_S2 * DROP_H_M
-        # per-drop SEM and the design-level print-to-print mass scatter in
-        # quadrature; the ~2 percent t180 print floor remains unmodeled
-        e_reb_sem = e_reb_mJ * float(np.hypot(e_sem / e_mean, MASS_PRINT_SD_G / mass_g))
+        # rebound objective from the tested article's own measured mass, in
+        # the active form (see REBOUND_FORMS)
+        reb, reb_sem = rebound_objective(
+            float(row["e_rebound_mean"]),
+            float(row["e_rebound_sd"]) / np.sqrt(n), mass_g)
         y_train.append(
             {
                 obj1_name: (float(row["t180_mean"]), float(row["t180_sd"]) / np.sqrt(n)),
-                obj2_name: (e_reb_mJ, e_reb_sem),
+                obj2_name: (reb, reb_sem),
             }
         )
         params[mass_param] = mass_g
@@ -619,12 +691,9 @@ def load_round2_training_data(results_path=ROUND2_RESULTS,
         params = {name: float(base[name]) for name in PARAM_NAMES}
         mass_g = float(row["mass_g"])
         n = float(row["n_valid"])
-        e_mean = float(row["e_rebound_mean"])
-        e_sem = float(row["e_rebound_sd"]) / np.sqrt(n)
-        e_reb_mJ = e_mean * mass_g * G_M_S2 * DROP_H_M
-        e_reb_sem = e_reb_mJ * float(
-            np.hypot(e_sem / e_mean, MASS_PRINT_SD_G / mass_g)
-        )
+        reb, reb_sem = rebound_objective(
+            float(row["e_rebound_mean"]),
+            float(row["e_rebound_sd"]) / np.sqrt(n), mass_g)
         if bool(row.get("t_drift_flag", False)):
             print(
                 f"WARNING: {pid} (trial {trial}) is T-DRIFT flagged "
@@ -637,7 +706,7 @@ def load_round2_training_data(results_path=ROUND2_RESULTS,
             {
                 obj1_name: (float(row["t180_mean"]),
                             float(row["t180_sd"]) / np.sqrt(n)),
-                obj2_name: (e_reb_mJ, e_reb_sem),
+                obj2_name: (reb, reb_sem),
             }
         )
         params[mass_param] = mass_g
@@ -719,12 +788,9 @@ def load_round3_training_data(results_path=ROUND3_RESULTS,
         params = {name: float(base[name]) for name in PARAM_NAMES}
         mass_g = float(row["mass_g"])
         n = float(row["n_valid"])
-        e_mean = float(row["e_rebound_mean"])
-        e_sem = float(row["e_rebound_sd"]) / np.sqrt(n)
-        e_reb_mJ = e_mean * mass_g * G_M_S2 * DROP_H_M
-        e_reb_sem = e_reb_mJ * float(
-            np.hypot(e_sem / e_mean, MASS_PRINT_SD_G / mass_g)
-        )
+        reb, reb_sem = rebound_objective(
+            float(row["e_rebound_mean"]),
+            float(row["e_rebound_sd"]) / np.sqrt(n), mass_g)
         if bool(row.get("t_drift_flag", False)):
             print(
                 f"WARNING: {pid} (trial {trial}) is T-DRIFT flagged "
@@ -737,7 +803,7 @@ def load_round3_training_data(results_path=ROUND3_RESULTS,
             {
                 obj1_name: (float(row["t180_mean"]),
                             float(row["t180_sd"]) / np.sqrt(n)),
-                obj2_name: (e_reb_mJ, e_reb_sem),
+                obj2_name: (reb, reb_sem),
             }
         )
         params[mass_param] = mass_g
@@ -846,29 +912,46 @@ FIG_RC = {
 # glyph is present in every face in FIG_RC["font.sans-serif"]; matplotlib
 # falls through that list per character if a machine's pick lacks it.
 ARROW_DOWN = "\u2193"
-Y_LABEL = f"Rebound energy to payload\n(mJ per drop, {ARROW_DOWN} is better)"
+Y_LABEL = REBOUND_FORMS[REBOUND_FORM]["y_label"]
 X_LABEL = f"Shock transmissibility t180 ({ARROW_DOWN} is better)"
 
-# Objective-2 display mode. The default is the absolute rebound energy in mJ
-# per drop, the quantity the committed suggestions optimized. --per-gram
-# divides every rebound-energy quantity (measured value, predicted mean and
-# sd) by the article's mass, per the intensive-form notes on PR #33: for a
-# measured article that quotient is exactly e_rebound * g * h, so the
-# per-gram axis is the restitution fraction in disguise and strips the
-# printed-mass dividend out of the comparison. Display only: the recorded
-# CSVs and the BO fit stay in absolute mJ.
-Y_TICK_STEP = 2.0
-OBJ2_UNIT = "mJ"
+# Objective-2 display mode. The default is the absolute objective in the
+# active rebound form (mg for m * e**2, mJ per drop for the historical first
+# power). --per-gram divides every objective-2 quantity (measured value,
+# predicted mean and sd) by the article's mass, per the intensive-form notes
+# on PR #33: for a measured article that quotient is exactly 1000 * e**2
+# (or e * g * h), so the per-gram axis is the restitution fraction in
+# disguise and strips the printed-mass dividend out of the comparison.
+# Display only: the recorded CSVs and the BO fit stay in absolute units.
+Y_TICK_STEP = REBOUND_FORMS[REBOUND_FORM]["y_tick"]
+OBJ2_UNIT = REBOUND_FORMS[REBOUND_FORM]["unit"]
 FILE_TAG = ""
 PRIOR_FRONT_GRAY = "#b9b8b4"
 
 
+def set_rebound_form(form):
+    """Switch objective 2 (loaders, labels, units, HV reference) to `form`.
+
+    Call before loading any data: the loaders read the active form when they
+    build each trial's objectives.
+    """
+    global REBOUND_FORM, obj2_name, Y_LABEL, Y_TICK_STEP, OBJ2_UNIT, HV_REF
+    spec = REBOUND_FORMS[form]
+    REBOUND_FORM = form
+    obj2_name = spec["name"]
+    Y_LABEL = spec["y_label"]
+    Y_TICK_STEP = spec["y_tick"]
+    OBJ2_UNIT = spec["unit"]
+    HV_REF = spec["hv_ref"]
+
+
 def set_per_gram_mode():
-    """Switch every figure this module draws to mJ/g per drop."""
+    """Switch every figure this module draws to the per-gram objective."""
     global Y_LABEL, Y_TICK_STEP, OBJ2_UNIT, FILE_TAG
-    Y_LABEL = f"Rebound energy per gram\n(mJ/g per drop, {ARROW_DOWN} is better)"
-    Y_TICK_STEP = 0.1
-    OBJ2_UNIT = "mJ/g"
+    spec = REBOUND_FORMS[REBOUND_FORM]
+    Y_LABEL = spec["y_label_per_gram"]
+    Y_TICK_STEP = spec["y_tick_per_gram"]
+    OBJ2_UNIT = spec["unit"] + "/g"
     FILE_TAG = "-per-gram"
 
 # Candidate label placements, in points relative to the marker, tried in
@@ -2090,14 +2173,17 @@ def sobol_process_point(names, seed, index=0):
     return point
 
 
-# Reference point for hypervolume bookkeeping, the same (t180, e_reb_mJ)
-# corner used for the round-2 front-expansion numbers on PR #102: slightly
-# worse than the worst article measured so far on each axis.
-HV_REF = (1.35, 15.0)
+# Reference point for hypervolume bookkeeping. Under the historical form it
+# is the same (t180, e_reb_mJ) corner used for the round-2 front-expansion
+# numbers on PR #102: slightly worse than the worst article measured so far
+# on each axis. Under m * e**2 it is (1.35, 50 mg), the same construction
+# (see REBOUND_FORMS); ``set_rebound_form`` keeps it in step with the form.
+HV_REF = REBOUND_FORMS[REBOUND_FORM]["hv_ref"]
 
 
-def hypervolume_2d(xs, ys, ref=HV_REF):
+def hypervolume_2d(xs, ys, ref=None):
     """Dominated hypervolume of 2-D minimization points against ``ref``."""
+    ref = HV_REF if ref is None else ref
     mask = pareto_mask(xs, ys)
     pts = sorted(zip(np.asarray(xs, float)[mask], np.asarray(ys, float)[mask]))
     hv, ceiling = 0.0, ref[1]
@@ -2383,12 +2469,27 @@ def main(argv=None):
         "--per-gram",
         action="store_true",
         help=(
-            "plot rebound energy divided by each article's mass (mJ/g per "
-            "drop; predictions divided by their predicted or target mass), "
-            "per the PR #33 intensive-form notes; display only, the BO fit "
-            "and the recorded CSVs stay in absolute mJ; use with "
-            "--plot-only, --measured-round2, --measured-round3 or "
+            "plot the rebound objective divided by each article's mass "
+            "(mg/g, which is 1000 * e**2, under m * e**2; mJ/g per drop under "
+            "the historical form; predictions divided by their predicted or "
+            "target mass), per the PR #33 intensive-form notes; display "
+            "only, the BO fit and the recorded CSVs stay in absolute units; "
+            "use with --plot-only, --measured-round2, --measured-round3 or "
             "--measured-round4"
+        ),
+    )
+    ap.add_argument(
+        "--rebound-form",
+        choices=sorted(REBOUND_FORMS),
+        default=None,
+        help=(
+            "objective 2: 'me2' = m * e**2 in mg (the campaign objective "
+            "from 2026-10-29), 'me' = e * m * g * h in mJ per drop (the "
+            "historical form batches 2 to 5 were generated with). Default: "
+            "me2 for a new fit; me for --measured-round2/3/4, whose "
+            "predictions were made in mJ; for --plot-only and "
+            "--prototype-next-round, whichever form the suggestions CSV "
+            "carries"
         ),
     )
     ap.add_argument(
@@ -2401,6 +2502,32 @@ def main(argv=None):
     )
     args = ap.parse_args(argv)
     batch_number = args.round + 1 if args.batch_number is None else args.batch_number
+
+    # Objective 2's form has to be fixed before any data is loaded, because
+    # the loaders build it. Views of a batch's frozen predictions follow the
+    # form those predictions were made in; a new fit uses m * e**2.
+    measured_view = (args.measured_round2 or args.measured_round3
+                     or args.measured_round4)
+    form = args.rebound_form
+    if measured_view:
+        if form == "me2":
+            ap.error("the round-2/3/4 predictions were made in mJ (e * m * g * "
+                     "h), so their predicted-vs-measured views exist only in "
+                     "--rebound-form me")
+        form = "me"
+    elif form is None and (args.plot_only or args.prototype_next_round):
+        cols = pd.read_csv(
+            BO_DIR / f"t3-prism-bo-suggestions-round{args.round}.csv", nrows=0
+        ).columns
+        carried = [k for k, v in REBOUND_FORMS.items()
+                   if f"pred_{v['name']}_mean" in cols]
+        if not carried:
+            ap.error(f"suggestions for run {args.round} carry no rebound "
+                     "prediction column; pass --rebound-form")
+        form = carried[0]
+    form = form or "me2"
+    set_rebound_form(form)
+    print(f"Objective 2: {obj2_name} ({OBJ2_UNIT}, --rebound-form {form}).")
 
     X1, y1, labels1, masses1, pending = load_training_data(args.results, args.design)
     X2, y2, labels2, masses2, trial_of = load_round2_training_data()
@@ -2418,7 +2545,7 @@ def main(argv=None):
                               or args.measured_round4):
         ap.error("--per-gram is a display mode: use it with --plot-only, "
                  "--measured-round2, --measured-round3 or --measured-round4 "
-                 "(the BO fit stays in absolute mJ)")
+                 "(the BO fit stays in absolute units)")
     # weighed mass per tested article, for the per-gram display division
     mass_of = {lab.split(" ")[0]: m for lab, m in zip(labels, masses)}
     if args.per_gram:
@@ -2841,10 +2968,10 @@ def main(argv=None):
             row[f"pred_{metric}_mean"] = f_mean[metric][j]
             row[f"pred_{metric}_sd"] = float(np.sqrt(f_cov[metric][metric][j]))
         # implied rebound fraction at the target mass, for comparison with the
-        # raw e_rebound column of the results CSV
-        row["pred_e_rebound_approx"] = row[f"pred_{obj2_name}_mean"] / (
-            args.target_mass_g * G_M_S2 * DROP_H_M
-        )
+        # raw e_rebound column of the results CSV (under m * e**2, the square
+        # root of the predicted mean, so only approximately the mean of e)
+        row["pred_e_rebound_approx"] = float(rebound_fraction(
+            row[f"pred_{obj2_name}_mean"], args.target_mass_g))
         # as-printed geometry under the constant-printed-mass projection at
         # this article's own infill, with PR #35's two printability checks
         # evaluated on it
@@ -2882,7 +3009,7 @@ def main(argv=None):
         f"\nBest-predicted specimen of the batch: trial "
         f"{int(best['trial_index'])} (predicted {obj1_name} "
         f"{best[f'pred_{obj1_name}_mean']:.3f}, {obj2_name} "
-        f"{best[f'pred_{obj2_name}_mean']:.2f} mJ), "
+        f"{best[f'pred_{obj2_name}_mean']:.2f} {OBJ2_UNIT}), "
         + (f"adding {best_hvi:.3f} of predicted hypervolume over the "
            f"measured front at reference {HV_REF}."
            if best_hvi > 0 else

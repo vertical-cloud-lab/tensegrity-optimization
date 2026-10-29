@@ -12,10 +12,13 @@ suggests the next print batch.
   fully Bayesian SAASBO, batch, existing data, visualization). Ingests the
   measured drop results, attaches them as completed Ax trials, attaches
   printed-but-untested specs as pending trials, and records the next
-  suggested batch. The rebound objective is the absolute energy returned to
-  the payload per drop (`e_reb_mJ = e_rebound * m_printed * g * h`), computed
+  suggested batch. From 2026-10-29 the rebound objective is the mass-weighted
+  rebound index `m_e2_mg = 1000 * m_printed * e_rebound**2` (mg), computed
   from each article's own weighed mass, and its noise folds in the
-  print-to-print mass scatter measured from the spec-08 triplicate. See the
+  print-to-print mass scatter measured from the spec-08 triplicate. Batches 2
+  to 5 were generated with the first-power form `e_reb_mJ = e_rebound *
+  m_printed * g * h` (mJ per drop), which `--rebound-form me` still selects;
+  see "Objective 2 is m * e^2 from 2026-10-29" below. See the
   docstring for the objective rationale (why `t180` stays a ratio) and the
   seven documented deviations from the rendered template. From round 3 the
   search space also carries six print-process parameters, with the four
@@ -905,10 +908,12 @@ the front.
 
 ## Pareto-front evolution per batch
 
-`t3_prism_front_evolution.py` recomputes the cumulative front and its
-dominated hypervolume (reference t180 = 1.35, rebound = 15 mJ, the
-reference every HV number on PR #102 uses) after each measured batch,
-from the committed CSVs only:
+`t3_prism_front_evolution.py --rebound-form me` recomputes the cumulative
+front and its dominated hypervolume after each measured batch, from the
+committed CSVs only. This table is in the first-power form the batches
+were generated with, at the reference every HV number on PR #102 uses
+(t180 = 1.35, rebound = 15 mJ). The same fronts under m * e^2 are in the
+next section.
 
 | after batch | n | HV | gain | best t180 | min rebound | entered / left |
 |---|---|---|---|---|---|---|
@@ -1040,6 +1045,111 @@ writes the 18 per-trial STLs, the manifest with the rendered-mass
 verification, and the H2D MM 3mf with the filament settings and all 18
 per-part infill overrides baked; follow with the headless BambuStudio
 slice check per the round-4 section).
+
+## Objective 2 is m * e^2 from 2026-10-29
+
+Requested on PR #97 (comment of 2026-10-29): the two objectives are now
+`t180` and the mass-weighted rebound index `m_e2_mg = 1000 * m * e**2`
+(mg), both minimized. `e` is the usual `e_rebound = g * t_second /
+(2 * dv)`, the fraction of the impact velocity returned at the top
+vertex. Squaring it weights rebound the way kinetic energy scales, and it
+halves the leverage of mass (ranking by `m * e**2` is ranking by
+`sqrt(m) * e`). The index stops short of `g * h` on purpose. `m * e**2 *
+g * h` would be the kinetic energy of the whole article at the hop speed,
+an upper bound on what is returned, because only the top-vertex
+subassembly flies (Edison audit, PR #97 commit `fb1917c`).
+
+What changed in the code:
+
+- `REBOUND_FORMS` in `t3_prism_bo_campaign.py` holds both forms, and
+  `set_rebound_form` switches the loaders, the noise model, the axis
+  labels, the units and the hypervolume reference together. The SEM is
+  `m_e2_mg * hypot(2 * e_sem / e, 0.457 / m)`: the square doubles the
+  relative weight of the per-drop SEM of `e`.
+- The command line defaults to `me2` for a new fit. `--measured-round2/3/4`
+  always use `me`, because the predictions they compare against were made
+  in mJ, and `--plot-only` / `--prototype-next-round` follow whichever form
+  the suggestions CSV carries, so every committed figure through run 5
+  redraws byte for byte (checked: `--plot-only --round 5` and
+  `--measured-round4 --no-animation` leave the working tree clean).
+- The module-level default stays `me`, so the diagnostics and replicate
+  scripts, whose committed outputs and frozen predictions are in mJ, keep
+  reproducing. Re-running LOGO-CV under `me2` is still to do.
+- The hypervolume reference under `me2` is (1.35, 50 mg): 6lhxfy, the worst
+  article through batch 2 on rebound, sits at 46.95 mg, as its 13.93 mJ sat
+  under the 15 mJ reference.
+
+### The fronts under m * e^2
+
+`python bo/t3_prism_front_evolution.py` (default `--rebound-form me2`)
+writes `t3-prism-bo-front-evolution-me2.csv` and
+`figures/t3-prism-bo-front-evolution-me2.png`; first prints, as in the
+first-power table above:
+
+| after batch | n | HV (1.35, 50 mg) | gain | best t180 | min m e^2 | entered / left |
+|---|---|---|---|---|---|---|
+| 1 Sobol | 8 | 14.721 | baseline | 0.893 | 8.11 mg | 6lhxfy 6nheas bpx68c ajhby6 |
+| 2 r2d2c | 17 | 16.976 | +15.3 pct | 0.893 | 3.87 mg | + r2d2c1/2/6/7, - 6nheas bpx68c |
+| 3 drran | 26 | 17.133 | +0.9 pct | 0.893 | 3.87 mg | + drran3/5/8, - r2d2c2 |
+| 4 corny | 35 | 23.020 | +34.4 pct | 0.803 | 3.87 mg | + corny6/7, - 6lhxfy ajhby6 drran8 r2d2c1 r2d2c7 |
+
+Total gain over the seed front: +56.4 percent (+64.7 under the first
+power). The final first-print front is the same five articles under both
+forms (corny7, corny6, drran5, drran3, r2d2c6), every one BO-chosen. The
+difference along the way is ajhby6, which the square keeps on the front
+until batch 4. On design means (repeat pairs collapsed, the convention of
+the round-5 section) the front is corny7 (0.803, 20.0 mg), corny6 (0.911,
+7.5), corny4 (1.047, 4.1) and r2d2c6 (1.055, 3.9). r2d2c2 drops out, as
+the PR #97 comparison (`scripts/analysis/pareto_rebound_index_variants.py`
+on that branch) found.
+
+### Batch 5 regenerated under m * e^2 (run 6)
+
+Generated by `python bo/t3_prism_bo_campaign.py --round 6 --batch-number 5`
+(8 minutes on 4 CPU cores). It used the same 44 completed + 2 pending
+trials, the same 20.23 g target, the same seed and the same filament point
+as run 5 (point 2 of the Sobol sequence). Run 6 supersedes run 5's batch, which was never printed, the
+same way run 3 superseded run 2. Files: `t3-prism-bo-suggestions-round6.csv`
+(trials 55-63), `t3-prism-bo-round6-plate-recipe.md`,
+`t3-prism-bo-ax-client-round6.json`,
+`figures/t3-prism-bo-round6-{pareto,process-space}.png`. Run 5's files and
+its rendered print files stay as they were. **Do not print the round-5
+STLs/3mf if the campaign is following m * e^2.** The run-6 print files have
+not been rendered yet (`t3_prism_printed_mass_plate.py` on the run-6 CSV,
+about 25 minutes of OpenSCAD).
+
+The rebound posterior is still flat. Every candidate is predicted at
+19.4 +/- 19.7 mg, the pooled mean, just as run 5 predicted 8.73 +/-
+4.10 mJ for all nine. The rebound model still claims nothing beyond the
+mean, so the acquisition is choosing on t180 and on the shape of the
+measured front. What moved is the split between the two families run 5
+also used:
+
+| | wide high-twist thin-cable (corny6/7 corner) | tall low-twist thick-cable (corny4 corner) |
+|---|---|---|
+| run 5 (`me`) | 3 (t56, t59, t63) | 6 |
+| run 6 (`me2`) | 6 (t55, t57-t60, t62) | 3 (t56, t61, t63) |
+
+The wide family costs printability. Six of nine articles project to
+2.51-2.78 mm cables as printed, below the 3.0 mm self-bridging floor, and
+trials 57 and 59 exceed the 250 cm^3 envelope. Run 5 had three sub-floor
+cables and no envelope violations. Both are flagged, not dropped, as in every
+earlier round. Best-predicted: trial 55 (predicted t180 1.036 +/- 0.101),
+by lowest predicted t180, since no candidate's predicted means improve the
+measured front.
+
+How much of the flip is the objective? Run 5 was generated on an earlier
+software stack, so the same command was rerun here with `--rebound-form me`
+(same data, seed and settings; suggestions kept as
+`t3-prism-bo-suggestions-round6-control-me.csv`, other outputs discarded).
+That control gives 4 wide, 4 tall and 1 intermediate design (t63: R 27,
+twist 60 deg), 4 sub-floor cables and 1 envelope violation, with predicted
+t180 1.036-1.039 against run 5's 1.018-1.030. So part of the difference
+between runs 5 and 6 comes from the environment (library versions and MCMC
+sampling, which `--seed` does not fully fix), and against the control the
+square adds two more wide designs. With the rebound posterior flat under
+both forms, the batch composition is only loosely tied to the choice of
+form, and it moves between reruns.
 
 ## Replicate study (3 designs x 9 articles, proposed 2026-09-23, print files 2026-09-28)
 
