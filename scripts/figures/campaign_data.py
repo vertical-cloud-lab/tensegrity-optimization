@@ -8,9 +8,12 @@ refit) and reproduces the campaign branch's own bookkeeping
 * the 35 articles of the four measured batches, each repeated batch-3
   design at its first print (drran), and the unmapped seed article amdjwm
   left out because it has no weighed mass;
-* the second objective E_reb = e * m * g * h in mJ per drop, where e is the
-  session's mean rebound fraction (column ``e_rebound_mean``), m the
-  article's weighed mass, g = 9.80665 m/s^2 and h = 1.524 m (60 in);
+* the second objective, the mass-weighted rebound index I_reb = m * e**2
+  in mg, where e is the session's mean rebound fraction (column
+  ``e_rebound_mean``) and m the article's weighed mass, and its first-power
+  form E_reb = e * m * g * h in mJ per drop (g = 9.80665 m/s^2, h = 1.524 m,
+  60 in), which batches 2 to 4 were recommended under and which the
+  archived predictions are in;
 * the print geometry of each article (post-projection R, H, twist, strut
   and cable diameters), taken from the drop-results tables, which carry the
   as-printed design values.
@@ -52,8 +55,8 @@ def load_articles() -> list[dict]:
     """All articles that enter the campaign front, in batch then file order.
 
     Each dict carries: print_id, batch, spec (seed only), trial (batches
-    2 to 4), mass_g, t180, t180_sd, e_reb_mJ, drift (bool), and the print
-    geometry R, H, twist, d_s, d_t (mm, degrees).
+    2 to 4), mass_g, t180, t180_sd, i_reb_mg, e_reb_mJ, drift (bool), and
+    the print geometry R, H, twist, d_s, d_t (mm, degrees).
     """
     seed_key = {r["print_id"]: r for r in read_csv("t3-prism-bo-batch-print-key.csv")}
     out = []
@@ -76,6 +79,7 @@ def load_articles() -> list[dict]:
                 "mass_g": mass,
                 "t180": float(row["t180_mean"]),
                 "t180_sd": float(row["t180_sd"]),
+                "i_reb_mg": 1000.0 * mass * e ** 2,
                 "e_reb_mJ": e * mass * G_M_S2 * DROP_H_M,
                 "drift": (row.get("t_drift_flag") or "").strip() == "True",
             }
