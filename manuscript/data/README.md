@@ -101,6 +101,21 @@ above, which predate it.
   CSVs regenerate byte-identical to the PR #97 outputs. The script's
   figures go to `figures/analysis/pareto_rebound_index_variants*.png`.
   The manuscript's Methods paragraph on e versus e² quotes these files.
+- `t3-prism-rebound-index-numbers.json` (added 2026-10-29): every
+  rebound-objective number the manuscript quotes, in both forms, the
+  mass-weighted rebound index I_reb = m·e² (mg, the second objective from
+  2026-10-29) and the first-power E_reb = e·m·g·h (mJ, the form batches 2
+  to 4 were recommended under). Written by
+  `scripts/analysis/rebound_index_numbers.py` from the drop-results
+  snapshots in this directory: per-specimen values, the first-print front
+  and hypervolume after each batch, the design-mean fronts with each
+  batch-3 design at the mean of its screened prints, and the batch-3
+  repeatability statistics. The script recomputes the E_reb numbers
+  first and exits non-zero unless they match the committed
+  `t3-prism-bo-front-evolution.csv` and
+  `t3-prism-bo-round3-three-print-stats.json`, so the I_reb numbers come
+  from the same code path. Hypervolume references: (1.35, 15 mJ) for
+  E_reb, (1.35, 50 mg) for I_reb.
 - `t3-prism-drop-count-sensitivity.csv`: the seed-session truncation
   replay (first 10, 20, 30 and 50 stabilized drops against the full
   session), copied verbatim from `bo/t3-prism-drop-count-sensitivity.csv`
