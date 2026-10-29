@@ -3,20 +3,27 @@
 
 Recomputes, from the committed drop-results CSVs only, the cumulative
 Pareto front after each physical batch (round 1 Sobol, round 2 r2d2c,
-round 3 drran, round 4 corny) and the dominated hypervolume at the
-standing reference point (t180 = 1.35, rebound = 15 mJ; the reference
-every hypervolume number quoted on PR #102 uses). Writes
+round 3 drran, round 4 corny) and the dominated hypervolume, in either
+form of the rebound objective:
 
-  bo/t3-prism-bo-front-evolution.csv        per-round table (HV, front
-                                            membership, entrants, exits)
-  bo/figures/t3-prism-bo-front-evolution.png one panel: all tested
-                                            articles + the four fronts
+* ``--rebound-form me2`` (default): m * e**2 in mg, the campaign objective
+  from 2026-10-29, at the reference point (t180 = 1.35, 50 mg). Writes
+  ``bo/t3-prism-bo-front-evolution-me2.csv`` and
+  ``bo/figures/t3-prism-bo-front-evolution-me2.png``.
+* ``--rebound-form me``: the historical e * m * g * h in mJ per drop, at
+  the standing reference (t180 = 1.35, rebound = 15 mJ; the reference every
+  hypervolume number quoted on PR #102 uses). Writes
+  ``bo/t3-prism-bo-front-evolution.csv`` (per-round table: HV, front
+  membership, entrants, exits) and
+  ``bo/figures/t3-prism-bo-front-evolution.png`` (one panel: all tested
+  articles + the four fronts), byte-identical to the committed files.
 
 Needs only pandas + matplotlib (reuses the campaign script's loaders,
 which read the committed CSVs; no Ax, no refit).
 """
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -26,15 +33,24 @@ import pandas as pd
 BO_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BO_DIR))
 
+import t3_prism_bo_campaign as camp  # noqa: E402
 from t3_prism_bo_campaign import (  # noqa: E402
     ARROW_DOWN, BO_DIR, FIG_RC, FIGURE_DPI, FRONT_BLUE, INK, LABEL_GRAY,
-    load_round2_training_data, load_round3_training_data,
-    load_round4_training_data, load_training_data, obj1_name, obj2_name,
+    REBOUND_FORMS, load_round2_training_data, load_round3_training_data,
+    load_round4_training_data, load_training_data, obj1_name,
     observed_frame,
 )
 
-# The reference point used for every HV number quoted on the PR thread.
-HV_REF = (1.35, 15.0)
+# Per form: the reference point for every HV number, the output-file tag
+# and the y-axis label (the historical one kept verbatim, so that form
+# reproduces the committed files byte for byte).
+HV_REF = REBOUND_FORMS["me"]["hv_ref"]
+FILE_TAGS = {"me": "", "me2": "-me2"}
+Y_LABELS = {
+    "me": "Rebound energy to payload /\n(mJ per drop, "
+          f"{ARROW_DOWN} is better)",
+    "me2": REBOUND_FORMS["me2"]["y_label"],
+}
 
 # One color per cumulative front, palest first (matplotlib Blues family
 # around the repo's FRONT_BLUE so the newest front reads strongest).
@@ -52,8 +68,9 @@ def pareto_mask(t: np.ndarray, e: np.ndarray) -> np.ndarray:
     return keep
 
 
-def hypervolume(t: np.ndarray, e: np.ndarray, ref=HV_REF) -> float:
+def hypervolume(t: np.ndarray, e: np.ndarray, ref=None) -> float:
     """Dominated hypervolume of the front of (t, e) under minimization."""
+    ref = HV_REF if ref is None else ref
     keep = pareto_mask(t, e)
     pts = sorted(zip(t[keep], e[keep]))
     hv, prev_t = 0.0, None
@@ -68,7 +85,21 @@ def hypervolume(t: np.ndarray, e: np.ndarray, ref=HV_REF) -> float:
     return hv
 
 
-def main() -> int:
+def main(argv=None) -> int:
+    global HV_REF
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--rebound-form", choices=sorted(REBOUND_FORMS),
+                    default="me2",
+                    help="objective 2: me2 = m * e**2 in mg (default), "
+                         "me = the historical e * m * g * h in mJ")
+    args = ap.parse_args(argv)
+    # before any loader runs: they build objective 2 in the active form
+    camp.set_rebound_form(args.rebound_form)
+    obj2_name = camp.obj2_name
+    HV_REF = camp.HV_REF
+    unit = camp.OBJ2_UNIT
+    tag = FILE_TAGS[args.rebound_form]
+
     _, y1, l1, *_ = load_training_data(
         BO_DIR / "t3-prism-bo-batch-drop-results.csv",
         BO_DIR / "t3-prism-bo-batch.csv")
@@ -92,11 +123,11 @@ def main() -> int:
         rows.append({
             "after_batch": name,
             "articles_cumulative": len(frame),
-            "hv_ref_1.35_15mJ": round(hv, 3),
+            f"hv_ref_{HV_REF[0]:g}_{HV_REF[1]:g}{unit}": round(hv, 3),
             "hv_gain_pct": (None if prev_hv is None
                             else round(100 * (hv - prev_hv) / prev_hv, 1)),
             "best_t180": round(float(t.min()), 3),
-            "min_e_reb_mJ": round(float(e.min()), 2),
+            f"min_{obj2_name}": round(float(e.min()), 2),
             "front": " ".join(member_ids),
             "entered": " ".join(sorted(set(member_ids) - prev_members)),
             "left": " ".join(sorted(prev_members - set(member_ids))),
@@ -105,7 +136,7 @@ def main() -> int:
         prev_members, prev_hv = set(member_ids), hv
 
     table = pd.DataFrame(rows)
-    out_csv = BO_DIR / "t3-prism-bo-front-evolution.csv"
+    out_csv = BO_DIR / f"t3-prism-bo-front-evolution{tag}.csv"
     table.to_csv(out_csv, index=False)
     print(table.drop(columns=["front"]).to_string(index=False))
     print(f"\nTable written to {out_csv}")
@@ -140,15 +171,14 @@ def main() -> int:
                     transform=ax.transAxes, fontsize=17, color=INK,
                     ha="left", va="center", zorder=5)
         ax.set_xlabel(f"Shock transmissibility t180 ({ARROW_DOWN} is better)")
-        ax.set_ylabel("Rebound energy to payload /\n(mJ per drop, "
-                      f"{ARROW_DOWN} is better)", rotation=0, ha="left",
+        ax.set_ylabel(Y_LABELS[args.rebound_form], rotation=0, ha="left",
                       va="bottom")
         ax.yaxis.set_label_coords(-0.035, 1.04)
         ax.spines[["top", "right"]].set_visible(False)
         ax.spines["left"].set_position(("outward", 14))
         ax.spines["bottom"].set_position(("outward", 14))
         fig.subplots_adjust(left=0.11, right=0.97, top=0.86, bottom=0.13)
-        out_png = BO_DIR / "figures" / "t3-prism-bo-front-evolution.png"
+        out_png = BO_DIR / "figures" / f"t3-prism-bo-front-evolution{tag}.png"
         fig.savefig(out_png, dpi=FIGURE_DPI, facecolor="white")
         plt.close(fig)
     print(f"Figure saved to {out_png}")
