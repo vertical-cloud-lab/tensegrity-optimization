@@ -1,9 +1,12 @@
-"""Teaching figure for the rebound-energy objective of PR #102.
+"""Teaching figure for the rebound objective of the BO campaign (PR #102).
 
 One barebones figure (style requested in PR #97 review): the top-vertex
 record with the hop delay t_second marked, and the two-step conversion to
 the BO objective set large beside the plot, worked with real numbers from
-one article of the T-3_01 Sobol batch.
+one article of the T-3_01 Sobol batch. The objective is the mass-weighted
+rebound index m * e_rebound**2 (mg) adopted on PR #97 on 2026-10-29;
+batches 2 to 4 were generated with the first-power form e_rebound * m * g *
+h (mJ), quoted in the footnote for comparison.
 
 The trace is an illustrative cartoon parameterized with representative
 campaign values; it is not measured data. The worked numbers are the
@@ -98,6 +101,7 @@ def main():
     v_sep = G * T_SECOND / 2.0
     e_reb = v_sep / DV
     e_reb_mj = e_reb * (MASS_G / 1e3) * G * DROP_H_M * 1e3
+    i_reb_mg = MASS_G * 1e3 * e_reb**2
 
     t = np.linspace(-2e-3, 40e-3, 8000)
     ms = t * 1e3
@@ -105,7 +109,7 @@ def main():
     fig = plt.figure(figsize=(11.2, 5.6))
     fig.text(0.045, 0.97,
              "We time the hop of the top vertex, turn it into a speed,\n"
-             "then weight it by the print's mass  (trace illustrative)",
+             "then square it and weight it by the print's mass  (trace illustrative)",
              fontsize=17, color=INK, ha="left", va="top", linespacing=1.4)
     ax = fig.add_axes([0.07, 0.13, 0.50, 0.62])
 
@@ -143,8 +147,8 @@ def main():
              fontsize=17, color=INK, ha="left", va="center")
 
     fig.text(xc + 0.065, 0.40,
-             "$e_{rebound} \\cdot m g h \\ \\approx$ "
-             f"$\\mathbf{{{e_reb_mj:.1f}\\ mJ}}$",
+             "$m \\cdot e_{rebound}^{2} \\ \\approx$ "
+             f"$\\mathbf{{{i_reb_mg:.1f}\\ mg}}$",
              fontsize=19, color=INK, ha="center", va="center")
     fig.text(xc + 0.065, 0.30,
              "the BO objective, minimized",
@@ -152,8 +156,8 @@ def main():
 
     fig.text(xc + 0.065, 0.175,
              f"worked for article bag26v: $\\Delta v$ = {DV:.2f} m/s\n"
-             f"from the bottom sensor, m = {MASS_G:.1f} g weighed,\n"
-             "h = 60 in drop height",
+             f"from the bottom sensor, m = {MASS_G:.1f} g weighed.\n"
+             f"Batches 2 to 4 used $e_{{rebound}} \\cdot m g h$ = {e_reb_mj:.1f} mJ",
              fontsize=10.5, color=MUTED, ha="center", linespacing=1.6)
 
     fig.savefig(OUT / "primer_fig4_rebound_energy.png", dpi=160)
