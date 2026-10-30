@@ -60,6 +60,29 @@ L = {
     "issue36_photo": f"{REPO}/issues/36#issuecomment-4509083060",
     "issue36_bungee": f"{REPO}/issues/36#issuecomment-4546364370",
     "issue92": f"{REPO}/issues/92",
+    "pin_halt": f"{REPO}/issues/92#issuecomment-5183508899",
+    "pin_fixed": f"{REPO}/issues/92#issuecomment-5198107974",
+    "pin_closed": f"{REPO}/issues/92#issuecomment-5272416211",
+    "liftoff": f"{REPO}/issues/36#issuecomment-4545983664",
+    "height77": f"{REPO}/issues/36#issuecomment-4606191756",
+    "sens_default": f"{REPO}/pull/74#issuecomment-4663450421",
+    "dytran": f"{REPO}/pull/74#issuecomment-4792400480",
+    "pr67": f"{REPO}/pull/67",
+    "vertex_fell": f"{REPO}/pull/67#issuecomment-4783408053",
+    "halfseat": f"{REPO}/pull/67#issuecomment-4867769577",
+    "rod_tie": f"{REPO}/pull/67#issuecomment-4870839517",
+    "ch5_fell": f"{REPO}/pull/67#issuecomment-4872786485",
+    "rotate": f"{REPO}/pull/35#issuecomment-4895789291",
+    "tape_entrance": f"{REPO}/pull/67#issuecomment-4918818168",
+    "handle": f"{REPO}/pull/67#issuecomment-4938319387",
+    "overload": f"{REPO}/pull/82#issuecomment-4983665345",
+    "hook_fixed": f"{REPO}/pull/86#issuecomment-5051832087",
+    "reenable": f"{REPO}/pull/86#issuecomment-5121788190",
+    "tp4_cleared": f"{REPO}/pull/86#issuecomment-5347154331",
+    "pu_stick": f"{REPO}/issues/88#issuecomment-5134564783",
+    "issue91": f"{REPO}/issues/91",
+    "video_auto": "https://youtu.be/TXerxMYEsDM",
+    "video_tp4db": "https://youtu.be/BSK_UcERTVw",
     "m23": blob(EQUIP, "equipment/lansmont-m23/README.md"),
     "m23_sheet": blob(EQUIP, "equipment/lansmont-m23/M23_Data_Sheet_official.pdf"),
     "m23_photo": blob(EQUIP, "equipment/lansmont-m23/images/m23_lansmont_datasheet_photo.png"),
@@ -87,7 +110,8 @@ L = {
 }
 
 # Figure numbers, in order of appearance (SOP.figure checks the order).
-FIGS = {"workspace": 1, "m23": 2, "setup": 3, "table": 4, "cable": 5, "tp4": 6, "impact": 7}
+FIGS = {"workspace": 1, "m23": 2, "setup": 3, "console": 4, "pins": 5, "table": 6, "cable": 7, "tp4": 8,
+        "impact": 9}
 
 NAVY = RGBColor(0x1F, 0x38, 0x64)
 GRAY = RGBColor(0x59, 0x59, 0x59)
@@ -528,7 +552,7 @@ def content(s: SOP):
                       "Test Partner 4 (TP4) data recorder ({PR #28|" + L["pr28"] + "}, "
                       "{issue #27|" + L["issue27"] + "})"],
         ["Location", "CB 152A (Smash Lab)"],
-        ["Prepared by", "Marcus Madsen, Jinkwan [last name]"],
+        ["Prepared by", "Marcus Madsen, Jinkwan Han"],
         ["Reviewed by", "[name, role, date]"],
         ["Approved by", "[supervisor name], [date] (signatures in section 19)"],
         ["Next review", "[date, for example one year after approval, or after any incident]"],
@@ -579,7 +603,7 @@ def content(s: SOP):
     s.h2("1.2 Before every drop")
     s.checklist([
         ("Block and specimen retained. Attachment checked by hand.", "9.1"),
-        ("Accelerometers tight. Cables clamped, slack loop clear of the carriage, guide rods, "
+        ("Accelerometers tight. Cables clamped, slack loop clear of the drop block, guide rods, "
          "brakes and absorber over the full travel and rebound.", "9.3, 9.4"),
         ("Drop height, mass and pressure match the test plan and the approved limits.", "8"),
         ("TP4 armed with the right channels, trigger and session name. Camera recording, if used.", "11"),
@@ -589,7 +613,7 @@ def content(s: SOP):
     ])
     s.h2("1.3 After every drop")
     s.checklist([
-        ("Carriage is held by the brakes and all motion has stopped before anyone approaches.", "12.2"),
+        ("Drop block is held by the brakes and all motion has stopped before anyone approaches.", "12.2"),
         ("Capture checked in the TP4: impact in the record, no channel at full scale, no flat or "
          "stepping channel.", "11, 15"),
         ("Specimen, sensors, cables and fixture inspected. Anything abnormal recorded.", "15"),
@@ -597,7 +621,7 @@ def content(s: SOP):
     ])
     s.h2("1.4 End of session, or before leaving the machine")
     s.checklist([
-        ("Carriage lowered to [rest position]. [Mechanical restraint] in place.", "16.3"),
+        ("Drop block lowered to [rest position]. [Mechanical restraint] in place.", "16.3"),
         ("Air supply closed and vented. Gauge reads 0 psi.", "16.2"),
         ("Controller and machine power off.", "16.3"),
         ("Safety key removed and stored at [location].", "7.1, 16.3"),
@@ -619,29 +643,35 @@ def content(s: SOP):
     s.label("Current status")
     s.p("Drop tower use was halted on 2026-10-19, after the cable of the 10,000 g single-axis "
         "accelerometer (channel 5, CH5) broke at its connector ({issue #115|" + L["halt"] + "}, "
-        f"Figure {FIGS['cable']}). The cable had been intermittent for an hour on 2026-10-17 before it failed "
-        "({CH5 fault analysis|" + L["ch5"] + "}). [Restart condition and who approves it.]")
+        f"Figure {FIGS['cable']} (b)). The cable had been intermittent for an hour on 2026-10-17 before it failed "
+        "({CH5 fault analysis|" + L["ch5"] + "}). Use was also halted on 2026-08-04, when a guide-rod locking pin "
+        "broke and the tower turned out to run with its pins out of their housing ({issue #92|" + L["pin_halt"]
+        + "}). [Restart condition and who approves it.]")
 
     # --------------------------------------------- 3 definitions and roles
     s.h1("3. Definitions and roles")
     s.label("Definitions")
     s.table(["Term", "Meaning in this SOP"], [
         ["Drop tower", "The Lansmont Model 23 shock test system in CB 152A: frame, guide rods, "
-                       "hoist, latch, carriage, brakes, absorber and controller."],
-        ["Carriage (drop mass)", "The table that is raised and dropped, with everything fastened to it. "
-                                 "[Confirm the term used on the machine.]"],
-        ["Block", "[Define: for example the fixture block fastened to the carriage table that the "
-                  "specimen and base plate sit on.]"],
-        ["Hoist (pulley)", "Raises the carriage to the drop height. [Confirm: chain hoist on the top "
+                       "hoist, latch, drop block, brakes, absorber and controller."],
+        ["Drop block (carriage, drop mass)", "The block that the hoist raises, the latch holds and releases, "
+                                             "and the brakes catch, with everything fastened to it. The "
+                                             "specimen sits on it."],
+        ["Guide-rod locking pins", f"Two pins that go through cross-holes in the guide rods to hold up the raised "
+                                   f"drop block while someone works under it, for example to change the absorber "
+                                   f"mat. When not in use they sit in their housing, which is part of the tower's "
+                                   f"safety circuit (Figure {FIGS['pins']})."],
+        ["Hoist (pulley)", "Raises the drop block to the drop height. [Confirm: chain hoist on the top "
                            "of the frame.]"],
-        ["Latch", "Holds the carriage at the drop height until release. The release hook is part of it."],
-        ["Brakes", "The anti-rebound brakes that catch the carriage after it bounces off the absorber, "
+        ["Latch", "Holds the drop block at the drop height until release. The release hook is part of it."],
+        ["Brakes", "The anti-rebound brakes that catch the drop block after it bounces off the absorber, "
                    "so it does not strike a second time."],
-        ["Absorber (programmer)", "The material stack the carriage strikes, which shapes the shock pulse: "
-                                  "felt, cardboard or polyurethane sheet in this project."],
-        ["Bungee cords", "Elastic cords that can be attached to the carriage to pull it down faster than "
-                         "free fall. They store energy while the carriage is raised."],
-        ["Safety key", "[Describe the key, where it goes in, and what it disables.]"],
+        ["Absorber (mat, programmer)", "The material the drop block strikes, which shapes the shock pulse: "
+                                       "felt, cardboard or polyurethane sheet in this project."],
+        ["Bungee cords", "Elastic cords that can be attached to the drop block to pull it down faster than "
+                         "free fall. They store energy while the drop block is raised."],
+        ["Safety key", f"[Confirm: the key in the System Power OFF/ON/START switch on the TouchTest Shock "
+                       f"console (Figure {FIGS['console']}). Describe what it disables.]"],
         ["Release controller", "The one person who controls the release for a drop (section 12.1)."],
         ["Exclusion zone", "The area around the tower that must be clear of people during a drop "
                            "(section 6.3)."],
@@ -656,11 +686,11 @@ def content(s: SOP):
     s.table(["Role", "Who", "Responsibilities"], [
         ["Supervisor", "[name, for example Jeffrey Hill]", "Approves this SOP, the operating limits, "
          "changes to either, and restarting after an incident. Receives incident notifications."],
-        ["SOP owners", "Marcus Madsen, Jinkwan [last name]", "Keep this SOP, the test log and the "
+        ["SOP owners", "Marcus Madsen, Jinkwan Han", "Keep this SOP, the test log and the "
          "incident register up to date."],
         ["Operator", "Authorized people (section 18)", "Set up, run and shut down tests by this SOP."],
         ["Release controller", "One operator per session", "Holds the safety key during the drop "
-         "sequence, gives the calls, releases the carriage."],
+         "sequence, gives the calls, releases the drop block."],
         ["Observer", "[optional or required]", "Watches the exclusion zone and the cables during drops "
          "and calls \"Stop\" if needed."],
     ], [1.4, 1.8, 3.3])
@@ -709,38 +739,41 @@ def content(s: SOP):
         ["Maximum velocity change", "24 to 32 ft/s (7.3 to 9.7 m/s)"],
         ["Maximum payload", "80 lb (36 kg)"],
         ["Table size", "9.06 in by 9.06 in (23 cm by 23 cm)"],
-        ["Air supply", "Plant air at 90 psi (6.2 bar). [Regulator setting used in the lab.]"],
+        ["Air supply", "Plant air at 90 psi (6.2 bar), through filter-regulators on the wall behind the "
+                       "tower. [Regulator setting used in the lab.]"],
         ["Machine power", "200 to 240 VAC three-phase at 4 A or more, or 380 to 480 VAC three-phase. "
                           "[Disconnect location.]"],
-        ["Emergency stop", "[Equipped? Location? See section 14.]"],
+        ["Emergency stop", "[Equipped? Is it the round button on the console? See section 14.]"],
         ["Manuals", "[Where the M23 and TP4 manuals are kept. The TP4 Quick Start Guide and User's Guide "
                     "were attached to the GitHub issue that started the drop-test protocol.]"],
     ], [1.45, 3.25], font=9, container=left)
     s.figure("m23", FIG / "lansmont-m23-vendor-photo.jpg", 1.25,
-             "Lansmont Model 23: hoist at the top, carriage on the guide rods, brake and air components "
+             "Lansmont Model 23: hoist at the top, drop block on the guide rods, brake and air components "
              "at the base. [Replace with a labeled photo of the lab's machine.]",
              "Vendor photo, {M23 data sheet|" + L["m23_vendor"] + "}, October 2025.", container=right)
     d.add_paragraph().paragraph_format.space_after = Pt(2)
     s.h2("5.2 Instrumentation")
     s.p(f"Channel use in the 2026 campaigns, from the TP4 settings re-entered on 2026-08-18 (Figure {FIGS['tp4']}) and "
-        "the per-campaign records on {PR #86|" + L["pr86"] + "}. Sensor models, serial numbers and "
-        "calibration sheets have not been recorded yet. Fill them in here and in table 9.2.")
+        "the per-campaign records on {PR #86|" + L["pr86"] + "}. The Dytran model and serial number are from "
+        "{PR #74|" + L["dytran"] + "}; the CH5 model is read off its case (Figure 1 (c)). Ranges, shock ratings "
+        "and calibration dates go in the table in section 9.2.")
     s.table(["Channel", "Sensor", "Location and mounting used", "TP4 full scale", "Sensitivity", "Role"], [
-        ["CH2, CH3, CH4", "High-range tri-axis accelerometer [model, serial]",
+        ["CH2, CH3, CH4", "Dytran 3133A4 tri-axis, SN 11799",
          "Top vertex of the specimen, in the printed key seat, held with wax; cable clamped to a rod",
          "14,492.8 / 14,992.5 / 13,624.0 G", "0.690 / 0.667 / 0.734 mV/G", "Output (\"TOP\")"],
-        ["CH5", "Single-axis accelerometer, 10,000 g class [model, serial]",
+        ["CH5", "Single-axis, 10,000 g class. Case label: PCB 350C04, SN 73149 [confirm]",
          "Base acrylic plate, taped (wax in earlier runs)", "9,442.9 G", "1.059 mV/G",
          "Input and trigger"],
         ["DAQ", "Lansmont TP4 [serial]", "[location of recorder and computer]", "", "", "Records all channels"],
     ], [0.75, 1.3, 1.75, 1.05, 0.95, 0.7], font=8.5)
     s.h2("5.3 Fixture and absorber")
     s.bullets([
-        "Specimens sit on an acrylic base plate on the carriage and are tied down to the plate bolts "
+        "Specimens sit on an acrylic base plate on the drop block and are tied down to the plate bolts "
         "with cords (Figure 3).",
-        "Absorber stacks used so far: 4 felt sheets plus 1 cardboard sheet (the standard 60 in campaign "
-        "setup), 5 felt sheets, and a 1/2 in polyurethane sheet ({print-defects setup|" + L["printdefects"]
-        + "}, {pre/post grease test|" + L["grease"] + "}).",
+        "Absorber mats used so far: 4 felt sheets plus 1 cardboard sheet, 1/4 in polyurethane sheet "
+        "(McMaster 8514K521), and a 1/2 in polyurethane sheet (McMaster 8514K625), which alone has been the "
+        "campaign mat since 2026-08-06 ({print-defects setup|" + L["printdefects"] + "}, "
+        "{pre/post grease test|" + L["grease"] + "}).",
         "Bungee cords: attached in the first drops ({issue #36|" + L["issue36_bungee"] + "}), removed "
         "for the later campaigns.",
         "An earlier specimen cage used two acrylic plates on four 18 in threaded rods "
@@ -760,13 +793,13 @@ def content(s: SOP):
     s.h1("6. Hazards, eye protection and personnel clearance")
     s.h2("6.1 Hazards")
     s.table(["Hazard", "Where", "Controlled in"], [
-        ["Falling carriage: crushing and pinching", "Under and around the carriage, between carriage, "
+        ["Falling drop block: crushing and pinching", "Under and around the drop block, between drop block, "
          "absorber and base", "7.2, 6.3, 16"],
-        ["Stored energy: raised carriage, stretched bungee cords, compressed air", "Hoist, latch, "
+        ["Stored energy: raised drop block, stretched bungee cords, compressed air", "Hoist, latch, "
          "bungee attachment points, air lines and brakes", "7, 14, 16.2"],
         ["Ejected parts: broken specimens, loose sensors, fixture pieces", "Around the table", "6.2, 6.3, 9"],
         ["Pinch points at the latch, hoist and brakes", "Moving parts of the tower", "7.1"],
-        ["Cable snagging and whipping", "Sensor cables between carriage and frame", "9.4"],
+        ["Cable snagging and whipping", "Sensor cables between drop block and frame", "9.4"],
         ["Compressed air (90 psi)", "Hoses, fittings, brake cylinders", "10, 16.2"],
         ["Electrical (three-phase machine power)", "Machine and controller", "16.3"],
         ["Noise from impacts", "Room", "[hearing protection: required or optional?]"],
@@ -776,7 +809,7 @@ def content(s: SOP):
     s.section_block(
         procedure=[
             "Everyone in CB 152A wears safety glasses with side shields marked Z87+ (impact rated to ANSI "
-            "Z87.1) whenever [the safety key is in, the system is pressurized, or the carriage is raised].",
+            "Z87.1) whenever [the safety key is in, the system is pressurized, or the drop block is raised].",
             "Prescription glasses count only if they are Z87+ rated. Otherwise wear goggles or "
             "over-glasses over them.",
             "[A face shield is required when: for example testing specimens that can shatter, or "
@@ -797,13 +830,15 @@ def content(s: SOP):
     s.section_block(
         procedure=[
             "Exclusion zone: [distance, for example 1 m] around the tower, marked with [floor tape or a "
-            "barrier]. Nobody enters it from the \"Ready?\" call until the carriage is caught and all "
+            "barrier]. Nobody enters it from the \"Ready?\" call until the drop block is caught and all "
             "motion has stopped (section 12.2).",
             "Operator location during a drop: [at the controller, location], outside the zone, with a "
             "clear view of the tower and the cables.",
             "Guard: [describe the shield or enclosure and when it must be closed].",
             "Tie specimens to the base plate (Figure 3) and clamp sensor cables so a broken specimen or a "
             "loose sensor stays on the table.",
+            "Start the camera with its remote from outside the zone (a remote was bought partly for this, "
+            "{issue #91|" + L["issue91"] + "}).",
             "Tell everyone else in the room before each drop or run.",
         ],
         verify=[
@@ -824,54 +859,78 @@ def content(s: SOP):
                  "from raising and the latch from releasing. Specify when the key may be reinserted.")
     s.section_block(
         procedure=[
-            "Remove the safety key from [location on the controller] before any work on the machine: "
-            "mounting a specimen or sensor, adjusting cables, changing the absorber, inspecting, "
-            "cleaning or troubleshooting.",
-            "The person working on the machine keeps the key [in a pocket or on a lanyard] until the work "
-            "is done. Nobody else reinserts it.",
-            "Reinsert the key only when everyone is out of the exclusion zone, tools and loose items are "
-            "off the machine, checklist 1.2 is complete up to the \"Ready?\" call, and the person who "
-            "held the key agrees.",
+            f"Remove the safety key from [the System Power key switch on the console (Figure {FIGS['console']}), "
+            "confirm] before any work on the machine: mounting a specimen or sensor, adjusting cables, changing "
+            "the absorber mat, inspecting, cleaning or troubleshooting.",
+            "The person working on the machine keeps the key [in a pocket or on a lanyard] until the work is "
+            "done. Nobody else reinserts it.",
+            "Reinsert the key only when everyone is out of the exclusion zone, tools and loose items are off the "
+            "machine, both locking pins are back in their housing (section 7.2), checklist 1.2 is complete up to "
+            "the \"Ready?\" call, and the person who held the key agrees.",
             "The spare key is kept by [supervisor] at [location].",
         ],
         verify=[
-            "At the start of each session, and after any maintenance or wiring change, with the key out "
-            "and the carriage resting on [its supports]: press the hoist raise control. The carriage must "
-            "not move.",
-            "With the key out, operate the release control [describe how to test this safely, for "
-            "example with the latch empty]. The latch must not open.",
-            "Record both results in the log.",
+            "At the start of each session, and after any maintenance or wiring change, with the key out and the "
+            "drop block resting on [its supports]: press the hoist raise control. The block must not move.",
+            "With the key out, operate the release control [describe how to test this safely, for example with "
+            "the latch empty]. The latch must not open.",
+            "With a locking pin out of its housing, the tower must not raise or release either [confirm the "
+            "intended behavior in the Lansmont manual]. In July and August 2026 the tower dropped with its pins "
+            "out of the housing because the safety had not been set up properly "
+            "({issue #92|" + L["pin_fixed"] + "}).",
+            "Record the results in the log.",
         ],
         stop=[
-            "The hoist raises or the latch releases with the key out. The interlock is not working: put "
-            "the machine in the secure state, tag it out, and notify the supervisor.",
+            "The hoist raises or the latch releases with the key out, or with a locking pin out of its housing. "
+            "The interlock is not working: tag the console \"Do not operate\" (as on 2026-08-04, Figure "
+            f"{FIGS['console']}), put the machine in the secure state, and notify the supervisor.",
             "The key is missing, or a second key is in use.",
         ])
-    s.box("Note:", "Removing the safety key does not hold up a raised carriage. Section 7.2 applies "
+    s.figure("console", FIG / "console-key-switch-do-not-operate-2026-08-04.jpg", 3.4,
+             "TouchTest Shock console with the System Power key switch (top right) and the \"Do not operate "
+             "(safety non-functional)\" tag used after the second locking pin broke, 2026-08-04.",
+             "Photo: Marcus Madsen, {issue #92|" + L["pin_halt"] + "}.")
+    s.box("Note:", "Removing the safety key does not hold up a raised drop block. Section 7.2 applies "
                    "whenever anyone reaches under it.", fill=WARN_FILL)
     s.h2("7.2 Supporting the raised mass")
     s.must_cover("Define the mechanical restraint required before accessing beneath it. Removal of the "
                  "safety key does not replace mechanical support of the raised mass.")
     s.section_block(
         procedure=[
-            "Never put hands, tools or any part of the body under a raised carriage that is held only by "
-            "the latch, the hoist or the brakes.",
-            "Lower the carriage to [its rest position] before working under it whenever possible.",
-            "If it must stay raised, install [the mechanical restraint: for example safety pins through "
-            "the frame, or a rigid prop rated for the carriage weight] directly under it, then remove the "
-            "safety key.",
-            "If bungee cords are attached, [detach or relax them] before working near the carriage. They "
-            "store energy while it is raised.",
-            "Remove the restraint only after everyone's hands are out and everyone is clear.",
+            "Never put hands, tools or any part of the body under a raised drop block that is held only by the "
+            "latch, the hoist or the brakes.",
+            "Lower the block to [its rest position] before working under it whenever possible.",
+            f"If it must stay raised (for example to change the absorber mat): remove the safety key, then put "
+            f"both guide-rod locking pins through the cross-holes in the guide rods under the block (Figure "
+            f"{FIGS['pins']} (a)). [Confirm the cross-hole positions and that the block rests on the pins.]",
+            "If bungee cords are attached, [detach or relax them] before working near the block. They store "
+            "energy while it is raised.",
+            f"When the work is done and everyone is clear, take both pins out and put both back in their housing "
+            f"(Figure {FIGS['pins']} (b)). Count them out loud: two pins in the housing before the key goes back "
+            f"in.",
+            "Use only the approved pins (machined from Klein 601-6 screwdrivers, 3/16 in, "
+            "{issue #92|" + L["pin_closed"] + "}). Replace a bent or cracked pin before use.",
         ],
         verify=[
-            "A second person checks that the restraint is in place before anyone reaches under.",
-            "[Record use of the restraint in the log.]",
+            "A second person checks that both pins are in the guide rods before anyone reaches under the block, "
+            "and that both are back in their housing before the key goes in.",
+            "[Record pin use in the log.]",
         ],
         stop=[
-            "No rated restraint is available.",
-            "The restraint is damaged, or the carriage moves while it is being installed.",
+            "A pin is missing, bent or cracked.",
+            "The block moves while the pins are being put in.",
+            "The tower can operate with a pin out of its housing (section 7.1).",
+        ],
+        sources=[
+            "A pin left in the guide rod during mat changes snapped when the block dropped, 2026-07-30. A second "
+            "pin broke on 2026-08-04, the tower turned out to run with its pins out of their housing, and use was "
+            "halted until the safety was set up properly on 2026-08-05 ({issue #92|" + L["issue92"] + "}).",
         ])
+    s.figure("pins", FIG / "guide-rod-locking-pins-issue92.jpg", 6.5,
+             "Guide-rod locking pins. (a) Cross-hole in a guide rod under the raised drop block, with the air "
+             "filter-regulators on the wall behind. (b) Both pins in their housing, the state required before a "
+             "drop. (c) The pin that was left in and snapped, 2026-07-30.",
+             "Photos: Marcus Madsen, {issue #92|" + L["issue92"] + "}, 2026-07-30 and 2026-08-12.")
 
     # ----------------------------------------------- 8 operating limits
     s.h1("8. Approved operating limits")
@@ -880,13 +939,14 @@ def content(s: SOP):
     s.p("The \"Used so far\" column comes from the campaign records on {PR #86|" + L["pr86"] + "}. "
         "The approved limits are for the supervisor to set.")
     s.table(["Parameter", "Approved limit", "Machine maximum (M23 data sheet)", "Used so far in this project"], [
-        ["Drop mass (carriage, fixture and specimen)", "[ ]", "80 lb (36 kg) payload", "[record the carriage mass]"],
-        ["Drop height", "[ ]", "[from the manual]", "5, 10, 13 and 60 in"],
+        ["Drop mass (drop block, fixture and specimen)", "[ ]", "80 lb (36 kg) payload", "[record the drop block mass]"],
+        ["Drop height", "[ ]", "About 77 in free fall with the bungee cords removed "
+         "({Jeffrey Hill|" + L["height77"] + "}) [confirm]", "5, 10, 13, 15, 20, 30 and 60 in"],
         ["Peak table acceleration", "[ ]", "5,000 g", "[ ]"],
         ["Air pressure", "[ ]", "90 psi (6.2 bar) supply", "[ ]"],
         ["Bungee cords", "[allowed? how many?]", "", "Attached in the first drops, removed since"],
-        ["Absorber stacks", "[approved list]", "", "4 felt + 1 cardboard; 5 felt; 1/2 in polyurethane"],
-        ["Automatic repeat drops", "[maximum drops per run]", "", "About 40 s per drop, up to 500 drops per run"],
+        ["Absorber mats", "[approved list]", "", "4 felt + 1 cardboard; 1/4 in and 1/2 in polyurethane"],
+        ["Automatic repeat drops", "[maximum drops per run]", "", "About 42 s per drop, up to 500 drops per run"],
         ["Peak reading vs. sensor range", "Below [80 %] of the sensor's range and of the TP4 full scale",
          "", "Some channels reached full scale in 2026 (section 17.3)"],
     ], [1.6, 1.4, 1.6, 1.9], font=9)
@@ -903,19 +963,24 @@ def content(s: SOP):
     s.must_cover("Specify how the block is retained and how its attachment is checked before every drop.")
     s.section_block(
         procedure=[
-            "[Describe the block and how it is fastened: bolt size, number, torque, thread locker.]",
-            "Fasten the acrylic base plate to the block with [fasteners].",
-            "Tie the specimen's bottom vertices to the plate bolts with cords (Figure 3). [Or the "
-            "approved method.]",
-            "Mark each bolt with a paint-pen line across the head and the plate (witness mark).",
+            "The drop block is held at the top by the release hook, which closes under gravity onto [the post "
+            "on the block, confirm]. Before every raise, check that the hook has fallen fully closed and "
+            "engaged. Never close it by hand with the block unsupported.",
+            "Parts fastened to the block: [describe the base plate and fixture fasteners: size, number, "
+            "torque]. Mark each bolt with a paint-pen line across the head and the plate (witness mark).",
+            "Tie the specimen's bottom vertices to the plate bolts with cords (Figure 3). [Or the approved "
+            "method.]",
+            "The absorber mat lies flat and centered under the block. Polyurethane sheets can stick to the "
+            "block; dusting them fixed this before ({issue #88|" + L["pu_stick"] + "}).",
         ],
         verify=[
-            "Before every drop: push and twist the block and plate by hand. Nothing moves, and the witness "
-            "marks line up (checklist 1.2).",
+            "Before every drop: the hook is seen to be closed on the block; the plate and fixture do not move "
+            "when pushed and twisted by hand; the witness marks line up (checklist 1.2).",
             "[Torque check every N drops or each session.]",
         ],
         stop=[
-            "The block or plate moves, a fastener is missing, or a witness mark is broken.",
+            "The hook does not close by itself (it stuck open on 2026-07-22, section 14).",
+            "Anything fastened to the block moves, a fastener is missing, or a witness mark is broken.",
             "The plate is cracked or crazed.",
         ])
     s.h2("9.2 Using proper shock accelerometers")
@@ -945,10 +1010,11 @@ def content(s: SOP):
         ])
     s.table(["Channel", "Model", "Serial", "Sensitivity", "Range (± g)", "Shock survival (± g)",
              "Calibration due"], [
-        ["CH2", "[ ]", "[ ]", "0.690 mV/G", "[ ]", "[ ]", "[ ]"],
-        ["CH3", "[ ]", "[ ]", "0.667 mV/G", "[ ]", "[ ]", "[ ]"],
-        ["CH4", "[ ]", "[ ]", "0.734 mV/G", "[ ]", "[ ]", "[ ]"],
-        ["CH5", "[PCB 350C04? confirm]", "[ ]", "1.059 mV/G", "[ ]", "[ ]", "[ ]"],
+        ["CH2 (X)", "Dytran 3133A4", "11799", "0.690 mV/G", "[ ]", "[ ]", "[calibrated 2023-04-20; due?]"],
+        ["CH3 (Y)", "Dytran 3133A4", "11799", "0.667 mV/G", "[ ]", "[ ]", "[same sensor]"],
+        ["CH4 (Z)", "Dytran 3133A4", "11799", "0.734 mV/G", "[ ]", "[ ]", "[same sensor]"],
+        ["CH5", "[PCB 350C04, confirm]", "[73149, confirm]", "1.059 mV/G", "[ ]", "[ ]",
+         "[2022 calibration sticker; due?]"],
     ], [0.7, 1.3, 0.8, 0.9, 0.85, 1.05, 0.9], font=9)
     s.h2("9.3 Accelerometer installation and handling")
     s.must_cover("Specify mounting method, appropriate mounting torque, connector handling, and protection "
@@ -958,8 +1024,10 @@ def content(s: SOP):
             "Mounting method for each location: [stud mount to a tapped hole at the torque on the sensor's "
             "data sheet, for example ___ in-lb with a torque wrench; adhesive mount; or the approved method]. "
             "Bare wax and press fits have let sensors fall off (section 17.3).",
-            "Top-vertex sensor: seat it flush in the printed key seat with wax inside the housing, and "
-            "clamp its cable to a rod so cable pull cannot drag it out of the seat.",
+            "Top-vertex sensor: seat it fully in the printed key seat with wax inside the housing, tape over "
+            "the housing entrance, and tie its cable to a rod so cable pull cannot drag it out of the seat "
+            "({half-seated sensor|" + L["halfseat"] + "}, {taped entrance|" + L["tape_entrance"] + "}).",
+            "Handle a sensor by its housing, never by its cable ({PR #67|" + L["handle"] + "}).",
             "Connectors: hand-tighten [10-32 coaxial] connectors. Never pull on the cable to disconnect, "
             "never let a connector carry the weight of the cable, and cap unused connectors.",
             "Place sensors and connectors where nothing can strike them during travel or rebound, and away "
@@ -977,7 +1045,7 @@ def content(s: SOP):
             "Readings are abnormal (section 13).",
         ])
     s.figure("table", FIG / "carriage-table-base-accelerometer.jpg", 3.9,
-             "Carriage table during the first drop tests. The red mark shows a base accelerometer next to "
+             "Drop block during the first drop tests. The red mark shows a base accelerometer next to "
              "the absorber plate. The striped elastic cords are bungee cords.",
              "Photo: {issue #36|" + L["issue36_photo"] + "} ({copy|" + L["table_photo"] + "}).")
     s.h2("9.4 Securing accelerometer cable slack")
@@ -985,13 +1053,13 @@ def content(s: SOP):
                  "snagging, pinching, or pulling on connectors.")
     s.section_block(
         procedure=[
-            "Route each cable from the sensor to a strain-relief clamp on the carriage within [100 mm] of "
+            "Route each cable from the sensor to a strain-relief clamp on the drop block within [100 mm] of "
             "the sensor, then in one loop to a fixed anchor on the frame at [location], then to the TP4.",
             "Strain relief at both ends: the clamp takes any pull before it reaches the connector. Use "
             "[cable clamps or P-clips]. Do not tape over the connector.",
             "Size the loop so it reaches the full drop height plus the rebound plus [margin] without going "
             "tight, and so it never hangs into the guide rods, brakes, latch, hoist or absorber.",
-            "Before the first drop of a session, and after any change, raise the carriage slowly to the "
+            "Before the first drop of a session, and after any change, raise the drop block slowly to the "
             "drop height while watching the cable along the whole travel.",
             "No sharp bends at the connectors. Minimum bend radius: [from the cable data sheet].",
         ],
@@ -1010,41 +1078,46 @@ def content(s: SOP):
         sources=[
             "CH5 cable fault: intermittent for an hour on 2026-10-17, then broken by 2026-10-19 "
             "({analysis|" + L["ch5"] + "}). The recommendation at the time was to reseat or replace the "
-            "cable and both connectors and give it strain relief clear of the carriage "
+            "cable and both connectors and give it strain relief clear of the drop block "
             "({lab actions|" + L["ch5_lab"] + "}).",
             "Sensor dragged out of the key seat by cable pull, fixed by clamping the cable to a rod "
             "({run 1|" + L["drift1"] + "}, {run 2|" + L["drift2"] + "}).",
         ])
-    s.figure("cable", FIG / "broken-accelerometer-cable-2026-10-19.jpg", 2.8,
-             "The CH5 (10,000 g single-axis) accelerometer cable after it broke at the connector, "
-             "2026-10-19. Drop tower use was halted after this failure.",
-             "Photo: Marcus Madsen, {issue #115|" + L["halt"] + "}.")
+    s.figure("cable", FIG / "cable-routing-and-failure.jpg", 5.4,
+             "(a) Sensor cables tied along a cage rod so a pull cannot drag the top sensor out of its seat, "
+             "2026-07-02. (b) The CH5 (10,000 g single-axis) accelerometer cable after it broke at the "
+             "connector, 2026-10-19. Drop tower use was halted after this failure.",
+             "Photos: (a) Jinkwan Han, {PR #67|" + L["rod_tie"] + "}; (b) Marcus Madsen, "
+             "{issue #115|" + L["halt"] + "}.")
 
     # -------------------------------------------- 10 pre-test inspection
     s.h1("10. Pre-test inspection")
     s.must_cover("Check fasteners, fixtures, guides, lifting and release components, hoses, fittings, "
                  "cables, and sensors for damage or looseness.")
-    s.p("Do this inspection with the safety key out and the carriage at rest, at the start of each session "
+    s.p("Do this inspection with the safety key out and the drop block at rest, at the start of each session "
         "and after any incident. Initial each line in the log.")
     s.table(["Done", "Item", "Check", "Past problem"], [
         ["", "Fasteners", "Block, plate and fixture bolts tight; witness marks line up", ""],
         ["", "Fixture and acrylic plates", "No cracks, crazing or chips", ""],
-        ["", "Guide rods and bearings", "Clean, lubricated per [the manual], no scoring; carriage moves "
-         "freely", "Rail friction cut impact speed to 79 to 86 % of free fall; rods were cleaned and "
-         "greased on 2026-08-10 ({record|" + L["grease"] + "})"],
-        ["", "Drop pins", "Present and undamaged [confirm what they are]", "A drop pin broke in "
-         "the 2026-08-04 to 08-06 sessions ({issue #92|" + L["issue92"] + "}, {analysis|" + L["abc123"] + "})"],
+        ["", "Guide rods and bearings", "Clean, lubricated per [the manual], no scoring; drop block moves "
+         "freely", "In early August the block reached only 79 to 86 % of free-fall speed; the rods were "
+         "cleaned and greased on 2026-08-10 ({record|" + L["grease"] + "}, {analysis|" + L["abc123"] + "})"],
+        ["", "Guide-rod locking pins", "Both in their housing; not bent or cracked", "Pins broke on 2026-07-30 "
+         "and 2026-08-04 ({issue #92|" + L["issue92"] + "})"],
         ["", "Hoist (pulley) and its chain", "No damage; [check per manual]", ""],
         ["", "Latch and release hook", "Hook falls closed by itself and engages fully; release works",
-         "Hook stuck open after more than 1,500 drops, 2026-07-22 ({note|" + L["hook"] + "})"],
+         "Hook stuck open after more than 1,500 drops, 2026-07-22 ({fixed by lubrication|"
+         + L["hook_fixed"] + "})"],
         ["", "Brakes", "[check per manual]", ""],
         ["", "Air hoses and fittings", "No hissing or cracks; hoses secured; regulator at [ ] psi", ""],
-        ["", "Absorber stack", "Right stack for the plan; not worn past [limit]", ""],
+        ["", "Absorber mat", "Right mat for the plan; flat; not worn or compacted past [limit]",
+         "Felt compacted with use; polyurethane stuck to the block ({issue #88|" + L["pu_stick"] + "})"],
         ["", "Bungee cords (if used)", "No fraying; right number and attachment", ""],
         ["", "Sensor cables and connectors", "No kinks, cuts or loose connectors; strain relief in place",
          "CH5 cable broke, 2026-10-19"],
-        ["", "Sensors", "Mounted firmly; no visible damage", "Sensors fell off in four runs (section 17.3)"],
-        ["", "Safety key interlock", "Check in section 7.1 done", ""],
+        ["", "Sensors", "Mounted firmly; no visible damage", "Sensors fell off or came loose five times in June and July 2026 (section 17.3)"],
+        ["", "Safety key and pin interlock", "Check in section 7.1 done", "Tower ran with pins out of "
+         "their housing until 2026-08-05"],
         ["", "Emergency stop", "[test per manual, if equipped]", ""],
     ], [0.5, 1.35, 2.35, 2.3], font=9, checkbox_col=0)
     s.label("How it is verified")
@@ -1061,10 +1134,17 @@ def content(s: SOP):
             "Connections: each sensor cable goes to the TP4 channel in table 5.2, connectors hand tight.",
             f"Excitation: ICP on for every channel with an ICP sensor (CH2 to CH5 in Figure {FIGS['tp4']}). [Check the "
             "sensor bias or fault indicator, if the TP4 shows one.]",
+            "Sensitivities come from each sensor's calibration certificate, not a default value (defaults "
+            "were typed in during the first tests in June 2026, {PR #74|" + L["sens_default"] + "}).",
+            "After any sensor is disconnected and reconnected, re-enable its channel and check that it is "
+            "active (a session's data were lost on 2026-07-29, {PR #86|" + L["reenable"] + "}).",
+            "Turn off channels with no sensor attached. A channel over its range latched the TP4 and stopped a "
+            "500-drop run at drop 256 on 2026-07-15 ({PR #82|" + L["overload"] + "}).",
             "Input ranges and sensitivities match table 9.2 and the calibration sheets. Compare the Recording "
             f"Setup screen with the reference (Figure {FIGS['tp4']}) and photograph it again after any change.",
             "Trigger: channel [CH5], level [150 G], pre-trigger [2 %], record time [100 ms], sample rate "
-            "[1.25 MHz]. Trigger levels from 150 G to 1,000 G have been used.",
+            "[1.25 MHz]. Trigger levels from 150 G to 1,000 G have been used. Set the level above the noise from "
+            "raising the block and below the smallest real impact: at 500 G, 5 in drops did not trigger.",
             "Recording: name the TP4 session after the specimen and campaign (for example RW5F61_100drops). "
             "Check that there is disk space.",
             "Camera (optional): recording, framed so the specimen and the release point are both in view.",
@@ -1094,7 +1174,7 @@ def content(s: SOP):
     s.section_block(
         procedure=[
             "At the start of the session, name one release controller and record the name in the log. Only "
-            "that person inserts the safety key, raises the carriage and releases it. A handover is said "
+            "that person inserts the safety key, raises the drop block and releases it. A handover is said "
             "out loud and logged.",
             "The release controller completes checklist 1.2 items 1 to 5.",
             "The release controller asks \"Ready?\". Each person present answers \"Ready\". The DAQ "
@@ -1116,22 +1196,22 @@ def content(s: SOP):
         ])
     s.h2("12.2 Rebound and secondary impacts")
     s.must_cover("Describe how these are controlled and when it is safe to approach.")
-    s.p("In two 60 in drops onto five felt sheets filmed at 960 frames per second, the carriage bounced back "
+    s.p("In two 60 in drops onto five felt sheets filmed at 960 frames per second, the drop block bounced back "
         "at 0.35 to 0.43 times its impact speed, and the anti-rebound brakes stopped it 86 to 89 ms after "
         "impact, 130 to 150 mm above the absorber, with no second impact "
         f"(Figure {FIGS['impact']}; " + "{analysis|" + L["felts60"] + "}).")
     s.section_block(
         procedure=[
             "Keep the anti-rebound brakes [on, with air at ___ psi] for every drop.",
-            "Approach only when the brakes hold the carriage, the specimen and cables have stopped moving, "
+            "Approach only when the brakes hold the drop block, the specimen and cables have stopped moving, "
             "and [the controller shows ___]. Wait at least [5 s] after impact.",
-            "If the brakes do not catch and the carriage strikes again, stop and inspect before the next "
+            "If the brakes do not catch and the drop block strikes again, stop and inspect before the next "
             "drop.",
         ],
         verify=["One impact per capture in the TP4 record; the brake catch shows in video or data."],
         stop=[
             "A second impact.",
-            "The brakes do not catch, or the carriage creeps down after the catch.",
+            "The brakes do not catch, or the drop block creeps down after the catch.",
         ])
     s.figure("impact", FIG / "impact-sequence-60in-9GMQYQ.jpg", 6.5,
              "Frames from a 60 in drop filmed at 960 frames per second: entry, contact, turnaround, rebound, "
@@ -1165,7 +1245,7 @@ def content(s: SOP):
         ["Damaged cable or connector", "Cut, kink, crushed jacket, strained connector",
          "Replace; slow-raise check (9.4)"],
         ["Leak", "Hissing, pressure falling", "Vent (16.2), fix, leak check"],
-        ["Unexpected motion", "Carriage creeps, latch will not close, hoist moves without a command",
+        ["Unexpected motion", "Drop block creeps, latch will not close, hoist moves without a command",
          "Secure state; supervisor (17.2)"],
         ["Abnormal readings", "Missing impacts, clipping, baseline steps, peaks far from reference",
          "Check sensors, cables and settings (9, 11)"],
@@ -1182,24 +1262,26 @@ def content(s: SOP):
                  "emergency stop does, if equipped, and what hazards remain afterward.")
     s.section_block(
         procedure=[
-            "If the carriage does not release: do not reach under it, and do not keep retrying. Remove the "
+            "If the drop block does not release: do not reach under it, and do not keep retrying. Remove the "
             "safety key.",
-            "Unload the latch: lower the carriage with the hoist [describe] onto [its rest position]. If it "
+            "Unload the latch: lower the drop block with the hoist [describe] onto [its rest position]. If it "
             "cannot be lowered, install the mechanical restraint (section 7.2) before anyone works near it.",
             "Vent the air (section 16.2) and switch off the power (section 16.3) before troubleshooting the "
             "latch, hoist or release.",
-            "Interrupted test (power loss, air loss, DAQ crash, someone in the zone): treat the carriage as "
+            "Interrupted test (power loss, air loss, DAQ crash, someone in the zone): treat the drop block as "
             "raised and latched until checked, and follow steps 1 to 3.",
-            "Release hook that will not fall closed: follow the {troubleshooting note|" + L["hook"] + "}, "
-            "with power and air off and the carriage supported.",
+            "Release hook that will not fall closed: follow the {troubleshooting note|" + L["hook"] + "} "
+            "(it wrongly calls the tower a custom build), with power and air off and the drop block "
+            "supported. On 2026-07-22 a second lubrication fixed it ({PR #86|" + L["hook_fixed"] + "}).",
         ],
         verify=["The secure state is checked (section 16.3) before troubleshooting starts."],
         stop=["Any failed release or interrupted test. Restart needs the supervisor's approval (17.2)."])
     s.label("Emergency stop")
     s.table(["Question", "Answer"], [
-        ["Is the machine equipped with one? Where is it?", "[ ]"],
+        ["Is the machine equipped with one? Where is it?", f"[Is it the round button at the top left of the "
+                                                            f"console in Figure {FIGS['console']}?]"],
         ["What it does", "[for example: cuts power to the hoist motor and controller]"],
-        ["What it does not do", "[for example: it does not lower the carriage. A raised carriage stays "
+        ["What it does not do", "[for example: it does not lower the drop block. A raised drop block stays "
                                 "raised and can still fall. Air stays in the lines and brakes. Bungee cords "
                                 "stay stretched.]"],
         ["Hazards left after an emergency stop", "[raised mass, stretched bungee cords, compressed air, "
@@ -1237,11 +1319,11 @@ def content(s: SOP):
     s.section_block(
         procedure=[
             "An authorized operator stays in CB 152A, in sight of the tower, whenever the safety key is in, "
-            "the system is pressurized or the carriage is raised. This includes automatic repeat runs.",
-            "Before stepping away for any length of time: stop the run, lower the carriage to [its rest "
+            "the system is pressurized or the drop block is raised. This includes automatic repeat runs.",
+            "Before stepping away for any length of time: stop the run, lower the drop block to [its rest "
             "position], and take the safety key.",
             "Away for more than [10 min]: leave the machine in the secure state (section 16.3).",
-            "Never leave a carriage held up by the latch alone.",
+            "Never leave a drop block held up by the latch alone.",
             "Hand over to another authorized operator in person, and say out loud who is now the release "
             "controller.",
         ],
@@ -1253,8 +1335,8 @@ def content(s: SOP):
         procedure=[
             "Depressurize at the end of each session, before leaving the machine unattended, before work on "
             "any air component (hoses, fittings, brakes, release), and after an emergency stop or a leak.",
-            "Close the supply valve at [location] and vent through [valve]. Watch the gauge at [location] "
-            "fall to zero.",
+            f"Close the supply valve at [location] and vent through [valve]. Watch the gauge at [location; "
+            f"the filter-regulators are on the wall behind the tower, Figure {FIGS['pins']} (a)] fall to zero.",
             "Check for residual pressure: the gauge reads 0 psi after [time], and [cycling the brake or "
             "release valve with the key out] releases no air.",
             "The system may stay pressurized only while an authorized operator is present.",
@@ -1265,8 +1347,8 @@ def content(s: SOP):
     s.must_cover("Define the required position of the drop mass, mechanical restraints, pressure state, "
                  "power state, and safety key location.")
     s.table(["Done", "Item", "Required state"], [
-        ["", "Drop mass (carriage)", "Lowered to [rest position]. Never left raised."],
-        ["", "Mechanical restraints", "[pins or blocks] in place"],
+        ["", "Drop mass (drop block)", "Lowered to [rest position]. Never left raised."],
+        ["", "Guide-rod locking pins", "Both in their housing, counted"],
         ["", "Bungee cords", "[detached or relaxed]"],
         ["", "Air", "Supply closed and vented; gauge at 0 psi"],
         ["", "Power", "Controller off; machine [disconnect] off"],
@@ -1298,58 +1380,70 @@ def content(s: SOP):
         "it in the log, for:")
     s.bullets([
         "Any injury, however small.",
-        "Any near miss: someone in the exclusion zone during a drop, or under a raised carriage without the "
+        "Any near miss: someone in the exclusion zone during a drop, or under a raised drop block without the "
         "restraint.",
         "Damage to the tower (latch, pins, guide rods, brakes, hoist, air system) or to a sensor or cable.",
-        "A failed release, an unexpected drop, or a carriage that moves without a command.",
+        "A failed release, an unexpected drop, or a drop block that moves without a command.",
         "A failed safety key interlock check.",
         "An air leak that tightening a fitting does not fix.",
         "A part thrown outside the exclusion zone.",
         "[Add or remove events.]",
     ])
     s.h2("17.3 Previous incidents and preventive steps")
-    s.p("Each previous incident is matched to a preventive step in this SOP. \"Logged\" is the date the run "
-        "was recorded in the repository. [Review each line, add any incident not listed, and confirm the "
-        "preventive step.]")
-    s.table(["Logged", "What happened", "Preventive step", "Section"], [
-        ["First drops ({issue #36|" + L["issue36_bungee"] + "})",
-         "With bungee cords pulling the carriage faster than free fall, the specimen lifted off the base "
-         "and landed out of line. The cage top plate could tilt about 25°.",
+    s.p("Each previous incident is matched to a preventive step in this SOP. Dates are when the incident was "
+        "reported. [Review each line, add any incident not listed, and confirm the preventive step.]")
+    s.table(["Date", "What happened", "Preventive step", "Section"], [
+        ["2026-05-26 ({issue #36|" + L["liftoff"] + "})",
+         "With bungee cords pulling the drop block faster than free fall, the specimen lifted off the base "
+         "and landed out of line. The cage top plate could tilt about 25\u00b0.",
          "Tie specimens to the base plate. Bungee cords only in approved configurations.", "5.3, 8, 9.1"],
-        ["2026-06-23 ({record|" + L["vertex"] + "})",
-         "Vertex-mounted accelerometer not fully secured; it fell off on the drop.",
+        ["June 2026 ({PR #74|" + L["sens_default"] + "})",
+         "Default sensitivities typed into the TP4 instead of certificate values; a channel saturated; the "
+         "TP4 captured while the block was raised; 5 in drops did not trigger.",
+         "Sensitivities from certificates; trigger level set between hoist noise and the smallest impact.", "11"],
+        ["2026-06-23 ({PR #67|" + L["vertex_fell"] + "})",
+         "A vertex accelerometer that was not fully secured fell off on the drop.",
          "Tug test after mounting; check before every drop.", "9.3, 1.2"],
         ["2026-06-29 ({record|" + L["keymount"] + "})",
-         "Top-vertex accelerometer fell out of the key seat; press fit alone was not enough.",
+         "Top-vertex accelerometer fell out of the key seat; the press fit alone was not enough.",
          "Wax inside the key-seat housing ({follow-up|" + L["keywax"] + "}).", "9.3"],
-        ["2026-07-02 ({run 1|" + L["drift1"] + "})",
-         "Tri-axis accelerometer fell out of the key seat at drop 26.",
-         "Clamp the cable to a rod so cable pull cannot reach the sensor; it then stayed on for all 50 "
-         "drops ({run 2|" + L["drift2"] + "}).", "9.4"],
-        ["2026-07-03 ({record|" + L["drops30"] + "})",
-         "CH5 base-plate accelerometer, held with bare wax, fell off mid-run.",
-         "Approved mounting method; stop if a sensor is loose.", "9.3, 13"],
-        ["2026-07-13 ({record|" + L["drops200"] + "})",
-         "CH7 and CH8 exceeded full scale (clipping) on most captures at 10 in.",
-         "Choose sensors and TP4 ranges for the expected peak.", "9.2"],
-        ["2026-07-22 ({note|" + L["hook"] + "})",
-         "Release hook stuck open after more than 1,500 drops; the latch no longer re-engaged by itself. WD-40 "
-         "did not help.",
-         "Latch check in the pre-test inspection; keep the latch dry; never free the hook with the carriage "
-         "unsupported.", "10, 14"],
-        ["2026-08-06 ({issue #92|" + L["issue92"] + "})",
-         "A drop pin broke. Rail friction cut impact speed to 79 to 86 % of free fall.",
-         "Inspect drop pins and guide rods; clean and grease the rods ({follow-up|" + L["grease"] + "}).",
-         "10"],
-        ["2026-08-18 ({check|" + L["calcheck"] + "})",
-         "TP4 settings were reset and had to be re-entered.",
+        ["2026-07-02 ({PR #67|" + L["halfseat"] + "})",
+         "Tri-axis accelerometer, seated only halfway, fell out at drop 26.",
+         "Housing deepened to 6.1 mm; cable tied to a rod so a pull cannot drag the sensor out; it then stayed "
+         "on for 50 drops ({run 2|" + L["drift2"] + "}).", "9.3, 9.4"],
+        ["2026-07-03 ({PR #67|" + L["ch5_fell"] + "})",
+         "CH5 base-plate accelerometer, held with wax, fell off mid-run and caused false triggers.",
+         "Approved mounting method (CH5 taped down from 2026-07-06); stop if a sensor is loose.", "9.3, 13"],
+        ["2026-07-06 ({PR #35|" + L["rotate"] + "})",
+         "An oversized key-seat pocket let the sensor rotate free despite the wax.",
+         "Tape over the housing entrance ({2026-07-08|" + L["tape_entrance"] + "}).", "9.3"],
+        ["2026-07-13 and 2026-07-15 ({PR #82|" + L["overload"] + "})",
+         "Low-range channels over full scale at 10 in; one latched the TP4 and stopped a 500-drop run at "
+         "drop 256.",
+         "Choose sensors and ranges for the expected peak; turn off unused channels.", "9.2, 11"],
+        ["2026-07-22 ({PR #86|" + L["hook_report"] + "})",
+         "Release hook stuck open after more than 1,500 drops and did not re-engage the block. WD-40 did not "
+         "fix it; a second lubrication did.",
+         "Hook check before every raise; never close it by hand with the block unsupported.", "9.1, 10, 14"],
+        ["2026-07-29 ({PR #86|" + L["reenable"] + "})",
+         "A session's data were lost: sensors were not re-enabled after being disconnected and reconnected.",
+         "Re-enable and check channels after any reconnection.", "11"],
+        ["2026-07-30 ({issue #92|" + L["issue92"] + "})",
+         "A guide-rod locking pin was left in during mat changes and snapped when the block dropped.",
+         "Pins counted back into their housing before the key goes in; two-person check.", "7.1, 7.2"],
+        ["2026-08-04 ({issue #92|" + L["pin_halt"] + "})",
+         "A second pin broke. The tower ran with its pins out of their housing because the safety was not set "
+         "up properly. Console tagged \"Do not operate\" and use halted until 2026-08-05.",
+         "Interlock check (key and pins) at the start of every session.", "7.1, 10"],
+        ["2026-08-18 ({PR #86|" + L["tp4_cleared"] + "})",
+         "TP4 settings were cleared and had to be re-entered.",
          "Compare settings with the reference screen every session.", "11"],
         ["2026-10-17 to 2026-10-19 ({analysis|" + L["ch5"] + "})",
          "CH5 cable intermittent for an hour, then broke at the connector. Drop tower use halted.",
          "Cable routing with strain relief at both ends; slow-raise check; cable inspection after every drop; "
-         "stop on missing impacts.", "9.4, 15, 13"],
+         "stop on missing impacts.", "9.4, 13, 15"],
         ["[date]", "[Add any incident not listed.]", "[ ]", "[ ]"],
-    ], [1.15, 2.25, 2.3, 0.8], font=8.5)
+    ], [1.2, 2.3, 2.25, 0.75], font=8.5)
 
     # ------------------------------------------------------ 18 training
     s.h1("18. Training and authorization")
@@ -1358,7 +1452,8 @@ def content(s: SOP):
         "Authorized operators have: [completed the required BYU lab safety training (name it)], read this SOP "
         "and signed the record below, been trained on the drop tower by [the supervisor or a named trainer], "
         "and run [N] sessions under supervision.",
-        "Training walkthrough video: {youtu.be/RNjpAmWWmkQ|" + L["video"] + "}.",
+        "Videos: {training walkthrough|" + L["video"] + "} (Jeffrey Hill), {automatic drop setup|"
+        + L["video_auto"] + "}, {TP4 databases|" + L["video_tp4db"] + "}.",
         "[The supervisor] approves this SOP and every later change. Changes are listed in section 19 and "
         "announced to all operators [and to the other teams using the tower].",
         "Operators re-read the SOP and re-sign [every year, and after every revision].",
@@ -1371,12 +1466,12 @@ def content(s: SOP):
     s.table(["Role", "Name", "Signature", "Date"], [
         ["Supervisor", "[ ]", "", ""],
         ["SOP owner", "Marcus Madsen", "", ""],
-        ["SOP owner", "Jinkwan [last name]", "", ""],
+        ["SOP owner", "Jinkwan Han", "", ""],
         ["[Lab or facility manager]", "[ ]", "", ""],
     ], [1.8, 1.9, 1.8, 1.0], font=10)
     s.table(["Revision", "Date", "Description", "By", "Approved"], [
         ["0.1", "2026-10-29", "Template drafted from the repository records ({issue #115|" + L["request"] + "})",
-         "Claude Code, for M. Madsen and Jinkwan", "Not approved"],
+         "Claude Code, for M. Madsen and J. Han", "Not approved"],
         ["", "", "", "", ""],
         ["", "", "", "", ""],
     ], [0.8, 0.9, 2.6, 1.3, 0.9], font=9.5)
