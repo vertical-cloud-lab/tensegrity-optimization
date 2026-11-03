@@ -1,0 +1,315 @@
+% =============================================================================
+% Utah NASA Space Grant Consortium Fellowship — Proposal Narrative
+% Applicant: Audrey Christiansen (Undergraduate, Mechanical Engineering, BYU)
+% Faculty Advisor: Sterling G. Baird, Department of Mechanical Engineering
+%
+% Hard upper limit: 5 pages total (including references).
+% Written in the first person from Audrey's perspective.
+% =============================================================================
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{wrapfig}
+\usepackage{caption}
+
+% --- Formatting ---
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\setlength{\parskip}{0.3em}
+\setlength{\parindent}{0em}
+\titlespacing*{\section}{0pt}{0.7em}{0.2em}
+\titlespacing*{\subsection}{0pt}{0.4em}{0.1em}
+
+% --- Draft helpers (remove for final) ---
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\note}[1]{\textcolor{blue}{\textbf{[NOTE: #1]}}}
+
+% =============================================================================
+\begin{document}
+
+% --- Title block (kept compact so it does not eat into the 3--5 page narrative)
+\begin{center}
+{\Large\textbf{Multi-Material 3D-Printed Tensegrity Energy Absorbers \\[0.1em]
+for Planetary Landing and CubeSat Payload Protection}}\\[0.4em]
+{\large Utah NASA Space Grant Consortium Fellowship Proposal, 2026--2027}\\[0.3em]
+Audrey Christiansen, Undergraduate Researcher, Mechanical Engineering\\
+Faculty Advisor: Sterling G.\ Baird, Department of Mechanical Engineering\\
+Brigham Young University \hspace{1em}\textbar\hspace{1em} \today
+\end{center}
+\vspace{0.4em}
+
+% =============================================================================
+\section{Introduction and Motivation}
+% =============================================================================
+
+% --- Overview figure (right-inset, reused from the MRG proposal) ---
+\begin{wrapfigure}{R}{0.42\textwidth}
+\centering
+\vspace{-0.6em}
+\includegraphics[width=0.41\textwidth]{../figures/overview-updated.png}
+\captionsetup{font=footnotesize}
+\caption{Closed-loop print--test--optimize workflow I will run on the Bambu Lab H2D: parameterized PLA + TPU tensegrity-inspired specimens are fabricated, characterized under quasi-static compression and drop-weight impact, and fed back to a Bayesian optimizer that recommends the next geometries to print.}
+\label{fig:overview}
+\vspace{-0.6em}
+\end{wrapfigure}
+
+I am applying for a Utah NASA Space Grant Consortium fellowship to support a
+year of focused research on \textbf{multi-material 3D-printed
+tensegrity-inspired structures for spacecraft and payload energy absorption}.
+Every NASA mission that lands on a planet, returns a sample to Earth, or
+deploys a CubeSat from a launch vehicle has to dissipate a large pulse of
+kinetic energy in a very short time.  Mars Pathfinder and the Mars Exploration
+Rovers landed on inflatable airbags qualified through 52 vacuum-chamber drop
+tests at velocities up to $\sim$25~m/s \citep{adams2004merairbag}; later
+crashworthy planetary landers have used composite-honeycomb energy absorbers
+designed to a $\sim$20~psi crush stress and a 20~g floor-acceleration limit
+\citep{jackson2014honeycomb}; CubeSats and instruments routinely sit on foam
+or elastomer isolators to survive launch shock and vibration
+\citep{nasagsfc2018gevs}.  These incumbent attenuators work, but they are
+heavy, single-use, and tuned to a narrow load profile---a design space first
+formalized by \citet{cloutier1966landing} as a trade among crushing stress,
+density, and stroke.
+
+\textbf{Tensegrity-inspired structures}---networks of rigid struts suspended
+in a continuous web of tension elements---offer a programmable alternative.
+NASA Ames' NASA Innovative Advanced Concepts (NIAC)-funded \emph{Super Ball Bot} project demonstrated that
+tensegrity geometries can survive impacts on the order of 15~m/s and combine
+landing, payload protection, and surface mobility in a single packable
+structure \citep{caluwaerts2014superball,agogino2018superball,sabelhaus2015system,vespignani2018design},
+and the concept has been extended to ocean-world rideshare rovers
+\citep{deitrich2022titan}.  What has been missing is a fast, low-cost way to
+design and \emph{experimentally} validate tensegrity-inspired geometries
+against NASA-relevant impact scenarios.  Recent work shows that
+tensegrity-inspired unit cells can be directly 3D-printed on consumer-grade
+fused deposition modeling (FDM) hardware and retain a load-limiting plateau under drop-weight impact
+\citep{pajunen2019design}.  Multi-material rigid--soft FDM (rigid struts +
+flexible tension skins) yields tunable energy absorption without delamination
+\citep{ye2023multimaterial,khatri2024energy}, and my lab has access to a
+dual-nozzle \textbf{Bambu Lab H2D} printer, which makes this multi-material
+workflow practical for a single-student campaign.
+
+I propose to use that capability to run a focused, year-long
+\textbf{print--test--optimize} campaign aimed squarely at two NASA-relevant
+load cases: (1) low-velocity \emph{lander-class} crush attenuation and
+(2) launch-/deployment-class \emph{shock isolation} for small-payload
+(CubeSat-class) hardware.  This work directly supports the Utah NASA Space
+Grant Consortium's mission of preparing students for the NASA workforce and
+aligns with two Space Technology Mission Directorate (STMD) priorities visible across the Ames NIAC tensegrity line
+and the In-Space Manufacturing (ISM) / FabLab roadmap: lightweight
+load-limiting structures and multi-material additive manufacturing (AM)
+\citep{nasa2022strategic,prater2019summary,agogino2018superball}.
+
+% =============================================================================
+\section{Background and Relation to NASA Priorities}
+% =============================================================================
+
+\textbf{Tensegrity in space systems.} Tensegrity structures have a long
+history in NASA-funded research \citep{skelton2009tensegrity,sultan2009tensegrity}.
+Caluwaerts, Agogino, SunSpiral, and collaborators at
+NASA Ames proposed tensegrity-based planetary probes that combine landing and
+surface mobility in a single deployable structure
+\citep{caluwaerts2014superball,agogino2018superball,sabelhaus2015system,vespignani2018design},
+and the line continues into Titan-class ocean-world rideshare concepts
+\citep{deitrich2022titan}.  Subsequent work has shown that 3D-printable
+\emph{tensegrity-inspired} unit cells exhibit a long
+plateau in their force--displacement response under drop-weight impact---exactly
+the behavior desired in a crush core, where peak transmitted force must stay
+below a hardware/biological tolerance \citep{pajunen2019design}.  Compared
+to honeycomb or foam, tensegrity
+geometries can be \emph{tuned} (struts, cables, topology) without changing
+manufacturing process, opening the door to mission-specific designs.
+
+\textbf{Multi-material 3D printing as an enabling technology.}  In-space
+manufacturing is an active NASA priority: the ISS has hosted FDM printers
+since 2014, and on-demand fabrication is expected to be central to long-duration
+missions \citep{prater2019summary}.  Demonstrating that tensegrity
+energy-absorbers can be reliably produced on a single FDM platform with two
+materials (PLA struts + TPU tension elements) contributes to that
+broader trajectory while staying achievable within a single fellowship year.
+The \textbf{Bambu Lab H2D}'s dual-nozzle architecture and Automatic Material
+System let me switch between rigid PLA and flexible TPU within a single
+print, dramatically reducing iteration time on each new geometry.  I expect
+to print on the order of \textbf{50--100 specimens} over the year.
+
+\textbf{Bayesian optimization of impact-absorbers.}  The design space (strut
+diameter and length, TPU skin thickness, tiling and topology) is too large to
+sweep exhaustively, and physical specimens are expensive in time, not just
+filament.  Bayesian optimization (BO) \citep{shahriari2016taking,frazier2018tutorial,zhang2021bo}
+fits the problem: each printed specimen updates a Gaussian process surrogate
+that recommends the next geometry to print and test.  BO has been
+applied to architected and metamaterial design \citep{mo2023accelerated,zhang2021bo}
+and to closed-loop materials discovery in domains ranging from concrete
+\citep{ament2023sustainable} to organic emitters
+\citep{striethkalthoff2024delocalized}; here I apply it directly to a
+NASA-relevant impact-attenuation problem with fully physical drop-weight tests,
+which the BO-in-AM literature identifies as an open gap \citep{zhang2021bo}.
+
+% =============================================================================
+\section{Research Objectives}
+% =============================================================================
+
+I have three concrete, measurable objectives for the fellowship year:
+
+\begin{enumerate}[leftmargin=1.5em,itemsep=0.2em]
+    \item \textbf{Build a parameterized tensegrity-inspired unit-cell family}
+    that prints reliably on the Bambu Lab H2D in PLA + TPU, with verified
+    geometric fidelity (computed tomography (CT) or caliper-and-mass) on at least 5 baseline
+    geometries.
+    \item \textbf{Quantify NASA-relevant impact response} for $\geq 30$
+    distinct geometries via quasi-static compression and drop-weight tests,
+    extracting peak transmitted force, specific energy absorption (SEA),
+    and crush-plateau efficiency.  Compare against a 3D-printed honeycomb
+    baseline of equal areal density.
+    \item \textbf{Close the loop with Bayesian optimization} to find geometries
+    that minimize peak transmitted force at a target SEA for two
+    NASA-motivated load cases: a low-velocity ``lander'' drop ($\sim$3--6~m/s,
+    20--50~J) and a high-frequency ``CubeSat'' shock pulse
+    \citep{nasagsfc2018gevs}.
+\end{enumerate}
+
+% =============================================================================
+\section{Proposed Approach and Methods}
+% =============================================================================
+
+\textbf{Design.} I will parameterize a family of tensegrity-inspired unit
+cells in Fusion~360---strut diameter and length, TPU skin thickness,
+connectivity topology, and tiling pattern---following the wrapping-based
+core/skin strategy in \citep{ye2023multimaterial} so that PLA struts
+remain mechanically interlocked with continuous TPU tension members and do
+not delaminate under cyclic loading \citep{khatri2024energy}.
+
+\textbf{Fabrication.} All specimens will be printed on the
+\textbf{Bambu Lab H2D} in the Baird lab, using its dual-nozzle, multi-material
+capability to produce PLA + TPU parts in a single build.  I will keep a
+\textbf{print log} (slicer settings, AMS routing, post-print mass and
+geometric checks) so that downstream test data can be traced back to a
+specific build configuration.  Early in the year I will validate
+PLA--TPU interface robustness on a reduced set of test coupons before
+committing to full unit-cell prints.
+
+\textbf{Testing.} Two complementary protocols, both NASA-relevant:
+\begin{itemize}[leftmargin=1.5em,itemsep=0.1em]
+    \item \emph{Quasi-static compression} on a benchtop universal testing
+    machine to extract force--displacement curves, plateau stress, and
+    densification strain (analogous to the characterization done for
+    honeycomb crush cores in entry, descent, and landing (EDL) design).
+    \item \emph{Drop-weight impact} from instrumented fixed-mass drops to
+    measure peak transmitted force and SEA at lander-relevant velocities,
+    following the protocol in \citep{pajunen2019design}.
+    A piezoelectric accelerometer or load cell at the base captures the
+    transmitted pulse.
+\end{itemize}
+A 3D-printed aluminum-equivalent honeycomb baseline of equal areal density
+will be tested under the same conditions to anchor performance claims to a
+NASA incumbent.
+
+\textbf{Bayesian optimization loop.} I will implement a BO loop in Python
+using BoTorch / Ax \citep{balandat2020botorch} that operates directly on
+experimental measurements.  Each round of physical tests updates a Gaussian
+process surrogate; the acquisition function (expected hypervolume improvement
+for the multi-objective peak-force / SEA trade-off) recommends the next batch
+of $\sim$3--5 designs to print and test.  This closed loop is the experimental
+analogue of the recent multifidelity BO framework for architected
+materials \citep{mo2023accelerated}, but here grounded entirely in physical
+data so that conclusions are not
+limited by simulation fidelity---an important property for NASA-relevant
+impact problems where rate-dependent TPU damping is hard to model accurately.
+
+\subsection*{Quarterly Task Plan}
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Task} & \textbf{Q1 (Fa)} & \textbf{Q2 (Wi)} & \textbf{Q3 (Sp)} & \textbf{Q4 (Su)} \\
+\midrule
+Literature review and NASA load-case scoping     & \(\bullet\) &           &           &           \\
+Bambu H2D PLA/TPU print process validation       & \(\bullet\) & \(\bullet\) &           &           \\
+Unit-cell parameterization and CAD               & \(\bullet\) & \(\bullet\) &           &           \\
+Quasi-static compression campaigns               &           & \(\bullet\) & \(\bullet\) & \(\bullet\) \\
+Drop-weight impact testing                       &           &           & \(\bullet\) & \(\bullet\) \\
+BO-guided design iteration                       &           &           & \(\bullet\) & \(\bullet\) \\
+UNSGC annual conference presentation             &           &           & \(\bullet\) &           \\
+Final report and manuscript preparation          &           &           &           & \(\bullet\) \\
+\bottomrule
+\end{tabular}
+\caption{Quarterly task plan for the 2026--2027 fellowship year.  Q1 = Fall 2026,
+Q2 = Winter 2027, Q3 = Spring 2027, Q4 = Summer 2027.}
+\label{tab:tasks}
+\end{table}
+
+% =============================================================================
+\section{Expected Outcomes and Broader Impact}
+% =============================================================================
+
+By the end of the fellowship year I expect to deliver:
+(i) a publicly released data set of $\sim$50--100 PLA/TPU tensegrity-inspired
+specimens with quasi-static and drop-weight impact characterization,
+(ii) an open-source Python implementation of the experimental BO loop, and
+(iii) a poster or talk at the annual UNSGC conference and a draft journal
+manuscript targeting
+\emph{Smart Materials and Structures} or the \emph{ASME Journal of Mechanical
+Design}.
+
+The broader impact is twofold.  Scientifically, this is an early empirical
+demonstration that a single student, with one multi-material FDM printer
+and a Bayesian optimization loop, can systematically discover impact
+attenuators that out-perform a NASA-incumbent geometry on a relevant load
+case.  The resulting dataset and methodology are designed to seed follow-on
+proposals to NASA NIAC (in the Super Ball Bot lineage
+\citep{agogino2018superball,deitrich2022titan}), STMD/SBIR ISM calls, and
+NASA EPSCoR, with a clear materials-qualification pathway from PLA/TPU
+discovery specimens toward space-qualified polymers (PEI/PEKK/PEEK) screened
+under MISSE-style protocols \citep{finckenor2023misse}.  Educationally, this
+fellowship would give me hands-on training in exactly the skills NASA's
+strategic plan calls out for the future workforce \citep{nasa2022strategic}:
+multi-material additive manufacturing, mechanical testing, and data-driven
+design.  I plan to use the experience as a springboard into graduate study
+in aerospace structures or in-space manufacturing.
+
+% =============================================================================
+\section{Qualifications and Mentoring Plan}
+% =============================================================================
+
+\textbf{My background.} I am a Junior in Mechanical Engineering at BYU.
+Relevant completed coursework includes Engineering Graphics (MeEn~272),
+Mechanics of Materials (CCE~203), Materials Science (MeEn~250),
+Thermodynamics (MeEn~321), Mechatronics (MeEn~330), and
+System Dynamics (MeEn~335); Machine Design (MeEn~372) is in progress.  My
+prior 3D-printing experience comes from my work in the Compliant Mechanisms
+Research Lab at BYU, my coursework, and my personal free time, where I have
+iterated on various designs and mechanisms.  I am a certified SolidWorks
+Associate and my research experience makes me an excellent candidate for new
+areas of discovery.
+
+\textbf{Mentoring structure.} I will work under Prof.~Sterling G.~Baird in the
+Department of Mechanical Engineering, with weekly one-on-one meetings
+(30~min) for technical guidance and professional development, and weekly lab
+group meetings (1~hr) covering progress updates, literature, and skill
+workshops.  Prof.~Baird's master's student will provide day-to-day co-mentoring
+on the Bambu H2D, mechanical testing equipment, and the Python BO codebase.
+I will keep a public lab notebook (GitHub) and present progress monthly to
+the lab.  The PI will provide the required 50\% non-federal cost share from
+laboratory startup funds.
+
+% =============================================================================
+% --- References (kept compact; total document is capped at 5 pages) ---
+% =============================================================================
+{\footnotesize
+\setlength{\bibsep}{0pt plus 0.3ex}
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+}
+
+\end{document}
