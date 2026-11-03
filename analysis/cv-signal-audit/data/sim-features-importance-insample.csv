@@ -1,0 +1,9 @@
+variant,objectives,metric,n,R2_insample,coverage_95_pct,median_posterior_sd_over_sd_obs,seconds
+shape-sim,campaign,e_reb_mJ,44,0.628747,70.4545,0.044172,669.4
+shape-sim,campaign,t180,44,0.871997,61.3636,0.00999959,669.4
+twelve-sim,campaign,e_reb_mJ,44,0.998741,100,0.0540076,46.4
+twelve-sim,campaign,t180,44,0.999999,100,0.00999963,46.4
+sim-only,campaign,e_reb_mJ,44,0.628767,70.4545,0.0441635,52.4
+sim-only,campaign,t180,44,0.871995,61.3636,0.00999963,52.4
+shape-sim,payload,tavg10ms,44,0.641132,61.3636,0.00999938,43.4
+shape-sim,payload,late_avg3ms_g,44,0.912704,65.9091,0.0150336,43.4

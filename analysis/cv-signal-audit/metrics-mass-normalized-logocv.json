@@ -1,0 +1,1600 @@
+{
+  "provenance": {
+    "generated_by": "analysis/cv-signal-audit/score_mass_normalized.py",
+    "question": "PR #111, sgbaird 2026-09-25: divide the objectives by mass; does the held-out skill recover with mass still in the fit space",
+    "runs_scored": [
+      "per-gram|12p",
+      "per-gram|6p",
+      "raw|12p",
+      "raw|5p shape-only",
+      "raw|6p"
+    ],
+    "runs_missing": [],
+    "n_permutations_within_batch": 20000
+  },
+  "runs": {
+    "raw|12p": {
+      "on_transformed": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 4.836207792240341,
+          "rmse": 0.08244284407173473,
+          "pearson_r": 0.28899116696597255,
+          "pearson_r_ci95": [
+            -0.008629585823325377,
+            0.539578008078214
+          ],
+          "pearson_p_perm": 0.06919,
+          "r_squared_of_r": 0.08351589458435463,
+          "spearman_rho": 0.3179704016913319,
+          "spearman_p_perm": 0.0346,
+          "R2_oos_vs_global_mean": 0.0825299387818178,
+          "R2_oos_vs_fold_train_mean": 0.12374339488681452,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.3186899278642777,
+          "coverage_68_pct": 79.54545454545455,
+          "coverage_95_pct": 88.63636363636364,
+          "median_posterior_sd": 0.104245,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.2380952380952381,
+              "r2d2c": -0.08333333333333334,
+              "drran": 0.03333333333333333,
+              "2dran": -0.45,
+              "corny": 0.5833333333333334
+            },
+            "mean_rho": 0.0642857142857143,
+            "perm_p": 0.6986650667466626
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 5.26769606331911,
+            "rmse": 0.08525184302574176,
+            "pearson_r": 0.31822236222782513,
+            "pearson_r_ci95": [
+              -0.016806447288663037,
+              0.589006796050802
+            ],
+            "pearson_p_perm": 0.0726,
+            "r_squared_of_r": 0.10126547182185715,
+            "spearman_rho": 0.3666666666666667,
+            "spearman_p_perm": 0.0307,
+            "R2_oos_vs_global_mean": 0.10085863523786831,
+            "R2_oos_vs_fold_train_mean": 0.15150414884487795,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.33250229735532555,
+            "coverage_68_pct": 77.14285714285715,
+            "coverage_95_pct": 88.57142857142857,
+            "median_posterior_sd": 0.10387,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.007340000000000075,
+            "between_design_pred_sd": 0.03033046032989822,
+            "predicted_gap_over_design_sd": 0.24200094295188382,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 0.26666666666666666
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 38.76912667624308,
+          "rmse": 3.841401575735855,
+          "pearson_r": -0.3557831383570718,
+          "pearson_r_ci95": [
+            -0.590311806634444,
+            -0.06585914163523149
+          ],
+          "pearson_p_perm": 0.02008,
+          "r_squared_of_r": 0.1265816415392073,
+          "spearman_rho": -0.3981112797143728,
+          "spearman_p_perm": 0.00799,
+          "R2_oos_vs_global_mean": -0.09035454227035733,
+          "R2_oos_vs_fold_train_mean": -0.045705045940162004,
+          "rmse_mean_predictor": 3.7565148357442775,
+          "shrinkage_sd_pred_over_sd_obs": 0.10935027655722696,
+          "coverage_68_pct": 75.0,
+          "coverage_95_pct": 93.18181818181817,
+          "median_posterior_sd": 4.04853,
+          "sd_observed": 3.721328012008537,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.0,
+              "r2d2c": 0.16666666666666669,
+              "drran": -0.35,
+              "2dran": -0.43333333333333335,
+              "corny": -0.43333333333333335
+            },
+            "mean_rho": -0.21000000000000002,
+            "perm_p": 0.1928403579821009
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 32.94742208757648,
+            "rmse": 3.3984804040174654,
+            "pearson_r": -0.19398283366707772,
+            "pearson_r_ci95": [
+              -0.49521654584722397,
+              0.1488884736137113
+            ],
+            "pearson_p_perm": 0.23666,
+            "r_squared_of_r": 0.03762933975750914,
+            "spearman_rho": -0.2994397759103642,
+            "spearman_p_perm": 0.07928,
+            "R2_oos_vs_global_mean": -0.04793335407515187,
+            "R2_oos_vs_fold_train_mean": 0.011093096072754549,
+            "rmse_mean_predictor": 3.4174885300642894,
+            "shrinkage_sd_pred_over_sd_obs": 0.0981533079274053,
+            "coverage_68_pct": 80.0,
+            "coverage_95_pct": 94.28571428571428,
+            "median_posterior_sd": 4.05369,
+            "sd_observed": 3.3683134694897525
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.389488888888889,
+            "between_design_pred_sd": 0.3306111091668546,
+            "predicted_gap_over_design_sd": 1.1780877232782871,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.06666666666666667
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "on_raw": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 4.836207792240341,
+          "rmse": 0.08244284407173473,
+          "pearson_r": 0.28899116696597255,
+          "pearson_r_ci95": [
+            -0.008629585823325377,
+            0.539578008078214
+          ],
+          "pearson_p_perm": 0.06919,
+          "r_squared_of_r": 0.08351589458435463,
+          "spearman_rho": 0.3179704016913319,
+          "spearman_p_perm": 0.0346,
+          "R2_oos_vs_global_mean": 0.0825299387818178,
+          "R2_oos_vs_fold_train_mean": 0.12374339488681452,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.3186899278642777,
+          "coverage_68_pct": 79.54545454545455,
+          "coverage_95_pct": 88.63636363636364,
+          "median_posterior_sd": 0.104245,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.2380952380952381,
+              "r2d2c": -0.08333333333333334,
+              "drran": 0.03333333333333333,
+              "2dran": -0.45,
+              "corny": 0.5833333333333334
+            },
+            "mean_rho": 0.0642857142857143,
+            "perm_p": 0.6986650667466626
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 5.26769606331911,
+            "rmse": 0.08525184302574176,
+            "pearson_r": 0.31822236222782513,
+            "pearson_r_ci95": [
+              -0.016806447288663037,
+              0.589006796050802
+            ],
+            "pearson_p_perm": 0.0726,
+            "r_squared_of_r": 0.10126547182185715,
+            "spearman_rho": 0.3666666666666667,
+            "spearman_p_perm": 0.0307,
+            "R2_oos_vs_global_mean": 0.10085863523786831,
+            "R2_oos_vs_fold_train_mean": 0.15150414884487795,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.33250229735532555,
+            "coverage_68_pct": 77.14285714285715,
+            "coverage_95_pct": 88.57142857142857,
+            "median_posterior_sd": 0.10387,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.007340000000000075,
+            "between_design_pred_sd": 0.03033046032989822,
+            "predicted_gap_over_design_sd": 0.24200094295188382,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 0.26666666666666666
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 38.76912667624308,
+          "rmse": 3.841401575735855,
+          "pearson_r": -0.3557831383570718,
+          "pearson_r_ci95": [
+            -0.590311806634444,
+            -0.06585914163523149
+          ],
+          "pearson_p_perm": 0.02008,
+          "r_squared_of_r": 0.1265816415392073,
+          "spearman_rho": -0.3981112797143728,
+          "spearman_p_perm": 0.00799,
+          "R2_oos_vs_global_mean": -0.09035454227035733,
+          "R2_oos_vs_fold_train_mean": -0.045705045940162004,
+          "rmse_mean_predictor": 3.7565148357442775,
+          "shrinkage_sd_pred_over_sd_obs": 0.10935027655722696,
+          "coverage_68_pct": 75.0,
+          "coverage_95_pct": 93.18181818181817,
+          "median_posterior_sd": 4.04853,
+          "sd_observed": 3.721328012008537,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.0,
+              "r2d2c": 0.16666666666666669,
+              "drran": -0.35,
+              "2dran": -0.43333333333333335,
+              "corny": -0.43333333333333335
+            },
+            "mean_rho": -0.21000000000000002,
+            "perm_p": 0.1928403579821009
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 32.94742208757648,
+            "rmse": 3.3984804040174654,
+            "pearson_r": -0.19398283366707772,
+            "pearson_r_ci95": [
+              -0.49521654584722397,
+              0.1488884736137113
+            ],
+            "pearson_p_perm": 0.23666,
+            "r_squared_of_r": 0.03762933975750914,
+            "spearman_rho": -0.2994397759103642,
+            "spearman_p_perm": 0.07928,
+            "R2_oos_vs_global_mean": -0.04793335407515187,
+            "R2_oos_vs_fold_train_mean": 0.011093096072754549,
+            "rmse_mean_predictor": 3.4174885300642894,
+            "shrinkage_sd_pred_over_sd_obs": 0.0981533079274053,
+            "coverage_68_pct": 80.0,
+            "coverage_95_pct": 94.28571428571428,
+            "median_posterior_sd": 4.05369,
+            "sd_observed": 3.3683134694897525
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.389488888888889,
+            "between_design_pred_sd": 0.3306111091668546,
+            "predicted_gap_over_design_sd": 1.1780877232782871,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.06666666666666667
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "diagnostics_check": {}
+    },
+    "raw|6p": {
+      "on_transformed": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 5.180280188954233,
+          "rmse": 0.08270403147808017,
+          "pearson_r": 0.31974384861217314,
+          "pearson_r_ci95": [
+            0.02526143696939126,
+            0.5631653679961175
+          ],
+          "pearson_p_perm": 0.05649,
+          "r_squared_of_r": 0.1022361287253243,
+          "spearman_rho": 0.05285412262156448,
+          "spearman_p_perm": 0.73577,
+          "R2_oos_vs_global_mean": 0.07670745128261813,
+          "R2_oos_vs_fold_train_mean": 0.11818245797450977,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.46991339130892534,
+          "coverage_68_pct": 72.72727272727273,
+          "coverage_95_pct": 84.0909090909091,
+          "median_posterior_sd": 0.098965,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.023809523809523815,
+              "r2d2c": -0.6,
+              "drran": -0.45,
+              "2dran": -0.33333333333333337,
+              "corny": 0.5499999999999999
+            },
+            "mean_rho": -0.17142857142857143,
+            "perm_p": 0.2864856757162142
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 5.61695000880249,
+            "rmse": 0.08493629423615932,
+            "pearson_r": 0.35594351142103225,
+            "pearson_r_ci95": [
+              0.025751535315196653,
+              0.6161090790856263
+            ],
+            "pearson_p_perm": 0.05574,
+            "r_squared_of_r": 0.1266957833227345,
+            "spearman_rho": 0.05602240896358543,
+            "spearman_p_perm": 0.74831,
+            "R2_oos_vs_global_mean": 0.10750243030734041,
+            "R2_oos_vs_fold_train_mean": 0.1577737219879879,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.4896102069434006,
+            "coverage_68_pct": 71.42857142857143,
+            "coverage_95_pct": 88.57142857142857,
+            "median_posterior_sd": 0.099575,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.01147222222222223,
+            "between_design_pred_sd": 0.044661655203364334,
+            "predicted_gap_over_design_sd": 0.25686961600469377,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 0.4666666666666666
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 43.5648639270684,
+          "rmse": 4.402308769929705,
+          "pearson_r": -0.40729753922271106,
+          "pearson_r_ci95": [
+            -0.628215003198434,
+            -0.12560517634140464
+          ],
+          "pearson_p_perm": 0.00786,
+          "r_squared_of_r": 0.16589128545687584,
+          "spearman_rho": -0.4157857646229739,
+          "spearman_p_perm": 0.00567,
+          "R2_oos_vs_global_mean": -0.43202076854529836,
+          "R2_oos_vs_fold_train_mean": -0.3733802038746623,
+          "rmse_mean_predictor": 3.7565148357442775,
+          "shrinkage_sd_pred_over_sd_obs": 0.3658616169884202,
+          "coverage_68_pct": 65.9090909090909,
+          "coverage_95_pct": 84.0909090909091,
+          "median_posterior_sd": 3.904055,
+          "sd_observed": 3.721328012008537,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.3333333333333334,
+              "r2d2c": 0.06666666666666667,
+              "drran": -0.18333333333333335,
+              "2dran": -0.8666666666666667,
+              "corny": -0.41666666666666663
+            },
+            "mean_rho": -0.2133333333333333,
+            "perm_p": 0.19069046547672616
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 33.77237425450479,
+            "rmse": 3.513503148576625,
+            "pearson_r": -0.2956837509795455,
+            "pearson_r_ci95": [
+              -0.5725169964816277,
+              0.04166863726725319
+            ],
+            "pearson_p_perm": 0.08137,
+            "r_squared_of_r": 0.08742888059333388,
+            "spearman_rho": -0.3100840336134454,
+            "spearman_p_perm": 0.07065,
+            "R2_oos_vs_global_mean": -0.12006910306668317,
+            "R2_oos_vs_fold_train_mean": -0.056979496444968136,
+            "rmse_mean_predictor": 3.4174885300642894,
+            "shrinkage_sd_pred_over_sd_obs": 0.1598208574499509,
+            "coverage_68_pct": 68.57142857142857,
+            "coverage_95_pct": 91.42857142857143,
+            "median_posterior_sd": 3.90031,
+            "sd_observed": 3.3683134694897525
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 1.892737777777778,
+            "between_design_pred_sd": 0.5383267468540712,
+            "predicted_gap_over_design_sd": 3.5159645862642943,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.33333333333333337
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "on_raw": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 5.180280188954233,
+          "rmse": 0.08270403147808017,
+          "pearson_r": 0.31974384861217314,
+          "pearson_r_ci95": [
+            0.02526143696939126,
+            0.5631653679961175
+          ],
+          "pearson_p_perm": 0.05649,
+          "r_squared_of_r": 0.1022361287253243,
+          "spearman_rho": 0.05285412262156448,
+          "spearman_p_perm": 0.73577,
+          "R2_oos_vs_global_mean": 0.07670745128261813,
+          "R2_oos_vs_fold_train_mean": 0.11818245797450977,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.46991339130892534,
+          "coverage_68_pct": 72.72727272727273,
+          "coverage_95_pct": 84.0909090909091,
+          "median_posterior_sd": 0.098965,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.023809523809523815,
+              "r2d2c": -0.6,
+              "drran": -0.45,
+              "2dran": -0.33333333333333337,
+              "corny": 0.5499999999999999
+            },
+            "mean_rho": -0.17142857142857143,
+            "perm_p": 0.2864856757162142
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 5.61695000880249,
+            "rmse": 0.08493629423615932,
+            "pearson_r": 0.35594351142103225,
+            "pearson_r_ci95": [
+              0.025751535315196653,
+              0.6161090790856263
+            ],
+            "pearson_p_perm": 0.05574,
+            "r_squared_of_r": 0.1266957833227345,
+            "spearman_rho": 0.05602240896358543,
+            "spearman_p_perm": 0.74831,
+            "R2_oos_vs_global_mean": 0.10750243030734041,
+            "R2_oos_vs_fold_train_mean": 0.1577737219879879,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.4896102069434006,
+            "coverage_68_pct": 71.42857142857143,
+            "coverage_95_pct": 88.57142857142857,
+            "median_posterior_sd": 0.099575,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.01147222222222223,
+            "between_design_pred_sd": 0.044661655203364334,
+            "predicted_gap_over_design_sd": 0.25686961600469377,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 0.4666666666666666
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 43.5648639270684,
+          "rmse": 4.402308769929705,
+          "pearson_r": -0.40729753922271106,
+          "pearson_r_ci95": [
+            -0.628215003198434,
+            -0.12560517634140464
+          ],
+          "pearson_p_perm": 0.00786,
+          "r_squared_of_r": 0.16589128545687584,
+          "spearman_rho": -0.4157857646229739,
+          "spearman_p_perm": 0.00567,
+          "R2_oos_vs_global_mean": -0.43202076854529836,
+          "R2_oos_vs_fold_train_mean": -0.3733802038746623,
+          "rmse_mean_predictor": 3.7565148357442775,
+          "shrinkage_sd_pred_over_sd_obs": 0.3658616169884202,
+          "coverage_68_pct": 65.9090909090909,
+          "coverage_95_pct": 84.0909090909091,
+          "median_posterior_sd": 3.904055,
+          "sd_observed": 3.721328012008537,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.3333333333333334,
+              "r2d2c": 0.06666666666666667,
+              "drran": -0.18333333333333335,
+              "2dran": -0.8666666666666667,
+              "corny": -0.41666666666666663
+            },
+            "mean_rho": -0.2133333333333333,
+            "perm_p": 0.19069046547672616
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 33.77237425450479,
+            "rmse": 3.513503148576625,
+            "pearson_r": -0.2956837509795455,
+            "pearson_r_ci95": [
+              -0.5725169964816277,
+              0.04166863726725319
+            ],
+            "pearson_p_perm": 0.08137,
+            "r_squared_of_r": 0.08742888059333388,
+            "spearman_rho": -0.3100840336134454,
+            "spearman_p_perm": 0.07065,
+            "R2_oos_vs_global_mean": -0.12006910306668317,
+            "R2_oos_vs_fold_train_mean": -0.056979496444968136,
+            "rmse_mean_predictor": 3.4174885300642894,
+            "shrinkage_sd_pred_over_sd_obs": 0.1598208574499509,
+            "coverage_68_pct": 68.57142857142857,
+            "coverage_95_pct": 91.42857142857143,
+            "median_posterior_sd": 3.90031,
+            "sd_observed": 3.3683134694897525
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 1.892737777777778,
+            "between_design_pred_sd": 0.5383267468540712,
+            "predicted_gap_over_design_sd": 3.5159645862642943,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.33333333333333337
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "diagnostics_check": {}
+    },
+    "raw|5p shape-only": {
+      "on_transformed": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 4.991346475649221,
+          "rmse": 0.07671381188606721,
+          "pearson_r": 0.45851325557314565,
+          "pearson_r_ci95": [
+            0.18710186118783645,
+            0.6648868450033831
+          ],
+          "pearson_p_perm": 0.00618,
+          "r_squared_of_r": 0.21023440553628478,
+          "spearman_rho": 0.4527158241252758,
+          "spearman_p_perm": 0.00228,
+          "R2_oos_vs_global_mean": 0.20561122843245694,
+          "R2_oos_vs_fold_train_mean": 0.24129577897117516,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.5068107048181435,
+          "coverage_68_pct": 61.36363636363637,
+          "coverage_95_pct": 70.45454545454545,
+          "median_posterior_sd": 0.099385,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.0,
+              "r2d2c": 0.3,
+              "drran": 0.25,
+              "2dran": -0.09999999999999999,
+              "corny": 0.5833333333333334
+            },
+            "mean_rho": 0.2066666666666667,
+            "perm_p": 0.1991900404979751
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 5.489957869066013,
+            "rmse": 0.07848885810373706,
+            "pearson_r": 0.49056950955183704,
+            "pearson_r_ci95": [
+              0.18806851801537713,
+              0.7080617058966568
+            ],
+            "pearson_p_perm": 0.00816,
+            "r_squared_of_r": 0.24065844370192993,
+            "spearman_rho": 0.5142857142857143,
+            "spearman_p_perm": 0.00186,
+            "R2_oos_vs_global_mean": 0.23785703343939213,
+            "R2_oos_vs_fold_train_mean": 0.2807859025762751,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.5419881670643755,
+            "coverage_68_pct": 62.857142857142854,
+            "coverage_95_pct": 74.28571428571429,
+            "median_posterior_sd": 0.09938,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0,
+            "between_design_pred_sd": 0.04943950983548594,
+            "predicted_gap_over_design_sd": 0.0,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 1.0
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 37.83493456559965,
+          "rmse": 4.314614661622328,
+          "pearson_r": -0.02267476363590542,
+          "pearson_r_ci95": [
+            -0.31741837138077,
+            0.27606398467378707
+          ],
+          "pearson_p_perm": 0.88533,
+          "r_squared_of_r": 0.0005141449059441787,
+          "spearman_rho": 0.04307215330746551,
+          "spearman_p_perm": 0.7798,
+          "R2_oos_vs_global_mean": -0.37553722114189236,
+          "R2_oos_vs_fold_train_mean": -0.31920963068719654,
+          "rmse_mean_predictor": 3.7565148357442775,
+          "shrinkage_sd_pred_over_sd_obs": 0.5673133816470818,
+          "coverage_68_pct": 52.27272727272727,
+          "coverage_95_pct": 70.45454545454545,
+          "median_posterior_sd": 3.4719100000000003,
+          "sd_observed": 3.721328012008537,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.09523809523809526,
+              "r2d2c": 0.41666666666666663,
+              "drran": -0.13333333333333333,
+              "2dran": 0.16666666666666669,
+              "corny": -0.08333333333333334
+            },
+            "mean_rho": 0.05428571428571427,
+            "perm_p": 0.7389630518474076
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 37.18776703116444,
+            "rmse": 4.072967007296927,
+            "pearson_r": -0.03161772593869491,
+            "pearson_r_ci95": [
+              -0.3610599629516879,
+              0.3048407727886357
+            ],
+            "pearson_p_perm": 0.85436,
+            "r_squared_of_r": 0.000999680593534421,
+            "spearman_rho": 0.0,
+            "spearman_p_perm": 1.0,
+            "R2_oos_vs_global_mean": -0.5051712266282495,
+            "R2_oos_vs_fold_train_mean": -0.42039015345490327,
+            "rmse_mean_predictor": 3.4174885300642894,
+            "shrinkage_sd_pred_over_sd_obs": 0.6683344579839674,
+            "coverage_68_pct": 57.14285714285714,
+            "coverage_95_pct": 74.28571428571429,
+            "median_posterior_sd": 3.53918,
+            "sd_observed": 3.3683134694897525
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0,
+            "between_design_pred_sd": 2.2511599569515304,
+            "predicted_gap_over_design_sd": 0.0,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": 1.0
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "on_raw": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 4.991346475649221,
+          "rmse": 0.07671381188606721,
+          "pearson_r": 0.45851325557314565,
+          "pearson_r_ci95": [
+            0.18710186118783645,
+            0.6648868450033831
+          ],
+          "pearson_p_perm": 0.00618,
+          "r_squared_of_r": 0.21023440553628478,
+          "spearman_rho": 0.4527158241252758,
+          "spearman_p_perm": 0.00228,
+          "R2_oos_vs_global_mean": 0.20561122843245694,
+          "R2_oos_vs_fold_train_mean": 0.24129577897117516,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.5068107048181435,
+          "coverage_68_pct": 61.36363636363637,
+          "coverage_95_pct": 70.45454545454545,
+          "median_posterior_sd": 0.099385,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.0,
+              "r2d2c": 0.3,
+              "drran": 0.25,
+              "2dran": -0.09999999999999999,
+              "corny": 0.5833333333333334
+            },
+            "mean_rho": 0.2066666666666667,
+            "perm_p": 0.1991900404979751
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 5.489957869066013,
+            "rmse": 0.07848885810373706,
+            "pearson_r": 0.49056950955183704,
+            "pearson_r_ci95": [
+              0.18806851801537713,
+              0.7080617058966568
+            ],
+            "pearson_p_perm": 0.00816,
+            "r_squared_of_r": 0.24065844370192993,
+            "spearman_rho": 0.5142857142857143,
+            "spearman_p_perm": 0.00186,
+            "R2_oos_vs_global_mean": 0.23785703343939213,
+            "R2_oos_vs_fold_train_mean": 0.2807859025762751,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.5419881670643755,
+            "coverage_68_pct": 62.857142857142854,
+            "coverage_95_pct": 74.28571428571429,
+            "median_posterior_sd": 0.09938,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0,
+            "between_design_pred_sd": 0.04943950983548594,
+            "predicted_gap_over_design_sd": 0.0,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 1.0
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 37.83493456559965,
+          "rmse": 4.314614661622328,
+          "pearson_r": -0.02267476363590542,
+          "pearson_r_ci95": [
+            -0.31741837138077,
+            0.27606398467378707
+          ],
+          "pearson_p_perm": 0.88533,
+          "r_squared_of_r": 0.0005141449059441787,
+          "spearman_rho": 0.04307215330746551,
+          "spearman_p_perm": 0.7798,
+          "R2_oos_vs_global_mean": -0.37553722114189236,
+          "R2_oos_vs_fold_train_mean": -0.31920963068719654,
+          "rmse_mean_predictor": 3.7565148357442775,
+          "shrinkage_sd_pred_over_sd_obs": 0.5673133816470818,
+          "coverage_68_pct": 52.27272727272727,
+          "coverage_95_pct": 70.45454545454545,
+          "median_posterior_sd": 3.4719100000000003,
+          "sd_observed": 3.721328012008537,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.09523809523809526,
+              "r2d2c": 0.41666666666666663,
+              "drran": -0.13333333333333333,
+              "2dran": 0.16666666666666669,
+              "corny": -0.08333333333333334
+            },
+            "mean_rho": 0.05428571428571427,
+            "perm_p": 0.7389630518474076
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 37.18776703116444,
+            "rmse": 4.072967007296927,
+            "pearson_r": -0.03161772593869491,
+            "pearson_r_ci95": [
+              -0.3610599629516879,
+              0.3048407727886357
+            ],
+            "pearson_p_perm": 0.85436,
+            "r_squared_of_r": 0.000999680593534421,
+            "spearman_rho": 0.0,
+            "spearman_p_perm": 1.0,
+            "R2_oos_vs_global_mean": -0.5051712266282495,
+            "R2_oos_vs_fold_train_mean": -0.42039015345490327,
+            "rmse_mean_predictor": 3.4174885300642894,
+            "shrinkage_sd_pred_over_sd_obs": 0.6683344579839674,
+            "coverage_68_pct": 57.14285714285714,
+            "coverage_95_pct": 74.28571428571429,
+            "median_posterior_sd": 3.53918,
+            "sd_observed": 3.3683134694897525
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0,
+            "between_design_pred_sd": 2.2511599569515304,
+            "predicted_gap_over_design_sd": 0.0,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": 1.0
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "diagnostics_check": {}
+    },
+    "per-gram|12p": {
+      "on_transformed": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 5.659849113852167,
+          "rmse": 0.004609816885031473,
+          "pearson_r": 0.356739896812883,
+          "pearson_r_ci95": [
+            0.06695015513441316,
+            0.591025323372802
+          ],
+          "pearson_p_perm": 0.0237,
+          "r_squared_of_r": 0.1272633539780664,
+          "spearman_rho": 0.45778717406624375,
+          "spearman_p_perm": 0.00198,
+          "R2_oos_vs_global_mean": 0.12427300878265413,
+          "R2_oos_vs_fold_train_mean": 0.16371032906299532,
+          "rmse_mean_predictor": 0.005040867799776898,
+          "shrinkage_sd_pred_over_sd_obs": 0.38741601938159803,
+          "coverage_68_pct": 84.0909090909091,
+          "coverage_95_pct": 93.18181818181817,
+          "median_posterior_sd": 0.005919609545,
+          "sd_observed": 0.004983006079373892,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.09523809523809526,
+              "r2d2c": 0.09999999999999999,
+              "drran": -0.33333333333333337,
+              "2dran": -0.15,
+              "corny": 0.6666666666666667
+            },
+            "mean_rho": 0.03761904761904762,
+            "perm_p": 0.8156092195390231
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 6.067070174886856,
+            "rmse": 0.0048042016299289945,
+            "pearson_r": 0.39224709599098584,
+            "pearson_r_ci95": [
+              0.0678725052292111,
+              0.6416237932482273
+            ],
+            "pearson_p_perm": 0.02666,
+            "r_squared_of_r": 0.15385778431336167,
+            "spearman_rho": 0.5378151260504201,
+            "spearman_p_perm": 0.00101,
+            "R2_oos_vs_global_mean": 0.1536196571569739,
+            "R2_oos_vs_fold_train_mean": 0.20129332544772405,
+            "rmse_mean_predictor": 0.005375607725103786,
+            "shrinkage_sd_pred_over_sd_obs": 0.3928409316987258,
+            "coverage_68_pct": 82.85714285714286,
+            "coverage_95_pct": 91.42857142857143,
+            "median_posterior_sd": 0.005926104525,
+            "sd_observed": 0.005298256818676031
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0005215296777777781,
+            "between_design_pred_sd": 0.002081372145027819,
+            "predicted_gap_over_design_sd": 0.25057012462843714,
+            "observed_pair_rho": 0.33333333333333337,
+            "predicted_pair_rho": 0.9
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 39.51015348498276,
+          "rmse": 0.20022899441396294,
+          "pearson_r": -0.4238769687949602,
+          "pearson_r_ci95": [
+            -0.6401947507485606,
+            -0.14527856164846256
+          ],
+          "pearson_p_perm": 0.00503,
+          "r_squared_of_r": 0.17967168467480363,
+          "spearman_rho": -0.48204658404077005,
+          "spearman_p_perm": 0.00086,
+          "R2_oos_vs_global_mean": -0.10697591385664418,
+          "R2_oos_vs_fold_train_mean": -0.061241553787203085,
+          "rmse_mean_predictor": 0.19436579671088758,
+          "shrinkage_sd_pred_over_sd_obs": 0.11132656847156353,
+          "coverage_68_pct": 72.72727272727273,
+          "coverage_95_pct": 90.9090909090909,
+          "median_posterior_sd": 0.211612816,
+          "sd_observed": 0.1925085358882873,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.1666666666666667,
+              "r2d2c": -0.35,
+              "drran": -0.5833333333333334,
+              "2dran": -0.7166666666666667,
+              "corny": -0.13333333333333333
+            },
+            "mean_rho": -0.39,
+            "perm_p": 0.014499275036248187
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 33.894229221500474,
+            "rmse": 0.17604919671324262,
+            "pearson_r": -0.2136005683260989,
+            "pearson_r_ci95": [
+              -0.5105082898097645,
+              0.1288152590901142
+            ],
+            "pearson_p_perm": 0.20696,
+            "r_squared_of_r": 0.04562520278923244,
+            "spearman_rho": -0.384873949579832,
+            "spearman_p_perm": 0.02317,
+            "R2_oos_vs_global_mean": -0.04217400486433154,
+            "R2_oos_vs_fold_train_mean": 0.016528041123945014,
+            "rmse_mean_predictor": 0.17752235760470164,
+            "shrinkage_sd_pred_over_sd_obs": 0.08268169216984106,
+            "coverage_68_pct": 80.0,
+            "coverage_95_pct": 94.28571428571428,
+            "median_posterior_sd": 0.21120351,
+            "sd_observed": 0.1749679459039017
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.023922521999999995,
+            "between_design_pred_sd": 0.014466645842815802,
+            "predicted_gap_over_design_sd": 1.6536329332953168,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.08333333333333334
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "on_raw": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 94.95821171674173,
+          "rmse": 0.9917667557006244,
+          "pearson_r": 0.2653253463388308,
+          "pearson_r_ci95": [
+            -0.034253140175843445,
+            0.5211544404179642
+          ],
+          "pearson_p_perm": 0.08315,
+          "r_squared_of_r": 0.07039753940982052,
+          "spearman_rho": 0.24467935165609583,
+          "spearman_p_perm": 0.10989,
+          "R2_oos_vs_global_mean": -131.77156166681795,
+          "R2_oos_vs_fold_train_mean": -125.80736167812101,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.02217276562259996,
+          "coverage_68_pct": 0.0,
+          "coverage_95_pct": 0.0,
+          "median_posterior_sd": 0.005919609545,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.2380952380952381,
+              "r2d2c": -0.15,
+              "drran": -0.06666666666666667,
+              "2dran": -0.21666666666666667,
+              "corny": 0.5666666666666667
+            },
+            "mean_rho": -0.020952380952380965,
+            "perm_p": 0.8990550472476376
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 94.95142741392873,
+            "rmse": 0.9883774612198836,
+            "pearson_r": 0.3020126283928796,
+            "pearson_r_ci95": [
+              -0.03472922764305866,
+              0.5771700833654393
+            ],
+            "pearson_p_perm": 0.08046,
+            "r_squared_of_r": 0.0912116277087756,
+            "spearman_rho": 0.27030812324929976,
+            "spearman_p_perm": 0.11615,
+            "R2_oos_vs_global_mean": -119.8554086136716,
+            "R2_oos_vs_fold_train_mean": -113.0480427407383,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.022817359589855393,
+            "coverage_68_pct": 0.0,
+            "coverage_95_pct": 0.0,
+            "median_posterior_sd": 0.005926104525,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0005215296777777781,
+            "between_design_pred_sd": 0.002081372145027819,
+            "predicted_gap_over_design_sd": 0.25057012462843714,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 0.9
+          },
+          "mass_restored": {
+            "n": 44,
+            "mape_pct": 5.6598443902589395,
+            "rmse": 0.08910242287470072,
+            "pearson_r": 0.28406564050138583,
+            "pearson_r_ci95": [
+              -0.013994975467766813,
+              0.5357632170142519
+            ],
+            "pearson_p_perm": 0.06409,
+            "r_squared_of_r": 0.08069328811346257,
+            "spearman_rho": 0.2617336152219873,
+            "spearman_p_perm": 0.08711,
+            "R2_oos_vs_global_mean": -0.07167968328326224,
+            "R2_oos_vs_fold_train_mean": -0.023539013137614972,
+            "rmse_mean_predictor": 0.0880718893561449,
+            "shrinkage_sd_pred_over_sd_obs": 0.6731542803751146,
+            "coverage_68_pct": 84.0909090909091,
+            "coverage_95_pct": 93.18181818181817,
+            "median_posterior_sd": 0.11854989803714999,
+            "sd_observed": 0.08706610680345829,
+            "within_batch": {
+              "per_batch_rho": {
+                "seed": 0.5714285714285715,
+                "r2d2c": 0.35,
+                "drran": 0.0,
+                "2dran": -0.33333333333333337,
+                "corny": 0.5666666666666667
+              },
+              "mean_rho": 0.23095238095238094,
+              "perm_p": 0.15219239038048096
+            },
+            "design_level": {
+              "n": 35,
+              "mape_pct": 6.066219157127973,
+              "rmse": 0.09239533641704406,
+              "pearson_r": 0.3122235107109345,
+              "pearson_r_ci95": [
+                -0.023464448891341312,
+                0.5846398005370832
+              ],
+              "pearson_p_perm": 0.06863,
+              "r_squared_of_r": 0.09748352064066104,
+              "spearman_rho": 0.26806722689075635,
+              "spearman_p_perm": 0.11729,
+              "R2_oos_vs_global_mean": -0.056137654255517866,
+              "R2_oos_vs_fold_train_mean": 0.003350915657649778,
+              "rmse_mean_predictor": 0.09255053104897937,
+              "shrinkage_sd_pred_over_sd_obs": 0.7041260804167112,
+              "coverage_68_pct": 82.85714285714286,
+              "coverage_95_pct": 91.42857142857143,
+              "median_posterior_sd": 0.11967045114180001,
+              "sd_observed": 0.09121879930196647
+            },
+            "twins": {
+              "n_pairs": 9,
+              "mean_predicted_gap": 0.013713860464111197,
+              "between_design_pred_sd": 0.06422953561281228,
+              "predicted_gap_over_design_sd": 0.21351330557301437,
+              "observed_pair_rho": 0.08333333333333334,
+              "predicted_pair_rho": 0.8166666666666667
+            }
+          }
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 94.08223273500232,
+          "rmse": 9.009352178407331,
+          "pearson_r": -0.4339178541889466,
+          "pearson_r_ci95": [
+            -0.6473991676769552,
+            -0.1573013040048891
+          ],
+          "pearson_p_perm": 0.00391,
+          "r_squared_of_r": 0.1882847041839399,
+          "spearman_rho": -0.46675358568742986,
+          "spearman_p_perm": 0.00173,
+          "R2_oos_vs_global_mean": -4.997577259450025,
+          "R2_oos_vs_fold_train_mean": -4.751979054376648,
+          "rmse_mean_predictor": 3.7565131719636877,
+          "shrinkage_sd_pred_over_sd_obs": 0.0057590528602701535,
+          "coverage_68_pct": 0.0,
+          "coverage_95_pct": 0.0,
+          "median_posterior_sd": 0.211612816,
+          "sd_observed": 3.721326270466379,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.1666666666666667,
+              "r2d2c": -0.21666666666666667,
+              "drran": -0.5833333333333334,
+              "2dran": -0.7166666666666667,
+              "corny": -0.13333333333333333
+            },
+            "mean_rho": -0.3633333333333334,
+            "perm_p": 0.02279886005699715
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 94.26165234694398,
+            "rmse": 8.819073762247248,
+            "pearson_r": -0.22686703127407548,
+            "pearson_r_ci95": [
+              -0.520743950958827,
+              0.11507985583774177
+            ],
+            "pearson_p_perm": 0.18177,
+            "r_squared_of_r": 0.051468649879112344,
+            "spearman_rho": -0.3705882352941177,
+            "spearman_p_perm": 0.02848,
+            "R2_oos_vs_global_mean": -6.056825586511033,
+            "R2_oos_vs_fold_train_mean": -5.659339084087147,
+            "rmse_mean_predictor": 3.4174912435824933,
+            "shrinkage_sd_pred_over_sd_obs": 0.004294919248820039,
+            "coverage_68_pct": 0.0,
+            "coverage_95_pct": 0.0,
+            "median_posterior_sd": 0.21120351,
+            "sd_observed": 3.3683161439624936
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.023922521999999995,
+            "between_design_pred_sd": 0.014466645842815802,
+            "predicted_gap_over_design_sd": 1.6536329332953168,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.08333333333333334
+          },
+          "mass_restored": {
+            "n": 44,
+            "mape_pct": 39.5101590548771,
+            "rmse": 3.924342794742409,
+            "pearson_r": -0.33087010405395,
+            "pearson_r_ci95": [
+              -0.571602613444438,
+              -0.037692193982432384
+            ],
+            "pearson_p_perm": 0.02784,
+            "r_squared_of_r": 0.1094750257566717,
+            "spearman_rho": -0.2690627202255109,
+            "spearman_p_perm": 0.07944,
+            "R2_oos_vs_global_mean": -0.13794846929625115,
+            "R2_oos_vs_fold_train_mean": -0.09134996969630027,
+            "rmse_mean_predictor": 3.7565131719636877,
+            "shrinkage_sd_pred_over_sd_obs": 0.1665007326759716,
+            "coverage_68_pct": 72.72727272727273,
+            "coverage_95_pct": 90.9090909090909,
+            "median_posterior_sd": 4.19516104515,
+            "sd_observed": 3.721326270466379,
+            "within_batch": {
+              "per_batch_rho": {
+                "seed": -0.04761904761904763,
+                "r2d2c": 0.26666666666666666,
+                "drran": -0.6833333333333333,
+                "2dran": -0.6,
+                "corny": -0.33333333333333337
+              },
+              "mean_rho": -0.2795238095238095,
+              "perm_p": 0.08149592520373981
+            },
+            "design_level": {
+              "n": 35,
+              "mape_pct": 33.90527950448867,
+              "rmse": 3.45681014711074,
+              "pearson_r": -0.15811807266156608,
+              "pearson_r_ci95": [
+                -0.46676946016703386,
+                0.18486968083084837
+              ],
+              "pearson_p_perm": 0.36367,
+              "r_squared_of_r": 0.02500132490220829,
+              "spearman_rho": -0.08711484593837535,
+              "spearman_p_perm": 0.61773,
+              "R2_oos_vs_global_mean": -0.0842126995356971,
+              "R2_oos_vs_fold_train_mean": -0.023142759725115036,
+              "rmse_mean_predictor": 3.4174912435824933,
+              "shrinkage_sd_pred_over_sd_obs": 0.1720548240926129,
+              "coverage_68_pct": 80.0,
+              "coverage_95_pct": 94.28571428571428,
+              "median_posterior_sd": 4.184030564555,
+              "sd_observed": 3.3683161439624936
+            },
+            "twins": {
+              "n_pairs": 9,
+              "mean_predicted_gap": 0.5339193341777775,
+              "between_design_pred_sd": 0.579535041637775,
+              "predicted_gap_over_design_sd": 0.9212891297632549,
+              "observed_pair_rho": -0.18333333333333335,
+              "predicted_pair_rho": -0.11666666666666665
+            }
+          }
+        }
+      }
+    },
+    "per-gram|6p": {
+      "on_transformed": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 6.5904484045559695,
+          "rmse": 0.004924528368969998,
+          "pearson_r": 0.2077921706411934,
+          "pearson_r_ci95": [
+            -0.09494532137358981,
+            0.4753485654781303
+          ],
+          "pearson_p_perm": 0.14432,
+          "r_squared_of_r": 0.043177586179778835,
+          "spearman_rho": 0.08287526427061309,
+          "spearman_p_perm": 0.59149,
+          "R2_oos_vs_global_mean": 0.0006199533818374015,
+          "R2_oos_vs_fold_train_mean": 0.0456258414902706,
+          "rmse_mean_predictor": 0.005040867799776898,
+          "shrinkage_sd_pred_over_sd_obs": 0.4124325826246716,
+          "coverage_68_pct": 72.72727272727273,
+          "coverage_95_pct": 86.36363636363636,
+          "median_posterior_sd": 0.005731678235000001,
+          "sd_observed": 0.004983006079373892,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": 0.4761904761904762,
+              "r2d2c": -0.7333333333333334,
+              "drran": -0.21666666666666667,
+              "2dran": -0.049999999999999996,
+              "corny": 0.5333333333333333
+            },
+            "mean_rho": 0.001904761904761898,
+            "perm_p": 0.9914004299785011
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 7.218788015894717,
+            "rmse": 0.005182134506262124,
+            "pearson_r": 0.22743714563041204,
+            "pearson_r_ci95": [
+              -0.11448664427444881,
+              0.5211819339891167
+            ],
+            "pearson_p_perm": 0.14252,
+            "r_squared_of_r": 0.05172765521250925,
+            "spearman_rho": 0.11484593837535015,
+            "spearman_p_perm": 0.51195,
+            "R2_oos_vs_global_mean": 0.015217146376068191,
+            "R2_oos_vs_fold_train_mean": 0.07068654792713047,
+            "rmse_mean_predictor": 0.005375607725103786,
+            "shrinkage_sd_pred_over_sd_obs": 0.41851256633989187,
+            "coverage_68_pct": 68.57142857142857,
+            "coverage_95_pct": 88.57142857142857,
+            "median_posterior_sd": 0.00574430314,
+            "sd_observed": 0.005298256818676031
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0005320581999999992,
+            "between_design_pred_sd": 0.002217387058311937,
+            "predicted_gap_over_design_sd": 0.23994827515817063,
+            "observed_pair_rho": 0.33333333333333337,
+            "predicted_pair_rho": 0.8666666666666667
+          },
+          "matches_archived_diagnostics": true
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 43.60926498336581,
+          "rmse": 0.22807067659668293,
+          "pearson_r": -0.41860542015680513,
+          "pearson_r_ci95": [
+            -0.6363970778408066,
+            -0.13899928791431163
+          ],
+          "pearson_p_perm": 0.00636,
+          "r_squared_of_r": 0.17523049778465535,
+          "spearman_rho": -0.6002818886539817,
+          "spearman_p_perm": 1e-05,
+          "R2_oos_vs_global_mean": -0.43622717814737433,
+          "R2_oos_vs_fold_train_mean": -0.37688990613928985,
+          "rmse_mean_predictor": 0.19436579671088758,
+          "shrinkage_sd_pred_over_sd_obs": 0.3633312181683977,
+          "coverage_68_pct": 70.45454545454545,
+          "coverage_95_pct": 84.0909090909091,
+          "median_posterior_sd": 0.2052092035,
+          "sd_observed": 0.1925085358882873,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.5000000000000001,
+              "r2d2c": -0.3,
+              "drran": -0.39999999999999997,
+              "2dran": -0.8166666666666667,
+              "corny": -0.43333333333333335
+            },
+            "mean_rho": -0.49000000000000005,
+            "perm_p": 0.0014999250037498126
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 34.711606613010964,
+            "rmse": 0.18597739091076557,
+            "pearson_r": -0.3505013587847594,
+            "pearson_r_ci95": [
+              -0.6122366065016089,
+              -0.01953677536078859
+            ],
+            "pearson_p_perm": 0.04001,
+            "r_squared_of_r": 0.12285120250996265,
+            "spearman_rho": -0.5319327731092437,
+            "spearman_p_perm": 0.00127,
+            "R2_oos_vs_global_mean": -0.16303408306792733,
+            "R2_oos_vs_fold_train_mean": -0.09752440818491781,
+            "rmse_mean_predictor": 0.17752235760470164,
+            "shrinkage_sd_pred_over_sd_obs": 0.1841622779209977,
+            "coverage_68_pct": 71.42857142857143,
+            "coverage_95_pct": 94.28571428571428,
+            "median_posterior_sd": 0.205291061,
+            "sd_observed": 0.1749679459039017
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.09845480388888889,
+            "between_design_pred_sd": 0.032222495480820436,
+            "predicted_gap_over_design_sd": 3.0554680020823164,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.16666666666666669
+          },
+          "matches_archived_diagnostics": true
+        }
+      },
+      "on_raw": {
+        "t180": {
+          "n": 44,
+          "mape_pct": 94.94867573462815,
+          "rmse": 0.9916774976088959,
+          "pearson_r": 0.2226096750718722,
+          "pearson_r_ci95": [
+            -0.0795264764485851,
+            0.487286068149721
+          ],
+          "pearson_p_perm": 0.13399,
+          "r_squared_of_r": 0.049555067435604526,
+          "spearman_rho": -0.12093023255813952,
+          "spearman_p_perm": 0.43519,
+          "R2_oos_vs_global_mean": -131.7476641064784,
+          "R2_oos_vs_fold_train_mean": -125.78453761444986,
+          "rmse_mean_predictor": 0.0880718893561449,
+          "shrinkage_sd_pred_over_sd_obs": 0.023604524676748062,
+          "coverage_68_pct": 0.0,
+          "coverage_95_pct": 0.0,
+          "median_posterior_sd": 0.005731678235000001,
+          "sd_observed": 0.08706610680345829,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.3333333333333334,
+              "r2d2c": -0.8333333333333333,
+              "drran": -0.15,
+              "2dran": -0.13333333333333333,
+              "corny": 0.4666666666666666
+            },
+            "mean_rho": -0.19666666666666668,
+            "perm_p": 0.22648867556622168
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 94.94276719078562,
+            "rmse": 0.9882984066714775,
+            "pearson_r": 0.2574353295017511,
+            "pearson_r_ci95": [
+              -0.0829253323886325,
+              0.5440114404904419
+            ],
+            "pearson_p_perm": 0.12475,
+            "r_squared_of_r": 0.06627294887567514,
+            "spearman_rho": -0.12240896358543418,
+            "spearman_p_perm": 0.48168,
+            "R2_oos_vs_global_mean": -119.83607634834975,
+            "R2_oos_vs_fold_train_mean": -113.0297993948509,
+            "rmse_mean_predictor": 0.09255053104897937,
+            "shrinkage_sd_pred_over_sd_obs": 0.02430844382166884,
+            "coverage_68_pct": 0.0,
+            "coverage_95_pct": 0.0,
+            "median_posterior_sd": 0.00574430314,
+            "sd_observed": 0.09121879930196647
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.0005320581999999992,
+            "between_design_pred_sd": 0.002217387058311937,
+            "predicted_gap_over_design_sd": 0.23994827515817063,
+            "observed_pair_rho": 0.08333333333333334,
+            "predicted_pair_rho": 0.8666666666666667
+          },
+          "mass_restored": {
+            "n": 44,
+            "mape_pct": 6.5904438873042075,
+            "rmse": 0.09570891899192899,
+            "pearson_r": 0.23249867641266742,
+            "pearson_r_ci95": [
+              -0.06915507423690422,
+              0.49519833207596137
+            ],
+            "pearson_p_perm": 0.12678,
+            "r_squared_of_r": 0.05405563453364223,
+            "spearman_rho": 0.16518675123326285,
+            "spearman_p_perm": 0.28527,
+            "R2_oos_vs_global_mean": -0.23649052403247328,
+            "R2_oos_vs_fold_train_mean": -0.18094642500346092,
+            "rmse_mean_predictor": 0.0880718893561449,
+            "shrinkage_sd_pred_over_sd_obs": 0.7715001689581265,
+            "coverage_68_pct": 72.72727272727273,
+            "coverage_95_pct": 86.36363636363636,
+            "median_posterior_sd": 0.1110941912646,
+            "sd_observed": 0.08706610680345829,
+            "within_batch": {
+              "per_batch_rho": {
+                "seed": 0.4761904761904762,
+                "r2d2c": 0.18333333333333335,
+                "drran": 0.049999999999999996,
+                "2dran": -0.3666666666666667,
+                "corny": 0.5833333333333334
+              },
+              "mean_rho": 0.18523809523809526,
+              "perm_p": 0.25708714564271784
+            },
+            "design_level": {
+              "n": 35,
+              "mape_pct": 7.2187037950511845,
+              "rmse": 0.10037039746501689,
+              "pearson_r": 0.25587936648198517,
+              "pearson_r_ci95": [
+                -0.08457933537028146,
+                0.5428376482406916
+              ],
+              "pearson_p_perm": 0.13444,
+              "r_squared_of_r": 0.06547425019122208,
+              "spearman_rho": 0.16134453781512606,
+              "spearman_p_perm": 0.35463,
+              "R2_oos_vs_global_mean": -0.24632616458015621,
+              "R2_oos_vs_fold_train_mean": -0.17612493571809051,
+              "rmse_mean_predictor": 0.09255053104897937,
+              "shrinkage_sd_pred_over_sd_obs": 0.8134426140052331,
+              "coverage_68_pct": 68.57142857142857,
+              "coverage_95_pct": 88.57142857142857,
+              "median_posterior_sd": 0.11034659734739999,
+              "sd_observed": 0.09121879930196647
+            },
+            "twins": {
+              "n_pairs": 9,
+              "mean_predicted_gap": 0.01584043918733337,
+              "between_design_pred_sd": 0.07420125855061034,
+              "predicted_gap_over_design_sd": 0.21347938696388963,
+              "observed_pair_rho": 0.08333333333333334,
+              "predicted_pair_rho": 0.7333333333333334
+            }
+          }
+        },
+        "e_reb_mJ": {
+          "n": 44,
+          "mape_pct": 93.94199510010452,
+          "rmse": 9.016473200026837,
+          "pearson_r": -0.42954602072925546,
+          "pearson_r_ci95": [
+            -0.6442670238874558,
+            -0.152056465759998
+          ],
+          "pearson_p_perm": 0.00466,
+          "r_squared_of_r": 0.18450978392433795,
+          "spearman_rho": -0.6022551092318534,
+          "spearman_p_perm": 4e-05,
+          "R2_oos_vs_global_mean": -5.0070620159789625,
+          "R2_oos_vs_fold_train_mean": -4.76107541421167,
+          "rmse_mean_predictor": 3.7565131719636877,
+          "shrinkage_sd_pred_over_sd_obs": 0.01879554647148429,
+          "coverage_68_pct": 0.0,
+          "coverage_95_pct": 0.0,
+          "median_posterior_sd": 0.2052092035,
+          "sd_observed": 3.721326270466379,
+          "within_batch": {
+            "per_batch_rho": {
+              "seed": -0.5000000000000001,
+              "r2d2c": -0.5666666666666667,
+              "drran": -0.39999999999999997,
+              "2dran": -0.8166666666666667,
+              "corny": -0.43333333333333335
+            },
+            "mean_rho": -0.5433333333333333,
+            "perm_p": 0.00034998250087495624
+          },
+          "design_level": {
+            "n": 35,
+            "mape_pct": 94.23096132977373,
+            "rmse": 8.822268061108362,
+            "pearson_r": -0.37165077185847817,
+            "pearson_r_ci95": [
+              -0.6272158017251628,
+              -0.043833003295686235
+            ],
+            "pearson_p_perm": 0.03088,
+            "r_squared_of_r": 0.1381242962230026,
+            "spearman_rho": -0.5507002801120449,
+            "spearman_p_perm": 0.00069,
+            "R2_oos_vs_global_mean": -6.06193852532212,
+            "R2_oos_vs_fold_train_mean": -5.664164028793773,
+            "rmse_mean_predictor": 3.4174912435824933,
+            "shrinkage_sd_pred_over_sd_obs": 0.00956635128759435,
+            "coverage_68_pct": 0.0,
+            "coverage_95_pct": 0.0,
+            "median_posterior_sd": 0.205291061,
+            "sd_observed": 3.3683161439624936
+          },
+          "twins": {
+            "n_pairs": 9,
+            "mean_predicted_gap": 0.09845480388888889,
+            "between_design_pred_sd": 0.032222495480820436,
+            "predicted_gap_over_design_sd": 3.0554680020823164,
+            "observed_pair_rho": -0.18333333333333335,
+            "predicted_pair_rho": -0.16666666666666669
+          },
+          "mass_restored": {
+            "n": 44,
+            "mape_pct": 43.6092814587905,
+            "rmse": 4.463451153789916,
+            "pearson_r": -0.4306209890101552,
+            "pearson_r_ci95": [
+              -0.6450378394266751,
+              -0.15334464554617605
+            ],
+            "pearson_p_perm": 0.00435,
+            "r_squared_of_r": 0.1854344361760842,
+            "spearman_rho": -0.3306553911205074,
+            "spearman_p_perm": 0.02774,
+            "R2_oos_vs_global_mean": -0.47207621623039153,
+            "R2_oos_vs_fold_train_mean": -0.4117953293326466,
+            "rmse_mean_predictor": 3.7565131719636877,
+            "shrinkage_sd_pred_over_sd_obs": 0.3802486728319616,
+            "coverage_68_pct": 70.45454545454545,
+            "coverage_95_pct": 84.0909090909091,
+            "median_posterior_sd": 4.089894713950001,
+            "sd_observed": 3.721326270466379,
+            "within_batch": {
+              "per_batch_rho": {
+                "seed": -0.19047619047619052,
+                "r2d2c": 0.3,
+                "drran": -0.48333333333333334,
+                "2dran": -0.6333333333333333,
+                "corny": -0.65
+              },
+              "mean_rho": -0.3314285714285714,
+              "perm_p": 0.03729813509324534
+            },
+            "design_level": {
+              "n": 35,
+              "mape_pct": 34.739161118487665,
+              "rmse": 3.6421242351896828,
+              "pearson_r": -0.34554565251930736,
+              "pearson_r_ci95": [
+                -0.6086993173860455,
+                -0.013899682765146035
+              ],
+              "pearson_p_perm": 0.04323,
+              "r_squared_of_r": 0.1194017979749939,
+              "spearman_rho": -0.2030812324929972,
+              "spearman_p_perm": 0.24014,
+              "R2_oos_vs_global_mean": -0.20357440964214502,
+              "R2_oos_vs_fold_train_mean": -0.13578123881332238,
+              "rmse_mean_predictor": 3.4174912435824933,
+              "shrinkage_sd_pred_over_sd_obs": 0.22260461512379812,
+              "coverage_68_pct": 71.42857142857143,
+              "coverage_95_pct": 94.28571428571428,
+              "median_posterior_sd": 4.09878294232,
+              "sd_observed": 3.3683161439624936
+            },
+            "twins": {
+              "n_pairs": 9,
+              "mean_predicted_gap": 1.9660392224155556,
+              "between_design_pred_sd": 0.7498027188420466,
+              "predicted_gap_over_design_sd": 2.6220753446343816,
+              "observed_pair_rho": -0.18333333333333335,
+              "predicted_pair_rho": -0.43333333333333335
+            }
+          }
+        }
+      }
+    }
+  },
+  "mass_alone_reference": {
+    "t180": {
+      "raw": {
+        "mass_alone_spearman_on_transformed": -0.13319238900634248,
+        "mass_alone_spearman_on_raw": -0.13319238900634248
+      },
+      "per_gram": {
+        "mass_alone_spearman_on_transformed": 0.3911205073995771,
+        "mass_alone_spearman_on_raw": -0.20042283298097252
+      }
+    },
+    "e_reb_mJ": {
+      "raw": {
+        "mass_alone_spearman_on_transformed": -0.6326990838618745,
+        "mass_alone_spearman_on_raw": -0.6326990838618745
+      },
+      "per_gram": {
+        "mass_alone_spearman_on_transformed": -0.14376321353065538,
+        "mass_alone_spearman_on_raw": -0.26116983791402393
+      }
+    }
+  }
+}
