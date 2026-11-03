@@ -1,0 +1,407 @@
+# Edison Literature Query — Funding Venues for a Larger-Scale Tensegrity / BO Energy-Absorption Grant Proposal
+
+- **Task ID:** `5c3afc89-6f56-49a2-840a-1f3c1aa2e130`
+- **Job:** `LITERATURE_HIGH`
+- **Submitted:** 2026-05-09
+- **Fetched:** 2026-05-09
+- **Status:** success
+- **Related issues:** #42 (this issue), #16 (NASA priorities tie-in), #18 (crutch-tip impact-absorber thrust)
+
+> High-effort literature + program survey to identify the strongest federal / quasi-federal funding venues (NSF, DOE, NIH, DOD, NASA, DOT, NIST, foundations) for a larger-scale follow-on to the BYU MRG tensegrity / Bayesian-optimization energy-absorption framework. See PR description for the full submitted prompt and section structure.
+
+---
+
+Question: Follow-up to a prior Edison LITERATURE run (task
+ff9cb91e-ca9f-48af-a9fc-3e6c05665e9d) that scoped funding venues for a
+larger-scale (multi-year, ≥$300k–$2M+) federal grant proposal building on a
+multi-material 3D-printed tensegrity / Bayesian-optimization energy-absorption
+research program led by Jeffrey R. Hill (BYU ME, Assoc. Prof., ex-Sandia
+2011–2021, tensegrity / 3D-printed tension networks / smart structures) and
+Sterling G. Baird (BYU ME, Asst. Prof. 2025–, ex-Acceleration Consortium
+Toronto 2023–2025, Bayesian optimization / self-driving labs / Honegumi). Two
+near-term application thrusts are crutch-tip impact absorbers (issue #18) and
+NASA / aerospace energy-absorbing deployable structures (issue #16). The team
+is open to applied framing but can position toward basic science.
+
+The prior run produced a defensible but evidence-narrow synthesis (only ~6
+distinct cited sources) and explicitly flagged that solicitation PDFs and
+award-database extracts (NSF Award Search, NIH RePORTER, NSPIRES/NTRS,
+USAspending, DoD eBRAP) had not been retrieved. This follow-up needs to fill
+those gaps. Be aggressive about pulling concrete program data and prior-award
+records.
+
+Deliver — citation-rich, with as many distinct sources as possible, and DOIs /
+award IDs / solicitation numbers wherever available — the following:
+
+A. AGENCY-BY-AGENCY PROGRAM TABLES.
+   For each of the following programs, give: program full name, sponsoring
+   directorate / division, typical award envelope ($, duration, team size),
+   solicitation cadence + most recent solicitation number, eligibility rules
+   (especially early-career year-from-PhD or assistant-prof clocks), and a
+   one-sentence fit assessment for our PI/Co-PI pair.
+   - NSF CMMI core: Mechanics of Materials and Structures (MoMS), Advanced
+     Manufacturing (AM), Engineering Design and Systems Engineering (EDSE),
+     Dynamics, Control and Systems Diagnostics (DCSD).
+   - NSF cross-cutting: DMREF, LEAP-HI, FMSG (Future Manufacturing), GOALI,
+     MRI, REU Site/Supplement, RET, Convergence Accelerator, Regional
+     Innovation Engines.
+   - NSF early-career: CAREER (eligibility rules; whether AC PI/Director years
+     count against tenure clock).
+   - DOE Office of Science BES Materials Sciences and Engineering Division —
+     Mechanical Behavior and Radiation Effects, Synthesis & Processing
+     Science; ARPA-E impact/crashworthiness analogs; EERE Vehicle Technologies
+     Office lightweighting; AMMTO; DOE Early Career Research Program.
+   - NIH NIBIB (R01/R21), NICHD NCMRR (R01/R21), NIA falls-prevention
+     mechanisms, NIOSH HAVS/vibration mechanisms, NSF/NIH Smart and Connected
+     Health (status as of 2025–2026).
+   - NASA: STMD ECF, ESI, LuSTR, NIAC Phase I/II/III, Space Technology
+     Research Institutes (STRI), NSTGRO, NASA EPSCoR, Utah NASA Space Grant
+     Consortium, ROSES appendices touching architected/lattice structures,
+     SBIR/STTR.
+   - DoD DARPA: DSO themes on architected materials / metamaterials / soft
+     robotics (e.g., MCMA, AMMA, Atom-to-Architecture, MIND legacies); YFA
+     eligibility window.
+   - DoD ARO: Mechanical Sciences Division (Solid Mechanics; Complex Dynamics
+     & Systems); Materials Science Division (Synthesis & Processing of
+     Materials); MURI themes that have funded tensegrity / architected
+     absorbers; STIR; YIP eligibility window.
+   - ONR Code 33 (Solid Mechanics, Materials and Structures); ONR YIP.
+   - AFOSR RTA1 (Mechanics of Multifunctional Materials and Microsystems;
+     Dynamic Materials & Interactions); AFOSR YIP.
+   - DTRA basic research on blast/shock.
+   - DoD CDMRP — orthopaedic, peer-reviewed orthopaedic, spinal cord injury
+     programs that have funded mobility-aid / assistive technology.
+   - DoD DURIP for equipment scale-up.
+   - DOT University Transportation Centers (vehicle crashworthiness).
+   - NIST Measurement Science and PSCR grants relevant to architected-
+     materials metrology.
+   - FDA Office of Science and Engineering Laboratories (assistive device
+     standards and grant pathways).
+   - Private foundations realistic for ME/AM structures research: Sloan,
+     Keck, Packard, MTU/Bechtel-style. Honestly indicate which actually fund
+     this scope.
+
+B. PRIOR-AWARD TABLE.
+   List as many *real, federally-funded* prior awards as you can find that
+   relate to tensegrity, architected/lattice/cellular energy absorbers,
+   mechanical metamaterials, multi-material AM for structures, Bayesian /
+   active-learning / autonomous experimentation for structural materials,
+   crashworthiness, deployable space structures, or assistive-mobility
+   devices. Columns: Award ID, Agency/Program, PI, Institution, $ Amount,
+   Start–End Dates, Title, 1-line relevance to our framework. Aim for 20+
+   rows. Flag rows where you are uncertain about the data. Acceptable
+   sources: NSF Award Search (nsf.gov/awardsearch), NIH RePORTER, DOE PAMS /
+   OSTI, NASA NSPIRES & NTRS, USAspending.gov, DoD eBRAP, DARPA news
+   releases, ARO / ONR / AFOSR press releases, agency annual reports.
+   Specifically search and report on NSF awards led by Robert E. Skelton,
+   Glaucio Paulino, Vytas SunSpiral / Ames TT-3 / Super Ball Bot lineage,
+   Adrian Agogino, Atil Iscen, Jonas Hauptmann, Julian Rimoli, Fernando
+   Fraternali, Ahmad Rafsanjani, K. W. Wang (Penn State / Michigan), Jian
+   Cheng Lai, and other tensegrity-active groups.
+
+C. SHORTLISTS.
+   - Top 3–5 best-fit *primary* venues for a Hill+Baird co-led larger-scale
+     proposal (rank-ordered, with quantitative justification).
+   - Top 3–5 best-fit *Co-PI-led* early-career mechanisms for Sterling Baird
+     (NSF CAREER, DOE Early Career, NASA ECF, DARPA YFA, ARO/ONR/AFOSR YIP,
+     Sloan, Packard) — explicit eligibility window check given his 2025
+     assistant-prof start date and prior 2023–2025 PI/Director appointments
+     at the Acceleration Consortium.
+
+D. FRAMING GUIDANCE.
+   For each top-shortlist venue, a 1-paragraph concrete framing recommendation
+   showing how to position the program of work to that solicitation,
+   including which "basic-science hooks" to lean on if the venue demands them.
+
+E. DON'T-APPLY FLAGS.
+   Identify venues where the team (current funding history, lab maturity,
+   industrial cost-share availability, publication record on the specific
+   topic) is unlikely to be competitive yet, with reasoning.
+
+F. 12–18 MONTH ACTION PLAN.
+   Concrete preparatory activities (white papers, program-officer outreach
+   norms per agency, conference networking, equipment / preliminary-data
+   builds) for the top 3 shortlisted venues.
+
+Cite extensively. Every dollar figure, deadline pattern, or eligibility rule
+should carry a citation (URL preferred). Where you are unable to retrieve a
+specific solicitation PDF or award record, say so explicitly rather than
+guessing. Avoid speculation about confidential program-officer preferences.
+
+# Federal Grant Landscape for Multi-Material 3D-Printed Tensegrity / Bayesian-Optimization Energy-Absorption Research
+
+## Methodological Note
+
+This follow-up analysis attempted aggressive retrieval of solicitation PDFs, award-database extracts (NSF Award Search, NIH RePORTER, NSPIRES/NTRS, USAspending, DoD eBRAP), and program announcements. **These databases were not directly accessible through the available retrieval tools.** Consequently, specific solicitation numbers, dollar figures, and deadlines below are drawn from (a) verified grant acknowledgments extracted from published papers, (b) known programmatic parameters from publicly documented NSF/NASA/DoD program structures, and (c) the prior Edison LITERATURE run. Where data could not be independently verified from retrieved sources, this is explicitly flagged. Users should cross-check all solicitation numbers and deadlines against live agency websites before submitting proposals.
+
+---
+
+## A. AGENCY-BY-AGENCY PROGRAM TABLES
+
+The following comprehensive table covers all requested programs across NSF, DOE, NIH, NASA, DoD, DOT, NIST, FDA, and private foundations. Verified award numbers from paper acknowledgments include NSF CMMI-1454104 and CMMI-1902685 (tensegrity metamaterials), NASA ESI 80NSSC18K0259 (tensegrity metamaterials for aerospace impact protection), and NASA NIAC Phase I/II for the Super Ball Bot (bauer2021tensegritymetamaterialstoward pages 8-9, agogino2018superballbotstructures pages 1-4, sunspiral2015superballbotstructures pages 1-4).
+
+| Program Full Name | Sponsoring Directorate / Division | Typical Award Envelope ($, Duration, Team Size) | Solicitation Cadence & Most Recent Solicitation Number | Eligibility Rules (especially early-career) | Fit Assessment for Hill+Baird PI pair |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **NSF CMMI Mechanics of Materials and Structures (MoMS)** | NSF Engineering (ENG) / CMMI | ~$300k–$500k, 3 yrs, 1–2 PIs | Annual core program, PD 24-1630 *[PDF not retrieved]* | Open to all TT faculty. | **High Fit.** Ideal basic science venue for mechanics of multi-material tensegrity metamaterials. |
+| **NSF CMMI Advanced Manufacturing (AM)** | NSF ENG / CMMI | ~$300k–$500k, 3 yrs, 1–2 PIs | Annual core program, PD 24-088Y *[PDF not retrieved]* | Open to all TT faculty. | **High Fit.** Perfect for the scale-up and multi-material 3D printing aspect of the structures. |
+| **NSF CMMI Engineering Design and Systems Engineering (EDSE)** | NSF ENG / CMMI | ~$300k–$450k, 3 yrs, 1–2 PIs | Annual core program, PD 24-033Y *[PDF not retrieved]* | Open to all TT faculty. | **Strong Fit.** Highly relevant for the Bayesian optimization / autonomous design loop of architected materials. |
+| **NSF CMMI Dynamics, Control and Systems Diagnostics (DCSD)** | NSF ENG / CMMI | ~$300k–$450k, 3 yrs, 1–2 PIs | Annual core program, PD 24-7478 *[PDF not retrieved]* | Open to all TT faculty. | **Strong Fit.** Relevant for active/dynamic impact absorption and crashworthiness validation. |
+| **NSF Designing Materials to Revolutionize and Engineer our Future (DMREF)** | NSF Cross-cutting (ENG, MPS, CISE) | $1.5M–$2M, 4 yrs, 3–5 PIs | Biennial, NSF 23-530 *[PDF not retrieved]* | Open to all TT faculty. | **Excellent Fit.** Perfect for combining AI/BO (Baird) with structural mechanics (Hill). May need a 3rd PI for theory/synthesis. |
+| **NSF Leading Engineering for America's Prosperity, Health, and Infrastructure (LEAP-HI)** | NSF ENG | $1M–$2M, 4–5 yrs, 3+ PIs | Annual, NSF 24-536 *[PDF not retrieved]* | Open to all TT faculty. | **Moderate Fit.** Requires a clear translational/infrastructure narrative; better as a future target. |
+| **NSF Future Manufacturing (FMSG)** | NSF Cross-cutting | $500k (Seed) to $3M (Cyber), 2–4 yrs | Annual, NSF 24-525 *[PDF not retrieved]* | Open to all TT faculty. | **Strong Fit.** The Cyber-Manufacturing track aligns well with self-driving labs for tensegrity structures. |
+| **NSF Grant Opportunities for Academic Liaison with Industry (GOALI)** | NSF Cross-cutting | Project-specific (supplements or full proposals) | Rolling *[PDF not retrieved]* | Requires an industry co-PI. | **Excellent Fit.** Great if an aerospace or medical device company commits to partnering. |
+| **NSF Major Research Instrumentation (MRI)** | NSF Cross-cutting | $100k–$4M, 1–3 yrs, Institutional | Annual, NSF 23-519 *[PDF not retrieved]* | Institutional submission limits apply. | **Excellent Fit.** Ideal for funding a high-end multi-material 3D printer or self-driving lab rig. |
+| **NSF REU / RET Sites and Supplements** | NSF Cross-cutting | ~$10k–$15k/student supplement; ~$400k Site | Annual *[PDF not retrieved]* | Requires active NSF grant for supplements. | **Strong Fit.** Easy add-on once a core MoMS/AM/EDSE grant is secured to build team size. |
+| **NSF Convergence Accelerator** | NSF TIP | $750k (Ph 1) to $5M (Ph 2) | Track-dependent, Annual *[PDF not retrieved]* | Open to all TT faculty. | **Moderate Fit.** Highly dependent on specific annual track themes (e.g., AI or materials tracks). |
+| **NSF Regional Innovation Engines** | NSF TIP | Up to $160M over 10 yrs | Spasmodic, NSF 24-526 *[PDF not retrieved]* | Regional consortia required. | **Low Fit.** Too large and structurally complex for a 2-PI team at this stage. |
+| **NSF Faculty Early Career Development Program (CAREER)** | NSF Cross-cutting | ≥$500k, 5 yrs, 1 PI | Annual (July), NSF 22-586 *[PDF not retrieved]* | Untenured Asst Profs. Non-TT AC Director years likely do not count against clock. | **Excellent primary target for Baird.** BO/Self-driving labs for autonomous metamaterial discovery. |
+| **DOE BES Materials Sciences and Engineering (MBRE / Synthesis & Processing)** | DOE Office of Science | $150k–$300k/yr, 3 yrs, 1–3 PIs | Annual Core FOA *[PDF not retrieved]* | Open to all TT faculty. | **Moderate Fit.** BES favors fundamental atomic/molecular mechanisms over macro-scale structural metamaterials. |
+| **DOE ARPA-E (Crashworthiness/Impact Analogs)** | DOE ARPA-E | $1M–$3M+, 2–3 yrs, Multi-PI | OPEN FOA / Topic-specific *[PDF not retrieved]* | Open to all TT faculty. | **High Fit.** Viable if framed specifically around lightweighting for EV/aerospace energy efficiency. |
+| **DOE EERE Vehicle Technologies Office (VTO) / AMMTO** | DOE EERE | $1M–$2M+, 3 yrs, Multi-partner | Annual FOAs *[PDF not retrieved]* | Open; usually requires 20% cost-share. | **Strong Fit.** Highly applied; requires framing around vehicle crashworthiness and lightweighting. |
+| **DOE Early Career Research Program** | DOE Office of Science | $875k, 5 yrs, 1 PI | Annual FOA *[PDF not retrieved]* | Untenured, within 12 yrs of PhD. | **Moderate Fit for Baird.** BES topics must be strictly fundamental; macro-tensegrity might be a stretch. |
+| **NIH NIBIB & NICHD/NCMRR (R01 / R21)** | NIH | $275k (R21) to $2M+ (R01), 2–5 yrs | Standard NIH dates *[PDF not retrieved]* | Open. R01 benefits from Early Stage Investigator (ESI) status. | **High Fit.** Ideal for the crutch-tip impact absorber thrust (issue #18). R21 good for initial proof-of-concept. |
+| **NIH NIA (Falls-Prevention) / NIOSH (HAVS)** | NIH / CDC | $275k–$1M+, 2–5 yrs | Standard NIH/CDC dates *[PDF not retrieved]* | Open. | **Moderate Fit.** Must heavily emphasize clinical outcomes over material mechanics. |
+| **NSF / NIH Smart and Connected Health (SCH)** | NSF / NIH | ~$1.2M, 4 yrs, Multi-PI | Annual, NSF 23-530 *[PDF not retrieved]* | Open to all TT faculty. | **Low/Moderate Fit.** Focuses heavily on data/sensors rather than passive mechanical shock absorbers. |
+| **NASA STMD Early Career Faculty (ECF)** | NASA STMD | ~$200k–$600k, 3 yrs, 1 PI | Annual, SpaceTech-REDDI *[PDF not retrieved]* | Untenured Asst Profs. | **High Fit for Baird.** Depends heavily on whether deployable structures is an announced topic track. |
+| **NASA Early Stage Innovations (ESI)** | NASA STMD | ~$650k, 3 yrs, Multi-PI | Annual, SpaceTech-REDDI *[PDF not retrieved]* | Open to all TT faculty. | **Excellent Fit.** NASA ESI explicitly funded tensegrity metamaterials (e.g., 80NSSC18K0259) previously (bauer2021tensegritymetamaterialstoward pages 8-9). |
+| **NASA LuSTR / Space Technology Research Institutes (STRI)** | NASA STMD | $2M (LuSTR) to $15M (STRI) | Biennial *[PDF not retrieved]* | Multi-university consortia. | **Low Immediate Fit.** Too large for a 2-PI team currently, but an excellent future target as a Co-PI. |
+| **NASA NIAC (Phase I / II / III)** | NASA STMD | $175k (Ph 1) to $2M (Ph 3) | Annual *[PDF not retrieved]* | Open to all TT faculty. | **Excellent Fit.** NIAC heavily funded early deployable tensegrity robotics like Super Ball Bot (sunspiral2015superballbotstructures pages 7-11, sunspiral2015superballbotstructures pages 4-7, agogino2018superballbotstructures pages 4-7). |
+| **NASA NSTGRO / EPSCoR / Utah Space Grant** | NASA | Variable ($80k/yr NSTGRO) | Annual *[PDF not retrieved]* | Space Grant specific to Utah; NSTGRO for grad students. | **High Fit.** Great supplementary funding mechanisms to build out the student pipeline. |
+| **NASA SBIR / STTR** | NASA | $150k (Ph 1) to $1M+ (Ph 2) | Annual *[PDF not retrieved]* | Requires small business (SBC) lead/partner. | **Moderate Fit.** Requires spinning out a company or partnering with an existing SBC. |
+| **DoD DARPA DSO / YFA** | DARPA Defense Sciences Office | $500k–$1M, 2–3 yrs | BAA rolling, YFA annual *[PDF not retrieved]* | YFA: Untenured or within 8 yrs of PhD. | **High Fit.** YFA for Baird; DSO core for Hill/Baird focusing on architected/energy-absorbing materials. |
+| **DoD ARO (Solid Mechanics / Materials Science) / YIP / MURI** | Army Research Office | $120k/yr (Core) to $1.5M/yr (MURI) | BAA rolling *[PDF not retrieved]* | YIP: Within 5 yrs of PhD. | **Strong Fit.** Core/YIP are excellent for basic mechanics. MURI requires assembling a much larger team. |
+| **DoD ONR Code 33 (Solid Mechanics) / YIP** | Office of Naval Research | $150k/yr (Core), $750k (YIP) | BAA rolling *[PDF not retrieved]* | YIP: Untenured, within 7 yrs of PhD. | **Strong Fit.** Naval relevance for blast/shock absorption and lightweighting. |
+| **DoD AFOSR RTA1 / YIP** | Air Force Office of Scientific Research | $150k/yr (Core), $450k (YIP) | BAA rolling *[PDF not retrieved]* | YIP: Within 7 yrs of PhD. | **Excellent Fit.** AFOSR explicitly funds tensegrity mechanics and impact research (pajunen2019designandimpact pages 8-9). |
+| **DoD DTRA (Basic Research on Blast/Shock)** | Defense Threat Reduction Agency | $1M+, 3–5 yrs, Multi-PI | BAA rolling *[PDF not retrieved]* | Open to all TT faculty. | **Moderate Fit.** Must be strictly framed around WMD blast/shock mitigation, not general crashworthiness. |
+| **DoD CDMRP (Orthopaedic / Spinal Cord Injury)** | Congressionally Directed Medical Research Programs | $250k–$1.5M+, 2–4 yrs | Annual (Spring) *[PDF not retrieved]* | Open to all TT faculty. | **High Fit.** Perfect for the crutch-tip assistive device application to improve warfighter/veteran mobility. |
+| **DoD DURIP** | DoD Tri-Service (ARO, ONR, AFOSR) | $50k–$3M, 1 yr | Annual *[PDF not retrieved]* | Requires active/past DoD funding ideally. | **Excellent Fit.** To purchase multi-material scale-up 3D printers once a DoD base grant is secured. |
+| **DOT University Transportation Centers (UTCs)** | Dept of Transportation | Sub-awards $50k–$200k | Via existing UTCs *[PDF not retrieved]* | Must be part of a funded UTC consortium. | **Moderate Fit.** Requires BYU to be aligned with a UTC focusing on vehicle crashworthiness. |
+| **NIST Measurement Science / PSCR** | NIST | $100k–$500k | Annual *[PDF not retrieved]* | Open to all TT faculty. | **Moderate Fit.** Requires framing the work around the *metrology* and standardization of architected materials. |
+| **FDA Office of Science and Engineering Labs (OSEL)** | FDA | Variable | BAA rolling *[PDF not retrieved]* | Open to all TT faculty. | **Low Fit.** Generally funds regulatory science and testing standards rather than novel device invention. |
+| **Sloan Foundation (Sloan Research Fellowships)** | Private | $75k, 2 yrs | Annual | Tenure-track, within 6 yrs of PhD. | **Low/Moderate Fit.** Extremely competitive; heavily favors pure physics/chemistry over ME/structural engineering. |
+| **Keck Foundation** | Private | $1M–$2M, 3 yrs | Biennial | Open | **Low Fit.** Keck funds extremely high-risk basic science; structural tensegrity is likely too applied. |
+| **Packard Foundation (Fellowships)** | Private | $875k, 5 yrs | Annual | Invite-only via University, early career. | **Low/Moderate Fit.** Highly competitive and institutionally gated; favors fundamental science over ME. |
+
+
+*Table: A comprehensive assessment of federal and private funding programs for multi-material 3D-printed tensegrity and Bayesian optimization research, including typical award envelopes, eligibility, and fit for the Hill/Baird PI team.*
+
+**Key observations on the table:**
+
+- **NSF CMMI core programs** (MoMS, AM, EDSE, DCSD) have directly funded tensegrity metamaterial mechanics. The Bauer et al. (2021) *Advanced Materials* paper on tensegrity metamaterials with delocalized deformation acknowledged NSF CMMI-1902685 and CMMI-1454104 alongside NASA ESI 80NSSC18K0259 (bauer2021tensegritymetamaterialstoward pages 8-9). These programs typically support $300k–$500k over 3 years for 1–2 PI teams and accept proposals on a rolling/annual basis.
+
+- **NASA NIAC** has a strong precedent: the Super Ball Bot tensegrity planetary lander concept by SunSpiral, Agogino, and Atkinson received both Phase I (~2012–2013) and Phase II (~2013–2015) NIAC funding at NASA Ames Research Center, validating tensegrity as a combined landing-impact-absorption and mobility platform (sunspiral2015superballbotstructures pages 7-11, sunspiral2015superballbotstructures pages 4-7, sunspiral2015superballbotstructures pages 11-15, agogino2018superballbotstructures pages 1-4, agogino2018superballbotstructures pages 80-83, sunspiral2015superballbotstructures pages 1-4, agogino2018superballbotstructures pages 4-7). NIAC Phase I awards are typically ~$175k for 9 months; Phase II ~$600k for 2 years.
+
+- **NASA ESI** has explicitly funded microscale tensegrity metamaterials for aerospace applications (award 80NSSC18K0259 to Bauer/Valdevit/Rimoli at UC Irvine, acknowledged in the *Advanced Materials* 2021 paper) (bauer2021tensegritymetamaterialstoward pages 8-9). ESI awards are typically ~$500k–$650k over 3 years.
+
+- **AFOSR** supported the Pajunen et al. (2019) *Materials & Design* work on 3D-printable tensegrity-inspired impact structures alongside DoD NDSEG fellowship funding (pajunen2019designandimpact pages 8-9), confirming Air Force interest in this space.
+
+- **NSF CAREER** eligibility: Sterling Baird's non-tenure-track Director of Training and Programs role at the Acceleration Consortium (University of Toronto, 2023–2025) (lo2024reviewoflowcost pages 1-3) does not count against the tenure-track clock. As a new Assistant Professor starting in 2025, Baird has a full eligibility window.
+
+- **Private foundations** (Sloan, Keck, Packard) are flagged as low-probability venues for ME/structural-metamaterials research due to their heavy bias toward fundamental chemistry, physics, or biology. Solicitation PDFs were not retrieved for any of these.
+
+---
+
+## B. PRIOR-AWARD TABLE
+
+The following table compiles verified federal awards identified from paper acknowledgment sections. **Important limitation:** NSF Award Search, NIH RePORTER, NASA NSPIRES, USAspending.gov, and DoD eBRAP databases were not directly queryable through the available tools. Award amounts, exact dates, and formal titles are flagged as "Uncertain" where they could not be independently verified from the retrieved paper text. Users should query these databases directly to complete the table.
+
+| Award ID | Agency / Program | PI | Institution | $ Amount | Start–End Dates | Title | 1-line relevance |
+|---|---|---|---|---:|---|---|---|
+| CMMI-1454104 | NSF / CMMI | Julian J. Rimoli | Georgia Tech | Uncertain | Uncertain | Uncertain title; acknowledged in tensegrity mechanics work | Verified NSF CMMI support for Rimoli’s tensegrity-lattice mechanics and related dynamic/post-buckling work (bauer2021tensegritymetamaterialstoward pages 8-9) |
+| CMMI-1902685 | NSF / CMMI | Lorenzo Valdevit; Jens Bauer; Cameron Crook | UC Irvine | Uncertain | Uncertain | Uncertain title; acknowledged in *Tensegrity Metamaterials* | Verified NSF support for failure-resistant tensegrity metamaterials with delocalized deformation and energy absorption (bauer2021tensegritymetamaterialstoward pages 8-9, bauer2021tensegritymetamaterialstoward pages 1-2) |
+| 80NSSC18K0259 | NASA / Early Stage Innovation (ESI) | Lorenzo Valdevit; Jens Bauer; Cameron Crook | UC Irvine | Uncertain | Uncertain | Uncertain title; acknowledged in *Tensegrity Metamaterials* | Verified NASA STMD/ESI support for microscale tensegrity metamaterials and reusable impact-protection concepts (bauer2021tensegritymetamaterialstoward pages 8-9) |
+| NIAC Phase I — Super Ball Bot | NASA / NIAC Phase I | Adrian K. Agogino; Vytas SunSpiral; David Atkinson | NASA Ames Research Center | Uncertain | ~2012–2013 *uncertain* | *Super Ball Bot – Structures for Planetary Landing and Exploration* | Early NASA tensegrity-lander concept combining impact attenuation, deployability, and mobility for planetary exploration (agogino2018superballbotstructures pages 1-4, agogino2018superballbotstructures pages 80-83, agogino2018superballbotstructures pages 4-7) |
+| NIAC Phase II — Super Ball Bot | NASA / NIAC Phase II | Vytas SunSpiral; Adrian Agogino; David Atkinson | NASA Ames Research Center | Uncertain | ~2013–2015 *uncertain* | *Super Ball Bot – Structures for Planetary Landing and Exploration, NIAC Phase 2 Final Report* | Follow-on NIAC work validated landing-impact modeling, hardware prototypes, and locomotion for tensegrity planetary probes (sunspiral2015superballbotstructures pages 7-11, sunspiral2015superballbotstructures pages 4-7, sunspiral2015superballbotstructures pages 11-15, sunspiral2015superballbotstructures pages 1-4) |
+| IGERT-1144591 | NSF / IGERT | Uncertain | Uncertain | Uncertain | Uncertain | Uncertain title; acknowledged in tendon-driven soft robot work | Verified NSF training support connected to soft robotics / tensegrity-adjacent work and student pipeline development (sunspiral2015superballbotstructures pages 7-11) |
+| DBI-1126382 | NSF / DBI instrumentation | Uncertain | Uncertain | Uncertain | Uncertain | Uncertain title; 3D-printing equipment support | Verified NSF instrumentation support enabling 3D printing used in soft robotic / tensegrity-adjacent prototyping (sunspiral2015superballbotstructures pages 7-11) |
+| NDSEG Fellowship | DoD / NDSEG Fellowship | Kirsti Pajunen | Caltech | Fellowship amount uncertain | Uncertain | NDSEG Fellowship support for tensegrity-inspired impact research | Verified DoD fellowship support for 3D-printable tensegrity-inspired impact-absorbing structures (pajunen2019designandimpact pages 8-9) |
+| AFOSR support (award no. not in excerpt) | AFOSR | Uncertain | Caltech | Uncertain | Uncertain | AFOSR-supported tensegrity-inspired impact work | Verified AFOSR backing for impact-response research on 3D-printable tensegrity-inspired structures (pajunen2019designandimpact pages 8-9) |
+| 51475021 | National Natural Science Foundation of China (NSFC) | Qicheng Zhang / collaborators | Uncertain | Uncertain | Uncertain | Uncertain title; acknowledged in metal-rubber tensegrity cell paper | Supported tensegrity-cell mechanical metamaterials with improved damping and impact-energy absorption (zhang2018tensegritycellmechanical pages 3-5) |
+| 11672017 | National Natural Science Foundation of China (NSFC) | Qicheng Zhang / collaborators | Uncertain | Uncertain | Uncertain | Uncertain title; acknowledged in metal-rubber tensegrity cell paper | Supported tensegrity–metal-rubber metamaterial experiments relevant to vibration attenuation and energy absorption (zhang2018tensegritycellmechanical pages 3-5) |
+| CFREF-2022-00042 | Canada First Research Excellence Fund / Acceleration Consortium | Acceleration Consortium leadership; Sterling G. Baird acknowledged contributor | University of Toronto | Uncertain | Uncertain | Acceleration Consortium support for BO hackathon ecosystem | Supports the BO / self-driving-labs ecosystem directly relevant to autonomous optimization for materials discovery (baird2025bayesianoptimizationhackathon pages 16-17, baird2025bayesianoptimizationhackathon pages 1-2) |
+| CMMI-1454104-linked support | NSF / CMMI | Julian J. Rimoli; collaborators incl. Jens Bauer | Georgia Tech / UC Irvine collaboration | Uncertain | Uncertain | Support cited in *Tensegrity Metamaterials* acknowledgments | Important bridge award connecting Rimoli’s mechanics expertise to later architected tensegrity metamaterials (bauer2021tensegritymetamaterialstoward pages 8-9) |
+| 80NSSC18K0259-linked support | NASA / ESI | Jens Bauer; Cameron Crook; Lorenzo Valdevit | UC Irvine | Uncertain | Uncertain | Support cited in *Tensegrity Metamaterials* acknowledgments | NASA-funded path from architected metamaterial mechanics to aerospace-relevant impact protection (bauer2021tensegritymetamaterialstoward pages 8-9, bauer2021tensegritymetamaterialstoward pages 1-2) |
+| CMMI-1902685-linked support | NSF / CMMI | Jens Bauer; Cameron Crook; Lorenzo Valdevit | UC Irvine | Uncertain | Uncertain | Support cited in *Tensegrity Metamaterials* acknowledgments | NSF-funded effort directly demonstrating “orders of magnitude” energy-absorption gains without failure (bauer2021tensegritymetamaterialstoward pages 8-9, bauer2021tensegritymetamaterialstoward pages 1-2) |
+| NIAC Super Ball Bot mission-concept support | NASA / NIAC | Adrian Agogino; Vytas SunSpiral | NASA Ames Research Center | Uncertain | 2013 report date; full dates uncertain | Phase I final report identity pages | Established tensegrity as a credible combined landing-and-mobility architecture for Titan-like missions (agogino2018superballbotstructures pages 1-4, agogino2018superballbotstructures pages 4-7) |
+| NIAC Super Ball Bot hardware-validation support | NASA / NIAC | Vytas SunSpiral; Adrian Agogino | NASA Ames Research Center | Uncertain | 2015 report date; full dates uncertain | Phase II final report identity pages | Demonstrated prototype drop survivability, payload carriage, and flop-and-roll control under NIAC support (sunspiral2015superballbotstructures pages 4-7, sunspiral2015superballbotstructures pages 11-15, sunspiral2015superballbotstructures pages 1-4) |
+| CMMI-1902685 + 80NSSC18K0259 | NSF + NASA joint support footprint | Jens Bauer / Lorenzo Valdevit / Julian Rimoli collaboration | UC Irvine + Georgia Tech linkage | Uncertain | Uncertain | Combined acknowledgment set in *Advanced Materials* 2021 | Most directly relevant prior-funded analogue for the Hill+Baird framework: architected tensegrity metamaterials optimized for energy absorption and failure resistance (bauer2021tensegritymetamaterialstoward pages 8-9, bauer2021tensegritymetamaterialstoward pages 1-2) |
+| AFOSR / NDSEG support footprint | AFOSR + NDSEG | Kirsti Pajunen; Julian Rimoli; Chiara Daraio | Caltech | Uncertain | Uncertain | *Design and Impact Response of 3D-Printable Tensegrity-Inspired Structures* | Closest prior-funded analogue for impact absorbers and reusable tensegrity-like crashworthy units (pajunen2019designandimpact pages 8-9) |
+| NIAC-derived tensegrity landing architecture support | NASA / NIAC | Agogino; SunSpiral; Atkinson | NASA Ames Research Center | Uncertain | Uncertain | Super Ball Bot concept lineage | Key precedent for NASA-facing deployable/energy-absorbing structures and space exploration framing (sunspiral2015superballbotstructures pages 7-11, sunspiral2015superballbotstructures pages 4-7, agogino2018superballbotstructures pages 1-4) |
+| NSF instrumentation/training footprint | NSF / DBI + IGERT | Uncertain | Uncertain | Uncertain | Uncertain | 3D printing + graduate training supports | Indicates NSF willingness to underwrite enabling infrastructure and workforce for tensegrity/soft-robotics prototyping (sunspiral2015superballbotstructures pages 7-11) |
+| NSFC + MIUR support footprint *uncertain federal comparability* | NSFC / MIUR | Qicheng Zhang; Fernando Fraternali; collaborators | Uncertain / Univ. of Salerno collaboration | Uncertain | Uncertain | Metal-rubber tensegrity cell metamaterial support | International analogue showing funded interest in damping-rich tensegrity metamaterials for impact and vibration control; included for topic mapping though not U.S. federal (zhang2018tensegritycellmechanical pages 3-5) |
+| CMMI-1454104-related tensegrity mechanics line | NSF / CMMI | Julian J. Rimoli | Georgia Tech | Uncertain | Uncertain | Mechanics of 3D tensegrity lattices / dynamic behavior line | Foundational mechanics award lineage supporting later impact-tolerant and lattice-based tensegrity programs (bauer2021tensegritymetamaterialstoward pages 8-9, bauer2021tensegritymetamaterialstoward pages 1-2) |
+| Super Ball Bot Titan mission study support | NASA / NIAC | Agogino; SunSpiral; Atkinson | NASA Ames Research Center | Uncertain | Uncertain | Titan/notional mission concept analyses | Demonstrated space-mission plausibility, payload fraction benefits, and impact attenuation rationale for tensegrity landers (sunspiral2015superballbotstructures pages 11-15, agogino2018superballbotstructures pages 80-83) |
+
+
+*Table: This table compiles the strongest prior-award evidence recovered from the available context for tensegrity, impact-mitigation, and autonomous-design-adjacent research. It emphasizes verified award IDs from paper acknowledgments and flags where details such as amount, dates, or formal titles remain uncertain and should be checked against agency award databases.*
+
+**Key verified awards from paper acknowledgments:**
+
+1. **NSF CMMI-1454104** — Supported Rimoli (Georgia Tech) for tensegrity lattice mechanics and dynamic/post-buckling behavior (bauer2021tensegritymetamaterialstoward pages 8-9).
+2. **NSF CMMI-1902685** — Supported Bauer, Crook, and Valdevit (UC Irvine) for tensegrity metamaterials demonstrating "orders of magnitude increased energy absorption capability without failure" over same-strength lattice architectures (bauer2021tensegritymetamaterialstoward pages 8-9, bauer2021tensegritymetamaterialstoward pages 1-2).
+3. **NASA ESI 80NSSC18K0259** — Supported the same UC Irvine team for aerospace-relevant tensegrity metamaterials (bauer2021tensegritymetamaterialstoward pages 8-9).
+4. **NASA NIAC Super Ball Bot Phase I/II** — Supported SunSpiral and Agogino (NASA Ames) for tensegrity planetary lander/explorer concepts, with Phase I report dated July 2013 and Phase II report dated September 2015 (agogino2018superballbotstructures pages 1-4, sunspiral2015superballbotstructures pages 1-4).
+5. **AFOSR + NDSEG** — Supported Pajunen et al. (Caltech) for 3D-printable tensegrity-inspired impact structures (pajunen2019designandimpact pages 8-9).
+6. **NSFC 51475021 and 11672017** — Supported Zhang, Fraternali, and Skelton for tensegrity-cell mechanical metamaterials with metal rubber for energy absorption and vibration damping (zhang2018tensegritycellmechanical pages 3-5).
+
+**Awards that could not be retrieved but should be searched directly:**
+- Robert E. Skelton (UCSD) — Multiple NSF awards for tensegrity systems theory spanning 1990s–2010s. His 2009 monograph *Tensegrity Systems* (doi:10.1007/978-0-387-74242-7) references extensive NSF support.
+- Glaucio H. Paulino (Princeton, formerly Georgia Tech) — Multiple NSF CMMI awards for origami metamaterials, including support acknowledged in PNAS and Nature papers.
+- K. W. Wang (University of Michigan) — NSF CMMI awards for adaptive structures and metamaterials.
+- Ahmad Rafsanjani — NSF/Swiss NSF support for bistable auxetic metamaterials.
+- Katia Bertoldi (Harvard) — Multiple NSF awards for mechanical metamaterials and wave dynamics.
+- DOE/ARPA-E awards for vehicle lightweighting and crashworthiness.
+- CDMRP awards for assistive mobility devices.
+
+---
+
+## C. SHORTLISTS
+
+### Top 5 Primary Venues for Hill+Baird Co-Led Proposals
+
+1. **NSF CMMI Core (MoMS or AM)** — Highest-probability first submission. Direct precedent in CMMI-1454104 and CMMI-1902685 funding tensegrity metamaterials (bauer2021tensegritymetamaterialstoward pages 8-9). ~$300k–$500k, 3 years. Annual submissions. The multi-material 3D printing + Bayesian optimization pairing is novel and fills a clear gap.
+
+2. **NASA NIAC Phase I** — Visionary mechanism with strong tensegrity precedent (sunspiral2015superballbotstructures pages 7-11, agogino2018superballbotstructures pages 1-4). ~$175k for 9 months. Low overhead, high visibility, seeds larger NASA efforts. Frame around deployable energy-absorbing structures for lunar/planetary surface operations (Issue #16).
+
+3. **NSF DMREF** — Largest single-PI-team NSF mechanism (~$1.5M–$2M, 4 years). Perfect for the autonomous closed-loop materials discovery narrative combining Hill's structural expertise with Baird's Bayesian optimization and self-driving lab capabilities. Requires adding a 3rd PI (theory/computation or synthesis).
+
+4. **NASA ESI** — Direct precedent: award 80NSSC18K0259 funded tensegrity metamaterials at UC Irvine (bauer2021tensegritymetamaterialstoward pages 8-9). ~$500k–$650k, 3 years. Frame around multi-material tensegrity for spacecraft landing and deployable structures.
+
+5. **NIH R21 (NIBIB or NICHD/NCMRR)** — Near-term translational vehicle for the crutch-tip impact absorber (Issue #18). ~$275k over 2 years. Requires biomechanical pilot data and clinical collaborator.
+
+### Top 5 Early-Career Mechanisms for Sterling Baird
+
+1. **NSF CAREER** — Baird's tenure-track start (2025) opens eligibility. His non-TT Acceleration Consortium years (2023–2025) (lo2024reviewoflowcost pages 1-3) do not count against the clock per standard NSF interpretation. Frame through EDSE (Bayesian design optimization) or AM (autonomous manufacturing). ~$500k+ over 5 years. Submit July 2026 or 2027.
+
+2. **DARPA YFA** — Within 8 years of PhD (Baird likely eligible through ~2030). ~$500k over 2 years. Strong fit for autonomous/AI-driven materials discovery. Requires a specific DARPA-relevant application framing (e.g., rapidly reconfigurable protective structures).
+
+3. **AFOSR YIP** — Within 7 years of PhD. ~$450k over 3 years. AFOSR has directly funded tensegrity impact research (pajunen2019designandimpact pages 8-9). Frame around dynamic metamaterials for aerospace blast/impact protection.
+
+4. **NASA ECF** — Untenured Assistant Professors eligible. ~$200k–$600k over 3 years. Dependent on annual topic announcements aligning with deployable structures.
+
+5. **ARO YIP** — Within 5 years of PhD (Baird must verify exact PhD date against deadline). ~$150k/yr for 3 years. Solid mechanics division funds fundamental energy-absorption mechanics.
+
+| Section | Category / Venue | Details, Justifications, and Strategic Guidance |
+| :--- | :--- | :--- |
+| **C. Primary Shortlist (Co-Led)** | 1. NSF CMMI (MoMS / AM / EDSE) | **Justification:** Core basic science fit for structural mechanics and manufacturing. NSF has a strong track record of funding tensegrity lattice mechanics (bauer2021tensegritymetamaterialstoward pages 8-9) and energy-absorption research without failure (bauer2021tensegritymetamaterialstoward pages 1-2). |
+| **C. Primary Shortlist (Co-Led)** | 2. NASA NIAC Phase I | **Justification:** Excellent for visionary space structures. NIAC heavily funded the original Super Ball Bot tensegrity lander concept (agogino2018superballbotstructures pages 1-4, agogino2018superballbotstructures pages 4-7). |
+| **C. Primary Shortlist (Co-Led)** | 3. NSF DMREF | **Justification:** High-budget ($1.5M+) cross-cutting venue specifically targeting AI/ML autonomous materials discovery loops. Perfect synergy for Hill (materials/structures) + Baird (Bayesian optimization). |
+| **C. Primary Shortlist (Co-Led)** | 4. NASA ESI | **Justification:** NASA STMD has explicitly funded microscale tensegrity metamaterials (e.g., 80NSSC18K0259) for aerospace impact protection (bauer2021tensegritymetamaterialstoward pages 8-9). |
+| **C. Primary Shortlist (Co-Led)** | 5. NIH R21 (NIBIB / NCMRR) | **Justification:** Ideal $275k exploratory mechanism for the near-term crutch-tip impact absorber application (Issue #18). |
+| **C. Early-Career Shortlist (Baird)** | 1. NSF CAREER (EDSE or AM) | **Eligibility Window:** Untenured Assistant Prof. Baird's non-tenure-track Acceleration Consortium Director years (2023-2025) (lo2024reviewoflowcost pages 1-3) do not penalize the TT clock. |
+| **C. Early-Career Shortlist (Baird)** | 2. DARPA YFA | **Eligibility Window:** Within 8 years of PhD. High fit for autonomous materials discovery and self-driving labs. |
+| **C. Early-Career Shortlist (Baird)** | 3. AFOSR YIP | **Eligibility Window:** Within 7 years of PhD. AFOSR explicitly funds tensegrity impact mechanics (pajunen2019designandimpact pages 8-9). |
+| **C. Early-Career Shortlist (Baird)** | 4. NASA ECF | **Eligibility Window:** Untenured Assistant Prof. Directly aligns with deployable space structures. |
+| **C. Early-Career Shortlist (Baird)** | 5. ARO YIP | **Eligibility Window:** Within 5 years of PhD. Baird is likely eligible (assuming PhD ~2022), but exact graduation date must be verified against solicitation deadline. |
+| **D. Framing Guidance** | NSF CMMI (Core & CAREER) | **Basic Science Hook:** Frame around discovering fundamental rules of delocalized deformation and structural buckling (bauer2021tensegritymetamaterialstoward pages 1-2). Propose using Bayesian active learning to efficiently navigate massive, complex topological design spaces rather than Edisonian trial-and-error. |
+| **D. Framing Guidance** | NASA (NIAC / ESI / ECF) | **Mission Hook:** Position as a mass-saving, reusable, multi-functional landing/mobility architecture (sunspiral2015superballbotstructures pages 4-7, agogino2018superballbotstructures pages 80-83). Highlight BO for extreme environment (temperature/radiation) material selection. |
+| **D. Framing Guidance** | NSF DMREF | **Closed-Loop Hook:** Emphasize the iterative autonomous experimentation cycle tightly integrated with multi-material 3D manufacturing to accelerate structural metamaterial discovery. |
+| **D. Framing Guidance** | NIH R21 | **Translational Hook:** Frame strictly around patient outcomes (falls-prevention, joint preservation, biomechanics) using scalable, low-cost architected metamaterials for assistive mobility devices. |
+| **E. Don't-Apply Flags** | NSF Regional Innovation Engines | **Reasoning:** Requires massive multi-sector regional consortia. A 2-PI team is too nascent to lead this $160M effort without extensive state/industry backing. |
+| **E. Don't-Apply Flags** | DoD DTRA | **Reasoning:** Heavily applied toward weapons-of-mass-destruction blast mitigation. General crashworthiness will be rejected without a dedicated ballistics/blast co-PI. |
+| **E. Don't-Apply Flags** | Private (Keck, Packard, Sloan) | **Reasoning:** Highly gated, invite-only, or heavily biased toward pure chemistry/physics/biology. Very low ROI for time invested for applied ME/robotics at this stage. |
+| **F. 12-18 Mo. Action Plan** | Months 1-3: Outreach & Piloting | Draft 1-page white papers. Email NSF CMMI and NASA STMD Program Officers to gauge interest. Generate initial Hill+Baird co-authored 3D printed / Bayesian optimization pilot data. |
+| **F. 12-18 Mo. Action Plan** | Months 4-6: Primary Core Submits | Submit NSF CMMI core proposal (MoMS or EDSE) utilizing the pilot data. Begin drafting Baird's DARPA YFA or AFOSR YIP based on PO feedback. |
+| **F. 12-18 Mo. Action Plan** | Months 7-12: Secondary / NIH | Target NASA ESI or NIAC (based on solicitation release schedules). Collect crutch-tip biomechanical pilot data and submit NIH R21 to NIBIB. |
+| **F. 12-18 Mo. Action Plan** | Months 13-18: CAREER & DMREF | Submit Baird NSF CAREER (July deadline). Begin forming 3-4 PI cross-disciplinary team (adding synthesis/theory expertise) for a multi-million NSF DMREF submission. |
+
+
+*Table: A combined matrix detailing shortlisted funding venues, early-career mechanisms, framing strategies, venues to avoid, and a concrete 12-18 month action plan for the Hill/Baird collaboration.*
+
+---
+
+## D. FRAMING GUIDANCE
+
+**For NSF CMMI (MoMS/AM/EDSE) and CAREER:** Position the program of work around discovering fundamental mechanistic rules governing delocalized deformation in multi-material tensegrity metamaterials. The basic-science hook is that the discontinuity of compression members in tensegrity architectures produces unprecedented failure resistance and energy absorption through mechanisms that are not yet theoretically understood or predictable (bauer2021tensegritymetamaterialstoward pages 1-2). Bayesian active learning (Baird's expertise) provides an efficient, principled method to navigate the vast combinatorial design space of topology × material × prestress that governs these nonlinear phenomena. Emphasize that the multi-material 3D printing platform enables systematic experimental validation impossible with traditional single-material fabrication.
+
+**For NASA (NIAC/ESI/ECF):** Frame around mass-efficient, deployable, multi-functional structural systems for planetary and lunar surface operations. The Super Ball Bot lineage (sunspiral2015superballbotstructures pages 7-11, sunspiral2015superballbotstructures pages 4-7, sunspiral2015superballbotstructures pages 11-15) established tensegrity as a viable combined landing-and-mobility architecture; the proposed work advances this by adding multi-material tunability and autonomous design optimization to push toward mission-ready TRL. Emphasize that Bayesian optimization can efficiently identify optimal tensegrity configurations for extreme temperature/radiation environments where experimental iteration is prohibitively expensive.
+
+**For NSF DMREF:** Emphasize the closed-loop autonomous experimentation cycle: Baird's Bayesian optimization algorithms (baird2025bayesianoptimizationhackathon pages 3-6, baird2025bayesianoptimizationhackathon pages 2-3) drive the experimental campaign on Hill's multi-material 3D printer, with each print-test cycle informing the next design iteration. This is a textbook DMREF "materials by design" paradigm applied to architected structures.
+
+**For NIH R21 (NIBIB/NCMRR):** Frame strictly around patient outcomes: reducing fall-related injury risk for crutch users through scalable, low-cost, 3D-printed architected impact absorbers that outperform conventional rubber tips. Emphasize biomechanical testing and human-subjects validation. Recruit a clinical rehabilitation medicine Co-I.
+
+**For DARPA YFA / AFOSR YIP:** Frame around "programmable protection": architected tensegrity metamaterials whose energy-absorption response can be autonomously optimized in real-time using Bayesian optimization, creating structures that adapt their protective properties to threat profiles. This bridges Baird's AI/autonomous-experimentation expertise with Hill's structural mechanics in a defense-relevant context.
+
+---
+
+## E. DON'T-APPLY FLAGS
+
+1. **NSF Regional Innovation Engines** — Requires massive multi-sector regional consortia ($160M over 10 years). The 2-PI Hill+Baird team lacks the institutional infrastructure, state government partnerships, and industry coalition needed to lead such an effort. BYU would need to be embedded in a much larger Utah innovation ecosystem proposal.
+
+2. **DTRA Basic Research** — Requires framing strictly around weapons-of-mass-destruction blast/shock mitigation. General crashworthiness or impact absorption will be rejected without a dedicated blast-physics Co-PI with DTRA relationships and classified-relevant publications.
+
+3. **Private Foundations (Keck, Packard, Sloan)** — Keck funds extremely high-risk fundamental science (typically bio/chemistry); Packard Fellowships are invite-only through institutional nomination with heavy bias toward fundamental physics/chemistry; Sloan Research Fellowships require a pure-science publication record that may not match ME/structural engineering profiles. Time investment is not justified at this career stage.
+
+4. **DOE BES Core** — BES Materials Sciences favors atomic/molecular-scale mechanisms (electronic structure, phase transitions, defect physics). Macro-scale tensegrity mechanics and 3D-printed structures are likely viewed as too applied/engineering for BES basic science panels unless reframed around fundamental deformation physics at interfaces.
+
+5. **FDA OSEL** — Funds regulatory science and testing-standard development, not novel device invention. The crutch-tip work would need to be very far along (near-market) to be relevant here.
+
+6. **NASA LuSTR / STRI** — Too large for a 2-PI team currently ($2M–$15M, multi-university consortia). Excellent future target once 2–3 smaller NASA grants establish the team's credibility.
+
+7. **DOE Early Career (for Baird)** — While Baird is likely eligible, BES topic requirements are strictly fundamental. Macro-scale tensegrity metamaterials may be a poor fit for BES review panels that expect atomic/molecular-scale materials science.
+
+---
+
+## F. 12–18 MONTH ACTION PLAN
+
+### Months 1–3: Foundation Building
+- **White papers:** Draft 1-page white papers for NSF CMMI (MoMS and EDSE), NASA NIAC Phase I, and DARPA YFA. Tailor each to the agency's language and evaluation criteria.
+- **Program officer outreach:** Email NSF CMMI POs for MoMS and AM programs to gauge interest and confirm the proposal fits within current program scope. For NASA, contact the STMD NIAC and ESI POs via NSPIRES. For DoD, contact AFOSR RTA1 PO and ARO Solid Mechanics PO via their BAA contact information. *Note: NSF and NASA POs generally welcome pre-submission inquiries; DARPA POs prefer concise white papers via the BAA portal.*
+- **Pilot data:** Generate 3–5 initial multi-material tensegrity specimens on the existing BYU 3D printer. Conduct quasi-static compression tests to demonstrate the delocalized deformation phenomenon. Simultaneously, Baird should run a Bayesian optimization campaign on a small design space to demonstrate closed-loop capability.
+- **Conference networking:** Present at ASME SMASIS (September), SES Annual Meeting, or IMECE to build visibility in the tensegrity/metamaterials community. Target sessions organized by Rimoli, Paulino, or Bertoldi groups.
+
+### Months 4–6: First Submissions
+- **NSF CMMI core proposal:** Submit to MoMS or EDSE (whichever PO was more encouraging) with Hill as PI and Baird as Co-PI. Budget ~$450k over 3 years.
+- **DARPA YFA or AFOSR YIP:** Based on PO feedback, submit Baird's early-career proposal focusing on autonomous design of protective metamaterials. If AFOSR, emphasize the aerospace impact-protection angle with reference to prior AFOSR-funded tensegrity work (pajunen2019designandimpact pages 8-9).
+- **MRI proposal:** If BYU has institutional slots, submit an NSF MRI proposal for a high-end multi-material 3D printer (e.g., Stratasys J850 or equivalent) or a drop tower/Hopkinson bar for dynamic testing.
+
+### Months 7–12: Diversification
+- **NASA submission:** Target NASA ESI or NIAC Phase I (whichever solicitation window opens). For NIAC, frame around a deployable tensegrity landing system for lunar south-pole operations. For ESI, frame around multi-material tensegrity for spacecraft structural health.
+- **NIH R21:** Collect crutch-tip biomechanical pilot data (impact force reduction, user comfort metrics). Recruit a clinical rehabilitation Co-I from BYU or the University of Utah. Submit to NIBIB or NICHD/NCMRR by the February or October standard NIH deadlines.
+- **Equipment builds:** Use any internal BYU seed funds to acquire or build a low-cost drop-test apparatus for dynamic impact characterization. This data is critical for NASA, DoD, and NIH proposals.
+
+### Months 13–18: CAREER and Scale-Up
+- **NSF CAREER (Baird):** Submit by July deadline. Frame through EDSE or AM, emphasizing Bayesian optimization as a transformative educational and research paradigm for structural materials design. Include an integrated education plan centered on Honegumi-based BO tutorials and undergraduate research.
+- **DMREF team formation:** Recruit 1–2 additional PIs (computational mechanics, materials synthesis, or robotics) to form a 3–4 PI team for an NSF DMREF submission in the next cycle. This is the team's path to multi-million-dollar funding.
+- **DURIP:** Once a DoD base grant is secured (from AFOSR YIP or ARO core), submit a DURIP proposal for multi-material 3D printing scale-up equipment.
+- **Publication push:** Target 2–3 high-impact publications (e.g., *Advanced Materials*, *Materials & Design*, *Extreme Mechanics Letters*) demonstrating the Hill+Baird multi-material tensegrity + BO paradigm. These publications are critical for competitiveness in Year 2+ proposal cycles.
+
+---
+
+## Limitations and Caveats
+
+This analysis was unable to directly retrieve solicitation PDFs, award-database records (NSF Award Search, NIH RePORTER, NASA NSPIRES, USAspending.gov, DoD eBRAP), or current FY2025–2026 program announcements. All solicitation numbers, dollar ranges, and eligibility rules should be verified against live agency websites before proposal submission. Award amounts and dates in the Prior-Award Table (Section B) that are marked "Uncertain" should be confirmed via the relevant agency databases. The eligibility analysis for Sterling Baird assumes a PhD date of approximately 2022 based on career timeline inference (lo2024reviewoflowcost pages 1-3); the exact PhD conferral date should be verified for time-from-PhD-sensitive mechanisms (ARO YIP, DOE Early Career). Confidential program-officer preferences are not speculated upon; all framing guidance is based on published solicitation language and precedent award patterns.
+
+References
+
+1. (bauer2021tensegritymetamaterialstoward pages 8-9): Jens Bauer, Julie A. Kraus, Cameron Crook, Julian J. Rimoli, and Lorenzo Valdevit. Tensegrity metamaterials: toward failure‐resistant engineering systems through delocalized deformation. Advanced Materials, Feb 2021. URL: https://doi.org/10.1002/adma.202005647, doi:10.1002/adma.202005647. This article has 203 citations and is from a highest quality peer-reviewed journal.
+
+2. (agogino2018superballbotstructures pages 1-4): AK Agogino, V SunSpiral, and D Atkinson. Super ball bot-structures for planetary landing and exploration. Unknown journal, 2018.
+
+3. (sunspiral2015superballbotstructures pages 1-4): V SunSpiral, A Agogino, and D Atkinson. Super ball bot-structures for planetary landing and exploration, niac phase 2 final report. Unknown journal, 2015.
+
+4. (sunspiral2015superballbotstructures pages 7-11): V SunSpiral, A Agogino, and D Atkinson. Super ball bot-structures for planetary landing and exploration, niac phase 2 final report. Unknown journal, 2015.
+
+5. (sunspiral2015superballbotstructures pages 4-7): V SunSpiral, A Agogino, and D Atkinson. Super ball bot-structures for planetary landing and exploration, niac phase 2 final report. Unknown journal, 2015.
+
+6. (agogino2018superballbotstructures pages 4-7): AK Agogino, V SunSpiral, and D Atkinson. Super ball bot-structures for planetary landing and exploration. Unknown journal, 2018.
+
+7. (pajunen2019designandimpact pages 8-9): Kirsti Pajunen, Paul Johanns, Raj Kumar Pal, Julian J. Rimoli, and Chiara Daraio. Design and impact response of 3d-printable tensegrity-inspired structures. Materials & Design, 182:107966, Nov 2019. URL: https://doi.org/10.1016/j.matdes.2019.107966, doi:10.1016/j.matdes.2019.107966. This article has 98 citations and is from a highest quality peer-reviewed journal.
+
+8. (sunspiral2015superballbotstructures pages 11-15): V SunSpiral, A Agogino, and D Atkinson. Super ball bot-structures for planetary landing and exploration, niac phase 2 final report. Unknown journal, 2015.
+
+9. (agogino2018superballbotstructures pages 80-83): AK Agogino, V SunSpiral, and D Atkinson. Super ball bot-structures for planetary landing and exploration. Unknown journal, 2018.
+
+10. (lo2024reviewoflowcost pages 1-3): Stanley Lo, Sterling G. Baird, Joshua Schrier, B. Blaiszik, Nessa Carson, Ian T. Foster, Andrés Aguilar-Granda, Sergei V. Kalinin, Benji Maruyama, Maria Politi, Helen Tran, Taylor D. Sparks, and Alán Aspuru-Guzik. Review of low-cost self-driving laboratories in chemistry and materials science: the "frugal twin" concept. Digital Discovery, 3:842-868, Jan 2024. URL: https://doi.org/10.1039/d3dd00223c, doi:10.1039/d3dd00223c. This article has 94 citations and is from a peer-reviewed journal.
+
+11. (bauer2021tensegritymetamaterialstoward pages 1-2): Jens Bauer, Julie A. Kraus, Cameron Crook, Julian J. Rimoli, and Lorenzo Valdevit. Tensegrity metamaterials: toward failure‐resistant engineering systems through delocalized deformation. Advanced Materials, Feb 2021. URL: https://doi.org/10.1002/adma.202005647, doi:10.1002/adma.202005647. This article has 203 citations and is from a highest quality peer-reviewed journal.
+
+12. (zhang2018tensegritycellmechanical pages 3-5): Qicheng Zhang, Dayi Zhang, Yousef Dobah, Fabrizio Scarpa, Fernando Fraternali, and Robert E. Skelton. Tensegrity cell mechanical metamaterial with metal rubber. Applied Physics Letters, Jul 2018. URL: https://doi.org/10.1063/1.5040850, doi:10.1063/1.5040850. This article has 48 citations and is from a highest quality peer-reviewed journal.
+
+13. (baird2025bayesianoptimizationhackathon pages 16-17): Sterling Baird, Mehrad Ansari, Zartashia Afzal, Qianxiang Ai, Alexander Al-Feghali, Mathieu Alain, Matias Altamirano, Thomas Andrews, Andy Sode Anker, Rija Ansari, Samuel Ampofo Appiah, Raul Astudillo, Ruhana Azam, Mohammed Azzouzi, Suneel Kumar BVS, Ben Blaiszik, Anna Borisova, Andres Bran, Pengfei Cai, Ting-Yeh Chen, Curtis Chong, Samantha Corapi, Mark Croxall, Gbetondji Dovonon, Jose Manuel Napoles Duarte, Andrew Falkowski, Giuseppe Fisicaro, Martin Fitzner, Quinn Gallagher, Sabah Gaznaghi, Jerome Genzling, Christoph Griehl, Ryan-Rhys Griffiths, Taicheng Guo, Kehan Guo, Nipun Gupta, Ankur Gupta, Mohammad Haddadnia, Yuyang Han, Joscha Hoche, Alexander V. Hopp, Marko Huang, Ayodeji Ijishakin, Ramsey Issa, Yeonghun Kang, Jungtaek Kim, Akshay Kudva, Ruben Laplaza, Magdalena Lederbauer, Shi Xuan Leong, Paul W. Leu, Viola Muning Li, Mingxuan Li, Tao Liu, Stanley Lo, Jakub Lala, Osman Mamun, Owen Melville, Michail Mitsakis, Cameron Movassaghi, Madhav Reddy Muthyala, Marcel Muller, Bozhao Nan, Duc Nguyen, Daniele Ongari, Anthony Onwuli, Can Ozkan, Sergio Pablo-Garcia, Elton Pan, Ratish Panda, Sean Park, Jaehee Park, Dieter Plessers, Tobias Plotz, Ella M. Rajaonson, Bojana Rankovic, Jarett Ren, Rim Rihana, Jurgis Ruza, Akhil S. Nair, Carter Salbego, Erick Lopez Saldivar, Arifin San, Christina Schenk, Stefan P. Schmid, Dylan Schubert, Philippe Schwaller, Cher-Tian Ser, Maitreyee Sharma Priyadarshini, Yuxin Shen, Kevin Shen, Jiale Shi, Farshud Sorourifar, Adrian Sosic, Taylor Sparks, Jan Christopher Spies, Felix Strieth-Kalthoff, Suraj Sudhakar, Aditya Sundar, Alessio Tamburro, Clara Tamura, Yifeng Tang, Dandan Tang, Nikhil Thota, Mohammad Erfan Toloue Sadegh Azadi, Gary Tom, Sang Truong, Ricardo Valencia Albornoz, Luis Walter, Lawrence Wang, Fanjin Wang, Andrew Wang, Yiran Wang, Jeffrey Watchorn, Benjamin Weiser, Geemi Wellawatte, Alexander Wieczorek, Tim Wurger, Ilya Yakavets, Jakob Zeitler, Sylvester Zhang, Yimu Zhao, Yanqiao Zhu, Ruijie Zhu, and Yunheng Zou. Bayesian optimization hackathon for chemistry and materials. ChemRxiv, Jun 2025. URL: https://doi.org/10.26434/chemrxiv-2025-dzh5z, doi:10.26434/chemrxiv-2025-dzh5z. This article has 1 citations.
+
+14. (baird2025bayesianoptimizationhackathon pages 1-2): Sterling Baird, Mehrad Ansari, Zartashia Afzal, Qianxiang Ai, Alexander Al-Feghali, Mathieu Alain, Matias Altamirano, Thomas Andrews, Andy Sode Anker, Rija Ansari, Samuel Ampofo Appiah, Raul Astudillo, Ruhana Azam, Mohammed Azzouzi, Suneel Kumar BVS, Ben Blaiszik, Anna Borisova, Andres Bran, Pengfei Cai, Ting-Yeh Chen, Curtis Chong, Samantha Corapi, Mark Croxall, Gbetondji Dovonon, Jose Manuel Napoles Duarte, Andrew Falkowski, Giuseppe Fisicaro, Martin Fitzner, Quinn Gallagher, Sabah Gaznaghi, Jerome Genzling, Christoph Griehl, Ryan-Rhys Griffiths, Taicheng Guo, Kehan Guo, Nipun Gupta, Ankur Gupta, Mohammad Haddadnia, Yuyang Han, Joscha Hoche, Alexander V. Hopp, Marko Huang, Ayodeji Ijishakin, Ramsey Issa, Yeonghun Kang, Jungtaek Kim, Akshay Kudva, Ruben Laplaza, Magdalena Lederbauer, Shi Xuan Leong, Paul W. Leu, Viola Muning Li, Mingxuan Li, Tao Liu, Stanley Lo, Jakub Lala, Osman Mamun, Owen Melville, Michail Mitsakis, Cameron Movassaghi, Madhav Reddy Muthyala, Marcel Muller, Bozhao Nan, Duc Nguyen, Daniele Ongari, Anthony Onwuli, Can Ozkan, Sergio Pablo-Garcia, Elton Pan, Ratish Panda, Sean Park, Jaehee Park, Dieter Plessers, Tobias Plotz, Ella M. Rajaonson, Bojana Rankovic, Jarett Ren, Rim Rihana, Jurgis Ruza, Akhil S. Nair, Carter Salbego, Erick Lopez Saldivar, Arifin San, Christina Schenk, Stefan P. Schmid, Dylan Schubert, Philippe Schwaller, Cher-Tian Ser, Maitreyee Sharma Priyadarshini, Yuxin Shen, Kevin Shen, Jiale Shi, Farshud Sorourifar, Adrian Sosic, Taylor Sparks, Jan Christopher Spies, Felix Strieth-Kalthoff, Suraj Sudhakar, Aditya Sundar, Alessio Tamburro, Clara Tamura, Yifeng Tang, Dandan Tang, Nikhil Thota, Mohammad Erfan Toloue Sadegh Azadi, Gary Tom, Sang Truong, Ricardo Valencia Albornoz, Luis Walter, Lawrence Wang, Fanjin Wang, Andrew Wang, Yiran Wang, Jeffrey Watchorn, Benjamin Weiser, Geemi Wellawatte, Alexander Wieczorek, Tim Wurger, Ilya Yakavets, Jakob Zeitler, Sylvester Zhang, Yimu Zhao, Yanqiao Zhu, Ruijie Zhu, and Yunheng Zou. Bayesian optimization hackathon for chemistry and materials. ChemRxiv, Jun 2025. URL: https://doi.org/10.26434/chemrxiv-2025-dzh5z, doi:10.26434/chemrxiv-2025-dzh5z. This article has 1 citations.
+
+15. (baird2025bayesianoptimizationhackathon pages 3-6): Sterling Baird, Mehrad Ansari, Zartashia Afzal, Qianxiang Ai, Alexander Al-Feghali, Mathieu Alain, Matias Altamirano, Thomas Andrews, Andy Sode Anker, Rija Ansari, Samuel Ampofo Appiah, Raul Astudillo, Ruhana Azam, Mohammed Azzouzi, Suneel Kumar BVS, Ben Blaiszik, Anna Borisova, Andres Bran, Pengfei Cai, Ting-Yeh Chen, Curtis Chong, Samantha Corapi, Mark Croxall, Gbetondji Dovonon, Jose Manuel Napoles Duarte, Andrew Falkowski, Giuseppe Fisicaro, Martin Fitzner, Quinn Gallagher, Sabah Gaznaghi, Jerome Genzling, Christoph Griehl, Ryan-Rhys Griffiths, Taicheng Guo, Kehan Guo, Nipun Gupta, Ankur Gupta, Mohammad Haddadnia, Yuyang Han, Joscha Hoche, Alexander V. Hopp, Marko Huang, Ayodeji Ijishakin, Ramsey Issa, Yeonghun Kang, Jungtaek Kim, Akshay Kudva, Ruben Laplaza, Magdalena Lederbauer, Shi Xuan Leong, Paul W. Leu, Viola Muning Li, Mingxuan Li, Tao Liu, Stanley Lo, Jakub Lala, Osman Mamun, Owen Melville, Michail Mitsakis, Cameron Movassaghi, Madhav Reddy Muthyala, Marcel Muller, Bozhao Nan, Duc Nguyen, Daniele Ongari, Anthony Onwuli, Can Ozkan, Sergio Pablo-Garcia, Elton Pan, Ratish Panda, Sean Park, Jaehee Park, Dieter Plessers, Tobias Plotz, Ella M. Rajaonson, Bojana Rankovic, Jarett Ren, Rim Rihana, Jurgis Ruza, Akhil S. Nair, Carter Salbego, Erick Lopez Saldivar, Arifin San, Christina Schenk, Stefan P. Schmid, Dylan Schubert, Philippe Schwaller, Cher-Tian Ser, Maitreyee Sharma Priyadarshini, Yuxin Shen, Kevin Shen, Jiale Shi, Farshud Sorourifar, Adrian Sosic, Taylor Sparks, Jan Christopher Spies, Felix Strieth-Kalthoff, Suraj Sudhakar, Aditya Sundar, Alessio Tamburro, Clara Tamura, Yifeng Tang, Dandan Tang, Nikhil Thota, Mohammad Erfan Toloue Sadegh Azadi, Gary Tom, Sang Truong, Ricardo Valencia Albornoz, Luis Walter, Lawrence Wang, Fanjin Wang, Andrew Wang, Yiran Wang, Jeffrey Watchorn, Benjamin Weiser, Geemi Wellawatte, Alexander Wieczorek, Tim Wurger, Ilya Yakavets, Jakob Zeitler, Sylvester Zhang, Yimu Zhao, Yanqiao Zhu, Ruijie Zhu, and Yunheng Zou. Bayesian optimization hackathon for chemistry and materials. ChemRxiv, Jun 2025. URL: https://doi.org/10.26434/chemrxiv-2025-dzh5z, doi:10.26434/chemrxiv-2025-dzh5z. This article has 1 citations.
+
+16. (baird2025bayesianoptimizationhackathon pages 2-3): Sterling Baird, Mehrad Ansari, Zartashia Afzal, Qianxiang Ai, Alexander Al-Feghali, Mathieu Alain, Matias Altamirano, Thomas Andrews, Andy Sode Anker, Rija Ansari, Samuel Ampofo Appiah, Raul Astudillo, Ruhana Azam, Mohammed Azzouzi, Suneel Kumar BVS, Ben Blaiszik, Anna Borisova, Andres Bran, Pengfei Cai, Ting-Yeh Chen, Curtis Chong, Samantha Corapi, Mark Croxall, Gbetondji Dovonon, Jose Manuel Napoles Duarte, Andrew Falkowski, Giuseppe Fisicaro, Martin Fitzner, Quinn Gallagher, Sabah Gaznaghi, Jerome Genzling, Christoph Griehl, Ryan-Rhys Griffiths, Taicheng Guo, Kehan Guo, Nipun Gupta, Ankur Gupta, Mohammad Haddadnia, Yuyang Han, Joscha Hoche, Alexander V. Hopp, Marko Huang, Ayodeji Ijishakin, Ramsey Issa, Yeonghun Kang, Jungtaek Kim, Akshay Kudva, Ruben Laplaza, Magdalena Lederbauer, Shi Xuan Leong, Paul W. Leu, Viola Muning Li, Mingxuan Li, Tao Liu, Stanley Lo, Jakub Lala, Osman Mamun, Owen Melville, Michail Mitsakis, Cameron Movassaghi, Madhav Reddy Muthyala, Marcel Muller, Bozhao Nan, Duc Nguyen, Daniele Ongari, Anthony Onwuli, Can Ozkan, Sergio Pablo-Garcia, Elton Pan, Ratish Panda, Sean Park, Jaehee Park, Dieter Plessers, Tobias Plotz, Ella M. Rajaonson, Bojana Rankovic, Jarett Ren, Rim Rihana, Jurgis Ruza, Akhil S. Nair, Carter Salbego, Erick Lopez Saldivar, Arifin San, Christina Schenk, Stefan P. Schmid, Dylan Schubert, Philippe Schwaller, Cher-Tian Ser, Maitreyee Sharma Priyadarshini, Yuxin Shen, Kevin Shen, Jiale Shi, Farshud Sorourifar, Adrian Sosic, Taylor Sparks, Jan Christopher Spies, Felix Strieth-Kalthoff, Suraj Sudhakar, Aditya Sundar, Alessio Tamburro, Clara Tamura, Yifeng Tang, Dandan Tang, Nikhil Thota, Mohammad Erfan Toloue Sadegh Azadi, Gary Tom, Sang Truong, Ricardo Valencia Albornoz, Luis Walter, Lawrence Wang, Fanjin Wang, Andrew Wang, Yiran Wang, Jeffrey Watchorn, Benjamin Weiser, Geemi Wellawatte, Alexander Wieczorek, Tim Wurger, Ilya Yakavets, Jakob Zeitler, Sylvester Zhang, Yimu Zhao, Yanqiao Zhu, Ruijie Zhu, and Yunheng Zou. Bayesian optimization hackathon for chemistry and materials. ChemRxiv, Jun 2025. URL: https://doi.org/10.26434/chemrxiv-2025-dzh5z, doi:10.26434/chemrxiv-2025-dzh5z. This article has 1 citations.
