@@ -1,0 +1,916 @@
+{
+  "per_drop": [
+    {
+      "session": "key-mounted",
+      "drop_in_session": 1,
+      "cum_drop": 1,
+      "input_cfc180_g": 222.8180061338695,
+      "input_pulse_ms": 1.52,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.18417906427613787,
+        0.17574888335697994,
+        0.15228561141156313
+      ],
+      "output_cfc180_g": 231.73837368753993,
+      "output_pulse_ms": 1.576,
+      "T": 1.0400343208722147,
+      "dom_freq_hz": 122.0703124999838,
+      "centroid_hz": 576.7284847403696
+    },
+    {
+      "session": "key-mounted",
+      "drop_in_session": 2,
+      "cum_drop": 2,
+      "input_cfc180_g": 222.75262435089488,
+      "input_pulse_ms": 1.552,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.1719623190417761,
+        0.17495682756400588,
+        0.15948981279302518
+      ],
+      "output_cfc180_g": 231.65083836233893,
+      "output_pulse_ms": 1.5279999999999998,
+      "T": 1.0399466180808132,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 684.8013941517246
+    },
+    {
+      "session": "key-mounted",
+      "drop_in_session": 3,
+      "cum_drop": 3,
+      "input_cfc180_g": 220.2121780575543,
+      "input_pulse_ms": 1.5360000000000005,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.20778128648412392,
+        0.18552085404831342,
+        0.14254752289185815
+      ],
+      "output_cfc180_g": 238.79260407783175,
+      "output_pulse_ms": 1.4800000000000004,
+      "T": 1.084375106700145,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 730.0219774353056
+    },
+    {
+      "session": "key-mounted",
+      "drop_in_session": 4,
+      "cum_drop": 4,
+      "input_cfc180_g": 212.33581007843767,
+      "input_pulse_ms": 1.5279999999999998,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.26468320062824496,
+        0.2354003036916938,
+        0.2023983077167196
+      ],
+      "output_cfc180_g": 232.76948425897274,
+      "output_pulse_ms": 1.5280000000000002,
+      "T": 1.0962328218353126,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 636.0307847950146
+    },
+    {
+      "session": "key-mounted",
+      "drop_in_session": 5,
+      "cum_drop": 5,
+      "input_cfc180_g": 217.82298260978106,
+      "input_pulse_ms": 1.5440000000000003,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.8525763422859945,
+        0.4451802595146535,
+        0.44713569623351135
+      ],
+      "output_cfc180_g": 233.11815407099408,
+      "output_pulse_ms": 1.5040000000000002,
+      "T": 1.0702183547298751,
+      "dom_freq_hz": 152.58789062497976,
+      "centroid_hz": 696.8298573643793
+    },
+    {
+      "session": "key-mounted-wax",
+      "drop_in_session": 1,
+      "cum_drop": 6,
+      "input_cfc180_g": 230.1436499097219,
+      "input_pulse_ms": 1.5440000000000003,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.1972646721411461,
+        0.17266341978855962,
+        0.14701191082299006
+      ],
+      "output_cfc180_g": 226.32673137506427,
+      "output_pulse_ms": 1.5279999999999998,
+      "T": 0.9834150603931289,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 583.5826927074007
+    },
+    {
+      "session": "key-mounted-wax",
+      "drop_in_session": 2,
+      "cum_drop": 7,
+      "input_cfc180_g": 229.03284331385512,
+      "input_pulse_ms": 1.5280000000000002,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.19901346560999242,
+        0.1970115954245475,
+        0.1585847436535592
+      ],
+      "output_cfc180_g": 227.75782532799263,
+      "output_pulse_ms": 1.5120000000000002,
+      "T": 0.9944330342870726,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 667.7862650563499
+    },
+    {
+      "session": "key-mounted-wax",
+      "drop_in_session": 3,
+      "cum_drop": 8,
+      "input_cfc180_g": 227.90945454908527,
+      "input_pulse_ms": 1.52,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.17355534828717323,
+        0.18966575923753567,
+        0.1357654235431806
+      ],
+      "output_cfc180_g": 227.74340082150698,
+      "output_pulse_ms": 1.5200000000000005,
+      "T": 0.9992714048308929,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 702.8250759300782
+    },
+    {
+      "session": "key-mounted-wax",
+      "drop_in_session": 4,
+      "cum_drop": 9,
+      "input_cfc180_g": 227.02069621720725,
+      "input_pulse_ms": 1.52,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.15849078865080757,
+        0.15107488301347183,
+        0.14584238791009088
+      ],
+      "output_cfc180_g": 229.14315559306996,
+      "output_pulse_ms": 1.5279999999999998,
+      "T": 1.0093491889119748,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 725.6719297829898
+    },
+    {
+      "session": "key-mounted-wax",
+      "drop_in_session": 5,
+      "cum_drop": 10,
+      "input_cfc180_g": 228.27350673674053,
+      "input_pulse_ms": 1.5359999999999996,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.15949319007231652,
+        0.17525417037087615,
+        0.148032658928577
+      ],
+      "output_cfc180_g": 230.14666688768617,
+      "output_pulse_ms": 1.5199999999999996,
+      "T": 1.0082057711283416,
+      "dom_freq_hz": 488.2812499999352,
+      "centroid_hz": 760.2341894372976
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 1,
+      "cum_drop": 11,
+      "input_cfc180_g": 225.75966064280132,
+      "input_pulse_ms": 1.5839999999999994,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.1696446643979458,
+        0.16143732172762484,
+        0.15220796003794945
+      ],
+      "output_cfc180_g": 222.07289998251858,
+      "output_pulse_ms": 1.5120000000000002,
+      "T": 0.9836695331230323,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 751.6535854817009
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 2,
+      "cum_drop": 12,
+      "input_cfc180_g": 222.22957698198434,
+      "input_pulse_ms": 1.5439999999999998,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.1689659930919851,
+        0.16139673605284213,
+        0.14956764938342618
+      ],
+      "output_cfc180_g": 224.70052374503447,
+      "output_pulse_ms": 1.5119999999999998,
+      "T": 1.0111188924382035,
+      "dom_freq_hz": 579.833984374923,
+      "centroid_hz": 709.2853391075591
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 3,
+      "cum_drop": 13,
+      "input_cfc180_g": 226.03872648230575,
+      "input_pulse_ms": 1.5999999999999994,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.1758213925064999,
+        0.19515038105132262,
+        0.1464596961203091
+      ],
+      "output_cfc180_g": 225.4205218258862,
+      "output_pulse_ms": 1.5119999999999998,
+      "T": 0.9972650498167271,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 788.407987626313
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 4,
+      "cum_drop": 14,
+      "input_cfc180_g": 227.92226455496228,
+      "input_pulse_ms": 1.5999999999999999,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.18006576645043995,
+        0.18439009736778367,
+        0.16997787711039866
+      ],
+      "output_cfc180_g": 224.9927325725216,
+      "output_pulse_ms": 1.5039999999999998,
+      "T": 0.9871467932798893,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 709.3477080603005
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 5,
+      "cum_drop": 15,
+      "input_cfc180_g": 229.12863900465288,
+      "input_pulse_ms": 1.6160000000000003,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.1685623192268394,
+        0.18904476693163733,
+        0.20193461623716472
+      ],
+      "output_cfc180_g": 223.9317904041759,
+      "output_pulse_ms": 1.5039999999999998,
+      "T": 0.9773190788237892,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 701.5551106078334
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 6,
+      "cum_drop": 16,
+      "input_cfc180_g": 227.59151615528432,
+      "input_pulse_ms": 1.5999999999999999,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.30786553270415723,
+        0.2257251030588748,
+        0.23641980396654455
+      ],
+      "output_cfc180_g": 223.3590211151573,
+      "output_pulse_ms": 1.5039999999999998,
+      "T": 0.981403107147284,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 738.8844818182985
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 7,
+      "cum_drop": 17,
+      "input_cfc180_g": 229.35127252916635,
+      "input_pulse_ms": 1.6160000000000003,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.19240968694600402,
+        0.18319802974937352,
+        0.1542320425921141
+      ],
+      "output_cfc180_g": 223.80623586844376,
+      "output_pulse_ms": 1.5040000000000007,
+      "T": 0.97582295227938,
+      "dom_freq_hz": 152.58789062497976,
+      "centroid_hz": 714.9079160335173
+    },
+    {
+      "session": "burn-in-wax",
+      "drop_in_session": 8,
+      "cum_drop": 18,
+      "input_cfc180_g": 226.77484399203456,
+      "input_pulse_ms": 1.5840000000000003,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.6241781657441308,
+        0.321601885806699,
+        0.35660256087265796
+      ],
+      "output_cfc180_g": 223.21141285046545,
+      "output_pulse_ms": 1.5039999999999998,
+      "T": 0.9842864795810673,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 742.2945470381223
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 1,
+      "cum_drop": 19,
+      "input_cfc180_g": 233.5978307120676,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.5476834492788722,
+        0.3214673533526652,
+        0.33002644734637643
+      ],
+      "output_cfc180_g": 255.33687496692406,
+      "output_pulse_ms": 1.5120000000000002,
+      "T": 1.093061841321857,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 726.0759400727815
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 2,
+      "cum_drop": 20,
+      "input_cfc180_g": 219.78613205792428,
+      "input_pulse_ms": 1.5279999999999998,
+      "output_valid": true,
+      "noise_rms_g": [
+        1.066989665362431,
+        0.6621417631218889,
+        0.5894648792888176
+      ],
+      "output_cfc180_g": 257.8336004157465,
+      "output_pulse_ms": 1.4960000000000004,
+      "T": 1.1731113241839795,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 714.2549421813105
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 3,
+      "cum_drop": 21,
+      "input_cfc180_g": 222.18519248501548,
+      "input_pulse_ms": 1.5520000000000005,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.668871272712071,
+        0.4312501461863276,
+        0.3778982612395462
+      ],
+      "output_cfc180_g": 257.9351347919623,
+      "output_pulse_ms": 1.496,
+      "T": 1.1609015520211043,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 714.5431190927759
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 4,
+      "cum_drop": 22,
+      "input_cfc180_g": 224.83671519388142,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.2956032021861895,
+        0.2205543410815569,
+        0.17853509961266403
+      ],
+      "output_cfc180_g": 258.0476625893034,
+      "output_pulse_ms": 1.4960000000000004,
+      "T": 1.1477114063278477,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 785.5678332239075
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 5,
+      "cum_drop": 23,
+      "input_cfc180_g": 221.72248703490678,
+      "input_pulse_ms": 1.536,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.21882743712404173,
+        0.1995976423046123,
+        0.17906863171070922
+      ],
+      "output_cfc180_g": 257.68311093128426,
+      "output_pulse_ms": 1.4960000000000004,
+      "T": 1.1621875362182639,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 695.8209875296843
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 6,
+      "cum_drop": 24,
+      "input_cfc180_g": 221.9047572661249,
+      "input_pulse_ms": 1.5440000000000003,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.3280845431403336,
+        0.2322779079369583,
+        0.20625694750762497
+      ],
+      "output_cfc180_g": 257.67876880187106,
+      "output_pulse_ms": 1.5039999999999998,
+      "T": 1.1612133600761125,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 765.8825910017856
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 7,
+      "cum_drop": 25,
+      "input_cfc180_g": 219.64273620653245,
+      "input_pulse_ms": 1.5279999999999998,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.2631590350797978,
+        0.18822423311753614,
+        0.17645866754148049
+      ],
+      "output_cfc180_g": 258.7247383519404,
+      "output_pulse_ms": 1.5040000000000002,
+      "T": 1.177934416682274,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 717.5979513411015
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 8,
+      "cum_drop": 26,
+      "input_cfc180_g": 220.17277322361363,
+      "input_pulse_ms": 1.5519999999999996,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.23599622229150086,
+        0.19476179895925477,
+        0.1713700147589521
+      ],
+      "output_cfc180_g": 260.70536130804913,
+      "output_pulse_ms": 1.5199999999999996,
+      "T": 1.1840944613222883,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 752.5365782772124
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 9,
+      "cum_drop": 27,
+      "input_cfc180_g": 208.40282728702394,
+      "input_pulse_ms": 1.5200000000000005,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.24299500851543265,
+        0.20560284334687265,
+        0.17802704910876385
+      ],
+      "output_cfc180_g": 262.5574716835574,
+      "output_pulse_ms": 1.5200000000000005,
+      "T": 1.2598556128125302,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 751.6037924824848
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 10,
+      "cum_drop": 28,
+      "input_cfc180_g": 206.66375308490854,
+      "input_pulse_ms": 1.5359999999999996,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.237536901581107,
+        0.18224972520739696,
+        0.19728219779139083
+      ],
+      "output_cfc180_g": 262.0019481860894,
+      "output_pulse_ms": 1.5120000000000002,
+      "T": 1.267769235171322,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 785.1332539085477
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 11,
+      "cum_drop": 29,
+      "input_cfc180_g": 212.30467316107703,
+      "input_pulse_ms": 1.5279999999999998,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.25012660974291,
+        0.20330218167304173,
+        0.15934997565459125
+      ],
+      "output_cfc180_g": 262.1991262976501,
+      "output_pulse_ms": 1.5200000000000005,
+      "T": 1.235013447389911,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 762.1873758312215
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 12,
+      "cum_drop": 30,
+      "input_cfc180_g": 220.05791311582973,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.2644248497768973,
+        0.24529933503050494,
+        0.18086816582016121
+      ],
+      "output_cfc180_g": 262.29350822935555,
+      "output_pulse_ms": 1.5199999999999996,
+      "T": 1.1919294540037497,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 757.610120831348
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 13,
+      "cum_drop": 31,
+      "input_cfc180_g": 214.6330166397908,
+      "input_pulse_ms": 1.5599999999999998,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.26575652677147327,
+        0.1902827131303947,
+        0.20419536556827553
+      ],
+      "output_cfc180_g": 262.3647206304556,
+      "output_pulse_ms": 1.5120000000000002,
+      "T": 1.2223875186489637,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 773.9094317989224
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 14,
+      "cum_drop": 32,
+      "input_cfc180_g": 217.9549592275198,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.2867089786109,
+        0.25251845916300214,
+        0.21254849046889343
+      ],
+      "output_cfc180_g": 262.15379591256817,
+      "output_pulse_ms": 1.5120000000000002,
+      "T": 1.2027888552832142,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 760.7637576825846
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 15,
+      "cum_drop": 33,
+      "input_cfc180_g": 211.31803726193033,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.3164125714624773,
+        0.23076624477310337,
+        0.19045112211024767
+      ],
+      "output_cfc180_g": 262.4858572263524,
+      "output_pulse_ms": 1.52,
+      "T": 1.2421365474874213,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 742.5548239248826
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 16,
+      "cum_drop": 34,
+      "input_cfc180_g": 202.46947129251524,
+      "input_pulse_ms": 1.536,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.35100556272499656,
+        0.24866440707412266,
+        0.21684657424319828
+      ],
+      "output_cfc180_g": 262.2977106813252,
+      "output_pulse_ms": 1.5200000000000005,
+      "T": 1.2954926439372871,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 778.6092537618074
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 17,
+      "cum_drop": 35,
+      "input_cfc180_g": 221.22467436570565,
+      "input_pulse_ms": 1.5919999999999996,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.32549287669965654,
+        0.2807639695225267,
+        0.20054232228957036
+      ],
+      "output_cfc180_g": 262.1377730393325,
+      "output_pulse_ms": 1.52,
+      "T": 1.1849391293757474,
+      "dom_freq_hz": 518.7988281249311,
+      "centroid_hz": 770.1408669267555
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 18,
+      "cum_drop": 36,
+      "input_cfc180_g": 221.17561202743912,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.4860116014366145,
+        0.3030924209218698,
+        0.2688013460310178
+      ],
+      "output_cfc180_g": 259.77364757918286,
+      "output_pulse_ms": 1.5119999999999998,
+      "T": 1.1745130722050643,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 780.899756399245
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 19,
+      "cum_drop": 37,
+      "input_cfc180_g": 212.83725418154435,
+      "input_pulse_ms": 1.536,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.5490301195059727,
+        0.344253197908715,
+        0.2797731565316055
+      ],
+      "output_cfc180_g": 260.94179670348484,
+      "output_pulse_ms": 1.5200000000000005,
+      "T": 1.226015613229574,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 753.1951829879748
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 20,
+      "cum_drop": 38,
+      "input_cfc180_g": 213.11714117363036,
+      "input_pulse_ms": 1.576,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.6641959164564052,
+        0.36175624011178936,
+        0.26353554770233806
+      ],
+      "output_cfc180_g": 261.24568020035684,
+      "output_pulse_ms": 1.5199999999999996,
+      "T": 1.225831384381772,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 790.0719291886173
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 21,
+      "cum_drop": 39,
+      "input_cfc180_g": 216.49962642896585,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.6012199114292519,
+        0.40420656500569024,
+        0.27347369458149634
+      ],
+      "output_cfc180_g": 261.43983171342603,
+      "output_pulse_ms": 1.5200000000000005,
+      "T": 1.2075763641061301,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 765.2697034568539
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 22,
+      "cum_drop": 40,
+      "input_cfc180_g": 211.90282880218908,
+      "input_pulse_ms": 1.5440000000000003,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.6198927581250989,
+        0.40073136614318133,
+        0.31800485450785737
+      ],
+      "output_cfc180_g": 261.1528032215451,
+      "output_pulse_ms": 1.5359999999999996,
+      "T": 1.2324177298516898,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 770.8352297897603
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 23,
+      "cum_drop": 41,
+      "input_cfc180_g": 216.27529823484522,
+      "input_pulse_ms": 1.5519999999999996,
+      "output_valid": true,
+      "noise_rms_g": [
+        0.7964638582447257,
+        0.40547962664523357,
+        0.30944346548572077
+      ],
+      "output_cfc180_g": 261.40819147076013,
+      "output_pulse_ms": 1.536,
+      "T": 1.2086826077886472,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 772.4899518882085
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 24,
+      "cum_drop": 42,
+      "input_cfc180_g": 220.61561348178782,
+      "input_pulse_ms": 1.568,
+      "output_valid": true,
+      "noise_rms_g": [
+        1.1656231567591209,
+        0.7581393710048668,
+        0.35707694983873767
+      ],
+      "output_cfc180_g": 263.0723350064597,
+      "output_pulse_ms": 1.52,
+      "T": 1.1924465855095825,
+      "dom_freq_hz": 549.3164062499271,
+      "centroid_hz": 843.0545927653869
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 25,
+      "cum_drop": 43,
+      "input_cfc180_g": 223.8064065482159,
+      "input_pulse_ms": 1.5839999999999994,
+      "output_valid": false,
+      "noise_rms_g": [
+        1.0181781896242343,
+        0.5795241499766025,
+        0.28558055195358434
+      ]
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 26,
+      "cum_drop": 44,
+      "input_cfc180_g": 202.64008824528838,
+      "input_pulse_ms": 1.48,
+      "output_valid": false,
+      "noise_rms_g": [
+        0.16498107003090218,
+        0.16657197977887492,
+        0.15272890000883527
+      ]
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 27,
+      "cum_drop": 45,
+      "input_cfc180_g": 209.93009965763295,
+      "input_pulse_ms": 1.4960000000000004,
+      "output_valid": false,
+      "noise_rms_g": [
+        0.1589698634765658,
+        0.15172684152185703,
+        0.14831967278718616
+      ]
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 28,
+      "cum_drop": 46,
+      "input_cfc180_g": 209.4499661273505,
+      "input_pulse_ms": 1.48,
+      "output_valid": false,
+      "noise_rms_g": [
+        0.17124364285900567,
+        0.17058757898820107,
+        0.14766272314039458
+      ]
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 29,
+      "cum_drop": 47,
+      "input_cfc180_g": 208.70152563270167,
+      "input_pulse_ms": 1.496,
+      "output_valid": false,
+      "noise_rms_g": [
+        0.1814968119597392,
+        0.17683675861156709,
+        0.15996996680865444
+      ]
+    },
+    {
+      "session": "drift-calibration",
+      "drop_in_session": 30,
+      "cum_drop": 48,
+      "input_cfc180_g": 211.56461540766736,
+      "input_pulse_ms": 1.5119999999999998,
+      "output_valid": false,
+      "noise_rms_g": [
+        0.15517959060109893,
+        0.17196862440008556,
+        0.15035479522625625
+      ]
+    }
+  ],
+  "per_session": {
+    "key-mounted": {
+      "n": 5,
+      "input_g": 219.18832024610748,
+      "output_g": 233.6138908915355,
+      "T": 1.0661614444436722,
+      "pulse_ms": 1.5232000000000003,
+      "dom_freq_hz": 378.41796874994975,
+      "centroid_hz": 664.8824996973588,
+      "noise_rms_g": [
+        0.33623644254325546,
+        0.2433614256351293,
+        0.22077139020933548
+      ]
+    },
+    "key-mounted-wax": {
+      "n": 5,
+      "input_g": 228.476030145322,
+      "output_g": 228.22355600106403,
+      "T": 0.9989348919102822,
+      "pulse_ms": 1.5215999999999998,
+      "dom_freq_hz": 537.1093749999287,
+      "centroid_hz": 688.0200305828232,
+      "noise_rms_g": [
+        0.17756349295228718,
+        0.17713396556699817,
+        0.14704742497167955
+      ]
+    },
+    "burn-in-wax": {
+      "n": 8,
+      "input_g": 226.84956254289898,
+      "output_g": 223.9368922955254,
+      "T": 0.9872539858111715,
+      "pulse_ms": 1.507,
+      "dom_freq_hz": 499.7253417968087,
+      "centroid_hz": 732.0420844717056,
+      "noise_rms_g": [
+        0.24843919013350027,
+        0.20274304021826972,
+        0.19592527579007057
+      ]
+    },
+    "drift-calibration": {
+      "n": 24,
+      "input_g": 217.1375551644487,
+      "output_g": 260.5613104141243,
+      "T": 1.2012504874723473,
+      "pulse_ms": 1.5143333333333338,
+      "dom_freq_hz": 531.5144856770129,
+      "centroid_hz": 759.6087069310483,
+      "noise_rms_g": [
+        0.4603380014590949,
+        0.311140993863463,
+        0.25080413444750155
+      ]
+    }
+  },
+  "trends_vs_cum_drop": {
+    "dom_freq_hz": {
+      "slope": 2.50995395809666,
+      "pct_per_drop": 0.49418300351283767,
+      "p": 0.05734117828384787,
+      "r2": 0.08738732571838534
+    },
+    "centroid_hz": {
+      "slope": 3.080580696233625,
+      "pct_per_drop": 0.41937852016865323,
+      "p": 5.013622899615567e-08,
+      "r2": 0.5283592778482548
+    },
+    "output_pulse_ms": {
+      "slope": 5.250790049428764e-05,
+      "pct_per_drop": 0.0034661948647681387,
+      "p": 0.7882094689762804,
+      "r2": 0.0018251581400356514
+    }
+  }
+}
