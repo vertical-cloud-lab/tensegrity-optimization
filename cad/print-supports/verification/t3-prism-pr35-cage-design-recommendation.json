@@ -1,0 +1,29 @@
+{
+  "tendon_d": 4.949714306920875,
+  "tilt_deg": 19.69839230996869,
+  "force_n": 0.01,
+  "e_tpu_mpa": 15.0,
+  "hot_tip_mm": 0.13333333333333333,
+  "committed": {
+    "ring_gap": 1.2,
+    "pillar_gap": 1.5,
+    "pillar_d": 2.5,
+    "opening": 120.0,
+    "spacing": 18.0,
+    "worst_corridor_travel_mm": 12.0,
+    "worst_closed_deflection_mm": 1.2450508689443514
+  },
+  "recommended": {
+    "ring_gap": 0.8,
+    "ring_spacing": 12.0,
+    "opening": 70.0,
+    "pillar_gap": 1.5,
+    "pillar_d": 2.5,
+    "worst_corridor_travel_mm": 1.06,
+    "worst_closed_deflection_mm": 0.8132128459163155,
+    "squeeze_ratio": 0.7589855814563464
+  },
+  "bare": {
+    "worst_deflection_mm": 4.753488026228381
+  }
+}
