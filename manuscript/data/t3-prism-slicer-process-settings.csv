@@ -1,0 +1,9 @@
+project,print_settings_id,printer_settings_id,layer_height,line_width,sparse_infill_density,sparse_infill_pattern,wall_loops,top_shell_layers,bottom_shell_layers,slot,filament_type,preset,nozzle_temp_C,temp_window_C,max_volumetric_mm3_s,used_on_plate,n_part_overrides
+t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.as-printed.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,1,PLA,Bambu PLA Basic @BBL H2D 0.6 nozzle,220.0,190-240,30.0,True,0
+t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.as-printed.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,2,TPU,Bambu TPU 85A @BBL H2D 0.4 nozzle,240.0,235-240,2.5,True,0
+t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.as-printed.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,3,PLA,Bambu PLA Basic @BBL H2D 0.6 nozzle,220.0,190-240,30.0,False,0
+t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.as-printed.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,4,PLA,Bambu PLA Basic @BBL H2D 0.6 nozzle,220.0,190-240,40.0,False,0
+t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.as-printed.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,5,TPU,Bambu TPU 85A @BBL H2D,225.0,200-250,2.2,False,0
+t3-prism-bo-batch.H2D-MM-PLAstruts-TPUcables.as-printed.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,6,PLA,Bambu PLA Basic @BBL H2D 0.6 nozzle,220.0,190-240,30.0,False,0
+t3-prism-bo-round1.H2D-MM-PLAstruts-TPUcables_manual-supports.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,1,PLA,Bambu PLA Basic @BBL H2D 0.6 nozzle,220.0,190-240,30.0,True,0
+t3-prism-bo-round1.H2D-MM-PLAstruts-TPUcables_manual-supports.3mf,0.30mm Standard @BBL H2D 0.6 nozzle,Bambu Lab H2D 0.6 nozzle,0.3,0.62,15%,grid,2,3,3,2,TPU,Bambu TPU 85A @BBL H2D 0.4 nozzle,240.0,235-240,2.5,True,0

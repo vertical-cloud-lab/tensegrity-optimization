@@ -17,7 +17,8 @@ Reads committed snapshots only:
   manuscript/data/t3-prism-bo-round1-print-key.csv   (r2d2c, physical batch 2)
   manuscript/data/t3-prism-bo-round3-print-key.csv   (drran + 2dran)
   manuscript/data/t3-prism-bo-round4-print-key.csv   (corny, physical batch 4)
-  manuscript/data/t3-prism-bo-round5-logocv.csv      (held-out predictions)
+  manuscript/data/t3-prism-bo-round5-logocv-nuts64.csv (held-out predictions,
+      the 64/128 NUTS run this audit was written against)
   manuscript/data/t3-prism-bo-round3-repeatability.csv (nine reprint pairs)
   manuscript/data/byu-eb-weather-hourly.csv          (hourly T/RH, local time)
 
@@ -148,7 +149,7 @@ def eta_squared(groups: list[np.ndarray]) -> tuple[float, float, float]:
 def main() -> None:
     cov = join_weather(load_articles())
 
-    logo = pd.read_csv(DATA / "t3-prism-bo-round5-logocv.csv")
+    logo = pd.read_csv(DATA / "t3-prism-bo-round5-logocv-nuts64.csv")
     for metric, col in [("t180", "t180"), ("e_reb_mJ", "ereb")]:
         d = logo[logo.metric == metric].set_index("print_id")
         cov[f"{col}_obs"] = cov.print_id.map(d.observed)

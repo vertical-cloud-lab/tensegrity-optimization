@@ -1,7 +1,9 @@
 """Quantify how much of the LOGO-CV 'poor performance' is a data ceiling.
 
 Reads the committed campaign snapshots only:
-  manuscript/data/t3-prism-bo-round5-logocv.csv        (held-out predictions)
+  manuscript/data/t3-prism-bo-round5-logocv-nuts64.csv (held-out predictions,
+      the 64/128 NUTS run this analysis was written against; the
+      full 256/512 rerun is t3-prism-bo-round5-logocv.csv)
   manuscript/data/t3-prism-bo-round3-repeatability.csv (nine reprint pairs)
 
 Prints (a) a recomputation of the LOGO-CV metrics, (b) calibration coverage
@@ -18,7 +20,7 @@ import pandas as pd
 from scipy import stats
 
 ROOT = Path(__file__).resolve().parents[2]
-LOGO = ROOT / "manuscript/data/t3-prism-bo-round5-logocv.csv"
+LOGO = ROOT / "manuscript/data/t3-prism-bo-round5-logocv-nuts64.csv"
 PAIRS = ROOT / "manuscript/data/t3-prism-bo-round3-repeatability.csv"
 OUT = ROOT / "figures/analysis/reprint-test-retest-ceiling.png"
 

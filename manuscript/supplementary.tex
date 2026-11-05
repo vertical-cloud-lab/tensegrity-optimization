@@ -62,8 +62,9 @@ together with the tables and figures moved out of the main text to meet the
 journal's length limit (the main text cites them by their S-numbers). Unlike
 the main text, the SI references the project's development history directly,
 including specific pull requests (PRs) and issues in the project repository
-(\href{\repo}{\repo}). Citations use the reference list at the end of this
-document, which is numbered independently of the main text.
+(\href{\repo}{\repo}), whose contents are listed in the Data Availability
+Statement of the main text. Citations use the reference list at the end of
+this document, which is numbered independently of the main text.
 
 % -----------------------------------------------------------------------------
 \section{Positioning Against Prior Work}
@@ -204,7 +205,9 @@ Full results, renders, and the Phase-3/Phase-4 design reviews are documented in
 % -----------------------------------------------------------------------------
 Near-vertical TPU tendons are otherwise unsupported during printing. For the
 printed campaign batches, we disabled automatic support generation and
-painted PLA edge supports manually in Bambu Studio along each tendon. We
+painted PLA supports manually in Bambu Studio along the edge of each
+tendon. The support type is ``Tree (manual)'', which grows tree supports
+only from the painted regions (Table~\ref{tab:si-print-params}). We
 tightened the support-to-object XY clearance from \SI{0.35}{mm} to
 \SI{0.2}{mm} during tuning on the S0 reference prism
 (\href{\repo/issues/98}{issue~\#98}). Support removal is the leading source of
@@ -260,7 +263,8 @@ objectives.
     Parameter & PLA (struts) & TPU 85A (tendons) \\
     \midrule
     Nozzle                             & \SI{0.6}{mm} & 0.4 then \SI{0.6}{mm} HF\textsuperscript{a} \\
-    Nozzle temperature (\textdegree C) & 220 & 220 \\
+    Nozzle temperature (\textdegree C) & 220\textsuperscript{b} & 240\textsuperscript{b} \\
+    Max volumetric speed (mm\textsuperscript{3}/s) & 30\textsuperscript{b} & 2.5\textsuperscript{b} \\
     Bed temperature, profile (\textdegree C) & 55 & 35 \\
     Layer height / line width (mm)     & \multicolumn{2}{c}{0.30 / 0.62} \\
     Infill                             & 15\% grid, 2 walls & near-solid \\
@@ -268,13 +272,28 @@ objectives.
     Filament drying                    & n/a & dry box, $\sim$8\% RH \\
     Build-plate type                   & \multicolumn{2}{c}{Textured PEI} \\
     Build orientation                  & \multicolumn{2}{c}{Upright (main text, Fig.~3)} \\
-    Supports                           & \multicolumn{2}{c}{Manual painted tree supports, PLA} \\
+    Supports                           & \multicolumn{2}{c}{Tree (manual), PLA, only where painted\textsuperscript{c}} \\
     \bottomrule
-  \end{tabular}\\[2pt]
-  {\footnotesize \textsuperscript{a}The TPU side ran a standard
+  \end{tabular}\par\vspace{2pt}
+  {\footnotesize\raggedright \textsuperscript{a}The TPU side ran a standard
   \SI{0.4}{mm} nozzle until the mid-batch clog, then a dedicated
   high-flow (HF) \SI{0.6}{mm} nozzle. Affected articles are flagged in
-  the print key.}
+  the print key.
+  \textsuperscript{b}Seed and batch-2 plates, as recorded in their
+  archived slicer projects (first TPU layer at \SI{235}{\celsius}).
+  Batch 3 printed PLA at \SI{217}{\celsius} and \SI{20.5}{mm^3/s} and
+  TPU at \SI{244}{\celsius} and \SI{3.6}{mm^3/s}. Batch 4 used
+  \SI{226}{\celsius} and \SI{29.5}{mm^3/s} for PLA and
+  \SI{236}{\celsius} and \SI{2.6}{mm^3/s} for TPU (main text, batch lines of
+  the model-recommended batch-results table). The wall speeds ask for
+  more flow than either limit allows, so the volumetric limit sets the
+  extrusion rate of both materials.
+  \textsuperscript{c}Bambu Studio's ``Tree (manual)'' support type
+  grows tree supports only from regions painted with the support tool.
+  We painted them along the edge of each tendon
+  (Section~\ref{si:supports}). The batch-3 and batch-4 slicer projects
+  archived with the campaign code record supports as off, so the
+  supports of those batches rest on the print log.\par}
 \end{table}
 
 % -----------------------------------------------------------------------------
@@ -829,10 +848,11 @@ Figures~\ref{fig:si-sensitivity} and~\ref{fig:si-logocv} are the surrogate
 diagnostics discussed in the main text (Section~4.3): the seed-state
 length-scale diagnostics of the sparse axis-aligned subspace model (SAASBO)
 and the leave-one-design-out cross-validation of the surrogate over the full
-44-article record. The cross-validation runner, its fold-level records, and
-the reliability-ceiling analysis of the reprint pairs are archived with the
-campaign code and the manuscript data
+44-article record. The cross-validation runner, its fold-level records, the
+plotting script, and the reliability-ceiling analysis of the reprint pairs
+are in the project repository
 (\texttt{t3-prism-bo-round5-logocv.csv},
+\texttt{scripts/\allowbreak figures/\allowbreak plot\_logocv.py},
 \texttt{scripts/\allowbreak figures/\allowbreak reprint\_reliability\_ceiling.py}).
 
 \begin{figure}[ht]
@@ -853,17 +873,23 @@ campaign code and the manuscript data
   \centering
   \includegraphics[width=0.8\linewidth]{../figures/bo/t3-prism-bo-round5-logocv.png}
   \caption{Leave-one-design-out cross-validation of the SAASBO
-    surrogate over the full 44-article record (35 design folds, one
-    full NUTS refit per fold). Each batch-3 reprint pair is held out
-    together so neither print leaks into the other's prediction.
-    Vertical bars are one posterior standard deviation of
-    the held-out prediction, horizontal bars are the ingested
-    standard error, and the dashed line is parity. Held-out
-    $t_{180}$ predictions stay close to the pooled mean (MAPE 5.0\%, rank
-    correlation $+0.08$), and the $E_{\mathrm{reb}}$ ordering is anti-correlated
-    ($-0.38$). Design-level held-out skill is near zero on
-    transmissibility and absent on the mass-weighted velocity-loss
-    objective.}
+    surrogate over the full 44-specimen record (35 design folds, one
+    NUTS refit per fold at 256 samples after 512 warmup steps, the
+    budget of the generation fits). Each batch-3 reprint pair is held
+    out together so neither print leaks into the other's prediction.
+    Vertical bars are one posterior standard deviation of the held-out
+    prediction, horizontal bars are the ingested standard error, and
+    the dashed line is parity. Held-out $t_{180}$ predictions stay close
+    to the pooled mean (MAPE 4.8\%, Spearman $\rho_s = +0.32$,
+    two-sided permutation $p = 0.036$), and the ordering of the
+    mass-weighted rebound $E_{\mathrm{reb}}$ runs against the
+    measurements (MAPE 38.8\%, $\rho_s = -0.40$, $p = 0.008$).
+    Design-level held-out skill is weak on transmissibility and absent
+    on $E_{\mathrm{reb}}$. The folds, held-out predictions, and
+    diagnostics are archived as \texttt{t3-prism-bo-round5-logocv.csv}
+    and its \texttt{-diagnostics.json}, and the earlier run at 64
+    samples after 128 warmup steps under the suffix \texttt{-nuts64}
+    ($t_{180}$ $\rho_s = +0.08$, $E_{\mathrm{reb}}$ $\rho_s = -0.38$).}
   \label{fig:si-logocv}
 \end{figure}
 

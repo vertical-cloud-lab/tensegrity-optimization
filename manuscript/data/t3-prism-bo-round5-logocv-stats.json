@@ -1,0 +1,36 @@
+{
+  "t180": {
+    "n_specimens": 44,
+    "MAPE": 0.04836207792240341,
+    "MAPE_ax": 0.0483621391172016,
+    "spearman_rho": 0.3179704016913319,
+    "spearman_rho_ax": 0.3179704016913319,
+    "spearman_p_perm_two_sided": 0.03639818009099545,
+    "spearman_p_asymptotic": 0.0354317286236419,
+    "pearson_r": 0.28899116696597277,
+    "pearson_r2": 0.08351589458435475,
+    "coverage_1p96sd": 0.8863636363636364,
+    "sd_pred_over_sd_obs": 0.3186899278642777,
+    "observed_range": [
+      0.80311,
+      1.33365
+    ]
+  },
+  "e_reb_mJ": {
+    "n_specimens": 44,
+    "MAPE": 0.3876912667624308,
+    "MAPE_ax": 0.38769121269203416,
+    "spearman_rho": -0.3981112797143729,
+    "spearman_rho_ax": -0.3977448907681465,
+    "spearman_p_perm_two_sided": 0.008449577521123944,
+    "spearman_p_asymptotic": 0.007442185424056167,
+    "pearson_r": -0.355783138357072,
+    "pearson_r2": 0.12658164153920742,
+    "coverage_1p96sd": 0.9318181818181818,
+    "sd_pred_over_sd_obs": 0.10935027655722697,
+    "observed_range": [
+      4.06643,
+      18.09369
+    ]
+  }
+}

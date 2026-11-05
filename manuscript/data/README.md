@@ -85,3 +85,46 @@ against the frozen predictions (0.75, which uses design means adjusted
 for the offset between prints; plain screened means give 0.55). The
 third print is not in the surrogate fit or the round-5 LOGO-CV files
 above, which predate it.
+
+## Batch-results table sources (added 2026-10-27)
+
+Four files are verbatim copies from the campaign branch
+`claude/issue-98-20260821-0103` at commit `65ff978` (directory `bo/`):
+`t3-prism-bo-round1-designs.csv`, `t3-prism-bo-round3-designs.csv` and
+`t3-prism-bo-round4-designs.csv` (post-projection, as-printed geometry and
+infill per Ax trial, and for batches 3 and 4 the batch-level filament
+settings), and `t3-prism-slicer-process-settings.csv` (process and filament
+settings read back out of the seed and batch-2 Bambu Studio projects by
+`bo/t3_prism_slicer_settings.py`). The drop-results, print-key and
+predictions CSVs the table also reads were already here and are identical
+at `65ff978`, except the round-3 print key, which at `65ff978` also lists
+the third-print rows (`dran31` to `dran39`). Those rows live in
+`t3-prism-bo-round3-third-print-key.json`, so the copy here keeps the
+two-print version that `scripts/figures/print_covariate_audit.py` expects.
+
+`scripts/figures/build_batch_results_table.py` (standard library only)
+reads these and writes `manuscript/tables/batch-results.tex`, which the
+body `\input`s as `tab:batch-results`. It stops if the inputs disagree with
+each other, and `--compare` checks every number against an earlier
+hand-typed table. Against the table at `ce6c4ec` it reports 216 values in
+27 rows with 0 mismatches.
+
+## Full-budget LOGO-CV rerun (added 2026-10-27)
+
+The round-5 leave-one-design-out CV was rerun at the NUTS budget of the
+generation fits (256 samples after 512 warmup steps per fold, 35/35
+folds) on branch `claude/cv-signal-audit-20260922`, commit `1e17c3e`,
+directory `analysis/cv-signal-audit/data/full-nuts-rerun/` (PR #111).
+`t3-prism-bo-round5-logocv.csv` and `t3-prism-bo-round5-logocv-diagnostics.json`
+are now verbatim copies of that rerun, and `t3-prism-bo-round5-logocv-state.json`
+is its `state.json` (settings, seed scheme, per-fold timings). The earlier
+64/128 run snapshotted from `bbf7a62` is kept as
+`t3-prism-bo-round5-logocv-nuts64.csv` and
+`t3-prism-bo-round5-logocv-nuts64-diagnostics.json` (figure:
+`figures/bo/t3-prism-bo-round5-logocv-nuts64.png`), and the two analysis
+scripts written against it (`reprint_reliability_ceiling.py`,
+`print_covariate_audit.py`) now read the `-nuts64` file so their committed
+outputs stay reproducible. `scripts/figures/plot_logocv.py` draws
+`figures/bo/t3-prism-bo-round5-logocv.png` from the rerun and writes
+`t3-prism-bo-round5-logocv-stats.json` (MAPE, Spearman rho with a two-sided
+permutation p, Pearson r and r^2, 1.96-sd coverage).
