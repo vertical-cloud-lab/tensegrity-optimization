@@ -1,0 +1,55 @@
+batch,print,specimen,n_recorded,n_stabilized,t180,t1000,seat_gauge,gauge_ge_1p15
+seed,1,6lhxfy,101,99,0.8931,0.9127,1.022,False
+seed,1,6nheas,101,99,0.997,0.9963,0.999,False
+seed,1,9hhbkp,101,99,1.0183,1.0282,1.01,False
+seed,1,amdjwm,101,99,0.9805,1.007,1.027,False
+seed,1,autv5r,103,101,1.0404,1.1362,1.092,False
+seed,1,bag26v,101,99,1.0616,1.2417,1.17,True
+seed,1,bpx68c,101,99,1.0111,1.0665,1.055,False
+seed,1,nvxsrv,101,99,1.0275,1.2299,1.197,True
+seed,1,ajhby6,101,99,1.0127,1.0338,1.021,False
+batch 2,1,r2d2c1,21,19,0.9942,1.0024,1.008,False
+batch 2,1,r2d2c2,21,19,1.0411,1.1142,1.07,False
+batch 2,1,r2d2c3,21,19,1.3337,2.4812,1.86,True
+batch 2,1,r2d2c4,21,19,1.1847,1.2213,1.031,False
+batch 2,1,r2d2c5,21,19,1.1516,1.4606,1.268,True
+batch 2,1,r2d2c6,21,19,1.0548,1.0915,1.035,False
+batch 2,1,r2d2c7,21,19,0.9484,1.107,1.167,True
+batch 2,1,r2d2c8,22,20,1.0704,1.5521,1.45,True
+batch 2,1,r2d2c9,21,19,1.053,1.4741,1.4,True
+batch 3,1,drran1,20,18,1.0326,1.1045,1.07,False
+batch 3,1,drran2,20,18,1.0345,1.1306,1.093,False
+batch 3,1,drran3,20,18,1.0389,1.1486,1.106,False
+batch 3,1,drran4,20,18,1.0344,1.0816,1.046,False
+batch 3,1,drran5,20,18,1.0373,1.0427,1.005,False
+batch 3,1,drran6,20,18,1.0471,1.0751,1.027,False
+batch 3,1,drran7,20,18,1.2513,2.9377,2.348,True
+batch 3,1,drran8,20,18,0.9804,1.0415,1.062,False
+batch 3,1,drran9,20,18,1.0425,1.0498,1.007,False
+batch 3,2,2dran1,20,18,1.0791,1.473,1.365,True
+batch 3,2,2dran2,20,18,1.09,1.2498,1.147,True
+batch 3,2,2dran3,20,18,1.0533,1.1945,1.134,False
+batch 3,2,2dran4,20,18,1.0433,1.1077,1.062,False
+batch 3,2,2dran5,20,18,1.0604,1.1014,1.039,False
+batch 3,2,2dran6,20,18,1.0859,1.133,1.043,False
+batch 3,2,2dran7,20,18,1.0286,1.0604,1.031,False
+batch 3,2,2dran8,20,18,1.0109,1.042,1.031,False
+batch 3,2,2dran9,20,18,1.0451,1.0548,1.009,False
+batch 3,3,dran31,20,18,1.0209,1.0478,1.026,False
+batch 3,3,dran32,20,18,1.0386,1.0608,1.021,False
+batch 3,3,dran33,20,18,1.0366,1.075,1.037,False
+batch 3,3,dran34,20,18,1.0201,1.0692,1.048,False
+batch 3,3,dran35,20,18,1.1679,2.8398,2.432,True
+batch 3,3,dran36,20,18,1.0353,1.0456,1.01,False
+batch 3,3,dran37,20,18,1.0448,1.0908,1.044,False
+batch 3,3,dran38,20,18,0.9958,1.0566,1.061,False
+batch 3,3,dran39,20,18,1.0438,1.0669,1.022,False
+batch 4,1,corny1,20,18,1.0459,1.2995,1.242,True
+batch 4,1,corny2,20,18,1.0846,1.1103,1.024,False
+batch 4,1,corny3,20,18,1.0705,1.2479,1.166,True
+batch 4,1,corny4,20,18,1.0475,1.0764,1.028,False
+batch 4,1,corny5,20,18,1.0876,1.197,1.101,False
+batch 4,1,corny6,20,18,0.9106,0.966,1.061,False
+batch 4,1,corny7,20,18,0.8031,0.7866,0.979,False
+batch 4,1,corny8,20,18,0.9535,0.9856,1.034,False
+batch 4,1,corny9,20,18,0.8766,0.8854,1.01,False

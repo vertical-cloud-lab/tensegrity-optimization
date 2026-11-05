@@ -1,0 +1,234 @@
+{
+ "seat_gauge": {
+  "n_sessions": 54,
+  "min": 0.979,
+  "max": 2.432,
+  "median": 1.045,
+  "n_le_1p07": 36,
+  "n_between": 5,
+  "n_ge_1p15": 13,
+  "flagged": [
+   [
+    "seed",
+    1,
+    "bag26v",
+    1.17,
+    1.0616
+   ],
+   [
+    "seed",
+    1,
+    "nvxsrv",
+    1.197,
+    1.0275
+   ],
+   [
+    "batch 2",
+    1,
+    "r2d2c3",
+    1.86,
+    1.3337
+   ],
+   [
+    "batch 2",
+    1,
+    "r2d2c5",
+    1.268,
+    1.1516
+   ],
+   [
+    "batch 2",
+    1,
+    "r2d2c7",
+    1.167,
+    0.9484
+   ],
+   [
+    "batch 2",
+    1,
+    "r2d2c8",
+    1.45,
+    1.0704
+   ],
+   [
+    "batch 2",
+    1,
+    "r2d2c9",
+    1.4,
+    1.053
+   ],
+   [
+    "batch 3",
+    1,
+    "drran7",
+    2.348,
+    1.2513
+   ],
+   [
+    "batch 3",
+    2,
+    "2dran1",
+    1.365,
+    1.0791
+   ],
+   [
+    "batch 3",
+    2,
+    "2dran2",
+    1.147,
+    1.09
+   ],
+   [
+    "batch 3",
+    3,
+    "dran35",
+    2.432,
+    1.1679
+   ],
+   [
+    "batch 4",
+    1,
+    "corny1",
+    1.242,
+    1.0459
+   ],
+   [
+    "batch 4",
+    1,
+    "corny3",
+    1.166,
+    1.0705
+   ]
+  ],
+  "per_batch": {
+   "seed": {
+    "n": 9,
+    "n_ge_1p15": 2
+   },
+   "batch 2": {
+    "n": 9,
+    "n_ge_1p15": 5
+   },
+   "batch 3": {
+    "n": 27,
+    "n_ge_1p15": 4
+   },
+   "batch 4": {
+    "n": 9,
+    "n_ge_1p15": 2
+   }
+  },
+  "batch4": {
+   "corny1": 1.242,
+   "corny2": 1.024,
+   "corny3": 1.166,
+   "corny4": 1.028,
+   "corny5": 1.101,
+   "corny6": 1.061,
+   "corny7": 0.979,
+   "corny8": 1.034,
+   "corny9": 1.01
+  }
+ },
+ "batch3_gauge_vs_deviation": {
+  "n": 27,
+  "spearman_gauge_vs_signed_dev": 0.527,
+  "flagged": [
+   [
+    "dran35",
+    2.432,
+    10.1
+   ],
+   [
+    "drran7",
+    2.348,
+    19.8
+   ],
+   [
+    "2dran2",
+    1.147,
+    4.9
+   ],
+   [
+    "2dran1",
+    1.365,
+    4.5
+   ]
+  ],
+  "median_abs_dev_unflagged": 0.22
+ },
+ "drop_counts": {
+  "seed print 1": [
+   [
+    101,
+    99
+   ],
+   [
+    103,
+    101
+   ]
+  ],
+  "batch 2 print 1": [
+   [
+    21,
+    19
+   ],
+   [
+    22,
+    20
+   ]
+  ],
+  "batch 3 print 1": [
+   [
+    20,
+    18
+   ]
+  ],
+  "batch 3 print 2": [
+   [
+    20,
+    18
+   ]
+  ],
+  "batch 3 print 3": [
+   [
+    20,
+    18
+   ]
+  ],
+  "batch 4 print 1": [
+   [
+    20,
+    18
+   ]
+  ]
+ },
+ "noise_E_reb": {
+  "n": 53,
+  "median_rel_drop_term_pct": 0.514,
+  "median_rel_mass_term_pct": 2.294,
+  "median_rel_total_pct": 2.397,
+  "n_mass_term_dominant": 42
+ },
+ "noise_I_reb": {
+  "n": 53,
+  "median_rel_drop_term_pct": 1.028,
+  "median_rel_mass_term_pct": 2.294,
+  "median_rel_total_pct": 2.53,
+  "n_mass_term_dominant": 37
+ },
+ "sigma_m_check": {
+  "masses_g": [
+   22.29,
+   21.42,
+   22.1
+  ],
+  "sample_sd_g": 0.4574
+ },
+ "e_reb_between_print_sd_mJ": 3.4169009571552107,
+ "objective_correlation_first_prints": {
+  "n": 35,
+  "spearman_t180_vs_I_reb": -0.389,
+  "spearman_t180_vs_E_reb": -0.417
+ }
+}

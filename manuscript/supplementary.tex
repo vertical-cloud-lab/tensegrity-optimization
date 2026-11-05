@@ -432,17 +432,19 @@ Partner~4 data-acquisition console. This section summarizes the
 development history behind the protocol in the main text.
 
 \paragraph{Protocol.} The drop height is \SI{60}{in}, with the specimen
-upright on the carriage plate. We discard the first two drops of each
-session as seating warm-up. Session length differs by batch. Seed sessions
-contribute 101 valid captures per specimen (103 for autv5r), the batch-2
-record lists 21 to 22 valid captures per specimen, and batch-3 and batch-4
-sessions recorded 20 drops per specimen. Exact per-session counts
-live in the archived per-drop records, whose two generations differ
-on whether the count is quoted before or after the warm-up discard.
+upright on the carriage plate. We discard the first 2 drops of each
+session as seating warm-up. Session length differs by batch. Seed
+sessions recorded 101 drops per specimen (103 for autv5r), batch-2
+sessions 21 or 22, and batch-3 and batch-4 sessions 20. After the
+warm-up discard, 99 (101), 19 or 20, and 18 stabilized drops per
+specimen enter the means. The per-specimen summaries archived with the
+data count every valid capture, including the 2 warm-up drops (column
+\texttt{n\_valid}), and the raw series tables of the seed sessions hold
+101 events each (103 for autv5r).
 Section 3.3 of the main text justifies the shortening. The
 statistical minimum from the pre-campaign variance study is five
 stabilized drops, and a truncation replay of the seed sessions
-preserves the full-session transmissibility ranking at twenty drops.
+preserves the full-session transmissibility ranking at 20 drops.
 The three prints of batch 3 also showed that the error budget is
 dominated by seating and print variation rather than session length. We record
 three high-speed video clips (\SI{959}{fps}) per specimen. From
@@ -454,22 +456,25 @@ documents the post-impact rebound and recovery. Synchronized
 laser-Doppler vibrometry is reserved for follow-up characterization
 of selected designs. Testing takes roughly \SI{42}{s} per
 drop, so about
-ninety minutes per seed specimen and fifteen per later-batch specimen.
+90 minutes per seed specimen and 15 per later-batch specimen.
 Capture settings:
 \SI{1.25}{MHz} sample rate, \SI{100}{ms} record, \SI{2}{ms} pre-trigger,
 \SI{150}{G} trigger on the base channel, AC-coupled ICP conditioning.
 After a settings-loss event, we re-verified the console settings
 digit-for-digit against an archived screenshot and confirmed data
-continuity to within about 1\%. Per the review instruction of 2026-09-02, the
-per-session capture counts above should be re-verified by a person
-against the committed per-drop records before submission.
+continuity to within about 1\%.
+% TODO (lab): Marcus asked on 2026-09-02 that a person verify the
+% per-session drop counts. On 2026-11-05 Claude checked them against the
+% raw TP4 series tables (data/drop-tests/sobol-campaign/raw/ on
+% copilot/add-drop-test-protocol-again) and the campaign analysis code
+% (n_valid counts the warm-up drops); a person should still confirm.
 
 \paragraph{Impact surface.} A blinded $3\times3$ crossover experiment over
 three candidate polyurethane mat arrangements (single \SI{0.25}{in} Shore
 70~OO, single \SI{0.5}{in} Shore 60~OO, stacked) selected the single
 \SI{0.5}{in} Shore 60~OO sheet (\href{\repo/issues/88}{issue~\#88},
 \href{\repo/pull/86}{PR~\#86}). Unlike the earlier felt stack, the mat does
-not measurably compact over hundred-drop sessions. Sessions
+not measurably compact over 100-drop sessions. Sessions
 recorded as ``5 felts'' in early protocol documents were physically four felt
 sheets plus one cardboard layer.
 
@@ -479,7 +484,7 @@ accelerometer on the carriage plate (\SI{1.059}{mV/G}, full scale
 (X/Y/Z 0.690/0.667/\SI{0.734}{mV/G}) seated in a printed pocket at the top
 vertex, mounted per ISO~5348. We retired an earlier single-axis channel
 after range clipping. We cross-calibrated the two base-capable channels in
-place over fifteen co-located drops. The ratio was $0.953 \pm 0.001$ at
+place over 15 co-located drops. The ratio was $0.953 \pm 0.001$ at
 CFC-180 (per-drop $0.952 \pm 0.004$) and stable across drop heights
 (\href{\repo/pull/74}{PR~\#74}).
 
@@ -527,7 +532,8 @@ record.
     Peak-search window & $\approx$\SI{1.5}{ms} from first contact \\
     Baseline estimate & record tail \\
     Warm-up exclusion & first 2 drops per session \\
-    Captures per session & 101 seed (103 autv5r); 21-22 batch 2; 20 batches 3-4 \\
+    Drops recorded per session & 101 seed (103 autv5r); 21-22 batch 2; 20 batches 3-4 \\
+    Stabilized drops per specimen & 99 seed (101 autv5r); 19-20 batch 2; 18 batches 3-4 \\
     Rig-health check & $\Delta v$ from baselined base channel \\
     Ringdown fit gate & $r^2 \ge 0.85$ (exponential fit) \\
     Second-contact threshold and window & code of record \\
@@ -560,6 +566,18 @@ and campaign sessions (tallied through
 campaign batches themselves contribute about 1{,}500 stabilized
 captures including the second print of batch 3, and its third print
 adds 162 more.
+
+\paragraph{Ringdown diagnostics.} We recorded ringdown descriptors per
+drop as print-health and prestress
+diagnostics~\citep{ashwear2014natural}, but they are not campaign
+objectives. They are the fitted natural frequency $f_n$ and, where the
+exponential fit passes an $r^2 \ge 0.85$ gate, a damping ratio
+$\zeta$. Of the 44 sessions with an accepted $f_n$, all but two rang
+at 260 to \SI{470}{Hz}. The exceptions are r2d2c7 (\SI{682}{Hz}, batch
+2) and corny8 (\SI{764}{Hz}, batch 4). In the seed batch, $f_n$ was
+\SI{368}{Hz} for 6lhxfy, 455 for amdjwm, 322 for 6nheas, 468 for bpx68c,
+364 for 9hhbkp, 294 for nvxsrv, and 386 for autv5r, with no accepted
+estimate for ajhby6 or bag26v.
 
 \paragraph{Seating sensitivity, the between-seat rule, and the seat
 gauge.} The three prints of batch 3 (main text, Section 4.2) showed
