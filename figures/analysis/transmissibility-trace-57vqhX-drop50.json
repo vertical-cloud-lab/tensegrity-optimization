@@ -1,0 +1,55 @@
+{
+  "source_csv": "manuscript/data/57vqhX_Signal50.csv",
+  "session": "57vqhX 60 in - 4 felt 1 crdbrd",
+  "session_date": "2026-07-28",
+  "event": 50,
+  "drop_height_in": 60,
+  "surface": "four felt pads and one cardboard sheet (commissioning stack)",
+  "sample_rate_hz": 1249999.9999999697,
+  "record_ms": 19.998400000000004,
+  "channels": {
+    "CH2": "top vertex X (G)",
+    "CH3": "top vertex Y (G)",
+    "CH4": "top vertex Z (G)",
+    "CH5": "base plate, single axis, input and trigger (G)"
+  },
+  "filter": "SAE J211/1 CFC: butter(2, 2.0775*CFC) forward and backward",
+  "baseline": "per-channel median over t < 0.18 ms (pre-trigger)",
+  "time_zero": "CFC-1000 base trace first reaches 5 % of its peak",
+  "t_zero_s_in_record": 0.0002616,
+  "corrected_j211": {
+    "180": {
+      "base_peak_g": 562.8401532783969,
+      "top_peak_g": 588.0541305125583,
+      "ratio": 1.0447977584529047,
+      "t_base_peak_ms": 0.5944,
+      "t_top_peak_ms": 0.6616000000000001
+    },
+    "1000": {
+      "base_peak_g": 1861.0938575891332,
+      "top_peak_g": 2394.385222560056,
+      "ratio": 1.2865472704647738,
+      "t_base_peak_ms": 0.592,
+      "t_top_peak_ms": 0.6592
+    }
+  },
+  "legacy_1p65cfc_fullmedian": {
+    "180": {
+      "base_peak_g": 478.6413187895779,
+      "top_peak_g": 500.3850291272189,
+      "ratio": 1.045427984346667,
+      "t_base_peak_ms": 0.5928,
+      "t_top_peak_ms": 0.6608
+    },
+    "1000": {
+      "base_peak_g": 1739.7856853487901,
+      "top_peak_g": 2095.556854463701,
+      "ratio": 1.2044913762142986,
+      "t_base_peak_ms": 0.5912,
+      "t_top_peak_ms": 0.6568
+    }
+  },
+  "t180": 1.0448,
+  "cfc1000_ratio": 1.2865,
+  "seat_gauge_cfc1000_over_cfc180": 1.2314
+}

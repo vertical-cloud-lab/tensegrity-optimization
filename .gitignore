@@ -63,3 +63,14 @@ edison-trajectories/mock-jmd-review-5/bundle/
 edison-trajectories/mock-jmd-review-5/mock-jmd-review-5-bundle.zip
 edison-trajectories/rubberduck-*/bundle/
 edison-trajectories/rubberduck-*/rubberduck-*-bundle.zip
+
+# Video files and archives stay out of the repo; commit extracted frames only
+# (see figures/photos/README.md)
+*.mp4
+*.webm
+*.mkv
+*.mov
+*.m4v
+*.info.json
+figures/**/*.zip
+manuscript/**/*.zip
