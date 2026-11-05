@@ -170,9 +170,9 @@ We report a drop-test-driven Bayesian optimization campaign over
 three-strut prisms printed in one piece from polylactic acid (PLA) and
 thermoplastic polyurethane (TPU). The search space has five geometry
 variables, plus infill densities and filament settings from the third
-batch. Each candidate is scaled to a common mass target before
-printing, then 3D printed and drop-tested repeatedly. Designs are
-scored by transmissibility (measured as a ratio of filtered top-to-base
+batch. We scale each candidate to a common mass target before
+printing, then 3D print and drop-test it repeatedly. We score
+designs by transmissibility (measured as a ratio of filtered top-to-base
 peak accelerations) and a mass-weighted rebound index (specimen mass
 times the squared fraction of impact velocity returned at the top),
 both minimized. Most specimens amplify the peak shock. Over a quasi-random
@@ -310,12 +310,12 @@ Our motivating application is protecting the payload of a planetary
 lander, where added mass is costly. An absorber there should limit the
 peak shock delivered to the payload during touchdown and the motion it
 sends back into the payload afterward. These two needs set the two
-objectives of this paper: the transmissibility $t_{180}$, a ratio of
-filtered peak accelerations across the structure, and the mass-weighted
-rebound index $I_{\mathrm{reb}}$, which grows with the specimen's mass
-and with the share of the impact velocity it returns
+objectives of this paper. The transmissibility $t_{180}$ compares the
+peak acceleration at the top of the structure with the peak at its
+base. The mass-weighted rebound index $I_{\mathrm{reb}}$ grows with the
+specimen's mass and with the share of the impact velocity it returns
 (Section~\ref{sec:methods:testing}). The mass budget sets a third
-condition, that every candidate is printed at a common mass. The
+condition, that we print every candidate at a common mass. The
 printed PLA/TPU $T_3$ prism studied here is a testbed for developing
 and validating the closed-loop workflow. It is not flight hardware, and
 it is not the end of the design space we intend to search. Our
@@ -328,10 +328,10 @@ application scale.
   \item A parameterized family of multi-material 3D-printable
     tensegrity-inspired unit cells that uses TPU in place of the
     tension elements of the traditional tensegrity topology, with PLA
-    members that carry compression most of the time. The cells are
-    not prestressed, so neither member type acts as a pure tension or
+    members that carry compression most of the time. We do not
+    prestress the cells, so neither member type acts as a pure tension or
     compression element. Under impact, some tendons stretch while
-    others buckle. The TPU tendons are anchored \emph{inside} the
+    others buckle. We anchor the TPU tendons \emph{inside} the
     ends of each PLA strut, the strut acting as a rigid cage in which
     the tendons meeting at a given end join before exiting through
     discrete outlets. We report the resulting printable
@@ -346,10 +346,10 @@ application scale.
     later batches, after a 2-drop warm-up) with standardized
     SAE~J211 filtering~\citep{saej211}. The measured within-session
     variance justifies the smaller count in later batches
-    (Section~\ref{sec:methods:testing}). The two per-specimen
-    objectives, the transmissibility after channel-frequency-class (CFC)
-    180 filtering and the mass-weighted rebound index, are each characterized
-    for repeatability before entering the optimizer.
+    (Section~\ref{sec:methods:testing}). We characterize each of the two
+    per-specimen objectives, the transmissibility after
+    channel-frequency-class (CFC) 180 filtering and the mass-weighted
+    rebound index, for repeatability before they enter the optimizer.
   \item An experiment-driven BO loop, built on
     BoTorch/Ax~\citep{balandat2020botorch, pmlr-v293-olson25a} with a
     fully Bayesian sparse axis-aligned subspace surrogate
@@ -376,9 +376,9 @@ application scale.
     uninformed sampling baselines, and finished ahead on all ten seeds.
 \end{enumerate}
 
-The completed evidence in this paper is restricted to single-cell,
+The completed evidence in this paper covers only single-cell,
 fixed-topology $T_3$-prism-inspired specimens under one \emph{axial}
-drop condition. Quasi-static testing is planned as an extension for
+drop condition. We plan quasi-static testing as an extension for
 future work.
 Off-axis and combined loading, controlled fatigue and
 damage-accumulation testing, multi-cell behavior, and landing-attitude
@@ -395,13 +395,13 @@ prototype design space.
     design space of Table~\ref{tab:design-vars}
     (Fig.~\ref{fig:design-space}). \emph{Design:} a Gaussian-process
     surrogate fitted to the noisy measurements recommends the next batch
-    (Section~\ref{sec:methods:bo}). \emph{Make:} each batch is scaled to a
-    common mass and laid out as one build plate. The plate is sliced with
-    PLA supports painted by hand along the TPU tendons and printed in one
+    (Section~\ref{sec:methods:bo}). \emph{Make:} we scale each batch to a
+    common mass and lay it out as one build plate. We slice the plate with
+    PLA supports painted by hand along the TPU tendons and print it in one
     dual-nozzle job, with the hard material (PLA) from the left nozzle and
     the soft material (TPU) from the right
-    (Section~\ref{sec:methods:fabrication}). \emph{Test:} the labeled
-    specimens are drop-tested one at a time on the drop-tower carriage
+    (Section~\ref{sec:methods:fabrication}). \emph{Test:} we drop-test the
+    labeled specimens one at a time on the drop-tower carriage
     (Section~\ref{sec:methods:testing}). \emph{Conclude:} report the
     final Pareto front. The plate render is batch 4, the mid-print frame
     is a later replicate plate, and the labeled specimens are batch 2.}
@@ -413,7 +413,7 @@ prototype design space.
   specimen. Confirm, then name it in the caption or swap in a photo of a
   campaign specimen.}
 
-The remainder of the paper is organized as follows.
+We organize the remainder of the paper as follows.
 Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
 3D printing for energy absorption, and Bayesian optimization with an
 emphasis on multi-objective and noise-robust acquisition functions.
@@ -476,17 +476,17 @@ optimization loop.
 
 Multi-material rigid-soft FDM enables stiff/compliant combinations on a
 single platform with tunable energy absorption, demonstrated for thick-panel
-origami whose PLA panels are joined by TPU hinges~\cite{ye2023multimaterial}
+origami in which TPU hinges join the PLA panels~\cite{ye2023multimaterial}
 and for ABS/TPU honeycombs~\cite{khatri2024energy}. Neither study is itself a
 tensegrity, but both establish the rigid-soft co-printing route we adopt. Ye
 et~al.~\cite{ye2023multimaterial}
-introduced a \emph{wrapping-based} strategy in which rigid cores are
-encapsulated by continuous soft skins, reported to reduce interface
+introduced a \emph{wrapping-based} strategy in which continuous soft skins
+encapsulate rigid cores, reported to reduce interface
 delamination under cyclic loading, something we take inspiration from in our
 designs.
 Beyond these rigid-soft demonstrations, several studies show
-that tensegrity-inspired architectures can be additively
-manufactured with tunable mechanical response. Bauer
+that additive manufacturing can produce tensegrity-inspired
+architectures with tunable mechanical response. Bauer
 et~al.~\cite{bauer2021tensegrity} showed that 3D-printed tensegrity
 metamaterials delocalize deformation to resist catastrophic failure, while
 Pajunen et~al.~\cite{pajunen2021prestrain} tuned acoustic bandgaps in
@@ -508,8 +508,8 @@ stiffness, strength, and energy absorption for the same PLA/TPU pair
 used here, while FDM PLA fatigue
 data~\citep{ezeh2018onthefatigue, vanaei2021multiscaledamageanalysis}
 can inform conservative design bounds for the rigid struts.
-Architected multi-material lattices with co-printed compliant skins
-have been designed for high specific energy
+Yavas et~al.\ have designed architected multi-material lattices with
+co-printed compliant skins for high specific energy
 absorption~\citep{yavas2022designandfabrication}. Recent surveys review
 additively manufactured polymeric energy
 absorbers~\citep{bustihan2026recentadvancesin,
@@ -542,8 +542,8 @@ continuous $T_3$-prism prototype studied here, have dedicated
 treatments in Bayesian optimization of combinatorial structures
 (BOCS)~\citep{baptista2018bocs} and the
 one-hot-with-rounded-kernel construction
-of~\citep{garridomerchan2020dealingwithcategorical}. BO has been
-applied to architected-material
+of~\citep{garridomerchan2020dealingwithcategorical}. Prior work has
+applied BO to architected-material
 design~\citep{mo2023accelerated}
 and to additive manufacturing~\citep{zhang2021bo}.
 Mo et~al.~\cite{mo2023accelerated} in
@@ -580,11 +580,11 @@ the design family:
     from a discrete set of candidate unit cells (e.g.,
     truncated-tetrahedral, prism-based, and octahedral variants). When
     activated, the design vector would encode this as a categorical
-    choice. It is held fixed at the $T_3$ prism for the present
+    choice. We hold it fixed at the $T_3$ prism for the present
     campaign.
   \item \textbf{Unit-cell tiling (future extension).} Number of cells
     $N_x \times N_y \times N_z$ and the orientation of each cell
-    relative to the impact direction. It is held fixed at a single
+    relative to the impact direction. We hold it fixed at a single
     cell here.
 \end{itemize}
 \todo{Specify exact manufacturing-feasibility constraints once
@@ -602,7 +602,7 @@ cable (tendon) diameter $d_t$. We treat the cable diameter $d_t$ as a
 \emph{continuous} variable on $[3.0, 5.5]$\,\si{mm}. From batch 3 the
 space grows to include the print
 process: two per-specimen sparse-infill densities (strut and tendon,
-each 12 to 35\%) chosen by the acquisition, and four filament
+each 12 to 35\%) that the acquisition chooses, and four filament
 settings (PLA and TPU nozzle temperature and maximum volumetric
 speed). The filament settings are physically one value per print
 job, so we draw them as one quasi-random point per batch, and they
@@ -612,17 +612,17 @@ $D_3$ symmetry all struts are equivalent, and we also give all cables
 one diameter. We therefore use a single strut-diameter axis and a single
 cable-diameter axis, leaving room to relax
 to per-orbit (saddle, top, bottom) or fully per-member diameters once
-the individual orbits have been characterized.\todo{Cite primary
+we have characterized the individual orbits.\todo{Cite primary
 sources on $D_3$-symmetric versus per-member diameters. The Edison
 literature brief \texttt{5191cf4d} lists candidate papers to read and
 cite.} We hold the joint diameter $d_j$ fixed at
 \SI{7.0}{mm}. It sets the printed strut-end cage
 that houses the internal cable anchors
-(Section~\ref{sec:methods:fabrication}), so it is constrained primarily by the
-TPU-tendon outlet count and the dual-nozzle clearance rather than by
-energy-absorption performance. Fixing it keeps the anchor geometry
-constant across specimens so that the optimized variables are not
-confounded by joint-strength changes. Relaxing $d_j$ is deferred to a
+(Section~\ref{sec:methods:fabrication}), so the TPU-tendon outlet count and
+the dual-nozzle clearance, rather than energy-absorption performance,
+primarily constrain it. Fixing it keeps the anchor geometry
+constant across specimens so that joint-strength changes do not
+confound the optimized variables. We defer relaxing $d_j$ to a
 follow-on joint-design study. Figure~\ref{fig:design-space} shows the
 design variables on a mid-range prism, six tested specimens drawn to one
 scale, and an as-printed specimen.
@@ -632,8 +632,8 @@ cell mass varies severalfold across the raw design box, an
 unconstrained search would partly reward designs for carrying more
 material rather than for their architecture. We therefore project
 every candidate onto a constant material budget before printing.
-Each design is uniformly scaled (all dimensions except the twist
-angle) until its mass target is met, converged to within
+The projection uniformly scales each design (all dimensions except the
+twist angle) until it meets its mass target, converged to within
 \SI{0.15}{g} on rendered geometry. The target evolved with the
 campaign. Batches 1 and 2 held \emph{solid} CAD mass
 $\rho_{\mathrm{PLA}} V_{\mathrm{PLA}} + \rho_{\mathrm{TPU}}
@@ -649,7 +649,7 @@ constant, and the surrogate carries each specimen's weighed mass
 explicitly (Section~\ref{sec:methods:bo}). From batch 3 the projection
 instead holds \emph{printed} mass at \SI{20.23}{g}, the mass of the
 printed reference specimen. A calibrated model predicts each design's
-printed mass from its geometry, and the design is scaled until that
+printed mass from its geometry, and the projection scales the design until that
 prediction equals the target (Supplementary Information). The printed
 batches came in slightly light. Their mean masses were 0.2 to
 \SI{0.6}{g} (1 to 3\%) below the target, and the CV within a batch was
@@ -657,8 +657,8 @@ batches came in slightly light. Their mean masses were 0.2 to
 
 We also checked each projected design against two printability
 limits, a \SI{250}{cm^3} size limit on $\pi R^2 H$ and a \SI{3.0}{mm}
-minimum on the printed TPU cable diameter. Both were recorded as
-warnings, and neither was used to reject or change a design. Because
+minimum on the printed TPU cable diameter. We recorded both as
+warnings, and we used neither to reject or change a design. Because
 the projection scales the whole cell, nine specimens printed with
 cables of 2.51 to \SI{2.78}{mm}, including all four batch-4 specimens
 that reduced the peak shock, and all nine printed. The screens and
@@ -667,15 +667,15 @@ the defect record behind them are in the Supplementary Information
 
 \begin{table}[ht]
   \centering
-  \caption{Design variables for the $T_3$-prism campaign, as implemented
-    in the BO code. The seed batch is an $n=9$ Sobol draw (fixed
-    seed) over the five geometry variables, with each design then
-    projected onto the constant-mass budget of the text. The process
-    variables joined the space in batch 3. The two infill densities
-    are acquisition-chosen per specimen, while the four filament
-    settings admit one value per print job and are therefore drawn as
-    a single quasi-random point per batch, confounded with batch
-    until varied within a plate. The joint diameter is held fixed.
+  \caption{Design variables for the $T_3$-prism campaign, as the BO
+    code implements them. The seed batch is an $n=9$ Sobol draw (fixed
+    seed) over the five geometry variables, and we then project each
+    design onto the constant-mass budget of the text. The process
+    variables joined the space in batch 3. The acquisition chooses the
+    two infill densities per specimen. The four filament
+    settings admit one value per print job, and we therefore draw them
+    as a single quasi-random point per batch, confounded with batch
+    until a round varies them within a plate. We hold the joint diameter fixed.
     All specimens print upright on a Bambu Lab~H2D, with the prism
     axis normal to the build plate and the base triangle on the bed
     (Fig.~\ref{fig:overview}, Make panel). The seed batch used
@@ -716,13 +716,13 @@ cross-sections, so the effective search granularity is coarser than the
 nominal continuous box. The realized member diameter changes in steps
 set by the slicer line width, and these steps determine the smallest CAD
 change that gives a distinguishable as-built member. We weigh every specimen on a
-\SI{0.01}{g} scale, and mass is the only as-built quantity measured for
+\SI{0.01}{g} scale, and mass is the only as-built quantity we measure for
 every specimen. We have not yet measured the dimensions of the printed
-members, so the geometry attached to the surrogate is the commanded
+members, so the geometry we attach to the surrogate is the commanded
 post-projection geometry. Repeated prints bound the fabrication
 scatter in mass. One seed design printed three times has a mass
-standard deviation of \SI{0.457}{g}, the value used in the observation
-noise model (Section~\ref{sec:methods:bo}), and the three prints of
+standard deviation of \SI{0.457}{g}, the value we use in the observation
+noise model (Section~\ref{sec:methods:bo}). The three prints of
 the batch-3 plate differ by a per-print flow offset of up to
 \SI{0.48}{g} rather than by random scatter
 (Section~\siref{si:printability}).
@@ -745,7 +745,7 @@ the batch-3 plate differ by a per-print flow offset of up to
     measured $t_{180}$ and $E_{\mathrm{reb}}$. \emph{(c)} Specimen corny7
     as printed, with its ID label around one strut. The drawings show PLA
     struts in black, TPU tendons in green, and the square strut-end
-    housings. Specimen corny7 was printed in white PLA.}
+    housings. We printed specimen corny7 in white PLA.}
   \label{fig:design-space}
 \end{figure*}%
 
@@ -757,7 +757,7 @@ for the rigid struts and TPU for the soft tension elements.
 The Make panel of Fig.~\ref{fig:overview} shows the steps from the
 build plate through slicing to the print. Rather than wrapping the struts in a continuous TPU skin, we anchored
 the TPU tension elements \emph{inside} the ends of each PLA strut. The
-cables converging at a given strut end are joined within the strut,
+cables converging at a given strut end join within the strut,
 which acts as a rigid cage housing the junction, and the individual
 tendons then exit through discrete outlets. This keeps the soft-rigid
 interface in internal, compression-dominated pockets rather than at an
@@ -785,16 +785,16 @@ previous text named a dovetail joint with an anchor-bulb backup.}
 Because near-vertical TPU tendons are otherwise unsupported during
 printing, we disabled automatic support generation and painted PLA
 edge supports manually along each tendon in the slicer. Support removal
-is the main source of the cosmetic defects logged per specimen in the
+is the main source of the cosmetic defects we logged per specimen in the
 print key (Sections~\siref{si:supports} and~\siref{si:printkey}). TPU
 is hygroscopic, so we fed it from a heated dry box held near or below
-\SI{8}{\percent} relative humidity, logged per print. Midway through
-the seed batch, a partial clog of the TPU extruder was resolved by a
-cold pull and a move to a dedicated high-flow \SI{0.6}{mm} nozzle,
-and the print key flags the affected specimens so that any
-nozzle-related covariate can be checked against the measured
+\SI{8}{\percent} relative humidity, which we logged per print. Midway through
+the seed batch, a cold pull and a move to a dedicated high-flow
+\SI{0.6}{mm} nozzle resolved a partial clog of the TPU extruder.
+The print key flags the affected specimens so that we can check
+any nozzle-related covariate against the measured
 objectives. Table~\siref{tab:si-print-params} of the Supplementary
-Information lists the print parameters transcribed from the archived
+Information lists the print parameters we transcribed from the archived
 as-printed slicer project (Section~\siref{si:process}).\todo{The
 joint-design CAD and vision reviews (Edison analysis tasks
 \texttt{19e0c868} and \texttt{e9a1f4cc}) are working records rather than
@@ -824,14 +824,14 @@ with the painted supports rising beside the tendons.
     prime tower. (a)~First layers, with the bottom TPU tendons and
     the strut-end housings. (b)~Mid-height, with the struts and the
     painted PLA supports partly built. (c)~Final layers, with the top
-    tendons complete. Frames are cropped and down-scaled only.}
+    tendons complete. We only crop and down-scale the frames.}
   \label{fig:print-timelapse}
 \end{figure*}%
 
 \subsection{Experimental Characterization}
 \label{sec:methods:testing}
 
-Every specimen was drop-tested on one instrumented fixture under one
+We drop-tested every specimen on one instrumented fixture under one
 protocol. This section describes the fixture, the instrumentation and
 filtering, the two objectives computed from each session, and the
 replication checks that bound what a single session can show.
@@ -839,13 +839,13 @@ replication checks that bound what a single session can show.
 \paragraph{Drop-tower fixture} We characterized the specimens primarily
 by repeated drop-weight impact on a Lansmont Model~23 shock test system.
 The printed specimen rode upright on the free-fall carriage plate,
-which was raised \SI{60}{in} (\SI{1.524}{m}) along guide rails and
+which we raised \SI{60}{in} (\SI{1.524}{m}) along guide rails and
 released. The plate landed on a single \SI{0.5}{in} Shore 60~OO
 polyurethane cushioning sheet, which shaped the landing into a single
 sharp base pulse of roughly \SI{1.6}{ms} duration. We selected this
 impact surface in a blinded crossover experiment over three candidate
 mat arrangements. Unlike a felt stack, it did not measurably compact
-over 100-drop sessions (the seed sessions were specified at 100
+over 100-drop sessions (we specified the seed sessions at 100
 drops). We monitored rig health continuously through the impact
 velocity change $\Delta v$ recovered from the base accelerometer. Over
 an uninterrupted 100-drop characterization session, the $\Delta v$
@@ -863,15 +863,15 @@ input and triggered the acquisition. A triaxial accelerometer (Dytran
 the transmitted response. We cross-calibrated the two base-capable
 channels in place over 15 co-located drops (ratio
 $0.953 \pm 0.001$ at matched filtering) and archived the transducer
-settings with the data. Signals were captured at
+settings with the data. We captured signals at
 \SI{1.25}{MHz} over a \SI{100}{ms} record with a \SI{2}{ms}
 pre-trigger. We low-pass filtered all channels with the SAE~J211/1
-channel-frequency-class (CFC) filters~\citep{saej211}, implemented from
-the standard's published coefficients with the two-pass corner
-frequency handled explicitly. A common implementation shortcut narrows
+channel-frequency-class (CFC) filters~\citep{saej211}, which we
+implemented from the standard's published coefficients, handling the
+two-pass corner frequency explicitly. A common implementation shortcut narrows
 the passband by roughly 20\%, which we identified and corrected before
 the campaign. All reported numbers use the corrected filter. CFC-180
-is the reporting class for peak metrics, with CFC-1000 retained as a
+is the reporting class for peak metrics, and we retain CFC-1000 as a
 higher-bandwidth diagnostic.
 Figure~\ref{fig:transmissibility-trace} shows both channels of one
 drop at both filter classes.
@@ -885,7 +885,7 @@ drop at both filter classes.
     print-defect study (2026-07-28, event 50 of its session), dropped
     from \SI{60}{in} onto the earlier stack of four felt pads and one
     cardboard sheet. Campaign drops land on the polyurethane surface
-    instead. Both channels are low-pass filtered with the SAE~J211/1
+    instead. We low-pass filter both channels with the SAE~J211/1
     CFC filter, and the top-vertex trace is the magnitude of the three
     filtered axes. The zero-phase CFC-180 filter spreads the
     sub-millisecond pulse in both directions in time, so its traces
@@ -952,9 +952,11 @@ peaks need not be simultaneous, and the filter class is part of the
 definition. We cite SAE~J211/1 only for the impact-channel
 filtering. Values above unity indicate the structure amplifies the
 peak shock reaching its top vertex; values below unity indicate
-attenuation. The second objective is the \emph{mass-weighted rebound
-index} $I_{\mathrm{reb}}$, and lower is better, as for the
-transmissibility. It is built on the rebound fraction $e_{\mathrm{reb}}$,
+attenuation.
+
+\paragraph{Mass-weighted rebound index} The second objective is the
+\emph{mass-weighted rebound index} $I_{\mathrm{reb}}$, and lower is
+better, as for the transmissibility. It builds on the rebound fraction $e_{\mathrm{reb}}$,
 the speed at which the top vertex hops after impact divided by the
 measured base velocity change $\Delta v$, that is, the fraction of the
 impact velocity returned at the top. We estimate the hop speed from the
@@ -981,8 +983,9 @@ the specimens by $I_{\mathrm{reb}}$ and by $e_{\mathrm{reb}}$ gives
 nearly the same order (Spearman rank correlation $\rho = 0.998$ over 27
 specimens, against 0.995 for $E_{\mathrm{reb}}$). In batches 1 and 2 the
 two orders agree less well ($\rho = 0.917$ over 17, against 0.855).
-Two caveats apply. First, the rebound fraction is a timing index, not a
-measured return velocity. The specimen and the carriage fall together
+
+\paragraph{Limits of the rebound measurement} Two caveats apply. First,
+the rebound fraction is a timing index. The specimen and the carriage fall together
 and share one arrival speed, but the carriage itself bounces back off
 the mat. High-speed video (\SI{959}{fps}) of seven batch-4 drops shows
 that bounce at 0.56 to \SI{0.64}{m/s}, so $\Delta v$ (5.1 to
@@ -1000,8 +1003,8 @@ not be read as a coefficient of restitution.%
   2026-10-19, PR~\#86).}
 Second, $I_{\mathrm{reb}}$ is a ranking score that penalizes designs,
 and grams, that send more motion back to the payload. It is not a
-measured energy (see the next paragraph). Once the hop timing is
-validated, the rebound fraction could become a constraint rather than
+measured energy (see the next paragraph). Once we validate the hop
+timing, the rebound fraction could become a constraint rather than
 an objective (Section~\ref{sec:discussion}).
 
 \paragraph{Square of the rebound fraction} Returned kinetic energy
@@ -1009,8 +1012,8 @@ scales with the \emph{square} of a velocity ratio, so $I_{\mathrm{reb}}$
 weights rebound the way an energy-based score would. It is still not
 an energy. Multiplied by $g h$, it would give the kinetic energy of the
 whole specimen at the hop speed, but only the top-vertex subassembly
-hops, and the ballistic reading of the second contact is not yet
-validated. Squaring also halves the leverage of mass, because ranking
+hops, and we have not yet validated the ballistic reading of the
+second contact. Squaring also halves the leverage of mass, because ranking
 by $m\,e_{\mathrm{reb}}^2$ is the same as ranking by
 $\sqrt{m}\,e_{\mathrm{reb}}$. The change of form moves the record only
 at the margins. Because $g h$ is the same for every drop,
@@ -1024,8 +1027,8 @@ $I_{\mathrm{reb}}$. Eight of the 21 reversals come from averaging
 repeated prints of the batch-3 designs. The mean of the squares exceeds
 the square of the mean, so $I_{\mathrm{reb}}$ penalizes a design whose
 prints rebound inconsistently, a penalty that tracks print scatter as
-well as design performance. The comparison and its per-design and
-per-specimen tables are archived with the manuscript data
+well as design performance. We archive the comparison and its
+per-design and per-specimen tables with the manuscript data
 (\texttt{scripts/\allowbreak analysis/\allowbreak pareto\_rebound\_index\_variants.py}),
 and \texttt{scripts/\allowbreak analysis/\allowbreak rebound\_index\_numbers.py}
 recomputes every $I_{\mathrm{reb}}$ number quoted here after first
@@ -1042,20 +1045,20 @@ $s/\sqrt{n_{\mathrm{drops}}}$ optimistic. As an advisory check on how
 well a specimen is seated on the carriage, we computed a \emph{seat
 gauge} for every session, the ratio of its CFC-1000 to its CFC-180
 transmissibility. The CFC-180 filter keeps the slower part of the
-response (its corner is near \SI{300}{Hz}), while CFC-1000 (corner near
+response (its corner is near \SI{300}{Hz}). CFC-1000 (corner near
 \SI{1.65}{kHz}) also keeps short, sharp spikes, such as a loosely seated
 specimen or top sensor knocking against its seat. A well-seated session
 gives nearly the same ratio at both filter classes, and the gauge read
 1.00 to 1.07 on most sessions. We call a session that reads 1.15 or
-more a \emph{re-seat candidate}: its specimen should be taken off the
-carriage, mounted again, and re-tested before its value is used for a
+more a \emph{re-seat candidate}: we should take its specimen off the
+carriage, mount it again, and re-test it before using its value for a
 decision. Two replication
 measurements bound what a single session can claim. The seed
 attenuator, re-measured across a day and an independent re-seat,
 agreed to 0.13\%. Three prints of the batch-3 designs put the
 standard deviation between specimens and seatings at 0.0087 in
-$t_{180}$, once sessions that fail the seat gauge or carry a drift
-flag are set aside (Section~\ref{sec:results:batches}). The two
+$t_{180}$, once we set aside sessions that fail the seat gauge or carry
+a drift flag (Section~\ref{sec:results:batches}). The two
 largest deviations, 10 and 20\% above their design medians, both came
 with a failed gauge. We therefore adopted a
 between-seat replication rule: a single-seating value that would
@@ -1065,10 +1068,9 @@ we treat it as a design property.
 
 \paragraph{Planned quasi-static extension and complementary data
 streams} The drop test loads the specimens in their elastic regime.
-The crush lasts 1 to \SI{3}{ms} and the specimen recovers, so
-crush-energy metrics such as specific energy absorption (SEA) and
-compaction efficiency cannot be recovered from these captures by any
-reprocessing. We plan a quasi-static compression campaign on a
+The crush lasts 1 to \SI{3}{ms} and the specimen recovers, so no
+reprocessing of these captures can recover crush-energy metrics such
+as specific energy absorption (SEA) and compaction efficiency. We plan a quasi-static compression campaign on a
 benchtop load frame to supply them as a complementary
 characterization of selected designs, not as objectives of the
 drop-tower campaign. The metric definitions, the protocol we will
@@ -1089,7 +1091,7 @@ acquisition function to recommend the next batch of designs to
 fabricate. We pose the campaign as a two-objective minimization of
 the transmissibility $t_{180}$
 and the mass-weighted rebound index $I_{\mathrm{reb}}$ of
-Eq.~\eqref{eq:objectives}. Batches 2 to 4 were recommended under the
+Eq.~\eqref{eq:objectives}. The optimizer recommended batches 2 to 4 under the
 first-power form $E_{\mathrm{reb}}$ in its place
 (Section~\ref{sec:methods:testing}). Minimizing either form favors a
 small rebound fraction on a light specimen. Both objectives serve the
@@ -1101,8 +1103,8 @@ the single strongest attenuator and not statistically resolved at seven
 mapped specimens (Spearman $\rho = -0.39$, $p = 0.38$;
 Section~\ref{sec:discussion}). After four batches, the measured front
 is nondegenerate (its members span both axes), and the rebound
-fraction remains a candidate to become a constraint once its ballistic
-reading is validated. Any later batch minimizes $I_{\mathrm{reb}}$.
+fraction remains a candidate to become a constraint once we validate
+its ballistic reading. Any later batch minimizes $I_{\mathrm{reb}}$.
 Every measured specimen has an $I_{\mathrm{reb}}$ value as well, so
 later results stay comparable with the existing front.
 We implement the loop in the Ax platform~\citep{pmlr-v293-olson25a} over
@@ -1110,15 +1112,16 @@ BoTorch~\citep{balandat2020botorch}, with noisy expected hypervolume
 improvement (qNEHVI)~\citep{daulton2021nehvi} as the multi-objective
 acquisition. The $T_3$-prism search space is fully continuous,
 including the process variables added in batch 3
-(Table~\ref{tab:design-vars}), so no categorical
-encoding is required.
+(Table~\ref{tab:design-vars}), so we need no categorical
+encoding.
 
 \paragraph{Surrogate and noise model} The surrogate is the fully
 Bayesian sparse axis-aligned subspace model
 (SAASBO)~\citep{eriksson2021saasbo}. It uses a Mat\'ern-5/2 kernel with
 automatic relevance determination whose length scales carry strong
-sparsity-inducing priors and are marginalized by Markov-chain Monte
-Carlo with the No-U-Turn Sampler (NUTS) rather than point-estimated.
+sparsity-inducing priors, and it marginalizes those length scales by
+Markov-chain Monte Carlo with the No-U-Turn Sampler (NUTS) rather than
+point-estimating them.
 Every fit that generated a batch, and every archived prediction, used
 the BoTorch default budget of 512 warmup steps and 256 samples,
 thinned to 16 retained draws. The leave-one-design-out
@@ -1135,8 +1138,8 @@ sizes of physical campaigns. We audit the fitted model each round
 with cross-validation (leave-one-out, and leave-one-design-out once
 replicates entered the record) and length-scale-based
 sensitivity diagnostics
-(Section~\ref{sec:results}). Inputs are normalized to the unit cube
-and outputs standardized. We supply observation noise per
+(Section~\ref{sec:results}). We normalize inputs to the unit cube
+and standardize outputs. We supply observation noise per
 observation as a fixed variance. For $t_{180}$ it is the squared
 standard error of the stabilized mean,
 $\sigma_t^2 = s_{\mathrm{drop}}^2 / n_{\mathrm{drops}}$. For
@@ -1149,7 +1152,7 @@ rebound fraction, doubled because $e_{\mathrm{reb}}$ enters squared.
 The second term stands in for print-to-print variation at a fixed
 design. Here $\sigma_m = \SI{0.457}{g}$ is the standard deviation of
 printed mass over three prints of one seed design (spec 08, 21.42 to
-\SI{22.29}{g}), about 2.3\% of a typical specimen, and a re-print that
+\SI{22.29}{g}), about 2.3\% of a typical specimen. A re-print that
 weighs more or less changes $I_{\mathrm{reb}}$ in proportion. The mass
 term is the larger of the two for most specimens. The refits through
 batch 4 used the same construction for $E_{\mathrm{reb}}$, without the
@@ -1165,11 +1168,11 @@ per-specimen noise term. We ingested the nine second-print specimens,
 re-prints of the same designs, as distinct completed trials at identical design coordinates,
 each with its own weighed mass and per-session standard error and with
 no pre-pooling. Later refits therefore observe measured
-design-level replicates directly. Because per-session variances are
-supplied as known, replicate disagreement is not absorbed by a
-separately inferred noise parameter. Instead, it widens the posterior
-through the fit itself. The third print was tested after the last
-refit reported here and has not yet entered the fit. SAASBO is the
+design-level replicates directly. Because we supply per-session variances
+as known, no separately inferred noise parameter absorbs replicate
+disagreement. Instead, it widens the posterior
+through the fit itself. We tested the third print after the last
+refit reported here, and it has not yet entered the fit. SAASBO is the
 prespecified surrogate. We make no claim that it outperforms
 a standard single-task GP at this dimensionality and sample size,
 and the planned head-to-head calibration comparison against a
@@ -1180,9 +1183,9 @@ projection of batches 1 and 2 does not hold printed grams constant
 (Section~\ref{sec:methods:parameterization}), printed mass correlates
 with the shape variables in the seed batch, and with $t_{180}$
 ($r = 0.83$, $n = 7$, dominated by the lightest specimen). We therefore
-keep mass explicit in the loop. The second objective,
-$I_{\mathrm{reb}}$, is computed with each specimen's weighed mass, as
-$E_{\mathrm{reb}}$ was, so added grams are penalized through the
+keep mass explicit in the loop. We compute the second objective,
+$I_{\mathrm{reb}}$, with each specimen's weighed mass, as we did for
+$E_{\mathrm{reb}}$, so it penalizes added grams through the
 motion they send back to the payload. The transmissibility $t_{180}$
 stays a ratio on purpose, because payload peak acceleration is a
 damage criterion that does not scale with specimen mass. The objective surrogates take
@@ -1196,9 +1199,9 @@ additionally include printed mass as an input to probe this confound. With the c
 printed-mass model (Supplementary Information), we then held
 \emph{printed} grams constant in batches 3 and 4. Across all 53 tested
 specimens, printed mass explains about 1\% of the variance in
-transmissibility ($r = 0.12$), so the seed batch's mass confound was
-removed by the experimental design rather than adjusted away in the
-analysis (Section~\ref{sec:results:audits}).
+transmissibility ($r = 0.12$), so the experimental design, rather than an
+adjustment in the analysis, removed the seed batch's mass confound
+(Section~\ref{sec:results:audits}).
 
 \paragraph{Budget and seeding} We drew the nine seed designs as the
 first points of a scrambled Sobol
@@ -1209,24 +1212,24 @@ five-variable box more evenly than the same number of independent
 random draws. We printed the nine designs together with the fixed
 reference prism (S0). Optimization proceeds in
 sequential batches of $q = 9$ prints, sized to one build-plate
-generation cycle. Three model-recommended batches are reported here
+generation cycle. We report three model-recommended batches here
 (Ax trials 10 to 18, 28 to 36, and 37 to 45). The numbering gap
-records a superseded draft batch that was regenerated, before
-printing, when the batch-level filament handling was simplified.
+records a superseded draft batch that we regenerated, before
+printing, when we simplified the batch-level filament handling.
 From batch 3 the four filament settings take one quasi-random point
 per batch, formally the settings of that batch's best-predicted
-specimen, so those axes are confounded with batch and are reported as
+specimen, so those axes are confounded with batch, and we report them as
 unidentified rather than learned. We record all random seeds,
 the full experiment state, and the recommendation tables
-per round. Full computational reproducibility (the exact processing
-pipeline and model settings) is carried by the campaign code. We plan to escalate to
+per round. The campaign code carries full computational reproducibility
+(the exact processing pipeline and model settings). We plan to escalate to
 trust-region BO (TuRBO)~\citep{eriksson2019turbo} only if
 per-member-diameter extensions push the design space well beyond the
 present regime. We retain a single-objective log-Expected-Improvement
 run~\citep{ament2023logei} on $t_{180}$ as a baseline to
 quantify the benefit of the multi-objective formulation. The
 campaign code, the recommended batches, and the data behind every
-table and figure are in the project repository, which will be archived
+table and figure are in the project repository, which we will archive
 under a Zenodo DOI at acceptance (Data Availability Statement).\todo{Insert the
 Zenodo DOI and release version for the campaign code once the
 repository snapshot is published.}
@@ -1234,12 +1237,12 @@ repository snapshot is published.}
 \subsection{Simulation-Only Campaign}
 \label{sec:methods:sim}
 
-To test the optimizer on a problem whose front can be mapped, we
+To test the optimizer on a problem whose front we can map, we
 also ran a campaign entirely in simulation. The simulator is a
 MuJoCo~\citep{todorov2012mujoco} model of the drop tower with rigid
 PLA struts, tension-only TPU tendons, and an impact-surface contact
 calibrated once against the reference prism (S0). It reports $t_{180}$
-with the bench's CFC-180 filter. Printed mass is fixed at \SI{20.23}{g},
+with the bench's CFC-180 filter. We fix printed mass at \SI{20.23}{g},
 and the search varies four shape ratios, with printed tendon diameter
 of at least \SI{3.0}{mm} and envelope volume $\pi R^2 H$ of at most
 \SI{250}{cm^3} as constraints. The two minimized objectives are
@@ -1264,8 +1267,8 @@ Repeated prints of the batch-3 designs
 measurement can move between seatings and prints by more than the
 design signal separating neighboring designs. To test whether the
 measured ordering survives fabrication and seating variation, we
-re-printed three batch-4 designs chosen before any replicate was
-printed. Trial~37 (corny7) was the batch-4 best-predicted design and
+re-printed three batch-4 designs chosen before we printed any
+replicate. Trial~37 (corny7) was the batch-4 best-predicted design and
 measured $t_{180} = 0.803$, the lowest value of the campaign. Trial~39
 (corny8) is its near twin in design space, differing mainly in TPU
 infill, yet it measured 0.150 higher. Trial~38 (corny2) comes from the
@@ -1278,12 +1281,12 @@ We drop-tested plate~1 on 2026-10-17 under the standard protocol of
 Section~\ref{sec:methods:testing}, and the session recorded two
 instrument faults. For about an hour an intermittent fault on the
 base-input channel, which also triggers the acquisition, set off the
-trigger away from the impact, so 56 captures were mistimed and hold
+trigger away from the impact, so it mistimed 56 captures, which hold
 no impact. The top-vertex accelerometer also knocked at impact onset
 in every session on the corny7 and corny8 copies, a spike that reads
 the transmissibility high and fails the seat gauge. On 2026-10-19 the
 input-channel instrumentation failed and drop testing stopped.
-Plates~2 and~3 were printed and weighed but have not been tested. We
+We printed and weighed plates~2 and~3 but have not tested them. We
 withhold the replicate record until the repeats are complete on
 repaired instrumentation, so no replicate value appears in this paper.
 The Supplementary Information gives the plate layout, the weighed
@@ -1294,9 +1297,9 @@ masses, and the fault record (Section~\siref{si:rankstability}).
   (\texttt{data/drop-tests/1sne-checkin}) reports that the CH5 cable
   broke. The text says ``input-channel instrumentation'' until this is
   settled.}
-We also plan a metal-analog comparison in which worst-, mid-, and
-best-predicted designs are rebuilt from hollow aluminum rods and
-stainless-steel threaded cables and ranked against their PLA/TPU
+We also plan a metal-analog comparison in which we rebuild worst-,
+mid-, and best-predicted designs from hollow aluminum rods and
+stainless-steel threaded cables and rank them against their PLA/TPU
 equivalents (Section~\siref{si:metal-validation}).
 
 \begin{figure}[t]
@@ -1320,7 +1323,7 @@ equivalents (Section~\siref{si:metal-validation}).
 
 We used AI tools under our direction throughout this study and
 reviewed and edited their output at every step. The Acknowledgment
-names each tool and model and what they were used for. The repository
+names each tool and model and what we used them for. The repository
 file \texttt{manuscript/AI-USE.md} is the full inventory, including
 every automated session run on this manuscript (Data Availability
 Statement).
@@ -1347,8 +1350,8 @@ Section~\ref{sec:results:batches} the three model-recommended batches.
     hypervolume (HV) at the $(1.35, \SI{50}{mg})$ reference in the
     legend. Batch 2 grew the front on the $I_{\mathrm{reb}}$ axis,
     batch 3 filled the knee, and batch 4 extended it to lower
-    transmissibility. Repeated batch-3 designs are drawn at their
-    first-print values. The design-mean front is given in the text.
+    transmissibility. We draw repeated batch-3 designs at their
+    first-print values. The text gives the design-mean front.
     Lower is better on both axes.}
   \label{fig:front-evolution}
 \end{figure*}
@@ -1361,8 +1364,8 @@ declared them acceptable to test. Nine specimens (seven mapped Sobol
 designs, the reference prism, and one specimen whose design mapping
 is unconfirmed) completed seed characterization sessions, totaling
 over 900 clean captures within a project-wide history of more than
-4{,}000 instrumented drops. The two remaining seed designs (specs 03
-and 06) were printed, but their drop sessions are absent from the
+4{,}000 instrumented drops. We printed the two remaining seed designs
+(specs 03 and 06), but their drop sessions are absent from the
 campaign record and they do not enter any fit or figure.
 Table~\ref{tab:seed-results} reports the
 stabilized objectives. Three findings frame the batch. First, the
@@ -1386,13 +1389,13 @@ apparent trade-off in this sample. The best attenuator has the
 lowest velocity loss index of the batch (0.950) and the largest
 $I_{\mathrm{reb}}$ (\SI{46.9}{mg}), so the observed front is
 nondegenerate. The trade-off rests largely on that single specimen,
-though, and is not statistically resolved at this sample size
+though, and the data do not statistically resolve it at this sample size
 (Section~\ref{sec:discussion}). Third, among the eight mapped
 specimens with weighed masses, printed mass and $t_{180}$ showed a
 large sample
 correlation ($r = 0.82$, $n = 8$). The association is confounded with
 the design coordinates and is highly sensitive to the lightest
-specimen ($r = 0.26$ when 6lhxfy is omitted), so it is not evidence of a
+specimen ($r = 0.26$ when we omit 6lhxfy), so it is not evidence of a
 causal mass effect. It nonetheless motivated the mass-aware objective
 formulation of Section~\ref{sec:methods:bo}, and the
 constant-printed-mass batches later removed the confound
@@ -1404,18 +1407,18 @@ constant-mass box spans aspect ratio, member sizing, and twist.
   \centering
   \caption{Seed-batch drop-tower results: 99 stabilized drops per
     specimen (101 for autv5r) at \SI{60}{in} onto the standardized
-    polyurethane surface, CFC-180 filtering, counted after the first
-    2 warm-up drops of each session were discarded. Means $\pm$ one
-    standard deviation over the stabilized drops. Rows are ordered by
+    polyurethane surface, CFC-180 filtering, counted after we discarded
+    the first 2 warm-up drops of each session. Means $\pm$ one
+    standard deviation over the stabilized drops. We order the rows by
     $t_{180}$. $I_{\mathrm{reb}}$ uses each
     specimen's weighed mass per Eq.~\eqref{eq:objectives}.
-    A dash denotes a quantity that cannot be computed from the
-    available record. Specimen \textit{amdjwm}, which lacks a weighed
-    mass and a confirmed design mapping, is excluded from the surrogate
+    A dash denotes a quantity that we cannot compute from the
+    available record. We exclude specimen \textit{amdjwm}, which lacks a
+    weighed mass and a confirmed design mapping, from the surrogate
     fit and from all mass-dependent quantities. The ringdown
     frequencies of these sessions are in the Supplementary
-    Information. Specs 03 and 06 were printed but have no drop sessions in the
-    campaign record. All specimens were printed upright
+    Information. We printed specs 03 and 06, but they have no drop sessions in the
+    campaign record. We printed all specimens upright
     (Fig.~\ref{fig:print-timelapse}).}
   \label{tab:seed-results}
   \small
@@ -1441,11 +1444,11 @@ constant-mass box spans aspect ratio, member sizing, and twist.
   \centering
   \includegraphics[width=\linewidth]{../figures/bo/fig-seed-designs.pdf}
   \caption{The nine Sobol seed designs at their printed geometry, drawn
-    to one millimeter scale as in Fig.~\ref{fig:design-space}(b). Each
-    drawing is labeled with
-    its Sobol spec and the ID of its printed specimen. Specs 03 and 06
-    (asterisks) were printed but not drop-tested, and spec 08 is
-    labeled with its tested specimen, bag26v.}
+    to one millimeter scale as in Fig.~\ref{fig:design-space}(b). We
+    label each drawing with
+    its Sobol spec and the ID of its printed specimen. We printed specs 03 and 06
+    (asterisks) but did not drop-test them, and we label spec 08 with
+    its tested specimen, bag26v.}
   \label{fig:seed-designs}
 \end{figure}
 
@@ -1457,7 +1460,7 @@ the three model-recommended batches, and
 Fig.~\ref{fig:front-evolution} overlays every measured specimen with
 the non-dominated front after each batch. We evaluate Pareto
 membership over specimens with both objectives and omit the unmapped
-seed specimen amdjwm, whose $I_{\mathrm{reb}}$ cannot be computed
+seed specimen amdjwm, whose $I_{\mathrm{reb}}$ we cannot compute
 without a weighed mass. Dominated hypervolume, evaluated
 at the fixed reference point $(t_{180}, I_{\mathrm{reb}}) =
 (1.35, \SI{50}{mg})$, grew from 14.72 after the seed batch to 16.98
@@ -1486,8 +1489,8 @@ gain came from favorable first prints.
 \paragraph{Batch 2 (Ax trials 10 to 18)} We generated the first
 recommended batch from the seed fit and printed it under the
 constant-solid-mass projection, so its printed masses still spread
-widely (17.91 to \SI{23.47}{g}). A regenerated constant-printed-mass
-recommendation set is archived alongside the as-printed one, and every
+widely (17.91 to \SI{23.47}{g}). We archive a regenerated constant-printed-mass
+recommendation set alongside the as-printed one, and every
 result reported here is for the as-printed set. The batch grew the front almost entirely
 on the $I_{\mathrm{reb}}$ axis, and four batch-2 specimens joined the front.
 Specimen r2d2c6 still holds the lowest $I_{\mathrm{reb}}$ on record,
@@ -1532,7 +1535,7 @@ batch MAPE was 6.0\%, and no specimen left its predictive band by more
 than one standard deviation. The record itself beat its band by 1.0
 standard deviation in the good direction. Per the between-seat replication rule, the batch-4
 attenuation values, including the record, are single-seating
-measurements whose re-seat confirmations are scheduled. One session
+measurements whose re-seat confirmations we have scheduled. One session
 (corny5) carries a drift flag, so its mean is provisional. Another
 (corny6) was erratic, with a per-drop CV of 2.0\%, but attenuates
 under any reading of its record.
@@ -1542,7 +1545,7 @@ plate three times and drop-tested every specimen under the identical
 protocol, 540 drops in all. In the later prints, specimens 2dran$N$ and
 dran3$N$ re-print drran$N$ at the same Ax trial (round-3 print key).
 Each of the nine designs therefore has three specimens
-(Fig.~\ref{fig:three-print}; the per-print values are tabulated in
+(Fig.~\ref{fig:three-print}; we tabulate the per-print values in
 Table~\siref{tab:si-round3-repeatability} of the Supplementary
 Information).
 The three prints averaged 19.59, 19.86, and \SI{20.07}{g}. Neither
@@ -1578,14 +1581,14 @@ the third's $-0.003$, so the upward shift of the second print did not
 recur. The third print was also the heaviest, so that shift was
 probably not a mass effect. Over the screened sessions the intraclass correlation of
 $t_{180}$ (the share of its variance that lies between designs) is
-0.58, against 0.06 when every session is included. Most of the design
+0.58, against 0.06 when we include every session. Most of the design
 signal in batch 3 comes from trial 35. Without it, the other eight
 design means span 1.028 to 1.045 (standard deviation 0.006), less than
 the scatter of a single specimen. Single specimens therefore cannot rank
 those eight, and the orderings from different prints agree poorly
 (Spearman $\rho$ of 0.08, 0.67, and 0.20 between pairs of prints). The
 frozen batch-3 predictions rank the nine design means with
-$\rho = 0.75$ ($p = 0.02$) when each mean is adjusted for the print
+$\rho = 0.75$ ($p = 0.02$) when we adjust each mean for the print
 offsets, and with $\rho = 0.55$ ($p = 0.13$) without that adjustment.
 Against single prints they reach 0.20, 0.72, and 0.30.
 
@@ -1627,14 +1630,14 @@ Fig.~\ref{fig:front-evolution}. Their sessions (2026-09-28 to
     records give the exact per-session counts. $m$ is the weighed
     specimen mass, and $I_{\mathrm{reb}}$, the mass-weighted rebound index of
     Eq.~\eqref{eq:objectives} (lower is better), uses it. ``Pred.''\ is
-    the posterior-mean $t_{180}$ archived when the batch was recommended,
-    before any of its specimens were tested. $\dagger$ marks a
+    the posterior-mean $t_{180}$ archived when the model recommended the batch,
+    before we tested any of its specimens. $\dagger$ marks a
     transmissibility-drift-flagged session whose mean is provisional,
     and $\ddagger$ marks an erratic session (per-drop CV above 1.5\%
     without a drift flag). The print key
     (Table~\siref{tab:si-printkey-r2} of the Supplementary Information)
-    maps each trial to its specimen. The table is generated from the
-    archived data by \texttt{scripts/\allowbreak figures/\allowbreak
+    maps each trial to its specimen. We generate the table from the
+    archived data with \texttt{scripts/\allowbreak figures/\allowbreak
     build\_batch\_results\_table.py}.}
   \label{tab:batch-results}
   \input{tables/batch-results}
@@ -1645,14 +1648,14 @@ Fig.~\ref{fig:front-evolution}. Their sessions (2026-09-28 to
   \includegraphics[width=0.8\textwidth]{../figures/bo/t3-prism-bo-round4-predicted-vs-actual.pdf}
   \caption{Batch-4 predictions against outcomes. Orange diamonds are the
     archived posterior-mean predictions for trials 37 to 45, saved when
-    the batch was recommended, and each arrow joins a prediction to the
+    the optimizer recommended the batch, and each arrow joins a prediction to the
     measured value of the specimen printed for the same trial (black).
-    Gray circles are the 26 specimens the batch-4 fit was trained on
+    Gray circles are the 26 specimens we trained the batch-4 fit on
     (the seed batch, batch 2, and the first prints of batch 3). The
     vertical axis is $E_{\mathrm{reb}}$, the first-power form of
     Section~\ref{sec:methods:testing} that the optimizer predicted and
-    minimized when it recommended the batch, not the $I_{\mathrm{reb}}$
-    of Fig.~\ref{fig:front-evolution}. Predictive uncertainty is omitted
+    minimized when it recommended the batch. Fig.~\ref{fig:front-evolution}
+    plots $I_{\mathrm{reb}}$ instead. We omit predictive uncertainty
     for legibility. The record attenuator corny7 (measured 0.803) is the
     left-most point. Lower is better on both axes.}
   \label{fig:batch4-pred-vs-meas}
@@ -1687,9 +1690,9 @@ Held-out point accuracy \emph{declined} as the campaign grew. The
 $t_{180}$ LOOCV MAPE was 2.9\% with rank correlation $+0.76$ on the
 seed state (8 specimens, 6 model inputs), 5.4\% and $+0.60$ after
 batch 2 (17 specimens), and 6.2\% and $+0.19$ after batch 3 (26
-specimens, 12 inputs). The MAPE of the rebound objective the model
-was fit on, $E_{\mathrm{reb}}$, was 29.3\%, 23.6\%, and
-32.2\% at the same states. The fold-level records are archived
+specimens, 12 inputs). The MAPE of the rebound objective we fit the
+model on, $E_{\mathrm{reb}}$, was 29.3\%, 23.6\%, and
+32.2\% at the same states. We archive the fold-level records
 with the campaign data. Three changes coincided and are confounded:
 the input space doubled from 6 to 12 while the data grew only from
 17 to 26, four of the six added axes carry a single value per batch
@@ -1703,8 +1706,8 @@ Batch 4's value was the design family it selected and the record it
 found, not its point accuracy, and its best-predicted specimen was
 the record.
 
-Plain LOOCV also leaks once replicates exist. When one print of a
-repeated design is held out, its twin remains in training at nearly
+Plain LOOCV also leaks once replicates exist. When we hold out one print
+of a repeated design, its twin remains in training at nearly
 identical coordinates, so the fold tests interpolation rather than
 prediction. We re-audited the full record with leave-one-design-out
 folds (35 folds over 44 specimens, each drran/2dran pair held out
@@ -1719,9 +1722,9 @@ $\rho_s = -0.40$ ($p = 0.008$), so the held-out ordering of
 $E_{\mathrm{reb}}$ runs against the measured one. Held-out
 design-level $t_{180}$ skill is therefore weak but above chance. An
 earlier run of the same folds at a quarter of that NUTS budget gave
-$\rho_s = +0.08$ for $t_{180}$ (both runs are archived), so this
-ranking statistic depends on how fully each fold's posterior is
-sampled, and we quote the full-budget run. Part of the
+$\rho_s = +0.08$ for $t_{180}$ (we archive both runs), so this
+ranking statistic depends on how fully NUTS samples each fold's
+posterior, and we quote the full-budget run. Part of the
 apparent $E_{\mathrm{reb}}$ skill of the earlier states came from the
 model fitting chance differences between prints, which matches the
 poor print-to-print repeatability of the rebound objective in
@@ -1737,8 +1740,8 @@ constant-printed-mass projection removed the seed batch's main
 confound. Within batch 4 alone the two
 correlate strongly ($r = 0.85$). There, however, the wide, high-twist family
 printed at 19.45 to \SI{19.64}{g} and the tall, low-twist family at
-20.15 to \SI{20.58}{g}, so printed mass follows the design family. The
-correlation within the batch therefore cannot be read as a mass
+20.15 to \SI{20.58}{g}, so printed mass follows the design family. We
+therefore cannot read the correlation within the batch as a mass
 effect. We have not yet run the planned head-to-head calibration
 comparison against a point-estimated single-task GP with the same
 kernel, so we make no claim that SAASBO outperforms it here.
@@ -1749,13 +1752,13 @@ kernel, so we make no claim that SAASBO outperforms it here.
 none of their values appear in this section. The batch-4 attenuators
 (the record specimen first) and the third-print outlier dran35 await
 re-seats. The third print of the batch-3 designs has not yet entered
-the surrogate fit or its cross-validation. A fifth batch was
-generated, regenerated once the second print entered the fit, and
-regenerated again under $I_{\mathrm{reb}}$, but not printed, and nothing
-from it appears here. The 27 specimens of
+the surrogate fit or its cross-validation. We generated a fifth batch,
+regenerated it once the second print entered the fit, and
+regenerated it again under $I_{\mathrm{reb}}$, but did not print it, and nothing
+from it appears here. We have printed the 27 specimens of
 the replicate rank-stability study
-(Section~\ref{sec:methods:rankstability}) are printed, but their
-record is withheld until the repeats are complete. The quasi-static
+(Section~\ref{sec:methods:rankstability}), but we withhold their
+record until the repeats are complete. The quasi-static
 crush campaign and the metal-analog comparison (Supplementary
 Information, Section~\siref{si:metal-validation}) have not yet run.
 
@@ -1803,7 +1806,7 @@ the optimizer only.
     the baseline run with the same seed index. LHS is Latin hypercube
     sampling. The envelope-pair baselines skip unprintable candidates
     without simulating them, and the strain control used the earlier
-    protocol that charged them. Generated by
+    protocol that charged them. We generate the table with
     \texttt{scripts/\allowbreak figures/\allowbreak sim\_campaign\_tables.py}
     from the per-seed records.}
   \label{tab:sim-campaign}
@@ -1839,7 +1842,7 @@ and batch 3's best-predicted design measured as its worst amplifier
 on its first print, a seating artifact that its two later prints did
 not repeat. Batch 4
 then delivered four attenuators from the wide, high-twist,
-thin-cable family, led by its best-predicted design at
+thin-cable family, with its best-predicted design leading at
 $t_{180} = 0.803$. The strongest attenuators still tend to have
 low velocity loss indices (0.938 and 0.940 for corny9 and corny8), and
 the record specimen is mid-pack at 0.968. The tall batch-4 family
@@ -1848,16 +1851,16 @@ so the front remains two-dimensional.
 
 \paragraph{Pre-registered review of the objective choices} We
 pre-registered an adversarial, data-first review of the objective
-choices, run with the analysis tool named in the Acknowledgment. The
+choices and ran it with the analysis tool named in the Acknowledgment. The
 review had to commit to its own objective set from the raw campaign
 files before reading ours. Its findings temper the round-1 formulation
 and set the round-3 revision. First, the rebound fraction $e_{\mathrm{reb}}$ rests on a ballistic
-interpretation of the second contact event that has not yet been
-validated against synchronized video (a restrained-versus-unrestrained
-check is scheduled). Second, the apparent
+interpretation of the second contact event that we have not yet
+validated against synchronized video (we have scheduled a
+restrained-versus-unrestrained check). Second, the apparent
 $t_{180}$-versus-$E_{\mathrm{reb}}$ trade-off (unchanged under
 $I_{\mathrm{reb}}$, which orders the seed specimens identically)
-is driven substantially by the single strongest attenuator (Spearman
+depends substantially on the single strongest attenuator (Spearman
 $\rho = -0.39$, $p = 0.38$ across the reliable specimens). Third,
 per-drop standard errors are much smaller than the
 between-specimen variation, and therefore understate design-level
@@ -1877,8 +1880,8 @@ practice.
 solid CAD mass constant did not hold printed grams constant. PLA
 prints at partial infill while thin TPU cables print near solid, so
 the seed specimens span \SIrange{18.50}{22.29}{g}, and among the
-mapped seed specimens mass and $t_{180}$ are correlated
-($r = 0.82$). Printed mass is itself induced by the geometry and is
+mapped seed specimens mass and $t_{180}$ correlate
+($r = 0.82$). The geometry induces printed mass, which is
 strongly collinear with member dimensions (light specimens \emph{are}
 the thick-strut, thin-cable corner by construction), so the seed
 observations cannot identify separate geometry and mass effects. A
@@ -1888,7 +1891,7 @@ confound by experimental design rather than adjustment. We used the
 calibrated printed-mass model (Supplementary Information) to compare
 geometries at fixed printed grams in batches 3 and 4, where the batch
 mass CVs were 1.7 and 2.3\%. Over all 53 tested specimens, mass and transmissibility are
-nearly uncorrelated ($r = 0.12$). The confound was broken by
+nearly uncorrelated ($r = 0.12$). We broke the confound by
 construction, and $I_{\mathrm{reb}}$ keeps grams penalized where they
 matter physically, in the motion returned to the payload.
 
@@ -1901,7 +1904,7 @@ et~al.~\cite{mo2023accelerated}, the loop's ground truth is physical
 measurement, and no simulated number enters the objectives, the
 acquisition, or candidate priority. We based that exclusion on an
 exploratory multi-engine simulation
-study conducted alongside the campaign (rigid-body through
+study that we conducted alongside the campaign (rigid-body through
 finite-element fidelities, archived in the project repository). The
 study could not reproduce the amplification that dominates the measured record,
 predicted design-invariant rebound
@@ -1926,7 +1929,7 @@ interface durability under repeated impact remains open. No joint
 failed during the repeated-drop measurement sessions, which covered more than
 1,400 stabilized captures across 35 specimens, plus the second and
 third prints of batch 3. Because
-those sessions were not designed as controlled fatigue tests, the
+we did not design those sessions as controlled fatigue tests, the
 observation does not establish interface durability. Pull-out
 and fatigue characterization of the internal-anchor joint is
 planned follow-on work. Sensitivity to
@@ -1961,7 +1964,7 @@ heuristics.
 
 \paragraph{Limitations} The measured evidence base is 53 specimens: 35
 across the four batches and 18 re-prints of the nine batch-3 designs,
-which are the only designs tested more than once. The surrogate fit
+which are the only designs we tested more than once. The surrogate fit
 includes the nine second prints but not yet the nine third prints.
 That replication exposed the sensitivity to seating and printing, so
 every single-specimen extreme, including the batch-4 record, is
@@ -1969,8 +1972,8 @@ provisional until its re-seat. The drop protocol probes one height,
 one impact surface, and axial loading only. The specimens never leave
 the elastic regime, so crush-energy metrics await the quasi-static
 campaign. Per-specimen energy absorption in joules is also not
-recoverable from the current rig, because the falling-mass and displacement
-channels required for a force integral are not instrumented. The four
+recoverable from the current rig, because we do not instrument the falling-mass
+and displacement channels required for a force integral. The four
 filament axes carry one value per batch, so their effects are not
 identifiable. The
 held-out prediction skill of the surrogate declined as the input space
@@ -1994,16 +1997,16 @@ Section~\siref{si:metal-validation}).
 
 We have presented an experiment-driven Bayesian-optimization
 framework for designing multi-material 3D-printed tensegrity-inspired
-energy absorbers, with TPU used in place of the traditional tension
+energy absorbers, with TPU taking the place of the traditional tension
 elements and PLA members carrying compression most of the time. We
 have run it through the recommend, fabricate, measure, and update
 cycle three times on physical hardware. The framework parameterizes a
-$T_3$-prism family (five geometry variables, joined in batch 3 by
-infill and filament process variables) under a constant-mass fairness
+$T_3$-prism family (five geometry variables, with infill and filament
+process variables joining them in batch 3) under a constant-mass fairness
 projection. It fabricates each candidate in a single multi-material
 FDM build with TPU tendons anchored inside the PLA strut ends and
-characterizes every specimen with repeated instrumented drops (99
-stabilized drops per specimen in the seed batch, 18 to 20 thereafter). A
+characterizes every specimen with repeated instrumented drops (99 for
+each seed specimen and 18 to 20 for later ones, after a warm-up). A
 fully Bayesian Gaussian-process
 surrogate~\citep{balandat2020botorch, eriksson2021saasbo} fitted to
 those measurements recommends the next batch. Across the four measured batches (35
@@ -2036,8 +2039,8 @@ of the front, BO did not separate from the samplers.
 % =============================================================================
 \section*{Acknowledgment} % ASME requests this exact spelling, singular.
 
-This work was supported by the Brigham Young University Mentored
-Research Grant program. The authors thank the undergraduate researchers
+The Brigham Young University Mentored Research Grant program supported
+this work. The authors thank the undergraduate researchers
 who carried out the multi-material printing and impact testing, and the
 graduate co-mentor who supported day-to-day operations.
 \todo{Confirm exact grant numbers and acknowledge any
@@ -2062,8 +2065,8 @@ described in the Discussion (task \texttt{3e398131}, archived in the
 project repository) from May to September 2026. The faster-whisper speech-to-text model
 transcribed the co-authors' recorded reviews of the draft. The file
 \texttt{manuscript/AI-USE.md} in the project repository lists the
-tool, model, access route, and dates of each use. The manuscript has
-been reviewed in full by the human authors, who take responsibility
+tool, model, access route, and dates of each use. The human authors
+have reviewed the manuscript in full and take responsibility
 for it.
 
 \section*{Funding Data}
@@ -2089,7 +2092,7 @@ printed batch. The remaining contents are the parametric CAD model of
 the $T_3$ prism, the joint-design study, the drop-test processing
 pipeline with the per-drop records of every session, the
 cross-validation fold records, and the exploratory simulation study.
-A Zenodo DOI will be minted at acceptance.
+We will mint a Zenodo DOI at acceptance.
 \todo[inline]{Before submission, merge or tag the campaign, drop-test,
   and simulation branches (\texttt{claude/issue-98-20260821-0103},
   \texttt{copilot/add-drop-test-protocol-again}, and
