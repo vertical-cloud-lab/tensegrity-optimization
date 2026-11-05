@@ -155,5 +155,6 @@
     "r2d2c1": 148.0,
     "r2d2c2": 136.6
   },
-  "status": "running"
+  "status": "complete",
+  "total_fold_seconds": 5130.7
 }
