@@ -14,8 +14,10 @@ render upright when embedded by `pdflatex` (which ignores EXIF orientation).
 | `printed-batch.jpg`         | (reserve; not currently placed) | PR #35 comment 4634008108 (printed batch) |
 | `drop-tower.jpg`            | Fig.~3 "Dynamic \& Static Testing" node | PR #36 comment 4509083060 (bungee-assisted drop-tower base plate + accelerometer) |
 
-(Figure numbers are for the current `manuscript.pdf`; Fig.~3 is the
-fabrication/characterization workflow diagram, `figures/fab-workflow.tex`.)
+(The "used in" column is historical: the printed-prototypes figure and the
+fabrication workflow diagram were removed from the manuscript on 2026-10-27.
+The overview loop and the design-space figure now use the photos listed in
+`overview/README.md`.)
 
 Regenerate the cropped/oriented copies from the originals with
 `scripts/figures/fetch_repo_photos.py` (re-downloads from the recorded comment

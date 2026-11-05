@@ -35,8 +35,9 @@
 % House style: no en dashes anywhere, including ranges; siunitx ranges
 % therefore render as "X to Y" rather than "X--Y".
 \sisetup{range-phrase = { to }, range-units = single}
-% tikz for measurement callouts overlaid on the printed-prototype photograph
-% (Fig.~\ref{fig:printed-prototypes}); asmejour already loads graphicx/xcolor.
+% tikz for in-document drawings; the overview loop (Fig.~\ref{fig:overview})
+% is a standalone TikZ source compiled to figures/overview-loop.pdf.
+% asmejour already loads graphicx/xcolor.
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
 % Cross-references into the Supplementary Information, which is built first
@@ -349,19 +350,32 @@ variability are likewise future work (Section~\ref{sec:discussion}).
 We limit the novelty and generality claims above to this restricted
 prototype design space.
 
-\begin{figure*}[t]
+\begin{figure}[!t]
   \centering
-  \includegraphics[width=0.7\textwidth]{../figures/overview-updated.png}
-  \caption{Closed-loop, experiment-driven design framework. Parameterized
-    PLA/TPU tensegrity-inspired unit cells are printed, characterized by
-    repeated instrumented drop-weight impacts, and the resulting
-    performance data drive a Gaussian-process surrogate that recommends the
-    next batch of designs to fabricate.}
+  \includegraphics[width=\linewidth]{../figures/overview-loop.pdf}
+  \caption{Closed-loop, experiment-driven design framework. Initialize and
+    Conclude run once, and the dashed arrow returns each tested batch to
+    the Design step. \emph{Initialize:} the five-variable $T_3$-prism
+    design space of Table~\ref{tab:design-vars}
+    (Fig.~\ref{fig:design-space}). \emph{Design:} a Gaussian-process
+    surrogate fitted to the noisy measurements recommends the next batch
+    (Section~\ref{sec:methods:bo}). \emph{Make:} each batch is scaled to a
+    common mass and laid out as one build plate. The plate is sliced with
+    PLA supports painted by hand along the TPU tendons and printed in one
+    dual-nozzle job, with the hard material (PLA) from the left nozzle and
+    the soft material (TPU) from the right
+    (Section~\ref{sec:methods:fabrication}). \emph{Test:} the labeled
+    specimens are drop-tested one at a time on the drop-tower carriage
+    (Section~\ref{sec:methods:testing}). \emph{Conclude:} report the
+    final Pareto front. The plate render is batch 4, the mid-print frame
+    is a later replicate plate, and the labeled specimens are batch 2.}
   \label{fig:overview}
-\end{figure*}%
-\todo{Eventually switch this overview figure to a vertical orientation; it is
-  currently reproduced from the MRG proposal
-  (\texttt{figures/overview-updated.png}).}
+\end{figure}%
+\todo{Which specimen is on the Lansmont carriage in the Test photograph
+  (group deck, slide~23, photo dated 2026-08-06)? Its strut label appears
+  to read mdt6ja, the July print-defects specimen rather than a campaign
+  specimen. Confirm, then name it in the caption or swap in a photo of a
+  campaign specimen.}
 
 The remainder of the paper is organized as follows.
 Section~\ref{sec:background} reviews tensegrity mechanics, multi-material
@@ -512,7 +526,7 @@ calibrate from first principles.
 \label{sec:methods:parameterization}
 
 We parameterize a family of tensegrity-inspired unit cells via four
-groups of design variables. For the working $T_3$-prism prototype that
+groups of design variables. For the $T_3$ prism that
 defines the initial BO search space (Section~\ref{sec:methods:bo}),
 only the first two groups are active and all of their variables are
 \emph{continuous}. We hold the connectivity-topology and tiling groups
@@ -539,7 +553,7 @@ the design family:
 finalized; the connectivity-topology categorical encoding is deferred
 until that variable is activated beyond the $T_3$ prism.}
 
-\paragraph{Working prototype and search-space evolution} We validated
+\paragraph{Design family and search-space evolution} We validated
 the fabrication and test pipeline on the first instance of this family,
 a three-strut, $T_3$-prism-inspired cell scaled to a
 $\sim$50\,mm bounding box. In batches 1 and 2 the BO search space has
@@ -571,9 +585,9 @@ TPU-tendon outlet count and the dual-nozzle clearance rather than by
 energy-absorption performance. Fixing it keeps the anchor geometry
 constant across specimens so that the optimized variables are not
 confounded by joint-strength changes. Relaxing $d_j$ is deferred to a
-follow-on joint-design study. Figure~\ref{fig:printed-prototypes}
-shows the parametric CAD model alongside an as-printed prototype of this
-working $T_3$ prism.
+follow-on joint-design study. Figure~\ref{fig:design-space} shows the
+design variables on a mid-range prism, six tested specimens drawn to one
+scale, and an as-printed specimen.
 
 \paragraph{Constant-mass projection and printability screens} Because
 cell mass varies severalfold across the raw design box, an
@@ -626,7 +640,7 @@ the defect record behind them are in the Supplementary Information
     until varied within a plate. The joint diameter is held fixed.
     All specimens print upright on a Bambu Lab~H2D, with the prism
     axis normal to the build plate and the base triangle on the bed
-    (Fig.~\ref{fig:fab-workflow}, slicing panel). The seed batch used
+    (Fig.~\ref{fig:overview}, Make panel). The seed batch used
     one specimen per named build plate, and each later batch used one
     nine-article plate.}
   \label{tab:design-vars}
@@ -675,62 +689,35 @@ the batch-3 plate differ by a per-print flow offset of up to
 \SI{0.48}{g} rather than by random scatter
 (Section~\siref{si:printability}).
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \begin{subfigure}[b]{0.42\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{../figures/photos/cad-render.png}
-    \label{fig:proto-cad}
-  \end{subfigure}\hfill
-  \begin{subfigure}[b]{0.54\linewidth}
-    \centering
-    \begin{tikzpicture}
-      \node[anchor=south west,inner sep=0] (ph)
-        {\includegraphics[width=\linewidth]{../figures/photos/printed-specimen-light-bg.jpg}};
-      \begin{scope}[x={(ph.south east)},y={(ph.north west)},
-                    font=\sffamily\scriptsize]
-        \tikzset{callout/.style={-{Latex[length=1.5mm]},line width=0.5pt,
-                                 draw=red!75!black}}
-        \tikzset{lab/.style={fill=white,fill opacity=0.85,text opacity=1,
-                             inner sep=1pt,rounded corners=1pt}}
-        \draw[callout] (0.74,0.95) node[lab,anchor=south]{$d_s$}
-          -- (0.63,0.52);
-        \draw[callout] (0.30,0.96) node[lab,anchor=south]{$d_t$}
-          -- (0.40,0.815);
-        \draw[{Latex[length=1.5mm]}-{Latex[length=1.5mm]},line width=0.5pt]
-          (0.05,0.23) -- (0.05,0.85) node[lab,midway]{$H$};
-      \end{scope}
-    \end{tikzpicture}
-    \label{fig:proto-print}
-  \end{subfigure}
-  \caption{Working $T_3$-prism prototype. \emph{(a)} Parametric OpenSCAD model
-    whose base radius $R$, cell height $H$, twist angle $\theta$, strut diameter
-    $d_s$, and cable diameter $d_t$ are the design variables of
-    Table~\ref{tab:design-vars}. \emph{(b)} A representative dual-material prototype
-    print (rigid PLA struts in white, tendon members in orange), with
-    callouts marking the strut diameter $d_s$, a tendon (cable) diameter
-    $d_t$, and the cell height $H$. The twist angle $\theta$ is the
-    relative rotation of the top and bottom node triangles, and the base
-    radius $R$ sets their circumradius. The photograph's wooden
-    background was digitally replaced with a plain light backdrop. The
-    specimen itself is unedited.}
-  \label{fig:printed-prototypes}
-\end{figure}%
-\todo{@me-madsen, @ctrhjk: panel (b) is a stopgap (the earlier photo with
-  its background digitally replaced). Check it, or reshoot an untaped
-  article of this geometry on a light paper sweep (checklist in
-  \texttt{reviews/2026-09-29-madsen-video-review-part2/fig2b-candidates/notes.md}).
-  Madsen review part~2, item~6.}
+  \includegraphics[width=\textwidth]{../figures/design-space.pdf}
+  \caption{Design space of the $T_3$-prism campaign. \emph{(a)} A mid-range
+    design of the five-variable box ($R = \SI{32.5}{mm}$,
+    $H = \SI{85}{mm}$, $\theta = 60^\circ$, $d_s = \SI{9}{mm}$,
+    $d_t = \SI{4.25}{mm}$, before scaling to the mass target), labeled
+    with the bounds of each variable. The side elevation is an
+    orthographic projection, so each end triangle appears as a line, and
+    $H$ is the vertical distance between the planes through the joint
+    centers. The plan view shows the base triangle (solid), the top
+    triangle (dashed), the circumradius $R$, and the twist $\theta$
+    between them. \emph{(b)} Six tested specimens at their printed,
+    post-projection geometry and one millimeter scale, labeled with the
+    batch, the Ax trial (or the Sobol spec of a seed specimen), and the
+    measured $t_{180}$ and $E_{\mathrm{reb}}$. \emph{(c)} Specimen corny7
+    as printed, with its ID label around one strut. The drawings show PLA
+    struts in black, TPU tendons in green, and the square strut-end
+    housings. Specimen corny7 was printed in white PLA.}
+  \label{fig:design-space}
+\end{figure*}%
 
 \subsection{Multi-Material Fabrication}
 \label{sec:methods:fabrication}
 
 We fabricate specimens on a multi-material FDM printer using PLA for
 the rigid struts and TPU for the soft tension elements.
-Figure~\ref{fig:fab-workflow} summarizes the fabrication and
-characterization workflow, from parametric CAD through multi-material
-slicing, dual-extrusion printing, post-processing, and mechanical
-testing. Rather than wrapping the struts in a continuous TPU skin, we anchor
+The Make panel of Fig.~\ref{fig:overview} shows the steps from the
+build plate through slicing to the print. Rather than wrapping the struts in a continuous TPU skin, we anchor
 the TPU tension elements \emph{inside} the ends of each PLA strut. The
 cables converging at a given strut end are joined within the strut,
 which acts as a rigid cage housing the junction, and the individual
@@ -777,22 +764,6 @@ references.}
   before the mid-batch nozzle change logged in the print key) and to
   supply filament lot numbers and drying duration, which the slicer
   archive does not record.}
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{../figures/fab-workflow.pdf}
-  \caption{Fabrication and characterization workflow for the multi-material
-    tensegrity-inspired unit cells. The steps are parametric CAD from the
-    design parameters, slicing with manually painted supports along the TPU
-    tendons, a single multi-material print on the Bambu Lab~H2D,
-    post-processing and inspection, and mechanical testing. Node photographs are representative examples
-    from the project's build history. They show the OpenSCAD $T_3$-prism render
-    (CAD), the dual-nozzle Bambu Studio slice with PLA on the left extruder
-    and TPU on the right (slicing), an in-progress H2D print of the prism
-    batch (FDM), an as-printed specimen (post-processing), and the
-    bungee-assisted drop-tower base plate with accelerometer (testing).}
-  \label{fig:fab-workflow}
-\end{figure*}%
 
 \subsection{Experimental Characterization}
 \label{sec:methods:testing}
@@ -1148,6 +1119,28 @@ equivalents (Section~\siref{si:metal-validation}).
 \label{sec:results}
 % =============================================================================
 
+Figure~\ref{fig:front-evolution} shows every specimen measured in the
+four batches and the non-dominated front after each batch.
+Section~\ref{sec:results:seed} reports the seed batch and
+Section~\ref{sec:results:batches} the three model-recommended batches.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.8\textwidth]{../figures/bo/t3-prism-bo-front-evolution.pdf}
+  \caption{Measured objective space and front evolution across the
+    four batches. The vertical axis is the mass-weighted rebound
+    $E_{\mathrm{reb}}$ of Eq.~\eqref{eq:objectives}. Gray circles are
+    all 35 measured specimens at their stabilized means. The blue lines
+    are the non-dominated fronts after each batch, with the dominated
+    hypervolume (HV) at the $(1.35, \SI{15}{mJ})$ reference in the
+    legend. Batch 2 grew the front on the $E_{\mathrm{reb}}$ axis,
+    batch 3 filled the knee, and batch 4 extended it to lower
+    transmissibility. Repeated batch-3 designs are drawn at their
+    first-print values. The design-mean front is given in the text.
+    Lower is better on both axes.}
+  \label{fig:front-evolution}
+\end{figure*}
+
 \subsection{Seed-Batch Measurements}
 \label{sec:results:seed}
 
@@ -1195,16 +1188,6 @@ constant-printed-mass batches later removed the confound
 the seed geometries to a common scale, showing how widely the
 constant-mass box spans aspect ratio, member sizing, and twist.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{../figures/bo/fig-seed-designs.png}
-  \caption{The nine seed geometries rendered to a common millimeter
-    scale (rigid PLA struts in black, TPU tendons in orange). Every
-    rendering corresponds to a physically printed article in the seed
-    campaign.}
-  \label{fig:seed-designs}
-\end{figure}
-
 \begin{table*}[t]
   \centering
   \caption{Seed-batch drop-tower results: 101 stabilized captures per
@@ -1241,6 +1224,18 @@ constant-mass box spans aspect ratio, member sizing, and twist.
     \bottomrule
   \end{tabular}
 \end{table*}
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/bo/fig-seed-designs.pdf}
+  \caption{The nine Sobol seed designs at their printed geometry, drawn
+    to one millimeter scale as in Fig.~\ref{fig:design-space}(b). Each
+    drawing is labeled with
+    its Sobol spec and the ID of its printed specimen. Specs 03 and 06
+    (asterisks) were printed but not drop-tested, and spec 08 is
+    labeled with its tested specimen, bag26v.}
+  \label{fig:seed-designs}
+\end{figure}
 
 \subsection{Model-Recommended Batches and Replication}
 \label{sec:results:batches}
@@ -1458,33 +1453,17 @@ Fig.~\ref{fig:front-evolution}. Their sessions (2026-09-28 to
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.85\textwidth]{../figures/bo/t3-prism-bo-front-evolution.png}
-  \caption{Measured objective space and front evolution across the
-    four batches. The vertical axis is the mass-weighted velocity-loss
-    objective $E_{\mathrm{reb}} = (1 - \mathrm{VLI})\,m g h$ of
-    Eq.~\eqref{eq:objectives}. Gray circles are all measured articles at their
-    stabilized means. The blue lines are the non-dominated fronts
-    after each batch, with the dominated hypervolume at the
-    $(1.35, \SI{15}{mJ})$ reference in the legend. Batch 2 grew the
-    front on the velocity-loss axis, batch 3 filled the knee, and batch 4
-    extended it to lower transmissibility. Repeated batch-3 designs are
-    drawn at their first-print values. The design-mean front is
-    given in the text. Lower is better on both axes.}
-  \label{fig:front-evolution}
-\end{figure*}
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.85\textwidth]{../figures/bo/t3-prism-bo-round4-predicted-vs-actual.png}
-  \caption{Batch-4 predictions against outcomes. Orange diamonds with
-    bars are the archived posterior predictions (mean $\pm$ one
-    standard deviation) for trials 37 to 45 at recommendation time.
-    Arrows connect each prediction to its article's measured value.
-    Black circles are measured values, and all previously measured
-    articles are shown for context. The vertical axis is $E_{\mathrm{reb}}$, as in
-    Fig.~\ref{fig:front-evolution}. The record attenuator corny7
-    (measured 0.803) is the left-most measured point. Lower is better
-    on both axes.}
+  \includegraphics[width=0.8\textwidth]{../figures/bo/t3-prism-bo-round4-predicted-vs-actual.pdf}
+  \caption{Batch-4 predictions against outcomes. Orange diamonds are the
+    archived posterior-mean predictions for trials 37 to 45, saved when
+    the batch was recommended, and each arrow joins a prediction to the
+    measured value of the specimen printed for the same trial (black).
+    Gray circles are the 26 specimens the batch-4 fit was trained on
+    (the seed batch, batch 2, and the first prints of batch 3). The
+    vertical axis is $E_{\mathrm{reb}}$, as in
+    Fig.~\ref{fig:front-evolution}. Predictive uncertainty is omitted
+    for legibility. The record attenuator corny7 (measured 0.803) is the
+    left-most point. Lower is better on both axes.}
   \label{fig:batch4-pred-vs-meas}
 \end{figure*}
 
