@@ -80,10 +80,10 @@ All 15 are Audrey's. Request A had already applied most of them on 2026-11-05.
 | Audrey's change | Current abstract |
 |---|---|
 | "polylactic acid **(PLA)**", "thermoplastic polyurethane **(TPU)**" | Present. |
-| "~~re~~scaled" | "scaled to a common mass target before printing". |
-| "**3D** printed" | "then 3D printed and drop-tested repeatedly". |
+| "~~re~~scaled" | "We scale each candidate to a common mass target before printing" (now active voice, C0). |
+| "**3D** printed" | "then 3D print and drop-test it repeatedly". |
 | "(~~the top-to-base ratio of filtered peak accelerations~~ **measured as a ratio of filtered top-to-base peak accelerations**)" | Present as written. |
-| "a ~~low~~ **mass-weighted** velocity loss index" | "a mass-weighted rebound index (specimen mass times the squared fraction of impact velocity returned at the top), both minimized". Mass-weighted as you wrote; the name is explained in Section 1. |
+| "a ~~low~~ **mass-weighted** velocity loss index" | "We score designs by transmissibility (...) and a mass-weighted rebound index (specimen mass times the squared fraction of impact velocity returned at the top), both minimized". Mass-weighted as you wrote; the name is explained in Section 1. |
 | "~~articles~~ **specimen**" (twice) | "specimens". |
 
 ## 4. Comments, one by one
@@ -100,7 +100,7 @@ what happened.
 ### C1, Audrey: "Does this need to be 18 pages long?"
 
 **Answered** in [Report R5](#r5-length-c1). Short version: no. JMD's limit is about 12 typeset pages, and the
-draft is about 4 to 5 pages over. Two of the group's own notes (C44, C49) removed text this session; the
+draft is about 4 to 6 pages over. Two of the group's own notes (C44, C49) removed text this session; the
 larger cuts are listed for the team.
 
 ### C11, Audrey: "index now is calculated by: m(v₂/v₁)²"
@@ -130,7 +130,7 @@ drop testing stopped on 2026-10-19 when the input-channel instrumentation failed
 
 ![](images/C20-p1.png)
 
-**Already applied** ("ten percent below the best initial-batch specimen").
+**Already applied** ("10 percent below the best initial-batch specimen").
 
 ### C22, Audrey: "all measurements are noisy; also how does it help to say they are partially correlated?"
 
@@ -263,9 +263,9 @@ also rewritten in plain terms:
 
 ![](images/C47-p7.png)
 
-Line 457 of the Word file is the sentence just before Eq. (1), so the note covers the whole objectives
-discussion through the replication rule. In the `ce6c4ec` build most of it was one paragraph of about 700 words;
-the Word conversion also flattened Eq. (1). **Explained** in [Report R3](#r3-methods-33-in-plain-terms-c41-to-c47).
+In a rendering of the group's file, line 457 is the sentence just before Eq. (1), so the note covers the whole
+objectives discussion through the replication rule. In the `ce6c4ec` build most of it was one paragraph of about
+700 words. **Explained** in [Report R3](#r3-methods-33-in-plain-terms-c41-to-c47).
 In the manuscript it is now split into headed paragraphs (the transmissibility definition right after
 Eq. (1), then "Mass-weighted rebound index", "Limits of the rebound measurement", "Square of the rebound
 fraction", and "Session diagnostics and replication"), the energy form is out of the
@@ -316,10 +316,10 @@ advisory. It does not delete data; it says which values need a second seating be
 (the between-seat replication rule).
 
 **Where the numbers came from.** The lab defined the gauge on 2026-09-12, after the first two prints of
-batch 3 had been tested. In the three prints of batch 3, the four sessions at 1.15 or more were each their design's highest reading, 4.5 to
-19.8% above the design median, while the other 23 sat a median 0.2% from it (Spearman ρ = 0.52, p = 0.006
-between gauge and deviation). The 1.15 cutoff is a judgment call from that one dataset, applied at two
-decimals (1.145 counts).
+batch 3 had been tested. In the three prints of batch 3, the four sessions at 1.15 or more were each
+their design's highest reading, 4.5 to 19.8% above the design median, while the other 23 sat a median 0.2% from it (Spearman ρ = 0.52, p = 0.006
+between gauge and deviation). The analysis code applies the 1.15 cutoff at two decimals, so a gauge of
+1.145 counts.
 
 **Every session, applied retrospectively:**
 
