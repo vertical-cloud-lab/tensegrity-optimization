@@ -1,0 +1,350 @@
+{
+  "E_reb": {
+    "unit": "mJ",
+    "hv_reference": [
+      1.35,
+      15.0
+    ],
+    "first_print_evolution": [
+      {
+        "members": [
+          "6lhxfy",
+          "6nheas",
+          "bpx68c",
+          "ajhby6"
+        ],
+        "hv": 3.1549,
+        "after_batch": 1,
+        "gain_pct": null
+      },
+      {
+        "members": [
+          "6lhxfy",
+          "r2d2c7",
+          "r2d2c1",
+          "r2d2c2",
+          "r2d2c6"
+        ],
+        "hv": 3.9691,
+        "after_batch": 2,
+        "gain_pct": 25.8
+      },
+      {
+        "members": [
+          "6lhxfy",
+          "r2d2c7",
+          "drran8",
+          "r2d2c1",
+          "drran5",
+          "drran3",
+          "r2d2c6"
+        ],
+        "hv": 4.0066,
+        "after_batch": 3,
+        "gain_pct": 0.9
+      },
+      {
+        "members": [
+          "corny7",
+          "corny6",
+          "drran5",
+          "drran3",
+          "r2d2c6"
+        ],
+        "hv": 5.1953,
+        "after_batch": 4,
+        "gain_pct": 29.7
+      }
+    ],
+    "first_print_total_gain_pct": 64.7,
+    "design_mean_front_after_batch2": {
+      "members": [
+        "6lhxfy",
+        "r2d2c7",
+        "r2d2c1",
+        "r2d2c2",
+        "r2d2c6"
+      ],
+      "hv": 3.9691
+    },
+    "design_mean_front_after_batch3": {
+      "members": [
+        "6lhxfy",
+        "r2d2c7",
+        "r2d2c1",
+        "r2d2c2",
+        "drran5*",
+        "r2d2c6"
+      ],
+      "hv": 3.973
+    },
+    "design_mean_front_after_batch4": {
+      "members": [
+        "corny7",
+        "corny6",
+        "r2d2c2",
+        "corny4",
+        "r2d2c6"
+      ],
+      "hv": 5.1813
+    },
+    "design_mean_batch3_gain_pct": 0.1,
+    "batch3_repeatability": {
+      "max_over_min_per_design": {
+        "min": 1.353,
+        "max": 2.908
+      },
+      "worst_trial": {
+        "trial": 30,
+        "min": 5.2,
+        "max": 15.13
+      },
+      "rank_between_prints": {
+        "drran-2dran": -0.183,
+        "drran-dran3": 0.25,
+        "2dran-dran3": 0.333
+      },
+      "between_print_sd": 3.417,
+      "design_mean_sd": 2.326
+    },
+    "specimens": {
+      "6lhxfy": 13.93,
+      "6nheas": 13.07,
+      "9hhbkp": 6.95,
+      "autv5r": 8.83,
+      "bag26v": 7.71,
+      "bpx68c": 6.18,
+      "nvxsrv": 8.2,
+      "ajhby6": 6.1,
+      "r2d2c1": 5.97,
+      "r2d2c2": 5.62,
+      "r2d2c3": 5.59,
+      "r2d2c4": 6.44,
+      "r2d2c5": 6.71,
+      "r2d2c6": 4.07,
+      "r2d2c7": 12.17,
+      "r2d2c8": 7.89,
+      "r2d2c9": 5.84,
+      "drran1": 18.09,
+      "drran2": 11.76,
+      "drran3": 4.23,
+      "drran4": 9.1,
+      "drran5": 4.97,
+      "drran6": 4.77,
+      "drran7": 8.17,
+      "drran8": 11.22,
+      "drran9": 5.2,
+      "2dran1": 7.34,
+      "2dran2": 4.48,
+      "2dran3": 9.43,
+      "2dran4": 11.19,
+      "2dran5": 4.98,
+      "2dran6": 7.74,
+      "2dran7": 11.63,
+      "2dran8": 9.9,
+      "2dran9": 15.13,
+      "dran31": 9.63,
+      "dran32": 4.54,
+      "dran33": 6.98,
+      "dran34": 15.47,
+      "dran35": 7.24,
+      "dran36": 6.8,
+      "dran37": 10.83,
+      "dran38": 8.3,
+      "dran39": 6.65,
+      "corny1": 8.66,
+      "corny2": 9.22,
+      "corny3": 8.75,
+      "corny4": 4.31,
+      "corny5": 8.48,
+      "corny6": 5.73,
+      "corny7": 9.37,
+      "corny8": 17.54,
+      "corny9": 18.09
+    },
+    "lowest": {
+      "specimen": "r2d2c6",
+      "value": 4.07
+    },
+    "seed_highest": {
+      "specimen": "6lhxfy",
+      "value": 13.93
+    }
+  },
+  "I_reb": {
+    "unit": "mg",
+    "hv_reference": [
+      1.35,
+      50.0
+    ],
+    "first_print_evolution": [
+      {
+        "members": [
+          "6lhxfy",
+          "6nheas",
+          "bpx68c",
+          "ajhby6"
+        ],
+        "hv": 14.7212,
+        "after_batch": 1,
+        "gain_pct": null
+      },
+      {
+        "members": [
+          "6lhxfy",
+          "r2d2c7",
+          "r2d2c1",
+          "ajhby6",
+          "r2d2c2",
+          "r2d2c6"
+        ],
+        "hv": 16.9764,
+        "after_batch": 2,
+        "gain_pct": 15.3
+      },
+      {
+        "members": [
+          "6lhxfy",
+          "r2d2c7",
+          "drran8",
+          "r2d2c1",
+          "ajhby6",
+          "drran5",
+          "drran3",
+          "r2d2c6"
+        ],
+        "hv": 17.1332,
+        "after_batch": 3,
+        "gain_pct": 0.9
+      },
+      {
+        "members": [
+          "corny7",
+          "corny6",
+          "drran5",
+          "drran3",
+          "r2d2c6"
+        ],
+        "hv": 23.0197,
+        "after_batch": 4,
+        "gain_pct": 34.4
+      }
+    ],
+    "first_print_total_gain_pct": 56.4,
+    "design_mean_front_after_batch2": {
+      "members": [
+        "6lhxfy",
+        "r2d2c7",
+        "r2d2c1",
+        "ajhby6",
+        "r2d2c2",
+        "r2d2c6"
+      ],
+      "hv": 16.9764
+    },
+    "design_mean_front_after_batch3": {
+      "members": [
+        "6lhxfy",
+        "r2d2c7",
+        "r2d2c1",
+        "ajhby6",
+        "r2d2c2",
+        "drran6*",
+        "drran5*",
+        "r2d2c6"
+      ],
+      "hv": 16.9905
+    },
+    "design_mean_front_after_batch4": {
+      "members": [
+        "corny7",
+        "corny6",
+        "corny4",
+        "r2d2c6"
+      ],
+      "hv": 22.9861
+    },
+    "design_mean_batch3_gain_pct": 0.1,
+    "batch3_repeatability": {
+      "max_over_min_per_design": {
+        "min": 1.894,
+        "max": 8.324
+      },
+      "worst_trial": {
+        "trial": 30,
+        "min": 6.26,
+        "max": 52.13
+      },
+      "rank_between_prints": {
+        "drran-2dran": -0.183,
+        "drran-dran3": 0.25,
+        "2dran-dran3": 0.333
+      },
+      "between_print_sd": 16.976,
+      "design_mean_sd": 10.188
+    },
+    "specimens": {
+      "6lhxfy": 46.95,
+      "6nheas": 35.2,
+      "9hhbkp": 9.99,
+      "autv5r": 15.84,
+      "bag26v": 12.44,
+      "bpx68c": 8.45,
+      "nvxsrv": 14.58,
+      "ajhby6": 8.11,
+      "r2d2c1": 8.22,
+      "r2d2c2": 7.89,
+      "r2d2c3": 7.51,
+      "r2d2c4": 9.61,
+      "r2d2c5": 8.58,
+      "r2d2c6": 3.87,
+      "r2d2c7": 35.8,
+      "r2d2c8": 13.96,
+      "r2d2c9": 8.53,
+      "drran1": 75.89,
+      "drran2": 32.02,
+      "drran3": 4.03,
+      "drran4": 18.59,
+      "drran5": 5.56,
+      "drran6": 5.29,
+      "drran7": 14.9,
+      "drran8": 29.18,
+      "drran9": 6.26,
+      "2dran1": 12.4,
+      "2dran2": 4.57,
+      "2dran3": 19.75,
+      "2dran4": 27.76,
+      "2dran5": 5.48,
+      "2dran6": 13.72,
+      "2dran7": 29.81,
+      "2dran8": 22.5,
+      "2dran9": 52.13,
+      "dran31": 20.84,
+      "dran32": 4.69,
+      "dran33": 10.67,
+      "dran34": 52.47,
+      "dran35": 11.65,
+      "dran36": 10.48,
+      "dran37": 25.55,
+      "dran38": 15.4,
+      "dran39": 10.05,
+      "corny1": 16.63,
+      "corny2": 18.85,
+      "corny3": 17.02,
+      "corny4": 4.05,
+      "corny5": 15.63,
+      "corny6": 7.55,
+      "corny7": 20.02,
+      "corny8": 70.13,
+      "corny9": 75.32
+    },
+    "lowest": {
+      "specimen": "r2d2c6",
+      "value": 3.87
+    },
+    "seed_highest": {
+      "specimen": "6lhxfy",
+      "value": 46.95
+    }
+  }
+}
