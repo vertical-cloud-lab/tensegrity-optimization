@@ -15,7 +15,7 @@ pull-request comments. How to refresh it is at the end.
 
 | Tool | Models / version | Access | Dates | Evidence |
 |---|---|---|---|---|
-| Claude Code (Anthropic) | Claude Opus 4.8 (2026-06-30, one commit), Claude Fable 5 (2026-07-01 to 2026-09-25), Claude Opus 5 (2026-08-04 to 2026-09-25), Claude Opus 5.5 (2026-09-25 to 2026-10-27), Claude Fable 5.1 (2026-10-13 to 2026-10-25) | GitHub Actions, through [`anthropics/claude-code-action@v1`](https://github.com/anthropics/claude-code-action) (workflow `.github/workflows/claude.yml`, added 2026-06-29), started by an `@claude` comment from a lab member. Claude Code 2.1.312 on the 2026-10-27 runner | 2026-06-29 to 2026-10-27 | 947 commits authored by `claude[bot]`; model from each commit's `Co-Authored-By: Claude <model>` trailer (403 Fable 5, 187 Fable 5.1, 180 Opus 5.5, 46 Opus 5, 1 Opus 4.8) |
+| Claude Code (Anthropic) | Claude Opus 4.8 (2026-06-30, one commit), Claude Fable 5 (2026-07-01 to 2026-09-25), Claude Opus 5 (2026-08-04 to 2026-09-25), Claude Opus 5.5 (2026-09-25 to 2026-10-27), Claude Fable 5.1 (2026-10-13 to 2026-11-05) | GitHub Actions, through [`anthropics/claude-code-action@v1`](https://github.com/anthropics/claude-code-action) (workflow `.github/workflows/claude.yml`, added 2026-06-29), started by an `@claude` comment from a lab member. Claude Code 2.1.312 on the 2026-10-27 runner | 2026-06-29 to 2026-11-05 | 947 commits (count at 2026-10-27) authored by `claude[bot]`; model from each commit's `Co-Authored-By: Claude <model>` trailer (403 Fable 5, 187 Fable 5.1, 180 Opus 5.5, 46 Opus 5, 1 Opus 4.8) |
 | Claude Code (Anthropic) | Claude Opus 5.5, including its 1M-context variant | Command-line interface, in local sessions run by S. G. Baird and pushed from his account | 2026-09-26 to 2026-10-27 | 7 commits authored by S. G. Baird with a `Co-Authored-By: Claude Opus 5.5` trailer, mostly workflow and repository-instruction changes |
 | GitHub Copilot coding agent | Claude Opus 4.6 (2026-03-10 to 2026-05-21), Claude Opus 4.7 (2026-04-20 to 2026-05-26), Claude Opus 4.8 (2026-05-28 to 2026-07-20), and once each Claude Haiku 4.5, Claude Sonnet 4.6, Claude Fable 5 and MAI Code 1 Flash | GitHub, started by an `@copilot` mention or issue assignment | 2026-03-09 to 2026-07-20 | 334 commits authored by `copilot-swe-agent[bot]`. Its commits carry no model trailer, so the models come from the `@copilot+<model>` selectors in lab members' comments (194 such selectors) |
 | GitHub Copilot CLI | model not recorded | Command-line interface, local sessions run by S. G. Baird | 2026-06-09 | 4 commits with a `Co-authored-by: Copilot` trailer, including the first manuscript scaffolding (`262e0a6`, `447f64b`) |
@@ -53,6 +53,14 @@ in order. Each run's prompt is the triggering comment on that PR.
 | 2026-10-24 | sgbaird | [40066982733](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40066982733) |
 | 2026-10-24 | sgbaird | [40126421965](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40126421965) |
 | 2026-10-25 | sgbaird | [40148662172](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40148662172) |
+| 2026-10-27 | sgbaird | [40597981027](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597981027) |
+| 2026-10-27 | sgbaird | [40597984199](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597984199) |
+| 2026-10-27 | sgbaird | [40597986643](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597986643) |
+| 2026-10-27 | sgbaird | [40597990730](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597990730) |
+| 2026-10-27 | sgbaird | [40597994432](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597994432) |
+| 2026-11-05 | achris0520 | [41951090039](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/41951090039) |
+| 2026-11-05 | achris0520 | [41951278695](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/41951278695) |
+| 2026-11-05 | sgbaird | [41964354485](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/41964354485) |
 | 2026-10-27 | sgbaird | [40597981027](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597981027) |
 | 2026-10-27 | sgbaird | [40597984199](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597984199) |
 | 2026-10-27 | sgbaird | [40597986643](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/40597986643) |
