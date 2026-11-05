@@ -74,7 +74,141 @@ model is worse than predicting the mean.
 
 ## Results
 
-RESULTS_PLACEHOLDER
+Held out over 35 design folds (44 articles). rho_s is Spearman's rank
+correlation between held-out prediction and measurement, with a two-sided
+permutation p (20,000 shuffles); "design" is the same statistic over the 35
+design means; R2_oos is against the per-fold training mean; "spread" is the
+sd of the predictions over the sd of the measurements; "95% cov" is the share
+of articles within 1.96 reported sd of the measurement. SAASBO rows are the
+Ax runs at 256/512; the twelve-parameter SAASBO row is the manuscript's SI
+figure.
+
+**t180 (transmissibility)**
+
+| feature space | model | MAPE | R2_oos | rho_s (p) | design rho_s | spread | 95% cov |
+|---|---|--:|--:|--:|--:|--:|--:|
+| 6 original (shape + mass) | SAASBO | 5.2% | +0.12 | +0.05 (0.73) | +0.06 | 0.47 | 84% |
+| 6 original | training mean | 5.2% | 0 | mechanical | | 0.03 | 91% |
+| 6 original | print-session mean | 6.0% | +0.02 | +0.03 (0.86) | +0.06 | 0.45 | 89% |
+| 6 original | ridge | 5.2% | +0.17 | +0.51 (<0.001) | +0.53 | 0.55 | 93% |
+| 6 original | k-nearest neighbours | 4.4% | +0.22 | +0.44 (0.003) | +0.49 | 0.69 | 93% |
+| 6 original | random forest (tuned) | 4.5% | +0.40 | **+0.59 (<0.001)** | +0.63 | 0.60 | 93% |
+| 6 original | GP, ARD Matern (ML-II) | 4.6% | +0.31 | +0.51 (<0.001) | +0.56 | 0.77 | 75% |
+| 6 original + 6 sim | **SAASBO (new run)** | 5.4% | +0.02 | **-0.14 (0.37)** | -0.14 | 0.13 | 86% |
+| 6 original + 6 sim | ridge | 5.2% | +0.19 | +0.54 (<0.001) | +0.58 | 0.65 | 89% |
+| 6 original + 6 sim | k-nearest neighbours | 4.4% | +0.36 | +0.53 (<0.001) | +0.54 | 0.67 | 93% |
+| 6 original + 6 sim | random forest (tuned) | 4.1% | +0.49 | **+0.65 (<0.001)** | +0.71 | 0.66 | 91% |
+| 6 original + 6 sim | GP, ARD Matern (ML-II) | 5.2% | +0.16 | +0.41 (0.006) | +0.44 | 0.81 | 70% |
+| 12 campaign | SAASBO (manuscript) | 4.8% | +0.12 | +0.32 (0.036) | +0.37 | 0.32 | 89% |
+| 12 campaign | ridge | 5.4% | +0.09 | +0.41 (0.005) | +0.43 | 0.53 | 93% |
+| 12 campaign | k-nearest neighbours | 4.7% | +0.25 | +0.52 (<0.001) | +0.58 | 0.71 | 95% |
+| 12 campaign | random forest (tuned) | 5.0% | +0.33 | +0.52 (<0.001) | +0.58 | 0.67 | 93% |
+| 12 campaign | GP, ARD Matern (ML-II) | 4.4% | +0.34 | +0.55 (<0.001) | +0.61 | 0.77 | 77% |
+
+**E_reb (mass-weighted rebound, mJ per drop)**
+
+| feature space | model | MAPE | R2_oos | rho_s (p) | design rho_s | spread | 95% cov |
+|---|---|--:|--:|--:|--:|--:|--:|
+| 6 original (shape + mass) | SAASBO | 43.6% | -0.37 | -0.42 (0.005) | -0.31 | 0.37 | 84% |
+| 6 original | training mean | 37.9% | 0 | mechanical | | 0.03 | 93% |
+| 6 original | print-session mean | 38.9% | -0.11 | -0.20 (0.18) | -0.07 | 0.32 | 86% |
+| 6 original | ridge | 36.2% | +0.10 | +0.28 (0.064) | +0.25 | 0.41 | 91% |
+| 6 original | k-nearest neighbours | 37.2% | 0.00 | +0.23 (0.14) | +0.14 | 0.41 | 89% |
+| 6 original | random forest (tuned) | 40.5% | -0.08 | +0.13 (0.39) | +0.10 | 0.34 | 89% |
+| 6 original | GP, ARD Matern (ML-II) | 36.2% | +0.05 | +0.24 (0.12) | +0.17 | 0.32 | 36% |
+| 6 original + 6 sim | **SAASBO (new run)** | 43.5% | -0.30 | **-0.71 (<0.001)** | -0.67 | 0.30 | 89% |
+| 6 original + 6 sim | ridge | 35.1% | +0.13 | +0.35 (0.021) | +0.33 | 0.38 | 91% |
+| 6 original + 6 sim | k-nearest neighbours | 38.7% | -0.06 | +0.06 (0.72) | -0.07 | 0.38 | 91% |
+| 6 original + 6 sim | random forest (tuned) | 35.8% | +0.04 | +0.20 (0.19) | +0.18 | 0.39 | 91% |
+| 6 original + 6 sim | GP, ARD Matern (ML-II) | 35.9% | -0.02 | +0.21 (0.17) | +0.12 | 0.39 | 34% |
+| 12 campaign | SAASBO (manuscript) | 38.8% | -0.05 | -0.40 (0.008) | -0.30 | 0.11 | 93% |
+| 12 campaign | ridge | 34.9% | +0.10 | +0.37 (0.014) | +0.41 | 0.47 | 91% |
+| 12 campaign | k-nearest neighbours | 39.6% | -0.05 | +0.14 (0.36) | +0.09 | 0.49 | 89% |
+| 12 campaign | random forest (tuned) | 35.9% | +0.08 | +0.27 (0.082) | +0.41 | 0.39 | 91% |
+| 12 campaign | GP, ARD Matern (ML-II) | 33.9% | +0.18 | +0.41 (0.006) | +0.46 | 0.47 | 57% |
+
+![t180 comparison grid](figures/logocv-grid-t180.png)
+
+![E_reb comparison grid](figures/logocv-grid-e_reb_mJ.png)
+
+The SI-style figure for each run is `figures/logocv-<model>-<space>.png`
+(for example [`logocv-saasbo-six-sim.png`](figures/logocv-saasbo-six-sim.png),
+[`logocv-rf-six.png`](figures/logocv-rf-six.png),
+[`logocv-mean-six.png`](figures/logocv-mean-six.png)).
+
+### Reading
+
+- **In the six-parameter space the inputs carry a usable t180 signal, and
+  SAASBO is the one model that does not use it.** On identical folds,
+  inputs and targets, SAASBO ranks held-out t180 at +0.05 while ridge,
+  k-nearest neighbours, the tuned random forest and a plain ARD GP rank it
+  at +0.44 to +0.59 (random forest: R2_oos +0.40, MAPE 4.5%, design-level
+  rho_s +0.63). The audit's explanation stands: the weighed-mass input is a
+  print-session label in physical units, and the SAAS sparsity prior leans
+  on it. The marginal-likelihood GP in the same space switches mass nearly
+  off (median ARD lengthscale 6.3 on standardized inputs, against 0.1 for
+  cable diameter) and rides the cable-diameter gradient instead
+  (`data/baselines/gp-lengthscales.json`).
+- **Appending the six simulation features hurts SAASBO and helps the
+  forest.** SAASBO goes from +0.05 to -0.14 on t180 and from -0.42 to
+  -0.71 on E_reb, the inversion the audit saw in the shape-only space
+  (relevance diluted across six proxies of the same coordinates). The
+  random forest goes from +0.59 to +0.65 (R2_oos +0.49, MAPE 4.1%), ridge
+  from +0.51 to +0.54, the ARD GP falls to +0.41. For a tree ensemble the
+  features act as pre-computed nonlinear transforms of the geometry; for a
+  sparse GP they are collinear competitors.
+- **The manuscript's twelve-parameter SAASBO (+0.32) is not the ceiling of
+  the record.** In that same space the GP (ML-II) reaches +0.55, the forest
+  and k-nearest neighbours +0.52, ridge +0.41. The gain over the twelve
+  parameters is between-session calibration (the four filament settings
+  are batch labels), which the shape-only baselines reach without it.
+- **E_reb has no real held-out skill in any model.** The best R2_oos is
+  +0.18 (GP, twelve parameters) and the best ranking +0.41 (same run,
+  p 0.006) with ridge at +0.35 to +0.37; the random forest and k-nearest
+  neighbours are at or below the mean in R2_oos. SAASBO is anti-correlated
+  in every space and worse than predicting the mean (R2_oos -0.05 to
+  -0.37), with the six-plus-sim run the most inverted of the set (-0.71).
+  The MAPE floor of the mean predictor is 37.9%; the best model reaches
+  33.9%. This is the metric the reprint pairs already showed to be
+  noise-floored.
+- **Dummies.** Predicting the mean gives t180 MAPE 5.2% and E_reb MAPE
+  37.9%, which the SAASBO runs beat by at most 0.4 points and the forest by
+  1.1 points. The print-session mean adds nothing (R2_oos +0.02 and -0.11),
+  so the session offsets alone are not what the baselines are exploiting.
+- **Uncertainty.** SAASBO's posterior sd covers 84 to 93% of articles at
+  1.96 sd, honest but with a prediction spread of only a tenth to a half
+  of the data sd. The ML-II GP's noise-free predictive sd is overconfident
+  (70 to 77% on t180, 34 to 57% on E_reb). The inner-CV RMSE bars of the
+  point models cover 89 to 95%, as a correctly sized constant error should.
+
+### Caveats
+
+- 44 articles and 35 designs. Every row is one realization: the audit's
+  NUTS-budget experiment moved SAASBO's t180 rho_s by 0.24 with nothing but
+  the sampler budget changed, and the forest and GP would move with their
+  seeds and inner folds too. Differences under about 0.2 in rho_s between
+  rows should not be ranked; the gap between SAASBO (+0.05, -0.14) and the
+  baselines (+0.44 to +0.65) in the six-parameter spaces is larger than
+  that, the differences among the baselines are not.
+- This table holds 36 held-out model-by-space-by-objective numbers; quoting
+  its best cell is optimistic in the usual way.
+- The baselines fit the per-article objective means unweighted; SAASBO
+  uses the per-article SEMs as known noise. For t180 the SEMs (0.0004 to
+  0.003) are far below the between-print scatter, so this changes little;
+  for E_reb they are also small relative to the design spread.
+- The simulation features of a held-out design are computed from its
+  geometry and design-mean weighed mass, which is what a candidate could
+  provide before printing (the audit found the four non-ringdown channels
+  insensitive to the within-design mass choice).
+- The print-session mean uses session labels no fitted model had; it is a
+  reference line, not a candidate model.
+
+What this suggests for the manuscript: the held-out t180 skill reported for
+the surrogate (rho_s +0.32 in the twelve-parameter space) is a fact about
+the SAASBO surrogate with weighed mass as an input, not the ceiling of the
+data, since simpler models on the same folds reach +0.5 to +0.65. Whether
+that belongs in the SI next to the LOGO figure is the authors' call; the
+grid figures above are drawn to drop in.
 
 ## Files
 
