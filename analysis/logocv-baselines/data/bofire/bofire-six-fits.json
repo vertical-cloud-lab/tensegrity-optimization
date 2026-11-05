@@ -1,0 +1,982 @@
+{
+ "6lhxfy/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.57829,
+   0.81626,
+   0.43836,
+   0.65258,
+   3.18318,
+   0.68751
+  ],
+  "noise_standardized": 0.20990598213843062,
+  "n_train": 43,
+  "seconds": 0.88
+ },
+ "6lhxfy/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.28738,
+   1.09996,
+   1.18574,
+   1.17539,
+   1.53818,
+   2.34139
+  ],
+  "noise_standardized": 0.6653930819720018,
+  "n_train": 43,
+  "seconds": 0.26
+ },
+ "r2d2c3/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.74607,
+   0.59913,
+   0.43242,
+   0.41864,
+   3.02798,
+   2.17049
+  ],
+  "noise_standardized": 0.2456762981994637,
+  "n_train": 43,
+  "seconds": 0.31
+ },
+ "r2d2c3/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.73009,
+   1.05924,
+   1.11616,
+   1.21189,
+   1.83558,
+   2.31356
+  ],
+  "noise_standardized": 0.6688206807881063,
+  "n_train": 43,
+  "seconds": 0.29
+ },
+ "r2d2c4/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.57278,
+   0.7361,
+   0.44892,
+   0.68113,
+   3.15978,
+   0.67157
+  ],
+  "noise_standardized": 0.20921157303986193,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "r2d2c4/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.14417,
+   0.89293,
+   1.37181,
+   1.265,
+   1.78294,
+   2.50765
+  ],
+  "noise_standardized": 0.645978328086351,
+  "n_train": 43,
+  "seconds": 0.28
+ },
+ "r2d2c5/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.71761,
+   0.81839,
+   0.42633,
+   0.44115,
+   3.11408,
+   0.71246
+  ],
+  "noise_standardized": 0.20303788707422396,
+  "n_train": 43,
+  "seconds": 0.28
+ },
+ "r2d2c5/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.35834,
+   1.13486,
+   1.19365,
+   0.88009,
+   0.92575,
+   2.41899
+  ],
+  "noise_standardized": 0.6425374595163801,
+  "n_train": 43,
+  "seconds": 0.27
+ },
+ "r2d2c6/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.57779,
+   0.84673,
+   0.46121,
+   0.69646,
+   2.70507,
+   0.7234
+  ],
+  "noise_standardized": 0.1999698961613601,
+  "n_train": 43,
+  "seconds": 0.23
+ },
+ "r2d2c6/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   2.09432,
+   1.04836,
+   1.12657,
+   1.2966,
+   2.21222,
+   2.2648
+  ],
+  "noise_standardized": 0.6741656549128493,
+  "n_train": 43,
+  "seconds": 0.29
+ },
+ "r2d2c7/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.58933,
+   0.87918,
+   0.47811,
+   0.67151,
+   3.2711,
+   0.57497
+  ],
+  "noise_standardized": 0.19939412784563357,
+  "n_train": 43,
+  "seconds": 0.27
+ },
+ "r2d2c7/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.37297,
+   1.23077,
+   1.27808,
+   1.04534,
+   0.65942,
+   2.46349
+  ],
+  "noise_standardized": 0.6433696057084668,
+  "n_train": 43,
+  "seconds": 0.25
+ },
+ "r2d2c8/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.54831,
+   0.84579,
+   0.45882,
+   0.69274,
+   3.22147,
+   0.68577
+  ],
+  "noise_standardized": 0.19604737318601348,
+  "n_train": 43,
+  "seconds": 0.25
+ },
+ "r2d2c8/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.17526,
+   1.13337,
+   1.22071,
+   1.10904,
+   0.99855,
+   2.51156
+  ],
+  "noise_standardized": 0.6387057675161091,
+  "n_train": 43,
+  "seconds": 0.32
+ },
+ "r2d2c9/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.62457,
+   0.88138,
+   0.41774,
+   0.70006,
+   3.16055,
+   0.69999
+  ],
+  "noise_standardized": 0.19381371840591166,
+  "n_train": 43,
+  "seconds": 0.29
+ },
+ "r2d2c9/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.73473,
+   1.18929,
+   1.0463,
+   1.25372,
+   1.93679,
+   2.51179
+  ],
+  "noise_standardized": 0.6579255780525497,
+  "n_train": 43,
+  "seconds": 0.31
+ },
+ "drran1/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.58291,
+   0.84663,
+   0.47192,
+   0.66818,
+   3.10149,
+   0.71186
+  ],
+  "noise_standardized": 0.1957699317170391,
+  "n_train": 42,
+  "seconds": 0.28
+ },
+ "drran1/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.90289,
+   0.78952,
+   1.06141,
+   1.39514,
+   2.25192,
+   2.67107
+  ],
+  "noise_standardized": 0.6203121403434229,
+  "n_train": 42,
+  "seconds": 0.28
+ },
+ "drran2/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.5982,
+   0.84273,
+   0.45921,
+   0.68181,
+   3.06073,
+   0.70402
+  ],
+  "noise_standardized": 0.1959831196231103,
+  "n_train": 42,
+  "seconds": 0.3
+ },
+ "drran2/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.56098,
+   1.07357,
+   1.09213,
+   1.23457,
+   1.85153,
+   2.45419
+  ],
+  "noise_standardized": 0.6428927175985302,
+  "n_train": 42,
+  "seconds": 0.26
+ },
+ "drran3/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.48424,
+   0.90149,
+   0.4649,
+   0.70003,
+   3.07399,
+   0.69084
+  ],
+  "noise_standardized": 0.1985369483402315,
+  "n_train": 42,
+  "seconds": 0.23
+ },
+ "drran3/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.18917,
+   1.1297,
+   1.20269,
+   1.08974,
+   0.96784,
+   2.51561
+  ],
+  "noise_standardized": 0.6398156797940701,
+  "n_train": 42,
+  "seconds": 0.24
+ },
+ "6nheas/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.57106,
+   0.82436,
+   0.42705,
+   0.66139,
+   3.21588,
+   0.69144
+  ],
+  "noise_standardized": 0.197296298541386,
+  "n_train": 43,
+  "seconds": 0.26
+ },
+ "6nheas/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.85386,
+   1.27681,
+   1.23185,
+   0.75829,
+   0.57992,
+   2.51724
+  ],
+  "noise_standardized": 0.6316374402385573,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "drran4/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.74047,
+   0.86646,
+   0.46822,
+   0.62217,
+   3.33166,
+   0.67847
+  ],
+  "noise_standardized": 0.19210498216969366,
+  "n_train": 42,
+  "seconds": 0.24
+ },
+ "drran4/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.23239,
+   1.05033,
+   1.13463,
+   1.19766,
+   1.50165,
+   2.49058
+  ],
+  "noise_standardized": 0.6495536928695915,
+  "n_train": 42,
+  "seconds": 0.3
+ },
+ "drran5/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.60439,
+   0.84589,
+   0.45813,
+   0.66621,
+   3.19669,
+   0.7032
+  ],
+  "noise_standardized": 0.20027114737188256,
+  "n_train": 42,
+  "seconds": 0.26
+ },
+ "drran5/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.13186,
+   1.15535,
+   1.27333,
+   1.09998,
+   0.76506,
+   2.39026
+  ],
+  "noise_standardized": 0.6333161198111665,
+  "n_train": 42,
+  "seconds": 0.21
+ },
+ "drran6/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.59747,
+   0.84714,
+   0.45955,
+   0.68099,
+   3.08431,
+   0.69481
+  ],
+  "noise_standardized": 0.19910759160370778,
+  "n_train": 42,
+  "seconds": 0.24
+ },
+ "drran6/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.51972,
+   1.18465,
+   1.28509,
+   1.05278,
+   0.7092,
+   2.50646
+  ],
+  "noise_standardized": 0.6441661753974791,
+  "n_train": 42,
+  "seconds": 0.23
+ },
+ "drran7/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.73978,
+   1.0708,
+   0.53963,
+   0.56655,
+   3.63527,
+   0.63567
+  ],
+  "noise_standardized": 0.10470735594176418,
+  "n_train": 42,
+  "seconds": 0.33
+ },
+ "drran7/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.17455,
+   1.1127,
+   1.05296,
+   1.17064,
+   1.31191,
+   2.49409
+  ],
+  "noise_standardized": 0.6441767576675148,
+  "n_train": 42,
+  "seconds": 0.27
+ },
+ "drran8/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.52853,
+   0.86055,
+   0.46823,
+   0.71301,
+   3.22201,
+   0.68744
+  ],
+  "noise_standardized": 0.1996531155907161,
+  "n_train": 42,
+  "seconds": 0.26
+ },
+ "drran8/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.96651,
+   0.9428,
+   1.19236,
+   1.31233,
+   2.09387,
+   2.30081
+  ],
+  "noise_standardized": 0.6556869826794699,
+  "n_train": 42,
+  "seconds": 0.27
+ },
+ "drran9/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.60802,
+   0.84765,
+   0.45936,
+   0.67875,
+   3.22721,
+   0.71232
+  ],
+  "noise_standardized": 0.20087789400271824,
+  "n_train": 42,
+  "seconds": 0.26
+ },
+ "drran9/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.31699,
+   1.02702,
+   0.97071,
+   1.22685,
+   2.02862,
+   2.51677
+  ],
+  "noise_standardized": 0.602036530229132,
+  "n_train": 42,
+  "seconds": 0.32
+ },
+ "9hhbkp/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.66448,
+   0.83476,
+   0.41759,
+   0.6824,
+   3.20562,
+   0.71291
+  ],
+  "noise_standardized": 0.19784163414029948,
+  "n_train": 43,
+  "seconds": 0.26
+ },
+ "9hhbkp/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.42068,
+   1.15172,
+   1.26727,
+   1.06935,
+   0.79434,
+   2.58821
+  ],
+  "noise_standardized": 0.6389423596361531,
+  "n_train": 43,
+  "seconds": 0.26
+ },
+ "corny1/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.57123,
+   0.82947,
+   0.45855,
+   0.69002,
+   3.04226,
+   0.70455
+  ],
+  "noise_standardized": 0.19779638931801932,
+  "n_train": 43,
+  "seconds": 0.28
+ },
+ "corny1/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.92464,
+   1.06712,
+   1.17098,
+   1.24734,
+   1.84455,
+   2.45314
+  ],
+  "noise_standardized": 0.6560864269968459,
+  "n_train": 43,
+  "seconds": 0.29
+ },
+ "corny2/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.59402,
+   0.85468,
+   0.45752,
+   0.68438,
+   2.97654,
+   0.69581
+  ],
+  "noise_standardized": 0.19989810590244825,
+  "n_train": 43,
+  "seconds": 0.26
+ },
+ "corny2/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.97003,
+   1.06569,
+   1.17353,
+   1.25992,
+   1.89017,
+   2.46022
+  ],
+  "noise_standardized": 0.6540582172827953,
+  "n_train": 43,
+  "seconds": 0.25
+ },
+ "corny3/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.59104,
+   0.84468,
+   0.45712,
+   0.68326,
+   3.16878,
+   0.69899
+  ],
+  "noise_standardized": 0.2011050633667338,
+  "n_train": 43,
+  "seconds": 0.23
+ },
+ "corny3/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.72365,
+   1.08165,
+   1.16356,
+   1.23675,
+   1.77553,
+   2.4627
+  ],
+  "noise_standardized": 0.655678079957382,
+  "n_train": 43,
+  "seconds": 0.35
+ },
+ "corny4/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.56754,
+   0.84508,
+   0.46284,
+   0.69215,
+   2.90028,
+   0.69696
+  ],
+  "noise_standardized": 0.19812406137414207,
+  "n_train": 43,
+  "seconds": 0.22
+ },
+ "corny4/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.36828,
+   1.03982,
+   1.04923,
+   1.24759,
+   1.77376,
+   2.36775
+  ],
+  "noise_standardized": 0.6562615300147241,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "corny5/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.61298,
+   0.8393,
+   0.45082,
+   0.67327,
+   3.07745,
+   0.70403
+  ],
+  "noise_standardized": 0.19915316131257207,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "corny5/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.19062,
+   1.17932,
+   1.25962,
+   1.11499,
+   0.7363,
+   2.61626
+  ],
+  "noise_standardized": 0.6242423696080174,
+  "n_train": 43,
+  "seconds": 0.23
+ },
+ "autv5r/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.58563,
+   0.81329,
+   0.44147,
+   0.67625,
+   3.23258,
+   0.69606
+  ],
+  "noise_standardized": 0.195752844337304,
+  "n_train": 43,
+  "seconds": 0.25
+ },
+ "autv5r/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   2.09196,
+   1.00996,
+   1.07549,
+   1.32734,
+   2.02664,
+   2.29963
+  ],
+  "noise_standardized": 0.6498010386469463,
+  "n_train": 43,
+  "seconds": 0.31
+ },
+ "corny6/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.56772,
+   0.83591,
+   0.44903,
+   0.67458,
+   3.13319,
+   0.6879
+  ],
+  "noise_standardized": 0.2088591739507266,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "corny6/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.40792,
+   0.98087,
+   0.98636,
+   0.94676,
+   0.59653,
+   2.51223
+  ],
+  "noise_standardized": 0.5394501204480533,
+  "n_train": 43,
+  "seconds": 0.25
+ },
+ "corny7/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.54952,
+   0.77642,
+   0.43192,
+   0.62226,
+   3.17712,
+   0.67451
+  ],
+  "noise_standardized": 0.19757295426730834,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "corny7/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.33577,
+   1.07835,
+   1.12574,
+   1.02047,
+   0.77172,
+   2.5456
+  ],
+  "noise_standardized": 0.6169849670991981,
+  "n_train": 43,
+  "seconds": 0.28
+ },
+ "corny8/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.54566,
+   0.83315,
+   0.45134,
+   0.66534,
+   3.28855,
+   0.68362
+  ],
+  "noise_standardized": 0.1796725511770507,
+  "n_train": 43,
+  "seconds": 0.3
+ },
+ "corny8/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.48212,
+   1.21597,
+   1.22376,
+   1.23662,
+   1.68589,
+   2.20538
+  ],
+  "noise_standardized": 0.6996246466757787,
+  "n_train": 43,
+  "seconds": 0.31
+ },
+ "corny9/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.51071,
+   0.86016,
+   0.45389,
+   0.69019,
+   3.05184,
+   0.67293
+  ],
+  "noise_standardized": 0.2177896360028693,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "corny9/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.89585,
+   1.25827,
+   1.25804,
+   1.2553,
+   1.88687,
+   2.11921
+  ],
+  "noise_standardized": 0.7068526015079155,
+  "n_train": 43,
+  "seconds": 0.33
+ },
+ "bag26v/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.74025,
+   0.79414,
+   0.45188,
+   0.69104,
+   3.3031,
+   0.6853
+  ],
+  "noise_standardized": 0.19682459111165443,
+  "n_train": 43,
+  "seconds": 0.22
+ },
+ "bag26v/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.92607,
+   1.0747,
+   1.09912,
+   1.2754,
+   1.98538,
+   2.43495
+  ],
+  "noise_standardized": 0.6551319316968774,
+  "n_train": 43,
+  "seconds": 0.29
+ },
+ "bpx68c/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.43789,
+   0.93943,
+   0.48445,
+   0.71798,
+   3.16691,
+   0.69066
+  ],
+  "noise_standardized": 0.19813517558779656,
+  "n_train": 43,
+  "seconds": 0.26
+ },
+ "bpx68c/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.10061,
+   1.18215,
+   1.10388,
+   1.12298,
+   1.19887,
+   2.57501
+  ],
+  "noise_standardized": 0.6327127450720171,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "nvxsrv/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.63612,
+   0.79658,
+   0.42222,
+   0.65996,
+   3.27321,
+   0.68743
+  ],
+  "noise_standardized": 0.19579675287535228,
+  "n_train": 43,
+  "seconds": 0.26
+ },
+ "nvxsrv/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.56315,
+   1.06607,
+   1.10435,
+   1.22719,
+   1.76341,
+   2.35248
+  ],
+  "noise_standardized": 0.656419145679932,
+  "n_train": 43,
+  "seconds": 0.29
+ },
+ "ajhby6/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.54799,
+   0.85621,
+   0.44498,
+   0.69326,
+   3.23771,
+   0.68203
+  ],
+  "noise_standardized": 0.19716719319523526,
+  "n_train": 43,
+  "seconds": 0.25
+ },
+ "ajhby6/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.48225,
+   1.17264,
+   1.3421,
+   1.06782,
+   0.65926,
+   2.49504
+  ],
+  "noise_standardized": 0.6259334688511488,
+  "n_train": 43,
+  "seconds": 0.27
+ },
+ "r2d2c1/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.57427,
+   0.83112,
+   0.46929,
+   0.68872,
+   3.15527,
+   0.66591
+  ],
+  "noise_standardized": 0.1975727502389862,
+  "n_train": 43,
+  "seconds": 0.24
+ },
+ "r2d2c1/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.18347,
+   1.26539,
+   1.17544,
+   1.02816,
+   0.72397,
+   2.87913
+  ],
+  "noise_standardized": 0.6164925706994265,
+  "n_train": 43,
+  "seconds": 0.22
+ },
+ "r2d2c2/t180": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   0.60319,
+   0.82804,
+   0.45135,
+   0.64021,
+   3.07841,
+   0.69493
+  ],
+  "noise_standardized": 0.1979525066488611,
+  "n_train": 43,
+  "seconds": 0.22
+ },
+ "r2d2c2/e_reb_mJ": {
+  "kernel": "RBFKernel",
+  "lengthscale": [
+   1.96275,
+   1.11248,
+   0.99062,
+   1.25669,
+   2.2075,
+   1.92239
+  ],
+  "noise_standardized": 0.6452159230303226,
+  "n_train": 43,
+  "seconds": 0.25
+ }
+}

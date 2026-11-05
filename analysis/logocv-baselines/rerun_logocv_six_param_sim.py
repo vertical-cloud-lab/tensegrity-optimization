@@ -34,6 +34,45 @@ Variants (``--variant``):
 - ``shape-sim``, ``twelve-sim``, ``sim-only``, ``shape-only``: the audit
   driver's own variants, unchanged.
 
+- ``six``, ``twelve``: the six parameters, or the campaign's twelve, with no
+  features. For SAASBO these repeat ``ablation-six-param`` and
+  ``full-nuts-rerun`` (reproduction checks, need ``--out-dir``); they exist
+  for the other surrogates below.
+
+Surrogates (``--model``; PR #121 follow-up, sgbaird, 2026-11-05: "try also
+with Ax default and separately also BoFire"). Everything except the model
+is the protocol above: same snapshot, same data, same fit space, same folds,
+same seeds, ``refit_on_cv=True``.
+
+- ``saasbo`` (default): the campaign's surrogate, ``diag.fit_saasbo``.
+- ``ax-default``: what Ax 0.5.0 fits when nobody chooses a model.
+  ``AxClient`` without a generation strategy calls
+  ``choose_generation_strategy``, which for this all-continuous space gives
+  Sobol and then ``Models.BOTORCH_MODULAR`` with the default surrogate
+  (``SingleTaskGP``, BoTorch 0.13's dimension-scaled lognormal lengthscale
+  prior, MAP fit) and a ``Winsorize`` transform in front of the usual ones.
+  The model kwargs are taken from that BoTorch step verbatim. With two
+  minimized objectives and no objective thresholds, ``Winsorize`` clips each
+  objective's upper tail at the Tukey fence (Q3 + 1.5 IQR) before the fit.
+- ``ax-registry``: ``Models.BOTORCH_MODULAR`` with the registry's own
+  transforms (no ``Winsorize``), i.e. exactly the SAASBO transform stack with
+  only the BoTorch model class changed.
+
+For the two MAP models ``warm_start_refit`` is set False, so each fold's
+hyperparameters are optimized from the prior's starting point and not from
+the full-data optimum (Ax's default warm start would carry information about
+the held-out design into the fold). SAASBO's NUTS refit draws afresh, so it
+is unaffected and keeps the archived setting.
+
+Noise (``--noise``): ``known`` (default) passes the archived per-article SEMs
+as Ax's known observation noise, as the campaign did; ``inferred`` blanks
+them (``sem = NaN``) so the GP learns one noise level per objective.
+
+Output directory: ``data/ax-<variant>/`` for SAASBO with known noise (the
+existing runs), ``data/ax-saasbo-inferred-noise-<variant>/`` for SAASBO with
+the noise inferred, otherwise ``data/<model>[-inferred-noise]-<variant>/``
+(``data/ax-default-six/``, ``data/ax-registry-twelve/``, ...).
+
 Usage (repo root; campaign ``bo/`` tree extracted at ``bbf7a62``)::
 
     git archive bbf7a62 bo | tar -x -C /tmp/campaign
@@ -45,6 +84,14 @@ Usage (repo root; campaign ``bo/`` tree extracted at ``bbf7a62``)::
     python analysis/logocv-baselines/rerun_logocv_six_param_sim.py \
         --campaign-bo /tmp/campaign/bo --variant six-sim --assemble \
         --commit-each-fold
+
+    # Ax default (MAP, seconds per fold): fold loop, then assembly
+    for v in six six-sim twelve; do
+      python analysis/logocv-baselines/rerun_logocv_six_param_sim.py \
+          --campaign-bo /tmp/campaign/bo --model ax-default --variant $v
+      python analysis/logocv-baselines/rerun_logocv_six_param_sim.py \
+          --campaign-bo /tmp/campaign/bo --model ax-default --variant $v --assemble
+    done
 """
 
 from __future__ import annotations
@@ -73,7 +120,7 @@ PUSH_SCRIPT = Path(
 COMMIT_TRAILER = (
     "\n\nCo-authored-by: Sterling G. Baird "
     "<45469701+sgbaird@users.noreply.github.com>"
-    "\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 )
 
 FEATURES = (
@@ -103,6 +150,21 @@ VARIANTS = {
                      note="the six simulation features alone"),
     "shape-only": dict(base="shape", features=False,
                        note="the five shape coordinates (reproduction check)"),
+    "six": dict(base="six", features=False,
+                note="the rounds-1-and-2 six parameters (five shape "
+                     "coordinates plus weighed printed mass)"),
+    "twelve": dict(base="twelve", features=False,
+                   note="the campaign's twelve parameters"),
+}
+MODELS = ("saasbo", "ax-default", "ax-registry")
+MODEL_NOTE = {
+    "saasbo": "SAASBO (Models.SAASBO, SaasFullyBayesianSingleTaskGP, NUTS)",
+    "ax-default": "Ax default: the BoTorch step of choose_generation_strategy "
+                  "(Models.BOTORCH_MODULAR, default surrogate SingleTaskGP, "
+                  "MAP fit, Winsorize + MBM_X_trans + Y_trans)",
+    "ax-registry": "Models.BOTORCH_MODULAR with the registry transforms "
+                   "(MBM_X_trans + Y_trans, the SAASBO stack), default "
+                   "surrogate SingleTaskGP, MAP fit",
 }
 PAYLOAD = ("tavg10ms", "late_avg3ms_g")
 
@@ -243,7 +305,10 @@ def assemble(args, names, diag, labels_by_arm, n_articles, n_params, keep,
                       OUT_DIR / "t3-prism-bo-round5-logocv.png",
                       n_articles=n_articles,
                       note=diag.LOGOCV_NOTE + f"\nObjectives raw; fit space: "
-                      f"{n_params} parameters, {VARIANTS[args.variant]['note']}.")
+                      f"{n_params} parameters, {VARIANTS[args.variant]['note']}."
+                      + ("" if args.model == "saasbo" and args.noise == "known"
+                         else f"\nSurrogate: {MODEL_NOTE[args.model]}; noise "
+                              f"{args.noise}."))
     state = json.loads(STATE_PATH.read_text())
     state["status"] = "complete"
     state["total_fold_seconds"] = round(sum(state["fold_seconds"].values()), 1)
@@ -256,11 +321,149 @@ def assemble(args, names, diag, labels_by_arm, n_articles, n_params, keep,
         with _locked():
             _git_commit_push(
                 [OUT_DIR],
-                f"LOGO-CV {run_label} complete: "
-                f"{len(fold_keys)} folds at {args.num_samples}/{args.warmup_steps}",
+                f"LOGO-CV {run_label} complete: {len(fold_keys)} folds"
+                + (f" at {args.num_samples}/{args.warmup_steps}"
+                   if args.model == "saasbo" else ""),
             )
     print(f"ALL_FOLDS_DONE ({time.time() - t_start:.0f} s)", flush=True)
     return 0
+
+
+def fit_model(args, diag, experiment, data):
+    """The initial fit, with the model spec every fold refits with."""
+    if args.model == "saasbo":
+        model = diag.fit_saasbo(experiment, data, args.num_samples,
+                                args.warmup_steps, refit_on_cv=True)
+        return model, {"num_samples": args.num_samples,
+                       "warmup_steps": args.warmup_steps}
+    from ax.modelbridge.registry import Models
+
+    t0 = time.time()
+    if args.model == "ax-default":
+        from ax.modelbridge.dispatch_utils import choose_generation_strategy
+
+        gs = choose_generation_strategy(
+            search_space=experiment.search_space,
+            optimization_config=experiment.optimization_config,
+            experiment=experiment,
+        )
+        steps = [st for st in gs._steps if st.model == Models.BOTORCH_MODULAR]
+        assert len(steps) == 1, gs
+        kwargs = dict(steps[0].model_kwargs or {})
+        info = {
+            "generation_strategy": str(gs),
+            "transforms": [t.__name__ for t in kwargs.get("transforms", [])],
+            "transform_configs": kwargs.get("transform_configs"),
+            "fit_out_of_design": kwargs.get("fit_out_of_design"),
+        }
+    else:
+        kwargs = {}
+        info = {"transforms": "registry default for Models.BOTORCH_MODULAR"}
+    model = Models.BOTORCH_MODULAR(
+        experiment=experiment, data=data, refit_on_cv=True,
+        warm_start_refit=bool(args.warm_start_refit), **kwargs)
+    surrogate = model.model.surrogate
+    info.update({
+        "botorch_model": type(surrogate.model).__name__,
+        "submodels": [type(m).__name__ for m in
+                      getattr(surrogate.model, "models", [surrogate.model])],
+        "likelihoods": [type(m.likelihood).__name__ for m in
+                        getattr(surrogate.model, "models", [surrogate.model])],
+        "transforms_applied": [type(t).__name__ for t in model.transforms.values()],
+        "refit_on_cv": True,
+        "warm_start_refit": bool(args.warm_start_refit),
+        "full_data_hyperparameters": _hypers(surrogate.model, model),
+    })
+    if "Winsorize" in model.transforms:
+        info["winsorize_cutoffs_full_data"] = {
+            m: [float(c) for c in v]
+            for m, v in model.transforms["Winsorize"].cutoffs.items()}
+    print(f"  {args.model}: {info['submodels']} with {info['likelihoods']}, "
+          f"transforms {info['transforms_applied']}, fit in "
+          f"{time.time() - t0:.1f} s", flush=True)
+    return model, info
+
+
+def _hypers(botorch_model, bridge):
+    """Lengthscales (in the model's normalized input units) and noise of a
+    fitted MAP model, per outcome. Handles a ``ModelListGP`` and a batched
+    multi-output ``SingleTaskGP`` (Ax's ``allow_batched_models``)."""
+    subs = getattr(botorch_model, "models", None)
+    if subs is not None:
+        pairs = [(name, sub, None) for name, sub in zip(bridge.outcomes, subs)]
+    else:
+        batched = getattr(botorch_model, "num_outputs", 1) > 1
+        pairs = [(name, botorch_model, i if batched else None)
+                 for i, name in enumerate(bridge.outcomes)]
+    out = {}
+    for name, sub, idx in pairs:
+        kern = sub.covar_module
+        base = getattr(kern, "base_kernel", kern)
+        ls = base.lengthscale.detach()
+        ls = ls[idx] if idx is not None else ls
+        rec = {"kernel": type(base).__name__,
+               "lengthscale": [round(float(v), 5) for v in ls.reshape(-1)]}
+        if hasattr(kern, "outputscale"):
+            os_ = kern.outputscale.detach()
+            os_ = os_[idx] if idx is not None and os_.dim() else os_
+            rec["outputscale"] = round(float(os_.reshape(-1)[0]), 5)
+        lik = sub.likelihood
+        rec["likelihood"] = type(lik).__name__
+        if type(lik).__name__ == "GaussianLikelihood":
+            noise = lik.noise.detach()
+            noise = noise[idx] if idx is not None and noise.dim() > 1 else noise
+            rec["noise_standardized"] = float(noise.reshape(-1)[0])
+        out[name] = rec
+    return out
+
+
+def _last_fold_hypers(bridge):
+    """Ax's ``cross_validate`` refits a clone and discards it; the fold's
+    hyperparameters are recovered from the clone's state, which the patched
+    ``ModularBoTorchModel.cross_validate`` below stores on the model."""
+    model = bridge.model
+    saved = getattr(model, "_last_cv_surrogate_model", None)
+    return None if saved is None else _hypers(saved, bridge)
+
+
+def _patch_cv_capture():
+    """Keep a handle on the surrogate model each CV refit produced (Ax 0.5.0
+    restores the full-data surrogate in a ``finally`` and drops the clone)."""
+    from ax.models.torch.botorch_modular.model import (
+        BoTorchModel as ModularBoTorchModel,
+    )
+
+    if getattr(ModularBoTorchModel, "_cv_capture_patched", False):
+        return
+    original_predict = ModularBoTorchModel.predict
+
+    def predict(self, X, use_posterior_predictive=False):
+        self._last_cv_surrogate_model = self.surrogate.model
+        return original_predict(self, X, use_posterior_predictive=use_posterior_predictive)
+
+    ModularBoTorchModel.predict = predict
+    ModularBoTorchModel._cv_capture_patched = True
+
+
+def _patch_winsorize_writable():
+    """Compatibility shim, no change in behaviour: Ax 0.5.0's ``Winsorize``
+    clips ``ObservationData.means`` in place, and under pandas >= 3
+    (copy-on-write) those arrays arrive read-only, which raises
+    "assignment destination is read-only". Hand it a writable copy."""
+    from ax.modelbridge.transforms.winsorize import Winsorize
+
+    if getattr(Winsorize, "_writable_patched", False):
+        return
+    original = Winsorize._transform_observation_data
+
+    def _transform_observation_data(self, observation_data):
+        for obsd in observation_data:
+            if not obsd.means.flags.writeable:
+                obsd.means = np.array(obsd.means, dtype=float, copy=True)
+        return original(self, observation_data)
+
+    Winsorize._transform_observation_data = _transform_observation_data
+    Winsorize._writable_patched = True
 
 
 def main(argv=None):
@@ -268,6 +471,14 @@ def main(argv=None):
     ap.add_argument("--campaign-bo", type=Path, required=True,
                     help="path to the extracted campaign bo/ directory")
     ap.add_argument("--variant", choices=sorted(VARIANTS), required=True)
+    ap.add_argument("--model", choices=MODELS, default="saasbo",
+                    help="surrogate (see the module docstring)")
+    ap.add_argument("--warm-start-refit", action="store_true",
+                    help="MAP models: start each fold's refit from the full-data "
+                         "optimum (Ax's own default; leaks, off unless asked)")
+    ap.add_argument("--noise", choices=("known", "inferred"), default="known",
+                    help="known: archived SEMs as fixed noise (the campaign); "
+                         "inferred: SEMs blanked, noise learned")
     ap.add_argument("--objectives", choices=("campaign", "payload"),
                     default="campaign")
     ap.add_argument("--shard", default="0/1",
@@ -286,6 +497,9 @@ def main(argv=None):
                     help="NUTS warmup per fold (BoTorch library default)")
     ap.add_argument("--commit-each-fold", action="store_true",
                     help="git commit+push the checkpoint after every fold")
+    ap.add_argument("--commit-every", type=int, default=1,
+                    help="with --commit-each-fold: commit only when the number "
+                         "of finished folds is a multiple of this")
     ap.add_argument("--assemble", action="store_true",
                     help="all folds done: write the campaign-format outputs")
     ap.add_argument("--queue", action="store_true",
@@ -297,14 +511,23 @@ def main(argv=None):
     t_start = time.time()
     variant = VARIANTS[args.variant]
     run_label = f"{args.variant}, {args.objectives} pair"
+    if args.model != "saasbo" or args.noise != "known":
+        run_label = (f"{args.model}"
+                     f"{', noise inferred' if args.noise == 'inferred' else ''}, "
+                     + run_label)
 
     global OUT_DIR, STATE_PATH, FOLDS_PATH, LOCK_PATH
     shard_i, shard_n = (int(v) for v in args.shard.split("/"))
     assert 0 <= shard_i < shard_n, args.shard
-    out_name = f"ax-{args.variant}" + (
-        "-payload" if args.objectives == "payload" else "")
+    if (args.model, args.noise) == ("saasbo", "known"):
+        out_name = f"ax-{args.variant}"
+    else:
+        out_name = (("ax-saasbo" if args.model == "saasbo" else args.model)
+                    + ("-inferred-noise" if args.noise == "inferred" else "")
+                    + f"-{args.variant}")
+    out_name += "-payload" if args.objectives == "payload" else ""
     OUT_DIR = args.out_dir or HERE / "data" / out_name
-    if not variant["features"]:
+    if not variant["features"] and args.model == "saasbo" and args.noise == "known":
         assert args.out_dir is not None, "reproduction check needs --out-dir"
     STATE_PATH = OUT_DIR / "state.json"
     FOLDS_PATH = OUT_DIR / "folds.jsonl"
@@ -399,6 +622,15 @@ def main(argv=None):
         print(f"Objectives swapped to {names} for {len(matched)} articles",
               flush=True)
 
+    if args.noise == "inferred":
+        from ax.core.data import Data
+
+        # blank the archived SEMs: the GP then learns one noise level per
+        # objective instead of taking the per-article SEMs as known
+        data = Data(df=data.df.assign(sem=np.nan))
+        objective_note += "; SEMs blanked (noise inferred)"
+        print("Noise: inferred (archived SEMs blanked)", flush=True)
+
     # ---- the fit space: base coordinates plus the simulation features -----
     from ax.core.parameter import ParameterType, RangeParameter
     from ax.core.search_space import SearchSpace
@@ -463,10 +695,11 @@ def main(argv=None):
                         n_params, keep + feats, t_start, run_label)
 
     # ---- initial fit (same spec the folds refit with) --------------------
+    if args.model != "saasbo":
+        _patch_cv_capture()
+        _patch_winsorize_writable()
     torch.manual_seed(10_000)
-    cv_model = diag.fit_saasbo(
-        experiment, data, args.num_samples, args.warmup_steps, refit_on_cv=True
-    )
+    cv_model, model_info = fit_model(args, diag, experiment, data)
     assert set(cv_model.outcomes) == set(names), cv_model.outcomes
     assert len(cv_model.parameters) == n_params, cv_model.parameters
 
@@ -500,6 +733,10 @@ def main(argv=None):
                             "sim branch at 94e53a8, run at the design's print "
                             "geometry with the simulator's own mass model, so "
                             "reprint twins share every feature",
+        "model": args.model,
+        "model_note": MODEL_NOTE[args.model],
+        "model_info": model_info,
+        "noise": args.noise,
         "num_samples": args.num_samples,
         "warmup_steps": args.warmup_steps,
         "seed_scheme": "torch.manual_seed(fold_index) per fold, "
@@ -530,6 +767,9 @@ def main(argv=None):
                 raise RuntimeError("objectives changed between invocations")
             if state["variant"] != args.variant:
                 raise RuntimeError("variant changed between invocations")
+            if (state.get("model", "saasbo"), state.get("noise", "known")) != (
+                    args.model, args.noise):
+                raise RuntimeError("model or noise changed between invocations")
         else:
             STATE_PATH.write_text(json.dumps(fresh_state, indent=2) + "\n")
         done = set(_read_folds())
@@ -592,6 +832,8 @@ def main(argv=None):
             "fold_key": gkey,
             "fold_index": k,
             "seconds": round(dt, 1),
+            **({"hyperparameters": _last_fold_hypers(cv_model)}
+               if args.model != "saasbo" else {}),
             "articles": [
                 {
                     "arm_name": obs.arm_name,
@@ -614,7 +856,9 @@ def main(argv=None):
             print(f"    fold {k}/{len(fold_keys)} ({gkey}, {len(test)} article"
                   f"{'s' if len(test) > 1 else ''}) in {dt:.0f} s; "
                   f"{n_done}/{len(fold_keys)} done", flush=True)
-            if args.commit_each_fold:
+            if args.commit_each_fold and (
+                    n_done % max(args.commit_every, 1) == 0
+                    or n_done == len(fold_keys)):
                 _git_commit_push(
                     [FOLDS_PATH, STATE_PATH],
                     f"LOGO-CV {run_label}: "

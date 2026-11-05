@@ -1,0 +1,214 @@
+{
+  "variant": "twelve",
+  "variant_note": "the campaign's twelve parameters",
+  "objectives": [
+    "e_reb_mJ",
+    "t180"
+  ],
+  "objective_note": "the campaign pair as fitted in the round-5 snapshot; SEMs blanked (noise inferred)",
+  "n_params": 12,
+  "kept_parameters": [
+    "R_mm",
+    "H_mm",
+    "twist_deg",
+    "strut_d_mm",
+    "cable_d_mm",
+    "mass_printed_g",
+    "strut_infill_pct",
+    "tpu_infill_pct",
+    "pla_nozzle_temp_C",
+    "pla_flow_mm3_s",
+    "tpu_nozzle_temp_C",
+    "tpu_flow_mm3_s"
+  ],
+  "sim_features": [],
+  "sim_feature_bounds": {},
+  "sim_feature_source": "data/sim-features.csv",
+  "untested_arms_with_placeholder_features": [],
+  "sim_feature_note": "Tier C / Tier B drop-tower simulators from the sim branch at 94e53a8, run at the design's print geometry with the simulator's own mass model, so reprint twins share every feature",
+  "model": "ax-default",
+  "model_note": "Ax default: the BoTorch step of choose_generation_strategy (Models.BOTORCH_MODULAR, default surrogate SingleTaskGP, MAP fit, Winsorize + MBM_X_trans + Y_trans)",
+  "model_info": {
+    "generation_strategy": "GenerationStrategy(name='Sobol+BoTorch', steps=[Sobol for 24 trials, BoTorch for subsequent trials])",
+    "transforms": [
+      "Winsorize",
+      "FillMissingParameters",
+      "RemoveFixed",
+      "OrderedChoiceToIntegerRange",
+      "OneHot",
+      "LogIntToFloat",
+      "Log",
+      "Logit",
+      "IVW",
+      "Derelativize",
+      "StandardizeY"
+    ],
+    "transform_configs": {
+      "Derelativize": {
+        "use_raw_status_quo": false
+      },
+      "Winsorize": {
+        "derelativize_with_raw_status_quo": false
+      }
+    },
+    "fit_out_of_design": false,
+    "botorch_model": "SingleTaskGP",
+    "submodels": [
+      "SingleTaskGP"
+    ],
+    "likelihoods": [
+      "GaussianLikelihood"
+    ],
+    "transforms_applied": [
+      "Cast",
+      "Winsorize",
+      "FillMissingParameters",
+      "RemoveFixed",
+      "OrderedChoiceToIntegerRange",
+      "OneHot",
+      "LogIntToFloat",
+      "Log",
+      "Logit",
+      "IVW",
+      "Derelativize",
+      "StandardizeY"
+    ],
+    "refit_on_cv": true,
+    "warm_start_refit": false,
+    "full_data_hyperparameters": {
+      "e_reb_mJ": {
+        "kernel": "RBFKernel",
+        "lengthscale": [
+          0.52663,
+          2.30734,
+          2.66128,
+          3.13928,
+          1.07815,
+          1.67584,
+          0.53576,
+          0.7409,
+          1.03989,
+          1.36785,
+          1.1169,
+          1.24415
+        ],
+        "likelihood": "GaussianLikelihood",
+        "noise_standardized": 0.42047754638785995
+      },
+      "t180": {
+        "kernel": "RBFKernel",
+        "lengthscale": [
+          1.06257,
+          0.40744,
+          1.04046,
+          3.11994,
+          0.55243,
+          1.91508,
+          1.16254,
+          0.62798,
+          1.4294,
+          1.8848,
+          1.69834,
+          1.6469
+        ],
+        "likelihood": "GaussianLikelihood",
+        "noise_standardized": 0.15241059322476214
+      }
+    },
+    "winsorize_cutoffs_full_data": {
+      "e_reb_mJ": [
+        -Infinity,
+        19.3813075364
+      ],
+      "t180": [
+        -Infinity,
+        1.15945601445
+      ]
+    }
+  },
+  "noise": "inferred",
+  "num_samples": 256,
+  "warmup_steps": 512,
+  "seed_scheme": "torch.manual_seed(fold_index) per fold, manual_seed(10000) before the shared initial fit (identical to the full-nuts-rerun protocol; fold order asserted equal to full-nuts-rerun); folds split across worker processes, each repeating the seeded initial fit",
+  "snapshot": "t3-prism-bo-ax-client-round5.json",
+  "campaign_branch": "claude/issue-98-20260821-0103",
+  "campaign_code_commit": "bbf7a62",
+  "driver": "analysis/logocv-baselines/rerun_logocv_six_param_sim.py (analysis/cv-signal-audit/rerun_logocv_sim_features.py at 6964ac2 plus the six-parameter base space)",
+  "torch_threads": 1,
+  "fold_keys": [
+    "6lhxfy",
+    "r2d2c3",
+    "r2d2c4",
+    "r2d2c5",
+    "r2d2c6",
+    "r2d2c7",
+    "r2d2c8",
+    "r2d2c9",
+    "drran1",
+    "drran2",
+    "drran3",
+    "6nheas",
+    "drran4",
+    "drran5",
+    "drran6",
+    "drran7",
+    "drran8",
+    "drran9",
+    "9hhbkp",
+    "corny1",
+    "corny2",
+    "corny3",
+    "corny4",
+    "corny5",
+    "autv5r",
+    "corny6",
+    "corny7",
+    "corny8",
+    "corny9",
+    "bag26v",
+    "bpx68c",
+    "nvxsrv",
+    "ajhby6",
+    "r2d2c1",
+    "r2d2c2"
+  ],
+  "fold_seconds": {
+    "6lhxfy": 0.3,
+    "r2d2c3": 0.5,
+    "r2d2c4": 0.4,
+    "r2d2c5": 0.4,
+    "r2d2c6": 0.3,
+    "r2d2c7": 0.4,
+    "r2d2c8": 0.3,
+    "r2d2c9": 0.3,
+    "drran1": 0.4,
+    "drran2": 0.4,
+    "drran3": 0.3,
+    "6nheas": 0.3,
+    "drran4": 0.3,
+    "drran5": 0.3,
+    "drran6": 0.3,
+    "drran7": 0.5,
+    "drran8": 0.3,
+    "drran9": 0.5,
+    "9hhbkp": 0.5,
+    "corny1": 0.4,
+    "corny2": 0.3,
+    "corny3": 0.3,
+    "corny4": 0.4,
+    "corny5": 0.4,
+    "autv5r": 0.4,
+    "corny6": 0.3,
+    "corny7": 0.4,
+    "corny8": 0.5,
+    "corny9": 0.3,
+    "bag26v": 0.4,
+    "bpx68c": 0.4,
+    "nvxsrv": 0.3,
+    "ajhby6": 0.4,
+    "r2d2c1": 0.4,
+    "r2d2c2": 0.4
+  },
+  "status": "complete",
+  "total_fold_seconds": 13.0
+}

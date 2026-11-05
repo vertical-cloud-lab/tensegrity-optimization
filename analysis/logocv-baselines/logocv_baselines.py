@@ -58,6 +58,22 @@ typical out-of-sample error, which is what a parity error bar should show
 for a point predictor). ``gp`` reports its own predictive sd with the fitted
 noise level removed, which is what Ax's ``predicted_sem`` is for SAASBO.
 
+BO-framework surrogates (PR #121 follow-up, sgbaird, 2026-11-05: "try also
+with Ax default and separately also BoFire"), all on the same folds, read
+from their own drivers' outputs:
+
+- ``ax-default``: Ax 0.5.0's default model (``choose_generation_strategy``'s
+  BoTorch step: ``SingleTaskGP``, MAP, ``Winsorize`` in front), with the
+  archived SEMs as known noise, as Ax uses them when they are reported
+  (``data/ax-default-<space>/``, ``rerun_logocv_six_param_sim.py --model
+  ax-default``).
+- ``bofire``: BoFire 0.5.0's default surrogate (``SingleTaskGPSurrogate``,
+  MAP, noise learned; ``data/bofire/``, ``logocv_bofire.py``).
+- diagnostics that isolate the difference: ``ax-registry`` (Ax's GP with
+  the SAASBO transform stack, no ``Winsorize``, SEMs as noise),
+  ``ax-default-learned`` (Ax default with the SEMs blanked, noise learned),
+  ``saasbo-learned`` (SAASBO at 256/512 with the noise learned).
+
 Scorecard per (run, objective): n, MAPE, RMSE, R2_oos (1 - SSE / SSE of the
 per-fold training mean, so the ``mean`` baseline scores exactly 0), Spearman
 rho_s with a two-sided permutation p (20,000 shuffles, seed 0, the
@@ -132,14 +148,51 @@ AX_RUNS = {
     "sim-only": DATA / "ax-runs" / "sim-features-sim-only",
 }
 MODELS = ("mean", "session-mean", "ridge", "knn", "rf", "gp")
+# surrogates fitted by their own drivers (Ax, BoFire): campaign-format CSVs
+
+
+def _ax_csv(prefix):
+    return lambda space: DATA / f"{prefix}-{space}" / "t3-prism-bo-round5-logocv.csv"
+
+
+EXTERNAL = {
+    "saasbo": lambda space: AX_RUNS[space] / "t3-prism-bo-round5-logocv.csv",
+    "ax-default": _ax_csv("ax-default"),
+    "bofire": lambda space: DATA / "bofire" / f"bofire-{space}.csv",
+    "ax-registry": _ax_csv("ax-registry"),
+    "ax-default-learned": _ax_csv("ax-default-inferred-noise"),
+    "saasbo-learned": _ax_csv("ax-saasbo-inferred-noise"),
+}
+FRAMEWORKS = ("saasbo", "ax-default", "bofire")
+DIAGNOSTICS = ("ax-registry", "ax-default-learned", "saasbo-learned")
+RUN_ORDER = FRAMEWORKS + MODELS + DIAGNOSTICS
 MODEL_LABEL = {
     "saasbo": "SAASBO (Ax, 256/512)",
+    "ax-default": "Ax default (GP, MAP, SEMs as noise)",
+    "bofire": "BoFire default (GP, MAP, noise learned)",
+    "ax-registry": "Ax GP without Winsorize (SEMs as noise)",
+    "ax-default-learned": "Ax default, noise learned",
+    "saasbo-learned": "SAASBO, noise learned (256/512)",
     "mean": "training mean",
     "session-mean": "print-session mean",
     "ridge": "ridge (linear)",
     "knn": "k-nearest neighbours",
     "rf": "random forest (tuned)",
     "gp": "GP, ARD Matern (ML-II)",
+}
+GRID_LABEL = {
+    "saasbo": "SAASBO\n(SEMs as noise)",
+    "ax-default": "Ax default\n(SEMs as noise)",
+    "bofire": "BoFire default\n(noise learned)",
+    "ax-registry": "Ax GP, no Winsorize\n(SEMs as noise)",
+    "ax-default-learned": "Ax default\n(noise learned)",
+    "saasbo-learned": "SAASBO\n(noise learned)",
+    "mean": "training mean",
+    "session-mean": "print-session\nmean",
+    "ridge": "ridge (linear)",
+    "knn": "k-nearest\nneighbours",
+    "rf": "random forest\n(tuned)",
+    "gp": "GP, ARD Matern\n(ML-II)",
 }
 N_PERM = 20000
 SEED = 0
@@ -324,8 +377,8 @@ def run_baseline(model: str, space: str, table: pd.DataFrame) -> pd.DataFrame:
 
 # ---------------------------------------------------------------- scores
 def load_run(space: str, model: str) -> pd.DataFrame | None:
-    if model == "saasbo":
-        path = AX_RUNS[space] / "t3-prism-bo-round5-logocv.csv"
+    if model in EXTERNAL:
+        path = EXTERNAL[model](space)
     else:
         path = BASE_DIR / f"{model}-{space}.csv"
     if not path.exists():
@@ -373,13 +426,16 @@ def score(df: pd.DataFrame, table: pd.DataFrame, metric: str, rng) -> dict:
         "sd_pred_over_sd_obs": float(np.std(p) / np.std(o)),
         "coverage_1p96sd": float(np.mean(np.abs(o - p) <= 1.96 * s)),
         "median_predicted_sem": float(np.median(s)),
+        **({"coverage_1p96sd_bofire_sd_with_noise": float(np.mean(
+                np.abs(o - p) <= 1.96 * sub.predicted_sd_bofire.to_numpy()))}
+           if "predicted_sd_bofire" in sub else {}),
     }
 
 
 def score_all(table: pd.DataFrame, spaces) -> dict:
     out = {}
     for space in spaces:
-        for model in ("saasbo",) + MODELS:
+        for model in RUN_ORDER:
             df = load_run(space, model)
             if df is None:
                 continue
@@ -397,6 +453,7 @@ def score_all(table: pd.DataFrame, spaces) -> dict:
     pd.DataFrame(flat).to_csv(HERE / "scores.csv", index=False, float_format="%.4g")
     write_markdown(out, spaces)
     summarize_gp(spaces)
+    summarize_map_gps(spaces)
     return out
 
 
@@ -431,25 +488,118 @@ def summarize_gp(spaces) -> dict:
     return out
 
 
+def summarize_map_gps(spaces) -> dict:
+    """Median fitted lengthscale per input across the 35 folds of each MAP
+    BoTorch GP (Ax default and its variants: unit-cube inputs; BoFire: the
+    same unit cube), the share of folds at BoTorch's 0.025 lengthscale floor,
+    and the median learned noise. Written to data/map-gp-lengthscales.json."""
+    out = {}
+    floor = 0.025 * 1.001
+    for space in spaces:
+        cols = SPACES[space]
+        per = {}
+        for model, prefix in (("ax-default", "ax-default"),
+                              ("ax-registry", "ax-registry"),
+                              ("ax-default-learned", "ax-default-inferred-noise")):
+            path = DATA / f"{prefix}-{space}" / "folds.jsonl"
+            if not path.exists():
+                continue
+            recs = [json.loads(line) for line in path.read_text().splitlines()]
+            for m in METRICS:
+                per[(model, m)] = [r["hyperparameters"][m] for r in recs]
+        path = DATA / "bofire" / f"bofire-{space}-fits.json"
+        if path.exists():
+            fits = json.loads(path.read_text())
+            for m in METRICS:
+                per[("bofire", m)] = [v for k, v in fits.items() if k.endswith("/" + m)]
+        for (model, m), hs in per.items():
+            ls = np.array([h["lengthscale"] for h in hs], dtype=float)
+            assert ls.shape == (35, len(cols)), (model, space, m, ls.shape)
+            rec = {
+                "n_folds": int(len(ls)),
+                "median_lengthscale_unit_cube": dict(zip(cols, np.round(np.median(ls, axis=0), 4).tolist())),
+                "share_of_folds_at_0.025_floor": dict(zip(cols, np.round((ls <= floor).mean(axis=0), 2).tolist())),
+                "likelihood": hs[0].get("likelihood", "GaussianLikelihood"),
+            }
+            noise = [h["noise_standardized"] for h in hs if "noise_standardized" in h]
+            if noise:
+                rec["median_noise_standardized"] = float(np.median(noise))
+            out[f"{model}-{space}/{m}"] = rec
+    (DATA / "map-gp-lengthscales.json").write_text(json.dumps(out, indent=2) + "\n")
+    return out
+
+
 def _fmt_p(p):
     return "<0.001" if p < 0.001 else f"{p:.3f}"
 
 
-def write_markdown(out: dict, spaces) -> None:
+NOISE_LABEL = {
+    "saasbo": "SEMs as known noise (campaign)",
+    "saasbo-learned": "learned",
+    "ax-default": "SEMs as known noise",
+    "ax-default-learned": "learned",
+    "ax-registry": "SEMs as known noise",
+    "bofire": "learned",
+    "gp": "learned (white-noise term)",
+    "rf": "n/a",
+    "mean": "n/a",
+}
+SUMMARY_MODELS = ("saasbo", "saasbo-learned", "ax-default", "ax-default-learned",
+                  "ax-registry", "bofire", "gp", "rf", "mean")
+
+
+def summary_markdown(out: dict, spaces) -> list[str]:
+    """Compact model x (objective, space) matrices of rho_s, R2_oos and MAPE
+    for the BO-framework surrogates and the reference baselines."""
+    spaces = [sp for sp in ("six", "six-sim", "twelve") if sp in spaces]
+    short = {"six": "6 orig.", "six-sim": "6 orig. + sim", "twelve": "12 campaign"}
+    head = ("| model | noise | " + " | ".join(f"t180, {short[sp]}" for sp in spaces)
+            + " | " + " | ".join(f"E_reb, {short[sp]}" for sp in spaces) + " |")
+    rule = "|---|---|" + "--:|" * (2 * len(spaces))
     lines = []
+    for stat, title, fmt in (
+            ("spearman_rho", "Spearman rho_s, held-out prediction vs measurement (two-sided permutation p in brackets)", None),
+            ("R2_oos_vs_fold_mean", "R2_oos (1 - SSE / SSE of the per-fold training mean; 0 = the mean predictor)", "{:+.2f}"),
+            ("MAPE", "MAPE", "pct")):
+        lines += [f"### {title}", "", head, rule]
+        for model in SUMMARY_MODELS:
+            cells = []
+            for m in METRICS:
+                for sp in spaces:
+                    r = out.get(f"{model}-{sp}")
+                    if r is None:
+                        cells.append("not run")
+                        continue
+                    v = r[m]
+                    if stat == "spearman_rho":
+                        cells.append("mechanical" if model == "mean" else
+                                     f"{v['spearman_rho']:+.2f} ({_fmt_p(v['spearman_p_perm_two_sided'])})")
+                    elif fmt == "pct":
+                        cells.append(f"{100 * v['MAPE']:.1f}%")
+                    else:
+                        cells.append(fmt.format(round(v[stat], 2) + 0.0))
+            lines.append(f"| {MODEL_LABEL[model]} | {NOISE_LABEL[model]} | " + " | ".join(cells) + " |")
+        lines.append("")
+    return lines
+
+
+def write_markdown(out: dict, spaces) -> None:
+    lines = ["## Summary: BO-framework surrogates against the reference baselines", ""]
+    lines += summary_markdown(out, spaces)
+    lines += ["## Full scorecard", ""]
     for m, label in (("t180", "t180 (transmissibility)"), ("e_reb_mJ", "E_reb (mJ per drop)")):
         lines += [f"### {label}, held out over 35 design folds (44 articles)", "",
                   "| feature space | model | MAPE | RMSE | R2_oos | rho_s (perm p) | design-mean rho_s | r | spread / data sd | 95% cov |",
                   "|---|---|--:|--:|--:|--:|--:|--:|--:|--:|"]
         for space in spaces:
-            for model in ("saasbo",) + MODELS:
+            for model in RUN_ORDER:
                 r = out.get(f"{model}-{space}")
                 if r is None:
                     continue
                 s = r[m]
                 lines.append(
                     f"| {SPACE_LABEL[space]} | {MODEL_LABEL[model]} | {100 * s['MAPE']:.1f}% | "
-                    f"{s['RMSE']:.3g} | {s['R2_oos_vs_fold_mean']:+.2f} | "
+                    f"{s['RMSE']:.3g} | {round(s['R2_oos_vs_fold_mean'], 2) + 0.0:+.2f} | "
                     f"{s['spearman_rho']:+.2f} ({_fmt_p(s['spearman_p_perm_two_sided'])}) | "
                     f"{s['design_mean_spearman_rho']:+.2f} | {s['pearson_r']:+.2f} | "
                     f"{s['sd_pred_over_sd_obs']:.2f} | {100 * s['coverage_1p96sd']:.0f}% |")
@@ -469,7 +619,7 @@ def plot_run(space: str, model: str, table: pd.DataFrame, scores: dict) -> Path 
     return out
 
 
-def plot_grid(spaces, models, table: pd.DataFrame, scores: dict) -> None:
+def plot_grid(spaces, models, table: pd.DataFrame, scores: dict, tag: str = "") -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -496,7 +646,7 @@ def plot_grid(spaces, models, table: pd.DataFrame, scores: dict) -> None:
                     ax.set_ylim(*lim)
                     ax.set_aspect("equal", adjustable="box")
                     if i == 0:
-                        ax.set_title(MODEL_LABEL[mo], fontsize=10.5, pad=8)
+                        ax.set_title(GRID_LABEL.get(mo, MODEL_LABEL[mo]), fontsize=10.5, pad=8)
                     if j == 0:
                         ax.set_ylabel(SPACE_LABEL[sp].replace(" (", "\n("), fontsize=10)
                     if i == nr - 1:
@@ -519,7 +669,7 @@ def plot_grid(spaces, models, table: pd.DataFrame, scores: dict) -> None:
                          fontsize=12, y=1.0)
             fig.supylabel("Predicted", fontsize=11, x=0.004)
             fig.tight_layout()
-            out = FIGS / f"logocv-grid-{metric}.png"
+            out = FIGS / f"logocv-grid{tag}-{metric}.png"
             fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
             plt.close(fig)
             print(f"wrote {out.relative_to(ROOT)}")
@@ -536,7 +686,10 @@ def main(argv=None):
     ap.add_argument("--force", action="store_true", help="refit baselines that already have a CSV")
     ap.add_argument("--score", action="store_true")
     ap.add_argument("--plot", action="store_true")
-    ap.add_argument("--grid-models", nargs="*", default=["saasbo", "mean", "session-mean", "ridge", "knn", "rf", "gp"])
+    ap.add_argument("--grid-models", nargs="*", default=[
+        "saasbo", "ax-default", "bofire", "mean", "session-mean", "ridge", "knn", "rf", "gp"])
+    ap.add_argument("--bo-grid-models", nargs="*", default=[
+        "saasbo", "saasbo-learned", "ax-default", "ax-default-learned", "bofire", "rf"])
     args = ap.parse_args(argv)
 
     table = build_table() if args.build_table or not TABLE_CSV.exists() else load_table()
@@ -553,11 +706,12 @@ def main(argv=None):
         print((HERE / "scores.md").read_text())
     if args.plot:
         for space in args.spaces:
-            for model in ("saasbo",) + MODELS:
+            for model in RUN_ORDER:
                 p = plot_run(space, model, table, scores)
                 if p is not None:
                     print(f"wrote {p.relative_to(ROOT)}")
         plot_grid(args.spaces, args.grid_models, table, scores)
+        plot_grid(args.spaces, args.bo_grid_models, table, scores, tag="-bo")
 
 
 if __name__ == "__main__":

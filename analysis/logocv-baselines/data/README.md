@@ -58,3 +58,51 @@ Branch `claude/cv-signal-audit-20260922` at commit `6964ac2`, directory
   `<model>-<space>-fits.json` recording the hyperparameters each fold chose
   (`../logocv_baselines.py --fit`). Models and spaces are defined in that
   script's docstring.
+
+## Produced on this branch: Ax default, BoFire and the noise diagnostics
+
+PR #121 follow-up (sgbaird, 2026-11-05): "try also with Ax default and
+separately also BoFire". Every run below uses the 35 design folds, 44
+articles and observed values of the runs above.
+
+- `ax-default-<space>/` (`six`, `six-sim`, `twelve`): Ax 0.5.0's default
+  model, i.e. the BoTorch step of `choose_generation_strategy` (what
+  `AxClient` builds when no generation strategy is given):
+  `Models.BOTORCH_MODULAR`, default surrogate `SingleTaskGP` (BoTorch 0.13
+  default priors, MAP fit), transforms `Winsorize` + the SAASBO stack. The
+  archived SEMs enter as known noise (`FixedNoiseGaussianLikelihood`), as they
+  do whenever Ax is given SEMs. By `../rerun_logocv_six_param_sim.py --model
+  ax-default --variant <space>`.
+- `ax-registry-<space>/`: the same GP with the registry transforms (no
+  `Winsorize`), i.e. the SAASBO run with only the model class changed
+  (`--model ax-registry`).
+- `ax-default-inferred-noise-<space>/`: Ax default with the SEMs blanked
+  (`sem = NaN`), so the GP learns one noise level per objective
+  (`--model ax-default --noise inferred`).
+- `ax-saasbo-inferred-noise-<space>/`: SAASBO at 256/512 with the SEMs
+  blanked (`--model saasbo --noise inferred`); per-fold seeds as in the
+  archived runs.
+
+  Each Ax directory has the layout of `ax-six-sim/`. For the MAP models each
+  `folds.jsonl` record also carries `hyperparameters` (fitted lengthscales
+  on the unit cube, likelihood type, learned noise where there is one), and
+  `state.json` carries `model_info` (the generation strategy, transforms,
+  Winsorize cutoffs, full-data fit). The MAP refits use
+  `warm_start_refit=False` (each fold starts from the prior, not from the
+  full-data optimum); a check with Ax's warm start moved rho_s by at most
+  0.04.
+- `bofire/`: BoFire 0.5.0's default surrogate (`SingleTaskGPSurrogate`, one
+  per objective, data-model defaults, noise learned), by
+  `../logocv_bofire.py`: `bofire-<space>.csv` (campaign layout; `predicted_sem`
+  is the latent sd, `predicted_sd_bofire` is BoFire's own `predict()` sd with
+  the learned noise added), `bofire-<space>-fits.json` (per fold and
+  objective: lengthscales, learned noise, seconds), `state.json` (versions,
+  the resolved data-model defaults).
+- `fit-space-bounds.json`: the input bounds every run fits in (the campaign's
+  `fit_search_space` for the twelve parameters, the padded observed range for
+  the six simulation features), so that BoFire's domain matches Ax's search
+  space.
+- `map-gp-lengthscales.json`: per MAP GP run and objective, the median fitted
+  lengthscale of each input over the 35 folds, the share of folds at BoTorch's
+  0.025 lengthscale floor, and the median learned noise (by
+  `../logocv_baselines.py --score`).
