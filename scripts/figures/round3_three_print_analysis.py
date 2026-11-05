@@ -21,7 +21,10 @@ gauge, the ratio of CFC-1000 to CFC-180 transmissibility, is below 1.145
 and it carries no transmissibility-drift flag.
 
 E_reb = e_rebound * m * g * h (mJ per drop) with the session's weighed mass,
-g = 9.80665 m/s^2 and h = 60 in, the convention of the campaign tables.
+g = 9.80665 m/s^2 and h = 60 in, the first-power form batches 2 to 4 were
+recommended under; every number in the outputs above uses it. The figure's
+panel (b) plots the second objective as reported from 2026-10-29, the
+mass-weighted rebound index I_reb = m * e_rebound**2 (mg).
 VLI = 1 - e_rebound.
 """
 
@@ -57,10 +60,12 @@ def load_print(tag: str, fname: str) -> pd.DataFrame:
         d["trial"] = d.spec.str.lstrip("t").astype(int)
     d = d.assign(print_=tag, gauge=d.t1000_mean / d.t180_mean,
                  e_reb_mJ=e_reb_mj(d), vli=1 - d.e_rebound_mean,
+                 i_reb_mg=1000 * d.mass_g * d.e_rebound_mean ** 2,
                  drift=d.t_drift_flag.astype(str).eq("True"))
     d["screened"] = (d.gauge < GAUGE_MAX) & ~d.drift
     return d[["trial", "print_", "specimen", "mass_g", "n_valid", "t180_mean",
-              "t180_sd", "gauge", "drift", "screened", "e_reb_mJ", "vli"]]
+              "t180_sd", "gauge", "drift", "screened", "e_reb_mJ", "vli",
+              "i_reb_mg"]]
 
 
 def icc_oneway(groups: list[np.ndarray]) -> float:
@@ -252,13 +257,13 @@ def main() -> None:
     pd.DataFrame(rows).to_csv(OUT_CSV, index=False)
     OUT_JSON.write_text(json.dumps(s, indent=1, default=float) + "\n")
 
-    # Figure: per-design transmissibility and E_reb across the three prints.
+    # Figure: per-design transmissibility and I_reb across the three prints.
     order = dmean_scr.sort_values().index
     fig, axes = plt.subplots(1, 2, figsize=(9.5, 3.6), constrained_layout=True)
     marks = {"drran": "o", "2dran": "s", "dran3": "^"}
     names = {"drran": "print 1", "2dran": "print 2", "dran3": "print 3"}
     for ax, col, lab, tag in [(axes[0], "t180_mean", r"transmissibility $t_{180}$", "(a)"),
-                              (axes[1], "e_reb_mJ", r"$E_{\mathrm{reb}}$, mass-weighted rebound (mJ per drop)", "(b)")]:
+                              (axes[1], "i_reb_mg", r"$I_{\mathrm{reb}}$, mass-weighted rebound index (mg)", "(b)")]:
         ax.set_title(tag, loc="left", fontsize=9)
         for k, (p, _) in enumerate(PRINTS):
             d = long[long.print_ == p].set_index("trial").reindex(order)
