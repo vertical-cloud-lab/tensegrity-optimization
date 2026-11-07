@@ -1,0 +1,7 @@
+pair,obj1,obj2,ref_obj1,ref_obj2,ceiling_hv_cloud,ceiling_hv_polished
+strain,t180,peak_tendon_strain,1.03871,0.246564,0.0624177,0.0635583
+rebound,t180,e_rebound,1.03871,0.647274,0.0149354,
+envelope,t180,envelope_cm3,1.03871,262.446,84.0232,85.9287
+stroke,t180,stroke_mm,1.03871,37.8093,12.6171,
+strain_envelope,peak_tendon_strain,envelope_cm3,0.246564,262.446,51.5251,
+envelope_straincap,t180,envelope_cm3,1.03871,262.264,62.5395,
