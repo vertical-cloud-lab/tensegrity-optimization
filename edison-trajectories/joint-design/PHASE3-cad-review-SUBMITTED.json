@@ -1,0 +1,12 @@
+{
+  "task_id": "19e0c868-3587-440d-ba4a-07da4dddf99a",
+  "name": "ANALYSIS",
+  "submitted_at": "2026-05-09T05:12:10Z",
+  "attached_files": {
+    "cad-joint-design.zip": "data_entry:95de1583-341d-4905-b054-d212ba1322c2",
+    "analysis-followup-ce84ddf8.md": "data_entry:2f615951-23da-44bc-84a7-59f0a9cb8bdc",
+    "joint-design-README.md": "data_entry:cdc0c051-b060-4167-89f5-76d79c1b2473",
+    "task-manifest.json": "data_entry:6f3967a1-b986-44d0-b666-ef07f2e710ff"
+  },
+  "purpose": "Visual + technical CAD review against published prior art; request concrete dimensional refinements for the new primary (Design B \u2014 dovetail) and backup (Design A \u2014 anchor-bulb) before the first H2D PETG+TPU multi-material print."
+}

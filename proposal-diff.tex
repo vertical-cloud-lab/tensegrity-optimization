@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/proposal-orig.tex   Mon Mar 16 17:47:02 2026
-%DIF ADD proposal.tex             Mon Mar 16 17:11:21 2026
+%DIF DEL /tmp/proposal_old.tex   Fri Jun 12 01:07:17 2026
+%DIF ADD proposal.tex            Fri Jun 12 00:59:22 2026
 
 % --- Packages ---
 \usepackage[margin=1in]{geometry}
@@ -148,7 +148,11 @@ than merely a deviation from idealized behavior.
 
 Multi-material 3D printing with PLA (rigid struts) and TPU (flexible tension
 elements) enables rapid fabrication of diverse tensegrity-inspired geometries
-\citep{ye2023multimaterial, khatri2024energy}.  Rather
+\DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{ye2023multimaterial, khatri2024energy}}\hskip0pt%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{khatri2024energy}}\hskip0pt%DIFAUXCMD
+}\DIFaddend .  Rather
 than relying on costly simulations, we leverage this manufacturing
 agility for a \textbf{high-throughput experimental approach}: students
 will print, test, and iterate on many candidate designs---we estimate 50--100+
@@ -182,11 +186,14 @@ Pajunen et al.\ \citep{pajunen2019design} demonstrated that
 \emph{tensegrity-inspired} unit cells can be directly 3D-printed and exhibit
 load-limiting plateaus under drop-weight impact.
 Multi-material rigid--soft printing
-\citep{ye2023multimaterial, khatri2024energy} has shown that PLA--TPU
+\DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{ye2023multimaterial, khatri2024energy} }\hskip0pt%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{khatri2024energy} }\hskip0pt%DIFAUXCMD
+}\DIFaddend has shown that PLA--TPU
 combinations on a single FDM platform achieve tunable energy
-absorption via a wrapping-based strategy (rigid cores
-encapsulated by continuous soft skins) that prevents interface delamination and
-enables cyclic durability---a critical enabler for our fabrication approach.
+absorption \DIFdelbegin \DIFdel{via a wrapping-based strategy (rigid cores
+encapsulated by continuous soft skins) that prevents interface delamination and enables }\DIFdelend \DIFaddbegin \DIFadd{and }\DIFaddend cyclic durability---a critical enabler for our fabrication approach.
 
 \textbf{Bayesian optimization} (BO) is a sequential, model-based strategy for
 optimizing expensive black-box functions using a Gaussian process surrogate
@@ -216,10 +223,12 @@ backbone of the project.  Working under weekly mentoring from
 Prof.~Hill, the student will \textbf{parameterize a family of
 tensegrity-inspired unit cells} in CAD (SolidWorks or Fusion~360), defining key
 variables---strut diameter and length (PLA), tension-element cross-section
-(TPU), connectivity topology, and unit-cell tiling---that span the design space.
-Following \citet{ye2023multimaterial}, the designs use a core-wrapping strategy
+(TPU), connectivity topology, and unit-cell tiling---that span the design space\DIFdelbegin \DIFdel{.
+Following \mbox{%DIFAUXCMD
+\citet{ye2023multimaterial}}\hskip0pt%DIFAUXCMD
+, the designs use a core-wrapping strategy
 (rigid PLA struts encapsulated by continuous TPU skins) to ensure robust
-mechanical interlocking. PLA--TPU interface robustness will be validated during early print trials.
+mechanical interlocking. PLA--TPU interface robustness will be validated during early print trials}\DIFdelend .
 
 The student will then \textbf{fabricate structures} using the department's
 multi-material FDM printer, iterating on print parameters
