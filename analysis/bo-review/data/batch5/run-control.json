@@ -1,0 +1,122 @@
+{
+  "tag": "control",
+  "rebound_form": "me2",
+  "thresholds_set": false,
+  "fixed_filament": false,
+  "seed": 42,
+  "threads": 1,
+  "gen_seconds": 1826.9,
+  "objective_thresholds_per_trial": [
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ],
+    [
+      {
+        "metric": "m_e2_mg",
+        "bound": 8.752049826551625,
+        "relative": false
+      },
+      {
+        "metric": "t180",
+        "bound": 1.0653625490325123,
+        "relative": false
+      }
+    ]
+  ],
+  "acqf_class": "qLogNoisyExpectedHypervolumeImprovement",
+  "total_seconds": 1829.3,
+  "suggestions_csv": "/tmp/b5-control/bo/t3-prism-bo-suggestions-round6.csv"
+}

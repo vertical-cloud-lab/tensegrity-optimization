@@ -1,0 +1,170 @@
+{
+  "gp-six/t180": {
+    "n_folds": 35,
+    "median_lengthscale": {
+      "R_mm": 2.39,
+      "H_mm": 2.57,
+      "twist_deg": 1.95,
+      "strut_d_mm": 100.0,
+      "cable_d_mm": 0.1,
+      "mass_printed_g": 6.29
+    },
+    "share_at_upper_bound": {
+      "R_mm": 0.0,
+      "H_mm": 0.09,
+      "twist_deg": 0.0,
+      "strut_d_mm": 1.0,
+      "cable_d_mm": 0.0,
+      "mass_printed_g": 0.03
+    },
+    "median_noise_level_normalized": 0.276
+  },
+  "gp-six/e_reb_mJ": {
+    "n_folds": 35,
+    "median_lengthscale": {
+      "R_mm": 1.57,
+      "H_mm": 100.0,
+      "twist_deg": 100.0,
+      "strut_d_mm": 100.0,
+      "cable_d_mm": 1.53,
+      "mass_printed_g": 100.0
+    },
+    "share_at_upper_bound": {
+      "R_mm": 0.0,
+      "H_mm": 0.97,
+      "twist_deg": 1.0,
+      "strut_d_mm": 1.0,
+      "cable_d_mm": 0.0,
+      "mass_printed_g": 1.0
+    },
+    "median_noise_level_normalized": 0.837
+  },
+  "gp-six-sim/t180": {
+    "n_folds": 35,
+    "median_lengthscale": {
+      "R_mm": 100.0,
+      "H_mm": 100.0,
+      "twist_deg": 2.2,
+      "strut_d_mm": 100.0,
+      "cable_d_mm": 0.914,
+      "mass_printed_g": 8.04,
+      "sim_tierC_t180": 100.0,
+      "sim_tierC_tendon_energy_mJ": 100.0,
+      "sim_tierC_stroke_mm": 100.0,
+      "sim_tierB_t180": 100.0,
+      "sim_tierB_fn_hz": 100.0,
+      "sim_tierB_zeta_pct": 100.0
+    },
+    "share_at_upper_bound": {
+      "R_mm": 0.71,
+      "H_mm": 0.74,
+      "twist_deg": 0.11,
+      "strut_d_mm": 0.91,
+      "cable_d_mm": 0.29,
+      "mass_printed_g": 0.29,
+      "sim_tierC_t180": 0.69,
+      "sim_tierC_tendon_energy_mJ": 0.6,
+      "sim_tierC_stroke_mm": 0.54,
+      "sim_tierB_t180": 1.0,
+      "sim_tierB_fn_hz": 1.0,
+      "sim_tierB_zeta_pct": 0.54
+    },
+    "median_noise_level_normalized": 0.28
+  },
+  "gp-six-sim/e_reb_mJ": {
+    "n_folds": 35,
+    "median_lengthscale": {
+      "R_mm": 100.0,
+      "H_mm": 100.0,
+      "twist_deg": 100.0,
+      "strut_d_mm": 100.0,
+      "cable_d_mm": 100.0,
+      "mass_printed_g": 100.0,
+      "sim_tierC_t180": 100.0,
+      "sim_tierC_tendon_energy_mJ": 1.87,
+      "sim_tierC_stroke_mm": 100.0,
+      "sim_tierB_t180": 100.0,
+      "sim_tierB_fn_hz": 100.0,
+      "sim_tierB_zeta_pct": 100.0
+    },
+    "share_at_upper_bound": {
+      "R_mm": 0.89,
+      "H_mm": 0.89,
+      "twist_deg": 0.97,
+      "strut_d_mm": 1.0,
+      "cable_d_mm": 0.94,
+      "mass_printed_g": 0.94,
+      "sim_tierC_t180": 1.0,
+      "sim_tierC_tendon_energy_mJ": 0.06,
+      "sim_tierC_stroke_mm": 1.0,
+      "sim_tierB_t180": 1.0,
+      "sim_tierB_fn_hz": 0.94,
+      "sim_tierB_zeta_pct": 0.94
+    },
+    "median_noise_level_normalized": 0.797
+  },
+  "gp-twelve/t180": {
+    "n_folds": 35,
+    "median_lengthscale": {
+      "R_mm": 2.39,
+      "H_mm": 2.57,
+      "twist_deg": 1.95,
+      "strut_d_mm": 100.0,
+      "cable_d_mm": 0.1,
+      "mass_printed_g": 6.27,
+      "strut_infill_pct": 100.0,
+      "tpu_infill_pct": 100.0,
+      "pla_nozzle_temp_C": 100.0,
+      "pla_flow_mm3_s": 100.0,
+      "tpu_nozzle_temp_C": 100.0,
+      "tpu_flow_mm3_s": 100.0
+    },
+    "share_at_upper_bound": {
+      "R_mm": 0.0,
+      "H_mm": 0.09,
+      "twist_deg": 0.0,
+      "strut_d_mm": 1.0,
+      "cable_d_mm": 0.0,
+      "mass_printed_g": 0.03,
+      "strut_infill_pct": 1.0,
+      "tpu_infill_pct": 0.94,
+      "pla_nozzle_temp_C": 1.0,
+      "pla_flow_mm3_s": 0.97,
+      "tpu_nozzle_temp_C": 1.0,
+      "tpu_flow_mm3_s": 1.0
+    },
+    "median_noise_level_normalized": 0.276
+  },
+  "gp-twelve/e_reb_mJ": {
+    "n_folds": 35,
+    "median_lengthscale": {
+      "R_mm": 1.33,
+      "H_mm": 100.0,
+      "twist_deg": 100.0,
+      "strut_d_mm": 100.0,
+      "cable_d_mm": 2.38,
+      "mass_printed_g": 100.0,
+      "strut_infill_pct": 2.06,
+      "tpu_infill_pct": 3.7,
+      "pla_nozzle_temp_C": 18.5,
+      "pla_flow_mm3_s": 100.0,
+      "tpu_nozzle_temp_C": 100.0,
+      "tpu_flow_mm3_s": 100.0
+    },
+    "share_at_upper_bound": {
+      "R_mm": 0.0,
+      "H_mm": 0.66,
+      "twist_deg": 1.0,
+      "strut_d_mm": 1.0,
+      "cable_d_mm": 0.0,
+      "mass_printed_g": 1.0,
+      "strut_infill_pct": 0.0,
+      "tpu_infill_pct": 0.06,
+      "pla_nozzle_temp_C": 0.49,
+      "pla_flow_mm3_s": 1.0,
+      "tpu_nozzle_temp_C": 1.0,
+      "tpu_flow_mm3_s": 1.0
+    },
+    "median_noise_level_normalized": 0.602
+  }
+}

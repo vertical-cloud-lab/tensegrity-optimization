@@ -1,0 +1,2294 @@
+[
+ {
+  "dataset": "all-twelve",
+  "noise": "fixed",
+  "budget": "1024/512",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.191,
+   "strut_infill_pct": 0.095,
+   "R_mm": 0.087,
+   "pla_nozzle_temp_C": 0.084,
+   "H_mm": 0.073,
+   "twist_deg": 0.069,
+   "tpu_nozzle_temp_C": 0.069,
+   "tpu_flow_mm3_s": 0.068,
+   "strut_d_mm": 0.067,
+   "pla_flow_mm3_s": 0.067,
+   "cable_d_mm": 0.066,
+   "tpu_infill_pct": 0.065
+  },
+  "importance_seed_sd_max": 0.03,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.03,
+    "R_mm": 0.025,
+    "cable_d_mm": 0.027,
+    "mass_printed_g": 0.012,
+    "pla_flow_mm3_s": 0.029,
+    "pla_nozzle_temp_C": 0.027,
+    "strut_d_mm": 0.034,
+    "strut_infill_pct": 0.019,
+    "tpu_flow_mm3_s": 0.025,
+    "tpu_infill_pct": 0.041,
+    "tpu_nozzle_temp_C": 0.029,
+    "twist_deg": 0.031
+   },
+   "1": {
+    "H_mm": 0.038,
+    "R_mm": 0.021,
+    "cable_d_mm": 0.04,
+    "mass_printed_g": 0.013,
+    "pla_flow_mm3_s": 0.037,
+    "pla_nozzle_temp_C": 0.035,
+    "strut_d_mm": 0.052,
+    "strut_infill_pct": 0.034,
+    "tpu_flow_mm3_s": 0.046,
+    "tpu_infill_pct": 0.034,
+    "tpu_nozzle_temp_C": 0.04,
+    "twist_deg": 0.058
+   },
+   "2": {
+    "H_mm": 0.029,
+    "R_mm": 0.027,
+    "cable_d_mm": 0.029,
+    "mass_printed_g": 0.01,
+    "pla_flow_mm3_s": 0.034,
+    "pla_nozzle_temp_C": 0.017,
+    "strut_d_mm": 0.025,
+    "strut_infill_pct": 0.021,
+    "tpu_flow_mm3_s": 0.029,
+    "tpu_infill_pct": 0.027,
+    "tpu_nozzle_temp_C": 0.024,
+    "twist_deg": 0.023
+   },
+   "3": {
+    "H_mm": 0.027,
+    "R_mm": 0.035,
+    "cable_d_mm": 0.042,
+    "mass_printed_g": 0.012,
+    "pla_flow_mm3_s": 0.034,
+    "pla_nozzle_temp_C": 0.033,
+    "strut_d_mm": 0.029,
+    "strut_infill_pct": 0.023,
+    "tpu_flow_mm3_s": 0.035,
+    "tpu_infill_pct": 0.039,
+    "tpu_nozzle_temp_C": 0.04,
+    "twist_deg": 0.029
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.065,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.99,
+   "H_mm": 0.985,
+   "twist_deg": 1.019,
+   "strut_d_mm": 1.065,
+   "cable_d_mm": 1.018,
+   "mass_printed_g": 0.988,
+   "strut_infill_pct": 1.027,
+   "tpu_infill_pct": 0.99,
+   "pla_nozzle_temp_C": 1.019,
+   "pla_flow_mm3_s": 0.985,
+   "tpu_nozzle_temp_C": 1.012,
+   "tpu_flow_mm3_s": 1.003
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.000295098605626648,
+  "posterior_mean_at_train_seed_sd_max": 0.023873888656507636,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0,
+   0.0001,
+   0.0001,
+   0.0001
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "fixed",
+  "budget": "1024/512",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.447,
+   "strut_infill_pct": 0.064,
+   "cable_d_mm": 0.059,
+   "tpu_flow_mm3_s": 0.055,
+   "pla_nozzle_temp_C": 0.054,
+   "R_mm": 0.051,
+   "H_mm": 0.049,
+   "tpu_infill_pct": 0.048,
+   "tpu_nozzle_temp_C": 0.048,
+   "twist_deg": 0.044,
+   "pla_flow_mm3_s": 0.043,
+   "strut_d_mm": 0.039
+  },
+  "importance_seed_sd_max": 0.025,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.462,
+    "R_mm": 0.398,
+    "cable_d_mm": 0.394,
+    "mass_printed_g": 0.041,
+    "pla_flow_mm3_s": 0.44,
+    "pla_nozzle_temp_C": 0.339,
+    "strut_d_mm": 0.496,
+    "strut_infill_pct": 0.295,
+    "tpu_flow_mm3_s": 0.264,
+    "tpu_infill_pct": 0.423,
+    "tpu_nozzle_temp_C": 0.423,
+    "twist_deg": 0.434
+   },
+   "1": {
+    "H_mm": 0.423,
+    "R_mm": 0.324,
+    "cable_d_mm": 0.281,
+    "mass_printed_g": 0.039,
+    "pla_flow_mm3_s": 0.486,
+    "pla_nozzle_temp_C": 0.432,
+    "strut_d_mm": 0.451,
+    "strut_infill_pct": 0.272,
+    "tpu_flow_mm3_s": 0.333,
+    "tpu_infill_pct": 0.352,
+    "tpu_nozzle_temp_C": 0.344,
+    "twist_deg": 0.454
+   },
+   "2": {
+    "H_mm": 0.551,
+    "R_mm": 0.511,
+    "cable_d_mm": 0.368,
+    "mass_printed_g": 0.046,
+    "pla_flow_mm3_s": 0.556,
+    "pla_nozzle_temp_C": 0.438,
+    "strut_d_mm": 0.446,
+    "strut_infill_pct": 0.337,
+    "tpu_flow_mm3_s": 0.427,
+    "tpu_infill_pct": 0.386,
+    "tpu_nozzle_temp_C": 0.442,
+    "twist_deg": 0.445
+   },
+   "3": {
+    "H_mm": 0.248,
+    "R_mm": 0.31,
+    "cable_d_mm": 0.275,
+    "mass_printed_g": 0.044,
+    "pla_flow_mm3_s": 0.334,
+    "pla_nozzle_temp_C": 0.258,
+    "strut_d_mm": 0.601,
+    "strut_infill_pct": 0.285,
+    "tpu_flow_mm3_s": 0.398,
+    "tpu_infill_pct": 0.439,
+    "tpu_nozzle_temp_C": 0.389,
+    "twist_deg": 0.393
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.018,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.99,
+   "H_mm": 0.992,
+   "twist_deg": 1.001,
+   "strut_d_mm": 0.988,
+   "cable_d_mm": 0.988,
+   "mass_printed_g": 1.018,
+   "strut_infill_pct": 0.98,
+   "tpu_infill_pct": 0.98,
+   "pla_nozzle_temp_C": 0.974,
+   "pla_flow_mm3_s": 1.002,
+   "tpu_nozzle_temp_C": 0.983,
+   "tpu_flow_mm3_s": 0.979
+  },
+  "posterior_mean_at_train_seed_sd_median": 8.869618443143894e-07,
+  "posterior_mean_at_train_seed_sd_max": 3.473230964580851e-05,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0043,
+   0.0019,
+   0.0045,
+   0.003
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "fixed",
+  "budget": "256/128",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.227,
+   "R_mm": 0.082,
+   "tpu_infill_pct": 0.076,
+   "twist_deg": 0.076,
+   "cable_d_mm": 0.074,
+   "strut_infill_pct": 0.071,
+   "H_mm": 0.068,
+   "strut_d_mm": 0.068,
+   "tpu_nozzle_temp_C": 0.066,
+   "pla_nozzle_temp_C": 0.066,
+   "pla_flow_mm3_s": 0.064,
+   "tpu_flow_mm3_s": 0.06
+  },
+  "importance_seed_sd_max": 0.1,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.047,
+    "R_mm": 0.036,
+    "cable_d_mm": 0.04,
+    "mass_printed_g": 0.012,
+    "pla_flow_mm3_s": 0.055,
+    "pla_nozzle_temp_C": 0.042,
+    "strut_d_mm": 0.063,
+    "strut_infill_pct": 0.043,
+    "tpu_flow_mm3_s": 0.06,
+    "tpu_infill_pct": 0.044,
+    "tpu_nozzle_temp_C": 0.043,
+    "twist_deg": 0.054
+   },
+   "1": {
+    "H_mm": 0.023,
+    "R_mm": 0.021,
+    "cable_d_mm": 0.018,
+    "mass_printed_g": 0.015,
+    "pla_flow_mm3_s": 0.02,
+    "pla_nozzle_temp_C": 0.024,
+    "strut_d_mm": 0.016,
+    "strut_infill_pct": 0.029,
+    "tpu_flow_mm3_s": 0.028,
+    "tpu_infill_pct": 0.028,
+    "tpu_nozzle_temp_C": 0.02,
+    "twist_deg": 0.022
+   },
+   "2": {
+    "H_mm": 0.047,
+    "R_mm": 0.026,
+    "cable_d_mm": 0.042,
+    "mass_printed_g": 0.015,
+    "pla_flow_mm3_s": 0.035,
+    "pla_nozzle_temp_C": 0.044,
+    "strut_d_mm": 0.041,
+    "strut_infill_pct": 0.028,
+    "tpu_flow_mm3_s": 0.044,
+    "tpu_infill_pct": 0.036,
+    "tpu_nozzle_temp_C": 0.055,
+    "twist_deg": 0.036
+   },
+   "3": {
+    "H_mm": 0.038,
+    "R_mm": 0.052,
+    "cable_d_mm": 0.047,
+    "mass_printed_g": 0.008,
+    "pla_flow_mm3_s": 0.078,
+    "pla_nozzle_temp_C": 0.052,
+    "strut_d_mm": 0.06,
+    "strut_infill_pct": 0.055,
+    "tpu_flow_mm3_s": 0.042,
+    "tpu_infill_pct": 0.028,
+    "tpu_nozzle_temp_C": 0.047,
+    "twist_deg": 0.03
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.592,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.073,
+   "H_mm": 0.977,
+   "twist_deg": 0.986,
+   "strut_d_mm": 1.34,
+   "cable_d_mm": 1.035,
+   "mass_printed_g": 0.968,
+   "strut_infill_pct": 1.001,
+   "tpu_infill_pct": 1.079,
+   "pla_nozzle_temp_C": 1.03,
+   "pla_flow_mm3_s": 1.043,
+   "tpu_nozzle_temp_C": 1.592,
+   "tpu_flow_mm3_s": 0.917
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0004438694150491939,
+  "posterior_mean_at_train_seed_sd_max": 0.05467718315333502,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "fixed",
+  "budget": "256/128",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.412,
+   "tpu_flow_mm3_s": 0.063,
+   "cable_d_mm": 0.061,
+   "strut_infill_pct": 0.059,
+   "pla_flow_mm3_s": 0.059,
+   "tpu_nozzle_temp_C": 0.058,
+   "pla_nozzle_temp_C": 0.054,
+   "R_mm": 0.053,
+   "strut_d_mm": 0.047,
+   "tpu_infill_pct": 0.047,
+   "twist_deg": 0.046,
+   "H_mm": 0.041
+  },
+  "importance_seed_sd_max": 0.08,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.385,
+    "R_mm": 0.26,
+    "cable_d_mm": 0.709,
+    "mass_printed_g": 0.041,
+    "pla_flow_mm3_s": 0.381,
+    "pla_nozzle_temp_C": 0.458,
+    "strut_d_mm": 0.591,
+    "strut_infill_pct": 0.468,
+    "tpu_flow_mm3_s": 0.407,
+    "tpu_infill_pct": 0.384,
+    "tpu_nozzle_temp_C": 0.442,
+    "twist_deg": 0.834
+   },
+   "1": {
+    "H_mm": 0.677,
+    "R_mm": 0.272,
+    "cable_d_mm": 0.261,
+    "mass_printed_g": 0.055,
+    "pla_flow_mm3_s": 0.363,
+    "pla_nozzle_temp_C": 0.242,
+    "strut_d_mm": 0.259,
+    "strut_infill_pct": 0.284,
+    "tpu_flow_mm3_s": 0.594,
+    "tpu_infill_pct": 0.426,
+    "tpu_nozzle_temp_C": 0.237,
+    "twist_deg": 0.303
+   },
+   "2": {
+    "H_mm": 0.351,
+    "R_mm": 0.363,
+    "cable_d_mm": 0.342,
+    "mass_printed_g": 0.05,
+    "pla_flow_mm3_s": 0.315,
+    "pla_nozzle_temp_C": 0.311,
+    "strut_d_mm": 0.348,
+    "strut_infill_pct": 0.28,
+    "tpu_flow_mm3_s": 0.138,
+    "tpu_infill_pct": 0.436,
+    "tpu_nozzle_temp_C": 0.267,
+    "twist_deg": 0.315
+   },
+   "3": {
+    "H_mm": 0.549,
+    "R_mm": 1.113,
+    "cable_d_mm": 0.209,
+    "mass_printed_g": 0.042,
+    "pla_flow_mm3_s": 0.264,
+    "pla_nozzle_temp_C": 0.507,
+    "strut_d_mm": 0.629,
+    "strut_infill_pct": 0.306,
+    "tpu_flow_mm3_s": 0.437,
+    "tpu_infill_pct": 0.39,
+    "tpu_nozzle_temp_C": 0.488,
+    "twist_deg": 0.448
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.142,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.02,
+   "H_mm": 0.947,
+   "twist_deg": 0.954,
+   "strut_d_mm": 1.072,
+   "cable_d_mm": 1.033,
+   "mass_printed_g": 0.983,
+   "strut_infill_pct": 1.09,
+   "tpu_infill_pct": 0.929,
+   "pla_nozzle_temp_C": 1.12,
+   "pla_flow_mm3_s": 1.013,
+   "tpu_nozzle_temp_C": 1.142,
+   "tpu_flow_mm3_s": 0.973
+  },
+  "posterior_mean_at_train_seed_sd_median": 1.2909944487155973e-06,
+  "posterior_mean_at_train_seed_sd_max": 7.335473172657505e-05,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0037,
+   0.0024,
+   0.0007,
+   0.0047
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "fixed",
+  "budget": "512/256",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.205,
+   "tpu_nozzle_temp_C": 0.089,
+   "strut_infill_pct": 0.083,
+   "twist_deg": 0.082,
+   "tpu_infill_pct": 0.077,
+   "cable_d_mm": 0.072,
+   "tpu_flow_mm3_s": 0.068,
+   "strut_d_mm": 0.067,
+   "pla_nozzle_temp_C": 0.066,
+   "H_mm": 0.066,
+   "pla_flow_mm3_s": 0.063,
+   "R_mm": 0.062
+  },
+  "importance_seed_sd_max": 0.053,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.019,
+    "R_mm": 0.03,
+    "cable_d_mm": 0.028,
+    "mass_printed_g": 0.011,
+    "pla_flow_mm3_s": 0.026,
+    "pla_nozzle_temp_C": 0.029,
+    "strut_d_mm": 0.029,
+    "strut_infill_pct": 0.027,
+    "tpu_flow_mm3_s": 0.027,
+    "tpu_infill_pct": 0.019,
+    "tpu_nozzle_temp_C": 0.022,
+    "twist_deg": 0.036
+   },
+   "1": {
+    "H_mm": 0.039,
+    "R_mm": 0.07,
+    "cable_d_mm": 0.035,
+    "mass_printed_g": 0.018,
+    "pla_flow_mm3_s": 0.083,
+    "pla_nozzle_temp_C": 0.041,
+    "strut_d_mm": 0.047,
+    "strut_infill_pct": 0.041,
+    "tpu_flow_mm3_s": 0.032,
+    "tpu_infill_pct": 0.051,
+    "tpu_nozzle_temp_C": 0.031,
+    "twist_deg": 0.03
+   },
+   "2": {
+    "H_mm": 0.061,
+    "R_mm": 0.037,
+    "cable_d_mm": 0.034,
+    "mass_printed_g": 0.016,
+    "pla_flow_mm3_s": 0.035,
+    "pla_nozzle_temp_C": 0.051,
+    "strut_d_mm": 0.046,
+    "strut_infill_pct": 0.029,
+    "tpu_flow_mm3_s": 0.075,
+    "tpu_infill_pct": 0.035,
+    "tpu_nozzle_temp_C": 0.041,
+    "twist_deg": 0.031
+   },
+   "3": {
+    "H_mm": 0.078,
+    "R_mm": 0.048,
+    "cable_d_mm": 0.064,
+    "mass_printed_g": 0.01,
+    "pla_flow_mm3_s": 0.049,
+    "pla_nozzle_temp_C": 0.043,
+    "strut_d_mm": 0.038,
+    "strut_infill_pct": 0.035,
+    "tpu_flow_mm3_s": 0.041,
+    "tpu_infill_pct": 0.046,
+    "tpu_nozzle_temp_C": 0.029,
+    "twist_deg": 0.038
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.102,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.998,
+   "H_mm": 0.978,
+   "twist_deg": 0.953,
+   "strut_d_mm": 0.955,
+   "cable_d_mm": 0.961,
+   "mass_printed_g": 1.025,
+   "strut_infill_pct": 0.985,
+   "tpu_infill_pct": 0.994,
+   "pla_nozzle_temp_C": 0.977,
+   "pla_flow_mm3_s": 0.973,
+   "tpu_nozzle_temp_C": 0.997,
+   "tpu_flow_mm3_s": 1.102
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0003542012655806346,
+  "posterior_mean_at_train_seed_sd_max": 0.0376913764175577,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0,
+   0.0,
+   0.0001,
+   0.0
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "fixed",
+  "budget": "512/256",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.432,
+   "strut_infill_pct": 0.063,
+   "tpu_nozzle_temp_C": 0.059,
+   "H_mm": 0.058,
+   "cable_d_mm": 0.055,
+   "pla_flow_mm3_s": 0.053,
+   "strut_d_mm": 0.052,
+   "tpu_flow_mm3_s": 0.052,
+   "twist_deg": 0.047,
+   "R_mm": 0.047,
+   "tpu_infill_pct": 0.044,
+   "pla_nozzle_temp_C": 0.039
+  },
+  "importance_seed_sd_max": 0.061,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.389,
+    "R_mm": 0.456,
+    "cable_d_mm": 0.381,
+    "mass_printed_g": 0.035,
+    "pla_flow_mm3_s": 0.241,
+    "pla_nozzle_temp_C": 0.71,
+    "strut_d_mm": 0.635,
+    "strut_infill_pct": 0.346,
+    "tpu_flow_mm3_s": 0.368,
+    "tpu_infill_pct": 0.465,
+    "tpu_nozzle_temp_C": 0.248,
+    "twist_deg": 0.845
+   },
+   "1": {
+    "H_mm": 0.354,
+    "R_mm": 0.409,
+    "cable_d_mm": 0.386,
+    "mass_printed_g": 0.04,
+    "pla_flow_mm3_s": 0.405,
+    "pla_nozzle_temp_C": 0.468,
+    "strut_d_mm": 0.297,
+    "strut_infill_pct": 0.351,
+    "tpu_flow_mm3_s": 0.386,
+    "tpu_infill_pct": 0.324,
+    "tpu_nozzle_temp_C": 0.247,
+    "twist_deg": 0.337
+   },
+   "2": {
+    "H_mm": 0.359,
+    "R_mm": 0.443,
+    "cable_d_mm": 0.306,
+    "mass_printed_g": 0.048,
+    "pla_flow_mm3_s": 0.472,
+    "pla_nozzle_temp_C": 0.412,
+    "strut_d_mm": 0.291,
+    "strut_infill_pct": 0.305,
+    "tpu_flow_mm3_s": 0.424,
+    "tpu_infill_pct": 0.456,
+    "tpu_nozzle_temp_C": 0.361,
+    "twist_deg": 0.451
+   },
+   "3": {
+    "H_mm": 0.226,
+    "R_mm": 0.307,
+    "cable_d_mm": 0.298,
+    "mass_printed_g": 0.05,
+    "pla_flow_mm3_s": 0.34,
+    "pla_nozzle_temp_C": 0.405,
+    "strut_d_mm": 0.351,
+    "strut_infill_pct": 0.218,
+    "tpu_flow_mm3_s": 0.281,
+    "tpu_infill_pct": 0.476,
+    "tpu_nozzle_temp_C": 0.496,
+    "twist_deg": 0.263
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.059,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.985,
+   "H_mm": 1.039,
+   "twist_deg": 1.021,
+   "strut_d_mm": 0.991,
+   "cable_d_mm": 1.057,
+   "mass_printed_g": 0.977,
+   "strut_infill_pct": 1.005,
+   "tpu_infill_pct": 0.998,
+   "pla_nozzle_temp_C": 0.952,
+   "pla_flow_mm3_s": 0.965,
+   "tpu_nozzle_temp_C": 1.059,
+   "tpu_flow_mm3_s": 0.98
+  },
+  "posterior_mean_at_train_seed_sd_median": 1.274650093970571e-06,
+  "posterior_mean_at_train_seed_sd_max": 7.067531393635954e-05,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.004,
+   0.0034,
+   0.0025,
+   0.0025
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "learned",
+  "budget": "1024/512",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "strut_infill_pct": 0.126,
+   "tpu_infill_pct": 0.106,
+   "R_mm": 0.104,
+   "tpu_flow_mm3_s": 0.094,
+   "cable_d_mm": 0.091,
+   "tpu_nozzle_temp_C": 0.086,
+   "pla_nozzle_temp_C": 0.078,
+   "pla_flow_mm3_s": 0.075,
+   "mass_printed_g": 0.073,
+   "strut_d_mm": 0.062,
+   "twist_deg": 0.053,
+   "H_mm": 0.051
+  },
+  "importance_seed_sd_max": 0.032,
+  "top_parameter_per_seed": [
+   "strut_infill_pct",
+   "R_mm",
+   "tpu_flow_mm3_s",
+   "strut_infill_pct"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 8.718,
+    "R_mm": 3.757,
+    "cable_d_mm": 4.603,
+    "mass_printed_g": 6.801,
+    "pla_flow_mm3_s": 4.497,
+    "pla_nozzle_temp_C": 4.419,
+    "strut_d_mm": 5.819,
+    "strut_infill_pct": 2.39,
+    "tpu_flow_mm3_s": 3.575,
+    "tpu_infill_pct": 4.644,
+    "tpu_nozzle_temp_C": 3.48,
+    "twist_deg": 6.988
+   },
+   "1": {
+    "H_mm": 6.588,
+    "R_mm": 3.321,
+    "cable_d_mm": 4.483,
+    "mass_printed_g": 4.99,
+    "pla_flow_mm3_s": 6.864,
+    "pla_nozzle_temp_C": 7.33,
+    "strut_d_mm": 8.077,
+    "strut_infill_pct": 3.377,
+    "tpu_flow_mm3_s": 4.819,
+    "tpu_infill_pct": 3.411,
+    "tpu_nozzle_temp_C": 4.803,
+    "twist_deg": 8.901
+   },
+   "2": {
+    "H_mm": 8.876,
+    "R_mm": 4.274,
+    "cable_d_mm": 3.912,
+    "mass_printed_g": 5.972,
+    "pla_flow_mm3_s": 5.534,
+    "pla_nozzle_temp_C": 4.04,
+    "strut_d_mm": 6.936,
+    "strut_infill_pct": 5.081,
+    "tpu_flow_mm3_s": 3.637,
+    "tpu_infill_pct": 3.757,
+    "tpu_nozzle_temp_C": 5.306,
+    "twist_deg": 7.426
+   },
+   "3": {
+    "H_mm": 7.792,
+    "R_mm": 4.315,
+    "cable_d_mm": 4.806,
+    "mass_printed_g": 4.906,
+    "pla_flow_mm3_s": 5.166,
+    "pla_nozzle_temp_C": 5.93,
+    "strut_d_mm": 5.764,
+    "strut_infill_pct": 2.846,
+    "tpu_flow_mm3_s": 5.814,
+    "tpu_infill_pct": 3.715,
+    "tpu_nozzle_temp_C": 5.682,
+    "twist_deg": 7.541
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.05,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.015,
+   "H_mm": 0.976,
+   "twist_deg": 0.979,
+   "strut_d_mm": 1.033,
+   "cable_d_mm": 1.018,
+   "mass_printed_g": 0.988,
+   "strut_infill_pct": 1.008,
+   "tpu_infill_pct": 1.03,
+   "pla_nozzle_temp_C": 1.009,
+   "pla_flow_mm3_s": 0.997,
+   "tpu_nozzle_temp_C": 1.015,
+   "tpu_flow_mm3_s": 1.05
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.07775459258450063,
+  "posterior_mean_at_train_seed_sd_max": 0.26179192852260247,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.1515,
+   1.2541,
+   1.2103,
+   1.1918
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": [
+   2.712,
+   2.7184,
+   2.6673,
+   2.7299
+  ]
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "learned",
+  "budget": "1024/512",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.148,
+   "twist_deg": 0.123,
+   "R_mm": 0.096,
+   "tpu_nozzle_temp_C": 0.08,
+   "mass_printed_g": 0.08,
+   "H_mm": 0.079,
+   "tpu_flow_mm3_s": 0.074,
+   "pla_nozzle_temp_C": 0.071,
+   "pla_flow_mm3_s": 0.064,
+   "strut_infill_pct": 0.062,
+   "tpu_infill_pct": 0.062,
+   "strut_d_mm": 0.06
+  },
+  "importance_seed_sd_max": 0.022,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm",
+   "twist_deg"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 2.669,
+    "R_mm": 2.102,
+    "cable_d_mm": 1.421,
+    "mass_printed_g": 2.964,
+    "pla_flow_mm3_s": 3.418,
+    "pla_nozzle_temp_C": 2.972,
+    "strut_d_mm": 4.146,
+    "strut_infill_pct": 3.501,
+    "tpu_flow_mm3_s": 3.471,
+    "tpu_infill_pct": 4.107,
+    "tpu_nozzle_temp_C": 2.567,
+    "twist_deg": 2.08
+   },
+   "1": {
+    "H_mm": 2.505,
+    "R_mm": 2.795,
+    "cable_d_mm": 1.525,
+    "mass_printed_g": 2.648,
+    "pla_flow_mm3_s": 3.593,
+    "pla_nozzle_temp_C": 3.588,
+    "strut_d_mm": 3.648,
+    "strut_infill_pct": 4.258,
+    "tpu_flow_mm3_s": 2.913,
+    "tpu_infill_pct": 3.696,
+    "tpu_nozzle_temp_C": 2.716,
+    "twist_deg": 2.273
+   },
+   "2": {
+    "H_mm": 4.434,
+    "R_mm": 2.507,
+    "cable_d_mm": 1.766,
+    "mass_printed_g": 3.364,
+    "pla_flow_mm3_s": 4.459,
+    "pla_nozzle_temp_C": 3.498,
+    "strut_d_mm": 4.408,
+    "strut_infill_pct": 4.028,
+    "tpu_flow_mm3_s": 3.14,
+    "tpu_infill_pct": 3.887,
+    "tpu_nozzle_temp_C": 3.667,
+    "twist_deg": 2.017
+   },
+   "3": {
+    "H_mm": 3.478,
+    "R_mm": 3.072,
+    "cable_d_mm": 2.077,
+    "mass_printed_g": 3.536,
+    "pla_flow_mm3_s": 4.221,
+    "pla_nozzle_temp_C": 3.967,
+    "strut_d_mm": 4.395,
+    "strut_infill_pct": 4.255,
+    "tpu_flow_mm3_s": 4.106,
+    "tpu_infill_pct": 4.541,
+    "tpu_nozzle_temp_C": 3.663,
+    "twist_deg": 1.827
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.07,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.026,
+   "H_mm": 1.006,
+   "twist_deg": 0.975,
+   "strut_d_mm": 1.01,
+   "cable_d_mm": 1.019,
+   "mass_printed_g": 0.995,
+   "strut_infill_pct": 0.985,
+   "tpu_infill_pct": 0.984,
+   "pla_nozzle_temp_C": 1.006,
+   "pla_flow_mm3_s": 1.009,
+   "tpu_nozzle_temp_C": 1.07,
+   "tpu_flow_mm3_s": 1.028
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0017017400056616367,
+  "posterior_mean_at_train_seed_sd_max": 0.006401003801488251,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0319,
+   0.0313,
+   0.0331,
+   0.0336
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": [
+   0.0469,
+   0.0481,
+   0.0462,
+   0.0488
+  ]
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "learned",
+  "budget": "256/128",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "tpu_infill_pct": 0.135,
+   "strut_infill_pct": 0.13,
+   "R_mm": 0.11,
+   "pla_flow_mm3_s": 0.097,
+   "cable_d_mm": 0.091,
+   "mass_printed_g": 0.068,
+   "pla_nozzle_temp_C": 0.065,
+   "twist_deg": 0.064,
+   "tpu_nozzle_temp_C": 0.063,
+   "H_mm": 0.06,
+   "tpu_flow_mm3_s": 0.059,
+   "strut_d_mm": 0.059
+  },
+  "importance_seed_sd_max": 0.035,
+  "top_parameter_per_seed": [
+   "R_mm",
+   "tpu_infill_pct",
+   "tpu_infill_pct",
+   "strut_infill_pct"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 5.019,
+    "R_mm": 2.2,
+    "cable_d_mm": 5.04,
+    "mass_printed_g": 6.929,
+    "pla_flow_mm3_s": 3.338,
+    "pla_nozzle_temp_C": 4.981,
+    "strut_d_mm": 6.348,
+    "strut_infill_pct": 2.56,
+    "tpu_flow_mm3_s": 6.196,
+    "tpu_infill_pct": 2.573,
+    "tpu_nozzle_temp_C": 5.129,
+    "twist_deg": 7.417
+   },
+   "1": {
+    "H_mm": 7.947,
+    "R_mm": 4.748,
+    "cable_d_mm": 2.76,
+    "mass_printed_g": 5.168,
+    "pla_flow_mm3_s": 3.409,
+    "pla_nozzle_temp_C": 4.677,
+    "strut_d_mm": 6.619,
+    "strut_infill_pct": 2.963,
+    "tpu_flow_mm3_s": 4.969,
+    "tpu_infill_pct": 2.163,
+    "tpu_nozzle_temp_C": 5.604,
+    "twist_deg": 4.608
+   },
+   "2": {
+    "H_mm": 6.373,
+    "R_mm": 3.607,
+    "cable_d_mm": 3.971,
+    "mass_printed_g": 4.853,
+    "pla_flow_mm3_s": 5.156,
+    "pla_nozzle_temp_C": 6.577,
+    "strut_d_mm": 6.121,
+    "strut_infill_pct": 3.492,
+    "tpu_flow_mm3_s": 8.626,
+    "tpu_infill_pct": 3.036,
+    "tpu_nozzle_temp_C": 6.046,
+    "twist_deg": 7.295
+   },
+   "3": {
+    "H_mm": 5.897,
+    "R_mm": 3.688,
+    "cable_d_mm": 5.277,
+    "mass_printed_g": 5.256,
+    "pla_flow_mm3_s": 3.478,
+    "pla_nozzle_temp_C": 6.811,
+    "strut_d_mm": 5.778,
+    "strut_infill_pct": 2.415,
+    "tpu_flow_mm3_s": 5.673,
+    "tpu_infill_pct": 3.273,
+    "tpu_nozzle_temp_C": 6.458,
+    "twist_deg": 4.668
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.158,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.158,
+   "H_mm": 1.008,
+   "twist_deg": 1.006,
+   "strut_d_mm": 0.933,
+   "cable_d_mm": 1.057,
+   "mass_printed_g": 0.974,
+   "strut_infill_pct": 0.904,
+   "tpu_infill_pct": 0.957,
+   "pla_nozzle_temp_C": 0.927,
+   "pla_flow_mm3_s": 0.955,
+   "tpu_nozzle_temp_C": 1.002,
+   "tpu_flow_mm3_s": 0.951
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.12199461109553922,
+  "posterior_mean_at_train_seed_sd_max": 0.434555356029202,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.247,
+   1.3539,
+   1.4093,
+   1.2282
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": [
+   2.7657,
+   2.7477,
+   2.4278,
+   2.6495
+  ]
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "learned",
+  "budget": "256/128",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.172,
+   "twist_deg": 0.131,
+   "R_mm": 0.087,
+   "H_mm": 0.084,
+   "pla_nozzle_temp_C": 0.073,
+   "pla_flow_mm3_s": 0.072,
+   "tpu_flow_mm3_s": 0.071,
+   "mass_printed_g": 0.069,
+   "tpu_infill_pct": 0.066,
+   "tpu_nozzle_temp_C": 0.062,
+   "strut_d_mm": 0.057,
+   "strut_infill_pct": 0.056
+  },
+  "importance_seed_sd_max": 0.032,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 2.369,
+    "R_mm": 3.711,
+    "cable_d_mm": 1.582,
+    "mass_printed_g": 3.651,
+    "pla_flow_mm3_s": 2.736,
+    "pla_nozzle_temp_C": 3.799,
+    "strut_d_mm": 5.913,
+    "strut_infill_pct": 3.499,
+    "tpu_flow_mm3_s": 4.095,
+    "tpu_infill_pct": 5.087,
+    "tpu_nozzle_temp_C": 3.824,
+    "twist_deg": 2.329
+   },
+   "1": {
+    "H_mm": 2.339,
+    "R_mm": 2.362,
+    "cable_d_mm": 1.415,
+    "mass_printed_g": 3.355,
+    "pla_flow_mm3_s": 3.994,
+    "pla_nozzle_temp_C": 2.061,
+    "strut_d_mm": 4.085,
+    "strut_infill_pct": 3.944,
+    "tpu_flow_mm3_s": 3.435,
+    "tpu_infill_pct": 1.987,
+    "tpu_nozzle_temp_C": 3.44,
+    "twist_deg": 1.427
+   },
+   "2": {
+    "H_mm": 3.244,
+    "R_mm": 2.687,
+    "cable_d_mm": 1.507,
+    "mass_printed_g": 3.322,
+    "pla_flow_mm3_s": 4.365,
+    "pla_nozzle_temp_C": 3.698,
+    "strut_d_mm": 3.076,
+    "strut_infill_pct": 3.879,
+    "tpu_flow_mm3_s": 2.358,
+    "tpu_infill_pct": 4.018,
+    "tpu_nozzle_temp_C": 3.378,
+    "twist_deg": 2.285
+   },
+   "3": {
+    "H_mm": 4.768,
+    "R_mm": 2.964,
+    "cable_d_mm": 1.379,
+    "mass_printed_g": 4.353,
+    "pla_flow_mm3_s": 3.489,
+    "pla_nozzle_temp_C": 5.098,
+    "strut_d_mm": 5.574,
+    "strut_infill_pct": 9.035,
+    "tpu_flow_mm3_s": 5.391,
+    "tpu_infill_pct": 6.359,
+    "tpu_nozzle_temp_C": 6.048,
+    "twist_deg": 1.836
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.277,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.277,
+   "H_mm": 1.038,
+   "twist_deg": 1.028,
+   "strut_d_mm": 0.98,
+   "cable_d_mm": 1.006,
+   "mass_printed_g": 1.035,
+   "strut_infill_pct": 1.024,
+   "tpu_infill_pct": 1.087,
+   "pla_nozzle_temp_C": 1.073,
+   "pla_flow_mm3_s": 1.0,
+   "tpu_nozzle_temp_C": 1.014,
+   "tpu_flow_mm3_s": 1.063
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.00290963288173356,
+  "posterior_mean_at_train_seed_sd_max": 0.01060233695543895,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.033,
+   0.0314,
+   0.0333,
+   0.036
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": [
+   0.0506,
+   0.048,
+   0.0437,
+   0.0478
+  ]
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "learned",
+  "budget": "512/256",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "tpu_infill_pct": 0.13,
+   "R_mm": 0.127,
+   "strut_infill_pct": 0.111,
+   "pla_nozzle_temp_C": 0.09,
+   "cable_d_mm": 0.085,
+   "pla_flow_mm3_s": 0.073,
+   "tpu_nozzle_temp_C": 0.073,
+   "tpu_flow_mm3_s": 0.071,
+   "mass_printed_g": 0.065,
+   "twist_deg": 0.062,
+   "H_mm": 0.059,
+   "strut_d_mm": 0.054
+  },
+  "importance_seed_sd_max": 0.035,
+  "top_parameter_per_seed": [
+   "tpu_infill_pct",
+   "R_mm",
+   "tpu_infill_pct",
+   "R_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 4.993,
+    "R_mm": 4.037,
+    "cable_d_mm": 4.279,
+    "mass_printed_g": 5.085,
+    "pla_flow_mm3_s": 4.665,
+    "pla_nozzle_temp_C": 3.577,
+    "strut_d_mm": 5.464,
+    "strut_infill_pct": 3.918,
+    "tpu_flow_mm3_s": 4.672,
+    "tpu_infill_pct": 2.545,
+    "tpu_nozzle_temp_C": 4.351,
+    "twist_deg": 5.267
+   },
+   "1": {
+    "H_mm": 7.314,
+    "R_mm": 3.273,
+    "cable_d_mm": 4.023,
+    "mass_printed_g": 6.626,
+    "pla_flow_mm3_s": 5.703,
+    "pla_nozzle_temp_C": 4.003,
+    "strut_d_mm": 8.815,
+    "strut_infill_pct": 3.477,
+    "tpu_flow_mm3_s": 4.746,
+    "tpu_infill_pct": 3.649,
+    "tpu_nozzle_temp_C": 4.508,
+    "twist_deg": 7.248
+   },
+   "2": {
+    "H_mm": 7.584,
+    "R_mm": 3.349,
+    "cable_d_mm": 4.318,
+    "mass_printed_g": 6.533,
+    "pla_flow_mm3_s": 4.961,
+    "pla_nozzle_temp_C": 4.476,
+    "strut_d_mm": 7.772,
+    "strut_infill_pct": 4.728,
+    "tpu_flow_mm3_s": 6.496,
+    "tpu_infill_pct": 3.032,
+    "tpu_nozzle_temp_C": 9.022,
+    "twist_deg": 6.598
+   },
+   "3": {
+    "H_mm": 4.668,
+    "R_mm": 1.442,
+    "cable_d_mm": 4.065,
+    "mass_printed_g": 3.881,
+    "pla_flow_mm3_s": 4.108,
+    "pla_nozzle_temp_C": 3.735,
+    "strut_d_mm": 4.808,
+    "strut_infill_pct": 1.649,
+    "tpu_flow_mm3_s": 4.314,
+    "tpu_infill_pct": 1.867,
+    "tpu_nozzle_temp_C": 3.378,
+    "twist_deg": 4.088
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.129,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.129,
+   "H_mm": 0.984,
+   "twist_deg": 1.032,
+   "strut_d_mm": 1.053,
+   "cable_d_mm": 0.961,
+   "mass_printed_g": 0.985,
+   "strut_infill_pct": 1.065,
+   "tpu_infill_pct": 0.96,
+   "pla_nozzle_temp_C": 1.0,
+   "pla_flow_mm3_s": 0.982,
+   "tpu_nozzle_temp_C": 1.032,
+   "tpu_flow_mm3_s": 1.013
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.13941253128582567,
+  "posterior_mean_at_train_seed_sd_max": 0.2677798221703487,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.1639,
+   1.2519,
+   1.3166,
+   1.065
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": [
+   2.8543,
+   2.7256,
+   2.6552,
+   2.6378
+  ]
+ },
+ {
+  "dataset": "all-twelve",
+  "noise": "learned",
+  "budget": "512/256",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.189,
+   "twist_deg": 0.13,
+   "R_mm": 0.085,
+   "H_mm": 0.076,
+   "tpu_flow_mm3_s": 0.071,
+   "mass_printed_g": 0.07,
+   "strut_d_mm": 0.069,
+   "tpu_infill_pct": 0.065,
+   "tpu_nozzle_temp_C": 0.063,
+   "strut_infill_pct": 0.062,
+   "pla_flow_mm3_s": 0.06,
+   "pla_nozzle_temp_C": 0.059
+  },
+  "importance_seed_sd_max": 0.025,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 2.435,
+    "R_mm": 3.097,
+    "cable_d_mm": 1.286,
+    "mass_printed_g": 2.975,
+    "pla_flow_mm3_s": 3.817,
+    "pla_nozzle_temp_C": 4.587,
+    "strut_d_mm": 2.997,
+    "strut_infill_pct": 4.426,
+    "tpu_flow_mm3_s": 3.604,
+    "tpu_infill_pct": 3.633,
+    "tpu_nozzle_temp_C": 2.998,
+    "twist_deg": 1.707
+   },
+   "1": {
+    "H_mm": 3.23,
+    "R_mm": 2.668,
+    "cable_d_mm": 1.118,
+    "mass_printed_g": 2.832,
+    "pla_flow_mm3_s": 3.335,
+    "pla_nozzle_temp_C": 3.057,
+    "strut_d_mm": 5.462,
+    "strut_infill_pct": 4.555,
+    "tpu_flow_mm3_s": 2.365,
+    "tpu_infill_pct": 3.882,
+    "tpu_nozzle_temp_C": 4.072,
+    "twist_deg": 1.657
+   },
+   "2": {
+    "H_mm": 3.294,
+    "R_mm": 2.134,
+    "cable_d_mm": 1.075,
+    "mass_printed_g": 2.891,
+    "pla_flow_mm3_s": 3.509,
+    "pla_nozzle_temp_C": 3.59,
+    "strut_d_mm": 2.416,
+    "strut_infill_pct": 2.908,
+    "tpu_flow_mm3_s": 5.325,
+    "tpu_infill_pct": 2.544,
+    "tpu_nozzle_temp_C": 4.285,
+    "twist_deg": 1.826
+   },
+   "3": {
+    "H_mm": 2.631,
+    "R_mm": 2.489,
+    "cable_d_mm": 1.128,
+    "mass_printed_g": 4.05,
+    "pla_flow_mm3_s": 3.771,
+    "pla_nozzle_temp_C": 3.64,
+    "strut_d_mm": 2.792,
+    "strut_infill_pct": 2.672,
+    "tpu_flow_mm3_s": 2.32,
+    "tpu_infill_pct": 3.674,
+    "tpu_nozzle_temp_C": 2.889,
+    "twist_deg": 1.481
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.054,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.019,
+   "H_mm": 0.959,
+   "twist_deg": 0.987,
+   "strut_d_mm": 1.044,
+   "cable_d_mm": 0.974,
+   "mass_printed_g": 0.979,
+   "strut_infill_pct": 1.016,
+   "tpu_infill_pct": 0.987,
+   "pla_nozzle_temp_C": 1.001,
+   "pla_flow_mm3_s": 1.024,
+   "tpu_nozzle_temp_C": 0.987,
+   "tpu_flow_mm3_s": 1.054
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0020661871769952853,
+  "posterior_mean_at_train_seed_sd_max": 0.0062349427356365355,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0322,
+   0.03,
+   0.0331,
+   0.0309
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": [
+   0.0459,
+   0.0472,
+   0.0439,
+   0.0487
+  ]
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "fixed",
+  "budget": "1024/512",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "R_mm": 0.498,
+   "cable_d_mm": 0.142,
+   "H_mm": 0.136,
+   "mass_printed_g": 0.082,
+   "twist_deg": 0.077,
+   "strut_d_mm": 0.064
+  },
+  "importance_seed_sd_max": 0.061,
+  "top_parameter_per_seed": [
+   "R_mm",
+   "R_mm",
+   "R_mm",
+   "R_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.72,
+    "R_mm": 0.424,
+    "cable_d_mm": 1.669,
+    "mass_printed_g": 3.274,
+    "strut_d_mm": 4.206,
+    "twist_deg": 2.811
+   },
+   "1": {
+    "H_mm": 2.081,
+    "R_mm": 0.519,
+    "cable_d_mm": 1.687,
+    "mass_printed_g": 3.098,
+    "strut_d_mm": 4.181,
+    "twist_deg": 3.215
+   },
+   "2": {
+    "H_mm": 2.013,
+    "R_mm": 0.455,
+    "cable_d_mm": 1.6,
+    "mass_printed_g": 4.054,
+    "strut_d_mm": 5.536,
+    "twist_deg": 3.961
+   },
+   "3": {
+    "H_mm": 1.632,
+    "R_mm": 0.657,
+    "cable_d_mm": 2.155,
+    "mass_printed_g": 2.334,
+    "strut_d_mm": 2.79,
+    "twist_deg": 3.25
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.031,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.008,
+   "H_mm": 1.002,
+   "twist_deg": 1.001,
+   "strut_d_mm": 1.031,
+   "cable_d_mm": 0.997,
+   "mass_printed_g": 1.021
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0028847492092034747,
+  "posterior_mean_at_train_seed_sd_max": 0.010186412404112962,
+  "posterior_mean_sd_over_space_by_seed": [
+   2.0623,
+   2.0409,
+   2.0836,
+   1.9187
+  ],
+  "y_std": 2.801423965868086,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "fixed",
+  "budget": "1024/512",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.205,
+   "twist_deg": 0.203,
+   "H_mm": 0.164,
+   "mass_printed_g": 0.155,
+   "strut_d_mm": 0.149,
+   "R_mm": 0.124
+  },
+  "importance_seed_sd_max": 0.032,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "twist_deg",
+   "cable_d_mm",
+   "twist_deg"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.998,
+    "R_mm": 2.451,
+    "cable_d_mm": 1.426,
+    "mass_printed_g": 2.093,
+    "strut_d_mm": 1.555,
+    "twist_deg": 1.623
+   },
+   "1": {
+    "H_mm": 1.976,
+    "R_mm": 2.685,
+    "cable_d_mm": 1.729,
+    "mass_printed_g": 2.484,
+    "strut_d_mm": 2.562,
+    "twist_deg": 1.523
+   },
+   "2": {
+    "H_mm": 1.954,
+    "R_mm": 2.736,
+    "cable_d_mm": 1.472,
+    "mass_printed_g": 2.24,
+    "strut_d_mm": 2.153,
+    "twist_deg": 1.799
+   },
+   "3": {
+    "H_mm": 1.942,
+    "R_mm": 2.495,
+    "cable_d_mm": 1.688,
+    "mass_printed_g": 1.653,
+    "strut_d_mm": 2.668,
+    "twist_deg": 1.428
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.033,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.033,
+   "H_mm": 1.009,
+   "twist_deg": 1.003,
+   "strut_d_mm": 0.994,
+   "cable_d_mm": 1.005,
+   "mass_printed_g": 0.991
+  },
+  "posterior_mean_at_train_seed_sd_median": 2.5000000000200787e-06,
+  "posterior_mean_at_train_seed_sd_max": 2.1124630174281982e-05,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0406,
+   0.0415,
+   0.0415,
+   0.0401
+  ],
+  "y_std": 0.09837767040168392,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "fixed",
+  "budget": "256/128",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "R_mm": 0.443,
+   "cable_d_mm": 0.173,
+   "H_mm": 0.144,
+   "mass_printed_g": 0.09,
+   "twist_deg": 0.084,
+   "strut_d_mm": 0.066
+  },
+  "importance_seed_sd_max": 0.041,
+  "top_parameter_per_seed": [
+   "R_mm",
+   "R_mm",
+   "R_mm",
+   "R_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.711,
+    "R_mm": 0.494,
+    "cable_d_mm": 1.829,
+    "mass_printed_g": 2.557,
+    "strut_d_mm": 4.711,
+    "twist_deg": 3.137
+   },
+   "1": {
+    "H_mm": 1.774,
+    "R_mm": 0.74,
+    "cable_d_mm": 1.856,
+    "mass_printed_g": 4.333,
+    "strut_d_mm": 4.026,
+    "twist_deg": 3.525
+   },
+   "2": {
+    "H_mm": 1.631,
+    "R_mm": 0.523,
+    "cable_d_mm": 1.316,
+    "mass_printed_g": 3.277,
+    "strut_d_mm": 2.894,
+    "twist_deg": 3.583
+   },
+   "3": {
+    "H_mm": 2.189,
+    "R_mm": 0.616,
+    "cable_d_mm": 1.183,
+    "mass_printed_g": 2.067,
+    "strut_d_mm": 4.89,
+    "twist_deg": 2.446
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.068,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.068,
+   "H_mm": 0.97,
+   "twist_deg": 0.966,
+   "strut_d_mm": 0.938,
+   "cable_d_mm": 0.911,
+   "mass_printed_g": 0.998
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0033063452632779537,
+  "posterior_mean_at_train_seed_sd_max": 0.014869351756773504,
+  "posterior_mean_sd_over_space_by_seed": [
+   2.0741,
+   2.0219,
+   1.9791,
+   2.0473
+  ],
+  "y_std": 2.801423965868086,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "fixed",
+  "budget": "256/128",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.226,
+   "twist_deg": 0.191,
+   "H_mm": 0.16,
+   "mass_printed_g": 0.155,
+   "strut_d_mm": 0.142,
+   "R_mm": 0.126
+  },
+  "importance_seed_sd_max": 0.044,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "cable_d_mm",
+   "twist_deg",
+   "cable_d_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 2.149,
+    "R_mm": 2.344,
+    "cable_d_mm": 1.695,
+    "mass_printed_g": 2.864,
+    "strut_d_mm": 2.71,
+    "twist_deg": 2.08
+   },
+   "1": {
+    "H_mm": 2.348,
+    "R_mm": 2.609,
+    "cable_d_mm": 1.065,
+    "mass_printed_g": 2.571,
+    "strut_d_mm": 1.681,
+    "twist_deg": 1.562
+   },
+   "2": {
+    "H_mm": 1.793,
+    "R_mm": 2.438,
+    "cable_d_mm": 1.88,
+    "mass_printed_g": 1.69,
+    "strut_d_mm": 2.371,
+    "twist_deg": 1.682
+   },
+   "3": {
+    "H_mm": 2.307,
+    "R_mm": 3.716,
+    "cable_d_mm": 1.583,
+    "mass_printed_g": 2.0,
+    "strut_d_mm": 3.07,
+    "twist_deg": 1.797
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.107,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.991,
+   "H_mm": 1.033,
+   "twist_deg": 0.967,
+   "strut_d_mm": 1.107,
+   "cable_d_mm": 1.062,
+   "mass_printed_g": 0.937
+  },
+  "posterior_mean_at_train_seed_sd_median": 3.774917217604225e-06,
+  "posterior_mean_at_train_seed_sd_max": 2.328089345370786e-05,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.04,
+   0.0397,
+   0.0402,
+   0.0445
+  ],
+  "y_std": 0.09837767040168392,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "fixed",
+  "budget": "512/256",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "R_mm": 0.478,
+   "H_mm": 0.148,
+   "cable_d_mm": 0.14,
+   "mass_printed_g": 0.083,
+   "twist_deg": 0.082,
+   "strut_d_mm": 0.068
+  },
+  "importance_seed_sd_max": 0.123,
+  "top_parameter_per_seed": [
+   "R_mm",
+   "R_mm",
+   "R_mm",
+   "R_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.594,
+    "R_mm": 0.504,
+    "cable_d_mm": 1.441,
+    "mass_printed_g": 2.932,
+    "strut_d_mm": 3.454,
+    "twist_deg": 3.173
+   },
+   "1": {
+    "H_mm": 1.74,
+    "R_mm": 0.754,
+    "cable_d_mm": 2.057,
+    "mass_printed_g": 2.737,
+    "strut_d_mm": 4.737,
+    "twist_deg": 3.194
+   },
+   "2": {
+    "H_mm": 2.448,
+    "R_mm": 0.268,
+    "cable_d_mm": 1.689,
+    "mass_printed_g": 2.694,
+    "strut_d_mm": 3.215,
+    "twist_deg": 3.526
+   },
+   "3": {
+    "H_mm": 1.244,
+    "R_mm": 0.639,
+    "cable_d_mm": 1.692,
+    "mass_printed_g": 3.276,
+    "strut_d_mm": 2.953,
+    "twist_deg": 2.253
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.043,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.005,
+   "H_mm": 0.991,
+   "twist_deg": 1.012,
+   "strut_d_mm": 1.043,
+   "cable_d_mm": 0.966,
+   "mass_printed_g": 0.964
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.003700736807267831,
+  "posterior_mean_at_train_seed_sd_max": 0.020033135434408343,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.92,
+   2.0287,
+   2.0495,
+   1.9368
+  ],
+  "y_std": 2.801423965868086,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "fixed",
+  "budget": "512/256",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.221,
+   "twist_deg": 0.193,
+   "H_mm": 0.167,
+   "mass_printed_g": 0.158,
+   "strut_d_mm": 0.146,
+   "R_mm": 0.114
+  },
+  "importance_seed_sd_max": 0.032,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.554,
+    "R_mm": 2.677,
+    "cable_d_mm": 1.332,
+    "mass_printed_g": 1.711,
+    "strut_d_mm": 1.719,
+    "twist_deg": 1.782
+   },
+   "1": {
+    "H_mm": 2.26,
+    "R_mm": 3.371,
+    "cable_d_mm": 1.583,
+    "mass_printed_g": 1.814,
+    "strut_d_mm": 3.09,
+    "twist_deg": 1.893
+   },
+   "2": {
+    "H_mm": 2.182,
+    "R_mm": 3.017,
+    "cable_d_mm": 1.44,
+    "mass_printed_g": 2.508,
+    "strut_d_mm": 2.733,
+    "twist_deg": 1.571
+   },
+   "3": {
+    "H_mm": 1.731,
+    "R_mm": 2.243,
+    "cable_d_mm": 1.435,
+    "mass_printed_g": 2.287,
+    "strut_d_mm": 1.667,
+    "twist_deg": 1.437
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.078,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.03,
+   "H_mm": 0.994,
+   "twist_deg": 1.017,
+   "strut_d_mm": 1.078,
+   "cable_d_mm": 0.979,
+   "mass_printed_g": 0.988
+  },
+  "posterior_mean_at_train_seed_sd_median": 5.123475383035034e-06,
+  "posterior_mean_at_train_seed_sd_max": 4.136020631794417e-05,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0406,
+   0.0427,
+   0.0417,
+   0.04
+  ],
+  "y_std": 0.09837767040168392,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "learned",
+  "budget": "1024/512",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "R_mm": 0.421,
+   "cable_d_mm": 0.172,
+   "H_mm": 0.141,
+   "mass_printed_g": 0.1,
+   "twist_deg": 0.087,
+   "strut_d_mm": 0.078
+  },
+  "importance_seed_sd_max": 0.088,
+  "top_parameter_per_seed": [
+   "R_mm",
+   "R_mm",
+   "R_mm",
+   "R_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 2.936,
+    "R_mm": 0.711,
+    "cable_d_mm": 1.7,
+    "mass_printed_g": 2.402,
+    "strut_d_mm": 3.353,
+    "twist_deg": 3.943
+   },
+   "1": {
+    "H_mm": 2.154,
+    "R_mm": 0.993,
+    "cable_d_mm": 1.77,
+    "mass_printed_g": 3.086,
+    "strut_d_mm": 4.158,
+    "twist_deg": 3.529
+   },
+   "2": {
+    "H_mm": 2.473,
+    "R_mm": 0.503,
+    "cable_d_mm": 1.742,
+    "mass_printed_g": 3.958,
+    "strut_d_mm": 4.849,
+    "twist_deg": 4.246
+   },
+   "3": {
+    "H_mm": 1.897,
+    "R_mm": 0.997,
+    "cable_d_mm": 2.284,
+    "mass_printed_g": 3.845,
+    "strut_d_mm": 4.451,
+    "twist_deg": 3.321
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.041,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.041,
+   "H_mm": 0.99,
+   "twist_deg": 1.0,
+   "strut_d_mm": 0.998,
+   "cable_d_mm": 1.011,
+   "mass_printed_g": 1.009
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.04463601691739523,
+  "posterior_mean_at_train_seed_sd_max": 0.18158256851085727,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.8687,
+   1.909,
+   1.9288,
+   1.7928
+  ],
+  "y_std": 2.801423965868086,
+  "noise_sd_median_by_seed": [
+   0.8854,
+   0.9781,
+   0.7618,
+   0.7081
+  ]
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "learned",
+  "budget": "1024/512",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.21,
+   "twist_deg": 0.195,
+   "H_mm": 0.17,
+   "mass_printed_g": 0.163,
+   "strut_d_mm": 0.141,
+   "R_mm": 0.121
+  },
+  "importance_seed_sd_max": 0.033,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm",
+   "twist_deg"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.925,
+    "R_mm": 2.47,
+    "cable_d_mm": 1.401,
+    "mass_printed_g": 2.126,
+    "strut_d_mm": 2.305,
+    "twist_deg": 1.5
+   },
+   "1": {
+    "H_mm": 2.371,
+    "R_mm": 2.781,
+    "cable_d_mm": 1.65,
+    "mass_printed_g": 2.097,
+    "strut_d_mm": 2.868,
+    "twist_deg": 2.066
+   },
+   "2": {
+    "H_mm": 2.117,
+    "R_mm": 3.171,
+    "cable_d_mm": 1.539,
+    "mass_printed_g": 2.162,
+    "strut_d_mm": 2.41,
+    "twist_deg": 1.963
+   },
+   "3": {
+    "H_mm": 1.732,
+    "R_mm": 2.96,
+    "cable_d_mm": 2.085,
+    "mass_printed_g": 2.027,
+    "strut_d_mm": 2.17,
+    "twist_deg": 1.578
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.032,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.032,
+   "H_mm": 0.991,
+   "twist_deg": 1.025,
+   "strut_d_mm": 0.977,
+   "cable_d_mm": 1.016,
+   "mass_printed_g": 0.994
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0022512897044435205,
+  "posterior_mean_at_train_seed_sd_max": 0.011835510561441775,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0377,
+   0.0365,
+   0.0354,
+   0.037
+  ],
+  "y_std": 0.09837767040168392,
+  "noise_sd_median_by_seed": [
+   0.0188,
+   0.0274,
+   0.0281,
+   0.0244
+  ]
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "learned",
+  "budget": "256/128",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "R_mm": 0.49,
+   "cable_d_mm": 0.147,
+   "mass_printed_g": 0.107,
+   "H_mm": 0.106,
+   "twist_deg": 0.08,
+   "strut_d_mm": 0.07
+  },
+  "importance_seed_sd_max": 0.059,
+  "top_parameter_per_seed": [
+   "R_mm",
+   "R_mm",
+   "R_mm",
+   "R_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 3.036,
+    "R_mm": 0.663,
+    "cable_d_mm": 2.227,
+    "mass_printed_g": 2.826,
+    "strut_d_mm": 5.91,
+    "twist_deg": 5.833
+   },
+   "1": {
+    "H_mm": 2.847,
+    "R_mm": 0.512,
+    "cable_d_mm": 1.952,
+    "mass_printed_g": 3.903,
+    "strut_d_mm": 3.413,
+    "twist_deg": 2.963
+   },
+   "2": {
+    "H_mm": 3.054,
+    "R_mm": 0.657,
+    "cable_d_mm": 2.543,
+    "mass_printed_g": 4.213,
+    "strut_d_mm": 3.779,
+    "twist_deg": 6.186
+   },
+   "3": {
+    "H_mm": 3.297,
+    "R_mm": 0.885,
+    "cable_d_mm": 2.195,
+    "mass_printed_g": 2.254,
+    "strut_d_mm": 6.687,
+    "twist_deg": 3.05
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.053,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.931,
+   "H_mm": 0.914,
+   "twist_deg": 1.026,
+   "strut_d_mm": 1.053,
+   "cable_d_mm": 0.918,
+   "mass_printed_g": 0.946
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.11197068929858363,
+  "posterior_mean_at_train_seed_sd_max": 0.3405625140111333,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.9347,
+   2.1133,
+   1.9598,
+   2.0974
+  ],
+  "y_std": 2.801423965868086,
+  "noise_sd_median_by_seed": [
+   0.901,
+   0.5281,
+   0.9405,
+   0.4556
+  ]
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "learned",
+  "budget": "256/128",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.213,
+   "twist_deg": 0.186,
+   "H_mm": 0.177,
+   "strut_d_mm": 0.154,
+   "mass_printed_g": 0.15,
+   "R_mm": 0.121
+  },
+  "importance_seed_sd_max": 0.052,
+  "top_parameter_per_seed": [
+   "H_mm",
+   "twist_deg",
+   "cable_d_mm",
+   "twist_deg"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.557,
+    "R_mm": 2.347,
+    "cable_d_mm": 1.617,
+    "mass_printed_g": 2.358,
+    "strut_d_mm": 2.298,
+    "twist_deg": 2.263
+   },
+   "1": {
+    "H_mm": 2.129,
+    "R_mm": 3.583,
+    "cable_d_mm": 1.998,
+    "mass_printed_g": 3.23,
+    "strut_d_mm": 1.797,
+    "twist_deg": 1.614
+   },
+   "2": {
+    "H_mm": 2.257,
+    "R_mm": 3.835,
+    "cable_d_mm": 1.914,
+    "mass_printed_g": 3.267,
+    "strut_d_mm": 3.375,
+    "twist_deg": 3.518
+   },
+   "3": {
+    "H_mm": 3.796,
+    "R_mm": 3.662,
+    "cable_d_mm": 1.986,
+    "mass_printed_g": 2.14,
+    "strut_d_mm": 3.364,
+    "twist_deg": 1.821
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.061,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.923,
+   "H_mm": 1.061,
+   "twist_deg": 1.007,
+   "strut_d_mm": 0.984,
+   "cable_d_mm": 0.93,
+   "mass_printed_g": 0.957
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.005477125607165398,
+  "posterior_mean_at_train_seed_sd_max": 0.02015549518121546,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.038,
+   0.0414,
+   0.0376,
+   0.0425
+  ],
+  "y_std": 0.09837767040168392,
+  "noise_sd_median_by_seed": [
+   0.0266,
+   0.0204,
+   0.0258,
+   0.0212
+  ]
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "learned",
+  "budget": "512/256",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "R_mm": 0.454,
+   "cable_d_mm": 0.144,
+   "H_mm": 0.134,
+   "twist_deg": 0.097,
+   "mass_printed_g": 0.093,
+   "strut_d_mm": 0.077
+  },
+  "importance_seed_sd_max": 0.035,
+  "top_parameter_per_seed": [
+   "R_mm",
+   "R_mm",
+   "R_mm",
+   "R_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 2.236,
+    "R_mm": 0.603,
+    "cable_d_mm": 2.651,
+    "mass_printed_g": 3.07,
+    "strut_d_mm": 3.97,
+    "twist_deg": 3.436
+   },
+   "1": {
+    "H_mm": 3.513,
+    "R_mm": 0.749,
+    "cable_d_mm": 1.831,
+    "mass_printed_g": 2.701,
+    "strut_d_mm": 3.54,
+    "twist_deg": 2.7
+   },
+   "2": {
+    "H_mm": 1.798,
+    "R_mm": 0.672,
+    "cable_d_mm": 2.275,
+    "mass_printed_g": 4.542,
+    "strut_d_mm": 4.132,
+    "twist_deg": 3.683
+   },
+   "3": {
+    "H_mm": 1.646,
+    "R_mm": 0.531,
+    "cable_d_mm": 1.488,
+    "mass_printed_g": 2.634,
+    "strut_d_mm": 3.386,
+    "twist_deg": 2.309
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.042,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.042,
+   "H_mm": 1.01,
+   "twist_deg": 1.012,
+   "strut_d_mm": 0.971,
+   "cable_d_mm": 1.041,
+   "mass_printed_g": 0.961
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0973762598801682,
+  "posterior_mean_at_train_seed_sd_max": 0.23433689273138397,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.8944,
+   1.8548,
+   1.9895,
+   1.9664
+  ],
+  "y_std": 2.801423965868086,
+  "noise_sd_median_by_seed": [
+   0.7384,
+   0.849,
+   0.6394,
+   0.6695
+  ]
+ },
+ {
+  "dataset": "round2-six",
+  "noise": "learned",
+  "budget": "512/256",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.208,
+   "twist_deg": 0.192,
+   "mass_printed_g": 0.182,
+   "H_mm": 0.161,
+   "strut_d_mm": 0.131,
+   "R_mm": 0.125
+  },
+  "importance_seed_sd_max": 0.04,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "cable_d_mm",
+   "cable_d_mm",
+   "twist_deg"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 1.684,
+    "R_mm": 3.648,
+    "cable_d_mm": 1.826,
+    "mass_printed_g": 1.513,
+    "strut_d_mm": 2.526,
+    "twist_deg": 1.568
+   },
+   "1": {
+    "H_mm": 2.437,
+    "R_mm": 2.868,
+    "cable_d_mm": 1.424,
+    "mass_printed_g": 2.265,
+    "strut_d_mm": 2.336,
+    "twist_deg": 2.349
+   },
+   "2": {
+    "H_mm": 2.487,
+    "R_mm": 3.058,
+    "cable_d_mm": 1.458,
+    "mass_printed_g": 1.671,
+    "strut_d_mm": 2.52,
+    "twist_deg": 1.491
+   },
+   "3": {
+    "H_mm": 1.584,
+    "R_mm": 1.507,
+    "cable_d_mm": 1.514,
+    "mass_printed_g": 1.67,
+    "strut_d_mm": 2.419,
+    "twist_deg": 1.416
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.026,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.019,
+   "H_mm": 0.988,
+   "twist_deg": 0.958,
+   "strut_d_mm": 0.944,
+   "cable_d_mm": 1.026,
+   "mass_printed_g": 1.011
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.002175912835263937,
+  "posterior_mean_at_train_seed_sd_max": 0.009876320181795082,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0362,
+   0.0365,
+   0.0381,
+   0.0348
+  ],
+  "y_std": 0.09837767040168392,
+  "noise_sd_median_by_seed": [
+   0.0198,
+   0.0278,
+   0.0248,
+   0.0327
+  ]
+ }
+]

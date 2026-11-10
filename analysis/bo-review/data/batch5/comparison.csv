@@ -1,0 +1,7 @@
+variant,description,wide_high_twist,tall_low_twist,intermediate,pred_t180_min,pred_t180_max,pred_t180_sd_mean,pred_m_e2_mg_min,pred_m_e2_mg_max,pred_m_e2_mg_sd_mean,cable_below_3mm,envelope_over_250cm3,filament_point,matched_shape_distance_to_archived,matched_shape_distance_to_control,identical_to_archived
+archived,"archived run 6 (campaign branch, f66c363)",6,3,0,1.036,1.04,0.1005,19.37,19.38,19.67,6,2,223/24.7/240/3,0,0,True
+control,"control: campaign settings, rerun here",6,3,0,1.036,1.04,0.1005,19.37,19.38,19.67,6,2,223/24.7/240/3,0,0,True
+thresholds,"thresholds (1.35, 50 mg) + pinned qLogNEHVI",3,4,2,1.036,1.042,0.1001,19.04,19.39,19.66,4,1,223/24.7/240/3,0.4145,0.4145,False
+fixedfil,filament point fixed first (fixed_features),4,2,3,1.035,1.042,0.09966,19.16,19.38,19.67,5,2,223/24.7/240/3,0.4549,0.4549,False
+both,thresholds + filament fixed first,3,3,3,1.035,1.043,0.09978,19.07,19.38,19.66,3,1,223/24.7/240/3,0.5826,0.5826,False
+fixes,thresholds + filament fixed first + noise learned,4,1,4,0.91,1.116,0.06429,7.586,29.09,12.74,5,2,223/24.7/240/3,0.7481,0.7481,False

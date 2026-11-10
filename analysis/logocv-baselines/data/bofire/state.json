@@ -1,0 +1,165 @@
+{
+  "what": "BoFire default surrogate (SingleTaskGPSurrogate, data-model defaults), one per objective, leave-one-design-out over the 35 design folds of the round-5 record",
+  "driver": "analysis/logocv-baselines/logocv_bofire.py",
+  "versions": {
+    "bofire": "0.5.0",
+    "botorch": "0.18.1",
+    "gpytorch": "1.15.2",
+    "torch": "2.15.0+cpu",
+    "pandas": "3.1.1",
+    "numpy": "2.4.6"
+  },
+  "python": "3.12.3",
+  "torch_threads": 1,
+  "seed_scheme": "torch.manual_seed(fold_index) before each fit",
+  "input_bounds_source": "data/fit-space-bounds.json",
+  "observed_values_source": "data/article-features.csv",
+  "predicted_sem": "posterior sd of the latent function (observation_noise=False)",
+  "predicted_sd_bofire": "BoFire predict() sd (observation_noise=True, the learned noise added)",
+  "spaces": {
+    "six": {
+      "inputs": [
+        "R_mm",
+        "H_mm",
+        "twist_deg",
+        "strut_d_mm",
+        "cable_d_mm",
+        "mass_printed_g"
+      ],
+      "seconds": 22.9,
+      "data_model": {
+        "type": "SingleTaskGPSurrogate",
+        "kernel": {
+          "type": "RBFKernel",
+          "features": null,
+          "ard": true,
+          "lengthscale_prior": {
+            "type": "DimensionalityScaledLogNormalPrior",
+            "loc": 1.4142135623730951,
+            "loc_scaling": 0.5,
+            "scale": 1.7320508075688772,
+            "scale_scaling": 0.0
+          },
+          "lengthscale_constraint": null
+        },
+        "noise_prior": {
+          "type": "LogNormalPrior",
+          "loc": -4.0,
+          "scale": 1.0
+        },
+        "noise_constraint": {
+          "type": "GreaterThan",
+          "lower_bound": 0.0001,
+          "initial_value": null
+        },
+        "scaler": {
+          "type": "Normalize",
+          "features": []
+        },
+        "output_scaler": "STANDARDIZE",
+        "aggregations": null,
+        "categorical_encodings": {}
+      }
+    },
+    "six-sim": {
+      "inputs": [
+        "R_mm",
+        "H_mm",
+        "twist_deg",
+        "strut_d_mm",
+        "cable_d_mm",
+        "mass_printed_g",
+        "sim_tierC_t180",
+        "sim_tierC_tendon_energy_mJ",
+        "sim_tierC_stroke_mm",
+        "sim_tierB_t180",
+        "sim_tierB_fn_hz",
+        "sim_tierB_zeta_pct"
+      ],
+      "seconds": 27.7,
+      "data_model": {
+        "type": "SingleTaskGPSurrogate",
+        "kernel": {
+          "type": "RBFKernel",
+          "features": null,
+          "ard": true,
+          "lengthscale_prior": {
+            "type": "DimensionalityScaledLogNormalPrior",
+            "loc": 1.4142135623730951,
+            "loc_scaling": 0.5,
+            "scale": 1.7320508075688772,
+            "scale_scaling": 0.0
+          },
+          "lengthscale_constraint": null
+        },
+        "noise_prior": {
+          "type": "LogNormalPrior",
+          "loc": -4.0,
+          "scale": 1.0
+        },
+        "noise_constraint": {
+          "type": "GreaterThan",
+          "lower_bound": 0.0001,
+          "initial_value": null
+        },
+        "scaler": {
+          "type": "Normalize",
+          "features": []
+        },
+        "output_scaler": "STANDARDIZE",
+        "aggregations": null,
+        "categorical_encodings": {}
+      }
+    },
+    "twelve": {
+      "inputs": [
+        "R_mm",
+        "H_mm",
+        "twist_deg",
+        "strut_d_mm",
+        "cable_d_mm",
+        "mass_printed_g",
+        "strut_infill_pct",
+        "tpu_infill_pct",
+        "pla_nozzle_temp_C",
+        "pla_flow_mm3_s",
+        "tpu_nozzle_temp_C",
+        "tpu_flow_mm3_s"
+      ],
+      "seconds": 28.3,
+      "data_model": {
+        "type": "SingleTaskGPSurrogate",
+        "kernel": {
+          "type": "RBFKernel",
+          "features": null,
+          "ard": true,
+          "lengthscale_prior": {
+            "type": "DimensionalityScaledLogNormalPrior",
+            "loc": 1.4142135623730951,
+            "loc_scaling": 0.5,
+            "scale": 1.7320508075688772,
+            "scale_scaling": 0.0
+          },
+          "lengthscale_constraint": null
+        },
+        "noise_prior": {
+          "type": "LogNormalPrior",
+          "loc": -4.0,
+          "scale": 1.0
+        },
+        "noise_constraint": {
+          "type": "GreaterThan",
+          "lower_bound": 0.0001,
+          "initial_value": null
+        },
+        "scaler": {
+          "type": "Normalize",
+          "features": []
+        },
+        "output_scaler": "STANDARDIZE",
+        "aggregations": null,
+        "categorical_encodings": {}
+      }
+    }
+  }
+}
