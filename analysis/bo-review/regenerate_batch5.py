@@ -10,6 +10,9 @@ methods:
   (1.35, 50 mg) for ``me2``) and pins ``botorch_acqf_class`` to
   ``qLogNoisyExpectedHypervolumeImprovement`` (already Ax 0.5.0's default
   for two objectives, so the pin documents rather than changes it).
+* ``--learned-noise`` (item 1): every objective goes to Ax as ``(mean,
+  None)``, so the GP learns one noise level per objective instead of taking
+  the per-article SEMs as known.
 * "Honegumi with fixed_features should be able to take care of this."
   ``--fixed-filament`` hands the batch's filament point (the same seeded
   Sobol point the script would substitute afterwards) to
@@ -43,6 +46,9 @@ ap.add_argument("--campaign-bo", type=Path, required=True)
 ap.add_argument("--rebound-form", choices=("me", "me2"), default="me2")
 ap.add_argument("--thresholds", action="store_true")
 ap.add_argument("--fixed-filament", action="store_true")
+ap.add_argument("--learned-noise", action="store_true",
+                help="report each objective as (mean, None) so Ax learns the noise "
+                     "instead of taking the SEMs as known (item 1 of the review)")
 ap.add_argument("--seed", type=int, default=42)
 ap.add_argument("--threads", type=int, default=1)
 ap.add_argument("--tag", required=True)
@@ -65,6 +71,7 @@ from botorch.acquisition.multi_objective.logei import (  # noqa: E402
 ROUND, BATCH = 6, 5   # run 6 = batch 5 regenerated (the me2 branch's numbering)
 record = {"tag": args.tag, "rebound_form": args.rebound_form,
           "thresholds_set": args.thresholds, "fixed_filament": args.fixed_filament,
+          "learned_noise": args.learned_noise,
           "seed": args.seed, "threads": args.threads}
 
 _orig_create = AxClient.create_experiment
@@ -96,6 +103,19 @@ def gs_init(self, steps, *a, **kw):
 
 
 gsmod.GenerationStrategy.__init__ = gs_init
+
+_orig_complete = AxClient.complete_trial
+
+
+def complete_trial(self, trial_index, raw_data, *a, **kw):
+    if args.learned_noise:
+        # (mean, None): Ax treats the SEM as unknown and the model learns the noise
+        raw_data = {k: (v[0] if isinstance(v, tuple) else v, None)
+                    for k, v in raw_data.items()}
+    return _orig_complete(self, trial_index, raw_data, *a, **kw)
+
+
+AxClient.complete_trial = complete_trial
 
 _orig_gnt = AxClient.get_next_trials
 

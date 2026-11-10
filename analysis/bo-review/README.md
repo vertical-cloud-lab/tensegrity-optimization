@@ -115,7 +115,44 @@ changed. Every variant refits the same model with the same seed, so the
 differences come from the acquisition. See the table in `results.md`
 (section 2 and 3) and the reading below.
 
-BATCH5_READING
+| variant | wide high-twist / tall low-twist / other | predicted t180 | predicted m e^2 (mg) | cable < 3 mm | envelope > 250 cm3 |
+|---|---|---|---|--:|--:|
+| archived run 6 (`f66c363`) | 6 / 3 / 0 | 1.036 to 1.040 (sd 0.101) | 19.4 for all nine (sd 19.7) | 6 | 2 |
+| control: campaign settings rerun here | identical to run 6 | | | 6 | 2 |
+| thresholds (1.35, 50 mg) + pinned qLogNEHVI | 3 / 4 / 2 | 1.036 to 1.042 | 19.0 to 19.4 | 4 | 1 |
+| filament point fixed first | 4 / 2 / 3 | 1.035 to 1.042 | 19.2 to 19.4 | 5 | 2 |
+| thresholds + filament fixed first | 3 / 3 / 3 | 1.035 to 1.043 | 19.1 to 19.4 | 3 | 1 |
+| thresholds + filament fixed first + **noise learned** | 4 / 1 / 4 | 0.910 to 1.116 (sd 0.064) | 7.6 to 29.1 (sd 12.7) | 5 | 2 |
+
+(Families: wide high-twist = R >= 35 mm and twist >= 70 deg, the corny6/7
+corner; tall low-twist = H >= 95 mm and twist <= 50 deg, the corny4 corner.
+Shapes and infills of every batch are in `data/batch5/`.)
+
+- **The control reproduces run 6 exactly**, so this environment is the one
+  run 6 was generated in and every difference below is the acquisition's.
+- **Thresholds move the batch, but not toward anything the model knows.**
+  With the reference at (1.35, 50 mg) the first three candidates are the
+  same as run 6's and the last six change: 3 wide / 4 tall / 2 intermediate
+  against 6 / 3 / 0, and two fewer sub-floor cables. Every candidate is
+  still predicted at the pooled mean (t180 1.04 +/- 0.10, 19.4 +/- 19.7 mg),
+  in every variant that keeps the SEMs as fixed noise. That model is flat
+  away from the measured articles (items 6 and 7), so the acquisition can
+  only trade between variance structures, and the batch reshuffles with
+  any change to it, which is also why run 5 and its rerun differed.
+- **Learning the noise is what changes the batch.** With the three fixes
+  together the posterior has shape again: predicted t180 spans 0.91 to
+  1.12 and m e^2 7.6 to 29.1 mg, with posterior sds about a third smaller.
+  The batch explores the corners: four wide high-twist designs at R 40 mm
+  and 80 deg (predicted t180 0.91 to 0.95), and five R 25 mm designs spread
+  over height, twist and cable diameter, every one at the lowest TPU infill
+  (12 percent). Many coordinates sit on their bounds, so this batch
+  extrapolates; it is what the corrected model asks for, not a vetted print
+  list. It is not on the campaign branch.
+
+Recommendation: set both thresholds (the campaign's own HV reference is the
+natural choice), pin `botorch_acqf_class`, and fix the noise model (item 1)
+before generating batch 5. The thresholds alone are cheap and correct but
+change little while the model is flat.
 
 ## 3. Filament settings replaced after the acquisition
 
@@ -186,7 +223,36 @@ noise model of item 1; MAP so that 18 model-by-scheme runs fit in minutes):
 Scored two ways: LOGO (every held-out article's session is in training) and
 leave-one-session-out (LOBO, the situation of a new batch).
 
-BATCH_TERM_READING
+| space | batch term | LOGO t180 rho_s / R2_oos | LOGO E_reb rho_s / R2_oos | new-session t180 rho_s / R2_oos | new-session E_reb rho_s / R2_oos |
+|---|---|---|---|---|---|
+| six | none | +0.53 / +0.40 | +0.19 / -0.01 | +0.01 / -0.21 | +0.14 / -0.04 |
+| six | random intercept | +0.52 / +0.39 | +0.26 / +0.04 | +0.01 / -0.21 | +0.18 / -0.02 |
+| six | session order | +0.46 / +0.25 | +0.25 / +0.01 | -0.27 / -0.24 | +0.12 / -0.09 |
+| eight (filament settings dropped) | none | +0.51 / +0.40 | +0.49 / +0.28 | +0.05 / -0.22 | +0.13 / -0.30 |
+| eight | random intercept | +0.50 / +0.35 | +0.49 / +0.26 | +0.05 / -0.22 | +0.14 / -0.33 |
+| eight | session order | +0.44 / -0.01 | +0.26 / -0.09 | -0.23 / -0.24 | +0.14 / -0.32 |
+| twelve (campaign) | none | +0.48 / +0.29 | +0.53 / +0.34 | +0.06 / -0.30 | +0.05 / -0.48 |
+| twelve | random intercept | +0.47 / +0.29 | +0.52 / +0.32 | +0.07 / -0.30 | +0.05 / -0.48 |
+| twelve | session order | +0.45 / -0.01 | +0.28 / -0.06 | -0.22 / -0.19 | -0.07 / -0.53 |
+
+- **Dropping the four filament settings costs nothing within the record.**
+  `eight` matches `twelve` on t180 (LOGO R2_oos +0.40 against +0.29) and
+  comes close on E_reb (+0.28 against +0.34).
+- **No session offset is detectable.** The marginal likelihood sets the
+  random intercept's variance to zero for t180 in both spaces and for E_reb
+  in the eight space; in the six space it estimates offsets of -0.85 to
+  +0.49 mJ, each with a posterior sd of about 0.75 mJ. So the random
+  intercept changes nothing.
+- **Session order as an input hurts** under both schemes: a smooth trend
+  over five sessions is not in the data.
+- **No model predicts a new print session.** Leaving a session out, every
+  variant ranks held-out t180 at about zero and is worse than predicting the
+  training mean (R2_oos -0.19 to -0.53). The filament settings do not help
+  (twelve is the worst on E_reb, -0.48), which is what an unidentified
+  filament effect looks like when it has to extrapolate. Part of this is
+  how the sessions were chosen: each later batch sits in a corner the
+  earlier ones did not cover, so a held-out session is also a held-out
+  region of design space.
 
 **Humidity, drying, spools.** The covariate table of the print audit
 (`manuscript/data/t3-prism-article-print-covariates.csv`,
@@ -254,7 +320,45 @@ fit space, next to the sd of the data. It does so for the round-2 model
 (17 articles, six parameters: the archived importances) and for the
 twelve-parameter model on all 44 articles, with fixed and learned noise.
 
-IMPORTANCE_READING
+Twelve parameters, all 44 articles, NUTS 512/256, medians over four
+seeds (full table in `results.md`):
+
+| noise | objective | shortest lengthscale (unit cube) | other lengthscales | Ax importance of the top input | posterior-mean sd over the space (data sd) |
+|---|---|---|---|---|---|
+| fixed (campaign) | t180 | mass 0.044 | 0.30 to 0.46 | mass 0.43 | 0.0025 to 0.004 (0.087) |
+| fixed (campaign) | E_reb | mass 0.013 | 0.030 to 0.050 | mass 0.21 | 0.0000 to 0.0001 mJ (3.72) |
+| learned | t180 | cable d 1.1 | 1.7 to 3.7 | cable d 0.19 | 0.030 to 0.033 (0.087) |
+| learned | E_reb | TPU infill 2.8 | 3.3 to 6.6 | 0.11 to 0.13 (varies by seed) | 1.07 to 1.32 mJ (3.72) |
+
+Round 2 (17 articles, six parameters, the archived importances): t180
+lengthscales 1.4 (cable d) to 2.8 (R) with fixed noise, 1.5 to 3.0 learned;
+E_reb R at 0.57 to 0.64, the rest 1.7 to 3.8. Posterior-mean sd over the
+space 0.035 to 0.043 (t180, data sd 0.098) and 1.85 to 2.05 mJ (E_reb, data
+sd 2.80).
+
+- **Round 2: near-uniform, but not flat.** Every t180 lengthscale is longer
+  than the unit cube (1.4 to 3.0), so the model is smooth and close to
+  linear in every input, with no input much stronger than another. That is
+  what near-uniform importances meant there, and the posterior mean still
+  moves with an sd of about 0.04 over the space, 35 to 45 percent of the
+  data sd.
+- **Twelve parameters, fixed noise: flat, with mass "most important".** The
+  t180 model sets mass at 0.044 and E_reb sets every lengthscale at 0.013
+  to 0.050: they interpolate the 44 articles and revert to the mean between
+  them. The posterior mean barely moves over the space (t180 sd 0.003, 3
+  to 5 percent of the data sd; E_reb 0.0001 mJ). This is the flat
+  posterior of runs 5 and 6, which predict every batch-5 candidate at the
+  pooled mean. The E_reb importances look uniform (0.06 to 0.21) for the
+  opposite reason to round 2: every lengthscale is tiny. So the
+  normalized importances could not have told Juan's two cases apart, and
+  for the twelve-parameter model they mostly report the noise model.
+- **Twelve parameters, learned noise: smooth, cable diameter first.** t180
+  ranks cable diameter first in 11 of 12 seed-and-budget fits (twist in
+  one), lengthscales 1.1 to 3.7, posterior-mean sd 0.031 (36 percent of the
+  data sd). E_reb is smooth (2.8 to 6.6) with no stable ranking: the top
+  input changes between seeds (R, TPU infill, strut infill, TPU flow), so
+  its importances carry no ranking. The four filament settings sit at 3 to
+  4.8, about as long as the shape inputs.
 
 ## 8. MCMC stability across seeds and sample counts
 
@@ -268,7 +372,28 @@ ranks first, the spread of the posterior mean at the training articles, and
 a split-R-hat over the four seeds (one chain each) for every log
 lengthscale.
 
-MCMC_READING
+| noise | NUTS budget | max seed-to-seed sd of an importance | max split-R-hat, log lengthscales (t180 / E_reb) |
+|---|---|--:|---|
+| fixed | 256/128 | 0.10 | 1.14 / 1.59 |
+| fixed | 512/256 (campaign) | 0.06 | 1.06 / 1.10 |
+| fixed | 1024/512 | 0.03 | 1.02 / 1.07 |
+| learned | 256/128 | 0.035 | 1.28 / 1.16 |
+| learned | 512/256 (campaign) | 0.035 | 1.05 / 1.13 |
+| learned | 1024/512 | 0.032 | 1.07 / 1.05 |
+
+(twelve parameters, 44 articles, four seeds per cell; `results.md` has every
+cell and the round-2 model, whose R-hats are 1.03 to 1.11.)
+
+- At the campaign budget the chains agree on what matters: the top input is
+  the same in every seed for t180 under both noise models, and the R-hats
+  are at or below about 1.1 except for the fixed-noise E_reb model at
+  256/128 (1.59), the budget of the campaign's per-specimen LOO refits.
+- 256/128 is too short for the fixed-noise model, whose posterior has the
+  sharp mass ridge; 1024/512 buys little over 512/256 for either.
+- The instability that matters is not seed-to-seed but structural: the
+  fixed-noise posterior is flat away from the data, so small changes (a
+  seed, a library version, a threshold) reorder a batch the model has no
+  preference within. Learning the noise removes that.
 
 Two records from this PR say the same at the level of LOGO-CV and of the
 batch: the campaign's fixed-noise SAASBO moved its held-out t180 rho_s from

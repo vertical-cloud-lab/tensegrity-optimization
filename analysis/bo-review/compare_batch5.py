@@ -27,12 +27,13 @@ OUT = HERE / "data" / "batch5"
 SHAPE = ["R_mm", "H_mm", "twist_deg", "strut_d_mm", "cable_d_mm"]
 BOUNDS = {"R_mm": (25, 40), "H_mm": (60, 110), "twist_deg": (40, 80),
           "strut_d_mm": (6, 12), "cable_d_mm": (3, 5.5)}
-VARIANTS = ["control", "thresholds", "fixedfil", "both"]
+VARIANTS = ["control", "thresholds", "fixedfil", "both", "fixes"]
 LABEL = {"archived": "archived run 6 (campaign branch, f66c363)",
          "control": "control: campaign settings, rerun here",
          "thresholds": "thresholds (1.35, 50 mg) + pinned qLogNEHVI",
          "fixedfil": "filament point fixed first (fixed_features)",
-         "both": "thresholds + filament fixed first"}
+         "both": "thresholds + filament fixed first",
+         "fixes": "thresholds + filament fixed first + noise learned"}
 
 
 def family(r):
