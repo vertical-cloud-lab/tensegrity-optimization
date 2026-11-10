@@ -81,7 +81,11 @@ articles and observed values of the runs above.
   (`--model ax-default --noise inferred`).
 - `ax-saasbo-inferred-noise-<space>/`: SAASBO at 256/512 with the SEMs
   blanked (`--model saasbo --noise inferred`); per-fold seeds as in the
-  archived runs.
+  archived runs. `ax-saasbo-inferred-noise-six-sim/` holds only the
+  campaign-format CSV: its run finished in a job whose push failed, and the
+  CSV was restored from that job's PR comment (PR #121, 2026-11-05). The
+  same command regenerates it with `folds.jsonl`, `state.json` and the
+  diagnostics (same seeds, about 20 minutes on three workers).
 
   Each Ax directory has the layout of `ax-six-sim/`. For the MAP models each
   `folds.jsonl` record also carries `hyperparameters` (fitted lengthscales

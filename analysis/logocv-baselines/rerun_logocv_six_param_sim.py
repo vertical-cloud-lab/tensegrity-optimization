@@ -61,8 +61,10 @@ same seeds, ``refit_on_cv=True``.
 For the two MAP models ``warm_start_refit`` is set False, so each fold's
 hyperparameters are optimized from the prior's starting point and not from
 the full-data optimum (Ax's default warm start would carry information about
-the held-out design into the fold). SAASBO's NUTS refit draws afresh, so it
-is unaffected and keeps the archived setting.
+the held-out design into the fold). ``--warm-start-refit`` restores Ax's
+default for a check (it moved rho_s by at most 0.04 in the six and twelve
+spaces). SAASBO's NUTS refit draws afresh, so it is unaffected and keeps the
+archived setting.
 
 Noise (``--noise``): ``known`` (default) passes the archived per-article SEMs
 as Ax's known observation noise, as the campaign did; ``inferred`` blanks

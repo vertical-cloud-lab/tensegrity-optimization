@@ -386,6 +386,41 @@
       "median_predicted_sem": 1.31750393
     }
   },
+  "saasbo-learned-six": {
+    "model": "saasbo-learned",
+    "space": "six",
+    "n_features": 6,
+    "t180": {
+      "n": 44,
+      "MAPE": 0.04349997679916332,
+      "RMSE": 0.06750950792015525,
+      "R2_oos_vs_fold_mean": 0.41244025964133235,
+      "spearman_rho": 0.5340380549682875,
+      "spearman_p_perm_two_sided": 0.00014999250037498125,
+      "spearman_p_asymptotic": 0.00018881593964298956,
+      "pearson_r": 0.6283146952336469,
+      "design_mean_spearman_rho": 0.5971988795518207,
+      "design_mean_spearman_p_asymptotic": 0.00015224322931970985,
+      "sd_pred_over_sd_obs": 0.7061448259484833,
+      "coverage_1p96sd": 0.9090909090909091,
+      "median_predicted_sem": 0.03558855945
+    },
+    "e_reb_mJ": {
+      "n": 44,
+      "MAPE": 0.3635518060915255,
+      "RMSE": 3.5882440505966566,
+      "R2_oos_vs_fold_mean": 0.08758227840785582,
+      "spearman_rho": 0.2741367159971811,
+      "spearman_p_perm_two_sided": 0.07064646767661617,
+      "spearman_p_asymptotic": 0.07174381369076027,
+      "pearson_r": 0.25076320079106407,
+      "design_mean_spearman_rho": 0.2285714285714286,
+      "design_mean_spearman_p_asymptotic": 0.1866014418388759,
+      "sd_pred_over_sd_obs": 0.3698066111125957,
+      "coverage_1p96sd": 0.5,
+      "median_predicted_sem": 1.133205995
+    }
+  },
   "saasbo-six-sim": {
     "model": "saasbo",
     "space": "six-sim",
@@ -773,6 +808,41 @@
       "median_predicted_sem": 1.55706071
     }
   },
+  "saasbo-learned-six-sim": {
+    "model": "saasbo-learned",
+    "space": "six-sim",
+    "n_features": 12,
+    "t180": {
+      "n": 44,
+      "MAPE": 0.04498106275208418,
+      "RMSE": 0.06592169468659997,
+      "R2_oos_vs_fold_mean": 0.4397538607715007,
+      "spearman_rho": 0.5463002114164904,
+      "spearman_p_perm_two_sided": 0.000199990000499975,
+      "spearman_p_asymptotic": 0.00012497111251511016,
+      "pearson_r": 0.6447705806416525,
+      "design_mean_spearman_rho": 0.6047619047619048,
+      "design_mean_spearman_p_asymptotic": 0.00011907137996203774,
+      "sd_pred_over_sd_obs": 0.6559587973466634,
+      "coverage_1p96sd": 0.9090909090909091,
+      "median_predicted_sem": 0.0404282945
+    },
+    "e_reb_mJ": {
+      "n": 44,
+      "MAPE": 0.3541508707067566,
+      "RMSE": 3.5334218244395115,
+      "R2_oos_vs_fold_mean": 0.11524965783454744,
+      "spearman_rho": 0.3286821705426356,
+      "spearman_p_perm_two_sided": 0.029298535073246337,
+      "spearman_p_asymptotic": 0.02937714154531501,
+      "pearson_r": 0.29416378077627103,
+      "design_mean_spearman_rho": 0.28179271708683473,
+      "design_mean_spearman_p_asymptotic": 0.10100716042119438,
+      "sd_pred_over_sd_obs": 0.3893462633815318,
+      "coverage_1p96sd": 0.5454545454545454,
+      "median_predicted_sem": 1.30748619
+    }
+  },
   "saasbo-twelve": {
     "model": "saasbo",
     "space": "twelve",
@@ -1158,6 +1228,41 @@
       "sd_pred_over_sd_obs": 0.5376893694565441,
       "coverage_1p96sd": 0.7727272727272727,
       "median_predicted_sem": 1.779201675
+    }
+  },
+  "saasbo-learned-twelve": {
+    "model": "saasbo-learned",
+    "space": "twelve",
+    "n_features": 12,
+    "t180": {
+      "n": 44,
+      "MAPE": 0.0462544487901372,
+      "RMSE": 0.06834517141847667,
+      "R2_oos_vs_fold_mean": 0.39780406488446307,
+      "spearman_rho": 0.5522198731501057,
+      "spearman_p_perm_two_sided": 9.99950002499875e-05,
+      "spearman_p_asymptotic": 0.00010180548423338435,
+      "pearson_r": 0.6147344956625538,
+      "design_mean_spearman_rho": 0.6249299719887955,
+      "design_mean_spearman_p_asymptotic": 5.9914063164573164e-05,
+      "sd_pred_over_sd_obs": 0.7045282603887287,
+      "coverage_1p96sd": 0.9318181818181818,
+      "median_predicted_sem": 0.05095412875
+    },
+    "e_reb_mJ": {
+      "n": 44,
+      "MAPE": 0.33188925466700847,
+      "RMSE": 3.2980272720231416,
+      "R2_oos_vs_fold_mean": 0.2292061335604546,
+      "spearman_rho": 0.5054263565891473,
+      "spearman_p_perm_two_sided": 0.0004999750012499375,
+      "spearman_p_asymptotic": 0.00046618015952018283,
+      "pearson_r": 0.44424144631275125,
+      "design_mean_spearman_rho": 0.5498599439775911,
+      "design_mean_spearman_p_asymptotic": 0.0006223827341315898,
+      "sd_pred_over_sd_obs": 0.4119174539642965,
+      "coverage_1p96sd": 0.7272727272727273,
+      "median_predicted_sem": 1.80185661
     }
   }
 }
