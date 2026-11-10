@@ -90,6 +90,39 @@
         "output_scaler": "STANDARDIZE",
         "aggregations": null
       }
+    },
+    "six-sim": {
+      "inputs": [
+        "R_mm",
+        "H_mm",
+        "twist_deg",
+        "strut_d_mm",
+        "cable_d_mm",
+        "mass_printed_g",
+        "sim_tierC_t180",
+        "sim_tierC_tendon_energy_mJ",
+        "sim_tierC_stroke_mm",
+        "sim_tierB_t180",
+        "sim_tierB_fn_hz",
+        "sim_tierB_zeta_pct"
+      ],
+      "folds": 35,
+      "seconds_per_fold_median": 19.6,
+      "seconds_total": 690.9,
+      "data_model": {
+        "type": "FullyBayesianSingleTaskGPSurrogate",
+        "model_type": "saas",
+        "warmup_steps": 512,
+        "num_samples": 256,
+        "thinning": 16,
+        "features_to_warp": [],
+        "scaler": {
+          "type": "Normalize",
+          "features": []
+        },
+        "output_scaler": "STANDARDIZE",
+        "aggregations": null
+      }
     }
   }
 }
