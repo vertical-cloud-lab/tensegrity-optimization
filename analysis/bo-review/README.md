@@ -131,8 +131,8 @@ Shapes and infills of every batch are in `data/batch5/`.)
 - **The control reproduces run 6 exactly**, so this environment is the one
   run 6 was generated in and every difference below is the acquisition's.
 - **Thresholds move the batch, but not toward anything the model knows.**
-  With the reference at (1.35, 50 mg) the first three candidates are the
-  same as run 6's and the last six change: 3 wide / 4 tall / 2 intermediate
+  With the reference at (1.35, 50 mg) the first three candidates are within
+  0.1 mm and 0.1 deg of run 6's and the last six change: 3 wide / 4 tall / 2 intermediate
   against 6 / 3 / 0, and two fewer sub-floor cables. Every candidate is
   still predicted at the pooled mean (t180 1.04 +/- 0.10, 19.4 +/- 19.7 mg),
   in every variant that keeps the SEMs as fixed noise. That model is flat
