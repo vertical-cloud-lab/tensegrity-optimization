@@ -102,6 +102,26 @@ articles and observed values of the runs above.
   the learned noise added), `bofire-<space>-fits.json` (per fold and
   objective: lengthscales, learned noise, seconds), `state.json` (versions,
   the resolved data-model defaults).
+- `bofire-saas/`: BoFire 0.5.0's fully Bayesian SAAS surrogate
+  (`FullyBayesianSingleTaskGPSurrogate`, `model_type="saas"`, one per
+  objective, noise learned) at 512 warmup steps / 256 samples / thinning 16,
+  the budget of every SAASBO run here, by `../logocv_bofire_saas.py` (PR #121
+  follow-up, sgbaird, 2026-11-10). `folds/<space>/<fold_index>.json` holds
+  each fold as it finished (held-out rows, per-objective summaries of the 16
+  retained draws, seconds); `bofire-saas-<space>.csv` (campaign layout;
+  `predicted` and `predicted_sem` are the mean and latent sd of the mixture
+  over the draws, `predicted_sd_bofire` is BoFire's own `predict()` sd with
+  the learned noise added); `bofire-saas-<space>-fits.json` (per fold and
+  objective: median lengthscales over the draws on the unit cube, median
+  learned noise and outputscale, seconds); `state.json` (versions, budget,
+  seeds, the resolved data model).
+- `bofire-saas-default-budget/`: the same at BoFire's own default NUTS
+  budget (256 warmup steps / 128 samples / thinning 16, so 8 draws;
+  `--budget bofire`), same layout.
+- `bofire-saas-lengthscales.json`: per BoFire SAAS run and objective, the
+  median over the 35 folds of each input's median lengthscale, and the median
+  learned noise as a standardized variance and as an sd in the objective's
+  units (by `../logocv_baselines.py --score`).
 - `fit-space-bounds.json`: the input bounds every run fits in (the campaign's
   `fit_search_space` for the twelve parameters, the padded observed range for
   the six simulation features), so that BoFire's domain matches Ax's search

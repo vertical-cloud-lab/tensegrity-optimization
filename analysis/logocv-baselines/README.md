@@ -1,4 +1,4 @@
-# LOGO-CV in the original six-parameter space, with and without simulation features, against dummy and off-the-shelf baselines and the Ax and BoFire defaults
+# LOGO-CV in the original six-parameter space, with and without simulation features, against dummy and off-the-shelf baselines, the Ax and BoFire defaults, and BoFire's SAAS surrogate
 
 **The ask ([PR #121, 2026-11-05](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/121)):**
 "Perform LOGO-CV with 256/512, with only the 6 (?) original parameters, not
@@ -14,6 +14,217 @@ two scripts in this directory. Inputs and their provenance are in
 [`data/README.md`](data/README.md); every number below is in
 [`scores.json`](scores.json) / [`scores.csv`](scores.csv), and the full
 scorecard tables are in [`scores.md`](scores.md).
+
+## Follow-up 2: BoFire's fully Bayesian SAAS surrogate
+
+**The ask ([PR #121,
+2026-11-10](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/121)):**
+on the item left undone in the follow-up below, "BoFire's own fully Bayesian
+SAAS surrogate (another hour of NUTS)": "Do this also".
+
+**Short version.** BoFire's SAAS surrogate learns its noise level by
+construction, since it takes no per-point noise. At the campaign's NUTS
+budget (256 samples after 512 warmup steps) it reproduces Ax's SAASBO with
+the SEMs blanked in every space and for both objectives:
+
+- t180: held-out rho_s +0.54 / +0.59 / +0.52 (six / six + sim / twelve),
+  against +0.53 / +0.55 / +0.55 for Ax's SAASBO with learned noise and
+  +0.05 / -0.14 / +0.32 for the campaign's SAASBO with the SEMs as known
+  noise;
+- E_reb: +0.28 / +0.36 / +0.48, against +0.27 / +0.33 / +0.51 and
+  -0.42 / -0.71 / -0.40.
+
+Article by article, the two implementations' predictions correlate at
+r = 0.979 to 0.995, and they differ by a median of 4 to 10% of the
+posterior sd. Their rho_s differ by at most 0.05, far below the 0.2 that
+the caveats below treat as unresolved. BoFire's SAAS runs on a different
+sampler backend (NumPyro on JAX, not Pyro) with a different seed scheme, so
+the conclusion of the follow-up below holds with a second implementation. The
+SAAS prior is fine, and the campaign surrogate's weak held-out ranking comes
+from entering the SEMs as known noise.
+
+### What it is
+
+BoFire's fully Bayesian surrogate is `FullyBayesianSingleTaskGPSurrogate`,
+whose default `model_type` is `"saas"`. It builds BoTorch's
+`SaasFullyBayesianSingleTaskGP`, the model class of Ax's SAASBO, and it
+never passes `train_Yvar`, so the noise is always learned. Against Ax's
+SAASBO run with the SEMs blanked (`saasbo-learned`, in the follow-up below),
+it differs only in the stack:
+
+| | Ax 0.5.0 SAASBO, noise learned | BoFire 0.5.0 SAAS |
+|---|---|---|
+| model | `SaasFullyBayesianSingleTaskGP` (BoTorch 0.13.0), SEMs blanked | `SaasFullyBayesianSingleTaskGP` (BoTorch 0.18.1), built by `FullyBayesianSingleTaskGPSurrogate(model_type="saas")`; there is no per-point noise option |
+| priors | SAAS: global shrinkage tau^2 ~ HalfCauchy(0.1), inverse squared lengthscales tau^2 x HalfCauchy(1) per input; outputscale Gamma(2, 0.15); noise variance Gamma(0.9, 10); mean Normal(0, 1) | the same |
+| sampler | Pyro NUTS, full mass matrix, maximum tree depth 6, float64 | NumPyro NUTS on JAX, dense mass matrix, maximum tree depth 6, float32 (JAX's default; BoTorch does not enable x64) |
+| budget | 512 warmup steps, 256 samples, thinning 16: 16 draws | the same (`--budget campaign`); a second run at BoFire's own defaults, 256 warmup / 128 samples / thinning 16, so 8 draws (`--budget bofire`) |
+| seeds | `torch.manual_seed(fold_index)` | `torch.manual_seed(fold_index)` is set, but NUTS draws from `jax.random.PRNGKey(0)` in every fold, because BoFire passes no seed |
+| scaling | inputs normalized to the search space; `StandardizeY` fitted once on all 44 articles, as in every Ax run here | `Normalize` to the same bounds (`data/fit-space-bounds.json`) and `Standardize`, inside the fold |
+| prediction | mixture mean and latent mixture sd over the draws | the same (`predicted_sem`); BoFire's own `predict()` sd, which adds each draw's noise, is kept as `predicted_sd_bofire` |
+| time per fold (both objectives, one thread) | median 74 to 146 s across the four Ax SAASBO runs | median 18 to 20 s, mostly JAX compilation (four workers on two cores) |
+
+### Results
+
+Held out over the same 35 design folds (44 articles) as every run in this
+directory, from `logocv_baselines.py --score`. The summary at the top of
+[`scores.md`](scores.md) now carries the two BoFire SAAS rows as well.
+Reference rows: the campaign's SAASBO, Ax's SAASBO with the noise learned,
+the two MAP GPs with the noise learned, and the tuned random forest.
+
+#### Spearman rho_s, held-out prediction vs measurement (two-sided permutation p in brackets)
+
+| model | noise | t180, 6 orig. | t180, 6 orig. + sim | t180, 12 campaign | E_reb, 6 orig. | E_reb, 6 orig. + sim | E_reb, 12 campaign |
+|---|---|--:|--:|--:|--:|--:|--:|
+| SAASBO (Ax, 256/512) | SEMs as known noise (campaign) | +0.05 (0.731) | -0.14 (0.370) | +0.32 (0.036) | -0.42 (0.005) | -0.71 (<0.001) | -0.40 (0.008) |
+| SAASBO, noise learned (256/512) | learned | +0.53 (<0.001) | +0.55 (<0.001) | +0.55 (<0.001) | +0.27 (0.071) | +0.33 (0.029) | +0.51 (<0.001) |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | learned | +0.54 (<0.001) | +0.59 (<0.001) | +0.52 (<0.001) | +0.28 (0.062) | +0.36 (0.018) | +0.48 (<0.001) |
+| BoFire SAAS at BoFire's default budget (128/256) | learned | +0.51 (<0.001) | +0.59 (<0.001) | +0.51 (<0.001) | +0.30 (0.049) | +0.34 (0.024) | +0.44 (0.003) |
+| Ax default, noise learned | learned | +0.52 (<0.001) | +0.41 (0.007) | +0.53 (<0.001) | +0.19 (0.214) | +0.33 (0.027) | +0.54 (<0.001) |
+| BoFire default (GP, MAP, noise learned) | learned | +0.53 (<0.001) | +0.41 (0.006) | +0.48 (0.001) | +0.19 (0.227) | +0.28 (0.063) | +0.53 (<0.001) |
+| random forest (tuned) | n/a | +0.59 (<0.001) | +0.65 (<0.001) | +0.52 (<0.001) | +0.13 (0.390) | +0.20 (0.191) | +0.27 (0.082) |
+
+#### R2_oos (1 - SSE / SSE of the per-fold training mean; 0 = the mean predictor)
+
+| model | noise | t180, 6 orig. | t180, 6 orig. + sim | t180, 12 campaign | E_reb, 6 orig. | E_reb, 6 orig. + sim | E_reb, 12 campaign |
+|---|---|--:|--:|--:|--:|--:|--:|
+| SAASBO (Ax, 256/512) | SEMs as known noise (campaign) | +0.12 | +0.02 | +0.12 | -0.37 | -0.30 | -0.05 |
+| SAASBO, noise learned (256/512) | learned | +0.41 | +0.44 | +0.40 | +0.09 | +0.12 | +0.23 |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | learned | +0.45 | +0.43 | +0.37 | +0.09 | +0.12 | +0.25 |
+| BoFire SAAS at BoFire's default budget (128/256) | learned | +0.43 | +0.45 | +0.36 | +0.08 | +0.11 | +0.20 |
+| Ax default, noise learned | learned | +0.39 | +0.30 | +0.36 | -0.01 | +0.08 | +0.34 |
+| BoFire default (GP, MAP, noise learned) | learned | +0.40 | +0.31 | +0.29 | -0.01 | +0.03 | +0.34 |
+| random forest (tuned) | n/a | +0.40 | +0.49 | +0.33 | -0.08 | +0.04 | +0.08 |
+
+#### MAPE
+
+| model | noise | t180, 6 orig. | t180, 6 orig. + sim | t180, 12 campaign | E_reb, 6 orig. | E_reb, 6 orig. + sim | E_reb, 12 campaign |
+|---|---|--:|--:|--:|--:|--:|--:|
+| SAASBO (Ax, 256/512) | SEMs as known noise (campaign) | 5.2% | 5.4% | 4.8% | 43.6% | 43.5% | 38.8% |
+| SAASBO, noise learned (256/512) | learned | 4.3% | 4.5% | 4.6% | 36.4% | 35.4% | 33.2% |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | learned | 4.2% | 4.5% | 4.8% | 36.3% | 35.2% | 32.7% |
+| BoFire SAAS at BoFire's default budget (128/256) | learned | 4.2% | 4.4% | 4.8% | 36.5% | 35.8% | 33.8% |
+| Ax default, noise learned | learned | 4.2% | 4.6% | 4.6% | 38.8% | 35.5% | 30.2% |
+| BoFire default (GP, MAP, noise learned) | learned | 4.1% | 4.7% | 4.9% | 38.8% | 36.7% | 30.3% |
+| random forest (tuned) | n/a | 4.5% | 4.1% | 5.0% | 40.5% | 35.8% | 35.9% |
+
+#### Coverage of the held-out articles at 1.96 sd
+
+| model | sd | t180, 6 orig. | t180, 6 orig. + sim | t180, 12 campaign | E_reb, 6 orig. | E_reb, 6 orig. + sim | E_reb, 12 campaign |
+|---|---|--:|--:|--:|--:|--:|--:|
+| SAASBO, noise learned (256/512) | latent (Ax `predicted_sem`) | 91% | 91% | 93% | 50% | 55% | 73% |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | latent | 91% | 91% | 91% | 50% | 52% | 70% |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | BoFire `predict()`, noise added | 93% | 93% | 93% | 89% | 89% | 93% |
+| BoFire SAAS at BoFire's default budget (128/256) | latent | 91% | 91% | 93% | 48% | 55% | 70% |
+| BoFire SAAS at BoFire's default budget (128/256) | BoFire `predict()`, noise added | 93% | 93% | 93% | 89% | 89% | 93% |
+
+#### Agreement between runs, article by article
+
+| pair | objective | space | Pearson r of the predictions | median abs. difference / median sd | largest abs. difference / data sd | rho_s difference |
+|---|---|---|--:|--:|--:|--:|
+| Ax SAASBO vs BoFire SAAS (both 256/512, noise learned) | t180 | 6 orig. | 0.994 | 0.07 | 0.37 | +0.002 |
+| Ax SAASBO vs BoFire SAAS (both 256/512, noise learned) | t180 | 6 orig. + sim | 0.995 | 0.07 | 0.24 | +0.046 |
+| Ax SAASBO vs BoFire SAAS (both 256/512, noise learned) | t180 | 12 campaign | 0.995 | 0.04 | 0.28 | -0.033 |
+| Ax SAASBO vs BoFire SAAS (both 256/512, noise learned) | E_reb | 6 orig. | 0.992 | 0.10 | 0.14 | +0.009 |
+| Ax SAASBO vs BoFire SAAS (both 256/512, noise learned) | E_reb | 6 orig. + sim | 0.995 | 0.06 | 0.09 | +0.027 |
+| Ax SAASBO vs BoFire SAAS (both 256/512, noise learned) | E_reb | 12 campaign | 0.979 | 0.09 | 0.33 | -0.026 |
+| BoFire SAAS, 256/512 vs 128/256 | t180 | 6 orig. | 0.995 | 0.07 | 0.24 | -0.029 |
+| BoFire SAAS, 256/512 vs 128/256 | t180 | 6 orig. + sim | 0.993 | 0.07 | 0.27 | +0.000 |
+| BoFire SAAS, 256/512 vs 128/256 | t180 | 12 campaign | 0.993 | 0.06 | 0.26 | -0.008 |
+| BoFire SAAS, 256/512 vs 128/256 | E_reb | 6 orig. | 0.993 | 0.08 | 0.12 | +0.015 |
+| BoFire SAAS, 256/512 vs 128/256 | E_reb | 6 orig. + sim | 0.987 | 0.14 | 0.17 | -0.013 |
+| BoFire SAAS, 256/512 vs 128/256 | E_reb | 12 campaign | 0.983 | 0.09 | 0.27 | -0.037 |
+
+#### Learned noise and the mass lengthscale (medians over the 35 folds)
+
+| run | objective | space | noise sd (objective units) | mass lengthscale (unit cube) | shortest lengthscale |
+|---|---|---|--:|--:|---|
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | t180 | 6 orig. | 0.0444 | 1.74 | `twist_deg` 1.54 |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | t180 | 6 orig. + sim | 0.0485 | 3.22 | `sim_tierB_zeta_pct` 1.88 |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | t180 | 12 campaign | 0.0497 | 2.80 | `twist_deg` 1.35 |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | E_reb | 6 orig. | 2.92 mJ | 7.08 | `H_mm` 3.98 |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | E_reb | 6 orig. + sim | 3.05 mJ | 5.62 | `sim_tierB_t180` 3.86 |
+| BoFire SAAS (fully Bayesian, 256/512, noise learned) | E_reb | 12 campaign | 2.81 mJ | 4.33 | `H_mm` 3.08 |
+| BoFire SAAS at BoFire's default budget (128/256) | t180 | 6 orig. | 0.0476 | 1.62 | `mass_printed_g` 1.62 |
+| BoFire SAAS at BoFire's default budget (128/256) | t180 | 6 orig. + sim | 0.0478 | 2.90 | `sim_tierB_zeta_pct` 2.02 |
+| BoFire SAAS at BoFire's default budget (128/256) | t180 | 12 campaign | 0.0502 | 2.96 | `twist_deg` 1.59 |
+| BoFire SAAS at BoFire's default budget (128/256) | E_reb | 6 orig. | 3.07 mJ | 7.28 | `H_mm` 4.57 |
+| BoFire SAAS at BoFire's default budget (128/256) | E_reb | 6 orig. + sim | 3.07 mJ | 5.27 | `sim_tierB_t180` 4.94 |
+| BoFire SAAS at BoFire's default budget (128/256) | E_reb | 12 campaign | 2.86 mJ | 4.25 | `pla_flow_mm3_s` 3.61 |
+
+### Reading
+
+- **Same model, same answer.** BoFire's SAAS and Ax's SAASBO, both with the
+  noise learned, agree within 0.05 in rho_s, 0.04 in R2_oos and half a point
+  in MAPE in all six cells. Their posterior sds agree within 4% (median
+  ratio 1.00 to 1.04).
+- **SAAS against the MAP GPs with learned noise.** On t180 SAAS matches or
+  beats them. R2_oos is +0.45 / +0.43 / +0.37 for BoFire's SAAS (six / six +
+  sim / twelve) against +0.40 / +0.31 / +0.29 for BoFire's MAP default,
+  and the gap is largest with the simulation features. On E_reb in the
+  twelve-parameter space the MAP GPs are ahead: R2_oos +0.34 against +0.25,
+  rho_s +0.53 and +0.54 against +0.48.
+- **Against the tuned random forest, t180.** BoFire's SAAS reaches R2_oos
+  +0.45 against +0.40 in the six-parameter space and +0.37 against +0.33 in
+  the twelve. With the simulation features the forest stays ahead, +0.49
+  against +0.43.
+- **Learned noise.** The median learned noise sd is 0.044 to 0.050 for t180
+  and 2.8 to 3.1 mJ for E_reb. That is 78 to 87% and 67 to 73% of the pooled
+  within-design sd of the nine reprint pairs (0.057 and 4.2 mJ), a little
+  above the MAP GPs' 0.034 to 0.040 and 2.4 to 3.0 mJ.
+- **No input is pinned.** The shortest median lengthscale on the unit cube
+  is 1.35 for t180 (twist angle; the mass lengthscale is 1.7 to 3.2) and 3.1
+  for E_reb. The known-noise MAP fits of the follow-up below put the mass
+  lengthscale at BoTorch's 0.025 floor in 94 to 100% of the folds of the two
+  six-parameter spaces. With the noise learned, no fit threads between the
+  reprint twins through the weighed mass.
+- **Uncertainty.** The latent sd covers 91% of t180 in every space and 50 to
+  70% of E_reb, as Ax's SAASBO does. BoFire's own `predict()` sd adds each
+  draw's learned noise. It covers 93% of t180 and 89 to 93% of E_reb, so it
+  is the one to use for a new article.
+- **Cost.** The median fold, both objectives, took 18 to 20 s (four workers
+  on two cores) against 74 to 146 s for the Ax SAASBO runs. JAX compilation
+  is most of that time, so BoFire's default budget saves little (median
+  16.5 to 18.2 s per fold).
+- **BoFire's own default budget gives nearly the same answer.** At 128
+  samples after 256 warmup steps (8 draws), held-out t180 rho_s is +0.51 /
+  +0.59 / +0.51 and E_reb +0.30 / +0.34 / +0.44 (six / six + sim / twelve),
+  within 0.04 of the 256/512 run in every cell. Article by article the two
+  budgets' predictions correlate at r = 0.983 to 0.995. The campaign's
+  known-noise SAASBO moved by 0.24 in t180 rho_s between 64/128 and 256/512
+  (Section 4.3 of the manuscript). Halving the budget of the learned-noise
+  SAAS moves it by at most 0.04.
+
+### Caveats
+
+- One NUTS chain per fold. BoFire seeds NUTS with `PRNGKey(0)` in every fold,
+  and the Ax runs seed it with the fold index. No seed study was run, so the
+  differences above mix the two implementations with chain-to-chain
+  variation.
+- JAX samples in float32 here (BoTorch 0.18 does not enable x64); the
+  predictions are then computed in float64 from the draws. The agreement
+  with Ax's float64 Pyro runs suggests this does not matter for this record.
+- The earlier caveats hold: 44 articles, one realization per row, and rho_s
+  differences under about 0.2 are not resolved. The scorecard has grown
+  again, so its best cell is more optimistic still.
+- Only BoFire 0.5.0 (BoTorch 0.18.1) was tried.
+
+### What this suggests for the manuscript (not edited here)
+
+Nothing changes in the suggestions at the end of the follow-up below. They
+no longer rest on one implementation: if the authors want a held-out number
+for the campaign surrogate with the noise learned, Ax's and BoFire's SAAS
+agree on it. In the twelve-parameter space t180 rho_s is +0.55 and +0.52,
+and E_reb rho_s is +0.51 and +0.48.
+
+### Figures
+
+The BO-framework grids of the follow-up below
+([`logocv-grid-bo-t180.png`](figures/logocv-grid-bo-t180.png),
+[`logocv-grid-bo-e_reb_mJ.png`](figures/logocv-grid-bo-e_reb_mJ.png)) now
+have a BoFire SAAS column next to Ax's SAASBO. The SI-style figure for each
+run is `figures/logocv-bofire-saas-<space>.png` (for example
+[`logocv-bofire-saas-twelve.png`](figures/logocv-bofire-saas-twelve.png)), and
+`figures/logocv-bofire-saas-default-budget-<space>.png` at BoFire's budget.
 
 ## Follow-up: the Ax and BoFire defaults, and why the BO surrogates fail
 
@@ -456,15 +667,19 @@ drawn to drop in.
   features.
 - [`logocv_bofire.py`](logocv_bofire.py): the BoFire driver (its own
   environment, see below).
+- [`logocv_bofire_saas.py`](logocv_bofire_saas.py): the driver for BoFire's
+  fully Bayesian SAAS surrogate (same environment; one task per space and
+  fold, so several workers can share the queue; `--budget campaign | bofire`).
 - [`logocv_baselines.py`](logocv_baselines.py): the article table, the
   baselines, the scorecard and the figures.
 - [`scores.json`](scores.json), [`scores.csv`](scores.csv),
   [`scores.md`](scores.md): the scorecard for every run.
 - [`data/`](data/README.md): vendored Ax runs, the new runs (SAASBO
   six-sim, Ax default and its diagnostics, SAASBO with learned noise,
-  BoFire), the article feature table, the input bounds, the baseline
-  predictions (campaign CSV layout), the hyperparameters each fold chose,
-  and the MAP GP lengthscale summary.
+  BoFire default, BoFire SAAS at two NUTS budgets), the article feature
+  table, the input bounds, the baseline predictions (campaign CSV layout),
+  the hyperparameters each fold chose, and the MAP GP and BoFire SAAS
+  lengthscale summaries.
 - [`figures/`](figures/): `logocv-<model>-<space>.png`, the SI figure for
   each run; `logocv-grid-t180.png` / `logocv-grid-e_reb_mJ.png`, the
   comparison grids; `logocv-grid-bo-t180.png` / `logocv-grid-bo-e_reb_mJ.png`,
@@ -511,5 +726,15 @@ python -m venv /tmp/venv-bofire
 /tmp/venv-bofire/bin/pip install "bofire[optimization]==0.5.0" matplotlib
 /tmp/venv-bofire/bin/python analysis/logocv-baselines/logocv_bofire.py \
     --spaces six six-sim twelve
+# BoFire's fully Bayesian SAAS surrogate, same environment (NumPyro NUTS,
+# about 18 s per fold per worker at 256/512), then at BoFire's own budget
+for b in campaign bofire; do
+  for i in 1 2 3 4; do
+    /tmp/venv-bofire/bin/python analysis/logocv-baselines/logocv_bofire_saas.py \
+        --worker --budget $b --spaces twelve six six-sim &
+  done; wait
+  /tmp/venv-bofire/bin/python analysis/logocv-baselines/logocv_bofire_saas.py \
+      --assemble --budget $b --spaces twelve six six-sim
+done
 python analysis/logocv-baselines/logocv_baselines.py --score --plot
 ```

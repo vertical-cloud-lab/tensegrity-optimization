@@ -1,0 +1,230 @@
+{
+  "bofire-saas-six/t180": {
+    "n_folds": 35,
+    "n_draws_per_fold": 16,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 3.601,
+      "H_mm": 1.988,
+      "twist_deg": 1.536,
+      "strut_d_mm": 2.549,
+      "cable_d_mm": 3.671,
+      "mass_printed_g": 1.738
+    },
+    "median_noise_variance_standardized": 0.2555,
+    "median_noise_sd_objective_units": 0.0444,
+    "median_outputscale": 5.044
+  },
+  "bofire-saas-six/e_reb_mJ": {
+    "n_folds": 35,
+    "n_draws_per_fold": 16,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 8.187,
+      "H_mm": 3.981,
+      "twist_deg": 5.776,
+      "strut_d_mm": 6.418,
+      "cable_d_mm": 7.541,
+      "mass_printed_g": 7.083
+    },
+    "median_noise_variance_standardized": 0.6145,
+    "median_noise_sd_objective_units": 2.9244,
+    "median_outputscale": 5.731
+  },
+  "bofire-saas-six-sim/t180": {
+    "n_folds": 35,
+    "n_draws_per_fold": 16,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 4.152,
+      "H_mm": 3.229,
+      "twist_deg": 1.881,
+      "strut_d_mm": 3.516,
+      "cable_d_mm": 3.658,
+      "mass_printed_g": 3.217,
+      "sim_tierC_t180": 3.626,
+      "sim_tierC_tendon_energy_mJ": 3.48,
+      "sim_tierC_stroke_mm": 2.726,
+      "sim_tierB_t180": 2.698,
+      "sim_tierB_fn_hz": 4.077,
+      "sim_tierB_zeta_pct": 1.878
+    },
+    "median_noise_variance_standardized": 0.3075,
+    "median_noise_sd_objective_units": 0.0485,
+    "median_outputscale": 5.038
+  },
+  "bofire-saas-six-sim/e_reb_mJ": {
+    "n_folds": 35,
+    "n_draws_per_fold": 16,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 7.871,
+      "H_mm": 6.356,
+      "twist_deg": 7.389,
+      "strut_d_mm": 6.697,
+      "cable_d_mm": 6.968,
+      "mass_printed_g": 5.621,
+      "sim_tierC_t180": 7.536,
+      "sim_tierC_tendon_energy_mJ": 6.342,
+      "sim_tierC_stroke_mm": 7.595,
+      "sim_tierB_t180": 3.857,
+      "sim_tierB_fn_hz": 6.989,
+      "sim_tierB_zeta_pct": 9.436
+    },
+    "median_noise_variance_standardized": 0.6658,
+    "median_noise_sd_objective_units": 3.0538,
+    "median_outputscale": 4.635
+  },
+  "bofire-saas-twelve/t180": {
+    "n_folds": 35,
+    "n_draws_per_fold": 16,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 3.542,
+      "H_mm": 2.292,
+      "twist_deg": 1.352,
+      "strut_d_mm": 2.634,
+      "cable_d_mm": 3.475,
+      "mass_printed_g": 2.798,
+      "strut_infill_pct": 4.292,
+      "tpu_infill_pct": 3.591,
+      "pla_nozzle_temp_C": 3.725,
+      "pla_flow_mm3_s": 3.796,
+      "tpu_nozzle_temp_C": 3.24,
+      "tpu_flow_mm3_s": 1.898
+    },
+    "median_noise_variance_standardized": 0.3219,
+    "median_noise_sd_objective_units": 0.0497,
+    "median_outputscale": 3.598
+  },
+  "bofire-saas-twelve/e_reb_mJ": {
+    "n_folds": 35,
+    "n_draws_per_fold": 16,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 6.953,
+      "H_mm": 3.085,
+      "twist_deg": 4.042,
+      "strut_d_mm": 5.081,
+      "cable_d_mm": 4.885,
+      "mass_printed_g": 4.333,
+      "strut_infill_pct": 6.777,
+      "tpu_infill_pct": 3.52,
+      "pla_nozzle_temp_C": 5.824,
+      "pla_flow_mm3_s": 3.453,
+      "tpu_nozzle_temp_C": 5.313,
+      "tpu_flow_mm3_s": 6.881
+    },
+    "median_noise_variance_standardized": 0.5647,
+    "median_noise_sd_objective_units": 2.8087,
+    "median_outputscale": 4.624
+  },
+  "bofire-saas-default-budget-six/t180": {
+    "n_folds": 35,
+    "n_draws_per_fold": 8,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 2.69,
+      "H_mm": 2.495,
+      "twist_deg": 1.739,
+      "strut_d_mm": 2.95,
+      "cable_d_mm": 3.788,
+      "mass_printed_g": 1.62
+    },
+    "median_noise_variance_standardized": 0.2977,
+    "median_noise_sd_objective_units": 0.0476,
+    "median_outputscale": 6.619
+  },
+  "bofire-saas-default-budget-six/e_reb_mJ": {
+    "n_folds": 35,
+    "n_draws_per_fold": 8,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 6.098,
+      "H_mm": 4.571,
+      "twist_deg": 6.008,
+      "strut_d_mm": 6.541,
+      "cable_d_mm": 7.32,
+      "mass_printed_g": 7.279
+    },
+    "median_noise_variance_standardized": 0.6802,
+    "median_noise_sd_objective_units": 3.0699,
+    "median_outputscale": 6.184
+  },
+  "bofire-saas-default-budget-six-sim/t180": {
+    "n_folds": 35,
+    "n_draws_per_fold": 8,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 3.384,
+      "H_mm": 3.484,
+      "twist_deg": 2.543,
+      "strut_d_mm": 3.758,
+      "cable_d_mm": 4.231,
+      "mass_printed_g": 2.897,
+      "sim_tierC_t180": 3.388,
+      "sim_tierC_tendon_energy_mJ": 4.214,
+      "sim_tierC_stroke_mm": 2.739,
+      "sim_tierB_t180": 2.585,
+      "sim_tierB_fn_hz": 4.178,
+      "sim_tierB_zeta_pct": 2.017
+    },
+    "median_noise_variance_standardized": 0.305,
+    "median_noise_sd_objective_units": 0.0478,
+    "median_outputscale": 5.323
+  },
+  "bofire-saas-default-budget-six-sim/e_reb_mJ": {
+    "n_folds": 35,
+    "n_draws_per_fold": 8,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 6.287,
+      "H_mm": 5.673,
+      "twist_deg": 9.309,
+      "strut_d_mm": 7.199,
+      "cable_d_mm": 7.646,
+      "mass_printed_g": 5.271,
+      "sim_tierC_t180": 7.825,
+      "sim_tierC_tendon_energy_mJ": 7.906,
+      "sim_tierC_stroke_mm": 6.595,
+      "sim_tierB_t180": 4.938,
+      "sim_tierB_fn_hz": 5.741,
+      "sim_tierB_zeta_pct": 9.86
+    },
+    "median_noise_variance_standardized": 0.6709,
+    "median_noise_sd_objective_units": 3.067,
+    "median_outputscale": 5.081
+  },
+  "bofire-saas-default-budget-twelve/t180": {
+    "n_folds": 35,
+    "n_draws_per_fold": 8,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 2.73,
+      "H_mm": 2.743,
+      "twist_deg": 1.589,
+      "strut_d_mm": 3.274,
+      "cable_d_mm": 3.556,
+      "mass_printed_g": 2.965,
+      "strut_infill_pct": 4.268,
+      "tpu_infill_pct": 4.289,
+      "pla_nozzle_temp_C": 3.63,
+      "pla_flow_mm3_s": 3.73,
+      "tpu_nozzle_temp_C": 2.902,
+      "tpu_flow_mm3_s": 2.221
+    },
+    "median_noise_variance_standardized": 0.3293,
+    "median_noise_sd_objective_units": 0.0502,
+    "median_outputscale": 4.29
+  },
+  "bofire-saas-default-budget-twelve/e_reb_mJ": {
+    "n_folds": 35,
+    "n_draws_per_fold": 8,
+    "median_lengthscale_unit_cube": {
+      "R_mm": 5.074,
+      "H_mm": 3.761,
+      "twist_deg": 4.491,
+      "strut_d_mm": 5.713,
+      "cable_d_mm": 5.189,
+      "mass_printed_g": 4.254,
+      "strut_infill_pct": 6.719,
+      "tpu_infill_pct": 4.138,
+      "pla_nozzle_temp_C": 5.203,
+      "pla_flow_mm3_s": 3.613,
+      "tpu_nozzle_temp_C": 4.916,
+      "tpu_flow_mm3_s": 6.924
+    },
+    "median_noise_variance_standardized": 0.5867,
+    "median_noise_sd_objective_units": 2.8634,
+    "median_outputscale": 4.761
+  }
+}

@@ -69,6 +69,12 @@ from their own drivers' outputs:
   ax-default``).
 - ``bofire``: BoFire 0.5.0's default surrogate (``SingleTaskGPSurrogate``,
   MAP, noise learned; ``data/bofire/``, ``logocv_bofire.py``).
+- ``bofire-saas``: BoFire 0.5.0's fully Bayesian SAAS surrogate
+  (``FullyBayesianSingleTaskGPSurrogate``, ``model_type="saas"``, noise
+  learned, NumPyro NUTS at 256/512 as every SAASBO run here;
+  ``data/bofire-saas/``, ``logocv_bofire_saas.py``), and
+  ``bofire-saas-default-budget``, the same at BoFire's own default NUTS
+  budget (128 samples / 256 warmup; ``data/bofire-saas-default-budget/``).
 - diagnostics that isolate the difference: ``ax-registry`` (Ax's GP with
   the SAASBO transform stack, no ``Winsorize``, SEMs as noise),
   ``ax-default-learned`` (Ax default with the SEMs blanked, noise learned),
@@ -159,17 +165,23 @@ EXTERNAL = {
     "saasbo": lambda space: AX_RUNS[space] / "t3-prism-bo-round5-logocv.csv",
     "ax-default": _ax_csv("ax-default"),
     "bofire": lambda space: DATA / "bofire" / f"bofire-{space}.csv",
+    "bofire-saas": lambda space: DATA / "bofire-saas" / f"bofire-saas-{space}.csv",
+    "bofire-saas-default-budget": lambda space: (
+        DATA / "bofire-saas-default-budget" / f"bofire-saas-{space}.csv"),
     "ax-registry": _ax_csv("ax-registry"),
     "ax-default-learned": _ax_csv("ax-default-inferred-noise"),
     "saasbo-learned": _ax_csv("ax-saasbo-inferred-noise"),
 }
-FRAMEWORKS = ("saasbo", "ax-default", "bofire")
-DIAGNOSTICS = ("ax-registry", "ax-default-learned", "saasbo-learned")
+FRAMEWORKS = ("saasbo", "ax-default", "bofire", "bofire-saas")
+DIAGNOSTICS = ("ax-registry", "ax-default-learned", "saasbo-learned",
+               "bofire-saas-default-budget")
 RUN_ORDER = FRAMEWORKS + MODELS + DIAGNOSTICS
 MODEL_LABEL = {
     "saasbo": "SAASBO (Ax, 256/512)",
     "ax-default": "Ax default (GP, MAP, SEMs as noise)",
     "bofire": "BoFire default (GP, MAP, noise learned)",
+    "bofire-saas": "BoFire SAAS (fully Bayesian, 256/512, noise learned)",
+    "bofire-saas-default-budget": "BoFire SAAS at BoFire's default budget (128/256)",
     "ax-registry": "Ax GP without Winsorize (SEMs as noise)",
     "ax-default-learned": "Ax default, noise learned",
     "saasbo-learned": "SAASBO, noise learned (256/512)",
@@ -184,6 +196,8 @@ GRID_LABEL = {
     "saasbo": "SAASBO\n(SEMs as noise)",
     "ax-default": "Ax default\n(SEMs as noise)",
     "bofire": "BoFire default\n(noise learned)",
+    "bofire-saas": "BoFire SAAS\n(noise learned)",
+    "bofire-saas-default-budget": "BoFire SAAS, 128/256\n(noise learned)",
     "ax-registry": "Ax GP, no Winsorize\n(SEMs as noise)",
     "ax-default-learned": "Ax default\n(noise learned)",
     "saasbo-learned": "SAASBO\n(noise learned)",
@@ -454,6 +468,7 @@ def score_all(table: pd.DataFrame, spaces) -> dict:
     write_markdown(out, spaces)
     summarize_gp(spaces)
     summarize_map_gps(spaces)
+    summarize_bofire_saas(table, spaces)
     return out
 
 
@@ -529,6 +544,46 @@ def summarize_map_gps(spaces) -> dict:
     return out
 
 
+def summarize_bofire_saas(table: pd.DataFrame, spaces) -> dict:
+    """Per BoFire SAAS run and objective, over the 35 folds: the median of
+    each fold's median lengthscale (unit cube; SAAS has no lower bound, small
+    means relevant), the median learned noise as a variance in standardized
+    units and as an sd in the objective's units (times each fold's training
+    sd, ddof 1, as BoTorch's ``Standardize``), and the median outputscale.
+    Written to data/bofire-saas-lengthscales.json."""
+    out = {}
+    for model, sub in (("bofire-saas", "bofire-saas"),
+                       ("bofire-saas-default-budget", "bofire-saas-default-budget")):
+        for space in spaces:
+            path = DATA / sub / f"bofire-saas-{space}-fits.json"
+            if not path.exists():
+                continue
+            fits = json.loads(path.read_text())
+            cols = SPACES[space]
+            for m in METRICS:
+                ls, noise_var, noise_sd, osc = [], [], [], []
+                for design in dict.fromkeys(table.design):
+                    h = fits[f"{design}/{m}"]
+                    ls.append(h["lengthscale_median"])
+                    nv = float(h["noise_standardized_median"])
+                    y = table.loc[table.design != design, f"{m}_obs"].to_numpy()
+                    noise_var.append(nv)
+                    noise_sd.append(np.sqrt(nv) * np.std(y, ddof=1))
+                    osc.append(h.get("outputscale_median", np.nan))
+                ls = np.array(ls, dtype=float)
+                assert ls.shape == (35, len(cols)), (model, space, m, ls.shape)
+                out[f"{model}-{space}/{m}"] = {
+                    "n_folds": int(len(ls)),
+                    "n_draws_per_fold": int(fits[next(iter(fits))]["n_draws"]),
+                    "median_lengthscale_unit_cube": dict(zip(cols, np.round(np.median(ls, axis=0), 3).tolist())),
+                    "median_noise_variance_standardized": round(float(np.median(noise_var)), 4),
+                    "median_noise_sd_objective_units": round(float(np.median(noise_sd)), 4),
+                    "median_outputscale": round(float(np.nanmedian(osc)), 3),
+                }
+    (DATA / "bofire-saas-lengthscales.json").write_text(json.dumps(out, indent=2) + "\n")
+    return out
+
+
 def _fmt_p(p):
     return "<0.001" if p < 0.001 else f"{p:.3f}"
 
@@ -540,11 +595,14 @@ NOISE_LABEL = {
     "ax-default-learned": "learned",
     "ax-registry": "SEMs as known noise",
     "bofire": "learned",
+    "bofire-saas": "learned",
+    "bofire-saas-default-budget": "learned",
     "gp": "learned (white-noise term)",
     "rf": "n/a",
     "mean": "n/a",
 }
-SUMMARY_MODELS = ("saasbo", "saasbo-learned", "ax-default", "ax-default-learned",
+SUMMARY_MODELS = ("saasbo", "saasbo-learned", "bofire-saas",
+                  "bofire-saas-default-budget", "ax-default", "ax-default-learned",
                   "ax-registry", "bofire", "gp", "rf", "mean")
 
 
@@ -689,7 +747,8 @@ def main(argv=None):
     ap.add_argument("--grid-models", nargs="*", default=[
         "saasbo", "ax-default", "bofire", "mean", "session-mean", "ridge", "knn", "rf", "gp"])
     ap.add_argument("--bo-grid-models", nargs="*", default=[
-        "saasbo", "saasbo-learned", "ax-default", "ax-default-learned", "bofire", "rf"])
+        "saasbo", "saasbo-learned", "bofire-saas", "ax-default", "ax-default-learned",
+        "bofire", "rf"])
     args = ap.parse_args(argv)
 
     table = build_table() if args.build_table or not TABLE_CSV.exists() else load_table()
