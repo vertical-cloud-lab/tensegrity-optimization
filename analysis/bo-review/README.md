@@ -61,7 +61,7 @@ replacement at +0.41 to +0.53.
 well as learning the noise: identical on t180, a little behind on E_reb for
 SAAS (+0.38 against +0.48). The two remedies agree because they estimate the
 same quantity: the learned noise sd (0.034 to 0.050 for t180, 2.4 to 3.1 mJ
-for E_reb across the runs of this PR) sits at 60 to 90 percent of the
+for E_reb across the runs of this PR) sits at 55 to 90 percent of the
 replicate `s_print`. What breaks the fixed-noise model is described in
 `../logocv-baselines/README.md` (follow-up 1): told that the twins are
 known to within their SEMs, the GP explains their 26-SEM (t180) and 6-SEM
@@ -183,7 +183,8 @@ the first batch only, and it was always applied after the acquisition, not
 before it. `gen_search_space(process_bounds=...)` exists but is never
 called with narrowed filament bounds. The script prints the prediction
 shift the substitution causes: 86 percent of a posterior t180 sd for the
-superseded batch 46 to 54, 31 percent for run 5.
+superseded batch 46 to 54, 31 percent for run 5, 21 percent for run 6
+(the control run here).
 
 **The fix.** `AxClient.get_next_trials(fixed_features=FixedFeatures(...))`
 in Ax 0.5.0 holds the four filament coordinates at the batch's point during
