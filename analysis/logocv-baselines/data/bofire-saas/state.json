@@ -63,6 +63,33 @@
         "output_scaler": "STANDARDIZE",
         "aggregations": null
       }
+    },
+    "six": {
+      "inputs": [
+        "R_mm",
+        "H_mm",
+        "twist_deg",
+        "strut_d_mm",
+        "cable_d_mm",
+        "mass_printed_g"
+      ],
+      "folds": 35,
+      "seconds_per_fold_median": 17.7,
+      "seconds_total": 621.2,
+      "data_model": {
+        "type": "FullyBayesianSingleTaskGPSurrogate",
+        "model_type": "saas",
+        "warmup_steps": 512,
+        "num_samples": 256,
+        "thinning": 16,
+        "features_to_warp": [],
+        "scaler": {
+          "type": "Normalize",
+          "features": []
+        },
+        "output_scaler": "STANDARDIZE",
+        "aggregations": null
+      }
     }
   }
 }
