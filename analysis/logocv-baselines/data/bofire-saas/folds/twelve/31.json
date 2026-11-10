@@ -1,0 +1,74 @@
+{
+ "space": "twelve",
+ "design": "bpx68c",
+ "fold_index": 31,
+ "rows": [
+  {
+   "arm_name": "5_0",
+   "print_id": "bpx68c",
+   "metric": "t180",
+   "observed": 1.011071663,
+   "observed_sem": 0.0002348421,
+   "predicted": 1.0126044940034626,
+   "predicted_sem": 0.044186856021809794,
+   "predicted_sd_bofire": 0.06621844507823531
+  },
+  {
+   "arm_name": "5_0",
+   "print_id": "bpx68c",
+   "metric": "e_reb_mJ",
+   "observed": 6.180443186,
+   "observed_sem": 0.1399730513,
+   "predicted": 7.7868578458686,
+   "predicted_sem": 1.4907533827258144,
+   "predicted_sd_bofire": 3.2562586090041887
+  }
+ ],
+ "fits": {
+  "t180": {
+   "kernel": "MaternKernel",
+   "n_draws": 16,
+   "lengthscale_median": [
+    3.28853,
+    2.49654,
+    1.58803,
+    2.04824,
+    3.74938,
+    2.24123,
+    4.23512,
+    3.59114,
+    2.65379,
+    4.01559,
+    3.24031,
+    1.78317
+   ],
+   "noise_standardized_median": 0.3190508186817169,
+   "n_train": 43,
+   "seconds": 9.36,
+   "outputscale_median": 3.5108813047409058
+  },
+  "e_reb_mJ": {
+   "kernel": "MaternKernel",
+   "n_draws": 16,
+   "lengthscale_median": [
+    8.79453,
+    3.91225,
+    3.54975,
+    4.49515,
+    6.65441,
+    6.96875,
+    5.47026,
+    5.19662,
+    4.97579,
+    2.8444,
+    5.354,
+    6.08794
+   ],
+   "noise_standardized_median": 0.6143790185451508,
+   "n_train": 43,
+   "seconds": 8.7,
+   "outputscale_median": 3.8609479665756226
+  }
+ },
+ "seconds": 18.1
+}
