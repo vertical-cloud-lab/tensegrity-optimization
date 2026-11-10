@@ -72,6 +72,10 @@ jobs:
         GH_READ_PAT_STAGING: ${{ secrets.GH_READ_PAT_STAGING }}
         ONSHAPE_ACCESS_KEY: ${{ secrets.ONSHAPE_ACCESS_KEY }}
         ONSHAPE_SECRET_KEY: ${{ secrets.ONSHAPE_SECRET_KEY }}
+        # The lab's shared Onshape account (member privileges, no 2FA), for signing
+        # in through the browser. See the Onshape section of CLAUDE.md.
+        ONSHAPE_USERNAME: ${{ secrets.ONSHAPE_USERNAME }}
+        ONSHAPE_PASSWORD: ${{ secrets.ONSHAPE_PASSWORD }}
         PPT_EDIT_LINK: ${{ secrets.PPT_EDIT_LINK }}
         PPT_EDIT_PASSWORD: ${{ secrets.PPT_EDIT_PASSWORD }}
         OT2_STREAM_CAM_HOSTNAME: ${{ secrets.OT2_STREAM_CAM_HOSTNAME }} # should swap out once we get new RPis in
