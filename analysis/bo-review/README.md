@@ -242,14 +242,14 @@ leave-one-session-out (LOBO, the situation of a new batch).
 - **No session offset is detectable.** The marginal likelihood sets the
   random intercept's variance to zero for t180 in both spaces and for E_reb
   in the eight space; in the six space it estimates offsets of -0.85 to
-  +0.49 mJ, each with a posterior sd of about 0.75 mJ. So the random
+  +0.49 mJ, each with a posterior sd of about 0.75 mJ (none beyond 1.2 sd). So the random
   intercept changes nothing.
 - **Session order as an input hurts** under both schemes: a smooth trend
   over five sessions is not in the data.
 - **No model predicts a new print session.** Leaving a session out, every
-  variant ranks held-out t180 at about zero and is worse than predicting the
-  training mean (R2_oos -0.19 to -0.53). The filament settings do not help
-  (twelve is the worst on E_reb, -0.48), which is what an unidentified
+  variant ranks held-out t180 at about zero or below and is worse than
+  predicting the training mean (R2_oos -0.02 to -0.53, every cell negative). The filament settings do not help
+  (twelve is the worst on E_reb, -0.48 against -0.30 for eight), which is what an unidentified
   filament effect looks like when it has to extrapolate. Part of this is
   how the sessions were chosen: each later batch sits in a corner the
   earlier ones did not cover, so a held-out session is also a held-out
