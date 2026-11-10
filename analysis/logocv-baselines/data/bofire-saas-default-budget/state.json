@@ -1,0 +1,95 @@
+{
+  "what": "BoFire fully Bayesian SAAS surrogate (FullyBayesianSingleTaskGPSurrogate, model_type 'saas'), one per objective, leave-one-design-out over the 35 design folds of the round-5 record",
+  "driver": "analysis/logocv-baselines/logocv_bofire_saas.py",
+  "budget": {
+    "name": "bofire",
+    "warmup_steps": 256,
+    "num_samples": 128,
+    "thinning": 16,
+    "retained_draws": 8,
+    "max_tree_depth": 6,
+    "sampler": "NumPyro NUTS (dense mass matrix), via botorch.fit.fit_fully_bayesian_model_nuts"
+  },
+  "versions": {
+    "bofire": "0.5.0",
+    "botorch": "0.18.1",
+    "gpytorch": "1.15.2",
+    "torch": "2.15.0+cpu",
+    "jax": "0.9.2",
+    "numpyro": "0.22.0",
+    "pandas": "3.1.1",
+    "numpy": "2.4.6"
+  },
+  "python": "3.12.16",
+  "jax_enable_x64": false,
+  "threads_per_worker": 1,
+  "seed_scheme": "torch.manual_seed(fold_index) before each fit; NUTS uses jax.random.PRNGKey(0) in every fold (BoFire passes no seed to fit_fully_bayesian_model_nuts)",
+  "noise": "learned (no train_Yvar): BoTorch's Gamma(0.9, 10) prior on the standardized noise variance",
+  "input_bounds_source": "data/fit-space-bounds.json",
+  "observed_values_source": "data/article-features.csv",
+  "predicted": "mixture mean over the retained draws",
+  "predicted_sem": "mixture sd of the latent function (observation_noise=False)",
+  "predicted_sd_bofire": "BoFire predict() sd (mixture, observation_noise=True, the learned noise added)",
+  "spaces": {
+    "twelve": {
+      "inputs": [
+        "R_mm",
+        "H_mm",
+        "twist_deg",
+        "strut_d_mm",
+        "cable_d_mm",
+        "mass_printed_g",
+        "strut_infill_pct",
+        "tpu_infill_pct",
+        "pla_nozzle_temp_C",
+        "pla_flow_mm3_s",
+        "tpu_nozzle_temp_C",
+        "tpu_flow_mm3_s"
+      ],
+      "folds": 35,
+      "seconds_per_fold_median": 18.2,
+      "seconds_total": 761.6,
+      "data_model": {
+        "type": "FullyBayesianSingleTaskGPSurrogate",
+        "model_type": "saas",
+        "warmup_steps": 256,
+        "num_samples": 128,
+        "thinning": 16,
+        "features_to_warp": [],
+        "scaler": {
+          "type": "Normalize",
+          "features": []
+        },
+        "output_scaler": "STANDARDIZE",
+        "aggregations": null
+      }
+    },
+    "six": {
+      "inputs": [
+        "R_mm",
+        "H_mm",
+        "twist_deg",
+        "strut_d_mm",
+        "cable_d_mm",
+        "mass_printed_g"
+      ],
+      "folds": 35,
+      "seconds_per_fold_median": 16.5,
+      "seconds_total": 595.7,
+      "data_model": {
+        "type": "FullyBayesianSingleTaskGPSurrogate",
+        "model_type": "saas",
+        "warmup_steps": 256,
+        "num_samples": 128,
+        "thinning": 16,
+        "features_to_warp": [],
+        "scaler": {
+          "type": "Normalize",
+          "features": []
+        },
+        "output_scaler": "STANDARDIZE",
+        "aggregations": null
+      }
+    }
+  }
+}
