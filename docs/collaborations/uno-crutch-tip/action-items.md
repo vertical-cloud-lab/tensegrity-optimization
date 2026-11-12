@@ -80,6 +80,8 @@ Dr. Dotov described three levels of measurement (18:28 to 20:44):
 
 **Optional, not decided:** a load cell in the handle to measure the force going into the hand, suggested by Jingxian Gu (20:44 to 21:10).
 
+More on these measures, how UNO ran them in its crutch study, and the other testing ideas from the meeting is in [testing-notes.md](testing-notes.md).
+
 ## Open questions
 
 | Question | Who answers | Transcript |
