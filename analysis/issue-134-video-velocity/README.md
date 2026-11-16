@@ -12,10 +12,8 @@ Justin asked on [issue #134](https://github.com/vertical-cloud-lab/tensegrity-op
 
 ## Results in short
 
-- **27 specimens tracked, 77 filmed drops:** corny1 to corny9, drran1 to
-  drran9 and 2dran1 to 2dran9. Each has 3 filmed drops, except drran1 and
-  drran8 (2) and drran5 (1). In the other 4 clips the tracker did not find the
-  impact.
+- **27 specimens tracked, 81 filmed drops:** corny1 to corny9, drran1 to
+  drran9 and 2dran1 to 2dran9, 3 filmed drops each.
 - **Initial speed of the tip: 4.48 to 4.92 m/s** (mean 4.64, SD 0.13 across
   specimens).
   - All drops are from 60 in, so the true impact speed should be the same for
@@ -37,8 +35,8 @@ Justin asked on [issue #134](https://github.com/vertical-cloud-lab/tensegrity-op
     the trend.
 - **Integrating the accelerometer overshoots the final velocity.**
   - The integrated final vertical velocity is higher than the video's by
-    0.48 m/s on average (SD 0.23, range −0.06 to +0.88 m/s). That is about
-    twice the true value (median ratio 1.98).
+    0.47 m/s on average (SD 0.23, range −0.06 to +0.88 m/s). That is about
+    twice the true value (median ratio 1.96).
   - Measured against the velocity change through the impact (5.18 m/s on
     average), the error is +9 %.
   - With all three axes the overshoot grows to +0.71 m/s on average, because
@@ -70,20 +68,20 @@ The full tables are:
 | corny1 | 3 | 4.73 ± 0.01 | 0.570 ± 0.066 | 0.557 ± 0.076 | 0.121 ± 0.014 | 1.046 ± 0.003 | 1.006 ± 0.037 | 1.102 ± 0.050 |
 | corny2 | 3 | 4.92 ± 0.01 | 0.536 ± 0.024 | 0.449 ± 0.033 | 0.109 ± 0.005 | 1.085 ± 0.003 | 0.619 ± 0.041 | 0.636 ± 0.037 |
 | corny3 | 3 | 4.84 ± 0.00 | 0.462 ± 0.033 | 0.443 ± 0.035 | 0.095 ± 0.007 | 1.071 ± 0.001 | 0.886 ± 0.036 | 1.036 ± 0.043 |
-| corny4 | 3 | 4.74 ± 0.03 | 0.545 ± 0.035 | 0.543 ± 0.036 | 0.115 ± 0.008 | 1.048 ± 0.003 | 0.937 ± 0.037 | 1.444 ± 0.058 |
+| corny4 | 3 | 4.74 ± 0.03 | 0.547 ± 0.033 | 0.545 ± 0.034 | 0.116 ± 0.008 | 1.048 ± 0.003 | 0.940 ± 0.037 | 1.446 ± 0.058 |
 | corny5 | 3 | 4.81 ± 0.00 | 0.636 ± 0.044 | 0.567 ± 0.019 | 0.132 ± 0.009 | 1.088 ± 0.010 | 0.768 ± 0.081 | 0.877 ± 0.144 |
 | corny6 | 3 | 4.52 ± 0.01 | 0.589 ± 0.020 | 0.587 ± 0.019 | 0.130 ± 0.004 | 0.911 ± 0.018 | 0.805 ± 0.042 | 1.050 ± 0.053 |
 | corny7 | 3 | 4.51 ± 0.01 | 0.734 ± 0.039 | 0.682 ± 0.037 | 0.163 ± 0.009 | 0.803 ± 0.003 | 0.624 ± 0.027 | 0.750 ± 0.028 |
 | corny8 | 3 | 4.48 ± 0.01 | 0.722 ± 0.019 | 0.682 ± 0.019 | 0.161 ± 0.004 | 0.954 ± 0.003 | 0.738 ± 0.028 | 0.901 ± 0.047 |
 | corny9 | 3 | 4.51 ± 0.01 | 0.708 ± 0.010 | 0.696 ± 0.005 | 0.157 ± 0.002 | 0.877 ± 0.004 | 0.932 ± 0.028 | 1.321 ± 0.027 |
-| drran1 | 2 | 4.50 ± 0.01 | 0.699 ± 0.011 | 0.646 ± 0.009 | 0.155 ± 0.002 | 1.033 ± 0.002 | 1.132 ± 0.074 | 1.573 ± 0.060 |
+| drran1 | 3 | 4.51 ± 0.02 | 0.704 ± 0.012 | 0.649 ± 0.008 | 0.156 ± 0.002 | 1.033 ± 0.002 | 1.121 ± 0.074 | 1.565 ± 0.060 |
 | drran2 | 3 | 4.53 ± 0.02 | 0.465 ± 0.007 | 0.465 ± 0.006 | 0.103 ± 0.001 | 1.034 ± 0.001 | 1.038 ± 0.025 | 1.253 ± 0.023 |
 | drran3 | 3 | 4.73 ± 0.00 | 0.498 ± 0.017 | 0.489 ± 0.017 | 0.105 ± 0.004 | 1.039 ± 0.001 | 0.983 ± 0.027 | 1.321 ± 0.028 |
 | drran4 | 3 | 4.63 ± 0.03 | 0.662 ± 0.041 | 0.640 ± 0.042 | 0.143 ± 0.009 | 1.034 ± 0.002 | 1.083 ± 0.019 | 1.313 ± 0.018 |
-| drran5 | 1 | 4.62 | 0.480 | 0.480 | 0.104 | 1.037 ± 0.002 | 0.952 ± 0.023 | 1.128 ± 0.028 |
+| drran5 | 3 | 4.63 ± 0.02 | 0.483 ± 0.028 | 0.483 ± 0.028 | 0.104 ± 0.006 | 1.037 ± 0.002 | 0.946 ± 0.023 | 1.123 ± 0.028 |
 | drran6 | 3 | 4.64 ± 0.02 | 0.495 ± 0.011 | 0.495 ± 0.011 | 0.107 ± 0.003 | 1.047 ± 0.004 | 1.028 ± 0.040 | 1.437 ± 0.029 |
 | drran7 | 3 | 4.55 ± 0.09 | 0.558 ± 0.011 | 0.548 ± 0.007 | 0.123 ± 0.005 | 1.251 ± 0.010 | 1.182 ± 0.037 | 1.682 ± 0.063 |
-| drran8 | 2 | 4.73 ± 0.01 | 0.606 ± 0.037 | 0.589 ± 0.033 | 0.128 ± 0.008 | 0.980 ± 0.005 | 1.014 ± 0.081 | 1.361 ± 0.113 |
+| drran8 | 3 | 4.72 ± 0.01 | 0.597 ± 0.030 | 0.582 ± 0.026 | 0.126 ± 0.007 | 0.980 ± 0.005 | 1.016 ± 0.081 | 1.363 ± 0.113 |
 | drran9 | 3 | 4.63 ± 0.01 | 0.533 ± 0.004 | 0.533 ± 0.004 | 0.115 ± 0.001 | 1.042 ± 0.001 | 1.056 ± 0.026 | 1.318 ± 0.035 |
 | 2dran1 | 3 | 4.68 ± 0.01 | 0.486 ± 0.026 | 0.485 ± 0.026 | 0.104 ± 0.006 | 1.079 ± 0.004 | 1.230 ± 0.024 | 1.537 ± 0.034 |
 | 2dran2 | 3 | 4.78 ± 0.02 | 0.418 ± 0.018 | 0.418 ± 0.018 | 0.088 ± 0.004 | 1.090 ± 0.006 | 1.101 ± 0.029 | 1.316 ± 0.038 |
@@ -184,9 +182,16 @@ If integration has to be used, I would:
   poorly, a patch cut from the previous tracked frame is used instead (motion
   blur, or a tip that has twisted). Positions for every frame are in
   [`results/tracks/`](results/tracks/).
-- **Check.** [`figures/05_tracking_check_*.jpg`](figures/) shows the tracked
-  point on each specimen's reference clip 15 ms before impact, at impact and
-  15 ms after.
+- **Check.** [`figures/05_tracking_check_1.jpg`](figures/05_tracking_check_1.jpg)
+  and [`_2`](figures/05_tracking_check_2.jpg) show the tracked point on each
+  specimen's reference clip 15 ms before impact, at impact and 15 ms after.
+  It stays on the same tip housing in all 27.
+- **Finding the impact in the key frames.** The impact is placed at the first
+  key frame where the tip is at its rest position (correlation above 0.75
+  with the rest frame) and stays there for the next two key frames. A clip
+  that opens with the carriage already at rest from the previous drop
+  (four of the longer drran clips do) is handled because key frame 0 does not
+  count as an arrival.
 
 ## How velocity is computed
 

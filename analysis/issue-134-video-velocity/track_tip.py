@@ -116,13 +116,14 @@ def find_impact_keyframe(kf: np.ndarray, kidx: np.ndarray, tip_rest: tuple[float
     ok = []
     for f in kf:
         pos, s = match(f, tpl, (tx, ty), rx=40 // Q * 4, ry=60 // Q)
-        ok.append(pos is not None and s > 0.6 and abs(pos[0] - tx) < 120 / Q)
+        ok.append(pos is not None and s > 0.75 and abs(pos[0] - tx) < 120 / Q)
     ok = np.array(ok)
     # the first arrival at rest (a key frame at rest whose predecessor was not)
-    # after which the tip stays at rest; a clip can open with the carriage
-    # resting from the previous drop, so key frame 0 does not count
+    # after which the tip stays at rest: the next two key frames also at rest
+    # and 90 % of the rest of the clip. A clip can open with the carriage
+    # resting from the previous drop, so key frame 0 does not count.
     for k in range(1, len(ok)):
-        if ok[k] and not ok[k - 1] and ok[k:].mean() > 0.9:
+        if ok[k] and not ok[k - 1] and ok[k:k + 3].all() and ok[k:].mean() > 0.9:
             return int(kidx[k])
     return int(kidx[-1])
 
