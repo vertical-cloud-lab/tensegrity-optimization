@@ -8,8 +8,8 @@ turned a quarter turn, so world "down" points to the right of the frame
 
 Steps for one clip:
 1. Read the key frames only (every ~30th frame, about 2 s per clip) at quarter
-   size and find the first key frame where the tip sits at its rest position.
-   The impact happens in the 30 frames before it.
+   size and find the key frame where the tip arrives at its rest position
+   to stay. The impact happens in the 30 frames before it.
 2. Read about 260 full-size frames around that key frame.
 3. Track the tip backward in time from the end of that window, frame by
    frame, with normalized cross-correlation (NCC) template matching and a
@@ -108,7 +108,8 @@ def match(img: np.ndarray, tpl: np.ndarray, center: tuple[float, float], rx: int
 
 def find_impact_keyframe(kf: np.ndarray, kidx: np.ndarray, tip_rest: tuple[float, float],
                          half: int = 12) -> int:
-    """First key frame from which the tip stays at its rest position."""
+    """Key frame at which the tip arrives at its rest position to stay; the
+    impact happens in the ~30 frames before it."""
     tx, ty = tip_rest[0] / Q, tip_rest[1] / Q
     rest = kf[-1]
     tpl = rest[int(ty) - half:int(ty) + half, int(tx) - half:int(tx) + half]
@@ -117,9 +118,11 @@ def find_impact_keyframe(kf: np.ndarray, kidx: np.ndarray, tip_rest: tuple[float
         pos, s = match(f, tpl, (tx, ty), rx=40 // Q * 4, ry=60 // Q)
         ok.append(pos is not None and s > 0.6 and abs(pos[0] - tx) < 120 / Q)
     ok = np.array(ok)
-    # earliest k such that every key frame from k on (except possibly one) is at rest
-    for k in range(len(ok)):
-        if ok[k:].mean() > 0.9 and ok[k]:
+    # the first arrival at rest (a key frame at rest whose predecessor was not)
+    # after which the tip stays at rest; a clip can open with the carriage
+    # resting from the previous drop, so key frame 0 does not count
+    for k in range(1, len(ok)):
+        if ok[k] and not ok[k - 1] and ok[k:].mean() > 0.9:
             return int(kidx[k])
     return int(kidx[-1])
 

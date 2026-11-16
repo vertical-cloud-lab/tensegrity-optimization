@@ -1,0 +1,20 @@
+{
+ "specimen": "2dran8",
+ "clip": "2dran8-1.MP4",
+ "reference_clip": "2dran8-2",
+ "n_frames": 2460,
+ "shift_px": [
+  -12.72,
+  -9.34
+ ],
+ "shift_ncc": 0.99,
+ "tip_rest_px": [
+  1107.3,
+  195.7
+ ],
+ "x_top_px": 1064.3,
+ "x_bottom_px": 1392.3,
+ "impact_keyframe": 1019,
+ "window_start": 849,
+ "n_tracked": 132
+}

@@ -1,0 +1,20 @@
+{
+ "specimen": "corny9",
+ "clip": "corny9-10th.MP4",
+ "reference_clip": "corny9-10th",
+ "n_frames": 2220,
+ "shift_px": [
+  0.0,
+  0.0
+ ],
+ "shift_ncc": 1.0,
+ "tip_rest_px": [
+  1100.0,
+  210.0
+ ],
+ "x_top_px": 1059.0,
+ "x_bottom_px": 1374.0,
+ "impact_keyframe": 899,
+ "window_start": 729,
+ "n_tracked": 183
+}

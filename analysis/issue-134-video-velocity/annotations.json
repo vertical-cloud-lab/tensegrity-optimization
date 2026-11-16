@@ -1,0 +1,245 @@
+{
+ "corny1-10th": {
+  "tip": [
+   1160,
+   192
+  ],
+  "x_top": 1128,
+  "x_bottom": 1512,
+  "note": "upper of two visible tips"
+ },
+ "corny2-10th": {
+  "tip": [
+   1170,
+   220
+  ],
+  "x_top": 1133,
+  "x_bottom": 1513,
+  "note": "upper of two visible tips"
+ },
+ "corny3-10th": {
+  "tip": [
+   1150,
+   218
+  ],
+  "x_top": 1109,
+  "x_bottom": 1528,
+  "note": "upper of two visible tips"
+ },
+ "corny4-10th": {
+  "tip": [
+   1013,
+   308
+  ],
+  "x_top": 976,
+  "x_bottom": 1370,
+  "note": "upper of two visible tips"
+ },
+ "corny5-10th": {
+  "tip": [
+   1000,
+   290
+  ],
+  "x_top": 971,
+  "x_bottom": 1360,
+  "note": "cable passes between the two visible tips; upper tip assumed"
+ },
+ "corny6-10th": {
+  "tip": [
+   1095,
+   231
+  ],
+  "x_top": 1055,
+  "x_bottom": 1372,
+  "note": "top of three visible tips"
+ },
+ "corny7-10th": {
+  "tip": [
+   1093,
+   227
+  ],
+  "x_top": 1057,
+  "x_bottom": 1376,
+  "note": "top of three visible tips"
+ },
+ "corny8-10th": {
+  "tip": [
+   1090,
+   236
+  ],
+  "x_top": 1053,
+  "x_bottom": 1378,
+  "note": "top of three visible tips"
+ },
+ "corny9-10th": {
+  "tip": [
+   1100,
+   210
+  ],
+  "x_top": 1059,
+  "x_bottom": 1374,
+  "note": "top of three visible tips"
+ },
+ "2dran5-2": {
+  "tip": [
+   1110,
+   226
+  ],
+  "x_top": 1076,
+  "x_bottom": 1396,
+  "note": "upper of two visible tips"
+ },
+ "2dran6-2": {
+  "tip": [
+   1118,
+   226
+  ],
+  "x_top": 1086,
+  "x_bottom": 1383,
+  "note": "upper of two visible tips"
+ },
+ "2dran7-2": {
+  "tip": [
+   1100,
+   215
+  ],
+  "x_top": 1071,
+  "x_bottom": 1400,
+  "note": "upper of two visible tips"
+ },
+ "2dran1-2": {
+  "tip": [
+   1115,
+   240
+  ],
+  "x_top": 1083,
+  "x_bottom": 1405,
+  "note": "upper of two visible tips"
+ },
+ "2dran2-2": {
+  "tip": [
+   1150,
+   252
+  ],
+  "x_top": 1121,
+  "x_bottom": 1415,
+  "note": "upper of two visible tips"
+ },
+ "2dran3-2": {
+  "tip": [
+   1110,
+   280
+  ],
+  "x_top": 1075,
+  "x_bottom": 1376,
+  "note": "upper of two visible tips"
+ },
+ "2dran4-2": {
+  "tip": [
+   1078,
+   285
+  ],
+  "x_top": 1039,
+  "x_bottom": 1393,
+  "note": "upper of two visible tips"
+ },
+ "2dran8-2": {
+  "tip": [
+   1120,
+   205
+  ],
+  "x_top": 1077,
+  "x_bottom": 1405,
+  "note": "three tips visible; cable ends between the top two, top one assumed (uncertain)"
+ },
+ "2dran9-2": {
+  "tip": [
+   1112,
+   228
+  ],
+  "x_top": 1081,
+  "x_bottom": 1395,
+  "note": "upper of two visible tips"
+ },
+ "drran1-2": {
+  "tip": [
+   1405,
+   228
+  ],
+  "x_top": 1372,
+  "x_bottom": 1698,
+  "note": "upper of two visible tips"
+ },
+ "drran2-2": {
+  "tip": [
+   1425,
+   222
+  ],
+  "x_top": 1394,
+  "x_bottom": 1698,
+  "note": "upper of two visible tips"
+ },
+ "drran3-2": {
+  "tip": [
+   1395,
+   240
+  ],
+  "x_top": 1361,
+  "x_bottom": 1680,
+  "note": "upper of two visible tips"
+ },
+ "drran4-2": {
+  "tip": [
+   1355,
+   233
+  ],
+  "x_top": 1322,
+  "x_bottom": 1688,
+  "note": "upper of two visible tips"
+ },
+ "drran5-2": {
+  "tip": [
+   1420,
+   245
+  ],
+  "x_top": 1388,
+  "x_bottom": 1684,
+  "note": "upper of two visible tips"
+ },
+ "drran6-2": {
+  "tip": [
+   1430,
+   248
+  ],
+  "x_top": 1396,
+  "x_bottom": 1676,
+  "note": "upper of two visible tips"
+ },
+ "drran7-2": {
+  "tip": [
+   1395,
+   248
+  ],
+  "x_top": 1360,
+  "x_bottom": 1671,
+  "note": "upper of two visible tips"
+ },
+ "drran8-2": {
+  "tip": [
+   1215,
+   194
+  ],
+  "x_top": 1167,
+  "x_bottom": 1486,
+  "note": "three tips visible; cable ends between the top two, top one assumed (uncertain)"
+ },
+ "drran9-2": {
+  "tip": [
+   1205,
+   252
+  ],
+  "x_top": 1161,
+  "x_bottom": 1460,
+  "note": "upper of two visible tips"
+ }
+}

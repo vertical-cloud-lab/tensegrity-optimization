@@ -1,0 +1,20 @@
+{
+ "specimen": "drran7",
+ "clip": "drran7-1.MP4",
+ "reference_clip": "drran7-2",
+ "n_frames": 2910,
+ "shift_px": [
+  -187.16,
+  -25.97
+ ],
+ "shift_ncc": 0.942,
+ "tip_rest_px": [
+  1207.8,
+  222.0
+ ],
+ "x_top_px": 1172.8,
+ "x_bottom_px": 1483.8,
+ "impact_keyframe": 1079,
+ "window_start": 909,
+ "n_tracked": 121
+}

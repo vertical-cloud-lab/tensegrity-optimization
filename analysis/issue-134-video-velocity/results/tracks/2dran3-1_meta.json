@@ -1,0 +1,20 @@
+{
+ "specimen": "2dran3",
+ "clip": "2dran3-1.MP4",
+ "reference_clip": "2dran3-2",
+ "n_frames": 2460,
+ "shift_px": [
+  -12.19,
+  -6.15
+ ],
+ "shift_ncc": 0.99,
+ "tip_rest_px": [
+  1097.8,
+  273.9
+ ],
+ "x_top_px": 1062.8,
+ "x_bottom_px": 1363.8,
+ "impact_keyframe": 659,
+ "window_start": 489,
+ "n_tracked": 122
+}
