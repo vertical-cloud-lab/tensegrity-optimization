@@ -31,7 +31,7 @@ Justin asked on [issue #134](https://github.com/vertical-cloud-lab/tensegrity-op
   - The four attenuators corny6 to corny9 (T180 0.80 to 0.95) give
     0.13 to 0.16.
   - Most of the rest (T180 1.01 to 1.09) give 0.09 to 0.14.
-  - drran1 (0.155 at T180 1.03) and drran7 (0.123 at T180 1.25) are off
+  - drran1 (0.156 at T180 1.03) and drran7 (0.123 at T180 1.25) are off
     the trend.
 - **Integrating the accelerometer overshoots the final velocity.**
   - The integrated final vertical velocity is higher than the video's by
