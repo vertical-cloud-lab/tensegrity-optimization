@@ -10,6 +10,12 @@ Justin asked on [issue #134](https://github.com/vertical-cloud-lab/tensegrity-op
 - Use the video velocities to test whether integrating the accelerometer gives
   the right final velocity.
 
+A second request on the same day added two comparisons on the same 27
+specimens: the video ratio against the ballistic ratio of issue #94, and the
+accelerometer integrated over the impact pulse only. They are in
+[Follow-up: ballistic ratio and pulse-only integration](#follow-up-ballistic-ratio-and-pulse-only-integration)
+below.
+
 ## Results in short
 
 - **27 specimens tracked, 81 filmed drops:** corny1 to corny9, drran1 to
@@ -156,6 +162,213 @@ If integration has to be used, I would:
 - Record a longer pre-trigger, so the free-fall baseline is in the record. At
   present the record starts after the pulse has begun.
 
+The follow-up below tests the third suggestion (integrate only the vertical
+axis over a short window).
+
+## Follow-up: ballistic ratio and pulse-only integration
+
+Justin's second request on issue #134 (2026-11-16), on the 27 tracked
+specimens:
+
+1. Compare the final/initial velocity ratio from the video with the one from
+   the ballistic analysis of issue #94, in a graph like figure 3.
+2. Integrate only the vertical axis, and only over the steepest part of the
+   curve, and compare that final velocity with the video's.
+
+Script: [`ballistic_and_short_window.py`](ballistic_and_short_window.py).
+Figures 6 to 8, and the per-specimen table
+[`results/ballistic_and_pulse_only_table.md`](results/ballistic_and_pulse_only_table.md)
+(also as CSV,
+[`results/ballistic_and_pulse_only_summary.csv`](results/ballistic_and_pulse_only_summary.csv)).
+
+### 1. Ballistic ratio against the video ratio
+
+**What the ballistic method is.** It is the `e_rebound` of the BO campaign,
+explained on issue #94
+([comment of 2026-09-21](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/94#issuecomment-5764640495)):
+
+- `t_second` is the time from the impact to the largest burst on the top
+  sensor 15 to 70 ms later. That burst is read as the vertex landing back on
+  its seat.
+- The vertex is assumed to leave its seat at the moment of impact and fly
+  freely under gravity, so its launch speed is v_sep = g × t_second / 2.
+- The ratio divides that by Δv, the integral of the base sensor (CH5) over the
+  impact pulse: e_rebound = g × t_second / (2 × Δv).
+
+The values are the campaign's own, mean ± SD over drops 3 to 20, from the
+tables on branch `claude/issue-98-20260821-0103` (commit `65ff978`), copied to
+[`inputs/ballistic/`](inputs/ballistic/). Nothing was recomputed. The video
+side uses the vertical component, because the ballistic method only sees
+vertical motion (the speed ratio of figure 1 differs from it by at most 0.02).
+
+![](figures/06_ratio_ballistic_vs_video.png)
+
+**Results.**
+
+- **The ballistic ratio is about a quarter of the video ratio:** 0.014 to
+  0.063 against 0.088 to 0.154. Ballistic / video has a median of 0.24 (range
+  0.12 to 0.50). No specimen comes near the equality line.
+- **The two still rank the specimens in a similar order,** but loosely:
+  Spearman ρ = 0.52 (p = 0.005), Pearson r = 0.60 (p = 0.001), n = 27. Both
+  put corny8, corny9 and drran1 near the top.
+- **Almost all of the gap is in the numerator** (panel b). The ballistic
+  launch speed g × t_second / 2 is 0.08 to 0.34 m/s; the video shows the tip
+  moving up at 0.42 to 0.70 m/s over the final window. The ballistic value is
+  a median 27 % of the video's.
+- **The denominators differ by 13 %, for a known reason** (panel c). The base
+  Δv (5.10 to 5.41 m/s) is the carriage's whole velocity change through the
+  pulse: the arrival speed plus the speed it comes back up with. The video
+  initial speed is the arrival speed alone (4.47 to 4.92 m/s). Compared like
+  for like, the base Δv and the video's whole change of the tip (initial plus
+  final) agree to 1.4 % on average (mean difference +0.07 m/s, SD 0.16 m/s).
+  This is an independent check of the video scale, which the first round
+  called its weakest link: the base sensor and the video were never fitted to
+  each other.
+
+![](figures/08_tip_height_after_impact.png)
+
+**Why the numerators differ: the tip is not in free flight after impact.**
+Figure 8 follows the height of the wired tip after impact in the video (six
+specimens, every filmed drop), next to the hop the ballistic model assumes.
+
+- At impact the specimen and the mat are compressed. Over the next 40 to 60 ms
+  the tip rises 13 to 28 mm (median 19 mm) above where it was at impact, most
+  of it just getting back to its resting height. The final window (+5 to
+  +25 ms) measures the start of that rise.
+- The ballistic model assumes a hop of 0.3 to 6 mm that starts at impact.
+  Nothing like that shows in the video.
+- On most designs (drran2, 2dran5, 2dran9 in figure 8) the tip rises and
+  settles, with no hop at all. On the soft attenuators corny7, corny8 and
+  corny9 it overshoots its resting height, peaks 52 to 55 ms after impact and
+  comes back down at 63 to 71 ms. On corny8 and corny9 that landing matches
+  t_second (64 and 66 ms); on corny7 it does not (t_second 34 ms).
+- The tip slows down at a median 2.9 g while it rises (0.9 to 5.4 g across
+  specimens, from the video velocity between +5 and +25 ms), not at 1 g. So
+  even where t_second times a real landing, g × t_second / 2 is not the speed
+  the tip left with. A free flight at the video's speed would last 85 to
+  140 ms, longer than the 15 to 70 ms window in which t_second is searched.
+
+So `e_rebound` does not measure the tip's rebound velocity. It is an index
+that ranks specimens roughly as the video ratio does (ρ = 0.52). This fits
+what issue #94 already said about it: the denominator is a different velocity
+from the numerator, and t_second is timed from impact while the launch is
+not observed.
+
+The tip velocity in the video is measured against the room, not against the
+carriage. Part of the rise in figure 8 is probably the carriage coming back up
+off the compressed mat with the specimen on it. I did not track the carriage,
+so I cannot split the two.
+
+### 2. Integrating only the steep part of the pulse
+
+**What was integrated.** The vertical axis (CH4) only, from the first sample
+of the record (about 2.8 ms before t50, already inside the pulse) to the end
+of the pulse. The end of the pulse is the first moment after the peak at which
+CH4, smoothed over 0.5 ms, falls below 10 % of its peak. That is 1.4 to 3.1 ms
+after t50 (median 2.2 ms). The velocity there is taken as the final velocity;
+nothing after it is integrated. The initial value and t50 are the same as in
+the first round.
+
+![](figures/07_final_velocity_pulse_only_vs_video.png)
+
+**Results** (each point: one specimen, mean of 20 drops, against the mean of
+its 3 filmed drops):
+
+| | whole record (figure 3a) | pulse only |
+|---|---|---|
+| integral − video, mean (m/s) | +0.47 | +0.22 |
+| integral − video, SD across specimens (m/s) | 0.23 | 0.43 |
+| range (m/s) | −0.06 to +0.88 | −0.76 to +0.86 |
+| RMS error (m/s) | 0.53 | 0.48 |
+| Pearson r, integral vs video, across specimens | −0.15 | −0.57 |
+
+- **The average overshoot halves, but nothing else improves.** The spread
+  across specimens doubles, the RMS error drops only from 0.53 to 0.48 m/s,
+  and the pulse-only values are negatively correlated with the video's (the
+  specimens with the fastest tip in the video get the lowest integrals).
+- **Two groups move in opposite directions.**
+  - On the soft attenuators corny6 to corny9, the pulse-only integral is
+    −0.08 to 0.28 m/s while the video shows 0.59 to 0.70 m/s (mean error
+    −0.55 m/s). Their tip is still speeding up when the pulse at the base has
+    ended, so stopping there cuts off part of the rebound.
+  - On the other 23 the error stays at +0.35 m/s on average. On the stiffest
+    drran and 2dran designs the pulse-only value is almost the same as the
+    whole-record value (for example 2dran5: 1.28 against 1.27 m/s), so for
+    them the overshoot is already there at the end of the pulse.
+- Using the end of the base pulse (CH5) instead of CH4 gives the same picture
+  (mean +0.10, SD 0.50, RMS 0.50 m/s).
+
+**Where the error comes from** (figure 7c, the integration stopped at every
+time from 1 to 30 ms after t50):
+
+- **The integral itself** (blue line: integral and video at the same moment)
+  is about +0.2 m/s too high just after the pulse (median +0.19 m/s at
+  +3 ms, +0.21 m/s at +5 ms). That is about 4 % of the 5.2 m/s change through
+  the impact. After the pulse it climbs about 0.03 m/s every millisecond
+  (+0.43 m/s at +10 ms, +0.72 m/s at +20 ms). That is the offset of about
+  3 G left on CH4 after the shock, which the first round found too.
+- **The tip's real velocity also keeps changing after the pulse.** In the
+  video it peaks at a median 1.0 m/s (0.7 to 1.9 m/s) 2 to 8 ms after t50,
+  then slows to 0.4 to 0.7 m/s in the final window. The velocity at the end of the pulse is
+  therefore not the final velocity, whatever the accelerometer does.
+- Stopping early removes the drift but also ignores this real change. No stop
+  time does better than an RMS error of 0.42 m/s (at 1.5 ms after t50,
+  before the pulse is over, where errors of opposite sign happen to cancel).
+
+**Verdict.** Integrating only the steep part does not make the final velocity
+usable. It is useful for something else: the velocity change through the
+impact, which it gets to within about 4 % (+0.2 m/s on 5.2 m/s) when compared
+with the video at the same moment. For the rebound velocity, which is about a
+tenth of that change, a 4 % error in the change is already 40 % of the answer.
+
+### Table
+
+Mean ± SD. Video: over the 3 filmed drops. Ballistic: the campaign's values
+over drops 3 to 20. Integrals: over drops 1 to 20. All velocities vertical,
+\+ up unless noted.
+
+| specimen | video ratio, vertical | ballistic e_rebound | t_second (ms) | ballistic v_sep (m/s) | video final vertical (m/s) | base Δv, CH5 (m/s) | video initial vertical (m/s, down) | integral, whole record (m/s) | integral, pulse only (m/s) | pulse end (ms after t50) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| corny1 | 0.118 ± 0.016 | 0.029 ± 0.002 | 30.8 ± 1.6 | 0.151 ± 0.008 | 0.557 ± 0.076 | 5.26 ± 0.06 | 4.72 ± 0.01 | 1.006 ± 0.037 | 0.708 ± 0.083 | 1.99 ± 0.17 |
+| corny2 | 0.091 ± 0.007 | 0.031 ± 0.001 | 31.8 ± 0.5 | 0.156 ± 0.002 | 0.449 ± 0.033 | 5.10 ± 0.11 | 4.92 ± 0.01 | 0.619 ± 0.041 | 0.242 ± 0.026 | 1.55 ± 0.05 |
+| corny3 | 0.091 ± 0.007 | 0.029 ± 0.000 | 30.8 ± 0.5 | 0.151 ± 0.003 | 0.443 ± 0.035 | 5.20 ± 0.03 | 4.84 ± 0.00 | 0.886 ± 0.036 | 0.524 ± 0.019 | 1.71 ± 0.03 |
+| corny4 | 0.115 ± 0.008 | 0.014 ± 0.000 | 15.3 ± 0.3 | 0.075 ± 0.001 | 0.545 ± 0.034 | 5.36 ± 0.04 | 4.74 ± 0.03 | 0.940 ± 0.037 | 0.758 ± 0.029 | 1.97 ± 0.02 |
+| corny5 | 0.118 ± 0.004 | 0.028 ± 0.003 | 29.7 ± 2.9 | 0.146 ± 0.014 | 0.567 ± 0.019 | 5.28 ± 0.05 | 4.81 ± 0.00 | 0.768 ± 0.081 | 0.678 ± 0.136 | 2.07 ± 0.36 |
+| corny6 | 0.130 ± 0.004 | 0.020 ± 0.008 | 20.9 ± 8.7 | 0.102 ± 0.043 | 0.587 ± 0.019 | 5.19 ± 0.03 | 4.52 ± 0.01 | 0.805 ± 0.042 | 0.284 ± 0.116 | 2.61 ± 0.23 |
+| corny7 | 0.151 ± 0.008 | 0.032 ± 0.013 | 34.0 ± 13.5 | 0.167 ± 0.066 | 0.682 ± 0.037 | 5.21 ± 0.02 | 4.51 ± 0.01 | 0.624 ± 0.027 | -0.078 ± 0.039 | 2.53 ± 0.03 |
+| corny8 | 0.152 ± 0.004 | 0.060 ± 0.017 | 63.9 ± 17.7 | 0.313 ± 0.087 | 0.682 ± 0.019 | 5.24 ± 0.02 | 4.48 ± 0.01 | 0.738 ± 0.028 | 0.238 ± 0.067 | 2.68 ± 0.15 |
+| corny9 | 0.154 ± 0.001 | 0.062 ± 0.012 | 66.3 ± 12.8 | 0.325 ± 0.063 | 0.696 ± 0.005 | 5.23 ± 0.02 | 4.51 ± 0.01 | 0.933 ± 0.028 | 0.018 ± 0.019 | 2.55 ± 0.03 |
+| drran1 | 0.144 ± 0.001 | 0.063 ± 0.001 | 69.1 ± 0.3 | 0.339 ± 0.001 | 0.649 ± 0.008 | 5.41 ± 0.05 | 4.51 ± 0.02 | 1.121 ± 0.074 | 0.733 ± 0.050 | 1.94 ± 0.02 |
+| drran2 | 0.103 ± 0.001 | 0.041 ± 0.000 | 44.4 ± 0.5 | 0.218 ± 0.002 | 0.465 ± 0.006 | 5.35 ± 0.01 | 4.53 ± 0.02 | 1.038 ± 0.025 | 1.116 ± 0.009 | 2.12 ± 0.01 |
+| drran3 | 0.103 ± 0.004 | 0.014 ± 0.001 | 15.4 ± 0.9 | 0.075 ± 0.004 | 0.489 ± 0.017 | 5.30 ± 0.05 | 4.73 ± 0.00 | 0.983 ± 0.027 | 0.924 ± 0.017 | 2.32 ± 0.14 |
+| drran4 | 0.138 ± 0.009 | 0.031 ± 0.000 | 32.5 ± 0.1 | 0.160 ± 0.001 | 0.640 ± 0.042 | 5.22 ± 0.01 | 4.63 ± 0.03 | 1.083 ± 0.019 | 0.693 ± 0.012 | 2.08 ± 0.02 |
+| drran5 | 0.104 ± 0.006 | 0.017 ± 0.001 | 17.8 ± 1.2 | 0.087 ± 0.006 | 0.483 ± 0.028 | 5.20 ± 0.05 | 4.62 ± 0.02 | 0.946 ± 0.023 | 0.955 ± 0.017 | 2.18 ± 0.01 |
+| drran6 | 0.107 ± 0.003 | 0.017 ± 0.001 | 18.3 ± 0.7 | 0.090 ± 0.003 | 0.495 ± 0.011 | 5.41 ± 0.02 | 4.64 ± 0.02 | 1.028 ± 0.040 | 1.053 ± 0.014 | 2.19 ± 0.03 |
+| drran7 | 0.121 ± 0.004 | 0.027 ± 0.001 | 30.1 ± 1.3 | 0.148 ± 0.006 | 0.548 ± 0.007 | 5.41 ± 0.02 | 4.55 ± 0.09 | 1.182 ± 0.037 | 0.719 ± 0.038 | 1.53 ± 0.03 |
+| drran8 | 0.123 ± 0.006 | 0.039 ± 0.009 | 42.2 ± 9.6 | 0.207 ± 0.047 | 0.582 ± 0.026 | 5.33 ± 0.06 | 4.72 ± 0.01 | 1.016 ± 0.081 | 0.587 ± 0.034 | 2.51 ± 0.25 |
+| drran9 | 0.115 ± 0.001 | 0.018 ± 0.000 | 19.3 ± 0.3 | 0.095 ± 0.001 | 0.533 ± 0.004 | 5.26 ± 0.02 | 4.63 ± 0.01 | 1.056 ± 0.027 | 1.020 ± 0.010 | 2.21 ± 0.01 |
+| 2dran1 | 0.104 ± 0.006 | 0.025 ± 0.001 | 27.2 ± 0.6 | 0.133 ± 0.003 | 0.485 ± 0.026 | 5.28 ± 0.04 | 4.68 ± 0.01 | 1.230 ± 0.024 | 0.764 ± 0.048 | 1.68 ± 0.06 |
+| 2dran2 | 0.088 ± 0.004 | 0.015 ± 0.003 | 16.0 ± 2.9 | 0.078 ± 0.014 | 0.418 ± 0.018 | 5.16 ± 0.21 | 4.78 ± 0.02 | 1.101 ± 0.029 | 1.092 ± 0.013 | 2.22 ± 0.05 |
+| 2dran3 | 0.105 ± 0.005 | 0.031 ± 0.021 | 32.7 ± 22.1 | 0.160 ± 0.109 | 0.502 ± 0.031 | 5.11 ± 0.06 | 4.76 ± 0.04 | 0.907 ± 0.053 | 0.703 ± 0.193 | 2.10 ± 0.41 |
+| 2dran4 | 0.140 ± 0.003 | 0.037 ± 0.001 | 40.1 ± 1.2 | 0.197 ± 0.006 | 0.630 ± 0.007 | 5.30 ± 0.04 | 4.49 ± 0.03 | 1.509 ± 0.050 | 1.017 ± 0.062 | 2.06 ± 0.28 |
+| 2dran5 | 0.091 ± 0.007 | 0.016 ± 0.002 | 17.9 ± 2.5 | 0.088 ± 0.012 | 0.418 ± 0.034 | 5.32 ± 0.03 | 4.58 ± 0.01 | 1.266 ± 0.043 | 1.276 ± 0.019 | 2.24 ± 0.01 |
+| 2dran6 | 0.111 ± 0.009 | 0.026 ± 0.011 | 27.7 ± 11.5 | 0.136 ± 0.056 | 0.509 ± 0.045 | 5.14 ± 0.07 | 4.56 ± 0.04 | 1.113 ± 0.059 | 1.255 ± 0.060 | 2.27 ± 0.08 |
+| 2dran7 | 0.126 ± 0.004 | 0.038 ± 0.000 | 40.1 ± 0.4 | 0.196 ± 0.002 | 0.566 ± 0.018 | 5.13 ± 0.02 | 4.47 ± 0.03 | 1.305 ± 0.027 | 1.341 ± 0.022 | 3.07 ± 0.04 |
+| 2dran8 | 0.121 ± 0.003 | 0.034 ± 0.000 | 35.4 ± 0.2 | 0.174 ± 0.001 | 0.573 ± 0.015 | 5.11 ± 0.02 | 4.73 ± 0.01 | 1.080 ± 0.027 | 0.779 ± 0.016 | 2.95 ± 0.02 |
+| 2dran9 | 0.103 ± 0.001 | 0.052 ± 0.001 | 54.5 ± 0.7 | 0.267 ± 0.004 | 0.467 ± 0.004 | 5.19 ± 0.06 | 4.53 ± 0.01 | 1.183 ± 0.029 | 1.218 ± 0.015 | 2.26 ± 0.03 |
+
+Other outputs of the script:
+
+- [`results/accel_pulse_only_per_drop.csv`](results/accel_pulse_only_per_drop.csv):
+  per drop, the pulse end (CH4 and CH5 definitions), the velocity there and
+  the whole-record final velocity.
+- [`results/pulse_only_stop_time_sweep.csv`](results/pulse_only_stop_time_sweep.csv):
+  the curves of figure 7c.
+- [`results/tip_rise_after_impact_per_clip.csv`](results/tip_rise_after_impact_per_clip.csv):
+  how far the tip rises above its impact position, per filmed drop.
+- [`results/ballistic_and_pulse_only_stats.json`](results/ballistic_and_pulse_only_stats.json):
+  every number quoted in this section.
+
 ## How the tip is tracked
 
 - **Clips.** Sony RX100 IV high-frame-rate clips at 959.04 frames/s (one frame
@@ -295,5 +508,6 @@ python fetch_waveforms.py --raw /tmp/drop-raw --batches corny drran 2dran   # ac
 python run_tracking.py --videos /tmp/vid          # tracks -> results/tracks/
 python velocity_analysis.py                       # tables -> results/
 python make_figures.py                            # figures -> figures/
+python ballistic_and_short_window.py              # follow-up: figures 6 to 8, ballistic and pulse-only tables
 python qa_montage.py --videos /tmp/vid            # tracking check sheets
 ```
