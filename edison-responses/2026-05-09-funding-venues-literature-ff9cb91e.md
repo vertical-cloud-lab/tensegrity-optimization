@@ -1,0 +1,339 @@
+# Edison Literature Query — Funding Venues for a Larger-Scale Tensegrity / BO Energy-Absorption Grant Proposal
+
+- **Task ID:** `ff9cb91e-ca9f-48af-a9fc-3e6c05665e9d`
+- **Job:** `LITERATURE`
+- **Submitted:** 2026-05-09
+- **Fetched:** 2026-05-09
+- **Status:** success
+- **Related issues:** #42 (this issue), #16 (NASA priorities tie-in), #18 (crutch-tip impact-absorber thrust)
+
+> High-effort literature + program survey to identify the strongest federal / quasi-federal funding venues (NSF, DOE, NIH, DOD, NASA, DOT, NIST, foundations) for a larger-scale follow-on to the BYU MRG tensegrity / Bayesian-optimization energy-absorption framework. See PR description for the full submitted prompt and section structure.
+
+---
+
+Question: High-effort literature + program synthesis identifying the strongest
+funding venues for a *larger-scale* (multi-year, ≥$300k–$2M+) federal grant
+proposal that builds on a multi-material 3D-printed tensegrity / Bayesian-
+optimization energy-absorption research program. The current effort is a small
+$25k 2-year BYU Mentored Research Grant (MRG); we are scoping the next, much
+larger proposal and want to find the *right venue* — long-term fit matters more
+than chasing a near-term deadline.
+
+CONTEXT — the research framework being scaled up
+-------------------------------------------------
+- Two PIs at Brigham Young University, Mechanical Engineering:
+  * **Jeffrey R. Hill** (Associate Prof., PI). Background: Penn State PhD ME
+    2011; ~10 years at Sandia National Laboratories (Principal Member of
+    Technical Staff, 2011–2021). Active research on tensegrity structures and
+    robots (Robotica 2024 — Layer/Denning/Hill, tensegrity locomotion via
+    center-of-mass manipulation; ASME SMASIS 2024 — Denning/Bullinger/Hill on
+    cable-tension interactions; SMASIS 2024 — Brown/Swain/Usevitch/Hill on
+    continuous-cable tensegrity), 3D-printed tension networks (Materials &
+    Design 2025 — Masmeijer/Swain/Hill/Habtour, programming tension in
+    spider-web-inspired networks), encapsulation for electronics (J. Electronic
+    Packaging 2025), and earlier piezoelectric / actuator-grouping /
+    smart-structure optimization (J. Intelligent Material Systems and
+    Structures 2011; Smart Materials and Structures 2011; SPIE Active and
+    Passive Smart Structures 2011).
+  * **Sterling G. Baird** (Assistant Prof., Co-PI). Background: U. Utah PhD
+    Materials Science 2023; Acceleration Consortium (U. Toronto) Director of
+    Training and Programs 2023–2025, then PI/Staff Scientist 2025; assistant
+    prof at BYU 2025–. Expertise in Bayesian optimization, self-driving labs,
+    and data-driven materials discovery: Honegumi (arXiv:2502.06815), the
+    *Chemical Reviews* 2024 self-driving labs review (Tom/Schmid/Baird et al.),
+    high-dimensional BO over 23 hyperparameters (Comp Mat Sci 2022), invariant
+    search-spaces / formulations BO (Comp Mat Sci 2023), the Frugal-Twin
+    "Hello World" closed-loop spectroscopy lab (STAR Protocols 2023; Digital
+    Discovery 2024), and BO Hackathon for Chemistry & Materials (chemrxiv
+    2025). Guest editor *npj Computational Materials*. Mentorship of 8 BYU
+    undergrads + 12 AC staff/students.
+- **Technical core:** Multi-material FDM (originally PLA struts + TPU tension
+  members; the project is converging on **PETG struts + TPU 95A tendons** on a
+  Bambu H2D printer — see related issue #18) building Snelson-style tensegrity
+  unit cells and architected lattices. Closed-loop, high-throughput Bayesian
+  optimization recommends ~50–100+ specimens characterized under quasi-static
+  compression and drop-weight impact, with full simulation-experiment
+  multifidelity integration. TPU rate-dependent viscoelastic damping is treated
+  as a *feature* for impact energy absorption, not a deviation from idealized
+  cable behavior.
+- **Two near-term application thrusts** that should be considered when scoping
+  venues:
+  * **Crutch-tip / mobility-aid impact absorber** (issue #18) — protective
+    attachment for the bottom of standard crutches. Connects to falls in the
+    elderly, disability mobility, hand-arm vibration syndrome (HAVS), slip
+    resistance, and rehab engineering.
+  * **NASA / aerospace tie-in** (issue #16) — tensegrity, deployable, lattice,
+    and energy-absorbing structures for landers, CubeSats, sample-return
+    capsules, habitat liners, EVA crash structures, rover suspension, MMOD
+    shields, in-space additive manufacturing.
+- **Other potentially in-scope verticals:** packaging, sports protective
+  equipment, automotive crash structures, soft robotics, deployable space
+  structures, prosthetics, defense/blast-mitigation seating, and architected
+  metamaterials.
+- **Stylistic leaning:** *applied*. We are comfortable framing toward use-case
+  performance; we will need help framing the basic-science / discovery-science
+  angle for venues that demand it. We prefer **longer-term** mechanisms
+  (multi-year, renewable, career-development, or center-style) and are NOT
+  optimizing for a particular fiscal-year deadline.
+
+REQUEST
+=======
+Provide a comprehensive, citation-rich (DOI / NSF/DOE/NIH/NASA award
+identifiers / RePORTER, NSPIRES, sam.gov, grants.gov, DODGRANTS / eBRAP IDs
+where possible) survey of *plausible federal and quasi-federal funding venues*
+in the United States for a larger-scale follow-on. For each venue, give:
+
+(a) Program name, sponsoring agency / division / directorate, and program
+    officer or contact pattern (e.g., NSF CMMI/M3X clusters, DOE BES MSE,
+    NIH NIBIB R01, NASA STMD ECF/ESI, DARPA DSO, ARO MSME, ONR Code 33, AFOSR
+    portfolio, DOT NIOSH, NIST MML, etc.).
+(b) Award envelope (typical $ range, duration, expected team size).
+(c) Cadence (rolling / annual / one-off; recent solicitation numbers and
+    closing dates if known — NOT to chase, only to characterize cadence).
+(d) Fit assessment for our team: how the PI's tensegrity / smart-structures /
+    Sandia background and Co-PI's BO / SDL background map onto the program's
+    stated priorities; how applied-vs-basic the program leans.
+(e) Concrete framing suggestions (one short paragraph each: how to position
+    this program of work to that solicitation, including what "basic-science"
+    hooks would be needed if the program is discovery-oriented).
+(f) Representative *prior awards* the agency/program has made that relate to
+    (i) tensegrity specifically; (ii) architected / lattice / cellular
+    energy absorbers; (iii) multi-material additive manufacturing; (iv)
+    Bayesian / active-learning / autonomous experimentation for structural
+    materials; (v) impact / blast / crashworthiness; (vi) assistive / rehab
+    / mobility devices; (vii) deployable space structures. Cite by award ID
+    plus PI plus title where possible.
+
+Cover, at minimum, the following venue families. For each, exhaustively list
+the specific programs that match our team and identify the single
+"best-fit lead" plus 2–3 backups:
+
+1. **NSF — Engineering directorate.** CMMI core programs (Mechanics of
+   Materials and Structures (MoMS), Advanced Manufacturing (AM), Engineering
+   Design and Systems Engineering (EDSE), Dynamics, Control and Systems
+   Diagnostics (DCSD)), CBET, ECCS, and cross-cutting solicitations
+   (DMREF, LEAP-HI, FMRG/FMSG cyber-manufacturing, ERI, GOALI, REU
+   Site/Supplement, RET, CAREER for Co-PI, MRI for equipment).
+2. **NSF — other directorates.** TIP (Convergence Accelerator, Regional
+   Innovation Engines, Translation Impacts), SBIR/STTR (if industrial
+   partner), MPS (DMR Metals & Metallic Nanostructures, Designing
+   Materials to Revolutionize and Engineer our Future — DMREF), CISE
+   (autonomous experimentation / AI for science overlap), EPSCoR /
+   Established Program to Stimulate Competitive Research (Utah is currently
+   non-EPSCoR — note status; consider Utah's NASA EPSCoR equivalent through
+   the BYU NASA Space Grant consortium).
+3. **DOE.** Office of Science BES (Materials Sciences and Engineering
+   Division — Mechanical Behavior and Radiation Effects, Synthesis &
+   Processing Science, Predictive Theory and Modeling), ARPA-E (impact and
+   crashworthiness analogs), EERE Vehicle Technologies Office (lightweighting
+   / crashworthiness), Advanced Manufacturing Office / AMMTO, Building
+   Technologies Office (impact-resilient envelopes), DOE Early Career.
+4. **NIH.** NIBIB R01 / R21 (rehabilitation, assistive devices); NICHD
+   National Center for Medical Rehabilitation Research (NCMRR) R01/R21;
+   NIA (falls in the elderly); NIOSH (HAVS, occupational exposures); NSF/NIH
+   Smart and Connected Health (joint solicitation if active).
+5. **NASA.** STMD Early Career Faculty (ECF), Early Stage Innovations (ESI),
+   NIAC (Phase I/II/III), Space Technology Graduate Research Opportunities
+   (NSTGRO), NASA EPSCoR, Utah NASA Space Grant Consortium (institutional
+   tie via BYU), ROSES appendices (PSTAR, PICASSO, MatISSE), SBIR/STTR.
+6. **DOD basic / applied research.**
+   - **DARPA** Defense Sciences Office (Materials with Controlled Microstructural
+     Architecture-style legacies, MCMA, AMMA, MIND, Atom-to-Architecture);
+     DARPA Tactical Technology Office (deployable structures); Young Faculty
+     Award (YFA — note Co-PI is early-career and could potentially be eligible
+     window-permitting — confirm YFA tenure-clock / years-from-PhD limits and
+     comment on Sterling's eligibility).
+   - **ARO (DEVCOM Army Research Office)** Mechanical Sciences Division —
+     Solid Mechanics, Complex Dynamics & Systems; Materials Science Division
+     — Synthesis & Processing of Materials; ARO Multidisciplinary University
+     Research Initiative (MURI) themes on architected materials, energy
+     absorption, soft robotics; ARO Short-Term Innovative Research (STIR);
+     ARO Young Investigator Program (YIP) — comment on Sterling's eligibility.
+   - **ONR** Code 33 (Sea Warfare and Weapons — Solid Mechanics, Materials and
+     Structures), Code 35 (Air Warfare — structural materials), ONR YIP.
+   - **AFOSR** RTA1 (Engineering & Information Sciences — Mechanics of
+     Multifunctional Materials and Microsystems, Dynamic Materials &
+     Interactions), AFOSR YIP.
+   - **DTRA** Basic Research (blast / shock).
+   - **DOD MURI** themes that have historically funded tensegrity, soft
+     robotics, architected materials, mechanical metamaterials, mechanically
+     graded composites.
+   - **DOD CDMRP** (Congressionally Directed Medical Research Programs) —
+     particularly any orthopaedic, peer-reviewed orthopaedic research, or
+     spinal cord injury programs that have funded mobility-aid technology.
+7. **DOT / NIOSH / FDA / NIST / Spencer / private foundations.** DOT
+   University Transportation Centers (vehicle crashworthiness), NIOSH
+   Construction / Mining / Manufacturing (HAVS, vibration), FDA Office of
+   Science and Engineering Laboratories (assistive device safety standards),
+   NIST Measurement Science grants (architected materials metrology),
+   relevant private foundations (e.g., Sloan, Keck, MTU, Bechtel-style;
+   identify which actually fund mechanical-engineering AM/structures vs.
+   not).
+8. **Career / early-career mechanisms** specifically for Co-PI Baird (NSF
+   CAREER, ARO YIP, ONR YIP, AFOSR YIP, DOE Early Career, NASA ECF, DARPA
+   YFA, NIH K-awards if applicable, Sloan Research Fellowships, Packard,
+   PECASE pathway). For each, comment on Sterling's eligibility window
+   (2025– assistant prof start) and on whether the Acceleration-Consortium
+   PI/Director years count against the tenure clock for that program.
+9. **Center-scale and longer-term mechanisms.** NSF ERC, NSF Engineering
+   Research Initiation, NSF AI Institutes, DOE EFRC, DOE Energy Innovation
+   Hub, NIH P-series, DARPA-style centers, NASA Space Technology Research
+   Institutes (STRI), NSF Materials Innovation Platforms (MIP).
+   Comment honestly on which are realistic to *lead* vs. *partner into* at
+   our team's current scale.
+10. **State, regional, and BYU-internal.** Utah Office of Energy Development,
+    Utah Industrial Assistance Account, Utah NASA Space Grant Consortium,
+    BYU Holland Research Fellowship analogs, BYU MEG / SCG, and any
+    Utah-Idaho regional consortia worth knowing.
+
+DELIVERABLES (within the formatted_answer)
+==========================================
+- A ranked **shortlist of 3–5 best-fit primary venues** for a longer-term
+  larger-scale proposal led by Hill+Baird, with strong justification.
+- A second shortlist of **3–5 best-fit early-career / Co-PI-led mechanisms**
+  for Baird specifically, with eligibility windows clearly stated.
+- A table of **prior tensegrity-relevant federal awards** (at least 10–20
+  rows where available; columns: Award ID, agency/program, PI, institution,
+  $, dates, title, brief relevance note) — drawn from NSF Award Search,
+  NIH RePORTER, DOE PAMS/OSTI, NASA NSPIRES/NTRS, DOD eBRAP, USAspending.gov,
+  etc.
+- A short section on **how to frame an applied program for basic-science
+  reviewers** when the venue requires it (e.g., NSF CMMI MoMS), with concrete
+  hooks the team can lean on (multifidelity BO theory, design-of-experiments,
+  rate-dependent viscoelastic constitutive modeling, instability-driven
+  energy absorption, topology optimization of prestressed networks, etc.).
+- A "**don't apply here**" section flagging mismatched venues (e.g.,
+  programs that strongly prefer faculty with substantial prior agency
+  funding history, programs with industrial cost-share Hill/Baird may not
+  yet have, programs whose technical scope diverges).
+- A short **action plan** with roughly the next 12–18 months of preparatory
+  activities (white papers, pre-proposal contacts, conference networking,
+  required preliminary data) that Hill+Baird should undertake to be
+  competitive for the top 3 shortlisted venues.
+
+Cite extensively. Where a specific dollar figure, deadline pattern, or
+eligibility rule is given, attach a citation. Note when information may be
+out of date. Avoid speculation about confidential program-officer preferences;
+when something is conjecture, label it as such.
+
+## Scope note (evidence limitations)
+The tool-based retrieval in this run successfully captured authoritative, citable details for (i) NSF’s **Convergence Accelerator** (funding levels, phase durations, annual cadence, and program model), (ii) NASA STMD’s **Space Technology Research Grants (STRG)** portfolio composition (NSTGRO/ECF/ESI/LuSTR/STRI) and NASA HEOMD/HRP’s **HERO** award-size range, (iii) NASA’s **NIAC** process and scale indicators, and (iv) a small set of **tensegrity-relevant prior award IDs** (NSF CMMI/EFRI and AFOSR) extracted from a tensegrity deployment paper’s acknowledgements.
+
+However, the run **did not retrieve** the primary solicitation documents needed to defensibly cite award envelopes/cadence/eligibility for NSF CMMI core programs (MoMS/AM/EDSE/DCSD), NSF DMREF/LEAP-HI/etc., DOE BES/EERE/ARPA‑E, NIH NIBIB/NICHD/NIA/NIOSH FOAs, or DoD YIP/YFA/BAAs. As a result, the venue survey below is **incomplete** and only those program parameters explicitly supported by citations are stated quantitatively.
+
+## Evidence-backed program facts extracted in this run
+| Program/mechanism | Agency | What the evidence explicitly says (funding/duration/cadence/notes) | Source citation ID |
+|---|---|---|---|
+| Convergence Accelerator | NSF | Three-phase model: topic identification, Phase 1, Phase 2. Phase 1 awards may receive up to **$750,000** for **12 months** and include a **9-month Innovation Curriculum**; all Phase 1 projects may submit Phase 2 proposals for up to **$5 million over 2 years**. Program issues a **solicitation each year**; topic ideation uses **DCL/RFI** processes and NSF-funded workshops; BAA route also used to encourage industry/nonprofit participation. | (baru2022thensfconvergence pages 1-2, baru2022thensfconvergence pages 2-3) |
+| Space Technology Research Grants (STRG) | NASA STMD | STRG explicitly includes component solicitations/programs: **NSTGRO, ECF, ESI, LuSTR, STRI**. ECF supports early-career faculty; ESI supports university-led early-stage projects, possibly multi-investigator; LuSTR supports university-led lunar surface work and is described as **short-duration, high-value grants**; STRI supports **multi-year**, university-led multidisciplinary teams. Solicitations are handled through NASA mechanisms such as **NSPIRES/NRAs**; no explicit dollar figures were stated in the extracted evidence. | (vivod2022collaboratingwithnasa pages 1-10, vivod2022collaboratingwithnasa pages 10-18) |
+| Human Exploration Research Opportunities (HERO) | NASA HEOMD/HRP | Awards are made as grants and generally range from **under $100K/year** for focused, limited efforts to **$1M/year** for extensive activities. | (vivod2022collaboratingwithnasa pages 1-10) |
+| NSF CMMI-1538830 | NSF | Listed in acknowledgements for a tensegrity/deployable structures paper: support associated with G.H. Paulino and K. Liu for “Programmable deployment of tensegrity structures by stimulus-responsive polymers.” No amount/duration stated in extracted evidence. | (liu2017programmabledeploymentof pages 7-8) |
+| NSF EFRI-1240374 | NSF | Listed in acknowledgements of the same tensegrity/deployable structures paper as support associated with H.J. Qi and J. Wu. No amount/duration stated in extracted evidence. | (liu2017programmabledeploymentof pages 7-8) |
+| NSF CMMI-1462894 | NSF | Listed in acknowledgements of the same tensegrity/deployable structures paper as support associated with H.J. Qi and J. Wu. No amount/duration stated in extracted evidence. | (liu2017programmabledeploymentof pages 7-8) |
+| NSF CMMI-1462895 | NSF | Listed in acknowledgements of the same tensegrity/deployable structures paper as support associated with H.J. Qi and J. Wu. No amount/duration stated in extracted evidence. | (liu2017programmabledeploymentof pages 7-8) |
+| AFOSR FA9550-16-1-0169 | AFOSR | Listed in acknowledgements of the same tensegrity/deployable structures paper; Dr. B.-L. “Les” Lee is named as Program Manager. No amount/duration stated in extracted evidence. | (liu2017programmabledeploymentof pages 7-8) |
+
+
+*Table: This table compiles the funding-program parameters and award identifiers explicitly supported by evidence gathered in this run. It is useful as a verified subset of program facts and prior-award anchors for the larger venue survey.*
+
+NSF’s Convergence Accelerator program model (including Phase 1 and Phase 2 funding levels/durations) is summarized in an extracted figure (baru2022thensfconvergence media 7f7e7c3e).
+
+## Ranked shortlist: best-fit primary venues (evidence-supported subset)
+### 1) NSF Convergence Accelerator (translation / use-inspired)
+**Why it is a best-fit lead.** Your program has unusually strong alignment with the Accelerator’s model: (i) iterative prototyping (50–100+ specimens) and measurable performance metrics (impact energy absorption), (ii) multi-sector relevance (mobility devices, aerospace structures), and (iii) a clear “deliverable in ~3 years” path supported by Bayesian-optimization-driven design loops.
+
+**Mechanism facts (citable).** Phase 1 awards can be up to **$750k** for **~12 months** and include an intensive innovation curriculum; Phase 2 proposals can be up to **$5M** over **2 years**; the program issues a **solicitation each year** and uses DCL/RFI plus workshops for topic ideation, and additionally leverages a BAA route to encourage non-academic participation (baru2022thensfconvergence pages 1-2, baru2022thensfconvergence pages 2-3, baru2022thensfconvergence media 7f7e7c3e).
+
+**Applied vs. basic.** Strongly applied/solutions-oriented by design, while still leveraging rigorous science/engineering (baru2022thensfconvergence pages 1-2, baru2022thensfconvergence pages 9-10).
+
+**Concrete framing.** Position the project as an “impact-energy-absorption digital thread” for architected, multi-material lattices where Bayesian optimization + multifidelity simulation reduces the number of expensive impact tests while meeting safety-critical constraints. Emphasize (a) a validated test+simulation workflow, (b) reproducible manufacturing recipes and QA metrics for TPU viscoelasticity and multi-material interfaces, and (c) clear transition partners (rehab device OEM, NASA center partner, or standards body) to satisfy the “solution” expectation.
+
+### 2) NASA STMD Space Technology Research Grants (STRG) family (ECF/ESI/LuSTR/STRI)
+**Why it is a best-fit lead.** Your NASA-relevant thrust (deployable/energy-absorbing structures; in-space AM; MMOD shields) maps naturally to STMD’s technology-development posture. Importantly, the STRG family includes both individual-PI and team-oriented mechanisms.
+
+**Mechanism facts (citable).** The STRG portfolio explicitly includes **NSTGRO, ECF, ESI, LuSTR, STRI**; ECF supports early-career faculty; ESI supports university-led early-stage projects; LuSTR is described as “short duration, high value grants” for lunar surface technology; STRI is described as **multi-year** and team-based (vivod2022collaboratingwithnasa pages 1-10, vivod2022collaboratingwithnasa pages 10-18).
+
+**Applied vs. basic.** Applied technology development (space-tech priority alignment; infusion language) as described (vivod2022collaboratingwithnasa pages 1-10, vivod2022collaboratingwithnasa pages 10-18).
+
+**Concrete framing.** For ESI/LuSTR: lead with lunar/lander shock/impact and packaging constraints, showing how tensegrity lattices provide (i) deployability, (ii) high specific energy absorption, and (iii) fault tolerance. For STRI (longer-term): cast the work as a platform institute topic: “Autonomous Design and Qualification of Additively Manufactured Architected Structures for Extreme Environments,” with Bayesian optimization for qualification-by-analysis and a testbed spanning quasi-static to impact.
+
+### 3) NASA NIAC (high-risk, early-phase concept maturation)
+**Why it is a strong backup.** NIAC has demonstrated prior interest in tensegrity-based planetary landing/exploration concepts (e.g., SuperBall Bot) and supports concepts with clear transition strategy requirements.
+
+**Mechanism facts (citable).** NIAC Phase III is described as a two-step process requiring a mandatory preliminary proposal and emphasizing a realistic transition strategy; NIAC had funded **329 studies through May 2025** (turner2025nasainnovativeadvanced pages 7-9).
+
+**Applied vs. basic.** Concept/mission-innovation oriented rather than classical basic science; fits “space systems concept” framing.
+
+**Concrete framing.** Propose a NIAC pathfinder concept such as “multifunctional tensegrity impact-absorbing aeroshell/lander liner with in-situ tuned damping” where the novelty is controllable viscoelastic energy absorption via multi-material AM plus autonomous design optimization.
+
+### 4) NASA HEOMD/HRP HERO (human health/performance; impact injury prevention analogs)
+**Why it is a plausible backup.** If you emphasize mobility-assist and fall-impact mitigation (e.g., crutch-tip shock reduction and HAVS exposure reduction), HERO provides an on-ramp to NASA-human exploration human factors / crew health analogs.
+
+**Mechanism facts (citable).** HERO awards “generally range from under **$100K/year** … to **$1M/year** … and will be made as grants” (vivod2022collaboratingwithnasa pages 1-10).
+
+**Concrete framing.** Pitch as an evidence-based, mechanically grounded injury-risk mitigation approach using tunable viscoelastic metamaterials for repetitive impact/vibration exposure (hands/upper extremity) with validated test protocols.
+
+### 5) DoD DURIP (equipment) as enabling supplement, not main research venue
+**Why it matters.** Your program depends on high-throughput test throughput (drop tower, instrumented impact, high-speed imaging, environmental conditioning, metrology). DURIP can be a strategic enabler.
+
+**Mechanism facts (citable).** DURIP has made “almost 4,000” awards totaling “over $800M” since 1997; awards range from “$15,000 to $1.3M”; program managers encourage conversations with potential PIs (belanich2019reviewofdefense pages 46-50).
+
+## Ranked shortlist: early-career / Co-PI-led mechanisms for Sterling G. Baird (evidence-supported subset)
+Only one early-career mechanism in this run has citable quantitative parameters: NSF Convergence Accelerator Phase 1/2. NASA STRG includes ECF but this run did not retrieve its explicit eligibility-window language.
+
+1) **NSF Convergence Accelerator (Phase 1 lead/co-lead; Phase 2 lead)** — strong fit for Baird’s self-driving labs/BO and applied deliverables; Phase 1 up to $750k/12 months; Phase 2 up to $5M/2 years (baru2022thensfconvergence pages 1-2, baru2022thensfconvergence pages 2-3).
+
+2) **NASA STMD ECF (within STRG)** — explicitly a mechanism intended to “support early-career faculty” in high-priority space technology research (vivod2022collaboratingwithnasa pages 1-10, vivod2022collaboratingwithnasa pages 10-18). **Eligibility window not retrieved** in this run; must be verified from the current ECF solicitation.
+
+3) **NASA STMD ESI (within STRG)** — university-led early-stage innovations; good for a Baird-led “autonomous design/qualification” thrust (vivod2022collaboratingwithnasa pages 10-18). **Award size/duration not retrieved**.
+
+4) **NASA NIAC Phase I/II/III** — not “early-career” per se but often accessible to early-career PIs; emphasizes innovation and transition strategy (turner2025nasainnovativeadvanced pages 7-9).
+
+5) **DoD DURIP (equipment)** — not early-career targeted, but can be PI-led and accelerates lab capacity (belanich2019reviewofdefense pages 46-50).
+
+## Prior tensegrity-relevant awards (evidence-backed subset)
+A tensegrity deployment paper explicitly acknowledges several NSF and AFOSR awards (liu2017programmabledeploymentof pages 7-8). These constitute **verified prior award IDs** relevant to tensegrity and deployable/programmable structures:
+- **NSF CMMI-1538830** (acknowledged) (liu2017programmabledeploymentof pages 7-8)
+- **NSF EFRI-1240374** (acknowledged) (liu2017programmabledeploymentof pages 7-8)
+- **NSF CMMI-1462894** (acknowledged) (liu2017programmabledeploymentof pages 7-8)
+- **NSF CMMI-1462895** (acknowledged) (liu2017programmabledeploymentof pages 7-8)
+- **AFOSR FA9550-16-1-0169** (acknowledged; program manager named Dr. B.-L. “Les” Lee) (liu2017programmabledeploymentof pages 7-8)
+
+## Framing an applied program for basic-science reviewers (principles; not fully evidence-backed here)
+Even for applied mechanisms, reviewers respond best when the proposal includes a crisp “science of…” core plus a use-case. For your program, the basic-science hooks that naturally emerge from your described technical core are:
+- **Rate-dependent constitutive modeling** of TPU tendons as a controllable damping mechanism (linking viscoelasticity to macro-scale impact response).
+- **Instability-mediated energy absorption** in prestressed networks (buckling, snap-through, tension-network reconfiguration).
+- **Design under uncertainty** with **multifidelity Bayesian optimization** (theory + algorithms + reproducible experimental design-of-experiments).
+- **Topology and prestress optimization** of continuous-cable tensegrity lattices with manufacturability constraints (multi-material FDM constraints).
+
+## “Don’t apply here (yet)” flags (based on evidence gaps in this run)
+Because solicitation documents and typical award envelopes were not retrieved here, it would be premature to recommend or discourage specific NSF CMMI core programs, DOE BES, NIH R01/R21, or DoD YIP/YFA by name with quantitative justification. Those venues may still be excellent fits, but the required evidence (award size/cadence/eligibility and examples of aligned prior awards) was not obtained in this run.
+
+## 12–18 month action plan (evidence-backed steps emphasized where possible)
+1) **Convergence Accelerator readiness sprint (3–6 months):** build a Phase‑1-ready narrative and partnership map; identify at least one non-academic deployment partner aligned with a plausible future track.
+2) **NASA STMD pathway mapping (3–6 months):** decide whether to aim at ESI/LuSTR (shorter-duration tech infusion) versus STRI (multi-year institute); map deliverables to STMD “infusion” language (vivod2022collaboratingwithnasa pages 10-18).
+3) **Instrument/test capacity upgrade plan (6–12 months):** if impact-testing throughput is a bottleneck, prepare for a DURIP-style equipment proposal and begin program-manager conversations (explicitly encouraged) (belanich2019reviewofdefense pages 46-50).
+4) **Tensegrity/space concept white paper (6–12 months):** develop a NIAC-ready concept with an explicit transition strategy, as NIAC evaluations emphasize transition planning (turner2025nasainnovativeadvanced pages 7-9).
+
+## What is still needed to fully satisfy your requested deliverables
+To deliver the comprehensive, agency-by-agency survey you requested (NSF CMMI/DMREF/CAREER; DOE BES/EERE/ARPA‑E; NIH NIBIB/NICHD/NIA/NIOSH; NASA ROSES appendices; DoD DARPA/ARO/ONR/AFOSR/DTRA/CDMRP; DOT/NIST/FDA; Utah/BYU programs) with **award envelopes, cadence, and representative prior awards**, a follow-on tool run would need to retrieve and extract from (a) current and recent **solicitation PDFs** (NSF/Grants.gov/SAM.gov/BAA), and (b) **award databases** (NSF Award Search, NIH RePORTER, NSPIRES, USAspending) for tensegrity-related terms. In this run, those documents were not successfully obtained, so the above is the defensible evidence-backed subset only.
+
+References
+
+1. (baru2022thensfconvergence pages 1-2): Chaitanya Baru, Lara Campbell, Aurali Dade, Pradeep Fulay, Alex Loewi, Douglas Maughan, Ibrahim Mohedas, Linda Molnar, Michael Pozmantier, Michael Reksulak, Shelby Smith, and Nicole Tehrani. The nsf convergence accelerator program. AI Mag., 43:6-16, Mar 2022. URL: https://doi.org/10.1609/aimag.v43i1.19118, doi:10.1609/aimag.v43i1.19118. This article has 7 citations.
+
+2. (baru2022thensfconvergence pages 2-3): Chaitanya Baru, Lara Campbell, Aurali Dade, Pradeep Fulay, Alex Loewi, Douglas Maughan, Ibrahim Mohedas, Linda Molnar, Michael Pozmantier, Michael Reksulak, Shelby Smith, and Nicole Tehrani. The nsf convergence accelerator program. AI Mag., 43:6-16, Mar 2022. URL: https://doi.org/10.1609/aimag.v43i1.19118, doi:10.1609/aimag.v43i1.19118. This article has 7 citations.
+
+3. (vivod2022collaboratingwithnasa pages 1-10): S Vivod. Collaborating with nasa. Unknown journal, 2022.
+
+4. (vivod2022collaboratingwithnasa pages 10-18): S Vivod. Collaborating with nasa. Unknown journal, 2022.
+
+5. (liu2017programmabledeploymentof pages 7-8): Ke Liu, Jiangtao Wu, Glaucio H. Paulino, and H. Jerry Qi. Programmable deployment of tensegrity structures by stimulus-responsive polymers. Scientific Reports, Jun 2017. URL: https://doi.org/10.1038/s41598-017-03412-6, doi:10.1038/s41598-017-03412-6. This article has 169 citations and is from a peer-reviewed journal.
+
+6. (baru2022thensfconvergence media 7f7e7c3e): Chaitanya Baru, Lara Campbell, Aurali Dade, Pradeep Fulay, Alex Loewi, Douglas Maughan, Ibrahim Mohedas, Linda Molnar, Michael Pozmantier, Michael Reksulak, Shelby Smith, and Nicole Tehrani. The nsf convergence accelerator program. AI Mag., 43:6-16, Mar 2022. URL: https://doi.org/10.1609/aimag.v43i1.19118, doi:10.1609/aimag.v43i1.19118. This article has 7 citations.
+
+7. (baru2022thensfconvergence pages 9-10): Chaitanya Baru, Lara Campbell, Aurali Dade, Pradeep Fulay, Alex Loewi, Douglas Maughan, Ibrahim Mohedas, Linda Molnar, Michael Pozmantier, Michael Reksulak, Shelby Smith, and Nicole Tehrani. The nsf convergence accelerator program. AI Mag., 43:6-16, Mar 2022. URL: https://doi.org/10.1609/aimag.v43i1.19118, doi:10.1609/aimag.v43i1.19118. This article has 7 citations.
+
+8. (turner2025nasainnovativeadvanced pages 7-9): Ronald E. Turner, John Nelson, Gary Fleming, Frank Spellman, and Katherine Reilly. Nasa innovative advanced concepts (niac) program. AIAA AVIATION FORUM AND ASCEND 2025, Jul 2025. URL: https://doi.org/10.2514/6.2025-4059, doi:10.2514/6.2025-4059. This article has 1 citations.
+
+9. (belanich2019reviewofdefense pages 46-50): J Belanich, EA Fedele, KI Fisher, and WA DeMaio. Review of defense university research instrumentation program (durip). Unknown journal, 2019.
