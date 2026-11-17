@@ -1,0 +1,2 @@
+tier,regime,seed,trial,stage,feasible,R_mm,H_mm,twist_deg,strut_d_mm,cable_d_mm,F_peak_N,SEA_J_per_g,eta
+B,crutch,1,15,bo,True,25.0,110.0,79.23373559527415,9.090476470374151,4.603201494774258,1137.9068548029118,nan,nan

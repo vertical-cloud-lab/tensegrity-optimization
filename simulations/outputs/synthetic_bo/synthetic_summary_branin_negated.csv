@@ -1,0 +1,6 @@
+problem,strategy,n_seeds,budget,final_hv_mean,final_hv_sd,hv_frac_of_ceiling,best_branin_mean,best_branin_sd,best_neg_branin_mean,best_neg_branin_sd,mannwhitney_p_vs_bo,wilcoxon_p_vs_bo,paired_wins_vs_bo
+branin_negated,botorch,10,45,53451.1,182.019,0.969317,1.26468,0.645144,-308.129,0,,,
+branin_negated,sobol,10,45,46694.2,2330.69,0.846783,1.70694,1.1788,-213.692,35.3666,5.41254e-06,0.000976562,10
+branin_negated,lhs,10,45,45382.5,2230.88,0.822996,1.4701,1.05719,-193.357,31.5057,5.41254e-06,0.000976562,10
+branin_negated,random,10,45,45898.2,2471.69,0.832348,1.71708,0.862219,-194.572,22.9195,5.41254e-06,0.000976562,10
+branin_negated,heuristic,10,45,48733.6,1710.91,0.883767,3.58198,2.77509,-229.76,41.3574,5.41254e-06,0.000976562,10

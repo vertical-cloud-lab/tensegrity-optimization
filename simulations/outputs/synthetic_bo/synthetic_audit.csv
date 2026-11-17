@@ -1,0 +1,5 @@
+problem,runs_checked,worst_rel_hv_disagreement_vs_botorch,budgets_seen,identical_round0_pairs
+branin_negated,50,2.2939204756186516e-08,[45],0
+branin_currin,50,1.64723398054802e-08,[45],0
+branin_currin_c,50,3.568899593585229e-08,[45],0
+branin_currin_4d,50,1.7657455505160937e-08,[45],0
