@@ -2,8 +2,10 @@
 
 `docs/index.html` is a single hand-editable HTML file with no build step and no
 CSS or JavaScript framework. Everything it shows is in this folder, except the
-talk's practice run, which loads from YouTube only when someone presses play
-(the page loads YouTube's thumbnail for it).
+talk recording (YouTube [`EhCbsQ58AGo`](https://youtu.be/EhCbsQ58AGo), the
+IDETC-CIE 2026 talk at the lab's group meeting on 21 Sep 2026), which loads
+from YouTube only when someone presses play. The page loads YouTube's
+thumbnail for it (`maxresdefault.jpg`, 1280 × 720).
 
 | File | Source |
 |---|---|
@@ -19,7 +21,7 @@ talk's practice run, which loads from YouTube only when someone presses play
 | `images/figS4_sim_campaign.png` | `figures/sim/sim-campaign.png` at `624e868`, byte for byte. Fig. S4 of the supplementary information. From Request E (#123). |
 | `images/printed_specimen.jpg` | `figures/photos/printed-specimen-light-bg.jpg` at `624e868`, byte for byte: a printed T3 prism (white PLA, orange TPU). |
 | `videos/teaser.mp4`, `images/teaser.jpg` | [`make_teaser.py`](make_teaser.py), from two clips already in this repository (below). The poster is the frame at 4.4 s. |
-| `screenshots/` | The page in headless Chrome at 1280 px and 390 px wide, and the teaser's storyboard, for the pull request. The page doesn't link to them. |
+| `screenshots/` | The page in headless Chrome at 1280 px and 390 px wide, its Talk section, and the teaser's storyboard, for the pull request. The page doesn't link to them. |
 
 The figure numbers and captions on the page follow the compiled manuscript
 (`manuscript/manuscript.pdf` at `624e868`, built 5 Nov 2026 from
