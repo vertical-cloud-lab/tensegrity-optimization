@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Experiment-driven Bayesian optimization of multi-material 3D-printed tensegrity-inspired structures</title>
+  <meta name="description" content="A drop-test-driven Bayesian optimization campaign over three-strut prisms printed in one piece from PLA and TPU. 35 specimens, four batches; the best design lowered transmissibility to 0.803.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Experiment-Driven Bayesian Optimization of the Impact Response of Multi-Material 3D-Printed Tensegrity-Inspired Structures">
+  <meta property="og:description" content="Rigid PLA struts and flexible TPU tendons, printed together, drop-tested, and chosen batch by batch with Bayesian optimization. Vertical Cloud Lab, BYU.">
+  <meta property="og:image" content="https://vertical-cloud-lab.github.io/tensegrity-optimization/static/images/teaser.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --text: #363636;
+      --muted: #4a4a4a;
+      --soft: #7a7a7a;
+      --link: #3273dc;
+      --button: #363636;
+      --light: #f5f5f5;
+      --rule: #e8e8e8;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: #fff;
+      font-family: "Noto Sans", "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 1.25rem; }
+    .narrow { max-width: 820px; }
+
+    /* Title block */
+    .hero { padding: 3.5rem 0 1rem; text-align: center; }
+    .title {
+      font-family: "Google Sans", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 2.4rem; font-weight: 600; line-height: 1.2; margin: 0 auto 1.25rem; max-width: 900px;
+    }
+    .authors { font-size: 1.2rem; margin: 0 0 .35rem; }
+    .authors span { display: inline-block; margin: 0 .4rem; white-space: nowrap; }
+    .affiliations { font-size: 1.05rem; color: var(--muted); margin: 0; }
+    .note { font-size: .9rem; color: var(--soft); margin: .4rem 0 0; }
+    .note span { display: inline-block; margin: 0 .35rem; }
+    .venue { font-size: 1.05rem; margin: .9rem 0 0; }
+    .venue span { display: inline-block; }
+    .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin: 1.4rem 0 0; }
+    .button {
+      display: inline-flex; align-items: center; gap: .45em;
+      background: var(--button); color: #fff; border-radius: 9999px;
+      padding: .5em 1.1em; font-size: 1rem; line-height: 1.2;
+    }
+    .button:hover { background: #222; text-decoration: none; }
+    .button svg { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* Teaser */
+    .teaser { padding: 1.5rem 0 0; }
+    .teaser video { width: 100%; height: auto; display: block; border-radius: 6px; background: #000; }
+    .teaser .subtitle { text-align: center; font-size: 1.25rem; margin: 1rem auto .25rem; max-width: 820px; }
+    .teaser .credit { text-align: center; font-size: .9rem; color: var(--soft); margin: 0 auto; max-width: 820px; }
+
+    /* Sections */
+    section { padding: 2.5rem 0; }
+    section.light { background: var(--light); }
+    h2 {
+      font-family: "Google Sans", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 2rem; font-weight: 600; text-align: center; margin: 0 0 1.1rem; line-height: 1.25;
+    }
+    h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 .6rem; }
+    .prose p { text-align: justify; hyphens: auto; margin: 0 0 1rem; }
+    .prose ul { padding-left: 1.3rem; } .prose li { margin: .3rem 0; }
+
+    /* Figures */
+    figure { margin: 1.75rem 0; }
+    figure img { width: 100%; height: auto; display: block; }
+    figure.mid { max-width: 720px; margin-left: auto; margin-right: auto; }
+    figure.small { max-width: 460px; margin-left: auto; margin-right: auto; }
+    figcaption { font-size: .92rem; color: var(--muted); margin-top: .7rem; line-height: 1.5; }
+    figcaption b { color: var(--text); }
+    details { margin-top: .45rem; }
+    details > summary { cursor: pointer; color: var(--link); font-size: .9rem; }
+    details > summary:hover { text-decoration: underline; }
+    details p { margin: .4rem 0; }
+    details.block { border: 1px solid var(--rule); border-radius: 8px; padding: .7rem 1rem; margin: 1.25rem 0; background: #fff; }
+    details.block > summary { font-size: 1rem; color: var(--text); }
+    details.block > summary b { color: var(--text); }
+
+    /* Video embed */
+    .embed { position: relative; width: 100%; padding-top: 56.25%; border-radius: 6px; overflow: hidden; background: #000; }
+    .embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    /* Click-to-play: YouTube's player loads only when someone presses play. */
+    .yt { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: #000; }
+    .yt img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .yt .play { position: absolute; left: 50%; top: 50%; width: 68px; height: 48px; margin: -24px 0 0 -34px; background: rgba(33, 33, 33, .85); border-radius: 12px; }
+    .yt .play::after { content: ""; position: absolute; left: 26px; top: 14px; border-style: solid; border-width: 10px 0 10px 18px; border-color: transparent transparent transparent #fff; }
+    .yt:hover .play, .yt:focus-visible .play { background: #f00; }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { padding: .45rem .55rem; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; }
+    th { font-weight: 600; border-bottom: 2px solid #dbdbdb; }
+    td.ctr, th.ctr { text-align: center; white-space: nowrap; }
+
+    /* Cards */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .9rem; margin-top: 1rem; }
+    .card { background: #fff; border: 1px solid var(--rule); border-radius: 8px; padding: .85rem 1rem; }
+    .card h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+    .card p { margin: 0; font-size: .9rem; color: var(--muted); }
+
+    .two-col { display: grid; grid-template-columns: 300px 1fr; gap: 1.75rem; align-items: start; }
+    .two-col img { width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; display: block; }
+    .two-col p { margin: 0 0 .9rem; }
+    .two-col i { color: var(--muted); }
+
+    pre {
+      background: var(--light); padding: 1.1rem 1.4rem; border-radius: 6px; overflow-x: auto;
+      font-size: .85rem; line-height: 1.45; margin: 0;
+    }
+    footer { padding: 2rem 0 3rem; text-align: center; font-size: .9rem; color: var(--muted); }
+    footer p { margin: .3rem 0; }
+
+    @media (max-width: 720px) {
+      .hero { padding-top: 2.25rem; }
+      .title { font-size: 1.6rem; }
+      .authors { font-size: 1.05rem; }
+      .affiliations { font-size: .95rem; }
+      h2 { font-size: 1.6rem; }
+      .teaser .subtitle { font-size: 1.1rem; }
+      .prose p { text-align: left; }
+      .two-col { grid-template-columns: 1fr; }
+      .two-col img { max-width: 320px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <h1 class="title">Experiment-Driven Bayesian Optimization of the Impact Response of Multi-Material 3D-Printed Tensegrity-Inspired Structures</h1>
+    <p class="authors">
+      <span>Marcus E. Madsen<sup>*</sup>,</span>
+      <span>Audrey K. Christiansen<sup>*</sup>,</span>
+      <span>Jinkwan Han<sup>*</sup>,</span>
+      <span>Jeffrey R. Hill<sup>&dagger;&Dagger;</sup>,</span>
+      <span>Sterling G. Baird<sup>&dagger;&Dagger;</sup></span>
+    </p>
+    <p class="affiliations">Department of Mechanical Engineering, Brigham Young University</p>
+    <p class="note"><span><sup>*</sup>Equal contribution</span> <span><sup>&dagger;</sup>Equal contribution</span> <span><sup>&Dagger;</sup>Corresponding authors</span></p>
+    <p class="venue"><span>Manuscript in preparation for the <i>ASME Journal of Mechanical Design</i> &middot;</span> <span>talk at ASME IDETC-CIE&nbsp;2026 &middot;</span> <span>abstract for TMS&nbsp;2027</span></p>
+
+    <nav class="buttons" aria-label="Links">
+      <a class="button" href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/624e868/manuscript/manuscript.pdf">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+        <span>Paper (draft)</span>
+      </a>
+      <a class="button" href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/624e868/manuscript/supplementary.pdf">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M12 11v6M9 14h6"/></svg>
+        <span>Supplement</span>
+      </a>
+      <a class="button" href="https://github.com/vertical-cloud-lab/tensegrity-optimization">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>
+        <span>Code</span>
+      </a>
+      <a class="button" href="https://github.com/vertical-cloud-lab/tensegrity-optimization/tree/624e868/manuscript/data">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+        <span>Data</span>
+      </a>
+      <a class="button" href="#talk">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/></svg>
+        <span>Talk</span>
+      </a>
+      <a class="button" href="#videos">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4"/></svg>
+        <span>Videos</span>
+      </a>
+      <a class="button" href="#abstracts">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg>
+        <span>Abstracts</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<section class="teaser">
+  <div class="container">
+    <video autoplay muted loop playsinline poster="static/images/teaser.jpg" width="1280" height="720" aria-label="Left, a three-strut prism printing in black PLA and orange TPU, timelapse. Right, the same kind of prism dropped on the drop-tower carriage, in slow motion">
+      <source src="static/videos/teaser.mp4" type="video/mp4">
+    </video>
+    <p class="subtitle">Each candidate design is printed in one piece from rigid PLA and flexible TPU, then dropped on an instrumented drop tower. A Bayesian optimizer reads the drop results and picks the next batch.</p>
+    <p class="credit">Left: a T<sub>3</sub> prism printing on the Bambu Lab H2D, PLA struts (black) and TPU tendons (orange) in one dual-nozzle job, 14 Jul 2026. Build-chamber timelapse (<a href="https://youtu.be/nQNmi-NiL5I">video</a>), as cut for the IDETC-CIE talk (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/84">#84</a>), sped up 1.6 times. Right: specimen prc1kn dropped from 60&nbsp;in on the drop-tower carriage, filmed at 959 frames per second and shown 32 times slower than real time (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86">#86</a>). This was a commissioning drop onto felt pads in July 2026, before the campaign; campaign drops land on polyurethane.</p>
+  </div>
+</section>
+
+<section id="abstract">
+  <div class="container narrow">
+    <h2>Abstract</h2>
+    <div class="prose">
+      <p>Tensegrity-inspired structures of rigid and soft members could cushion impacts, but their transmitted shock is hard to predict by simulation. We report a drop-test-driven Bayesian optimization campaign over three-strut prisms printed in one piece from polylactic acid (PLA) and thermoplastic polyurethane (TPU). The search space has five geometry variables, plus infill densities and filament settings from the third batch. We scale each candidate to a common mass target before printing, then 3D print and drop-test it repeatedly. We score designs by transmissibility (measured as a ratio of filtered top-to-base peak accelerations) and a mass-weighted rebound index (specimen mass times the squared fraction of impact velocity returned at the top), both minimized. Most specimens amplify the peak shock. Over a quasi-random initial batch and three model-recommended batches (35 specimens), the dominated hypervolume grew 56 percent, and the model chose every design on the final Pareto front. The final batch's best-predicted design lowered transmissibility to 0.803, 10 percent below the best initial-batch specimen. We printed one batch three times to measure repeatability. Print-to-print scatter in transmissibility was near 1 percent, and a seating check flagged both large outliers, so single-print extremes stay provisional until replicated. Code and data are available at <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization">github.com/vertical-cloud-lab/tensegrity-optimization</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="loop" class="light">
+  <div class="container">
+    <h2>The loop</h2>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>Every batch goes around the same loop. A Gaussian-process surrogate fitted to the drop-test measurements recommends the designs, the batch is printed as one build plate, and each specimen is drop-tested repeatedly before its results go back to the surrogate.</p>
+    </div>
+    <figure id="fig1" class="mid">
+      <a href="static/images/fig1_overview_loop.png"><img src="static/images/fig1_overview_loop.png" alt="Fig. 1: the closed loop. Initialize the design space, design experiments with Bayesian optimization, make the specimens, test them on the drop tower, and conclude with the final Pareto front" loading="eager" width="668" height="1039"></a>
+      <figcaption><b>Fig. 1 Closed-loop, experiment-driven design framework.</b> Initialize and Conclude run once, and the dashed arrow returns each tested batch to the Design step.
+      <details><summary>Full caption</summary><p><i>Initialize:</i> the five-variable T<sub>3</sub>-prism design space of Table 1 (Fig. 2). <i>Design:</i> a Gaussian-process surrogate fitted to the noisy measurements recommends the next batch (Section 3.4). <i>Make:</i> we scale each batch to a common mass and lay it out as one build plate. We slice the plate with PLA supports painted by hand along the TPU tendons and print it in one dual-nozzle job, with the hard material (PLA) from the left nozzle and the soft material (TPU) from the right (Section 3.2). <i>Test:</i> we drop-test the labeled specimens one at a time on the drop-tower carriage (Section 3.3). <i>Conclude:</i> report the final Pareto front. The plate render is batch 4, the mid-print frame is a later replicate plate, and the labeled specimens are batch 2.</p></details>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="design">
+  <div class="container">
+    <h2>The specimen and its design space</h2>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>The test article is a three-strut prism (T<sub>3</sub> prism): three rigid PLA struts held in a network of flexible TPU tendons, printed as one piece. Five geometry variables set its shape: base radius <i>R</i>, cell height <i>H</i>, twist angle <i>&theta;</i>, strut diameter <i>d</i><sub>s</sub> and tendon diameter <i>d</i><sub>t</sub>. Infill densities and filament settings join them from the third batch (Table 1). Each candidate is scaled to a common mass target before it is printed.</p>
+    </div>
+    <figure id="fig2">
+      <a href="static/images/fig2_design_space.png"><img src="static/images/fig2_design_space.png" alt="Fig. 2: a mid-range T3 prism labeled with the bounds of each variable, six tested specimens drawn at their printed geometry, and a photograph of specimen corny7" loading="lazy" width="2816" height="1288"></a>
+      <figcaption><b>Fig. 2 Design space of the T<sub>3</sub>-prism campaign.</b> (a) A mid-range design labeled with the bounds of each variable, (b) six tested specimens at their printed geometry, and (c) specimen corny7 as printed.
+      <details><summary>Full caption</summary><p>(a) A mid-range design of the five-variable box (<i>R</i> = 32.5&nbsp;mm, <i>H</i> = 85&nbsp;mm, <i>&theta;</i> = 60&deg;, <i>d</i><sub>s</sub> = 9&nbsp;mm, <i>d</i><sub>t</sub> = 4.25&nbsp;mm, before scaling to the mass target), labeled with the bounds of each variable. The side elevation is an orthographic projection, so each end triangle appears as a line, and <i>H</i> is the vertical distance between the planes through the joint centers. The plan view shows the base triangle (solid), the top triangle (dashed), the circumradius <i>R</i>, and the twist <i>&theta;</i> between them.</p><p>(b) Six tested specimens at their printed, post-projection geometry and one millimeter scale, labeled with the batch, the Ax trial (or the Sobol spec of a seed specimen), and the measured <i>t</i><sub>180</sub> and <i>E</i><sub>reb</sub>.</p><p>(c) Specimen corny7 as printed, with its ID label around one strut. The drawings show PLA struts in black, TPU tendons in green, and the square strut-end housings. We printed specimen corny7 in white PLA.</p></details>
+      </figcaption>
+    </figure>
+    <details class="block">
+      <summary><b>Table 1</b> Design variables</summary>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Variable</th><th>Symbol</th><th class="ctr">Range</th><th>Units</th><th>Active</th></tr></thead>
+        <tbody>
+          <tr><td>Base radius</td><td><i>R</i></td><td class="ctr">25-40</td><td>mm</td><td>batch 1 on</td></tr>
+          <tr><td>Cell height</td><td><i>H</i></td><td class="ctr">60-110</td><td>mm</td><td>batch 1 on</td></tr>
+          <tr><td>Twist angle</td><td><i>&theta;</i></td><td class="ctr">40-80</td><td>deg</td><td>batch 1 on</td></tr>
+          <tr><td>Strut (PLA) diameter</td><td><i>d</i><sub>s</sub></td><td class="ctr">6.0-12.0</td><td>mm</td><td>batch 1 on</td></tr>
+          <tr><td>Cable (TPU) diameter</td><td><i>d</i><sub>t</sub></td><td class="ctr">3.0-5.5</td><td>mm</td><td>batch 1 on</td></tr>
+          <tr><td>Strut infill density</td><td></td><td class="ctr">12-35</td><td>%</td><td>batch 3 on</td></tr>
+          <tr><td>Tendon infill density</td><td></td><td class="ctr">12-35</td><td>%</td><td>batch 3 on</td></tr>
+          <tr><td>PLA nozzle temperature</td><td></td><td class="ctr">212-228</td><td>&deg;C</td><td>batch 3 on<sup>a</sup></td></tr>
+          <tr><td>PLA volumetric speed</td><td></td><td class="ctr">20-30</td><td>mm<sup>3</sup>/s</td><td>batch 3 on<sup>a</sup></td></tr>
+          <tr><td>TPU nozzle temperature</td><td></td><td class="ctr">235-245</td><td>&deg;C</td><td>batch 3 on<sup>a</sup></td></tr>
+          <tr><td>TPU volumetric speed</td><td></td><td class="ctr">2.2-3.6</td><td>mm<sup>3</sup>/s</td><td>batch 3 on<sup>a</sup></td></tr>
+          <tr><td>Joint diameter (fixed)</td><td><i>d</i><sub>j</sub></td><td class="ctr">7.0</td><td>mm</td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note"><sup>a</sup>One value per print job (a plate carries a single filament configuration), so per-batch rather than per-specimen. The seed batch is an <i>n</i> = 9 Sobol draw (fixed seed) over the five geometry variables, and each design is then projected onto the constant-mass budget. The acquisition chooses the two infill densities per specimen. All specimens print upright on a Bambu Lab H2D, with the prism axis normal to the build plate and the base triangle on the bed.</p>
+    </details>
+    <details class="block">
+      <summary><b>Fig. 7</b> The nine Sobol seed designs</summary>
+      <figure id="fig7" class="small">
+        <a href="static/images/fig7_seed_designs.png"><img src="static/images/fig7_seed_designs.png" alt="Fig. 7: the nine Sobol seed designs drawn at their printed geometry" loading="lazy" width="1039" height="1611"></a>
+        <figcaption><b>Fig. 7 The nine Sobol seed designs at their printed geometry,</b> drawn to one millimeter scale as in Fig. 2(b). We label each drawing with its Sobol spec and the ID of its printed specimen. We printed specs 03 and 06 (asterisks) but did not drop-test them, and we label spec 08 with its tested specimen, bag26v.</figcaption>
+      </figure>
+    </details>
+  </div>
+</section>
+
+<section id="printing" class="light">
+  <div class="container">
+    <h2>Printing PLA and TPU together</h2>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>All specimens print upright on a Bambu Lab H2D, PLA from the left nozzle and TPU from the right, with each later batch on one nine-specimen plate. PLA supports, painted by hand along the TPU tendons in the slicer, hold the tendons up while they print.</p>
+    </div>
+    <figure id="fig3">
+      <a href="static/images/fig3_print_timelapse.jpg"><img src="static/images/fig3_print_timelapse.jpg" alt="Fig. 3: first layers, mid-height and final layers of a nine-specimen plate printing in black PLA and green TPU" loading="lazy" width="2908" height="614"></a>
+      <figcaption><b>Fig. 3 Three frames from the build-chamber camera timelapse of replicate plate 1 on the Bambu Lab H2D</b> (<a href="https://youtu.be/EmCLms7-Bd8">video</a>). The nine specimens print upright, with the prism axis normal to the build plate, beside a prime tower. (a) First layers, with the bottom TPU tendons and the strut-end housings. (b) Mid-height, with the struts and the painted PLA supports partly built. (c) Final layers, with the top tendons complete. We only crop and down-scale the frames.</figcaption>
+    </figure>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>To check how well a single print stands for its design, we printed the batch-3 designs three times (Fig. 9) and three batch-4 designs again on three replicate plates.</p>
+    </div>
+    <figure id="fig5" class="mid">
+      <a href="static/images/fig5_replicate_specimens.jpg"><img src="static/images/fig5_replicate_specimens.jpg" alt="Fig. 5: photographs of specimens corny7, corny8 and corny2 from batch 4 and their copies from replicate plates 1 to 3, each labeled with ID and weighed mass" loading="lazy" width="2226" height="2691"></a>
+      <figcaption><b>Fig. 5 Specimens of the three replicate-study designs, as photographed for the print log.</b> Rows are trials 37 (corny7), 39 (corny8), and 38 (corny2).
+      <details><summary>Full caption</summary><p>The first column is the batch-4 specimen (print log of 2026-09-11), and the other three are the front-row copy from replicate plates 1 to 3 (print log of 2026-10-17). Labels give the specimen ID and weighed mass. The batch-4 struts are white PLA and the replicate struts black PLA. Camera distance varies between photographs, so apparent size is not comparable across cells. The replicate drop tests are not complete, so the figure reports no measured values.</p></details>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="testing">
+  <div class="container">
+    <h2>Drop testing</h2>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>Each specimen rides upright on the free-fall carriage of a Lansmont Model 23 shock test system, which is raised 60&nbsp;in (1.524&nbsp;m) and released onto a polyurethane cushioning sheet. An accelerometer on the carriage records the input, and a triaxial accelerometer at the specimen's top vertex records what gets through. Both objectives are minimized: the transmissibility <i>t</i><sub>180</sub>, the ratio of the filtered top-to-base peak accelerations, and the mass-weighted rebound index <i>I</i><sub>reb</sub> = <i>m</i>&thinsp;<i>e</i><sub>reb</sub><sup>2</sup>, the specimen mass times the squared fraction of impact velocity returned at the top.</p>
+    </div>
+    <figure id="fig4" class="small">
+      <a href="static/images/fig4_transmissibility_trace.png"><img src="static/images/fig4_transmissibility_trace.png" alt="Fig. 4: base input and top-vertex acceleration against time for one drop, filtered at CFC-180 and at CFC-1000" loading="lazy" width="680" height="740"></a>
+      <figcaption><b>Fig. 4 Base-plate input and top-vertex response for one commissioning drop, shown to illustrate the transmissibility definition.</b> (a) At CFC-180, the reporting class, the peak ratio gives <i>t</i><sub>180</sub> = 588/563 = 1.045. (b) At CFC-1000, the diagnostic class, the same drop gives 2394/1861 = 1.287.
+      <details><summary>Full caption</summary><p>The specimen is 57vqhx from the pre-campaign print-defect study (2026-07-28, event 50 of its session), dropped from 60&nbsp;in onto the earlier stack of four felt pads and one cardboard sheet. Campaign drops land on the polyurethane surface instead. We low-pass filter both channels with the SAE J211/1 CFC filter, and the top-vertex trace is the magnitude of the three filtered axes. The zero-phase CFC-180 filter spreads the sub-millisecond pulse in both directions in time, so its traces are already nonzero at impact onset.</p></details>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="results" class="light">
+  <div class="container">
+    <h2>Results</h2>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>Most specimens amplify the peak shock (<i>t</i><sub>180</sub> above 1). Over the quasi-random seed batch and three model-recommended batches (35 specimens), the dominated hypervolume grew 56 percent, and the model chose every design on the final Pareto front.</p>
+    </div>
+    <figure id="fig6" class="mid">
+      <a href="static/images/fig6_front_evolution.png"><img src="static/images/fig6_front_evolution.png" alt="Fig. 6: all 35 measured specimens in the plane of transmissibility and mass-weighted rebound index, with the non-dominated front after each batch" loading="lazy" width="1907" height="1204"></a>
+      <figcaption><b>Fig. 6 Measured objective space and front evolution across the four batches.</b> Batch 2 grew the front on the <i>I</i><sub>reb</sub> axis, batch 3 filled the knee, and batch 4 extended it to lower transmissibility. Lower is better on both axes.
+      <details><summary>Full caption</summary><p>The vertical axis is the mass-weighted rebound index <i>I</i><sub>reb</sub> = <i>m</i>&thinsp;<i>e</i><sub>reb</sub><sup>2</sup> of Eq. (1). Gray circles are all 35 measured specimens at their stabilized means. The blue lines are the non-dominated fronts after each batch, with the dominated hypervolume (HV) at the (1.35, 50&nbsp;mg) reference in the legend. We draw repeated batch-3 designs at their first-print values. The text gives the design-mean front.</p></details>
+      </figcaption>
+    </figure>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>The final batch's best-predicted design, specimen corny7, lowered transmissibility to 0.803, 10 percent below the best specimen of the initial batch.</p>
+    </div>
+    <figure id="fig8" class="mid">
+      <a href="static/images/fig8_batch4_predicted_vs_measured.png"><img src="static/images/fig8_batch4_predicted_vs_measured.png" alt="Fig. 8: the optimizer's archived predictions for the nine batch-4 trials joined by arrows to the measured values" loading="lazy" width="1907" height="1187"></a>
+      <figcaption><b>Fig. 8 Batch-4 predictions against outcomes.</b> Each arrow joins the optimizer's archived prediction for a trial (orange diamond) to the measured value of the specimen printed for it (black). The record attenuator corny7 (measured 0.803) is the left-most point.
+      <details><summary>Full caption</summary><p>Orange diamonds are the archived posterior-mean predictions for trials 37 to 45, saved when the optimizer recommended the batch, and each arrow joins a prediction to the measured value of the specimen printed for the same trial (black). Gray circles are the 26 specimens we trained the batch-4 fit on (the seed batch, batch 2, and the first prints of batch 3). The vertical axis is <i>E</i><sub>reb</sub>, the first-power form of Section 3.3 that the optimizer predicted and minimized when it recommended the batch. Fig. 6 plots <i>I</i><sub>reb</sub> instead. We omit predictive uncertainty for legibility. Lower is better on both axes.</p></details>
+      </figcaption>
+    </figure>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>Printing the batch-3 designs three times put the print-to-print scatter in transmissibility near 1 percent. A seating check flagged both large outliers, so single-print extremes stay provisional until they are replicated.</p>
+    </div>
+    <figure id="fig9">
+      <a href="static/images/fig9_three_prints.png"><img src="static/images/fig9_three_prints.png" alt="Fig. 9: transmissibility and mass-weighted rebound index for three prints of each batch-3 design" loading="lazy" width="1900" height="720"></a>
+      <figcaption><b>Fig. 9 Three prints of each batch-3 design.</b> (a) Transmissibility and (b) <i>I</i><sub>reb</sub> for print 1 (circles), print 2 (squares), and print 3 (triangles), with the designs ordered by their screened mean transmissibility. Open red markers are sessions with a failed seat gauge or a drift flag, which the screened means leave out. The dashed line marks <i>t</i><sub>180</sub> = 1.</figcaption>
+    </figure>
+    <details class="block">
+      <summary><b>Fig. S4</b> The same optimizer against four baselines, in simulation</summary>
+      <div class="prose"><p>In a simulation-only campaign on a MuJoCo model of the drop tower, Bayesian optimization (BO) reached 93.0 percent of the best-known hypervolume after 45 designs (seeds 90.0 to 96.1 percent), against 76.5 to 79.1 percent for random, Sobol, Latin hypercube and compass-search baselines. The simulator benchmarks the optimizer and is not a substitute for the drop tower.</p></div>
+      <figure id="figS4">
+        <a href="static/images/figS4_sim_campaign.png"><img src="static/images/figS4_sim_campaign.png" alt="Fig. S4: running hypervolume for BO and four baselines, final hypervolume of every seed, and the evaluations in objective space" loading="lazy" width="2106" height="726"></a>
+        <figcaption><b>Fig. S4 Simulation-only campaign.</b> (a) Running hypervolume of the <i>t</i><sub>180</sub> and envelope-volume pair, scaled to the best-known reference and averaged over ten seeds (band: &plusmn; one standard deviation for BO), with filtered baselines. BO's first nine designs are an unfiltered Sobol batch, which is why it starts below the baselines. (b) Final hypervolume of every seed for both objective pairs (bar: mean). On the envelope pair every BO seed finishes above every baseline seed; on the strain control the distributions overlap. (c) Feasible evaluations of all seeds pooled in objective space, with the printable reference sweep in light gray and the refined reference front as a staircase. BO's evaluations follow the front along its length, and some lie beyond it, which is why the best-known reference includes them.</figcaption>
+      </figure>
+    </details>
+  </div>
+</section>
+
+<section id="talk">
+  <div class="container narrow">
+    <h2>Talk</h2>
+    <p>Marcus Madsen presented the campaign at ASME IDETC-CIE 2026 as <i>Closed-Loop Bayesian Optimization of Multi-Material 3D-Printed Tensegrity-Inspired Energy Absorbers</i> (track DAC-10, Design of Engineering Materials and Structures). This is the practice run of 7 Aug 2026, recorded before the later batches were tested.</p>
+    <div class="embed">
+      <button class="yt" type="button" data-id="M4u7qwBbTxM" data-start="0" aria-label="Play the practice run of the IDETC-CIE 2026 talk">
+        <img src="https://i.ytimg.com/vi/M4u7qwBbTxM/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
+        <span class="play" aria-hidden="true"></span>
+      </button>
+    </div>
+    <p class="note" style="text-align:center">Practice run, 7 Aug 2026 (<a href="https://youtu.be/M4u7qwBbTxM">open on YouTube</a>). The slides, figures and clips for the talk were assembled on <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/84">#84</a>; the two-page extended abstract is <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/main/idetc-abstract.pdf">idetc-abstract.pdf</a>.</p>
+  </div>
+</section>
+
+<section id="videos" class="light">
+  <div class="container">
+    <h2>Videos</h2>
+    <div class="grid">
+      <div class="card"><h4><a href="https://youtu.be/EmCLms7-Bd8">Printing replicate plate 1</a></h4><p>Build-chamber timelapse of nine specimens, the source of Fig. 3.</p></div>
+      <div class="card"><h4><a href="https://youtu.be/nQNmi-NiL5I">Printing one T<sub>3</sub> prism</a></h4><p>Timelapse, 14 Jul 2026: the left half of the teaser.</p></div>
+      <div class="card"><h4><a href="https://youtu.be/esYGqPv2fb0">Painting supports in Bambu Studio</a></h4><p>Painting the PLA supports along the TPU tendons, 12 minutes without audio (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35">#35</a>).</p></div>
+      <div class="card"><h4><a href="https://youtu.be/V86ctTIHKDY">Removing the supports</a></h4><p>From a PLA and TPU print (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35">#35</a>).</p></div>
+      <div class="card"><h4>Two print-setting timelapses</h4><p><a href="https://youtu.be/2wneIJc1WV8">A surrounding support</a> and <a href="https://youtu.be/xVBunPal9Kw">a smaller support gap that stopped the wobble</a> (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/35">#35</a>).</p></div>
+      <div class="card"><h4><a href="https://youtu.be/dL2djikfJFE">Setting up a drop test</a></h4><p>How a single drop is set up on the tower (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/36">#36</a>).</p></div>
+      <div class="card"><h4>Slow-motion drops</h4><p>Specimens <a href="https://youtube.com/shorts/Nab3hfuF4Dw">7xadt6</a> and <a href="https://youtube.com/shorts/zkum2JlHpYk">9GMQYQ</a>, 20 Jul 2026 (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86">#86</a>).</p></div>
+      <div class="card"><h4><a href="https://youtu.be/W2-wyqP9DH8">Running a test session</a></h4><p>Drop tests of the batch-2 plate, with some cycles shown (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/86">#86</a>).</p></div>
+      <div class="card"><h4><a href="https://youtu.be/RNjpAmWWmkQ">Drop-tower training</a></h4><p>19 May 2026 (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/36">#36</a>).</p></div>
+      <div class="card"><h4><a href="https://youtu.be/M4u7qwBbTxM">Talk practice run</a></h4><p>IDETC-CIE 2026, 7 Aug 2026 (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/84">#84</a>).</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="abstracts">
+  <div class="container">
+    <h2>Paper, abstracts and proposal</h2>
+    <div class="two-col">
+      <a href="static/images/printed_specimen.jpg"><img src="static/images/printed_specimen.jpg" alt="A printed T3 prism: three white PLA struts held by orange TPU tendons" loading="lazy" width="1200" height="1333"></a>
+      <div>
+        <p><b>Journal manuscript.</b> In preparation for the <i>ASME Journal of Mechanical Design</i>: <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/624e868/manuscript/manuscript.pdf">manuscript</a> and <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/624e868/manuscript/supplementary.pdf">supplementary information</a> (PDF, 5 Nov 2026 draft). The draft is revised on <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/76">#76</a> (tracked in <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/75">#75</a>).</p>
+        <p><b>ASME IDETC-CIE 2026.</b> <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/main/idetc-abstract.pdf">Extended abstract</a> (PDF, 2 pages) for the talk above.</p>
+        <p><b>TMS 2027 Annual Meeting &amp; Exhibition</b> (Orlando, 14 to 18 Mar 2027). <i>Closed-Loop Bayesian Optimization of Multi-Material 3D-Printed Tensegrity-Inspired Energy Absorbers</i>, for the symposium <i>AI-Enabled Materials Processing: Integrating Accelerated Experimental Workflows and Processing-Aware Machine Learning</i>, with Jeffrey R. Hill presenting (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/73">#73</a>, from <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/72">#72</a>). A second abstract, on tensegrity-inspired lattices for impact protection in any orientation, was drafted in <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/78">#78</a>.</p>
+        <p><b>Proposal.</b> The BYU Mentored Research Grant <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/main/proposal.pdf">proposal</a> (PDF) that the project grew out of.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="bibtex" class="light">
+  <div class="container narrow">
+    <h2>BibTeX</h2>
+    <p>Until the paper is out, please cite the repository:</p>
+<pre><code>@misc{madsen2026tensegrity,
+  title        = {Experiment-Driven Bayesian Optimization of the Impact
+                  Response of Multi-Material {3D}-Printed
+                  Tensegrity-Inspired Structures},
+  author       = {Madsen, Marcus E. and Christiansen, Audrey K. and
+                  Han, Jinkwan and Hill, Jeffrey R. and Baird, Sterling G.},
+  year         = {2026},
+  note         = {Manuscript in preparation for the ASME Journal of
+                  Mechanical Design},
+  howpublished = {\url{https://github.com/vertical-cloud-lab/tensegrity-optimization}}
+}</code></pre>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p><a href="https://github.com/vertical-cloud-lab">Vertical Cloud Lab</a>, Department of Mechanical Engineering, Brigham Young University</p>
+    <p>Page layout modelled on the <a href="https://nerfies.github.io/">Nerfies</a> project page. Source: <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/main/docs/index.html"><code>docs/index.html</code></a>.</p>
+  </div>
+</footer>
+
+<script>
+  // Swap the talk's thumbnail for YouTube's player on click.
+  document.querySelectorAll('.yt').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.id + '?autoplay=1&start=' + b.dataset.start;
+      f.title = b.getAttribute('aria-label');
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      f.allowFullscreen = true;
+      b.replaceWith(f);
+    });
+  });
+  // Respect "reduce motion": stop the looping teaser and give it controls instead.
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('video[autoplay]').forEach(function (v) {
+      v.removeAttribute('autoplay'); v.pause(); v.controls = true;
+    });
+  }
+</script>
+</body>
+</html>
