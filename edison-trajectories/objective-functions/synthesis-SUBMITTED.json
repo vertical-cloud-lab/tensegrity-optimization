@@ -1,0 +1,51 @@
+{
+  "slug": "synthesis",
+  "headline": "Cross-modality synthesis of the 5 per-data-source LITERATURE_HIGH briefs + normalization question",
+  "task_id": "789de8ab-9c68-4782-a70c-0a5a4e10e268",
+  "job": "ANALYSIS",
+  "status": "submitted",
+  "submitted_at": "2026-05-21T18:17:03Z",
+  "uploaded_files": [
+    {
+      "name": "01-accelerometer-cfd30f3e-20e8-43b4-b055-29f9fc4f121f.json",
+      "uri": "data_entry:457b426f-b2b9-44ea-b297-c93ed8bc333b"
+    },
+    {
+      "name": "01-accelerometer-cfd30f3e-20e8-43b4-b055-29f9fc4f121f.md",
+      "uri": "data_entry:0db6dd78-206a-4990-ad76-10500609e8f1"
+    },
+    {
+      "name": "02-high-speed-camera-7d6b43bf-d948-4e13-aea5-4a89ec12ed49.json",
+      "uri": "data_entry:e23830bf-cdd1-4483-b3a4-a45c215c3eef"
+    },
+    {
+      "name": "02-high-speed-camera-7d6b43bf-d948-4e13-aea5-4a89ec12ed49.md",
+      "uri": "data_entry:fab8f179-e8b4-4418-8a70-762fc911e5f7"
+    },
+    {
+      "name": "03-shaker-transfer-function-31126ee7-9f3b-4af4-adbe-855c14513487.json",
+      "uri": "data_entry:1825af55-c276-4fba-b440-309a7b5a03de"
+    },
+    {
+      "name": "03-shaker-transfer-function-31126ee7-9f3b-4af4-adbe-855c14513487.md",
+      "uri": "data_entry:4da19006-e9ba-4d3a-a2ca-5b780a23f224"
+    },
+    {
+      "name": "04-slug-firing-gas-gun-9d74ab2e-669f-48bd-938b-7e380e188492.json",
+      "uri": "data_entry:792910de-ba6f-43f1-a518-d7bc2a523cbb"
+    },
+    {
+      "name": "04-slug-firing-gas-gun-9d74ab2e-669f-48bd-938b-7e380e188492.md",
+      "uri": "data_entry:e11942f9-6f9a-4522-8b82-40dcad0f8d4e"
+    },
+    {
+      "name": "05-polytec-qtec-ldv-f40e41a7-b41d-4158-a89f-f18a5ae81e5c.json",
+      "uri": "data_entry:f4a4a8d0-b079-48d9-a4aa-3833f0cff5f8"
+    },
+    {
+      "name": "05-polytec-qtec-ldv-f40e41a7-b41d-4158-a89f-f18a5ae81e5c.md",
+      "uri": "data_entry:53a5dc77-7c01-4822-938a-abe1d9ec7371"
+    }
+  ],
+  "source_pr_comment": "https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/60#issuecomment-4511245383"
+}
