@@ -1,0 +1,79 @@
+name: Deploy project page
+
+# Publishes the project page (docs/index.html + docs/static/) to
+# https://vertical-cloud-lab.github.io/tensegrity-optimization/.
+#
+# Pull requests that touch the page run the build and link check only;
+# deploying happens on pushes to main and on manual runs from main.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/index.html'
+      - 'docs/static/**'
+      - '.github/workflows/pages.yml'
+  pull_request:
+    paths:
+      - 'docs/index.html'
+      - 'docs/static/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Stage the project page
+        run: |
+          mkdir -p _site/static
+          cp docs/index.html docs/.nojekyll _site/
+          # Only what the page serves; screenshots, SOURCES.md and
+          # make_teaser.py stay in the repo.
+          cp -r docs/static/images docs/static/videos _site/static/
+
+      - name: Check local links in index.html
+        run: |
+          python3 - <<'EOF'
+          import re, pathlib, sys
+          html = pathlib.Path("_site/index.html").read_text(encoding="utf-8")
+          refs = set(re.findall(r'(?:src|href|poster)="([^"]+)"', html))
+          local = sorted(r for r in refs
+                         if not re.match(r'(?:[a-z]+:|#|//)', r))
+          missing = [r for r in local
+                     if not (pathlib.Path("_site") / r.split("#")[0].split("?")[0]).exists()]
+          print(f"{len(local)} local references, {len(missing)} missing")
+          for r in missing:
+              print("  missing:", r)
+          sys.exit(1 if missing else 0)
+          EOF
+
+      - name: Site size
+        run: du -sh _site _site/* | sort -h
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
