@@ -14,8 +14,8 @@ H2D, PLA struts (black) and TPU tendons (orange) in one job. It is the talk's
 
 Right panel: the same kind of prism (specimen prc1kn) dropped from 60 in on the
 drop-tower carriage, filmed at 959 frames per second and played at 30, so 32
-times slower than real time. This is a commissioning drop onto five felt pads,
-from before the optimization campaign (campaign drops land on polyurethane).
+times slower than real time. This drop, onto five felt pads in July 2026,
+predates the optimization campaign (campaign drops land on polyurethane).
 """
 import pathlib
 import subprocess
