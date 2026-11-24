@@ -1,0 +1,35 @@
+We 3D-print small tensegrity structures on a Bambu Lab H2D FFF printer using Bambu Lab "PLA Basic"
+filament. We need to know whether filament COLOR alone (white vs black, same product line, same
+nominal base resin, differing only in the colour masterbatch) produces measurably different
+mechanical behaviour in the printed part. Specifically:
+
+1) Stiffness and strength: do pigments/colorants change the tensile/flexural elastic modulus, yield
+   and ultimate strength, elongation at break, and layer-to-layer (interlayer/Z-direction) bond
+   strength of FFF-printed PLA? Please give quantitative spreads reported in the literature between
+   colours of the same nominal PLA grade (percent differences, standard deviations), and say whether
+   colour-to-colour differences are larger or smaller than batch-to-batch, moisture, and
+   print-parameter (temperature, speed, cooling) variability.
+
+2) Damping / shock and vibration transmission: does colour change the viscoelastic response of
+   printed PLA, i.e. loss factor tan(delta), storage modulus E' from DMA, damping ratio, impact
+   strength (Izod/Charpy), coefficient of restitution, or wave/shock transmission and attenuation?
+   Are there DMA or vibration studies comparing pigmented PLA grades (particularly titanium dioxide
+   white and carbon black) against natural/unpigmented PLA?
+
+3) Mechanism: what is known about how common colorants act on PLA — TiO2 (rutile/anatase) and
+   carbon black as nucleating agents changing crystallinity and crystallisation kinetics; particle
+   loading levels typical for commercial filament masterbatch (wt%); effects on melt viscosity/MFI
+   and thus on extrusion and interlayer welding; effects on optical absorption, emissivity and
+   thermal conductivity that change cooling rate and therefore crystallinity and layer bonding;
+   possible photodegradation/UV and thermal-ageing differences (TiO2 is photocatalytic, carbon black
+   is a UV stabiliser).
+
+4) Practical guidance for a research group running a design-of-experiments/Bayesian-optimisation
+   campaign on printed structures: is filament colour a variable that must be held fixed or
+   randomised/blocked, or is it negligible relative to other noise sources? If measurable, which
+   direction do white (TiO2) and black (carbon black) typically differ in modulus, strength,
+   impact/damping, and dimensional accuracy? Are there any known anomalies (e.g. specific colours
+   of specific vendors testing significantly weaker/stronger)?
+
+Please give concrete numbers with citations wherever available, distinguish peer-reviewed data from
+community/hobbyist test data, and state explicitly where the evidence is thin or contradictory.
