@@ -321,7 +321,8 @@ def parity_png(rows, data, sc, out_stem, row_titles):
                     ax.set_ylabel(f"{row_titles[i]}\n\nPredicted (held out)", fontsize=16)
         fig.tight_layout(h_pad=2.2)
         for ext in ("png", "pdf"):
-            fig.savefig(OUT / f"{out_stem}.{ext}", dpi=300, bbox_inches="tight", facecolor="white")
+            fig.savefig(OUT / f"{out_stem}.{ext}", dpi=300, bbox_inches="tight", facecolor="white",
+                        metadata={"CreationDate": None} if ext == "pdf" else None)
         plt.close(fig)
 
 
@@ -381,7 +382,8 @@ def importance_png(imp_f, imp_l, out_stem):
         axes[1, 0].set_yticklabels(names, fontsize=14)
         fig.tight_layout(h_pad=2.5, w_pad=2.0)
         for ext in ("png", "pdf"):
-            fig.savefig(OUT / f"{out_stem}.{ext}", dpi=300, bbox_inches="tight", facecolor="white")
+            fig.savefig(OUT / f"{out_stem}.{ext}", dpi=300, bbox_inches="tight", facecolor="white",
+                        metadata={"CreationDate": None} if ext == "pdf" else None)
         plt.close(fig)
 
 
@@ -466,7 +468,8 @@ def importance_plotly(imps, cols, title_suffix):
     import plotly.graph_objects as go
 
     names = [PARAM_HTML[c] for c in cols]
-    fig = make_subplots(rows=2, cols=2, horizontal_spacing=0.2, vertical_spacing=0.09,
+    height = 52 * len(cols) * 2 + 230
+    fig = make_subplots(rows=2, cols=2, horizontal_spacing=0.2, vertical_spacing=150 / height,
                         subplot_titles=[f"{TITLE_HTML[m]}: share of model sensitivity" for m in METRICS]
                         + [f"{TITLE_HTML[m]}: raw length scales (log)" for m in METRICS])
     for j, metric in enumerate(METRICS):
@@ -518,7 +521,7 @@ def importance_plotly(imps, cols, title_suffix):
         for r in (1, 2):
             fig.update_yaxes(autorange="reversed", row=r, col=j + 1)
     fig.update_layout(template="simple_white", font=PLOTLY_FONT, barmode="group",
-                      bargap=0.25, bargroupgap=0.05, height=52 * len(cols) * 2 + 230,
+                      bargap=0.25, bargroupgap=0.05, height=height,
                       legend=dict(orientation="h", y=1.07, x=0.5, xanchor="center"),
                       margin=dict(l=40, r=30, t=110, b=60), title=dict(text=title_suffix, x=0.01))
     fig.update_annotations(selector=dict(xref="paper"), font_size=15)
@@ -596,8 +599,9 @@ def vendored_plotlyjs():
 def page(figs, sc, imps, t, data):
     import plotly.io as pio
 
-    def emb(fig, first=False):
-        return pio.to_html(fig, full_html=False, include_plotlyjs=False,
+    def emb(key, first=False):
+        # fixed div ids keep the page byte-identical between reruns
+        return pio.to_html(figs[key], full_html=False, include_plotlyjs=False, div_id=key,
                            config={"displaylogo": False, "responsive": True,
                                    "toImageButtonOptions": {"format": "svg", "scale": 1}})
 
@@ -629,7 +633,7 @@ together, one NUTS refit per fold at the campaign budget (512 warmup steps, 256 
 Ax 0.5.0 SAASBO with the same folds, seeds and budget; the bottom row blanks the SEMs so the noise is learned.
 Vertical bars are one posterior sd of the held-out prediction (latent, without the learned noise), horizontal bars the
 ingested SEM, dashed line parity. R²<sub>oos</sub> is against predicting each fold's training mean.</p>
-{emb(figs['parity_main'], first=True)}
+{emb('parity_main', first=True)}
 <p><b>Reading.</b> With the SEMs as fixed noise every held-out prediction sits near the pooled mean (spread of the
 predictions {c['t180']['pred_sd_over_obs_sd']:.2f} of the data sd for t<sub>180</sub>,
 {c['e_reb_mJ']['pred_sd_over_obs_sd']:.2f} for E<sub>reb</sub>), and the E<sub>reb</sub> ordering runs against the
@@ -655,7 +659,7 @@ out of the bars; BoFire's predictive sd, which adds it, covers 89 to 93% (see
 inputs). Bottom: noise learned and the four filament settings dropped (eight inputs: R, H, θ, d<sub>s</sub>,
 d<sub>t</sub>, printed mass, strut and tendon infill), the model the review recommends until a plate varies the
 filament settings on purpose. Both: BoTorch 0.18.1 SAAS, NUTS 512/256.</p>
-{emb(figs['parity_other'])}
+{emb('parity_other')}
 
 <h2>4. Feature importance of the surrogate fitted to all 44 articles</h2>
 <p>SAAS fits to all 44 articles at the campaign budget, four NUTS seeds each (64 posterior draws pooled). Top: the share
@@ -663,14 +667,14 @@ of model sensitivity, i.e. Ax's <code>feature_importances</code> (inverse length
 the posterior median over draws, whiskers the interquartile range; hover for Ax's pooled value and the value per seed.
 Bottom: the raw length scales on the unit cube, which say how smooth the model is (the normalization above hides that).
 Filled: noise learned. Open: SEMs as fixed noise (campaign).</p>
-{emb(figs['imp_twelve'])}
+{emb('imp_twelve')}
 <p><b>Reading.</b> With the SEMs as fixed noise the printed mass gets the largest share for both objectives, at length
 scales of a few hundredths of the cube: the model uses mass to tell the reprint twins apart and is flat between
 articles. With the noise learned every length scale is of the order of the cube or longer (a smooth, close to linear
 model), the t<sub>180</sub> model ranks cable diameter <i>d</i><sub>t</sub> first
 ({', '.join(f"{PARAM_HTML[k].rsplit(' (', 1)[0]} in {v} of 4 seeds" for k, v in top_t.items())}), and printed mass drops to an ordinary
 share. E<sub>reb</sub> has no stable ranking: its top input changes with the seed.</p>
-{emb(figs['imp_eight'])}
+{emb('imp_eight')}
 
 <h2>5. Is the model flat?</h2>
 <p>The sd of the posterior mean over 1024 scrambled-Sobol points of the fit space, against the sd of the 44
