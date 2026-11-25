@@ -14,6 +14,88 @@ the campaign's input bounds. The campaign code is
 for the LOGO protocol) and `claude/me2-objective-bo-20261029` (`f66c363`,
 the current batch-5 generator).
 
+## Figures: the surrogate with the fixes applied
+
+**The ask ([PR #121, 2026-11-25](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/121)):**
+"I want to see the updated LOGO-CV parity plots where the fixes have been
+applied, perhaps rendered and hosted on GitHub html preview or something like
+that with plotly. Same with feature importance. Something that could
+potentially go into the paper to show that the model is learning something."
+
+**Interactive page:** [`figures/index.html`](figures/index.html), rendered at
+[htmlpreview.github.io](https://htmlpreview.github.io/?https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/claude/request-c-tables-logocv-ai-20261027/analysis/bo-review/figures/index.html)
+or [raw.githack.com](https://raw.githack.com/vertical-cloud-lab/tensegrity-optimization/claude/request-c-tables-logocv-ai-20261027/analysis/bo-review/figures/index.html)
+(githack asks for one click first). It loads the plotly.js that plotly.py
+bundles (`figures/plotly-4.1.1.min.js`, MIT) by relative path, because
+htmlpreview runs only scripts served from raw.githubusercontent.com. Hovering
+over a point gives the article, its print session, its reprint twin, the
+measured and predicted values and all twelve inputs.
+
+**Static versions for the manuscript** (PDF and 300 dpi PNG, in the style of
+`scripts/figures/plot_logocv.py`):
+
+- `figures/logocv-parity-noise.pdf`: a candidate replacement for SI
+  `fig:si-logocv`. Top row: the campaign's SAASBO with the SEMs as fixed
+  noise (the run in the SI now). Bottom row: the same Ax 0.5.0 SAASBO, folds,
+  seeds and NUTS budget (512/256) with the SEMs blanked, so the noise is
+  learned.
+- `figures/feature-importance-noise.pdf`: a candidate companion to (or
+  replacement for) SI `fig:si-sensitivity`. Top: the share of model
+  sensitivity (Ax's `feature_importances`) of the twelve-input SAAS fit to
+  all 44 articles, noise learned against SEMs as fixed noise, posterior median
+  and interquartile range over 64 draws (four NUTS seeds). Bottom: the raw
+  length scales, which show how smooth each model is.
+- `figures/logocv-parity-other-fixes.pdf`: replicate-based SEMs (twelve
+  inputs) and the noise learned with the four filament settings dropped
+  (eight inputs).
+
+**Which fixes enter.** Items 1 (noise model) and 4 (filament settings dropped)
+change the surrogate. Items 2 (thresholds, pinned qLogNEHVI) and 3 (filament
+point fixed before the acquisition) change only the acquisition, so held-out
+predictions do not depend on them.
+
+**Held-out skill** (35 LOGO folds, 44 articles; p is the two-sided
+permutation p of `plot_logocv.py`, so the campaign row matches the
+manuscript exactly; it can differ in the third decimal from the tables
+below, which used `logocv_noise_models.py`'s estimator):
+
+| model | t180 rho_s (p) | t180 R2_oos | t180 MAPE | E_reb rho_s (p) | E_reb R2_oos | E_reb MAPE |
+|---|--:|--:|--:|--:|--:|--:|
+| campaign SAASBO, SEMs as fixed noise (SI now) | +0.32 (0.036) | +0.12 | 4.8% | -0.40 (0.008) | -0.05 | 38.8% |
+| same SAASBO, noise learned | +0.55 (<0.001) | +0.40 | 4.6% | +0.51 (<0.001) | +0.23 | 33.2% |
+| SAAS, replicate-based SEMs | +0.52 (<0.001) | +0.37 | 4.8% | +0.38 (0.012) | +0.12 | 35.0% |
+| SAAS, noise learned, filament settings dropped (eight inputs) | +0.52 (<0.001) | +0.42 | 4.4% | +0.44 (0.003) | +0.19 | 33.6% |
+| SAAS, noise learned, twelve inputs, BoTorch 0.18 driver (check) | +0.52 (<0.001) | +0.39 | 4.7% | +0.46 (0.002) | +0.22 | 33.0% |
+| tuned random forest (reference) | +0.52 (<0.001) | +0.33 | 5.0% | +0.27 (0.082) | +0.08 | 35.9% |
+| training mean (reference) | | 0 | 5.2% | | 0 | 37.9% |
+
+The two new runs of this section are `data/logocv/saas-learned-twelve/` and
+`data/logocv/saas-learned-eight/` (`logocv_noise_models.py`, 35 folds each);
+the eight-input importance fits are `data/importances/all-eight-*`
+(`importances_stability.py`, dataset `all-eight`).
+
+**Importances, all 44 articles, NUTS 512/256, four seeds.** With the SEMs as
+fixed noise the printed mass takes the largest share (t180 0.39, E_reb 0.18)
+at a length scale of 0.04 (t180) and 0.013 (E_reb) of the unit cube: the
+model uses mass to separate the reprint twins, and its posterior mean varies
+over the fit space with an sd of 3.4% (t180) and under 0.1% (E_reb) of the
+data sd. With the noise learned every length scale is 1.2 to 6.9, the
+posterior mean varies with 36% and 32% of the data sd, cable diameter d_t
+leads t180 in all four seeds (share 0.15, length scale 1.17; twist next at
+0.10), and E_reb has no stable leader (tendon infill 0.10, strut infill 0.10, R
+0.09). The eight-input model says the same: d_t first for
+t180 in all four seeds (0.19, then twist 0.16), E_reb split between strut
+infill, d_t and tendon infill across seeds, posterior-mean sd 43% and 35% of
+the data sd (fixed noise: 10% and under 0.1%).
+
+**For the paper.** These figures are a re-analysis of the same 44 articles,
+not the model that chose the batches: every generated batch came from the
+fixed-noise surrogate of the top row. A caption or Limitations sentence
+should say so. The vertical bars of the learned-noise panels are the latent
+posterior sd and leave out the learned print-to-print noise (sd 0.044 to
+0.049 for t180, 2.6 to 2.9 mJ for E_reb in the full-data fits), which is why
+their E_reb coverage at 1.96 sd is 73% rather than about 95%.
+
 ## 1. Fixed noise vs learned noise vs replicate-based SEMs
 
 > Could you compare fixed noise against inferred noise and against
@@ -420,6 +502,9 @@ batch-5 family split from 3/6 to 4/4/1.
 - `importances_stability.py`: raw lengthscales, importances, flatness, seed
   and budget sweep; `data/importances/`.
 - `summarize.py`: writes `results.md`.
+- `plot_fixes.py`: the figures of the section "Figures: the surrogate with
+  the fixes applied" (`figures/index.html`, the static PDFs and PNGs, and
+  `figures/scorecard.{csv,json}`), from committed run records only.
 
 ## Reproduce
 
@@ -457,4 +542,16 @@ python3 analysis/bo-review/compare_batch5.py --archived /tmp/campaign-me2/bo/t3-
 /tmp/venv-bofire/bin/python analysis/bo-review/importances_stability.py --run --noise learned
 /tmp/venv-bofire/bin/python analysis/bo-review/importances_stability.py --summarize
 /tmp/venv-bofire/bin/python analysis/bo-review/summarize.py
+
+# figures with the fixes applied (the two learned-noise SAAS runs, the eight-input importances, then the plots)
+for s in twelve eight; do
+  for i in 1 2; do /tmp/venv-bofire/bin/python analysis/bo-review/logocv_noise_models.py --model saas --noise learned --space $s --worker & done; wait
+  /tmp/venv-bofire/bin/python analysis/bo-review/logocv_noise_models.py --model saas --noise learned --space $s --assemble
+done
+for n in fixed learned; do
+  /tmp/venv-bofire/bin/python analysis/bo-review/importances_stability.py --run --noise $n --datasets all-eight --budgets 512/256
+done
+/tmp/venv-bofire/bin/python analysis/bo-review/importances_stability.py --summarize
+/tmp/venv-bofire/bin/pip install plotly
+/tmp/venv-bofire/bin/python analysis/bo-review/plot_fixes.py
 ```

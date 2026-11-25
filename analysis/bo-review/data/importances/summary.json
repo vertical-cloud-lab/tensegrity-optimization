@@ -1,5 +1,363 @@
 [
  {
+  "dataset": "all-eight",
+  "noise": "fixed",
+  "budget": "512/256",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.277,
+   "strut_infill_pct": 0.132,
+   "H_mm": 0.118,
+   "tpu_infill_pct": 0.105,
+   "strut_d_mm": 0.095,
+   "R_mm": 0.092,
+   "cable_d_mm": 0.091,
+   "twist_deg": 0.09
+  },
+  "importance_seed_sd_max": 0.038,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.024,
+    "R_mm": 0.048,
+    "cable_d_mm": 0.042,
+    "mass_printed_g": 0.012,
+    "strut_d_mm": 0.031,
+    "strut_infill_pct": 0.022,
+    "tpu_infill_pct": 0.034,
+    "twist_deg": 0.044
+   },
+   "1": {
+    "H_mm": 0.033,
+    "R_mm": 0.048,
+    "cable_d_mm": 0.028,
+    "mass_printed_g": 0.011,
+    "strut_d_mm": 0.025,
+    "strut_infill_pct": 0.025,
+    "tpu_infill_pct": 0.023,
+    "twist_deg": 0.038
+   },
+   "2": {
+    "H_mm": 0.025,
+    "R_mm": 0.019,
+    "cable_d_mm": 0.027,
+    "mass_printed_g": 0.012,
+    "strut_d_mm": 0.041,
+    "strut_infill_pct": 0.024,
+    "tpu_infill_pct": 0.028,
+    "twist_deg": 0.021
+   },
+   "3": {
+    "H_mm": 0.029,
+    "R_mm": 0.042,
+    "cable_d_mm": 0.051,
+    "mass_printed_g": 0.012,
+    "strut_d_mm": 0.046,
+    "strut_infill_pct": 0.027,
+    "tpu_infill_pct": 0.042,
+    "twist_deg": 0.053
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.002,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 0.984,
+   "H_mm": 0.952,
+   "twist_deg": 0.982,
+   "strut_d_mm": 1.002,
+   "cable_d_mm": 0.986,
+   "mass_printed_g": 0.998,
+   "strut_infill_pct": 0.993,
+   "tpu_infill_pct": 0.988
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.0006160419695745657,
+  "posterior_mean_at_train_seed_sd_max": 0.027758858494482928,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0015,
+   0.0004,
+   0.0013,
+   0.0164
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-eight",
+  "noise": "fixed",
+  "budget": "512/256",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "mass_printed_g": 0.543,
+   "strut_infill_pct": 0.088,
+   "cable_d_mm": 0.08,
+   "H_mm": 0.067,
+   "tpu_infill_pct": 0.059,
+   "strut_d_mm": 0.056,
+   "twist_deg": 0.056,
+   "R_mm": 0.05
+  },
+  "importance_seed_sd_max": 0.052,
+  "top_parameter_per_seed": [
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g",
+   "mass_printed_g"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 0.444,
+    "R_mm": 0.633,
+    "cable_d_mm": 0.411,
+    "mass_printed_g": 0.047,
+    "strut_d_mm": 0.57,
+    "strut_infill_pct": 0.337,
+    "tpu_infill_pct": 0.462,
+    "twist_deg": 0.824
+   },
+   "1": {
+    "H_mm": 0.389,
+    "R_mm": 0.385,
+    "cable_d_mm": 0.307,
+    "mass_printed_g": 0.05,
+    "strut_d_mm": 0.479,
+    "strut_infill_pct": 0.288,
+    "tpu_infill_pct": 0.405,
+    "twist_deg": 0.382
+   },
+   "2": {
+    "H_mm": 0.52,
+    "R_mm": 0.496,
+    "cable_d_mm": 0.285,
+    "mass_printed_g": 0.045,
+    "strut_d_mm": 0.549,
+    "strut_infill_pct": 0.334,
+    "tpu_infill_pct": 0.384,
+    "twist_deg": 0.671
+   },
+   "3": {
+    "H_mm": 0.279,
+    "R_mm": 0.657,
+    "cable_d_mm": 0.308,
+    "mass_printed_g": 0.05,
+    "strut_d_mm": 0.322,
+    "strut_infill_pct": 0.24,
+    "tpu_infill_pct": 0.537,
+    "twist_deg": 0.287
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.035,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.033,
+   "H_mm": 1.008,
+   "twist_deg": 1.035,
+   "strut_d_mm": 0.995,
+   "cable_d_mm": 1.009,
+   "mass_printed_g": 1.003,
+   "strut_infill_pct": 0.95,
+   "tpu_infill_pct": 0.986
+  },
+  "posterior_mean_at_train_seed_sd_median": 1.0000000000287557e-06,
+  "posterior_mean_at_train_seed_sd_max": 6.68979322052607e-05,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.0094,
+   0.0086,
+   0.009,
+   0.0072
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": null
+ },
+ {
+  "dataset": "all-eight",
+  "noise": "learned",
+  "budget": "512/256",
+  "metric": "e_reb_mJ",
+  "n_seeds": 4,
+  "importance_mean": {
+   "tpu_infill_pct": 0.158,
+   "R_mm": 0.15,
+   "strut_infill_pct": 0.147,
+   "cable_d_mm": 0.138,
+   "mass_printed_g": 0.114,
+   "twist_deg": 0.103,
+   "strut_d_mm": 0.1,
+   "H_mm": 0.089
+  },
+  "importance_seed_sd_max": 0.037,
+  "top_parameter_per_seed": [
+   "strut_infill_pct",
+   "cable_d_mm",
+   "tpu_infill_pct",
+   "strut_infill_pct"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 4.358,
+    "R_mm": 4.457,
+    "cable_d_mm": 5.047,
+    "mass_printed_g": 5.209,
+    "strut_d_mm": 4.896,
+    "strut_infill_pct": 3.31,
+    "tpu_infill_pct": 3.338,
+    "twist_deg": 6.81
+   },
+   "1": {
+    "H_mm": 7.464,
+    "R_mm": 3.969,
+    "cable_d_mm": 3.232,
+    "mass_printed_g": 7.087,
+    "strut_d_mm": 6.232,
+    "strut_infill_pct": 4.784,
+    "tpu_infill_pct": 3.937,
+    "twist_deg": 5.955
+   },
+   "2": {
+    "H_mm": 7.424,
+    "R_mm": 3.562,
+    "cable_d_mm": 4.136,
+    "mass_printed_g": 4.842,
+    "strut_d_mm": 5.841,
+    "strut_infill_pct": 5.031,
+    "tpu_infill_pct": 3.546,
+    "twist_deg": 4.917
+   },
+   "3": {
+    "H_mm": 8.628,
+    "R_mm": 3.781,
+    "cable_d_mm": 5.292,
+    "mass_printed_g": 4.166,
+    "strut_d_mm": 6.81,
+    "strut_infill_pct": 3.364,
+    "tpu_infill_pct": 4.041,
+    "twist_deg": 5.412
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.05,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.034,
+   "H_mm": 0.994,
+   "twist_deg": 1.01,
+   "strut_d_mm": 1.023,
+   "cable_d_mm": 0.976,
+   "mass_printed_g": 0.988,
+   "strut_infill_pct": 1.05,
+   "tpu_infill_pct": 0.957
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.11939658789072533,
+  "posterior_mean_at_train_seed_sd_max": 0.36936780012971665,
+  "posterior_mean_sd_over_space_by_seed": [
+   1.2986,
+   1.3477,
+   1.2955,
+   1.1553
+  ],
+  "y_std": 3.721328077055518,
+  "noise_sd_median_by_seed": [
+   2.7596,
+   2.8379,
+   2.6501,
+   2.8309
+  ]
+ },
+ {
+  "dataset": "all-eight",
+  "noise": "learned",
+  "budget": "512/256",
+  "metric": "t180",
+  "n_seeds": 4,
+  "importance_mean": {
+   "cable_d_mm": 0.228,
+   "twist_deg": 0.175,
+   "R_mm": 0.127,
+   "mass_printed_g": 0.11,
+   "H_mm": 0.101,
+   "strut_d_mm": 0.093,
+   "strut_infill_pct": 0.085,
+   "tpu_infill_pct": 0.082
+  },
+  "importance_seed_sd_max": 0.024,
+  "top_parameter_per_seed": [
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm",
+   "cable_d_mm"
+  ],
+  "lengthscale_median_by_seed": {
+   "0": {
+    "H_mm": 3.053,
+    "R_mm": 3.094,
+    "cable_d_mm": 1.632,
+    "mass_printed_g": 3.083,
+    "strut_d_mm": 4.018,
+    "strut_infill_pct": 4.281,
+    "tpu_infill_pct": 3.983,
+    "twist_deg": 1.816
+   },
+   "1": {
+    "H_mm": 3.431,
+    "R_mm": 3.095,
+    "cable_d_mm": 1.598,
+    "mass_printed_g": 2.563,
+    "strut_d_mm": 3.17,
+    "strut_infill_pct": 5.419,
+    "tpu_infill_pct": 4.647,
+    "twist_deg": 2.452
+   },
+   "2": {
+    "H_mm": 2.807,
+    "R_mm": 1.847,
+    "cable_d_mm": 1.189,
+    "mass_printed_g": 2.8,
+    "strut_d_mm": 3.479,
+    "strut_infill_pct": 3.031,
+    "tpu_infill_pct": 2.879,
+    "twist_deg": 1.494
+   },
+   "3": {
+    "H_mm": 4.438,
+    "R_mm": 2.887,
+    "cable_d_mm": 1.561,
+    "mass_printed_g": 4.396,
+    "strut_d_mm": 4.115,
+    "strut_infill_pct": 3.815,
+    "tpu_infill_pct": 5.711,
+    "twist_deg": 2.135
+   }
+  },
+  "split_rhat_log_lengthscale_max": 1.091,
+  "split_rhat_log_lengthscale": {
+   "R_mm": 1.091,
+   "H_mm": 0.994,
+   "twist_deg": 1.049,
+   "strut_d_mm": 1.03,
+   "cable_d_mm": 1.074,
+   "mass_printed_g": 0.988,
+   "strut_infill_pct": 0.995,
+   "tpu_infill_pct": 1.021
+  },
+  "posterior_mean_at_train_seed_sd_median": 0.002283679195398402,
+  "posterior_mean_at_train_seed_sd_max": 0.008102593468554848,
+  "posterior_mean_sd_over_space_by_seed": [
+   0.038,
+   0.0366,
+   0.0385,
+   0.0371
+  ],
+  "y_std": 0.08706642149099107,
+  "noise_sd_median_by_seed": [
+   0.0476,
+   0.0478,
+   0.045,
+   0.0486
+  ]
+ },
+ {
   "dataset": "all-twelve",
   "noise": "fixed",
   "budget": "1024/512",

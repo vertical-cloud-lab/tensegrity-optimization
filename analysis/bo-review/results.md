@@ -6,7 +6,9 @@
 
 | space | noise | t180 rho_s (p) | t180 R2_oos | t180 MAPE | t180 cov. | E_reb rho_s (p) | E_reb R2_oos | E_reb MAPE | E_reb cov. |
 |---|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| 6 orig. + 2 infill | learned | +0.52 (<0.001) | +0.42 | 4.4% | 91% | +0.44 (0.003) | +0.19 | 33.6% | 68% |
 | 12 campaign | fixed | +0.30 (0.050) | +0.15 | 4.9% | 86% | -0.51 (<0.001) | -0.05 | 39.0% | 93% |
+| 12 campaign | learned | +0.52 (<0.001) | +0.39 | 4.7% | 91% | +0.46 (0.002) | +0.22 | 33.0% | 70% |
 | 12 campaign | replicate | +0.52 (<0.001) | +0.37 | 4.8% | 89% | +0.38 (0.012) | +0.12 | 35.0% | 70% |
 
 ### MAP GP (BoTorch default SingleTaskGP)
@@ -90,6 +92,10 @@ Filament settings by session (PLA temp / PLA flow / TPU temp / TPU flow):
 
 | dataset | noise | NUTS budget | objective | posterior-mean sd over the space (data sd) | learned noise sd | largest importance (seed-to-seed sd) | top input by seed | max split-R-hat, log lengthscales |
 |---|---|---|---|--:|--:|---|---|--:|
+| all-eight | fixed | 512/256 | e_reb_mJ | 0.0015, 0.0004, 0.0013, 0.0164 (3.72) |  | mass_printed_g 0.28 (0.04) | mass_printed_g, mass_printed_g, mass_printed_g, mass_printed_g | 1.00 |
+| all-eight | fixed | 512/256 | t180 | 0.0094, 0.0086, 0.009, 0.0072 (0.0871) |  | mass_printed_g 0.54 (0.05) | mass_printed_g, mass_printed_g, mass_printed_g, mass_printed_g | 1.03 |
+| all-eight | learned | 512/256 | e_reb_mJ | 1.3, 1.35, 1.3, 1.16 (3.72) | 2.76, 2.84, 2.65, 2.83 | tpu_infill_pct 0.16 (0.04) | strut_infill_pct, cable_d_mm, tpu_infill_pct, strut_infill_pct | 1.05 |
+| all-eight | learned | 512/256 | t180 | 0.038, 0.0366, 0.0385, 0.0371 (0.0871) | 0.0476, 0.0478, 0.045, 0.0486 | cable_d_mm 0.23 (0.02) | cable_d_mm, cable_d_mm, cable_d_mm, cable_d_mm | 1.09 |
 | all-twelve | fixed | 1024/512 | e_reb_mJ | 0, 0.0001, 0.0001, 0.0001 (3.72) |  | mass_printed_g 0.19 (0.03) | mass_printed_g, mass_printed_g, mass_printed_g, mass_printed_g | 1.06 |
 | all-twelve | fixed | 1024/512 | t180 | 0.0043, 0.0019, 0.0045, 0.003 (0.0871) |  | mass_printed_g 0.45 (0.03) | mass_printed_g, mass_printed_g, mass_printed_g, mass_printed_g | 1.02 |
 | all-twelve | fixed | 256/128 | e_reb_mJ | 0, 0, 0, 0 (3.72) |  | mass_printed_g 0.23 (0.10) | mass_printed_g, mass_printed_g, mass_printed_g, mass_printed_g | 1.59 |
@@ -132,3 +138,12 @@ Median lengthscale on the unit cube (Ax importance in brackets), all-twelve, NUT
 | fixed | e_reb_mJ | 0.042 (0.06) | 0.05 (0.07) | 0.033 (0.08) | 0.042 (0.07) | 0.035 (0.07) | 0.013 (0.21) | 0.032 (0.08) | 0.041 (0.08) | 0.042 (0.07) | 0.042 (0.06) | 0.03 (0.09) | 0.037 (0.07) |
 | learned | t180 | 2.6 (0.08) | 2.9 (0.08) | 1.7 (0.13) | 2.9 (0.07) | 1.1 (0.19) | 2.9 (0.07) | 3.7 (0.06) | 3.7 (0.06) | 3.6 (0.06) | 3.6 (0.06) | 3.5 (0.06) | 3 (0.07) |
 | learned | e_reb_mJ | 3.3 (0.13) | 6.2 (0.06) | 5.9 (0.06) | 6.6 (0.05) | 4.2 (0.09) | 5.8 (0.06) | 3.7 (0.11) | 2.8 (0.13) | 3.9 (0.09) | 4.8 (0.07) | 4.4 (0.07) | 4.7 (0.07) |
+
+Median lengthscale on the unit cube (Ax importance in brackets), all-eight, NUTS 512/256, medians over seeds:
+
+| noise | objective | R_mm | H_mm | twist_deg | strut_d_mm | cable_d_mm | mass_printed_g | strut_infill_pct | tpu_infill_pct |
+|---|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| fixed | t180 | 0.56 (0.05) | 0.42 (0.07) | 0.53 (0.06) | 0.51 (0.06) | 0.31 (0.08) | 0.048 (0.54) | 0.31 (0.09) | 0.43 (0.06) |
+| fixed | e_reb_mJ | 0.045 (0.09) | 0.027 (0.12) | 0.041 (0.09) | 0.036 (0.10) | 0.035 (0.09) | 0.012 (0.28) | 0.025 (0.13) | 0.031 (0.10) |
+| learned | t180 | 3 (0.13) | 3.2 (0.10) | 2 (0.18) | 3.7 (0.09) | 1.6 (0.23) | 2.9 (0.11) | 4 (0.08) | 4.3 (0.08) |
+| learned | e_reb_mJ | 3.9 (0.15) | 7.4 (0.09) | 5.7 (0.10) | 6 (0.10) | 4.6 (0.14) | 5 (0.11) | 4.1 (0.15) | 3.7 (0.16) |

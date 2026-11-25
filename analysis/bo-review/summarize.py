@@ -136,7 +136,7 @@ def main():
     md += ["", "## 4. Batch terms", ""] + (batch_term_tables() or ["(not run)"])
     md += ["", "## 6 to 8. Lengthscales, importances, MCMC stability", ""]
     md += importance_tables() or ["(not run)"]
-    for ds in ("round2-six", "all-twelve"):
+    for ds in ("round2-six", "all-twelve", "all-eight"):
         t = lengthscale_table(ds)
         if t:
             md += ["", f"Median lengthscale on the unit cube (Ax importance in brackets), "
