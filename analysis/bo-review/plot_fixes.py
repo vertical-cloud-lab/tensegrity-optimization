@@ -35,8 +35,10 @@ Inputs (all committed; nothing is refitted here):
 
 Outputs (``analysis/bo-review/figures/``):
 
-* ``index.html``: the interactive page (plotly.js from its CDN): scorecard,
-  parity plots, importances, length scales, flatness;
+* ``index.html``: the interactive page: scorecard, parity plots,
+  importances, length scales, flatness. It loads ``plotly-<version>.min.js``
+  (MIT, vendored next to it) by relative path, so it works opened locally,
+  through htmlpreview.github.io and through raw.githack.com;
 * ``logocv-parity-noise.{png,pdf}``: the paper candidate, campaign surrogate
   (top) against the same SAASBO with the noise learned (bottom);
 * ``logocv-parity-other-fixes.{png,pdf}``: replicate-based SEMs and the
@@ -531,7 +533,7 @@ h1{font-size:26px;margin-bottom:4px} h2{font-size:21px;margin-top:38px;border-bo
 p,li{font-size:15.5px} .muted{color:#5f5e5a;font-size:14px}
 table{border-collapse:collapse;font-size:13.5px;margin:10px 0}
 th,td{border-bottom:1px solid #e4e3df;padding:4px 9px;text-align:right}
-th{background:#f6f5f2} td.l,th.l{text-align:left}
+th{background:#f6f5f2} td.l,th.l{text-align:left} td:not(.l){white-space:nowrap}
 tr.hl td{background:#eef4fc}
 code{font-size:13px;background:#f3f2ef;padding:1px 4px;border-radius:3px}
 """
@@ -578,6 +580,19 @@ def flat_table_html(imps):
     return "<table>" + head + "".join(rows) + "</table>"
 
 
+def vendored_plotlyjs():
+    """Write the plotly.js bundled with plotly.py next to the page, once, and
+    return its file name. The page loads it by relative path: the GitHub HTML
+    preview (htmlpreview.github.io) runs only scripts served from
+    raw.githubusercontent.com, so a CDN copy would leave the plots blank there."""
+    import plotly.offline as po
+
+    name = f"plotly-{po.get_plotlyjs_version()}.min.js"
+    if not (OUT / name).exists():
+        (OUT / name).write_text(po.get_plotlyjs())
+    return name
+
+
 def page(figs, sc, imps, t, data):
     import plotly.io as pio
 
@@ -590,7 +605,7 @@ def page(figs, sc, imps, t, data):
     imp_l = imps[("all-twelve", "learned")]
     imp_f = imps[("all-twelve", "fixed")]
     top_t = pd.Series(imp_l["t180"]["top_by_seed"]).value_counts()
-    plotly_js = "https://cdn.plot.ly/plotly-3.1.0.min.js"
+    plotly_js = vendored_plotlyjs()
     miss = []
     for metric, k in (("t180", 2), ("e_reb_mJ", 3)):
         d = data["learned"][metric].assign(err=lambda x: (x.observed - x.predicted).abs())
