@@ -22,8 +22,9 @@ PR #121 (sgbaird, 2026-11-10), items 6 to 8 of Juan Florez-Coronel's review:
    seeds (one chain each) for the log lengthscales and the noise.
 
 Datasets: ``round2-six`` (the 17 articles of rounds 1 and 2 in the six-
-parameter space, the model behind the archived round-2 importances) and
-``all-twelve`` (all 44 articles, the campaign's twelve parameters).
+parameter space, the model behind the archived round-2 importances),
+``all-twelve`` (all 44 articles, the campaign's twelve parameters) and
+``all-eight`` (all 44 articles, the four filament settings dropped).
 Noise: ``fixed`` (the archived SEMs, as the campaign) and ``learned``.
 
 Usage (BoFire venv, BoTorch 0.18.1)::
@@ -54,8 +55,8 @@ import pandas as pd  # noqa: E402
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "logocv-baselines"))
-from logocv_bofire import METRICS, SPACES, bounds_for  # noqa: E402
-from logocv_noise_models import load_table  # noqa: E402
+from logocv_bofire import METRICS, bounds_for  # noqa: E402
+from logocv_noise_models import ALL_SPACES as SPACES, load_table  # noqa: E402
 
 OUT = HERE / "data" / "importances"
 BUDGETS = {"256/128": (256, 128), "512/256": (512, 256), "1024/512": (1024, 512)}
@@ -63,6 +64,8 @@ SEEDS = (0, 1, 2, 3)
 DATASETS = {
     "round2-six": dict(sessions=("seed", "r2d2c"), space="six"),
     "all-twelve": dict(sessions=None, space="twelve"),
+    # item 4 / PR #121 2026-11-25: the four filament settings dropped
+    "all-eight": dict(sessions=None, space="eight"),
 }
 
 
