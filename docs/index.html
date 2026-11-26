@@ -125,7 +125,7 @@
       background: var(--light); padding: 1.1rem 1.4rem; border-radius: 6px; overflow-x: auto;
       font-size: .85rem; line-height: 1.45; margin: 0;
     }
-    footer { padding: 2rem 0 3rem; text-align: center; font-size: .9rem; color: var(--muted); }
+    footer { padding: 2rem 0 3rem; text-align: center; font-size: .9rem; color: var(--muted); background: var(--light); }
     footer p { margin: .3rem 0; }
 
     @media (max-width: 720px) {
@@ -343,7 +343,50 @@
   </div>
 </section>
 
-<section id="talk">
+<section id="surrogate">
+  <div class="container">
+    <h2>Checking the surrogate</h2>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>Every batch was chosen by a surrogate that took each specimen's standard error of the mean (SEM) over its drops as known, fixed noise. A later review of the optimization methods (<a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/121">#121</a>) pointed out that two prints of the same design differ by far more than those SEMs allow. Told the measurements were that precise, the model explained the gap with the inputs that differ between prints, mainly the printed mass, and stayed flat between specimens.</p>
+      <p>We refitted the same model to the same 44 specimens (the 35 designs, with two prints of each of the nine batch-3 designs) and let it learn the noise from the data instead. To test it, we held out one design at a time (both prints together), refitted on the rest and predicted the held-out design. The Spearman rank correlation between these held-out predictions and the measurements rose from +0.32 to +0.55 for transmissibility and from &minus;0.40 to +0.51 for the rebound objective. The rebound objective here is <i>E</i><sub>reb</sub> = <i>e</i><sub>reb</sub>&thinsp;<i>m</i>&thinsp;<i>g</i>&thinsp;<i>h</i> in millijoules, with <i>g</i> the gravitational acceleration and <i>h</i> the drop height: the first-power form the optimizer minimized when it chose batches 2 to 4, as in Fig. 8.</p>
+      <p>This is a re-analysis of data already collected. No batch was chosen with the learned-noise model, and the two figures below are candidates for the paper rather than part of the 5 Nov 2026 draft.</p>
+    </div>
+    <figure id="parity" class="mid">
+      <a href="static/images/surrogate_parity.png"><img src="static/images/surrogate_parity.png" alt="Held-out predicted against measured transmissibility and rebound for 44 specimens. With the SEMs as fixed noise the predictions sit near one value; with the noise learned they follow the parity line" loading="lazy" width="3650" height="3687"></a>
+      <figcaption><b>Held-out predictions against measurements.</b> Top row: the campaign's surrogate, with the SEMs as fixed noise. Bottom row: the same model with the noise learned. Left, <i>t</i><sub>180</sub>; right, <i>E</i><sub>reb</sub>. Points on the dashed line are predicted exactly.
+      <details><summary>Full caption</summary><p>Leave-one-design-out cross-validation over 44 specimens in 35 folds. The two prints of each batch-3 design are held out together, so neither leaks into the other's prediction. Both rows are the campaign's fully Bayesian Gaussian-process surrogate in Ax 0.5.0 with the same folds, seeds and sampler budget (one refit per fold, 512 warmup steps and 256 samples); only the noise model differs. The top row redraws Fig. S3 of the <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/624e868/manuscript/supplementary.pdf">supplementary information</a>.</p><p>Vertical bars are one posterior standard deviation of the held-out prediction, and horizontal bars are the specimen's SEM. In the bottom row the vertical bars leave out the learned print-to-print noise (standard deviation 0.044 to 0.049 for <i>t</i><sub>180</sub> and 2.6 to 2.9&nbsp;mJ for <i>E</i><sub>reb</sub>), so they understate the spread of a new print. &rho;<sub>s</sub> is the Spearman rank correlation, with its two-sided permutation <i>p</i> value. <i>R</i><sup>2</sup><sub>oos</sub> is the out-of-sample coefficient of determination against predicting each fold's training mean, which scores 0. MAPE is the mean absolute percentage error. With 44 specimens, differences in &rho;<sub>s</sub> under about 0.2 are not resolved, and both changes here are larger than that.</p></details>
+      </figcaption>
+    </figure>
+    <figure id="importance">
+      <a href="static/images/surrogate_importance.png"><img src="static/images/surrogate_importance.png" alt="Share of model sensitivity and length scale for each of the twelve inputs, for both objectives. With the SEMs as fixed noise, printed mass dominates at a very short length scale; with the noise learned, cable diameter leads transmissibility and every length scale is longer than the input range" loading="lazy" width="4257" height="3957"></a>
+      <figcaption><b>Which inputs the surrogate uses, and how smooth it is.</b> (a, b) Each input's share of model sensitivity, with the noise learned (filled) and with the SEMs as fixed noise (open). (c, d) The length scales behind those shares. With the noise learned, cable diameter <i>d</i><sub>t</sub> leads <i>t</i><sub>180</sub>.
+      <details><summary>Full caption</summary><p>The model is the twelve-input surrogate (the eleven design variables of Table 1 plus printed mass) fitted to all 44 specimens, pooled over four sampler seeds (64 posterior draws). A length scale is the distance along one input, as a fraction of its range, over which the prediction changes appreciably, so a short one means the model responds sharply to that input. The share of model sensitivity is Ax's feature importance: each input's inverse length scale, normalized so that the twelve shares sum to 1. Bars are posterior medians and whiskers interquartile ranges. The dashed line is an equal share (1/12) in (a, b) and a length scale equal to the input's full range in (c, d).</p><p>With the SEMs as fixed noise, printed mass takes the largest share (0.39 for <i>t</i><sub>180</sub>, 0.18 for <i>E</i><sub>reb</sub>) at length scales of 0.04 and 0.013 of its range, and every other <i>E</i><sub>reb</sub> length scale is 0.03 to 0.045. The model uses mass to tell the two prints of a design apart, interpolates the 44 specimens and is flat between them: its posterior mean varies over the design space by 3.4 percent of the data's standard deviation for <i>t</i><sub>180</sub> and by under 0.1 percent for <i>E</i><sub>reb</sub>. With the noise learned, every length scale is 1.2 to 6.9, so the model is smooth and close to linear, and its posterior mean varies by 36 percent (<i>t</i><sub>180</sub>) and 32 percent (<i>E</i><sub>reb</sub>) of the data's standard deviation. Cable diameter <i>d</i><sub>t</sub> leads <i>t</i><sub>180</sub> in all four seeds (share 0.15), twist angle comes next (0.10), and printed mass drops to an ordinary share. <i>E</i><sub>reb</sub> has no stable leader: tendon infill 0.10, strut infill 0.10, <i>R</i> 0.09.</p></details>
+      </figcaption>
+    </figure>
+    <div class="prose narrow" style="margin:0 auto">
+      <p>Both figures are also on an <a href="https://htmlpreview.github.io/?https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/ef7f2d9cbdfe4a5fc79958854bf421ae278251a9/analysis/bo-review/figures/index.html">interactive page</a>: hover over a point for the specimen, its print session, its twin print, the measured and predicted values and all twelve inputs, or over a bar for each seed's value.</p>
+    </div>
+    <details class="block">
+      <summary><b>Held-out skill</b> of each surrogate, with two references</summary>
+      <div class="table-wrap"><table>
+        <thead>
+          <tr><th>Surrogate</th><th class="ctr"><i>t</i><sub>180</sub> &rho;<sub>s</sub> (<i>p</i>)</th><th class="ctr"><i>t</i><sub>180</sub> <i>R</i><sup>2</sup><sub>oos</sub></th><th class="ctr"><i>t</i><sub>180</sub> MAPE</th><th class="ctr"><i>E</i><sub>reb</sub> &rho;<sub>s</sub> (<i>p</i>)</th><th class="ctr"><i>E</i><sub>reb</sub> <i>R</i><sup>2</sup><sub>oos</sub></th><th class="ctr"><i>E</i><sub>reb</sub> MAPE</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Campaign: SEMs as fixed noise</td><td class="ctr">+0.32 (0.036)</td><td class="ctr">+0.12</td><td class="ctr">4.8%</td><td class="ctr">&minus;0.40 (0.008)</td><td class="ctr">&minus;0.05</td><td class="ctr">38.8%</td></tr>
+          <tr><td><b>Same model, noise learned</b></td><td class="ctr"><b>+0.55 (&lt;0.001)</b></td><td class="ctr"><b>+0.40</b></td><td class="ctr"><b>4.6%</b></td><td class="ctr"><b>+0.51 (&lt;0.001)</b></td><td class="ctr"><b>+0.23</b></td><td class="ctr"><b>33.2%</b></td></tr>
+          <tr><td>Replicate-based SEMs<sup>a</sup></td><td class="ctr">+0.52 (&lt;0.001)</td><td class="ctr">+0.37</td><td class="ctr">4.8%</td><td class="ctr">+0.38 (0.012)</td><td class="ctr">+0.12</td><td class="ctr">35.0%</td></tr>
+          <tr><td>Noise learned, filament settings dropped (eight inputs)<sup>a</sup></td><td class="ctr">+0.52 (&lt;0.001)</td><td class="ctr">+0.42</td><td class="ctr">4.4%</td><td class="ctr">+0.44 (0.003)</td><td class="ctr">+0.19</td><td class="ctr">33.6%</td></tr>
+          <tr><td>Tuned random forest (reference)</td><td class="ctr">+0.52 (&lt;0.001)</td><td class="ctr">+0.33</td><td class="ctr">5.0%</td><td class="ctr">+0.27 (0.082)</td><td class="ctr">+0.08</td><td class="ctr">35.9%</td></tr>
+          <tr><td>Training mean (reference)</td><td class="ctr"></td><td class="ctr">0</td><td class="ctr">5.2%</td><td class="ctr"></td><td class="ctr">0</td><td class="ctr">37.9%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">The same 35 folds and 44 specimens throughout. Replicate-based SEMs add the print-to-print scatter of the twin prints in the training fold to each specimen's SEM. The eight-input model drops the four filament settings, which change only between batches and so cannot be told apart from other differences between batches. <sup>a</sup>Fitted with BoTorch 0.18 rather than Ax 0.5.0. That code reproduces the first two rows: &rho;<sub>s</sub> = +0.30 and &minus;0.51 with the SEMs as fixed noise, +0.52 and +0.46 with the noise learned. The fits behind the replicate and eight-input rows are drawn in <a href="https://github.com/vertical-cloud-lab/tensegrity-optimization/blob/ef7f2d9/analysis/bo-review/figures/logocv-parity-other-fixes.png">a third parity figure</a> on #121.</p>
+    </details>
+  </div>
+</section>
+
+<section id="talk" class="light">
   <div class="container narrow">
     <h2>Talk</h2>
     <p>The campaign is the subject of Marcus Madsen's talk at ASME IDETC-CIE 2026, <i>Discovering multi-material, tensegrity-inspired energy absorbers via closed-loop Bayesian optimization</i> (track DAC-10, Design of Engineering Materials and Structures). The recording is from the lab's group meeting on 21 Sep 2026, with questions from 15:32.</p>
@@ -357,7 +400,7 @@
   </div>
 </section>
 
-<section id="videos" class="light">
+<section id="videos">
   <div class="container">
     <h2>Videos</h2>
     <div class="grid">
@@ -375,7 +418,7 @@
   </div>
 </section>
 
-<section id="abstracts">
+<section id="abstracts" class="light">
   <div class="container">
     <h2>Paper, abstracts and proposal</h2>
     <div class="two-col">
@@ -395,7 +438,7 @@
   </div>
 </section>
 
-<section id="bibtex" class="light">
+<section id="bibtex">
   <div class="container narrow">
     <h2>BibTeX</h2>
     <p>Until the paper is out, please cite the repository:</p>

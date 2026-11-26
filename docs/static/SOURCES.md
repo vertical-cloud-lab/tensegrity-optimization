@@ -19,9 +19,11 @@ thumbnail for it (`maxresdefault.jpg`, 1280 × 720).
 | `images/fig8_batch4_predicted_vs_measured.png` | `figures/bo/t3-prism-bo-round4-predicted-vs-actual.png` at `624e868`, byte for byte. Fig. 8. From #120. |
 | `images/fig9_three_prints.png` | `figures/analysis/round3-three-print.png` at `624e868`, byte for byte. Fig. 9, in the m·e² form of #126. |
 | `images/figS4_sim_campaign.png` | `figures/sim/sim-campaign.png` at `624e868`, byte for byte. Fig. S4 of the supplementary information. From Request E (#123). |
+| `images/surrogate_parity.png` | `analysis/bo-review/figures/logocv-parity-noise.png` on #121's branch (`claude/request-c-tables-logocv-ai-20261027`, [`ef7f2d9`](https://github.com/vertical-cloud-lab/tensegrity-optimization/tree/ef7f2d9/analysis/bo-review/figures)), byte for byte. Drawn by `analysis/bo-review/plot_fixes.py` from the committed run records ([comment](https://github.com/vertical-cloud-lab/tensegrity-optimization/pull/121#issuecomment-7155009556), "paper candidate 1"). Not in the manuscript at `624e868`: a candidate to replace SI Fig. S3, whose run is its top row. |
+| `images/surrogate_importance.png` | `analysis/bo-review/figures/feature-importance-noise.png` at `ef7f2d9`, byte for byte, by the same script ("paper candidate 2"). Not in the manuscript at `624e868`: a candidate to replace or follow SI Fig. S2. |
 | `images/printed_specimen.jpg` | `figures/photos/printed-specimen-light-bg.jpg` at `624e868`, byte for byte: a printed T3 prism (white PLA, orange TPU). |
 | `videos/teaser.mp4`, `images/teaser.jpg` | [`make_teaser.py`](make_teaser.py), from two clips already in this repository (below). The poster is the frame at 4.4 s. |
-| `screenshots/` | The page in headless Chrome at 1280 px and 390 px wide, its Talk section, and the teaser's storyboard, for the pull request. The page doesn't link to them. |
+| `screenshots/` | The page in headless Chrome at 1280 px and 390 px wide, its Talk section, its *Checking the surrogate* section at both widths (`surrogate.png`, `surrogate-phone.png`), and the teaser's storyboard, for the pull requests. The page doesn't link to them. |
 
 The figure numbers and captions on the page follow the compiled manuscript
 (`manuscript/manuscript.pdf` at `624e868`, built 5 Nov 2026 from
@@ -33,6 +35,18 @@ in the captions are the paper's. Table 1 is copied from the manuscript's
 `tab:design-vars`. The title, abstract and author list are from
 `manuscript-body.tex` at `624e868`. If the manuscript's figures or captions
 change, update the page to match.
+
+The exception is the *Checking the surrogate* section, which is a re-analysis
+from #121 that the manuscript at `624e868` doesn't have yet. Its two figures
+have no paper numbers. Their captions, the numbers in the text and the
+*Held-out skill* table come from `analysis/bo-review/README.md` at `ef7f2d9`
+(section "Figures: the surrogate with the fixes applied") and from the #121
+comment linked above. The page links the interactive plotly version of the
+two figures, `analysis/bo-review/figures/index.html`, through htmlpreview,
+pinned to the full hash of `ef7f2d9` so that it matches the PNGs; that page
+loads `plotly-4.1.1.min.js` from the same folder, so nothing comes from a
+CDN. If those figures go into the paper, give them the paper's numbers and
+captions here.
 
 ### The teaser
 
