@@ -1,0 +1,52 @@
+{
+ "model": "map",
+ "noise": "replicate",
+ "space": "twelve",
+ "columns": [
+  "R_mm",
+  "H_mm",
+  "twist_deg",
+  "strut_d_mm",
+  "cable_d_mm",
+  "mass_printed_g",
+  "strut_infill_pct",
+  "tpu_infill_pct",
+  "pla_nozzle_temp_C",
+  "pla_flow_mm3_s",
+  "tpu_nozzle_temp_C",
+  "tpu_flow_mm3_s"
+ ],
+ "budget": "MAP (fit_gpytorch_mll)",
+ "seed_scheme": "fold_index + 0 (torch and the JAX PRNG)",
+ "versions": {
+  "botorch": "0.18.1",
+  "gpytorch": "1.15.2",
+  "torch": "2.15.0+cpu",
+  "jax": "0.9.2",
+  "numpyro": "0.22.0",
+  "numpy": "2.4.6",
+  "pandas": "3.1.1"
+ },
+ "python": "3.12.16",
+ "total_fold_seconds": 10.3,
+ "stats": {
+  "t180": {
+   "MAPE_pct": 4.870631385884727,
+   "spearman": 0.4542635658914728,
+   "perm_p": 0.00275,
+   "R2_oos": 0.3132815832842093,
+   "coverage_1.96sd_pct": 88.63636363636364,
+   "pred_spread_sd": 0.05729850003172954,
+   "obs_sd": 0.08706642149099107
+  },
+  "e_reb_mJ": {
+   "MAPE_pct": 32.714230532110015,
+   "spearman": 0.5114869626497532,
+   "perm_p": 0.00035,
+   "R2_oos": 0.26152402811346664,
+   "coverage_1.96sd_pct": 81.81818181818183,
+   "pred_spread_sd": 1.476433393728701,
+   "obs_sd": 3.721328077055518
+  }
+ }
+}

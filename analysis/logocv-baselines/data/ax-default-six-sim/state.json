@@ -1,0 +1,259 @@
+{
+  "variant": "six-sim",
+  "variant_note": "the rounds-1-and-2 six parameters (five shape coordinates plus weighed printed mass) plus the six simulation features",
+  "objectives": [
+    "e_reb_mJ",
+    "t180"
+  ],
+  "objective_note": "the campaign pair as fitted in the round-5 snapshot",
+  "n_params": 12,
+  "kept_parameters": [
+    "R_mm",
+    "H_mm",
+    "twist_deg",
+    "strut_d_mm",
+    "cable_d_mm",
+    "mass_printed_g"
+  ],
+  "sim_features": [
+    "sim_tierC_t180",
+    "sim_tierC_tendon_energy_mJ",
+    "sim_tierC_stroke_mm",
+    "sim_tierB_t180",
+    "sim_tierB_fn_hz",
+    "sim_tierB_zeta_pct"
+  ],
+  "sim_feature_bounds": {
+    "sim_tierC_t180": [
+      0.58262740302,
+      0.94217276598
+    ],
+    "sim_tierC_tendon_energy_mJ": [
+      13.417192555,
+      264.098114095
+    ],
+    "sim_tierC_stroke_mm": [
+      3.0336495578999996,
+      35.7115834911
+    ],
+    "sim_tierB_t180": [
+      0.25624732678999995,
+      1.0649551693100001
+    ],
+    "sim_tierB_fn_hz": [
+      -11.45104138,
+      365.96145518
+    ],
+    "sim_tierB_zeta_pct": [
+      -3.0880939430000005,
+      46.138434613
+    ]
+  },
+  "sim_feature_source": "data/sim-features.csv",
+  "untested_arms_with_placeholder_features": [
+    "44_0",
+    "45_0",
+    "46_0",
+    "47_0",
+    "48_0",
+    "49_0",
+    "50_0",
+    "51_0",
+    "52_0",
+    "53_0",
+    "54_0",
+    "55_0",
+    "56_0",
+    "57_0",
+    "58_0",
+    "59_0",
+    "60_0",
+    "61_0",
+    "62_0",
+    "63_0"
+  ],
+  "sim_feature_note": "Tier C / Tier B drop-tower simulators from the sim branch at 94e53a8, run at the design's print geometry with the simulator's own mass model, so reprint twins share every feature",
+  "model": "ax-default",
+  "model_note": "Ax default: the BoTorch step of choose_generation_strategy (Models.BOTORCH_MODULAR, default surrogate SingleTaskGP, MAP fit, Winsorize + MBM_X_trans + Y_trans)",
+  "model_info": {
+    "generation_strategy": "GenerationStrategy(name='Sobol+BoTorch', steps=[Sobol for 24 trials, BoTorch for subsequent trials])",
+    "transforms": [
+      "Winsorize",
+      "FillMissingParameters",
+      "RemoveFixed",
+      "OrderedChoiceToIntegerRange",
+      "OneHot",
+      "LogIntToFloat",
+      "Log",
+      "Logit",
+      "IVW",
+      "Derelativize",
+      "StandardizeY"
+    ],
+    "transform_configs": {
+      "Derelativize": {
+        "use_raw_status_quo": false
+      },
+      "Winsorize": {
+        "derelativize_with_raw_status_quo": false
+      }
+    },
+    "fit_out_of_design": false,
+    "botorch_model": "SingleTaskGP",
+    "submodels": [
+      "SingleTaskGP"
+    ],
+    "likelihoods": [
+      "FixedNoiseGaussianLikelihood"
+    ],
+    "transforms_applied": [
+      "Cast",
+      "Winsorize",
+      "FillMissingParameters",
+      "RemoveFixed",
+      "OrderedChoiceToIntegerRange",
+      "OneHot",
+      "LogIntToFloat",
+      "Log",
+      "Logit",
+      "IVW",
+      "Derelativize",
+      "StandardizeY"
+    ],
+    "refit_on_cv": true,
+    "warm_start_refit": false,
+    "full_data_hyperparameters": {
+      "e_reb_mJ": {
+        "kernel": "RBFKernel",
+        "lengthscale": [
+          0.71169,
+          0.70909,
+          0.70677,
+          0.70585,
+          0.71009,
+          0.025,
+          0.025,
+          0.66992,
+          0.67879,
+          0.69423,
+          0.025,
+          0.025
+        ],
+        "likelihood": "FixedNoiseGaussianLikelihood"
+      },
+      "t180": {
+        "kernel": "RBFKernel",
+        "lengthscale": [
+          1.07729,
+          0.76309,
+          1.80573,
+          0.2991,
+          0.73701,
+          0.025,
+          0.025,
+          0.78612,
+          0.75845,
+          0.89783,
+          0.91333,
+          1.13519
+        ],
+        "likelihood": "FixedNoiseGaussianLikelihood"
+      }
+    },
+    "winsorize_cutoffs_full_data": {
+      "e_reb_mJ": [
+        -Infinity,
+        19.3813075364
+      ],
+      "t180": [
+        -Infinity,
+        1.15945601445
+      ]
+    }
+  },
+  "noise": "known",
+  "num_samples": 256,
+  "warmup_steps": 512,
+  "seed_scheme": "torch.manual_seed(fold_index) per fold, manual_seed(10000) before the shared initial fit (identical to the full-nuts-rerun protocol; fold order asserted equal to full-nuts-rerun); folds split across worker processes, each repeating the seeded initial fit",
+  "snapshot": "t3-prism-bo-ax-client-round5.json",
+  "campaign_branch": "claude/issue-98-20260821-0103",
+  "campaign_code_commit": "bbf7a62",
+  "driver": "analysis/logocv-baselines/rerun_logocv_six_param_sim.py (analysis/cv-signal-audit/rerun_logocv_sim_features.py at 6964ac2 plus the six-parameter base space)",
+  "torch_threads": 1,
+  "fold_keys": [
+    "6lhxfy",
+    "r2d2c3",
+    "r2d2c4",
+    "r2d2c5",
+    "r2d2c6",
+    "r2d2c7",
+    "r2d2c8",
+    "r2d2c9",
+    "drran1",
+    "drran2",
+    "drran3",
+    "6nheas",
+    "drran4",
+    "drran5",
+    "drran6",
+    "drran7",
+    "drran8",
+    "drran9",
+    "9hhbkp",
+    "corny1",
+    "corny2",
+    "corny3",
+    "corny4",
+    "corny5",
+    "autv5r",
+    "corny6",
+    "corny7",
+    "corny8",
+    "corny9",
+    "bag26v",
+    "bpx68c",
+    "nvxsrv",
+    "ajhby6",
+    "r2d2c1",
+    "r2d2c2"
+  ],
+  "fold_seconds": {
+    "6lhxfy": 0.4,
+    "r2d2c3": 0.5,
+    "r2d2c4": 0.4,
+    "r2d2c5": 0.4,
+    "r2d2c6": 0.4,
+    "r2d2c7": 0.3,
+    "r2d2c8": 0.4,
+    "r2d2c9": 0.4,
+    "drran1": 0.4,
+    "drran2": 2.0,
+    "drran3": 0.5,
+    "6nheas": 0.4,
+    "drran4": 0.2,
+    "drran5": 0.2,
+    "drran6": 0.3,
+    "drran7": 0.2,
+    "drran8": 0.2,
+    "drran9": 0.6,
+    "9hhbkp": 0.3,
+    "corny1": 0.2,
+    "corny2": 0.2,
+    "corny3": 0.4,
+    "corny4": 0.3,
+    "corny5": 0.4,
+    "autv5r": 0.4,
+    "corny6": 0.5,
+    "corny7": 0.1,
+    "corny8": 0.2,
+    "corny9": 0.8,
+    "bag26v": 0.3,
+    "bpx68c": 0.2,
+    "nvxsrv": 0.2,
+    "ajhby6": 0.3,
+    "r2d2c1": 0.2,
+    "r2d2c2": 0.3
+  },
+  "status": "complete",
+  "total_fold_seconds": 13.5
+}

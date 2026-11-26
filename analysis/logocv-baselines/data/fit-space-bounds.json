@@ -1,0 +1,80 @@
+{
+ "source": "fit_search_space(include_process=True) of bo/t3_prism_bo_campaign.py at bbf7a62 (the Ax fit space of every LOGO-CV run)",
+ "bounds": {
+  "R_mm": [
+   25.0,
+   40.0
+  ],
+  "H_mm": [
+   60.0,
+   110.0
+  ],
+  "twist_deg": [
+   40.0,
+   80.0
+  ],
+  "strut_d_mm": [
+   6.0,
+   12.0
+  ],
+  "cable_d_mm": [
+   3.0,
+   5.5
+  ],
+  "mass_printed_g": [
+   17.5,
+   24.0
+  ],
+  "strut_infill_pct": [
+   12.0,
+   35.0
+  ],
+  "tpu_infill_pct": [
+   12.0,
+   35.0
+  ],
+  "pla_nozzle_temp_C": [
+   212.0,
+   228.0
+  ],
+  "pla_flow_mm3_s": [
+   20.0,
+   30.0
+  ],
+  "tpu_nozzle_temp_C": [
+   235.0,
+   245.0
+  ],
+  "tpu_flow_mm3_s": [
+   2.2,
+   3.6
+  ]
+ },
+ "sim_feature_bounds": {
+  "sim_tierC_t180": [
+   0.58262740302,
+   0.94217276598
+  ],
+  "sim_tierC_tendon_energy_mJ": [
+   13.417192555,
+   264.098114095
+  ],
+  "sim_tierC_stroke_mm": [
+   3.0336495578999996,
+   35.7115834911
+  ],
+  "sim_tierB_t180": [
+   0.25624732678999995,
+   1.0649551693100001
+  ],
+  "sim_tierB_fn_hz": [
+   -11.45104138,
+   365.96145518
+  ],
+  "sim_tierB_zeta_pct": [
+   -3.0880939430000005,
+   46.138434613
+  ]
+ },
+ "sim_feature_bounds_source": "data/ax-six-sim/state.json (observed range over the 46 design-mapped articles of data/sim-features.csv, padded by 10% of the span)"
+}

@@ -1,0 +1,282 @@
+{
+ "6lhxfy/t180": {
+  "kernel": "0.934**2 * Matern(length_scale=[2.29, 2.54, 1.95, 100, 0.1, 6.01], nu=2.5) + WhiteKernel(noise_level=0.289)",
+  "lml": -50.106731833545226
+ },
+ "6lhxfy/e_reb_mJ": {
+  "kernel": "0.391**2 * Matern(length_scale=[1.18, 100, 100, 100, 1.76, 100], nu=2.5) + WhiteKernel(noise_level=0.87)",
+  "lml": -60.05689162395228
+ },
+ "r2d2c3/t180": {
+  "kernel": "0.813**2 * Matern(length_scale=[1.67, 2.49, 8.56, 100, 0.1, 6.6], nu=2.5) + WhiteKernel(noise_level=0.335)",
+  "lml": -48.93765656874534
+ },
+ "r2d2c3/e_reb_mJ": {
+  "kernel": "0.424**2 * Matern(length_scale=[1.5, 100, 100, 100, 1.5, 100], nu=2.5) + WhiteKernel(noise_level=0.85)",
+  "lml": -59.82691166888293
+ },
+ "r2d2c4/t180": {
+  "kernel": "0.912**2 * Matern(length_scale=[1.74, 100, 1.88, 100, 0.1, 7.21], nu=2.5) + WhiteKernel(noise_level=0.322)",
+  "lml": -49.804044965374786
+ },
+ "r2d2c4/e_reb_mJ": {
+  "kernel": "0.463**2 * Matern(length_scale=[1.49, 100, 100, 100, 2, 100], nu=2.5) + WhiteKernel(noise_level=0.829)",
+  "lml": -59.46213146687512
+ },
+ "r2d2c5/t180": {
+  "kernel": "0.977**2 * Matern(length_scale=[2.38, 2.64, 1.96, 100, 0.1, 100], nu=2.5) + WhiteKernel(noise_level=0.274)",
+  "lml": -49.291571088702966
+ },
+ "r2d2c5/e_reb_mJ": {
+  "kernel": "0.432**2 * Matern(length_scale=[1.53, 100, 100, 100, 1.53, 100], nu=2.5) + WhiteKernel(noise_level=0.846)",
+  "lml": -59.75599388467256
+ },
+ "r2d2c6/t180": {
+  "kernel": "0.901**2 * Matern(length_scale=[2.4, 2.55, 1.96, 100, 0.1, 6.31], nu=2.5) + WhiteKernel(noise_level=0.279)",
+  "lml": -49.057103450316546
+ },
+ "r2d2c6/e_reb_mJ": {
+  "kernel": "0.417**2 * Matern(length_scale=[1.47, 100, 100, 100, 1.47, 100], nu=2.5) + WhiteKernel(noise_level=0.855)",
+  "lml": -59.894232232932936
+ },
+ "r2d2c7/t180": {
+  "kernel": "0.914**2 * Matern(length_scale=[2.75, 2.28, 0.45, 100, 0.715, 5.79], nu=2.5) + WhiteKernel(noise_level=0.267)",
+  "lml": -48.99375827108156
+ },
+ "r2d2c7/e_reb_mJ": {
+  "kernel": "0.42**2 * Matern(length_scale=[1.58, 100, 100, 100, 1.57, 100], nu=2.5) + WhiteKernel(noise_level=0.862)",
+  "lml": -60.034662052416294
+ },
+ "r2d2c8/t180": {
+  "kernel": "0.962**2 * Matern(length_scale=[2.89, 100, 2.01, 100, 0.1, 6.84], nu=2.5) + WhiteKernel(noise_level=0.295)",
+  "lml": -48.31641042001533
+ },
+ "r2d2c8/e_reb_mJ": {
+  "kernel": "0.451**2 * Matern(length_scale=[1.55, 100, 100, 100, 1.74, 100], nu=2.5) + WhiteKernel(noise_level=0.836)",
+  "lml": -59.58505960825799
+ },
+ "r2d2c9/t180": {
+  "kernel": "0.906**2 * Matern(length_scale=[2.64, 2.61, 1.97, 100, 0.1, 6.59], nu=2.5) + WhiteKernel(noise_level=0.265)",
+  "lml": -48.10249737715327
+ },
+ "r2d2c9/e_reb_mJ": {
+  "kernel": "0.448**2 * Matern(length_scale=[1.79, 100, 100, 100, 1.41, 100], nu=2.5) + WhiteKernel(noise_level=0.831)",
+  "lml": -59.47355135071308
+ },
+ "drran1/t180": {
+  "kernel": "0.891**2 * Matern(length_scale=[2.42, 2.54, 1.95, 100, 0.1, 6.12], nu=2.5) + WhiteKernel(noise_level=0.274)",
+  "lml": -47.556144935222044
+ },
+ "drran1/e_reb_mJ": {
+  "kernel": "0.532**2 * Matern(length_scale=[1.29, 100, 100, 100, 2.33, 100], nu=2.5) + WhiteKernel(noise_level=0.779)",
+  "lml": -57.324156478236375
+ },
+ "drran2/t180": {
+  "kernel": "0.893**2 * Matern(length_scale=[2.39, 2.54, 1.94, 100, 0.1, 6.27], nu=2.5) + WhiteKernel(noise_level=0.277)",
+  "lml": -48.00780817405345
+ },
+ "drran2/e_reb_mJ": {
+  "kernel": "0.463**2 * Matern(length_scale=[1.58, 100, 100, 100, 1.59, 100], nu=2.5) + WhiteKernel(noise_level=0.824)",
+  "lml": -58.073363314151536
+ },
+ "drran3/t180": {
+  "kernel": "0.874**2 * Matern(length_scale=[2.68, 1.63, 1.87, 100, 0.1, 6.1], nu=2.5) + WhiteKernel(noise_level=0.274)",
+  "lml": -47.73334328354798
+ },
+ "drran3/e_reb_mJ": {
+  "kernel": "0.429**2 * Matern(length_scale=[1.47, 100, 100, 100, 1.53, 100], nu=2.5) + WhiteKernel(noise_level=0.846)",
+  "lml": -58.37931702846029
+ },
+ "6nheas/t180": {
+  "kernel": "0.931**2 * Matern(length_scale=[2.4, 2.57, 1.94, 100, 0.1, 6.47], nu=2.5) + WhiteKernel(noise_level=0.269)",
+  "lml": -48.45229373254834
+ },
+ "6nheas/e_reb_mJ": {
+  "kernel": "0.396**2 * Matern(length_scale=[1.59, 100, 100, 100, 0.846, 100], nu=2.5) + WhiteKernel(noise_level=0.859)",
+  "lml": -59.90244838309017
+ },
+ "drran4/t180": {
+  "kernel": "0.94**2 * Matern(length_scale=[2.11, 100, 1.88, 100, 0.1, 6.35], nu=2.5) + WhiteKernel(noise_level=0.28)",
+  "lml": -47.061297659130595
+ },
+ "drran4/e_reb_mJ": {
+  "kernel": "0.436**2 * Matern(length_scale=[1.79, 100, 100, 100, 1.26, 100], nu=2.5) + WhiteKernel(noise_level=0.84)",
+  "lml": -58.26098475312196
+ },
+ "drran5/t180": {
+  "kernel": "0.886**2 * Matern(length_scale=[2.42, 2.55, 1.96, 100, 0.1, 6.19], nu=2.5) + WhiteKernel(noise_level=0.282)",
+  "lml": -48.10756923299768
+ },
+ "drran5/e_reb_mJ": {
+  "kernel": "0.392**2 * Matern(length_scale=[1.41, 100, 100, 100, 1.4, 100], nu=2.5) + WhiteKernel(noise_level=0.868)",
+  "lml": -58.6921525656449
+ },
+ "drran6/t180": {
+  "kernel": "0.891**2 * Matern(length_scale=[2.39, 2.54, 1.93, 100, 0.1, 6.3], nu=2.5) + WhiteKernel(noise_level=0.28)",
+  "lml": -48.14456045514142
+ },
+ "drran6/e_reb_mJ": {
+  "kernel": "0.411**2 * Matern(length_scale=[1.46, 100, 100, 100, 1.46, 100], nu=2.5) + WhiteKernel(noise_level=0.857)",
+  "lml": -58.53404891967486
+ },
+ "drran7/t180": {
+  "kernel": "1.52**2 * Matern(length_scale=[4.88, 4.09, 2.09, 100, 1.88, 6.12], nu=2.5) + WhiteKernel(noise_level=0.135)",
+  "lml": -40.42969280106108
+ },
+ "drran7/e_reb_mJ": {
+  "kernel": "0.439**2 * Matern(length_scale=[1.75, 100, 100, 100, 1.32, 100], nu=2.5) + WhiteKernel(noise_level=0.839)",
+  "lml": -58.24178244130664
+ },
+ "drran8/t180": {
+  "kernel": "0.896**2 * Matern(length_scale=[2.33, 2.4, 1.88, 100, 0.1, 6.2], nu=2.5) + WhiteKernel(noise_level=0.277)",
+  "lml": -48.047971016048784
+ },
+ "drran8/e_reb_mJ": {
+  "kernel": "0.447**2 * Matern(length_scale=[1.36, 100, 100, 100, 1.95, 100], nu=2.5) + WhiteKernel(noise_level=0.837)",
+  "lml": -58.234550189690665
+ },
+ "drran9/t180": {
+  "kernel": "0.884**2 * Matern(length_scale=[2.43, 2.57, 2, 100, 0.1, 6.38], nu=2.5) + WhiteKernel(noise_level=0.283)",
+  "lml": -48.08207365462494
+ },
+ "drran9/e_reb_mJ": {
+  "kernel": "0.537**2 * Matern(length_scale=[1.74, 100, 100, 100, 1.77, 100], nu=2.5) + WhiteKernel(noise_level=0.776)",
+  "lml": -57.27870135799289
+ },
+ "9hhbkp/t180": {
+  "kernel": "0.914**2 * Matern(length_scale=[2.32, 2.64, 1.9, 100, 0.1, 6.42], nu=2.5) + WhiteKernel(noise_level=0.267)",
+  "lml": -48.16844793246069
+ },
+ "9hhbkp/e_reb_mJ": {
+  "kernel": "0.438**2 * Matern(length_scale=[1.43, 100, 100, 100, 1.64, 100], nu=2.5) + WhiteKernel(noise_level=0.841)",
+  "lml": -59.66470112144154
+ },
+ "corny1/t180": {
+  "kernel": "0.901**2 * Matern(length_scale=[2.38, 2.57, 1.94, 100, 0.1, 6.27], nu=2.5) + WhiteKernel(noise_level=0.276)",
+  "lml": -48.95103217903885
+ },
+ "corny1/e_reb_mJ": {
+  "kernel": "0.45**2 * Matern(length_scale=[1.58, 100, 100, 100, 1.58, 100], nu=2.5) + WhiteKernel(noise_level=0.834)",
+  "lml": -59.58294677887288
+ },
+ "corny2/t180": {
+  "kernel": "0.903**2 * Matern(length_scale=[2.42, 2.63, 1.95, 100, 0.1, 6.32], nu=2.5) + WhiteKernel(noise_level=0.278)",
+  "lml": -49.00634635202853
+ },
+ "corny2/e_reb_mJ": {
+  "kernel": "0.457**2 * Matern(length_scale=[1.59, 100, 100, 100, 1.6, 100], nu=2.5) + WhiteKernel(noise_level=0.83)",
+  "lml": -59.520356088364295
+ },
+ "corny3/t180": {
+  "kernel": "0.901**2 * Matern(length_scale=[2.41, 2.61, 1.95, 100, 0.1, 6.32], nu=2.5) + WhiteKernel(noise_level=0.279)",
+  "lml": -49.06223726330022
+ },
+ "corny3/e_reb_mJ": {
+  "kernel": "0.451**2 * Matern(length_scale=[1.58, 100, 100, 100, 1.58, 100], nu=2.5) + WhiteKernel(noise_level=0.834)",
+  "lml": -59.57352008005697
+ },
+ "corny4/t180": {
+  "kernel": "0.901**2 * Matern(length_scale=[2.38, 2.57, 1.94, 100, 0.1, 6.29], nu=2.5) + WhiteKernel(noise_level=0.276)",
+  "lml": -48.96797333904474
+ },
+ "corny4/e_reb_mJ": {
+  "kernel": "0.414**2 * Matern(length_scale=[1.46, 10.5, 100, 100, 1.43, 100], nu=2.5) + WhiteKernel(noise_level=0.854)",
+  "lml": -59.8843669047768
+ },
+ "corny5/t180": {
+  "kernel": "0.906**2 * Matern(length_scale=[2.42, 2.65, 1.95, 100, 0.1, 6.31], nu=2.5) + WhiteKernel(noise_level=0.276)",
+  "lml": -48.96829293221322
+ },
+ "corny5/e_reb_mJ": {
+  "kernel": "0.448**2 * Matern(length_scale=[1.57, 100, 100, 100, 1.58, 100], nu=2.5) + WhiteKernel(noise_level=0.836)",
+  "lml": -59.602377773507165
+ },
+ "autv5r/t180": {
+  "kernel": "0.937**2 * Matern(length_scale=[2.44, 2.63, 1.96, 100, 0.1, 6.6], nu=2.5) + WhiteKernel(noise_level=0.268)",
+  "lml": -48.43934056691442
+ },
+ "autv5r/e_reb_mJ": {
+  "kernel": "0.475**2 * Matern(length_scale=[1.57, 100, 100, 100, 1.61, 100], nu=2.5) + WhiteKernel(noise_level=0.826)",
+  "lml": -59.51238408090271
+ },
+ "corny6/t180": {
+  "kernel": "0.935**2 * Matern(length_scale=[2.41, 2.53, 1.98, 100, 0.1, 6.21], nu=2.5) + WhiteKernel(noise_level=0.288)",
+  "lml": -50.07305505048224
+ },
+ "corny6/e_reb_mJ": {
+  "kernel": "0.628**2 * Matern(length_scale=[1.83, 100, 100, 100, 1.8, 100], nu=2.5) + WhiteKernel(noise_level=0.748)",
+  "lml": -58.34799028585716
+ },
+ "corny7/t180": {
+  "kernel": "0.964**2 * Matern(length_scale=[2.35, 2.29, 1.88, 100, 0.1, 5.69], nu=2.5) + WhiteKernel(noise_level=0.278)",
+  "lml": -50.43465756654261
+ },
+ "corny7/e_reb_mJ": {
+  "kernel": "0.498**2 * Matern(length_scale=[1.69, 100, 100, 100, 1.68, 100], nu=2.5) + WhiteKernel(noise_level=0.822)",
+  "lml": -59.52034613886342
+ },
+ "corny8/t180": {
+  "kernel": "0.962**2 * Matern(length_scale=[2.33, 2.57, 1.99, 100, 0.1, 5.94], nu=2.5) + WhiteKernel(noise_level=0.244)",
+  "lml": -48.33296502831378
+ },
+ "corny8/e_reb_mJ": {
+  "kernel": "0.318**2 * Matern(length_scale=[1.4, 100, 100, 100, 1.35, 100], nu=2.5) + WhiteKernel(noise_level=0.91)",
+  "lml": -60.50940470815847
+ },
+ "corny9/t180": {
+  "kernel": "0.923**2 * Matern(length_scale=[2.52, 2.27, 1.93, 100, 0.1, 6.24], nu=2.5) + WhiteKernel(noise_level=0.303)",
+  "lml": -50.69620535807481
+ },
+ "corny9/e_reb_mJ": {
+  "kernel": "0.311**2 * Matern(length_scale=[1.39, 100, 100, 100, 1.33, 100], nu=2.5) + WhiteKernel(noise_level=0.913)",
+  "lml": -60.53222843795254
+ },
+ "bag26v/t180": {
+  "kernel": "0.934**2 * Matern(length_scale=[2.38, 2.66, 1.96, 100, 0.1, 6.44], nu=2.5) + WhiteKernel(noise_level=0.268)",
+  "lml": -48.36287891818855
+ },
+ "bag26v/e_reb_mJ": {
+  "kernel": "0.454**2 * Matern(length_scale=[1.63, 100, 100, 100, 1.46, 100], nu=2.5) + WhiteKernel(noise_level=0.832)",
+  "lml": -59.530354459164215
+ },
+ "bpx68c/t180": {
+  "kernel": "0.904**2 * Matern(length_scale=[2.43, 2.35, 1.87, 100, 0.1, 6.07], nu=2.5) + WhiteKernel(noise_level=0.275)",
+  "lml": -48.937423141210274
+ },
+ "bpx68c/e_reb_mJ": {
+  "kernel": "0.447**2 * Matern(length_scale=[1.76, 100, 100, 100, 1.42, 100], nu=2.5) + WhiteKernel(noise_level=0.833)",
+  "lml": -59.503436016871134
+ },
+ "nvxsrv/t180": {
+  "kernel": "0.941**2 * Matern(length_scale=[2.39, 2.7, 1.99, 100, 0.1, 6.3], nu=2.5) + WhiteKernel(noise_level=0.268)",
+  "lml": -48.41367904365801
+ },
+ "nvxsrv/e_reb_mJ": {
+  "kernel": "0.439**2 * Matern(length_scale=[1.52, 100, 100, 100, 1.45, 100], nu=2.5) + WhiteKernel(noise_level=0.839)",
+  "lml": -59.63934827568916
+ },
+ "ajhby6/t180": {
+  "kernel": "0.939**2 * Matern(length_scale=[2.38, 2.63, 1.96, 100, 0.1, 6.27], nu=2.5) + WhiteKernel(noise_level=0.268)",
+  "lml": -48.417305584196725
+ },
+ "ajhby6/e_reb_mJ": {
+  "kernel": "0.439**2 * Matern(length_scale=[1.51, 100, 100, 100, 1.6, 100], nu=2.5) + WhiteKernel(noise_level=0.842)",
+  "lml": -59.68015880042076
+ },
+ "r2d2c1/t180": {
+  "kernel": "0.911**2 * Matern(length_scale=[2.31, 2.51, 1.92, 100, 0.1, 6.15], nu=2.5) + WhiteKernel(noise_level=0.274)",
+  "lml": -48.97890057942639
+ },
+ "r2d2c1/e_reb_mJ": {
+  "kernel": "0.448**2 * Matern(length_scale=[1.78, 100, 100, 100, 1.41, 100], nu=2.5) + WhiteKernel(noise_level=0.832)",
+  "lml": -59.48482720631692
+ },
+ "r2d2c2/t180": {
+  "kernel": "0.907**2 * Matern(length_scale=[2.37, 2.56, 1.92, 100, 0.1, 6.22], nu=2.5) + WhiteKernel(noise_level=0.275)",
+  "lml": -48.88762416007664
+ },
+ "r2d2c2/e_reb_mJ": {
+  "kernel": "0.45**2 * Matern(length_scale=[1.81, 100, 100, 100, 1.4, 100], nu=2.5) + WhiteKernel(noise_level=0.83)",
+  "lml": -59.45238392030751
+ }
+}

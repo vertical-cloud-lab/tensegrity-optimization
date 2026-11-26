@@ -1,0 +1,82 @@
+{
+ "space": "six",
+ "design": "drran4",
+ "fold_index": 13,
+ "rows": [
+  {
+   "arm_name": "20_0",
+   "print_id": "drran4",
+   "metric": "t180",
+   "observed": 1.034355449,
+   "observed_sem": 0.0003727773,
+   "predicted": 1.1103462992648747,
+   "predicted_sem": 0.05186831967576915,
+   "predicted_sd_bofire": 0.06958123366408994
+  },
+  {
+   "arm_name": "29_0",
+   "print_id": "2dran4",
+   "metric": "t180",
+   "observed": 1.043325924,
+   "observed_sem": 0.0005779807,
+   "predicted": 1.1096479352781294,
+   "predicted_sem": 0.05146970344985174,
+   "predicted_sd_bofire": 0.06928460049278326
+  },
+  {
+   "arm_name": "20_0",
+   "print_id": "drran4",
+   "metric": "e_reb_mJ",
+   "observed": 9.095628295,
+   "observed_sem": 0.2090117409,
+   "predicted": 9.208453551735431,
+   "predicted_sem": 1.5635135304485441,
+   "predicted_sd_bofire": 3.5271501654595077
+  },
+  {
+   "arm_name": "29_0",
+   "print_id": "2dran4",
+   "metric": "e_reb_mJ",
+   "observed": 11.18830966,
+   "observed_sem": 0.2672745215,
+   "predicted": 9.203127189543286,
+   "predicted_sem": 1.5604100240762289,
+   "predicted_sd_bofire": 3.525775542067722
+  }
+ ],
+ "fits": {
+  "t180": {
+   "kernel": "MaternKernel",
+   "n_draws": 8,
+   "lengthscale_median": [
+    3.42659,
+    1.91062,
+    1.70364,
+    3.50314,
+    3.2656,
+    1.23532
+   ],
+   "noise_standardized_median": 0.27966609597206116,
+   "n_train": 42,
+   "seconds": 8.37,
+   "outputscale_median": 4.477027893066406
+  },
+  "e_reb_mJ": {
+   "kernel": "MaternKernel",
+   "n_draws": 8,
+   "lengthscale_median": [
+    9.8263,
+    4.4196,
+    8.94202,
+    6.19573,
+    7.68065,
+    8.41455
+   ],
+   "noise_standardized_median": 0.6700594425201416,
+   "n_train": 42,
+   "seconds": 9.45,
+   "outputscale_median": 10.987515211105347
+  }
+ },
+ "seconds": 17.9
+}
