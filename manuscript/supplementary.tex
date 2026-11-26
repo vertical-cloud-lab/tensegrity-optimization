@@ -843,50 +843,81 @@ sessions are defined in Section~\ref{si:drop}.
 \section{Surrogate Diagnostic Figures}
 \label{si:surrogate}
 % -----------------------------------------------------------------------------
-Figures~\ref{fig:si-sensitivity} and~\ref{fig:si-logocv} are the surrogate
-diagnostics discussed in the main text (Section~4.3): the seed-state
-length-scale diagnostics of the sparse axis-aligned subspace model (SAASBO)
-and the leave-one-design-out cross-validation of the surrogate over the full
-44-specimen record. The cross-validation runner, its fold-level records, the
-plotting script, and the reliability-ceiling analysis of the reprint pairs
-are in the project repository
-(\texttt{t3-prism-bo-round5-logocv.csv},
-\texttt{scripts/\allowbreak figures/\allowbreak plot\_logocv.py},
-\texttt{scripts/\allowbreak figures/\allowbreak reprint\_reliability\_ceiling.py}).
+Figures~\ref{fig:si-importance} and~\ref{fig:si-logocv} are the surrogate
+diagnostics discussed in the main text (Section~4.3). Both compare two noise
+specifications of the same sparse axis-aligned subspace (SAAS) model. In the
+campaign's specification, each specimen's within-session standard error
+enters the fit as a known noise variance. In the re-analysis, the fit learns
+one noise variance per objective from the data. The campaign chose every
+batch with the first. The second is a re-analysis of the same 44 specimens.
+Both figures use the twelve inputs of the batch-3 and batch-4 fits: the five
+geometry coordinates, the weighed printed mass, the two infill densities, and
+the four filament settings. The runs, fold records, and plotting script
+(\texttt{plot\_fixes.py}, which draws both figures from the committed run
+records) are in the project repository under
+\texttt{analysis/\allowbreak bo-review/} and
+\texttt{analysis/\allowbreak logocv-baselines/}. The same directories hold
+the training-mean and tuned random-forest baselines, a variant with
+replicate-based standard errors, an eight-input variant without the
+filament settings, and point-estimated Gaussian processes on the same folds.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.7\linewidth]{../figures/bo/t3-prism-bo-round1-feature-importance.png}
-  \caption{Seed-state SAASBO length-scale diagnostics per objective
-    for the five design variables plus printed mass. Bars are median
-    normalized inverse length scales over MCMC draws, and whiskers
-    are interquartile ranges. The horizontal axis, labeled ``share of model
-    sensitivity'' in the plot, is this normalized inverse-length-scale
-    diagnostic. No input separates decisively from the equal-share
-    line (dashed) at seven mapped specimens, and these prior-sensitive
-    model diagnostics are not evidence of variable relevance.}
-  \label{fig:si-sensitivity}
+  \includegraphics[width=\linewidth]{../analysis/bo-review/figures/feature-importance-noise.pdf}
+  \caption{What the twelve-input SAAS surrogate uses, fitted to all 44
+    specimens with the standard errors as fixed noise (open gray bars and
+    markers, the campaign's specification) and with the noise learned
+    (filled). \emph{(a, b)} Share of model sensitivity, the normalized
+    inverse length scale that Ax reports as feature importance. Bars are
+    posterior medians and whiskers interquartile ranges over 64 draws
+    (four NUTS chains with different seeds, 512 warmup steps and 256
+    samples each, thinned by 16). The dashed line marks an equal share.
+    \emph{(c, d)} Raw length scales on the unit cube, with each chain's
+    median as a tick. The dashed line marks the width of the cube. With
+    fixed noise, printed mass takes the largest share (0.39 for
+    $t_{180}$, 0.18 for $E_{\mathrm{reb}}$) at length scales of 0.04 and
+    0.013, and every $E_{\mathrm{reb}}$ length scale is below 0.05. The
+    model uses mass to separate the reprint twins, and its posterior mean
+    is nearly flat between the data. Its standard deviation over the input
+    space is 3.4\% of the data standard deviation for $t_{180}$ and under
+    0.1\% for $E_{\mathrm{reb}}$. With the noise learned, every length
+    scale lies between 1.2 and 6.9, and the posterior mean varies with
+    36\% and 32\% of the data standard deviation. Cable diameter $d_t$
+    leads $t_{180}$ in all four chains (share 0.15), followed by the
+    twist angle (0.10). No input leads $E_{\mathrm{reb}}$ in every chain.
+    Normalized shares alone cannot tell a flat model from a smooth one,
+    which is why we show the raw length scales. These fits use BoTorch's
+    fully Bayesian SAAS model, the model class that Ax's SAASBO builds.}
+  \label{fig:si-importance}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\linewidth]{../figures/bo/t3-prism-bo-round5-logocv.png}
-  \caption{Leave-one-design-out cross-validation of the SAASBO
-    surrogate over the full 44-specimen record (35 design folds, one
-    NUTS refit per fold at 256 samples after 512 warmup steps, the
-    budget of the generation fits). Each batch-3 reprint pair is held
-    out together so neither print leaks into the other's prediction.
-    Vertical bars are one posterior standard deviation of the held-out
-    prediction, horizontal bars are the ingested standard error, and
-    the dashed line is parity. Held-out $t_{180}$ predictions stay close
-    to the pooled mean (MAPE 4.8\%, Spearman $\rho_s = +0.32$,
-    two-sided permutation $p = 0.036$), and the ordering of
-    $E_{\mathrm{reb}}$, the first-power rebound objective these fits
-    used, runs against the measurements (MAPE 38.8\%, $\rho_s = -0.40$, $p = 0.008$).
-    Design-level held-out skill is weak on transmissibility and absent
-    on $E_{\mathrm{reb}}$. The folds, held-out predictions, and
-    diagnostics are archived as \texttt{t3-prism-bo-round5-logocv.csv}
-    and its \texttt{-diagnostics.json}, and the earlier run at 64
+  \includegraphics[width=0.8\linewidth]{../analysis/bo-review/figures/logocv-parity-noise.pdf}
+  \caption{Leave-one-design-out cross-validation of the SAASBO surrogate
+    over the full 44-specimen record (35 design folds, each batch-3
+    reprint pair held out together). Each fold is refitted in Ax~0.5.0
+    with 512 NUTS warmup steps and 256 samples, the budget of the
+    generation fits.
+    \emph{(a, b)} The campaign's specification, with the standard errors
+    as fixed noise. The campaign chose every batch with this model.
+    \emph{(c, d)} The same model, folds, seeds, and budget with the noise
+    learned. Vertical bars are one posterior standard deviation of the
+    latent mean and leave out the learned noise, horizontal bars are the
+    ingested standard errors, and the dashed line is parity. $\rho_s$ is
+    the Spearman rank correlation with its two-sided permutation $p$, and
+    $R^2_{\mathrm{oos}}$ is the out-of-sample coefficient of
+    determination against the mean of each training fold. With fixed
+    noise, held-out $t_{180}$ predictions stay near the pooled mean, and
+    the ordering of $E_{\mathrm{reb}}$, the first-power rebound objective
+    of these fits, runs against the measurements. With the noise learned,
+    both held-out orderings correlate positively with the measured ones
+    ($\rho_s = +0.55$ and $+0.51$, $p < 0.001$). The
+    learned noise standard deviation is 0.044 to 0.049 for $t_{180}$ and
+    2.6 to \SI{2.9}{mJ} for $E_{\mathrm{reb}}$ in the fits of
+    Fig.~\ref{fig:si-importance}, so a single print can land well outside
+    the bars. The fixed-noise fold records are archived as
+    \texttt{t3-prism-bo-round5-logocv.csv}, with an earlier run at 64
     samples after 128 warmup steps under the suffix \texttt{-nuts64}
     ($t_{180}$ $\rho_s = +0.08$, $E_{\mathrm{reb}}$ $\rho_s = -0.38$).}
   \label{fig:si-logocv}

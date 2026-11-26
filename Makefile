@@ -129,9 +129,21 @@ figure-batch4:
 figure-three-print:
 	$(FIG_PY) $(FIG_SCRIPTS)/round3_three_print_analysis.py
 
-# SI fig:si-sensitivity, relabeled with the campaign branch's own plotting
-# code; needs a checkout of claude/issue-98-20260821-0103 (e.g. a worktree).
+# Seed-state feature importances (the SI figure fig:si-sensitivity until
+# 2026-11-26, when fig:si-importance replaced it), relabeled with the campaign
+# branch's own plotting code; needs a checkout of claude/issue-98-20260821-0103
+# (e.g. a worktree).
 CAMPAIGN_BO ?= /tmp/campaign/bo
 .PHONY: figure-si-sensitivity
 figure-si-sensitivity:
 	$(FIG_PY) $(FIG_SCRIPTS)/relabel_seed_feature_importance.py $(CAMPAIGN_BO)
+
+# SI fig:si-importance and fig:si-logocv: the campaign surrogate (standard
+# errors as fixed noise) against the same SAAS model with the noise learned
+# (PR #121). Draws both figures, the interactive page
+# analysis/bo-review/figures/index.html and the scorecard from committed run
+# records only (analysis/bo-review/data/, analysis/logocv-baselines/data/).
+# Needs numpy, scipy, pandas, matplotlib and plotly.
+.PHONY: figure-si-surrogate
+figure-si-surrogate:
+	$(FIG_PY) analysis/bo-review/plot_fixes.py

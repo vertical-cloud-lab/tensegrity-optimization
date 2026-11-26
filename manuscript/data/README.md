@@ -129,6 +129,26 @@ outputs stay reproducible. `scripts/figures/plot_logocv.py` draws
 `t3-prism-bo-round5-logocv-stats.json` (MAPE, Spearman rho with a two-sided
 permutation p, Pearson r and r^2, 1.96-sd coverage).
 
+## Surrogate re-analysis figures (added 2026-11-26)
+
+Since 2026-11-26 the SI shows `fig:si-importance` and `fig:si-logocv` from
+the PR #121 re-analysis instead of `figures/bo/t3-prism-bo-round1-feature-importance.png`
+(seed-state importances) and `figures/bo/t3-prism-bo-round5-logocv.png`. Both
+new figures, `analysis/bo-review/figures/feature-importance-noise.pdf` and
+`analysis/bo-review/figures/logocv-parity-noise.pdf`, are drawn by
+`analysis/bo-review/plot_fixes.py` (`make figure-si-surrogate`) from committed
+run records only. The top row of the parity figure reads
+`t3-prism-bo-round5-logocv.csv` in this directory (the campaign surrogate, so
+its numbers match the earlier figure exactly). The bottom row reads
+`analysis/logocv-baselines/data/ax-saasbo-inferred-noise-twelve/` (the same
+Ax 0.5.0 SAASBO, folds, seeds and NUTS budget with the standard errors
+blanked, so the noise is learned). The importance figure reads
+`analysis/bo-review/data/importances/all-twelve-{fixed,learned}-512w256-s{0..3}.json`.
+Every number the manuscript quotes from these runs is in
+`analysis/bo-review/figures/scorecard.{csv,json}` and
+`analysis/logocv-baselines/scores.csv`; the analysis and its caveats are in
+`analysis/bo-review/README.md` and `analysis/logocv-baselines/README.md`.
+
 ## Transmissibility trace capture (added 2026-10-27)
 
 - `57vqhX_Signal50.csv` is `git show origin/main:57vqhX_Signal50.csv`, the
