@@ -40,10 +40,12 @@ choose the next batch of nine designs. The paper contributes:
 5. a simulation-only benchmark of the optimizer against random, Sobol,
    Latin hypercube, and compass-search baselines at a matched budget.
 
-We think the paper suits JMD's readership in data-driven design,
-design under uncertainty, and design for additive manufacturing
-[check against the current JMD topic list and pick the matching
-keywords]. We have tried to state its limits plainly: the physical
+We think the paper fits JMD's design automation area (data-driven design
+and design optimization under noisy, expensive evaluations), with a
+design-for-manufacturing component; its keywords come from JMD's list
+(design optimization, data-driven design, design of experiments,
+metamodeling, design of engineered materials system). We have tried to
+state its limits plainly: the physical
 campaign has no budget-matched baseline, most specimens amplify the peak
 shock, the record specimen awaits a re-test, and the rebound index is a
 ranking score rather than a measured energy.
