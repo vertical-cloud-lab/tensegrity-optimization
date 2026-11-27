@@ -358,6 +358,9 @@ are excluded.
       tagged, LICENSE present
 - [ ] Funding Data with award numbers; Conflict of Interest statement
 - [ ] Figures: PDF is fine for review; TIFF or EPS files at acceptance
+- [ ] If LaTeX source is uploaded: strip the `\todo` notes and the
+      non-printing `% TODO` and process comments (they name people,
+      branches and agent sessions)
 
 ## 8. Realistic submission date
 
