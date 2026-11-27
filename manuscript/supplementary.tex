@@ -222,11 +222,12 @@ tendon. The support type is ``Tree (manual)'', which grows tree supports
 only from the painted regions (Table~\ref{tab:si-print-params}). We
 tightened the support-to-object XY clearance from \SI{0.35}{mm} to
 \SI{0.2}{mm} during tuning on the S0 reference prism
-(\href{\repo/issues/98}{issue~\#98}). Support removal is the leading source of
-the cosmetic defects that we log per specimen in the print key
-(Section~\ref{si:printkey}). They are surface stringing and, on five
-specimens (two seed and three batch-2), a TPU strand that did not fuse to
-its tendon and came away from it.
+(\href{\repo/issues/98}{issue~\#98}). The most frequent cosmetic defects
+that we log per specimen in the print key (Section~\ref{si:printkey}) are
+TPU stringing and small bubbles in diagonal tendons. On five specimens
+(two seed and three batch-2) a TPU strand did not fuse to its tendon and
+came away from it, and the print key attributes two of these to support
+removal.
 
 In parallel, we built an automated alternative in software and archived
 it, but no campaign specimen used it. Every campaign specimen was printed
@@ -243,7 +244,8 @@ in \href{\repo/pull/64}{PR~\#64}.
   \centering
   \includegraphics[width=\linewidth]{../figures/photos/print-timelapse-plate1.jpg}
   \caption{Three frames from the build-chamber camera timelapse of
-    replicate plate~1 on the Bambu Lab~H2D
+    plate~1 of the replicate study (Section~\ref{si:rankstability}),
+    printed in black PLA with the batch-4 settings, on the Bambu Lab~H2D
     (\url{https://youtu.be/EmCLms7-Bd8}). The nine specimens print
     upright, with the prism axis normal to the build plate, beside a
     prime tower. (a)~First layers, with the bottom TPU tendons and
@@ -330,12 +332,12 @@ objectives.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.6\linewidth]{../figures/bo/fig-seed-designs.pdf}
-  \caption{The nine Sobol seed designs at their printed geometry, drawn
-    to one millimeter scale as in the design-space figure of the main
+  \caption{The nine Sobol seed designs at their commanded geometry, drawn
+    to one common scale (\SI{20}{mm} bar) as in Fig.~2 of the main
     text. Each drawing is labeled with its Sobol spec and the ID of its
     printed specimen. Specs 03 and 06 (asterisks) were printed but not
-    drop-tested, and spec 08 is labeled with its tested specimen,
-    bag26v.}
+    drop-tested (they have no session in the campaign record), and spec
+    08 is labeled with its tested specimen, bag26v.}
   \label{fig:si-seed-designs}
 \end{figure}
 Table~\ref{tab:si-printkey} is the print key for the seed campaign: every
@@ -503,8 +505,8 @@ seed batch and batch 2 were not filmed. From batch 4 on, we film drops
 1, 10, and 20 so that clips pair deterministically with captures. The
 camera cannot resolve the millisecond-scale impact pulse (one to two
 frames), so the accelerometer channels produce the objectives, and the
-video documents the post-impact motion and checks the rebound index
-(Section~\ref{si:rebound}). Synchronized laser-Doppler vibrometry is
+video documents the post-impact motion and checks the rebound fraction
+$e_{\mathrm{reb}}$ (Section~\ref{si:rebound}). Synchronized laser-Doppler vibrometry is
 reserved for follow-up characterization of selected designs. Capture
 settings:
 \SI{1.25}{MHz} sample rate, \SI{100}{ms} record, \SI{2}{ms} pre-trigger,
@@ -908,7 +910,7 @@ the trigger away from the impact. Of the 70 captures in that hour, 56
 are mistimed and contain no impact. The channel was healthy before and
 after that hour. Separately, every session on the six corny7 and corny8
 copies showed a knocking top-vertex sensor. The knock is a spike of
-about \SI{0.1}{ms} at impact onset, up to \SI{3500}{g}, that reads the
+about \SI{0.1}{ms} at impact onset, up to \SI{3500}{G}, that reads the
 transmissibility high and fails the seat gauge of Section~\ref{si:drop}.
 In the three corny2 sessions the knock appeared on only two drops. On 2026-10-19 the
 input-channel instrumentation failed and drop testing stopped, with
@@ -1032,7 +1034,7 @@ noise standard deviation for $t_{180}$ (0.044 to 0.049 in the full-data
 fits) is about five times the screened print-to-print scatter of batch 3
 (0.0087) but close to the unscreened one (0.054), because the training
 record includes the sessions that fail the seat gauge
-(\texttt{t3-prism-bo-round3-three-print-stats.json}). Both figures show the first-power rebound objective $E_{\mathrm{reb}}$, the form these fits were trained on, rather than the $I_{\mathrm{reb}}$ that the main text reports, and their panel titles call it ``mass-weighted rebound'', the name the main text now reserves for $I_{\mathrm{reb}}$.
+(\texttt{t3-prism-bo-round3-three-print-stats.json}). Both figures show the first-power rebound objective $E_{\mathrm{reb}}$, the form these fits were trained on, rather than the $I_{\mathrm{reb}}$ that the main text reports. Their panel titles label $E_{\mathrm{reb}}$ ``mass-weighted rebound (mJ per drop)''; it is the first-power form of the main text's Eq.~(1), not $I_{\mathrm{reb}}$.
 Both figures use the twelve inputs of the batch-3 and batch-4 fits: the five
 geometry coordinates, the weighed printed mass, the two infill densities, and
 the four filament settings. The runs, fold records, and plotting script
@@ -1148,8 +1150,9 @@ MuJoCo~\cite{todorov2012mujoco}. The falling base-plate assembly is a
 \SI{2.0}{kg} carriage on a vertical slide joint that stands in for the
 guide rails, and it carries the base accelerometer site. The
 polyurethane impact surface is an explicit one-sided Hunt-Crossley
-contact on the carriage, $F = k\delta + \lambda\delta(-\dot{\delta})$
-for penetration $\delta > 0$ and zero otherwise, with
+contact on the carriage, $F = k\delta + \lambda\delta\dot{\delta}$
+for penetration $\delta = -z > 0$ (so $\dot{\delta} = -\dot{z}$, with $z$
+the carriage height) and zero otherwise, clipped so the mat never pulls, with
 $k = \SI{3.18e5}{N/m}$ and $\lambda = \SI{5.40e4}{N.s/m^2}$. These two
 constants were calibrated once against the measured input peak and
 pulse width of the reference prism (S0) and then held fixed for every
