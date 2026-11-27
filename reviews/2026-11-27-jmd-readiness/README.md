@@ -26,7 +26,7 @@ papers a reviewer would expect to see cited.
 | | Before (`3107245`) | Now |
 |---|---|---|
 | Main text, typeset | 17 pages + 1 page of caption lists | 13 pages through the references (references fill two-thirds of page 13), + 1 page of caption lists |
-| Running text (texcount, todo notes excluded) | about 10,900 words | 8,500 words, plus 1,140 in captions |
+| Running text (texcount, todo notes excluded) | about 12,300 words, plus 1,460 in captions | 8,500 words, plus 1,140 in captions |
 | Supplementary Information | 19 pages | 23 pages |
 | References in the main text | 69, none from JMD or any ASME journal | 57, six from JMD and J. Appl. Mech. |
 | Cited references with a verified DOI | 60 of 75, two of them wrong | main text 53 of 57 (the other four have no DOI to give) |
