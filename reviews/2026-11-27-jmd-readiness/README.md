@@ -205,6 +205,16 @@ items. Fixed, each code-dependent one checked against the code first:
   their sections, branch names replaced by repository locations, the
   five specimens with strand defects (not two), session time about 70
   minutes of drops (not 90), video coverage from batch 3 on.
+- Also checked against the code and data and now stated: the simulator
+  applies the standard J211/1 filter (unlike the bench pipeline), its 2%
+  tendon prestrain only keeps the rigid struts from forming a mechanism,
+  the pair screen excluded two named control pairs and its span criterion
+  was a judgment with no numeric cut, Fig. S7's "Reference cloud" is the
+  reference sweep, the mat crossover blinded the analyst to the shuffled
+  blocks' key, the per-print mass offsets are against rendered-volume
+  estimates, the learned noise matches the unscreened print scatter, and
+  bag26v and bpx68c are the tested specimens printed with the 0.4 mm
+  nozzle.
 
 Still open in the SI, for a co-author:
 
@@ -215,13 +225,6 @@ Still open in the SI, for a co-author:
   differs from the commanded 15%. (The per-print offsets are now stated
   against each specimen's rendered-volume estimate, as the code computes
   them.)
-- Simulation details: the objective-pair screen's threshold for a front
-  that "spans a meaningful part of both objectives". (Now stated: why the
-  model uses 2% tendon prestrain for unprestressed cells; the two
-  control pairs the screen excluded; that the simulator applies the
-  standard J211/1 filter, not the bench's narrower variant, so simulated
-  and measured t180 are filtered differently; and that Fig. S7's
-  "Reference cloud" is the printable reference sweep.)
 
 ### 3.5 Additive manufacturing (profile C)
 
