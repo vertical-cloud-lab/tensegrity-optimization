@@ -90,11 +90,11 @@ Drawn from `reviews/target_audience.md` (branch
 
 | Name | Affiliation (verify) | Why | Representative paper |
 |---|---|---|---|
-| Julian J. Rimoli | Georgia Institute of Technology | Tensegrity mechanics, tensegrity landers, printed tensegrity metamaterials | Bauer et al., Adv. Mater. 2021, 10.1002/adma.202005647 |
-| Christopher Hoyle | Oregon State University | Bayesian and multi-objective optimization in JMD | Biswas, Fuentes, Hoyle, J. Mech. Des. 2022, 10.1115/1.4051787 |
+| Julian J. Rimoli | Georgia Institute of Technology (verify) | Tensegrity mechanics, tensegrity landers, printed tensegrity metamaterials | Bauer et al., Adv. Mater. 2021, 10.1002/adma.202005647 |
+| Christopher Hoyle | Oregon State University (verify) | Bayesian and multi-objective optimization in JMD | Biswas, Fuentes, Hoyle, J. Mech. Des. 2022, 10.1115/1.4051787 |
 | Nathan Hertlein | (verify; JMD 2024 paper lists the University of Cincinnati group) | BO for impact-loaded additively manufactured lattices | Hertlein, Vemaganti, Anand, J. Mech. Des. 2024, 10.1115/1.4065065 |
 | Chengyang Mo | (verify; formerly University of Pennsylvania, Raney group) | Multifidelity BO of architected materials | Mo, Perdikaris, Raney, J. Eng. Mech. 2023 |
-| Andrea Micheletti | University of Rome Tor Vergata | Fabrication and testing of printed tensegrity-like cells | Intrigila et al., Addit. Manuf. 2022 |
+| Andrea Micheletti | University of Rome Tor Vergata (verify) | Fabrication and testing of printed tensegrity-like cells | Intrigila et al., Addit. Manuf. 2022 |
 | Kirsti Pajunen | (verify; public records stop at Caltech, Daraio group, around 2021) | Printed tensegrity-inspired cells and lattices under impact | Pajunen et al., Mater. Des. 2019; Extreme Mech. Lett. 2021 |
 | Lorenzo Valdevit (alternate) | University of California, Irvine (verify) | Architected materials, printed tensegrity metamaterials | Bauer et al., Adv. Mater. 2021, 10.1002/adma.202005647 |
 
