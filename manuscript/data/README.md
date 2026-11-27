@@ -211,3 +211,20 @@ records the same ratios under the older single-pass 1.65*CFC corner
   `bo/t3_prism_drop_count_sensitivity.py` there, commit `1bd2dd8`). The
   Methods quote its worst twenty-drop shift (+0.0078, bag26v) and the
   ranking check.
+
+## Video check of the rebound fraction (added 2026-11-27)
+
+`video-check/` holds four result files copied unchanged from the issue #134
+analysis (`claude/issue-134-20261116-1959` at `4e4c0c2`,
+`analysis/issue-134-video-velocity/results/`):
+`ballistic_and_pulse_only_summary.csv` and `specimen_summary.csv`
+(per-specimen top-vertex velocities tracked in the 959 fps clips of the 27
+batch-4, drran and 2dran specimens, three filmed drops each, next to the
+campaign's ballistic e_rebound), `ballistic_and_pulse_only_stats.json`
+(Spearman 0.524, p 0.005, between the ballistic e_rebound and the video
+ratio; ballistic/video median 0.243, range 0.122 to 0.499; tip rise 12.5 to
+28.4 mm against a ballistic hop of 0.29 to 5.86 mm), and
+`ratio_vs_T180_correlation.json` (video ratio against t180, Spearman
+-0.589, p 0.0012, n 27). The tracking code and figures stay on that branch.
+The main text (Section 3.3) and SI Section "Rebound Index: Video Check and
+First Power Versus Square" quote these numbers.

@@ -235,6 +235,20 @@ workflow is documented in
 \href{\repo/pull/66}{PR~\#66}, and the H2D multi-part material assignment fix
 in \href{\repo/pull/64}{PR~\#64}.
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/photos/print-timelapse-plate1.jpg}
+  \caption{Three frames from the build-chamber camera timelapse of
+    replicate plate~1 on the Bambu Lab~H2D
+    (\url{https://youtu.be/EmCLms7-Bd8}). The nine specimens print
+    upright, with the prism axis normal to the build plate, beside a
+    prime tower. (a)~First layers, with the bottom TPU tendons and
+    the strut-end housings. (b)~Mid-height, with the struts and the
+    painted PLA supports partly built. (c)~Final layers, with the top
+    tendons complete. The frames are only cropped and down-scaled.}
+  \label{fig:si-print-timelapse}
+\end{figure}
+
 % -----------------------------------------------------------------------------
 \section{Print Parameters and Process Control}
 \label{si:process}
@@ -308,6 +322,18 @@ objectives.
 \section{As-Printed Campaign Record (Print Key)}
 \label{si:printkey}
 % -----------------------------------------------------------------------------
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.6\linewidth]{../figures/bo/fig-seed-designs.pdf}
+  \caption{The nine Sobol seed designs at their printed geometry, drawn
+    to one millimeter scale as in the design-space figure of the main
+    text. Each drawing is labeled with its Sobol spec and the ID of its
+    printed specimen. Specs 03 and 06 (asterisks) were printed but not
+    drop-tested, and spec 08 is labeled with its tested specimen,
+    bag26v.}
+  \label{fig:si-seed-designs}
+\end{figure}
 Table~\ref{tab:si-printkey} is the print key for the seed campaign: every
 specimen's print identifier, its design, its weighed mass, and its logged
 defects. The authoritative machine-readable key
@@ -441,12 +467,24 @@ specimen enter the means. The per-specimen summaries archived with the
 data count every valid capture, including the 2 warm-up drops (column
 \texttt{n\_valid}), and the raw series tables of the seed sessions hold
 101 events each (103 for autv5r).
-Section 3.3 of the main text justifies the shortening. The
-statistical minimum from the pre-campaign variance study is five
-stabilized drops, and a truncation replay of the seed sessions
-preserves the full-session transmissibility ranking at 20 drops.
-The three prints of batch 3 also showed that the error budget is
-dominated by seating and print variation rather than session length. We record
+The statistical minimum from the pre-campaign variance study is five
+stabilized drops after two warm-ups. The seed sessions showed that the
+stabilized mean is insensitive to session length: their within-session
+per-drop CVs were 0.17 to 0.48\%, with flat post-warm-up trends. A
+replay of the seed sessions truncated to their first 20 stabilized
+drops left the transmissibility ranking of all nine tested seed
+specimens unchanged. The largest shift of a session mean was $+0.008$
+(bag26v). Gaps between specimens adjacent in the ranking were 0.002 to
+0.087, and at 20 drops the standard error of each mean (0.0002 to
+0.0011) was still below the smallest gap. The closest pair (bpx68c and
+ajhby6) kept its order because truncation shifted both upward
+(\texttt{t3-prism-drop-count-sensitivity.csv}). Shortening the
+sessions cut tower time per specimen from about 90 minutes to about 15
+while keeping roughly four times the minimum stabilized-drop budget,
+and a shorter session enters the surrogate with a proportionally larger
+standard error. The three prints of batch 3 later showed that seating
+and print variation limit what one session can claim far more than
+session length does, so the freed tower time went to re-seats. We record
 three high-speed video clips (\SI{959}{fps}) per specimen. From
 batch 4 on, we film them at drops 1, 10, and 20 so that clips pair
 deterministically with captures. The camera cannot resolve the
@@ -488,14 +526,27 @@ place over 15 co-located drops. The ratio was $0.953 \pm 0.001$ at
 CFC-180 (per-drop $0.952 \pm 0.004$) and stable across drop heights
 (\href{\repo/pull/74}{PR~\#74}).
 
-\paragraph{Filtering correction.} We implemented the SAE~J211/1
-channel-frequency-class filter used for all reported numbers from the
-standard's published coefficients. An earlier in-house implementation passed the
-two-pass (forward-backward) corner frequency to a single-pass design, which
-narrows every channel class by roughly 20\% (an effective CFC-144 where
-CFC-180 was intended). We identified the discrepancy during the analysis
-audit of \href{\repo/issues/94}{issue~\#94} and corrected it before the
-campaign numbers were produced.
+\paragraph{Filter implementation.} SAE~J211/1 specifies a phaseless
+four-pole Butterworth response, built as a two-pole filter run forward
+and backward whose design corner is $2.0775 \times \mathrm{CFC}$, so that
+the combined response falls by \SI{3}{dB} near $1.65 \times
+\mathrm{CFC}$. The campaign pipeline (\texttt{analyze\_capture} in the
+drop-test analysis code, \href{\repo/pull/86}{PR~\#86}) instead designs
+each two-pole pass at $1.65 \times \mathrm{CFC}$ (\SI{300}{Hz} for
+CFC-180 and \SI{1650}{Hz} for CFC-1000) and runs it forward and backward,
+which narrows every channel class by roughly 20\% (an effective CFC-144
+where CFC-180 was intended). The analysis audit of
+\href{\repo/issues/94}{issue~\#94} identified the difference, and the
+teaching figures and the main-text trace figure use the standard's
+recipe, but every campaign session, and therefore every reported
+$t_{180}$ and seat-gauge value, was processed with the narrower filter.
+On the trace drop of the main text the two filters give the same
+$t_{180}$ (1.045), while the CFC-1000 ratio is 1.287 under the standard
+filter and 1.204 under the pipeline's.
+% TODO (lab): re-process the sessions with butter(2, 2.0775*CFC) run
+% forward and backward and update every t180 and seat-gauge value, or keep
+% this description. Found on 2026-10-27 (Request D) and confirmed against
+% the code on 2026-11-27.
 
 \paragraph{Processing pipeline.} For each capture, we calibrate and
 CFC-filter every channel independently. We form the top-vertex magnitude
@@ -633,6 +684,74 @@ nine times each to test whether the measured ordering survives
 print-to-print and seating variation. Its drop tests are not complete.
 
 % -----------------------------------------------------------------------------
+\section{Rebound Index: Video Check and First Power Versus Square}
+\label{si:rebound}
+% -----------------------------------------------------------------------------
+\paragraph{Video check of the rebound fraction.} We tracked the
+accelerometer-bearing top vertex in the \SI{959}{fps} clips of the 27
+specimens of batch 4 and the first two prints of batch 3, three filmed
+drops each (\href{\repo/issues/134}{issue~\#134}). The seed batch and
+batch 2 have no video, and the third-print and replicate specimens were
+filmed too far out to identify the instrumented vertex. Velocity is the
+frame-to-frame displacement scaled by the specimen's printed overall
+height over its apparent height in pixels, averaged over \SI{20}{ms}
+windows that end \SI{5}{ms} before impact and begin \SI{5}{ms} after it.
+The vertex arrives at 4.48 to \SI{4.92}{m/s} and leaves at 0.42 to
+\SI{0.73}{m/s}, so its ratio of rebound to arrival speed (vertical
+components) is 0.088 to 0.154. The ballistic rebound fraction
+$e_{\mathrm{reb}}$ of the same specimens is 0.014 to 0.063, a median of
+0.24 times the video ratio (range 0.12 to 0.50), and the two rank the
+specimens similarly but loosely (Spearman $\rho = 0.52$, $p = 0.005$,
+$n = 27$). The ballistic reading assumes a free-flight hop of 0.3 to
+\SI{5.9}{mm} that starts at impact, whereas the video shows the vertex
+rising 12.5 to \SI{28.4}{mm} (median \SI{18.9}{mm}) back toward its
+resting height, mostly without leaving the carriage. The base $\Delta v$
+agrees with the video's total velocity change of the vertex (arrival
+plus rebound) to 1.4\% on average, an independent check of the video
+scale. A separate check of seven batch-4 drops measured the carriage
+bouncing back off the mat at 0.56 to \SI{0.64}{m/s}
+(\href{\repo/pull/97}{PR~\#97}), so the measured $\Delta v$ of 5.1 to
+\SI{5.4}{m/s} is the arrival speed plus that bounce. The video ratio
+falls as $t_{180}$ rises (Spearman $\rho = -0.59$, $p = 0.001$,
+$n = 27$): the attenuating designs return a larger share of their arrival
+speed, an independent sign of the trade-off between the two objectives.
+The per-specimen values and statistics are archived with the manuscript
+data (\texttt{video-check/}); the tracking code and figures are on the
+issue's branch.
+
+\paragraph{First power versus square.} Returned kinetic energy scales
+with the \emph{square} of a velocity ratio, so $I_{\mathrm{reb}}$ weights
+rebound the way an energy-based score would. It is still not an energy.
+Multiplied by $g h$, it would give the kinetic energy of the whole
+specimen at the hop speed, but only the top-vertex subassembly moves,
+and the video check above shows that the ballistic reading of the
+second contact does not give the hop speed. Squaring also halves the
+leverage of mass, because ranking by $m\,e_{\mathrm{reb}}^2$ is the same
+as ranking by $\sqrt{m}\,e_{\mathrm{reb}}$. The change of form moves the
+record only at the margins. Because $g h$ is the same for every drop,
+$E_{\mathrm{reb}}$ and $m\,e_{\mathrm{reb}}$ rank all 35 tested designs
+identically. Of the 595 pairs of designs, $I_{\mathrm{reb}}$ reverses the
+order of 21, and 16 of those 21 pairs differ by less than 5\% in
+$E_{\mathrm{reb}}$ (Spearman $\rho = 0.990$ between the two design
+orderings). The final front of first prints is the same under both
+forms, and the design-mean front loses r2d2c2 under $I_{\mathrm{reb}}$.
+Eight of the 21 reversals come from averaging repeated prints of the
+batch-3 designs. The mean of the squares exceeds the square of the
+mean, so $I_{\mathrm{reb}}$ penalizes a design whose prints rebound
+inconsistently, a penalty that tracks print scatter as well as design
+performance. Where printed mass was held constant (batches 3 and 4),
+ranking the specimens by $I_{\mathrm{reb}}$ and by $e_{\mathrm{reb}}$
+gives nearly the same order (Spearman $\rho = 0.998$ over 27 specimens,
+against 0.995 for $E_{\mathrm{reb}}$). In batches 1 and 2 the orders
+agree less well ($\rho = 0.917$ over 17, against 0.855). The comparison
+and its per-design and per-specimen tables are archived with the
+manuscript data
+(\texttt{scripts/\allowbreak analysis/\allowbreak pareto\_rebound\_index\_variants.py}),
+and \texttt{scripts/\allowbreak analysis/\allowbreak rebound\_index\_numbers.py}
+recomputes every $I_{\mathrm{reb}}$ number quoted in the main text after
+first reproducing the $E_{\mathrm{reb}}$ ones.
+
+% -----------------------------------------------------------------------------
 \section{Planned Quasi-Static Extension}
 \label{si:quasistatic}
 % -----------------------------------------------------------------------------
@@ -712,7 +831,7 @@ Both are archived with the manuscript data
 \section{Replicate Rank-Stability Study}
 \label{si:rankstability}
 % -----------------------------------------------------------------------------
-The replicate study re-prints three batch-4 designs that the lab chose on
+The replicate study (Fig.~\ref{fig:si-replicate-specimens}) re-prints three batch-4 designs that the lab chose on
 2026-09-28, before any replicate was printed. Trial~37 (corny7) had the
 lowest transmissibility measured in the campaign. Trial~39 (corny8) is its
 near twin, differing mainly in TPU infill (34 against 21\%). Trial~38
@@ -761,6 +880,22 @@ instrumentation.
 % Section 3.5 (sec:methods:rankstability), shown in manuscript-todos.pdf.
 The raw captures, the capture census, and the fault analysis are
 archived with the drop-test data.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\linewidth]{../figures/photos/replicate-specimens-panel.jpg}
+  \caption{Specimens of the three replicate-study designs, as
+    photographed for the print log. Rows are trials 37 (corny7),
+    39 (corny8), and 38 (corny2). The first column is the batch-4
+    specimen (print log of 2026-09-11), and the other three are the
+    front-row copy from replicate plates 1 to 3 (print log of
+    2026-10-17). Labels give the specimen ID and weighed mass. The
+    batch-4 struts are white PLA and the replicate struts black PLA.
+    Camera distance varies between photographs, so apparent size is not
+    comparable across cells. The replicate drop tests are not complete,
+    so the figure reports no measured values.}
+  \label{fig:si-replicate-specimens}
+\end{figure}
 
 % -----------------------------------------------------------------------------
 \section{Metal-Analog Validation Plan}
@@ -860,6 +995,28 @@ records) are in the project repository under
 the training-mean and tuned random-forest baselines, a variant with
 replicate-based standard errors, an eight-input variant without the
 filament settings, and point-estimated Gaussian processes on the same folds.
+
+\paragraph{Leave-one-out trajectory.} Before replicates existed, we
+audited each refit by leave-one-out cross-validation (LOOCV), with one
+full NUTS refit per held-out specimen at 256 warmup steps and 128
+samples. The $t_{180}$ LOOCV MAPE was 2.9\% with rank correlation
+$+0.76$ on the seed state (8 specimens, 6 model inputs), 5.4\% and
+$+0.60$ after batch 2 (17 specimens), and 6.2\% and $+0.19$ after batch 3
+(26 specimens, 12 inputs). The MAPE of the rebound objective the model
+was fit on, $E_{\mathrm{reb}}$, was 29.3\%, 23.6\%, and 32.2\% at the
+same states. Three changes coincided and are confounded: the input space
+doubled from 6 to 12 while the data grew only from 17 to 26, four of the
+six added axes carry a single value per batch and are therefore
+perfectly confounded with batch, and batch 3 added the campaign's largest
+outliers. The held-out posterior shrinks predictions toward the pooled
+mean, so it misses the campaign's extremes. The fold-level records are
+archived with the manuscript data
+(\texttt{t3-prism-bo-loocv-evolution.csv}). The leave-one-design-out
+re-audit of the main text replaced this trajectory once replicates
+entered the record, because plain LOOCV leaks a held-out print's twin
+into training. The comparison between the two is descriptive rather than
+a controlled ablation, since the states differ in specimen count, fold
+structure, and the presence of the repeat data.
 
 \begin{figure}[ht]
   \centering
