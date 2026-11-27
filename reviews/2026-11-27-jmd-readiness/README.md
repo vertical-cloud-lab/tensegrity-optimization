@@ -222,7 +222,6 @@ Still open in the SI, for a co-author:
   standard J211/1 filter, not the bench's narrower variant, so simulated
   and measured t180 are filtered differently; and that Fig. S7's
   "Reference cloud" is the printable reference sweep.)
-- What was blinded in the mat-selection crossover experiment.
 
 ### 3.5 Additive manufacturing (profile C)
 
