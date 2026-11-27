@@ -1163,7 +1163,10 @@ carriage's bounce off the mat, so this start speed is about
 \SI{4.92}{m/s}). Each drop runs for
 \SI{40}{ms} at a \SI{20}{\micro s} time step. The simulator reports
 $t_{180}$ as the ratio of the CFC-180-filtered peak accelerations at
-the top vertex and the base. The model omits strut flexure, mount compliance, tendon
+the top vertex and the base, using the SAE~J211/1 Appendix~C recipe
+(design corner $2.0775 \times \mathrm{CFC}$, run forward and backward;
+\texttt{\_cfc\_filter} in \texttt{bo\_evaluator.py}), not the narrower
+bench variant of Section~\ref{si:drop}. The model omits strut flexure, mount compliance, tendon
 hysteresis, and drift in the impact surface. Because the struts are
 rigid and cannot resonate, simulated $t_{180}$ stays below about 1,
 whereas most printed specimens measured above 1, so the simulator

@@ -216,9 +216,11 @@ Still open in the SI, for a co-author:
   against each specimen's rendered-volume estimate, as the code computes
   them.)
 - Simulation details: the second "existing pair", the screen's
-  threshold, which CFC filter the simulator applies, and why 2% tendon
-  prestrain for unprestressed cells. Fig. S7's legend says "Reference
-  cloud" where the caption says "printable reference sweep".
+  threshold, and why 2% tendon prestrain for unprestressed cells. Fig.
+  S7's legend says "Reference cloud" where the caption says "printable
+  reference sweep". (The simulator's filter is now stated: it applies
+  the standard J211/1 recipe, not the bench's narrower variant, so
+  simulated and measured t180 are filtered differently.)
 - What was blinded in the mat-selection crossover experiment.
 - Table S3 could carry a nozzle column (bag26v and bpx68c printed with
   the 0.4 mm TPU nozzle).

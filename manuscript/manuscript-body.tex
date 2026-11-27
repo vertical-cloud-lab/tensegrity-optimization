@@ -922,7 +922,9 @@ also ran a campaign entirely in simulation. The simulator is a
 MuJoCo~\citep{todorov2012mujoco} model of the drop tower with rigid
 PLA struts, tension-only TPU tendons, and an impact-surface contact
 calibrated once against the reference prism (S0). It reports $t_{180}$
-with the bench's CFC-180 filter. We fix printed mass at \SI{20.23}{g},
+after the CFC-180 filter as SAE~J211/1 specifies, rather than the
+narrower bench variant of Section~\ref{sec:methods:testing}. We fix
+printed mass at \SI{20.23}{g},
 and the search varies four shape ratios, with printed tendon diameter
 of at least \SI{3.0}{mm} and envelope volume $\pi R^2 H$ of at most
 \SI{250}{cm^3} as constraints. The two minimized objectives are
