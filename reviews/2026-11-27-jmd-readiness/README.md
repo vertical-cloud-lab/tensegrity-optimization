@@ -211,9 +211,10 @@ Still open in the SI, for a co-author:
 - Fig. S1 shows the five joints no specimen used, but not Design F, the
   joint every specimen used. Add a Design F render or cut the figure.
 - The printed-mass model's calibration set, sample size and whether its
-  0.378 g residual is in-sample; why the fitted infill (23.6%) differs
-  from the commanded 15%; and that the per-print offsets are against
-  per-specimen predictions, not the 20.23 g target.
+  0.378 g residual is in-sample, and why the fitted infill (23.6%)
+  differs from the commanded 15%. (The per-print offsets are now stated
+  against each specimen's rendered-volume estimate, as the code computes
+  them.)
 - Why the learned noise standard deviation (0.044 to 0.049 in t180) is
   about five times the replicate standard deviation (0.0087).
 - Simulation details: the second "existing pair", the screen's
