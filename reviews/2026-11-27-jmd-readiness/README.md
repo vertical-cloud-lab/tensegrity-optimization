@@ -215,8 +215,6 @@ Still open in the SI, for a co-author:
   differs from the commanded 15%. (The per-print offsets are now stated
   against each specimen's rendered-volume estimate, as the code computes
   them.)
-- Why the learned noise standard deviation (0.044 to 0.049 in t180) is
-  about five times the replicate standard deviation (0.0087).
 - Simulation details: the second "existing pair", the screen's
   threshold, which CFC filter the simulator applies, and why 2% tendon
   prestrain for unprestressed cells. Fig. S7's legend says "Reference

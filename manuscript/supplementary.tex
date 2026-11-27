@@ -1020,7 +1020,12 @@ specifications of the same sparse axis-aligned subspace (SAAS) model. In the
 campaign's specification, each specimen's within-session standard error
 enters the fit as a known noise variance. In the re-analysis, the fit learns
 one noise variance per objective from the data. The campaign chose batches
-2 to 4 with the first. The second is a re-analysis of the same 44 specimens. Both figures show the first-power rebound objective $E_{\mathrm{reb}}$, the form these fits were trained on, rather than the $I_{\mathrm{reb}}$ that the main text reports, and their panel titles call it ``mass-weighted rebound'', the name the main text now reserves for $I_{\mathrm{reb}}$.
+2 to 4 with the first. The second is a re-analysis of the same 44 specimens. Its learned
+noise standard deviation for $t_{180}$ (0.044 to 0.049 in the full-data
+fits) is about five times the screened print-to-print scatter of batch 3
+(0.0087) but close to the unscreened one (0.054), because the training
+record includes the sessions that fail the seat gauge
+(\texttt{t3-prism-bo-round3-three-print-stats.json}). Both figures show the first-power rebound objective $E_{\mathrm{reb}}$, the form these fits were trained on, rather than the $I_{\mathrm{reb}}$ that the main text reports, and their panel titles call it ``mass-weighted rebound'', the name the main text now reserves for $I_{\mathrm{reb}}$.
 Both figures use the twelve inputs of the batch-3 and batch-4 fits: the five
 geometry coordinates, the weighed printed mass, the two infill densities, and
 the four filament settings. The runs, fold records, and plotting script
