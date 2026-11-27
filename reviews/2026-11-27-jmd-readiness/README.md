@@ -215,12 +215,13 @@ Still open in the SI, for a co-author:
   differs from the commanded 15%. (The per-print offsets are now stated
   against each specimen's rendered-volume estimate, as the code computes
   them.)
-- Simulation details: the screen's
-  threshold, and why 2% tendon prestrain for unprestressed cells. Fig.
-  S7's legend says "Reference cloud" where the caption says "printable
-  reference sweep". (The simulator's filter is now stated: it applies
-  the standard J211/1 recipe, not the bench's narrower variant, so
-  simulated and measured t180 are filtered differently.)
+- Simulation details: the objective-pair screen's threshold for a front
+  that "spans a meaningful part of both objectives", and why the model
+  uses 2% tendon prestrain for unprestressed cells. (Now stated: the two
+  control pairs the screen excluded; that the simulator applies the
+  standard J211/1 filter, not the bench's narrower variant, so simulated
+  and measured t180 are filtered differently; and that Fig. S7's
+  "Reference cloud" is the printable reference sweep.)
 - What was blinded in the mat-selection crossover experiment.
 - Table S3 could carry a nozzle column (bag26v and bpx68c printed with
   the 0.4 mm TPU nozzle).
