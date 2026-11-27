@@ -215,7 +215,7 @@ Still open in the SI, for a co-author:
   differs from the commanded 15%. (The per-print offsets are now stated
   against each specimen's rendered-volume estimate, as the code computes
   them.)
-- Simulation details: the second "existing pair", the screen's
+- Simulation details: the screen's
   threshold, and why 2% tendon prestrain for unprestressed cells. Fig.
   S7's legend says "Reference cloud" where the caption says "printable
   reference sweep". (The simulator's filter is now stated: it applies
