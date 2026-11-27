@@ -245,6 +245,7 @@ work only.
 |---|---|
 | `asmejour` class, two columns, line numbers, page numbers (ASME) | Met |
 | Title case, prepositions of four letters or more capitalized (JMD) | Met |
+| Keywords from JMD's article-keyword list (JMD) | Changed to design optimization, data-driven design, design of experiments, metamodeling, design of engineered materials system, plus tensegrity (only "design of experiments" was on the list before). The authors may restore any old term |
 | Abstract 150 to 200 words, Latin characters only, background, method, results, conclusions (JMD) | 200 words, no symbols. Rewritten in places (Section 3.2); @sgbaird should approve the wording, since it started as his text |
 | Order: Acknowledgment, Funding Data, Conflict of Interest, Data Availability, Nomenclature, References, caption lists (ASME) | Met; Nomenclature added this session |
 | Every reference has a DOI (ASME) | 53 of the 57 main-text references; the four without are three NASA technical reports (NTRS URLs given) and the PMLR Ax paper, none of which has a DOI to give |
