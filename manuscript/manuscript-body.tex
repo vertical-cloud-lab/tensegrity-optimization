@@ -513,10 +513,11 @@ nozzle temperature and maximum volumetric speed). A build plate carries
 one filament configuration, so we draw these four as one quasi-random
 point per batch, and they stay confounded with batch
 (Section~\ref{sec:methods:bo}). We fix the joint diameter $d_j$ at
-\SI{7.0}{mm}. It sets the strut-end cage that houses the cable anchors
-(Section~\ref{sec:methods:fabrication}), and fixing it keeps the anchor
-geometry constant so that joint-strength changes do not confound the
-optimized variables. Figure~\ref{fig:design-space} shows the variables
+\SI{7.0}{mm} before the projection, so the joint, which sets the
+strut-end cage that houses the cable anchors
+(Section~\ref{sec:methods:fabrication}), scales with the rest of the cell
+(5.4 to \SI{8.1}{mm} as printed in the seed batch) rather than adding a
+design variable. Figure~\ref{fig:design-space} shows the variables
 on a mid-range prism, six tested specimens at one scale, and an
 as-printed specimen.
 
@@ -630,7 +631,7 @@ painted PLA edge supports along each tendon in the slicer
 Fig.~\siref{fig:si-print-timelapse}). Support removal is the main source
 of the cosmetic defects logged per specimen in the print key
 (Section~\siref{si:printkey}). The TPU fed from a heated dry box held
-near or below \SI{8}{\percent} relative humidity. Midway through the
+at 7 to \SI{11}{\percent} relative humidity, logged per print. Midway through the
 seed batch, a cold pull and a move to a dedicated high-flow
 \SI{0.6}{mm} nozzle cleared a partial clog of the TPU extruder, and the
 print key flags the affected specimens. Table~\siref{tab:si-print-params}
@@ -712,9 +713,9 @@ at both filter classes.
     sub-millisecond pulse in both directions in time, so its traces
     are already nonzero at impact onset. (a)~At CFC-180, the reporting
     class, the peak ratio
-    gives $t_{180} = 1.045$ (peaks of 588 and \SI{563}{g}). (b)~At
+    gives $t_{180} = 1.045$ (peaks of 588 and \SI{563}{G}). (b)~At
     CFC-1000, the diagnostic class, the same drop gives 1.287 (2394 and
-    \SI{1861}{g}). The campaign
+    \SI{1861}{G}). The campaign
     pipeline's narrower filter gives 1.045 and 1.204.}
   \label{fig:transmissibility-trace}
 \end{figure}
@@ -1226,8 +1227,8 @@ the leave-one-out $t_{180}$ MAPE rose from 2.9\% on the seed state to
 batch 3 added the campaign's largest outliers
 (Section~\siref{si:surrogate}). Once replicates exist, leave-one-out
 leaks, because a held-out print's twin stays in training at nearly the
-same coordinates. We therefore re-audited the full record with
-leave-one-design-out folds (35 folds over 44 specimens, each
+same coordinates. We therefore re-audited the fit's 44-specimen
+training record with leave-one-design-out folds (35 folds, each
 drran/2dran pair held out together, at the full NUTS budget). The
 $t_{180}$ MAPE is 4.8\% with Spearman $\rho_s = +0.32$ (two-sided
 permutation $p = 0.036$), but the held-out predictions stay near the
@@ -1347,7 +1348,8 @@ the optimizer only.
 \label{sec:discussion}
 % =============================================================================
 
-\paragraph{What the campaign establishes} The loop closed three times on
+\subsection{What the Campaign Establishes}
+The loop closed three times on
 physical hardware: printed specimens, instrumented drop sessions, a fully
 Bayesian surrogate, and model-recommended batches whose measurements fed
 the next refit. The measurement separates the tested specimens, whose
@@ -1372,7 +1374,8 @@ and in the video check the share of arrival speed returned rises as
 $t_{180}$ falls (Spearman $\rho = -0.59$ over 27 specimens;
 Section~\siref{si:rebound}), so the front stays two-dimensional.
 
-\paragraph{Pre-registered review of the objective choices} We
+\subsection{Pre-Registered Review of the Objective Choices}
+We
 pre-registered an adversarial, data-first review of the objective choices
 and ran it with the analysis tool named in the Acknowledgment; the
 review had to commit to its own objective set from the raw campaign files
@@ -1396,7 +1399,8 @@ trajectory because the loop is the contribution, and revising
 objectives mid-campaign, with the revision criteria stated in advance, is
 probably how such loops behave in practice.
 
-\paragraph{Relation to prior art, and the role of simulation} Relative
+\subsection{Relation to Prior Art, and the Role of Simulation}
+Relative
 to Pajunen et~al.~\cite{pajunen2019design}, we vary the geometry under an
 optimization loop rather than characterizing a single fabrication
 condition. Relative to Mo et~al.~\cite{mo2023accelerated} and Hertlein
@@ -1418,7 +1422,8 @@ printed-tensegrity literature's attenuation results as generic. The
 present cells are not pretensioned, and activating genuine pretension in
 printed tensegrity is an open direction outside this campaign.
 
-\paragraph{Path forward} No joint failed during the repeated-drop
+\subsection{Path Forward}
+No joint failed during the repeated-drop
 sessions, which covered 1,614 stabilized captures across the 53 tested
 specimens, but those sessions were
 not designed as fatigue tests, so interface durability remains open, and
@@ -1444,7 +1449,8 @@ force~\citep{segura2007mechanicsofambulation,
 macgillivray2016theinfluenceof} and tensegrity crutch concepts have been
 proposed~\citep{gu2026tensegritycrutches}.
 
-\paragraph{Limitations} The measured evidence base is 53 specimens: 35
+\subsection{Limitations}
+The measured evidence base is 53 specimens: 35
 across the four batches and 18 re-prints of the nine batch-3 designs,
 the only designs tested more than once. Every single-specimen extreme,
 the batch-4 record included, is provisional until its re-seat, and the
@@ -1533,7 +1539,8 @@ platform (data-analysis, literature, and precedent-search agents)
 produced mock peer reviews of earlier drafts, literature and reference
 checks, and the pre-registered review of the objective choices
 described in the Discussion (task \texttt{3e398131}, archived in the
-project repository) from May to September 2026. The faster-whisper speech-to-text model
+project repository), and an implementation audit of the simulated
+campaign (task \texttt{53cfc937}) from May to September 2026. The faster-whisper speech-to-text model
 transcribed the co-authors' recorded reviews of the draft. The file
 \texttt{manuscript/AI-USE.md} in the project repository lists the
 tool, model, access route, and dates of each use. The human authors
@@ -1578,8 +1585,8 @@ We will mint a Zenodo DOI at acceptance.
 % Latin symbols first (capitals before lowercase), then Greek.
 \begin{nomenclature}
   \EntryHeading{Latin symbols}
-  \entry{$a_{\mathrm{base}}$}{base-plate acceleration, filtered (g)}
-  \entry{$\mathbf{a}_{\mathrm{top}}$}{top-vertex acceleration vector, filtered (g)}
+  \entry{$a_{\mathrm{base}}$}{base-plate acceleration, filtered (G, multiples of standard gravity)}
+  \entry{$\mathbf{a}_{\mathrm{top}}$}{top-vertex acceleration vector, filtered (G)}
   \entry{$d_j$}{joint diameter (mm)}
   \entry{$d_s$}{strut diameter (mm)}
   \entry{$d_t$}{cable (tendon) diameter (mm)}

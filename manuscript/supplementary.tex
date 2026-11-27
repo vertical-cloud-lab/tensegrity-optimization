@@ -36,6 +36,7 @@
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\theequation}{S\arabic{equation}}
 
 \newcommand{\repo}{https://github.com/vertical-cloud-lab/tensegrity-optimization}
 
@@ -48,15 +49,25 @@
 \begin{document}
 \maketitle
 
-This Supplementary Information collects the detailed design-, fabrication-,
-test-, and analysis-development records supporting the main manuscript,
-together with the tables and figures moved out of the main text to meet the
-journal's length limit (the main text cites them by their S-numbers). Unlike
-the main text, the SI references the project's development history directly,
-including specific pull requests (PRs) and issues in the project repository
-(\href{\repo}{\repo}), whose contents are listed in the Data Availability
-Statement of the main text. Citations use the reference list at the end of
-this document, which is numbered independently of the main text.
+This Supplementary Information gives the design, fabrication, test, and
+analysis details behind the main manuscript, with the tables and figures
+that the main text cites by their S-numbers. Where a detail is recorded in
+the project repository (\href{\repo}{\repo}), we link the pull request (PR)
+or issue that holds it; the Data Availability Statement of the main text
+lists the repository's contents. Citations use the reference list at the
+end of this document, which is numbered independently of the main text.
+Abbreviations follow the main text: PLA (polylactic acid), TPU
+(thermoplastic polyurethane), FDM (fused-deposition modeling), CFC (the
+SAE~J211/1 channel frequency class of a filter), BO (Bayesian
+optimization), GP (Gaussian process), SAASBO (the sparse axis-aligned
+subspace GP surrogate), qNEHVI (noisy expected hypervolume improvement),
+NUTS (the No-U-Turn Sampler), MAPE (mean absolute percentage error), SEM
+(standard error of the mean), LHS (Latin hypercube sampling), RH (relative
+humidity), and CV (coefficient of variation). The two objectives are the
+transmissibility $t_{180}$ and the mass-weighted rebound index
+$I_{\mathrm{reb}} = m\,e_{\mathrm{reb}}^2$; the optimizer that recommended
+batches 2 to 4 minimized the first-power form
+$E_{\mathrm{reb}} = e_{\mathrm{reb}}\,m\,g\,h$ instead.
 
 % -----------------------------------------------------------------------------
 \section{Positioning Against Prior Work}
@@ -97,16 +108,16 @@ architecture with an experiment-driven optimization loop.
     Mo et~al.\ 2023~\cite{mo2023accelerated}
       & Architected lattices & n/a (simulation) & Multifidelity BO & Simulated response & Simulation \\
       & & & & metric & (+ sparse high-fid.) \\[2pt]
-    Almeida 2025~\cite{almeida2025highstrainrate};
+    Almeida et~al.\ 2025~\cite{almeida2025highstrainrate};
       & Tensegrity-inspired & Additive & None reported & n/a & Experiment \\
-    \ \ Davami 2025~\cite{davami2025dynamicanalysis}
+    \ \ Davami et~al.\ 2025~\cite{davami2025dynamicanalysis}
       & structures & manufacturing & & & (high-rate/dynamic) \\[2pt]
     Wang et~al.\ 2026~\cite{wang2026integrated}
       & Tensegrity-inspired & Integrated & None reported & n/a & Physical \\
       & rigid-flexible metamat. & dual-material & & & validation \\[2pt]
     \textbf{This work}
-      & Tensegrity-inspired & Multi-material & Experiment-driven & $t_{180}$; provisional & Physical \\
-      & $T_3$-prism cell (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & $I_{\mathrm{reb}}$ & experiment \\
+      & Tensegrity-inspired & Multi-material & Experiment-driven & $t_{180}$; $E_{\mathrm{reb}}$ & Physical \\
+      & $T_3$-prism cell (PLA/TPU) & FDM (PLA + TPU) & BO (SAASBO/qNEHVI) & (reported as $I_{\mathrm{reb}}$) & experiment \\
     \bottomrule
   \end{tabular}}
 \end{table}
@@ -129,7 +140,7 @@ geometry of every recommended design
 as ``envelope ${>}$ 250~cm$^3$'' or ``cable ${<}$ 3.0~mm''. The first compares $\pi R^2 H$ with
 \SI{250}{cm^3}, where $R$ is the radius of the circle through the
 joint centers and $H$ is the height between joint centers. The
-\SI{250}{cm^3} value is a placeholder size limit carried over from an
+\SI{250}{cm^3} value is a nominal size limit carried over from an
 earlier simulation study. It is not the printer's build volume, and
 because it is measured to the joint centers it undercounts the printed
 part. Seven printed specimens (five designs) exceeded it. The second
@@ -169,7 +180,7 @@ per-print flow offset rather than random scatter.
 \label{si:joints}
 % -----------------------------------------------------------------------------
 We developed the strut-to-cable junction through an OpenSCAD study of five
-candidate joints (Designs~A to E: anchor-bulb, dovetail, TPU-sleeve overmold,
+candidate joints (Fig.~\ref{fig:si-joints}; Designs~A to E: anchor-bulb, dovetail, TPU-sleeve overmold,
 eyelet-loop, and TPU-rebar), followed by a sixth, captive-core design
 (Design~F). Every campaign specimen uses Design~F, a captive TPU core inside
 a PLA shell. At each strut end the tendons meet in a TPU core that is too
@@ -179,7 +190,7 @@ the soft tendon away from layer-line failure at the transition. The campaign CAD
 (\texttt{cad/t3-prism/t3-prism.scad} on the campaign branch) builds this
 joint with \texttt{use\_captive\_core = true}.
 
-Full results, renders, and the Phase-3/Phase-4 design reviews are documented in
+Full results, renders, and the design reviews are documented in
 \href{\repo/pull/39}{PR~\#39} (joint design) and
 \href{\repo/pull/35}{PR~\#35} (CAD parameterization and print history).
 
@@ -251,8 +262,8 @@ geometry is described in Section~\ref{si:joints} and the support strategy in
 Section~\ref{si:supports}.
 
 \paragraph{Moisture and nozzle management.} TPU is hygroscopic, so we
-fed the soft filament from a heated dry box held near or below
-\SI{8}{\percent} relative humidity, logged per print. Midway through the seed batch the
+fed the soft filament from a heated dry box whose relative humidity we
+logged per print: \SI{8}{\percent} for the seed batch, \SI{11}{\percent} for batches 2 and 3, and \SI{7}{\percent} for batch 4. Midway through the seed batch the
 TPU extruder developed a progressive drop in flow (a partial clog,
 compounded by a stray PLA fragment found inside the extruder). We
 resolved it by performing a cold pull and moving the TPU to a dedicated
@@ -283,9 +294,9 @@ objectives.
     Layer height / line width (mm)     & \multicolumn{2}{c}{0.30 / 0.62} \\
     Infill                             & 15\% grid, 2 walls & near-solid \\
     Outer / inner wall speed (mm/s)    & \multicolumn{2}{c}{200 / 300 (profile)} \\
-    Filament drying                    & n/a & dry box, near or below 8\% RH \\
+    Filament drying                    & n/a & dry box, 7 to 11\% RH (logged per print) \\
     Build-plate type                   & \multicolumn{2}{c}{Textured PEI} \\
-    Build orientation                  & \multicolumn{2}{c}{Upright (main-text print timelapse figure)} \\
+    Build orientation                  & \multicolumn{2}{c}{Upright (Fig.~\ref{fig:si-print-timelapse})} \\
     Supports                           & \multicolumn{2}{c}{Tree (manual), PLA, only where painted\textsuperscript{c}} \\
     \bottomrule
   \end{tabular}\par\vspace{2pt}
@@ -347,7 +358,7 @@ surrogate fit until identified.
   \centering
   \caption{Print key for the seed campaign (nine Sobol designs plus the S0
     reference). Masses weighed on a \SI{0.01}{g} scale. TPU fed from a heated
-    dry box near or below 8\% relative humidity where logged. The first five specimens
+    dry box at 8\% relative humidity where logged. The first five specimens
     (printed before the TPU nozzle fix) used the standard \SI{0.4}{mm} TPU
     nozzle, and the rest used the high-flow \SI{0.6}{mm} nozzle.}
   \label{tab:si-printkey}
@@ -446,8 +457,8 @@ archived with the manuscript data.
 \label{si:drop}
 % -----------------------------------------------------------------------------
 The campaign fixture is a Lansmont Model~23 shock test system with a Test
-Partner~4 data-acquisition console. This section summarizes the
-development history behind the protocol in the main text.
+Partner~4 data-acquisition console. This section gives the protocol and
+rig details behind Section~3.3 of the main text.
 
 \paragraph{Protocol.} The drop height is \SI{60}{in}, with the specimen
 upright on the carriage plate. We discard the first 2 drops of each
@@ -472,24 +483,23 @@ specimens unchanged. The largest shift of a session mean was $+0.008$
 That pair (bpx68c and ajhby6) kept its order because truncation shifted
 both upward, but at 20 drops the two differ by only 0.00006 against
 standard errors of 0.0003 and 0.0010, so they are effectively tied
-(\texttt{t3-prism-drop-count-sensitivity.csv}). Shortening the
-sessions cut tower time per specimen from about 90 minutes to about 15
-while keeping roughly four times the minimum stabilized-drop budget,
-and a shorter session enters the surrogate with a proportionally larger
-standard error. The three prints of batch 3 later showed that seating
-and print variation limit what one session can claim far more than
-session length does, so the freed tower time went to re-seats. We record
-three high-speed video clips (\SI{959}{fps}) per specimen. From
-batch 4 on, we film them at drops 1, 10, and 20 so that clips pair
-deterministically with captures. The camera cannot resolve the
-millisecond-scale impact pulse (one to two frames), so the
-accelerometer channels produce the objectives and the video
-documents the post-impact rebound and recovery. Synchronized
-laser-Doppler vibrometry is reserved for follow-up characterization
-of selected designs. Testing takes roughly \SI{42}{s} per
-drop, so about
-90 minutes per seed specimen and 15 per later-batch specimen.
-Capture settings:
+(\texttt{t3-prism-drop-count-sensitivity.csv}). One drop takes roughly
+\SI{42}{s}, so shortening the sessions cut tower time per specimen from
+about 70 minutes of drops to about 15 while keeping roughly four times
+the minimum stabilized-drop budget, and a shorter session enters the
+surrogate with a proportionally larger standard error. The three prints
+of batch 3 later showed that seating and print variation limit what one
+session can claim far more than session length does, so we reserve the
+freed tower time for re-seats and repeat prints. From batch 3 on, we
+recorded three high-speed video clips (\SI{959}{fps}) per specimen; the
+seed batch and batch 2 were not filmed. From batch 4 on, we film drops
+1, 10, and 20 so that clips pair deterministically with captures. The
+camera cannot resolve the millisecond-scale impact pulse (one to two
+frames), so the accelerometer channels produce the objectives, and the
+video documents the post-impact motion and checks the rebound index
+(Section~\ref{si:rebound}). Synchronized laser-Doppler vibrometry is
+reserved for follow-up characterization of selected designs. Capture
+settings:
 \SI{1.25}{MHz} sample rate, \SI{100}{ms} record, \SI{2}{ms} pre-trigger,
 \SI{150}{G} trigger on the base channel, AC-coupled ICP conditioning.
 After a settings-loss event, we re-verified the console settings
@@ -531,7 +541,7 @@ CFC-180 and \SI{1650}{Hz} for CFC-1000) and runs it forward and backward,
 which narrows every channel class by roughly 20\% (an effective CFC-144
 where CFC-180 was intended). The analysis audit of
 \href{\repo/issues/94}{issue~\#94} identified the difference, and the
-teaching figures and the main-text trace figure use the standard's
+main-text trace figure uses the standard's
 recipe, but every campaign session, and therefore every reported
 $t_{180}$ and seat-gauge value, was processed with the narrower filter.
 On the trace drop of the main text the two filters give the same
@@ -543,26 +553,39 @@ filter and 1.204 under the pipeline's.
 % the code on 2026-11-27.
 
 \paragraph{Processing pipeline.} For each capture, we calibrate and
-CFC-filter every channel independently. We form the top-vertex magnitude
+CFC-filter every channel independently. We locate the impact as the
+absolute maximum of the CFC-180 base channel within the first
+\SI{15}{ms} of the record, form the top-vertex magnitude
 $\lVert\mathbf{a}_{\mathrm{top}}(t)\rVert$ from the three filtered
-triaxial components and search for the two peaks entering $t_{180}$
-within a short window (approximately \SI{1.5}{ms}) of first contact, so the
-peaks need not be simultaneous. We estimate the baseline from the record
-tail, because at healthy tower speed the mat-contact foot begins before the
-\SI{2}{ms} pre-trigger window. $\Delta v$ is the integral of the baselined
-base channel over the impact pulse and doubles as the rig-health check.
-Drops are discarded per the warm-up rule. Table~\ref{tab:si-processing}
-collects the operational analysis parameters in one place. Values known
-from the protocol are stated numerically. The remaining thresholds
-are to be transcribed verbatim from the version-tagged campaign analysis
-code at its archival release, so that the table matches the code of
-record.
+triaxial components, and take each peak entering $t_{180}$ within
+\SI{5}{ms} of the impact, so the two peaks need not be simultaneous. We
+estimate each channel's baseline as the median of the record after
+\SI{70}{ms}, because at healthy tower speed the mat-contact foot begins
+before the \SI{2}{ms} pre-trigger window. $\Delta v$ is the integral of
+the baselined base channel over the impact region and doubles as the
+rig-health check. The time to second contact, $t_{\mathrm{second}}$, is
+the time from the impact to the largest excursion of the top-vertex
+envelope (the magnitude of the analytic signal over the three axes,
+after decimation to \SI{50}{kHz} and a 300 to \SI{900}{Hz} band-pass)
+between 15 and \SI{70}{ms} after the impact. A capture is excluded when it
+holds no top-vertex impact ($t_{180}$ below 0.5) or when a top channel
+exceeds half of its full scale. Each session mean averages the
+stabilized drops (drops 3 onward that pass these screens), and its
+standard deviation uses $n-1$. A session carries a
+\emph{transmissibility-drift flag}, which makes its mean provisional,
+when its stabilized $t_{180}$ series has a least-squares slope steeper
+than 0.06\% per drop with $p < 0.01$, or a change of more than 2.5\%
+between the means of its first and last five stabilized drops. These
+limits sit just outside the envelope of 16 earlier sessions (about 1,300
+stabilized drops) on the same mat. Table~\ref{tab:si-processing}
+collects the parameters, as implemented in the archived analysis code
+(\texttt{analyze\_capture} and \texttt{t\_drift\_watch},
+\href{\repo/pull/86}{PR~\#86}).
 
 \begin{table}[ht]
   \centering
-  \caption{Operational analysis parameters for the drop-tower pipeline.
-    ``Code of record'' marks values to be transcribed from the
-    version-tagged analysis release.}
+  \caption{Operational analysis parameters of the drop-tower pipeline,
+    as implemented in the archived analysis code.}
   \label{tab:si-processing}
   \small
   \begin{tabular}{@{}ll@{}}
@@ -572,19 +595,23 @@ record.
     Drop height & \SI{60}{in} (\SI{1.524}{m}) \\
     Sample rate / record / pre-trigger & \SI{1.25}{MHz} / \SI{100}{ms} / \SI{2}{ms} \\
     Trigger & \SI{150}{G} on the base channel \\
-    Reporting filter class & CFC-180 (SAE J211/1), two-pass corner corrected \\
-    Diagnostic filter class & CFC-1000 \\
-    Peak-search window & $\approx$\SI{1.5}{ms} from first contact \\
-    Baseline estimate & record tail \\
+    Reporting filter class & CFC-180: two-pole Butterworth at \SI{300}{Hz} per pass, \\
+     & forward and backward (about 20\% narrower than SAE J211/1) \\
+    Diagnostic filter class & CFC-1000: the same construction at \SI{1650}{Hz} \\
+    Filter boundary handling & SciPy \texttt{filtfilt} defaults (odd padding) \\
+    Impact location & maximum of the CFC-180 base channel, first \SI{15}{ms} \\
+    Peak-search window & $\pm$\SI{5}{ms} around the impact \\
+    Baseline estimate & median of the record after \SI{70}{ms} \\
+    Second contact & largest 300 to \SI{900}{Hz} envelope excursion, 15 to \SI{70}{ms} \\
+    Capture exclusions & $t_{180} < 0.5$, or a top channel above 50\% of full scale \\
     Warm-up exclusion & first 2 drops per session \\
     Drops recorded per session & 101 seed (103 autv5r); 21-22 batch 2; 20 batches 3-4 \\
     Stabilized drops per specimen & 99 seed (101 autv5r); 19-20 batch 2; 18 batches 3-4 \\
-    Rig-health check & $\Delta v$ from baselined base channel \\
+    Stabilized mean & mean of the stabilized drops; standard deviation with $n-1$ \\
+    Drift flag & slope $> 0.06$\%/drop with $p < 0.01$, or first-5 vs last-5 change $> 2.5$\% \\
+    Seat gauge (re-seat candidate) & CFC-1000 over CFC-180 transmissibility $\geq 1.145$ \\
+    Rig-health check & $\Delta v$ from the baselined base channel \\
     Ringdown fit gate & $r^2 \ge 0.85$ (exponential fit) \\
-    Second-contact threshold and window & code of record \\
-    Per-capture exclusion rules & code of record \\
-    Stabilized-mean convention & code of record \\
-    Filter initialization / boundary handling & code of record \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -596,10 +623,11 @@ variation (CV, the standard deviation divided by the mean) was 0.54\%
 with a flat drift slope. Within a session, $\Delta v$ and the CFC-180 input
 typically ease down by 1 to 4\% as the polyurethane mat warms, and
 recover fully after a rest of minutes. After a mat rest or re-seat,
-the first 5 to 10 drops carry the settling transient, which is why
-the warm-up discard exists. The arrest velocity has visibly
-stabilized as cumulative drop count grew, so we keep the
-$\Delta v$ record. During commissioning, two guide-rod locking pins
+$\Delta v$ and the input settle over the first 5 to 10 drops. Because
+$t_{180}$ is a ratio of output to input, that transient largely cancels
+in it: the seed sessions show flat $t_{180}$ trends after the 2-drop
+warm-up discard (per-drop CV 0.17 to 0.48\%), and the drift flag
+screens any session whose $t_{180}$ still trends. During commissioning, two guide-rod locking pins
 failed, and we discovered and recommissioned a defeated pin-park
 safety interlock. The
 pin-related friction produced a measurable $\Delta v$ deficit that resolved
@@ -613,9 +641,9 @@ captures including the second print of batch 3, and its third print
 adds 162 more.
 
 \paragraph{Ringdown diagnostics.} We recorded ringdown descriptors per
-drop as print-health and prestress
-diagnostics~\citep{ashwear2014natural}, but they are not campaign
-objectives. They are the fitted natural frequency $f_n$ and, where the
+drop as print-health
+diagnostics, but they are not campaign
+objectives (in prestressed tensegrities, natural frequencies track the prestress~\citep{ashwear2014natural}; our cells carry none). They are the fitted natural frequency $f_n$ and, where the
 exponential fit passes an $r^2 \ge 0.85$ gate, a damping ratio
 $\zeta$. Of the 44 sessions with an accepted $f_n$, all but two rang
 at 260 to \SI{470}{Hz}. The exceptions are r2d2c7 (\SI{682}{Hz}, batch
@@ -654,10 +682,13 @@ evolved through a measurability review
 (\href{\repo/pull/97}{PR~\#97}). Per-specimen crush energy in joules is not
 recoverable from this rig, because it has no falling-mass or displacement
 channel and the specimens stay elastic. The campaign responses are therefore the
-filtered peak-acceleration ratio and the mass-weighted rebound index,
-built on the square of a provisional rebound fraction, with quasi-static
-crush metrics deferred to a load-frame campaign. Batches 2 to 4 were
-recommended under the first power of the rebound fraction. We pre-registered an
+filtered peak-acceleration ratio $t_{180}$ and a mass-weighted score built
+on a provisional rebound fraction, with quasi-static crush metrics
+deferred to a load-frame campaign. The optimizer recommended batches 2 to
+4 under the first-power form $E_{\mathrm{reb}}$. After the final batch we
+adopted the mass-weighted rebound index $I_{\mathrm{reb}}$, built on the
+square of the rebound fraction, which the paper reports and any later
+batch minimizes. We pre-registered an
 adversarial review of the objective choices, run with the Edison
 Scientific analysis agent (task \texttt{3e398131}, archived in the
 repository). It
@@ -668,11 +699,14 @@ and reserving print capacity for replicate specimens. The main text
 records how the campaign responded to these recommendations. We
 printed and tested the batch-3 plate three times, which measured
 the print-to-print scatter directly and produced the between-seat
-replication rule. The rebound fraction remains a
-candidate constraint, and the
-surrogate continues to ingest per-session standard errors, with the
-replication evidence carried as an interpretation bound rather than
-as an inflated noise term. We acted on the reserved-replicate
+replication rule. The video check of Section~\ref{si:rebound} showed that
+the ballistic reading does not give the rebound speed but ranks
+specimens similarly to the tracked rebound, so the rebound fraction
+remains a ranking index and a candidate constraint. The campaign
+surrogate ingested per-session standard errors throughout, with the
+replication evidence carried as an interpretation bound rather than as
+an inflated noise term; the learned-noise re-analysis of
+Section~\ref{si:surrogate} shows what that choice cost. We acted on the reserved-replicate
 recommendation with the replicate rank-stability study of
 Section~\ref{si:rankstability}, which re-printed three batch-4 designs
 nine times each to test whether the measured ordering survives
@@ -767,9 +801,9 @@ to supply the complementary crush metrics
 \end{equation}
 with the densification displacement $\delta_d$ taken at the maximum of
 the energy-absorption efficiency curve and $F_{\max}$ the peak force
-within $[0,\delta_d]$. We follow the standard cellular-solid
+within $[0,\delta_d]$. We will follow the standard cellular-solid
 treatments~\citep{gibson1997cellular, avalle2001characterization,
-tan2005dynamic, li2006densification} and mirror the
+tan2005dynamic, li2006densification} and the
 quasi-static protocol of Pajunen et~al.~\citep{pajunen2019design}.
 These metrics will be reported as a complementary characterization of
 selected designs rather than as objectives of the drop-tower campaign.
@@ -892,10 +926,10 @@ archived with the drop-test data.
 \end{figure}
 
 % -----------------------------------------------------------------------------
-\section{Metal-Analog Validation Plan}
+\section{Planned Metal-Analog Comparison}
 \label{si:metal-validation}
 % -----------------------------------------------------------------------------
-A planned validation campaign will rebuild a subset of the $T_3$-prism
+A planned comparison will rebuild a subset of the $T_3$-prism
 designs as metal analogs, using the same $R$, $H$, $\theta$, and
 member-diameter parameterization as the printed PLA/TPU specimens. The
 analogs will use hollow aluminum rods for the compression members and
@@ -917,8 +951,8 @@ construction, joint hardware and torque, specimen and payload masses,
 replicate count, and tie-handling rules. The intended rank statistic is the
 Spearman rank-correlation coefficient $\rho_s$ between the two material
 systems' orderings of the primary campaign metric ($t_{180}$ under the
-identical drop protocol), reported with an exact permutation test.
-Mass-weighted rebound $E_{\mathrm{reb}}$ and, later, quasi-static specific
+identical drop protocol), reported with an exact permutation test. With $n$ designs that test cannot fall below $p = 2/n!$ (two-sided), so the comparison needs at least five designs before agreement can reach $p < 0.05$.
+The mass-weighted rebound index $I_{\mathrm{reb}}$ and, later, quasi-static specific
 energy absorption (SEA, Section~\ref{si:quasistatic}) would give secondary
 rankings. Agreement between the
 two primary rankings would be preliminary evidence consistent with transfer
@@ -944,7 +978,7 @@ sessions are defined in Section~\ref{si:drop}.
     dran3$N$ are prints 1, 2, and 3. ``Pred.'' is the posterior-mean
     $t_{180}$ archived before any batch-3 specimen was tested. ``Mean''
     averages the prints that pass the health screen, a seat gauge (the
-    ratio of CFC-1000 to CFC-180 transmissibility) below 1.15 and no
+    ratio of CFC-1000 to CFC-180 transmissibility) below 1.145 and no
     drift flag. $\S$ marks a failed seat gauge and $\dagger$ a
     transmissibility-drift flag. $I_{\mathrm{reb}}$ is listed for
     prints 1, 2, and 3.}
@@ -977,8 +1011,8 @@ diagnostics discussed in the main text (Section~4.3). Both compare two noise
 specifications of the same sparse axis-aligned subspace (SAAS) model. In the
 campaign's specification, each specimen's within-session standard error
 enters the fit as a known noise variance. In the re-analysis, the fit learns
-one noise variance per objective from the data. The campaign chose every
-batch with the first. The second is a re-analysis of the same 44 specimens.
+one noise variance per objective from the data. The campaign chose batches
+2 to 4 with the first. The second is a re-analysis of the same 44 specimens. Both figures show the first-power rebound objective $E_{\mathrm{reb}}$, the form these fits were trained on, rather than the $I_{\mathrm{reb}}$ that the main text reports, and their panel titles call it ``mass-weighted rebound'', the name the main text now reserves for $I_{\mathrm{reb}}$.
 Both figures use the twelve inputs of the batch-3 and batch-4 fits: the five
 geometry coordinates, the weighed printed mass, the two infill densities, and
 the four filament settings. The runs, fold records, and plotting script
@@ -1046,12 +1080,12 @@ structure, and the presence of the repeat data.
   \centering
   \includegraphics[width=0.8\linewidth]{../analysis/bo-review/figures/logocv-parity-noise.pdf}
   \caption{Leave-one-design-out cross-validation of the SAASBO surrogate
-    over the full 44-specimen record (35 design folds, each batch-3
+    over the 44 specimens of its training record (35 design folds, each batch-3
     reprint pair held out together). Each fold is refitted in Ax~0.5.0
     with 512 NUTS warmup steps and 256 samples, the budget of the
     generation fits.
     \emph{(a, b)} The campaign's specification, with the standard errors
-    as fixed noise. The campaign chose every batch with this model.
+    as fixed noise. The campaign chose batches 2 to 4 with this model.
     \emph{(c, d)} The same model, folds, seeds, and budget with the noise
     learned. Vertical bars are one posterior standard deviation of the
     latent mean and leave out the learned noise, horizontal bars are the
@@ -1099,15 +1133,21 @@ contact on the carriage, $F = k\delta + \lambda\delta(-\dot{\delta})$
 for penetration $\delta > 0$ and zero otherwise, with
 $k = \SI{3.18e5}{N/m}$ and $\lambda = \SI{5.40e4}{N.s/m^2}$. These two
 constants were calibrated once against the measured input peak and
-restitution of the reference prism (S0) and then held fixed for every
-design. The specimen is three rigid PLA strut capsules, which carry
+pulse width of the reference prism (S0) and then held fixed for every
+design. The calibration deliberately leaves out the rebound fraction,
+because a mat lossy enough to reproduce it in this model would distort
+the input pulse (\texttt{calibrate} in \texttt{drop\_tower\_sim.py}). The specimen is three rigid PLA strut capsules, which carry
 its whole printed mass, joined by nine TPU tendons, with its three
 bottom vertices ball-anchored to the carriage. The tendons are springs
 that carry tension only, with zero force below the slack length, a
 linear force above it, 2\% prestrain, and a viscous damping ratio of
 0.02. A \SI{5}{g} mass at the top vertex
-stands for the accelerometer. Each drop starts at the measured campaign
-impact velocity of \SI{5.30}{m/s} (the \SI{60}{in} drop) and runs for
+stands for the accelerometer. Each drop starts at \SI{5.30}{m/s}, the
+mean base velocity change $\Delta v$ of the campaign sessions. By the
+video check of Section~\ref{si:rebound}, $\Delta v$ includes the
+carriage's bounce off the mat, so this start speed is about
+\SI{0.6}{m/s} above the measured arrival speed (4.48 to
+\SI{4.92}{m/s}). Each drop runs for
 \SI{40}{ms} at a \SI{20}{\micro s} time step. The simulator reports
 $t_{180}$ as the ratio of the CFC-180-filtered peak accelerations at
 the top vertex and the base. The model omits strut flexure, mount compliance, tendon
@@ -1190,8 +1230,9 @@ record (largest relative difference $2\times10^{-6}$, from rounding in
 the CSV files). It also checks the strain-pair rescoring against the
 committed per-seed values, that every run holds exactly 45
 evaluations, and that no two BO seeds drew the same first batch. An
-independent review of the campaign code and records (Edison analysis
-task \texttt{53cfc937}, archived with the snapshot) cross-checked the
+automated review of the campaign code and records by the Edison
+Scientific analysis agent (task \texttt{53cfc937}, archived with the
+snapshot) cross-checked the
 hypervolume routine against BoTorch's exact implementation and
 proposed the best-known denominator and the exact tests used here.
 
