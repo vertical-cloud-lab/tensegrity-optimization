@@ -131,7 +131,9 @@ first time you build.
 from the same source by `scripts/docx/build_manuscript_docx.py`
 (`make manuscript-docx`). It is a one-way export: edits made in Word do not
 flow back into `manuscript-body.tex`, so carry them back by hand and rerun
-the script after the LaTeX changes.
+the script after the LaTeX changes. The committed copy predates the
+2026-11-27 readiness-review edits (that run could not execute Python), so
+regenerate it before sharing.
 
 It keeps the PDF's figure, table, equation, section and citation numbers
 (read from the LaTeX `.aux` file), the reference list (from the `.bbl`),
@@ -161,6 +163,7 @@ manuscript/
 ├── manuscript.pdf        # Built output, todos hidden
 ├── manuscript-todos.pdf  # Built output, todos visible
 ├── manuscript.docx       # Editable Word copy of manuscript.pdf (generated)
+├── cover-letter.md       # Draft cover letter and suggested reviewers (not sent)
 ├── references.bib        # Curated BibTeX database used by the asmejour
 │                         #   build (proposal + Edison literature PRs)
 ├── references-full.bib   # MASTER synthesized library (every Edison query +

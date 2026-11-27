@@ -260,6 +260,29 @@ six suggested reviewers drawn from `reviews/target_audience.md` and the JMD
 check, each to be verified for affiliation and conflicts. BYU colleagues
 are excluded.
 
+### Draft question to ASME (for blocker 1, option b; not sent)
+
+> Subject: Pre-submission question: disclosed AI assistance in a JMD
+> research paper
+>
+> We are preparing a Research Paper for the ASME Journal of Mechanical
+> Design on experiment-driven Bayesian optimization of 3D-printed
+> tensegrity-inspired structures. Every data point is a physical drop-test
+> measurement made by the human authors. Under our direction, AI coding
+> agents (Claude Code by Anthropic, GitHub Copilot) wrote most of the
+> campaign, analysis, and figure code, drafted and revised manuscript text
+> that we then reviewed and edited, and transcribed our recorded reviews of
+> the draft; an AI analysis agent (Edison Scientific) produced mock reviews
+> and an audit. Every request to these tools, with its date, order, and
+> output, is archived in our public repository, and the manuscript's
+> Methods and Acknowledgment disclose this use in the detail Section IV.B of
+> the position statement asks for. Paragraph IV.A.8 prohibits AI-generated
+> substantive content, while IV.A.9 allows AI assistance in research with
+> full disclosure. Before we submit, could you tell us whether a manuscript
+> prepared this way is eligible for JMD, and if not, which parts the
+> authors would need to redo themselves (for example the text, the
+> analyses, or the figures)?
+
 ## 8. Realistic submission date
 
 The dates assume the team starts on 2026-11-30 and work pauses over the
