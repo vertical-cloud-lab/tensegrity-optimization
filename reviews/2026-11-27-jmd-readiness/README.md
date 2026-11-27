@@ -27,7 +27,7 @@ papers a reviewer would expect to see cited.
 |---|---|---|
 | Main text, typeset | 17 pages + 1 page of caption lists | 13 pages through the references (references fill two-thirds of page 13), + 1 page of caption lists |
 | Running text (texcount, todo notes excluded) | about 12,300 words, plus 1,460 in captions | 8,500 words, plus 1,140 in captions |
-| Supplementary Information | 19 pages | 23 pages |
+| Supplementary Information | 19 pages | 25 pages (after the second run) |
 | References in the main text | 69, none from JMD or any ASME journal | 57, six from JMD and J. Appl. Mech. |
 | Cited references with a verified DOI | 60 of 75, two of them wrong | main text 53 of 57 (the other four have no DOI to give) |
 | Build | clean | clean: no errors, no undefined references or citations |
@@ -384,3 +384,154 @@ student work, and that the drop tower is repaired before the re-seats.
 Not done in this session, and why: the replicate study and re-seats need a
 working tower; the filter re-run and the Fig. 2(b) relabel need Python;
 the cringe-filter lint needs pip. None of those could run here.
+
+## 9. Second run: fresh-eyes read, final rebuild (2026-11-27, run 46066320059)
+
+The first run stopped at 20:38 UTC when its seat hit the five-hour limit,
+before its last three items. This run finished them.
+
+### 9.1 How the fresh-eyes read was run
+
+Three reviewers that had not seen any earlier edit read the condensed
+draft independently. Each got only the committed PDFs (`01f0da4`), the
+LaTeX sources and `manuscript/data/`, and was told not to open anything
+under `reviews/`, the latexdiff PDF, the git history or the PR comments,
+so that none of them was anchored on this review or on earlier ones:
+
+- a JMD reviewer and Associate Editor (profile A of the target-audience
+  document, with profiles B and C in mind), on the main text;
+- a consistency and copy-edit audit: numbers stated more than once,
+  counts, definitions before use, the rebound objective's naming,
+  cross-references into the SI, and house style;
+- an SI reviewer: whether each main-text pointer into the SI lands on
+  content that supports it, and whether the reorganized SI reads on its
+  own.
+
+Two smaller checks ran alongside: the cover letter against the
+manuscript, and where each item the Data Availability Statement promises
+actually lives.
+
+### 9.2 What the fresh-eyes read found
+
+The JMD reviewer recommended **major revision**: "the evidence for the
+loop's effectiveness depends on objective and screening choices that do
+not hold up under the paper's own rules". The copy-edit audit recomputed
+about 120 quantitative claims (every hypervolume, the 56% and 35% gains,
+every MAPE and baseline, the correlations, the mass statistics and the
+front membership) and found them consistent with the tables and data.
+The SI reviewer confirmed every main-text SI pointer resolves.
+
+Two findings are new, and both were checked against `manuscript/data/`
+before anything changed:
+
+1. **The rebound fraction is cut off by its own search window.** The
+   pipeline looks for the second contact between 15 and 70 ms after
+   impact. Three first-print sessions have a mean t_second within 0.7 ms
+   of 15 ms (r2d2c6 15.70, drran3 15.36, corny4 15.35 ms), and they hold
+   the three lowest I_reb values on record (3.9 to 4.1 mg); drran1 sits
+   at 69.14 ms. Two of them (r2d2c6, drran3) are on the final front.
+   The SI reviewer adds that the 300 to 900 Hz detection band overlaps
+   the specimens' own ring-down (260 to 470 Hz), which would pile values
+   up at the window start. The text now says these four values are
+   bounded by the window rather than measured; fixing it needs a
+   re-processing run (new blocker 2b).
+2. **The seat gauge screened only batch 3.** Applied retrospectively at
+   the code's 1.145 cut, it flags 10 of the 35 first-print sessions:
+   bag26v and nvxsrv (seed), r2d2c3, r2d2c5, r2d2c7, r2d2c8, r2d2c9
+   (batch 2), drran7 (batch 3), corny1 and corny3 (batch 4). r2d2c3, at
+   gauge 1.86, is the campaign maximum (t180 = 1.334). None was
+   re-seated. The text now says so.
+
+### 9.3 Fixed in this run
+
+| Where | Was | Now |
+|---|---|---|
+| Methods 3.3, Results 4.2, Limitations | Window-edge rebound values reported as measurements | Disclosed as bounded by the search window (finding 1) |
+| Results 4.2, Limitations | Gauge applied to batch 3 only, silently | The 10 retrospective flags stated (finding 2) |
+| Abstract (200 words) | "Excluding sessions that failed a seating or drift check, ... near 1 percent, so single-print extremes stay provisional until replicated." The step between the two halves was missing | "...a seating or drift check, which produced every large deviation, ... stay provisional." |
+| Abstract, Contributions, Conclusions, Discussion, Limitations, Methods | "35 specimens", "53 tested specimens" | amdjwm was tested but has no weighed mass: 36 specimens in the four batches (35 with both objectives), 54 tested in all (53 with a weighed mass), each count matched to what it covers |
+| Contribution 2 | "CFC 180 filtering"; the rebound index "characterized for repeatability before it enters the optimizer" | "nominal" CFC 180; the optimizer that chose batches 2 to 4 used the first-power form |
+| Introduction | Fig. 1 first cited after Fig. 2 | Fig. 1 cited where the loop is introduced |
+| Introduction, Methods 3.3 | T3, "session", "drift flag" and "batch 1" never defined in the main text | Each defined at first use |
+| Methods 3.3.1, Fig. 3, Table 2 | "60 in (1.524 m)", "0.5 in (12.7 mm)" | SI units first, as ASME requires: 1.524 m (60 in), 12.7 mm (0.5 in) |
+| Methods 3.3.4 | "about four times the ballistic estimate (median ratio 0.24)" | The 0.24 is the ballistic value over the video ratio; said so |
+| Methods 3.2 | Support removal "the main source" of logged defects | The print key's most frequent defects are stringing and bubbles; two strand losses are attributed to support removal (also SI S4) |
+| Methods 3.6 | Agents "transcribed our recorded reviews"; "agent session" | Names the faster-whisper model; "agent run" (session means a drop session elsewhere) |
+| Results roadmap | Omitted Sections 4.3 and 4.4 | Lists all four |
+| Results 4.2 | "supplies a matched comparison" | "budget-matched comparison, in simulation" |
+| Results 4.4 | "a random batch already collects about 85% of the pair's reference hypervolume, BO reached 82.6%" (read as random beating BO) | The 85% is the screening sweep's share; BO's 82.6% is against the best-known reference |
+| Contributions, Conclusions | "four uninformed sampling baselines" | "three space-filling samplers and a compass search" (compass search is a direct-search optimizer) |
+| Fig. 1, Fig. 2, Table 3 captions | "five-variable" space (Table 1 lists more); "each batch" scaled; "printed" / "as-printed" geometry; "one millimeter scale" | Design space of Table 1; each design scaled; commanded post-projection values (dimensions were never measured); one common scale with the 20 mm bar |
+| Fig. 4, Tables 3 and 4 captions | "all 35 measured specimens"; script paths in captions | "the 35 first-print specimens with both objectives"; script paths moved to source comments (the Data Availability Statement covers them). The caption lists no longer overflow the page-14 footer |
+| Discussion 5.2 | Mass "channel the review flagged" (the review's findings do not mention mass); "revising objectives mid-campaign ... is probably how such loops behave in practice" | Points to the seed batch's mass confound; says the second objective was revised after the final batch |
+| Discussion 5.3 | Multi-engine simulation study described nowhere; simulation credited with diagnosing the mass confound | Pointer to the archived study; the unsupported credit removed |
+| Limitations | Specimen assignment discrepancy unnamed | Design 08, Section S6 |
+| Data Availability | `manuscript/AI-USE.md` cited from Methods but not listed | Listed |
+| SI S15 | Hunt-Crossley damping `F = kδ + λδ(−δ̇)` | `F = kδ + λδδ̇` with δ = −z, as `drop_tower_sim.py` computes it (`pen*(k - lambda*vz)`) |
+| SI | "3500 g"; "checks the rebound index"; Fig. S2 "replicate plate 1" undefined; Fig. S3 "printed geometry", "one millimeter scale"; S14 "the name the main text now reserves" | 3500 G; the rebound fraction; plate 1 of the replicate study, in black PLA; commanded geometry, 20 mm bar; S14 sentence states the naming without revision history |
+| SI title block | Author line 41 pt too wide | Broken over two lines |
+| Cover letter | Contribution list did not follow the manuscript's; implied the seed batch had model predictions; self-assessment sentence | Follows the manuscript's five contributions; predictions archived for the three recommended batches; limits stated plainly |
+
+### 9.4 Raised but not fixed, and why
+
+These need data, code that this run could not execute (Python, Perl and
+`make` are blocked on this pull request), or an author decision. They are
+the reviewers' points a JMD panel is most likely to raise.
+
+| Item | Why not here | Who |
+|---|---|---|
+| Re-process with a wider second-contact window and a detection band below the ring-down, and flag the window-edge sessions as censored (finding 1) | Needs Python | A Python-capable run, same as blocker 2 |
+| Re-seat the 10 gauge-flagged first-print specimens, or report results with them flagged (finding 2) | Needs the drop tower | Lab |
+| Hypervolume reference point: with t180 = 1.35, most of the hypervolume lies in the amplifying region. The reviewer recomputed it at t180 = 1.0: 0.37, 1.06, 1.16 and 7.02 across the batches, almost all from corny7 and corny6. Report that sensitivity | Needs the front recomputed and checked | A Python-capable run |
+| Recommendations sit on the bounds of the box (15 of 27 at exact corners by the reviewer's count; trials 28, 30 and 33 share a geometry, as do 40 and 44). Disclose, and use 40 and 44 as near-replicates | Needs checking against the design CSVs | A Python-capable run, then @sgbaird |
+| The base and top channel calibration (the 0.953 cross-calibration ratio): which channels, which way, and whether it was applied. 15 of the 26 amplifiers lie between 1.00 and 1.05 | Lab knowledge | @me-madsen, @achris0520 |
+| Top-vertex mass (sensor, cable and pocket) and the mounting method; whether the weighed mass includes the sensor | Lab knowledge | @me-madsen, @achris0520 |
+| Measure printed cable diameters, at least for the attenuators (2.51 to 2.78 mm commanded, below the 3.0 mm screen) | Needs calipers | Lab |
+| BO reproducibility details: qNEHVI reference point, MC samples, acquisition optimizer settings, BoTorch version, input normalization | On the campaign branch | A run with that branch checked out |
+| "Pre-registered" has no registry behind it; the reviewer suggests "Independent re-analysis of the objective choices" | The heading was set by @sgbaird's request of 2026-10-27 | @sgbaird |
+| Present tense for completed work in parts of Methods 3.1, 3.4 and 3.5 | Time; not a correctness issue | Length or style pass |
+| Figs. 2(b), 5, S5 and S6 label E_reb as "mass-weighted rebound"; Fig. 2(b) shows E_reb, not I_reb | Needs the figure scripts | A Python-capable run |
+| Six reference titles in sentence case; `amendola2014` title has an en dash | Cosmetic | Any run |
+| Figure text at 4 to 6 pt in Figs. 1, 2(b) and 6 | Needs the figure scripts | A Python-capable run |
+
+### 9.5 Status of the blockers at the end of this run (2026-11-27, about 21:30 UTC)
+
+Section 2's list stands. What changed or was checked in this run:
+
+- **Blocker 1 (AI policy).** Rechecked against ASME's journal author
+  page, which states that ASME prohibits the use of generative AI in the
+  creation of content for journal submissions and that authors confirm AI
+  was not used to develop their work. Unchanged: the first gate.
+- **New blocker 2b (rebound window and gauge flags).** Re-process with a
+  wider second-contact window and flag the window-edge and gauge-flagged
+  sessions (Section 9.2). Owner: a Python-capable run, with @sgbaird
+  deciding whether the results change before or after submission.
+- **Blocker 3 (re-seats).** Issue #115 still says drop-tower use is
+  halted (last update 2026-10-30); no repair is recorded.
+- **Blocker 4 (data and code).** Still no LICENSE, no tags, and the four
+  branches unmerged. One more branch is needed than the list said: the
+  joint-design study's CAD source is only on PR #39's branch
+  (`copilot/explore-joint-design-for-petg-tpu`). This branch must also be
+  merged into `main`, which today holds none of `manuscript/`,
+  `analysis/` or `scripts/figures/`. The manuscript's todo now lists all
+  six.
+- **Word file.** `manuscript.docx` was last regenerated on 2026-11-05 and
+  predates this review; regenerate it with `make manuscript-docx` in a run
+  that can execute Python, together with the Fig. 2(b) relabel.
+
+### 9.6 Realistic submission date (updated)
+
+BYU's fall classes end about 2026-12-10, finals run about 2026-12-12 to
+2026-12-17, and winter classes start 2027-01-06, so student work pauses
+from mid-December to early January.
+
+- **Earliest plausible: 2026-12-18.** Only if ASME confirms within about
+  a week that disclosed AI assistance is acceptable, the team submits
+  with the corny7 re-seat still pending (the text already says so), and
+  blockers 2 and 4 to 10 close before finals.
+- **Realistic: the week of 2027-01-18.** The AI question is answered
+  (or the co-author rewrite is done) over December and early January,
+  the co-author read-through happens in the first two weeks of the winter
+  semester, and the re-seat goes in if the tower is repaired by then.
+- **If ASME's answer requires a rewrite and the team wants the re-seat
+  first:** late January to early February 2027, depending on the tower.
