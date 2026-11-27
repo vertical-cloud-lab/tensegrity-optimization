@@ -216,8 +216,8 @@ Still open in the SI, for a co-author:
   against each specimen's rendered-volume estimate, as the code computes
   them.)
 - Simulation details: the objective-pair screen's threshold for a front
-  that "spans a meaningful part of both objectives", and why the model
-  uses 2% tendon prestrain for unprestressed cells. (Now stated: the two
+  that "spans a meaningful part of both objectives". (Now stated: why the
+  model uses 2% tendon prestrain for unprestressed cells; the two
   control pairs the screen excluded; that the simulator applies the
   standard J211/1 filter, not the bench's narrower variant, so simulated
   and measured t180 are filtered differently; and that Fig. S7's
