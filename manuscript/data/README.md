@@ -228,3 +228,12 @@ ratio; ballistic/video median 0.243, range 0.122 to 0.499; tip rise 12.5 to
 -0.589, p 0.0012, n 27). The tracking code and figures stay on that branch.
 The main text (Section 3.3) and SI Section "Rebound Index: Video Check and
 First Power Versus Square" quote these numbers.
+
+## Round-4 leave-one-out folds (added 2026-11-27)
+
+`t3-prism-bo-round4-loocv.csv` is `bo/t3-prism-bo-round4-loocv.csv` from the
+campaign branch (`claude/issue-98-20260821-0103` at `65ff978`), copied
+unchanged: the per-specimen leave-one-out refits after batch 3 (26
+specimens, 12 inputs) behind the SI's leave-one-out trajectory (t180 MAPE
+6.2%, rank correlation +0.19, E_reb MAPE 32.2%). The earlier states are in
+`t3-prism-bo-loocv-evolution.csv`.
