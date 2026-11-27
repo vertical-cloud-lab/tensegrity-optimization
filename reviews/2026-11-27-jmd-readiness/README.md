@@ -332,6 +332,24 @@ are excluded.
 > authors would need to redo themselves (for example the text, the
 > analyses, or the figures)?
 
+### Submission-day checklist
+
+- [ ] Blockers 1 to 10 of Section 2 closed or consciously accepted
+- [ ] Manuscript PDF built from the final source (line numbers on, which
+      ASME requires for first submission); SI as a separate PDF
+- [ ] Title, abstract (150 to 200 words, no symbols), keywords from JMD's
+      list, entered in the submission system exactly as in the PDF
+- [ ] All five authors with department, mailing address and e-mail;
+      corresponding authors marked
+- [ ] Cover letter final, with the prior-dissemination statement and the
+      verified suggested reviewers (BYU names excluded)
+- [ ] AI-use confirmation answered consistently with the Acknowledgment
+      and Methods (blocker 1)
+- [ ] Data Availability Statement true on the day: branches merged or
+      tagged, LICENSE present
+- [ ] Funding Data with award numbers; Conflict of Interest statement
+- [ ] Figures: PDF is fine for review; TIFF or EPS files at acceptance
+
 ## 8. Realistic submission date
 
 The dates assume the team starts on Monday 2026-11-30, that BYU's
