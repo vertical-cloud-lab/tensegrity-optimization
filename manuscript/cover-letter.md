@@ -24,31 +24,34 @@ printing, drop-test each specimen repeatedly, and let a fully Bayesian
 Gaussian-process surrogate with a multi-objective acquisition function
 choose the next batch of nine designs. The paper contributes:
 
-1. a constant-mass projection that makes candidate designs comparable at an
-   equal material budget, with the printability screens and print record
-   behind it;
-2. two impact objectives, peak-acceleration transmissibility and a
-   mass-weighted rebound index, measured under a characterized drop-tower
-   protocol, including a video check of what the rebound index measures;
-3. four measured batches (35 specimens) with the predictions the model
-   archived before each batch was printed, and a cross-validated audit
-   showing how the noise specification limited the surrogate's held-out
-   skill;
+1. a family of multi-material unit cells printed in one piece, with TPU
+   in place of the tension elements and the tendons anchored inside the
+   PLA strut ends, and a constant-mass projection that scales every
+   candidate to a common material budget before printing;
+2. a characterized drop-tower protocol and two per-specimen impact
+   objectives, peak-acceleration transmissibility and a mass-weighted
+   rebound index, with a video check of what the rebound index measures;
+3. an experiment-driven Bayesian-optimization loop that recommended three
+   batches after the Sobol seed batch. Over the four measured batches (35
+   specimens), every member of the final Pareto front came from a
+   recommended batch. The predictions archived before each recommended
+   batch was printed, and a cross-validated audit, show where the
+   surrogate had skill and how its noise specification limited it;
 4. a measured error budget from printing one nine-design batch three
    times, which shows that print-to-print and seating variation exceed the
    within-session scatter, and the replication rule that follows from it;
 5. a simulation-only benchmark of the optimizer against random, Sobol,
    Latin hypercube, and compass-search baselines at a matched budget.
 
-We think the paper fits JMD's design automation area (data-driven design
-and design optimization under noisy, expensive evaluations), with a
-design-for-manufacturing component; its keywords come from JMD's list
-(design optimization, data-driven design, design of experiments,
-metamodeling, design of engineered materials system). We have tried to
-state its limits plainly: the physical
-campaign has no budget-matched baseline, most specimens amplify the peak
-shock, the record specimen awaits a re-test, and the rebound index is a
-ranking score rather than a measured energy.
+We think the paper fits the journal's design automation area
+(data-driven design and design optimization under noisy, expensive
+evaluations), with a design-for-manufacturing component. Its keywords
+come from the journal's list (design optimization, data-driven design,
+design of experiments, metamodeling, design of engineered materials
+system). The paper states its limits: the physical campaign has no
+budget-matched baseline, most specimens amplify the peak shock, the
+record specimen awaits a re-test, and the rebound index is a ranking
+score rather than a measured energy.
 
 [Prior dissemination. Confirm and keep one:] An extended abstract of
 earlier campaign results was presented at the ASME IDETC-CIE 2026
