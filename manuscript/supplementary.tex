@@ -18,6 +18,8 @@
 \usepackage{amsmath}
 \usepackage{xcolor}
 \usepackage{subcaption}
+% Keep each section's floats inside that section.
+\usepackage[section]{placeins}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
 % Let TeX loosen a line rather than push a long file path into the margin.
@@ -45,16 +47,6 @@
 
 \begin{document}
 \maketitle
-
-\begin{center}
-  \fcolorbox{dummydata}{dummydata!6}{\parbox{0.94\linewidth}{\small
-  \textcolor{dummydata}{\textbf{Draft note (remove before submission):}
-  as in the main text, any value printed in this violet color is a
-  synthetic placeholder rather than a measurement. As of 2026-09-15
-  this Supplementary Information contains no violet values. The
-  former placeholder batch-2 print key was replaced by the logged
-  campaign record, which now covers batches 2 to 4.}}}
-\end{center}
 
 This Supplementary Information collects the detailed design-, fabrication-,
 test-, and analysis-development records supporting the main manuscript,
