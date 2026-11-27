@@ -63,6 +63,7 @@ in order. Each run's prompt is the triggering comment on that PR.
 | 2026-11-05 | sgbaird | [41964354485](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/41964354485) |
 | 2026-11-05 | me-madsen | [42114350865](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/42114350865) |
 | 2026-11-26 | sgbaird | [45763129406](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/45763129406) |
+| 2026-11-27 | sgbaird | [46053324785](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/46053324785) |
 
 The five runs of 2026-10-27 are the parallel requests A to E that split the
 post-review edits.
@@ -82,7 +83,20 @@ trailer.
 | 2026-11-05 | sgbaird | [41969528880](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/41969528880) |
 | 2026-11-10 | sgbaird | [42733237762](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/42733237762) |
 | 2026-11-10 | sgbaird | [42852820605](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/42852820605) |
-| 2026-11-25 | sgbaird | [45562101581](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/45562101581) | Before 2026-08-22 the Copilot coding agent worked the
+| 2026-11-25 | sgbaird | [45562101581](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/45562101581) |
+
+The video check of the rebound fraction (main text Section 3.3, SI section
+"Rebound Index") quotes the top-vertex tracking of
+[issue #134](https://github.com/vertical-cloud-lab/tensegrity-optimization/issues/134),
+written and run by Claude Code Action at the request of GitHub user
+`JustinBal-Vulp`.
+
+| Date (UTC) | Started by | Run |
+|---|---|---|
+| 2026-11-16 | JustinBal-Vulp | [43792371408](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/43792371408) |
+| 2026-11-16 | JustinBal-Vulp | [43944991793](https://github.com/vertical-cloud-lab/tensegrity-optimization/actions/runs/43944991793) |
+
+Before 2026-08-22 the Copilot coding agent worked the
 manuscript branch. It opened PR #76 on 2026-06-12 by merging the 43 commits of
 the earlier manuscript branch (PR #20), which it had also written, and it
 replied on PR #76 on 2026-06-12, 2026-06-13 and 2026-06-14.
