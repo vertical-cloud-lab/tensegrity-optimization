@@ -25,7 +25,7 @@ papers a reviewer would expect to see cited.
 
 | | Before (`3107245`) | Now |
 |---|---|---|
-| Main text, typeset | 17 pages + 1 page of caption lists | 12 pages + about 1.5 pages of caption lists |
+| Main text, typeset | 17 pages + 1 page of caption lists | 13 pages through the references (references fill two-thirds of page 13), + 1 page of caption lists |
 | Running text (texcount, todo notes excluded) | about 10,900 words | 8,500 words, plus 1,140 in captions |
 | Supplementary Information | 19 pages | 23 pages |
 | References in the main text | 69, none from JMD or any ASME journal | 57, six from JMD and J. Appl. Mech. |
@@ -56,7 +56,7 @@ the analysis filter, and the data release.
 | 6 | **Lab confirmations** (each is a `\todo` in `manuscript-todos.pdf`): every campaign specimen used the captive-core joint (Design F); the TPU nozzle hardware and 240 °C; the carriage photo in Fig. 1 is a campaign specimen (it may be mdt6ja from the July defect study); the carriage-bounce and video observations behind the rebound caveat. | The text states these as facts. | Marcus and Audrey. |
 | 7 | **Funding data.** The MRG award number, and any Utah NASA Space Grant Consortium support. | ASME prints funding data with award numbers. | Jeff Hill or @sgbaird. |
 | 8 | **Prior dissemination.** An extended abstract was presented at IDETC-CIE 2026 (Track DAC-10). If it appears in the proceedings, JMD wants its paper number at the end of the title and a statement of what is new. | Disclosure. | @sgbaird or Marcus. |
-| 9 | **Length.** Now 12 typeset pages and about 8,500 words of text. That meets ASME's general limit (12,000 word-equivalents, counting figures and tables by area) and the JMD FAQ's 12 pages, but JMD's own instructions say 9,000 words "or the equivalent of nine journal pages". | The Editor may return a long paper before review. | @sgbaird: ask the JMD office which limit applies, or cut further. The cheapest further cuts are listed in Section 4. |
+| 9 | **Length.** Now about 12.6 typeset pages through the references and about 8,500 words of text. That is at ASME's general limit (about 11,900 word-equivalents against 12,000, counting figures and tables by area) and just over the JMD FAQ's 12 pages (pages beyond 12 carry a charge the editor can waive), but JMD's own instructions say 9,000 words "or the equivalent of nine journal pages". | The Editor may return a long paper before review. | @sgbaird: ask the JMD office which limit applies, or cut further. The cheapest further cuts are listed in Section 4. |
 | 10 | **Co-author read-through.** Large parts of the text were condensed in this session. The co-authors reviewed earlier versions in detail, and their direct edits to Introduction paragraphs 1 to 3 are untouched, but the condensed Methods, Results and Discussion have not been read by a person. | Accountability (and item 1). | All authors, using `manuscript-diff.pdf`. |
 
 Optional, not blocking: the replicate rank-stability study (27 specimens
@@ -253,7 +253,7 @@ work only.
 | SI units, with U.S. customary in parentheses if used (ASME) | Met (the 0.5 in mat thickness now also reads 12.7 mm) |
 | Figures: TIFF or EPS at production; first submission as PDF is fine (ASME) | Convert at acceptance |
 | Third-party images need permission (ASME) | The Fig. 1 Design panel reuses the proposal's BO panel (lab-made); all photographs are lab-made. No third-party material found |
-| Length: 9,000 words or nine pages (JMD instructions), 12 typeset pages (JMD FAQ), 12,000 word-equivalents (ASME) | 12 typeset pages, 8,500 words of text plus captions; see blocker 9 |
+| Length: 9,000 words or nine pages (JMD instructions), 12 typeset pages (JMD FAQ), 12,000 word-equivalents (ASME) | About 12.6 typeset pages through the references; 8,500 words of text plus 1,140 in captions; about 11,900 word-equivalents; see blocker 9 |
 
 If the 9-page figure applies, these would cut about three pages without
 losing results: move Fig. 3 (trace) and Table 1 (design variables) to the

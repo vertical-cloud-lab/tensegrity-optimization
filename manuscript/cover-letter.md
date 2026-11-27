@@ -93,7 +93,13 @@ Drawn from `reviews/target_audience.md` (branch
 | Nathan Hertlein | (verify; JMD 2024 paper lists the University of Cincinnati group) | BO for impact-loaded additively manufactured lattices | Hertlein, Vemaganti, Anand, J. Mech. Des. 2024, 10.1115/1.4065065 |
 | Chengyang Mo | (verify; formerly University of Pennsylvania, Raney group) | Multifidelity BO of architected materials | Mo, Perdikaris, Raney, J. Eng. Mech. 2023 |
 | Andrea Micheletti | University of Rome Tor Vergata | Fabrication and testing of printed tensegrity-like cells | Intrigila et al., Addit. Manuf. 2022 |
-| Kirsti Pajunen | (verify; formerly Caltech, Daraio group) | Printed tensegrity-inspired cells and lattices under impact | Pajunen et al., Mater. Des. 2019; Extreme Mech. Lett. 2021 |
+| Kirsti Pajunen | (verify; public records stop at Caltech, Daraio group, around 2021) | Printed tensegrity-inspired cells and lattices under impact | Pajunen et al., Mater. Des. 2019; Extreme Mech. Lett. 2021 |
+| Lorenzo Valdevit (alternate) | University of California, Irvine (verify) | Architected materials, printed tensegrity metamaterials | Bauer et al., Adv. Mater. 2021, 10.1002/adma.202005647 |
+
+A web search on 2026-11-27 could not confirm current affiliations for
+Chengyang Mo (last public record: his 2022 University of Pennsylvania
+thesis) or Kirsti Pajunen; prefer the confirmed names if those two
+cannot be reached.
 
 Do not suggest: Larry L. Howell or Brian D. Jensen (same department), or
 anyone else at Brigham Young University.
