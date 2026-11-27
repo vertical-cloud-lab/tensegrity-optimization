@@ -223,8 +223,6 @@ Still open in the SI, for a co-author:
   and measured t180 are filtered differently; and that Fig. S7's
   "Reference cloud" is the printable reference sweep.)
 - What was blinded in the mat-selection crossover experiment.
-- Table S3 could carry a nozzle column (bag26v and bpx68c printed with
-  the 0.4 mm TPU nozzle).
 
 ### 3.5 Additive manufacturing (profile C)
 
