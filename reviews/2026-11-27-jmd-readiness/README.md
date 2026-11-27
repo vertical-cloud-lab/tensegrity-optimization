@@ -255,6 +255,12 @@ work only.
 | Third-party images need permission (ASME) | The Fig. 1 Design panel reuses the proposal's BO panel (lab-made); all photographs are lab-made. No third-party material found |
 | Length: 9,000 words or nine pages (JMD instructions), 12 typeset pages (JMD FAQ), 12,000 word-equivalents (ASME) | About 12.6 typeset pages through the references; 8,500 words of text plus 1,140 in captions; about 11,900 word-equivalents; see blocker 9 |
 
+The cheapest step to 12 pages: Figs. 4 and 5 are 4.8 in wide natively
+and run across both columns. Regenerated at single-column size with text
+of at least 7 pt (their scripts need a run that can execute Python), they
+would save about half a page; simply shrinking the current files makes
+their legends about 5 pt, which is too small (tested and reverted).
+
 If the 9-page figure applies, these would cut about three pages without
 losing results: move Fig. 3 (trace) and Table 1 (design variables) to the
 SI and keep one sentence each; move the simulated campaign's table to the
