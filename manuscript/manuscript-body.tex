@@ -174,16 +174,17 @@ batch. We scale each candidate to a common mass target before
 printing, then 3D print and drop-test it repeatedly. We score
 designs by transmissibility (measured as a ratio of filtered top-to-base
 peak accelerations) and a mass-weighted rebound index (specimen mass
-times the squared fraction of impact velocity returned at the top),
-both minimized. Most specimens amplify the peak shock. Over a quasi-random
-initial batch and three model-recommended batches (35 specimens), the
-dominated hypervolume grew 56 percent, and the model chose every design
-on the final Pareto front. The final batch's best-predicted design lowered transmissibility
-to 0.803, 10 percent below the best initial-batch specimen. We printed
-one batch three times to measure repeatability. Print-to-print scatter
-in transmissibility was near 1 percent, and a seating check flagged
-both large outliers, so single-print extremes stay provisional until
-replicated. Code and data are available at \url{\repo}.
+times the square of a timing-based rebound fraction), both minimized.
+Most specimens amplify the peak shock. Over a quasi-random initial batch
+and three model-recommended batches (35 specimens), the dominated
+hypervolume grew 56 percent. Over a third of that gain comes from the
+final batch's best-predicted design, which lowered transmissibility to
+0.803, 10 percent below the best initial-batch specimen, and awaits a
+re-test. We printed one batch three times to measure repeatability.
+Excluding sessions that failed a seating or drift check,
+print-to-print scatter in transmissibility was near 1 percent, so
+single-print extremes stay provisional until replicated. Code and data
+are available at \url{\repo}.
 \end{abstract}
 
 \maketitle
@@ -335,7 +336,7 @@ application scale.
     errors (Section~\ref{sec:results:batches}).
   \item A simulation-only benchmark in which multi-objective BO reached
     93\% of a best-known reference hypervolume after 45 designs, against
-    77 to 79\% for four uninformed sampling baselines at the same budget,
+    76.5 to 79.1\% for four uninformed sampling baselines at the same budget,
     and finished ahead on all ten seeds (Sections~\ref{sec:methods:sim}
     and~\ref{sec:results:sim}).
 \end{enumerate}
@@ -453,9 +454,15 @@ surrogate~\citep{shahriari2016taking, frazier2018tutorial}.%
 BoTorch~\citep{balandat2020botorch} and the Ax platform built on
 it~\citep{pmlr-v293-olson25a} support batched evaluations and noisy
 expected hypervolume improvement (qNEHVI) for multi-objective
-problems~\citep{daulton2021nehvi}. %JMDBO
-BO has been applied to architected-material
-design~\citep{mo2023accelerated} and to additive
+problems~\citep{daulton2021nehvi}. Multi-objective BO has also been
+developed for engineering design, for example with a weighted Tchebycheff
+acquisition~\citep{biswas2022mobotchebycheff}. BO has been applied to
+crashworthy multimaterial structures~\citep{liu2019crashworthinessbo},
+to additively manufactured lattices under simulated impact
+loading~\citep{hertlein2024latticeimpact}, to the equilibrium states of
+elastomeric beams for architected beam
+networks~\citep{yoo2021elastomericbeams}, to architected-material
+design~\citep{mo2023accelerated}, and to additive
 manufacturing~\citep{zhang2021bo}. Mo et~al.~\cite{mo2023accelerated}
 established a multifidelity BO framework for architected materials that
 fuses low-fidelity simulations with high-fidelity ground truth through
@@ -491,7 +498,10 @@ circumradius \SI{28.8}{mm} and height \SI{80.8}{mm}. In batches 1 and 2
 the search space has five continuous variables
 (Table~\ref{tab:design-vars}): the circumradius $R$, the cell height
 $H$, the twist angle $\theta$, a single strut diameter $d_s$, and a
-single cable (tendon) diameter $d_t$. Under the prism's $D_3$ symmetry
+single cable (tendon) diameter $d_t$. In a prestressed tensegrity prism,
+self-equilibrium fixes the twist between the end
+faces~\citep{cao2024tensegrityprism}. Our cells carry no prestress, so
+the twist is a free variable. Under the prism's $D_3$ symmetry
 all struts are equivalent, and we also give all cables one diameter,
 leaving per-orbit (saddle, top, bottom) diameters to a later
 extension.\todo{Cite primary sources on $D_3$-symmetric versus
@@ -702,8 +712,9 @@ at both filter classes.
     sub-millisecond pulse in both directions in time, so its traces
     are already nonzero at impact onset. (a)~At CFC-180, the reporting
     class, the peak ratio
-    gives $t_{180} = 588/563 = 1.045$. (b)~At CFC-1000, the diagnostic
-    class, the same drop gives $2394/1861 = 1.287$. The campaign
+    gives $t_{180} = 1.045$ (peaks of 588 and \SI{563}{g}). (b)~At
+    CFC-1000, the diagnostic class, the same drop gives 1.287 (2394 and
+    \SI{1861}{g}). The campaign
     pipeline's narrower filter gives 1.045 and 1.204.}
   \label{fig:transmissibility-trace}
 \end{figure}
@@ -792,10 +803,11 @@ seating, we computed a \emph{seat gauge} for every session, the ratio of
 its CFC-1000 to its CFC-180 transmissibility. CFC-1000 keeps short,
 sharp spikes, such as a loosely seated specimen or top sensor knocking
 against its seat, that CFC-180 smooths out. The gauge read 1.00 to 1.07
-on most sessions, and we call a session that reads 1.15 or more a
-\emph{re-seat candidate}, to be re-mounted and re-tested before its
-value drives a decision. The seed attenuator, re-measured across a day
-and an independent re-seat, agreed to 0.13\%. Three prints of the
+on most sessions, and we call a session whose gauge reaches 1.145 (1.15
+to two decimals) a \emph{re-seat candidate}, to be re-mounted and
+re-tested before its value drives a decision. The seed attenuator read
+within 0.14\% of its campaign value in a shorter seating on the
+previous day. Three prints of the
 batch-3 designs put the standard deviation between specimens and
 seatings at 0.0087 in $t_{180}$ once sessions that fail the gauge or
 carry a drift flag are set aside, and the two largest deviations, 10
@@ -858,6 +870,10 @@ tested specimen in its seating, not of a fresh print of the same design.
 We ingested the nine second-print specimens of batch 3 as distinct
 completed trials at identical coordinates, each with its own weighed mass
 and standard error, so later refits observe design-level replicates.
+Batch-sampling schemes can make the choice between replicating an
+observed design and sampling a new one under heteroscedastic
+noise~\citep{vanbeek2021batchnoise}; in this campaign a fixed replication
+rule made it.
 Because the variances are supplied as known, no inferred noise term
 absorbs replicate disagreement and the fit must explain it through the
 inputs. Section~\ref{sec:results:audits} shows what that cost in
@@ -983,8 +999,10 @@ Table~\ref{tab:seed-results} reports the stabilized objectives. The
 measured $t_{180}$ spans 0.893 to 1.062, and six of nine specimens
 \emph{amplify} the peak shock reaching the top vertex. The print of
 Sobol spec~01 (6lhxfy), the thick-strut, thin-cable, high-twist corner
-of the batch, attenuated ($t_{180} = 0.893$) and reproduced that value
-within 0.13\% across an independent re-seat. The spread between
+of the batch, attenuated ($t_{180} = 0.893$), and a shorter, separate
+seating of the same specimen on the previous day read within 0.14\% of
+that value (33 stabilized drops, with a slight downward drift). The
+spread between
 specimens far exceeds the 0.17 to 0.48\% within-session per-drop CV,
 but one specimen per geometry cannot separate geometry effects from
 print-to-print variation. The best attenuator also had the largest
@@ -1067,13 +1085,13 @@ the constant-solid-mass projection, so its masses spread from 17.91 to
 $I_{\mathrm{reb}}$ axis, and r2d2c6 still holds the lowest
 $I_{\mathrm{reb}}$ on record (\SI{3.9}{mg}). Its archived
 transmissibility predictions were optimistic for all nine specimens
-(mean absolute percentage error, MAPE, 14.4\%), worst for r2d2c3
-(predicted 0.910, measured 1.334, the strongest amplifier in the
-campaign). Batch 3 (trials 28 to 36), the first at constant printed mass
-(19.24 to \SI{20.06}{g}) and the first with the infill and filament axes
-active, filled the knee of the front. Eight of its nine specimens
-measured within 0.3 posterior standard deviations of their predictions
-(MAPE 3.8\%), but its two first-print extremes did not hold up on later
+(mean absolute percentage error, MAPE, 14.4\%, against 8.6\% for simply
+predicting the mean of the training data), worst for r2d2c3 (predicted
+0.910, measured 1.334, the strongest amplifier in the campaign). Batch 3
+(trials 28 to 36), the first at constant printed mass (19.24 to
+\SI{20.06}{g}) and the first with the infill and filament axes active,
+filled the knee of the front. Its MAPE of 3.8\% matched the training
+mean's 3.7\%, and its two first-print extremes did not hold up on later
 prints: the best-predicted design (trial 32, predicted 1.020) measured
 1.251, and the drift-flagged drran8 (trial 35) measured 0.980. Batch 4
 (trials 37 to 45) split between the wide, high-twist, thin-cable family
@@ -1105,7 +1123,7 @@ attenuator of trial 35 (drran8, 0.9804) measured 1.0109 and 0.9958.
 Trial 35 is the lowest-transmissibility design in every print, but its
 screened mean is 1.003, so batch 3 contains no reproducibly attenuating
 design. Every large same-design deviation came with a failed seat gauge.
-The four sessions reading 1.15 or more were each their design's highest
+The four sessions at or above the gauge threshold were each their design's highest
 value, 4.5 to 19.8\% above the design's median, while the 23 below the
 threshold sat a median 0.2\% from it (gauge versus deviation, Spearman
 $\rho = 0.52$, $p = 0.006$). The third print supplied one new outlier,
@@ -1120,12 +1138,13 @@ within-session standard errors the surrogate ingests (median 0.0006).
 Over the screened sessions the intraclass correlation of $t_{180}$, the
 share of its variance that lies between designs, is 0.58, against 0.06
 with every session included. Most of that design signal comes from trial
-35. The other eight design means span only 1.028 to 1.045, less than
-the scatter of a single specimen, and the orderings from different prints
+35. The other eight design means, adjusted for the print offsets, span
+only 1.028 to 1.045, less than the scatter of a single specimen, and the
+orderings from different prints
 agree poorly (Spearman $\rho$ of 0.08, 0.67, and 0.20 between pairs of
 prints). The frozen batch-3 predictions rank the nine design means with
 $\rho = 0.75$ ($p = 0.02$) after adjusting each mean for the print
-offsets and $\rho = 0.55$ ($p = 0.13$) without that adjustment.
+offsets and $\rho = 0.55$ ($p = 0.12$) without that adjustment.
 $I_{\mathrm{reb}}$ repeats far less well. For each design the largest of
 its three values is 1.9 to 8.3 times the smallest, the rank correlations
 between prints are $-0.18$, 0.25, and 0.33, and the scatter between
@@ -1214,12 +1233,20 @@ $t_{180}$ MAPE is 4.8\% with Spearman $\rho_s = +0.32$ (two-sided
 permutation $p = 0.036$), but the held-out predictions stay near the
 pooled mean, with about a third of the measured spread
 (Fig.~\siref{fig:si-logocv}). For $E_{\mathrm{reb}}$ the MAPE is 38.8\%
-and $\rho_s = -0.40$ ($p = 0.008$), so the held-out ordering runs
-against the measured one. An earlier run of the same folds at a quarter
-of the NUTS budget gave $\rho_s = +0.08$ for $t_{180}$, so this ranking
-statistic depends on how fully each fold's posterior is sampled. The
-campaign surrogate therefore ranked held-out designs only weakly on
-$t_{180}$ and not at all on rebound. Its value to the campaign lay in
+and $\rho_s = -0.40$ ($p = 0.008$). These rank correlations need a
+reference: a predictor that returns each fold's training mean scores
+$\rho_s = -0.87$ for $t_{180}$ and $-0.79$ for $E_{\mathrm{reb}}$ on the
+same folds by construction, because holding out a high value raises the
+mean of the rest. The negative $E_{\mathrm{reb}}$ value therefore
+reflects predictions that barely depart from the pooled mean, not an
+inverted ordering, and the out-of-sample coefficient of determination
+against each fold's training mean, which is zero for that predictor, is
+the cleaner summary: 0.12 for $t_{180}$ and $-0.05$ for
+$E_{\mathrm{reb}}$. An earlier run of the same folds at a quarter of the
+NUTS budget gave $\rho_s = +0.08$ for $t_{180}$, so the ranking statistic
+also depends on how fully each fold's posterior is sampled. The campaign
+surrogate therefore had little held-out skill on $t_{180}$ and none on
+rebound. Its value to the campaign lay in
 the region it steered batch 4 toward, where its prospective ranking held
 up (Section~\ref{sec:results:batches}), rather than in point forecasts.
 
@@ -1246,17 +1273,19 @@ well ($+0.27$, $p = 0.08$), and point-estimated GPs with learned noise
 rank about as well as SAASBO ($\rho_s$ of 0.48 to 0.55 for $t_{180}$ and
 0.41 to 0.54 for $E_{\mathrm{reb}}$), so we make no claim that SAASBO
 ranks better. Its posterior standard deviation is better calibrated for
-$t_{180}$, covering 93\% of the held-out values at 1.96 standard
-deviations against 77 to 89\% for the point-estimated GPs. This is a
+$t_{180}$, covering 41 of the 44 held-out values (93\%) at 1.96
+standard deviations against 77 to 89\% for the point-estimated GPs. Its
+$E_{\mathrm{reb}}$ intervals, which leave out the learned noise, cover
+only 73\%. This is a
 post hoc re-analysis of the same 44 specimens. The fixed-noise model
 chose batches 2 to 4, and its archived predictions are the ones the
 tables report.
 
 \paragraph{Mass} The correlation between printed mass and
 transmissibility fell from $r = 0.82$ over the eight mapped seed
-specimens to $0.12$ over all 53 tested specimens ($r^2 = 0.01$),
-consistent with the constant-printed-mass projection having removed the
-seed batch's main confound. Within batch 4 the two correlate strongly
+specimens to $0.12$ over all 53 tested specimens ($r^2 = 0.01$), so the
+seed correlation did not persist once printed mass was held near
+constant. Within batch 4 the two correlate strongly
 ($r = 0.85$), but there the wide, high-twist family printed at 19.45 to
 \SI{19.64}{g} and the tall, low-twist family at 20.15 to
 \SI{20.58}{g}, so printed mass follows the design family.
@@ -1361,7 +1390,8 @@ does not give the hop speed but ranks specimens similarly to the
 measured rebound, so $e_{\mathrm{reb}}$ stays a ranking index and a
 candidate constraint rather than a physical quantity. The between-seat
 replication rule now gates every extreme, and the constant-printed-mass
-projection removed the mass channel the review flagged. We report this
+projection holds batch masses within about 3\% of target, which narrows
+the mass channel the review flagged. We report this
 trajectory because the loop is the contribution, and revising
 objectives mid-campaign, with the revision criteria stated in advance, is
 probably how such loops behave in practice.
@@ -1369,9 +1399,11 @@ probably how such loops behave in practice.
 \paragraph{Relation to prior art, and the role of simulation} Relative
 to Pajunen et~al.~\cite{pajunen2019design}, we vary the geometry under an
 optimization loop rather than characterizing a single fabrication
-condition. Relative to Mo et~al.~\cite{mo2023accelerated}, the loop's
-ground truth is physical measurement, and no simulated number enters the
-objectives, the acquisition, or candidate priority. An exploratory
+condition. Relative to Mo et~al.~\cite{mo2023accelerated} and Hertlein
+et~al.~\cite{hertlein2024latticeimpact}, whose objectives come from
+computational models, the loop's ground truth is physical measurement,
+and no simulated number enters the objectives, the acquisition, or
+candidate priority. An exploratory
 multi-engine simulation study, from rigid-body through finite-element
 fidelity, could not reproduce the amplification that dominates the
 measured record. Its rigid-strut models cap $t_{180}$ near unity, and
@@ -1387,8 +1419,8 @@ present cells are not pretensioned, and activating genuine pretension in
 printed tensegrity is an open direction outside this campaign.
 
 \paragraph{Path forward} No joint failed during the repeated-drop
-sessions, which covered more than 1,400 stabilized captures across the
-35 specimens plus the later prints of batch 3, but those sessions were
+sessions, which covered 1,614 stabilized captures across the 53 tested
+specimens, but those sessions were
 not designed as fatigue tests, so interface durability remains open, and
 pull-out and fatigue characterization of the internal-anchor joint is
 planned. A replicate study re-printed three batch-4 designs (corny7,
@@ -1418,10 +1450,10 @@ the only designs tested more than once. Every single-specimen extreme,
 the batch-4 record included, is provisional until its re-seat, and the
 batch-4 hypervolume gain depends on two such specimens. The surrogate
 that chose the batches took the within-session standard errors as known
-noise and ranks held-out designs only weakly on $t_{180}$
-($\rho_s = +0.32$) and inversely on $E_{\mathrm{reb}}$
-($\rho_s = -0.40$). Learning the noise raises both to about $+0.5$ in a
-re-analysis, but no batch was chosen with that model. The drop protocol
+noise and had little held-out skill (out-of-sample coefficients of
+determination of 0.12 for $t_{180}$ and $-0.05$ for $E_{\mathrm{reb}}$).
+Learning the noise raises them to 0.40 and 0.23 in a re-analysis, but no
+batch was chosen with that model. The drop protocol
 probes one height, one impact surface, and axial loading only, and the
 specimens stay elastic, so crush-energy metrics await the quasi-static
 campaign, and the rig has no falling-mass or displacement channel from
@@ -1464,8 +1496,8 @@ error of a session mean, and a broadband seat gauge flagged both of the
 largest single-print errors, so a single-print extreme needs a
 replicate, or at least a clean re-seat, before it counts. In a
 simulation-only benchmark, BO collected 93\% of the best-known
-hypervolume in 45 designs where uninformed sampling collected 77 to
-79\%, but on a control objective pair that sampling alone covers well,
+hypervolume in 45 designs where uninformed sampling collected 76.5 to
+79.1\%, but on a control objective pair that sampling alone covers well,
 BO did not separate from the samplers. The workflow suits other
 experimentally evaluated architected structures whose constitutive
 response is hard to calibrate from first principles, although transfer
@@ -1538,7 +1570,46 @@ We will mint a Zenodo DOI at acceptance.
   \texttt{copilot/explore-simulations-for-tensegrity}) so that the
   repository link resolves to the code and data listed here. The
   repository also still has no LICENSE file. We suggest MIT for the
-  code and CC BY 4.0 for the data.}
+  code and CC BY 4.0 for the data. Also merge the issue~\#134 video
+  analysis branch (\texttt{claude/issue-134-20261116-1959}), whose
+  results the rebound check quotes.}
+
+% Nomenclature: ASME places it after the Data Availability Statement.
+% Latin symbols first (capitals before lowercase), then Greek.
+\begin{nomenclature}
+  \EntryHeading{Latin symbols}
+  \entry{$a_{\mathrm{base}}$}{base-plate acceleration, filtered (g)}
+  \entry{$\mathbf{a}_{\mathrm{top}}$}{top-vertex acceleration vector, filtered (g)}
+  \entry{$d_j$}{joint diameter (mm)}
+  \entry{$d_s$}{strut diameter (mm)}
+  \entry{$d_t$}{cable (tendon) diameter (mm)}
+  \entry{$E_{\mathrm{reb}}$}{first-power mass-weighted rebound,
+    $e_{\mathrm{reb}}\,m\,g\,h$ (mJ)}
+  \entry{$e_{\mathrm{reb}}$}{rebound fraction, Eq.~\eqref{eq:objectives} (dimensionless)}
+  \entry{$g$}{gravitational acceleration (\si{m/s^2})}
+  \entry{$H$}{cell height between the joint-center planes (mm)}
+  \entry{$h$}{drop height (m)}
+  \entry{$I_{\mathrm{reb}}$}{mass-weighted rebound index,
+    $m\,e_{\mathrm{reb}}^2$ (mg)}
+  \entry{$m$}{weighed specimen mass (g)}
+  \entry{$m^{\star}$}{solid CAD mass target of batches 1 and 2 (g)}
+  \entry{$N_x, N_y, N_z$}{number of cells along each axis of a tiling}
+  \entry{$n_{\mathrm{drops}}$}{stabilized drops in a session}
+  \entry{$q$}{batch size (specimens per batch)}
+  \entry{$R$}{circumradius of the end triangles (mm)}
+  \entry{$r$}{Pearson correlation coefficient}
+  \entry{$s_{\mathrm{drop}}$}{per-drop standard deviation within a session}
+  \entry{$t_{180}$}{transmissibility, CFC-180 peak acceleration ratio}
+  \entry{$t_{\mathrm{second}}$}{time from impact to the second contact (s)}
+  \entry{VLI}{velocity loss index, $1 - e_{\mathrm{reb}}$}
+  \EntryHeading{Greek symbols}
+  \entry{$\Delta v$}{base velocity change through the impact (m/s)}
+  \entry{$\theta$}{twist angle between the end triangles (deg)}
+  \entry{$\rho$, $\rho_s$}{Spearman rank correlation coefficient}
+  \entry{$\sigma_e$, $\sigma_I$, $\sigma_m$, $\sigma_t$}{standard errors
+    of $e_{\mathrm{reb}}$, $I_{\mathrm{reb}}$ and $t_{180}$, and the
+    standard deviation of printed mass}
+\end{nomenclature}
 
 % Print the list of pending TODOs at the end -- the [disable] option
 % on todonotes hides this automatically in the clean wrapper.

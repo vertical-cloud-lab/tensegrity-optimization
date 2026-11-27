@@ -476,8 +476,10 @@ drops left the transmissibility ranking of all nine tested seed
 specimens unchanged. The largest shift of a session mean was $+0.008$
 (bag26v). Gaps between specimens adjacent in the ranking were 0.002 to
 0.087, and at 20 drops the standard error of each mean (0.0002 to
-0.0011) was still below the smallest gap. The closest pair (bpx68c and
-ajhby6) kept its order because truncation shifted both upward
+0.0011) was still below the smallest gap except for the closest pair.
+That pair (bpx68c and ajhby6) kept its order because truncation shifted
+both upward, but at 20 drops the two differ by only 0.00006 against
+standard errors of 0.0003 and 0.0010, so they are effectively tied
 (\texttt{t3-prism-drop-count-sensitivity.csv}). Shortening the
 sessions cut tower time per specimen from about 90 minutes to about 15
 while keeping roughly four times the minimum stabilized-drop budget,
@@ -640,12 +642,13 @@ rule}, any single-seating value that would drive a decision requires
 confirmation on an independent re-seat. Second, we defined an advisory
 \emph{seat gauge}, the broadband ratio of CFC-1000 to CFC-180
 transmissibility. It reads 1.00 to 1.07 on most sessions, and we
-treat a session reading 1.15 or more as a re-seat candidate. The
+treat a session whose gauge reaches 1.145 (1.15 to two decimals; the
+analysis code's cut) as a re-seat candidate. The
 third print is the first replicate data collected after the gauge was
 defined (\mbox{2026-09-12}). Its one gross outlier (dran35, 10.1\% above its design's
 median over the three prints) read 2.43, and its other eight sessions
-read 1.01 to 1.06. Over all 27 batch-3 sessions, the four reading 1.15
-or more were each their design's highest value, and the gauge
+read 1.01 to 1.06. Over all 27 batch-3 sessions, the four at or above
+the threshold were each their design's highest value, and the gauge
 correlates with the deviation from the design median (Spearman
 $\rho = 0.52$, $p = 0.006$). Both conventions, with the
 session-by-session drift-watch record, live in the drop-test datasets
@@ -739,10 +742,11 @@ Eight of the 21 reversals come from averaging repeated prints of the
 batch-3 designs. The mean of the squares exceeds the square of the
 mean, so $I_{\mathrm{reb}}$ penalizes a design whose prints rebound
 inconsistently, a penalty that tracks print scatter as well as design
-performance. Where printed mass was held constant (batches 3 and 4),
-ranking the specimens by $I_{\mathrm{reb}}$ and by $e_{\mathrm{reb}}$
-gives nearly the same order (Spearman $\rho = 0.998$ over 27 specimens,
-against 0.995 for $E_{\mathrm{reb}}$). In batches 1 and 2 the orders
+performance. Where printed mass was held constant, ranking the
+specimens by $I_{\mathrm{reb}}$ and by $e_{\mathrm{reb}}$ gives nearly
+the same order (Spearman $\rho = 0.998$ over the 27 specimens of batch 4
+and the first two prints of batch 3, against 0.995 for
+$E_{\mathrm{reb}}$). In batches 1 and 2 the orders
 agree less well ($\rho = 0.917$ over 17, against 0.855). The comparison
 and its per-design and per-specimen tables are archived with the
 manuscript data
@@ -787,8 +791,10 @@ of scope for the present axial-impact study.
 \label{si:mass}
 % -----------------------------------------------------------------------------
 We projected the seed batch onto constant \emph{solid} CAD mass
-($m^{\star} = \SI{30.95}{g}$), yet the specimens weigh
-\SIrange{18.50}{22.29}{g}. The gap arises because PLA struts print at
+($m^{\star} = \SI{30.95}{g}$), yet the printed seed specimens weigh
+\SIrange{18.50}{22.29}{g} (\SIrange{18.50}{22.04}{g} for the eight
+tested specimens with weighed masses). The gap arises because PLA struts
+print at
 partial infill (15\% grid, two walls) while thin TPU cables print near
 solid, and the PLA-to-TPU volume split swings widely across the design
 box. A two-stage calibrated model closes this gap
@@ -877,7 +883,7 @@ instrumentation.
 % 10,000 g single-axis base accelerometer, while the plate-1 check-in on the
 % drop-test branch (data/drop-tests/1sne-checkin) reports the CH5 cable.
 % The SI does not load todonotes; the same question is a \todo in main-text
-% Section 3.5 (sec:methods:rankstability), shown in manuscript-todos.pdf.
+% Discussion (Path forward paragraph), shown in manuscript-todos.pdf.
 The raw captures, the capture census, and the fault analysis are
 archived with the drop-test data.
 
