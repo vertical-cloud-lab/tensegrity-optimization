@@ -44,12 +44,16 @@ LATEX=(pdflatex -interaction=nonstopmode -halt-on-error)
 # --- 1. Supplementary Information --------------------------------------------
 echo "[1/6] Building the Supplementary Information"
 mkdir -p "$WORK/si"
+# pdfTeX derives the PDF's trailer /ID from the output path, which is a
+# random temporary directory here; a fixed ID keeps the SI reproducible.
+SI=(-output-directory="$WORK/si" -jobname=supplementary
+    '\pdftrailerid{tensegrity-bo-supplementary}\input{supplementary}')
 (
   cd "$REPO/manuscript"
-  "${LATEX[@]}" -output-directory="$WORK/si" supplementary > "$WORK/si-1.log"
+  "${LATEX[@]}" "${SI[@]}" > "$WORK/si-1.log"
   (cd "$WORK/si" && BIBINPUTS="$REPO/manuscript:" bibtex supplementary > "$WORK/si-bib.log")
-  "${LATEX[@]}" -output-directory="$WORK/si" supplementary > "$WORK/si-2.log"
-  "${LATEX[@]}" -output-directory="$WORK/si" supplementary > "$WORK/si-3.log"
+  "${LATEX[@]}" "${SI[@]}" > "$WORK/si-2.log"
+  "${LATEX[@]}" "${SI[@]}" > "$WORK/si-3.log"
 )
 if grep -E -q 'undefined|Rerun to get' "$WORK/si/supplementary.log"; then
   grep -E 'undefined|Rerun to get' "$WORK/si/supplementary.log" | head
