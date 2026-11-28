@@ -90,6 +90,15 @@ Highlights:
 If we end up retargeting to SMS, swap the class line and bibliography style
 (`iopart-num.bst` for numeric references) and adjust the front-matter macros.
 
+## arXiv preprint
+
+A journal-neutral version of this manuscript for arXiv (plain `article`
+layout, the SI as an ancillary file, a Data Availability Statement that cites
+the public repository by commit) lives in [`../arxiv/`](../arxiv/README.md).
+Build it with `make arxiv` or `./arxiv/build.sh`. Its body text is
+`manuscript-body.tex` at `7fce855`, so carry later edits over by hand
+before posting a new arXiv version.
+
 ## Building
 
 The manuscript is wired into the top-level `Makefile`:

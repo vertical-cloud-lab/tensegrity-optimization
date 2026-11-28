@@ -68,6 +68,14 @@ $(MANU_DIR)/manuscript-todos.pdf: $(MANU_DIR)/manuscript-todos.tex $(MANU_BODY) 
 sim:
 	python3 scripts/figures/sim_campaign_tables.py
 
+# arXiv preprint bundle (journal-neutral article layout): writes
+# arxiv/tensegrity-bo-arxiv-source.tar.gz, arxiv/tensegrity-bo-preprint.pdf
+# and arxiv/bundle/, and checks that the tarball compiles on its own with
+# pdflatex and its .bbl. See arxiv/README.md.
+.PHONY: arxiv
+arxiv:
+	./arxiv/build.sh
+
 clean-manuscript:
 	cd $(MANU_DIR) && rm -f \
 	      manuscript.aux manuscript.bbl manuscript.blg manuscript.log \
