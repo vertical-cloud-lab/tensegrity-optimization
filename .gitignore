@@ -74,3 +74,6 @@ edison-trajectories/rubberduck-*/rubberduck-*-bundle.zip
 *.info.json
 figures/**/*.zip
 manuscript/**/*.zip
+
+# arXiv bundle: the .bbl is part of the submission (arXiv runs no BibTeX)
+!arxiv/bundle/main.bbl

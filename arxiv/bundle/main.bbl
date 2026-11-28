@@ -1,0 +1,491 @@
+\begin{thebibliography}{57}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Skelton and de~Oliveira(2009)]{skelton2009tensegrity}
+Robert~E. Skelton and Mauricio~C. de~Oliveira.
+\newblock \emph{Tensegrity Systems}.
+\newblock Springer, New York, 2009.
+\newblock \doi{10.1007/978-0-387-74242-7}.
+
+\bibitem[Sultan(2009)]{sultan2009tensegrity}
+Cornel Sultan.
+\newblock Tensegrity: 60 years of art, science, and engineering.
+\newblock \emph{Advances in Applied Mechanics}, 43:\penalty0 69--145, 2009.
+\newblock \doi{10.1016/S0065-2156(09)43002-3}.
+
+\bibitem[Amendola et~al.(2014)Amendola, Carpentieri, de~Oliveira, Skelton, and
+  Fraternali]{amendola2014experimental}
+Ada Amendola, Gerardo Carpentieri, Mauricio~C. de~Oliveira, Robert~E. Skelton,
+  and Fernando Fraternali.
+\newblock Experimental investigation of the softening--stiffening response of
+  tensegrity prisms under compressive loading.
+\newblock \emph{Composite Structures}, 117:\penalty0 234--243, 2014.
+\newblock \doi{10.1016/j.compstruct.2014.06.022}.
+
+\bibitem[Zhang et~al.(2018)Zhang, Zhang, Dobah, Scarpa, Fraternali, and
+  Skelton]{zhang2018tensegrity}
+Qicheng Zhang, Dayi Zhang, Yousef Dobah, Fabrizio Scarpa, Fernando Fraternali,
+  and Robert~E. Skelton.
+\newblock Tensegrity cell mechanical metamaterial with metal rubber.
+\newblock \emph{Applied Physics Letters}, 113\penalty0 (3):\penalty0 031906,
+  2018.
+\newblock \doi{10.1063/1.5040850}.
+
+\bibitem[Fraternali et~al.(2015)Fraternali, Carpentieri, and
+  Amendola]{fraternali2015tensegrity}
+Fernando Fraternali, Gerardo Carpentieri, and Ada Amendola.
+\newblock On the mechanical modeling of the extreme softening/stiffening
+  response of axially loaded tensegrity prisms.
+\newblock \emph{Journal of the Mechanics and Physics of Solids}, 74:\penalty0
+  136--157, 2015.
+\newblock \doi{10.1016/j.jmps.2014.10.010}.
+
+\bibitem[SunSpiral et~al.(2015)SunSpiral, Agogino, and
+  Atkinson]{agogino2018superball}
+Vytas SunSpiral, Adrian~K. Agogino, and David Atkinson.
+\newblock {Super Ball Bot}: Structures for planetary landing and exploration.
+\newblock NIAC Phase II Final Report ARC-E-DAA-TN27344, NASA Ames Research
+  Center, Moffett Field, CA, September 2015.
+\newblock URL \url{https://ntrs.nasa.gov/citations/20160000577}.
+
+\bibitem[Bruce et~al.(2014)Bruce, Sabelhaus, Chen, Lu, Morse, Milam,
+  Caluwaerts, Agogino, and SunSpiral]{caluwaerts2014superball}
+Jonathan Bruce, Andrew~P. Sabelhaus, Yangxin Chen, Dizhou Lu, Kyle Morse,
+  Sophie Milam, Ken Caluwaerts, Alice~M. Agogino, and Vytas SunSpiral.
+\newblock {SUPERball}: Exploring tensegrities for planetary probes.
+\newblock In \emph{Proceedings of the 12th International Symposium on
+  Artificial Intelligence, Robotics and Automation in Space (i-SAIRAS)}, 2014.
+\newblock URL \url{https://ntrs.nasa.gov/citations/20190001649}.
+
+\bibitem[Sabelhaus et~al.(2015)Sabelhaus, Bruce, Caluwaerts, Manovi, Firoozi,
+  Dobi, Agogino, and SunSpiral]{sabelhaus2015system}
+Andrew~P. Sabelhaus, Jonathan Bruce, Ken Caluwaerts, Pavlo Manovi, Roya~Fallah
+  Firoozi, Sarah Dobi, Alice~M. Agogino, and Vytas SunSpiral.
+\newblock System design and locomotion of {SUPERball}, an untethered tensegrity
+  robot.
+\newblock In \emph{2015 IEEE International Conference on Robotics and
+  Automation (ICRA)}, pages 2867--2873, 2015.
+\newblock \doi{10.1109/ICRA.2015.7139590}.
+
+\bibitem[Vespignani et~al.(2018)Vespignani, Friesen, SunSpiral, and
+  Bruce]{vespignani2018design}
+Massimo Vespignani, Jeffrey~M. Friesen, Vytas SunSpiral, and Jonathan Bruce.
+\newblock Design of {SUPERball v2}, a compliant tensegrity robot for absorbing
+  large impacts.
+\newblock In \emph{2018 IEEE/RSJ International Conference on Intelligent Robots
+  and Systems (IROS)}, pages 2865--2871, 2018.
+\newblock \doi{10.1109/IROS.2018.8594374}.
+
+\bibitem[Deitrich et~al.(2022)Deitrich, Baldonado, Khan, Cook, Rizzo,
+  Schroeder, Bayandor, and Samareh]{deitrich2022titan}
+Nicholas Deitrich, Karen~Mae Baldonado, Ahsan Khan, Joshua Cook, Louis Rizzo,
+  Kevin Schroeder, Javid Bayandor, and Jamshid Samareh.
+\newblock A rideshare tensegrity rover concept to explore {T}itan's lands and
+  oceans.
+\newblock NASA Technical Memorandum NASA/TM-20220014544, NASA Langley Research
+  Center, Hampton, VA, October 2022.
+\newblock URL \url{https://ntrs.nasa.gov/citations/20220014544}.
+
+\bibitem[Pajunen et~al.(2019)Pajunen, Johanns, Pal, Rimoli, and
+  Daraio]{pajunen2019design}
+Kirsti Pajunen, Paul Johanns, Raj~Kumar Pal, Julian~J. Rimoli, and Chiara
+  Daraio.
+\newblock Design and impact response of {3D}-printable tensegrity-inspired
+  structures.
+\newblock \emph{Materials \& Design}, 182:\penalty0 107966, 2019.
+\newblock \doi{10.1016/j.matdes.2019.107966}.
+
+\bibitem[Ye et~al.(2023)Ye, Liu, Cheng, Li, Jian, Wang, Sun, Lu, and
+  Ge]{ye2023multimaterial}
+Haitao Ye, Qingjiang Liu, Jianxiang Cheng, Honggeng Li, Bingcong Jian, Rong
+  Wang, Zechu Sun, Yang Lu, and Qi~Ge.
+\newblock Multimaterial {3D} printed self-locking thick-panel origami
+  metamaterials.
+\newblock \emph{Nature Communications}, 14:\penalty0 1607, 2023.
+\newblock \doi{10.1038/s41467-023-37343-w}.
+
+\bibitem[Khatri and Egan(2024)]{khatri2024energy}
+Nava~Raj Khatri and Paul~F. Egan.
+\newblock Energy absorption of {3D} printed {ABS} and {TPU} multimaterial
+  honeycomb structures.
+\newblock \emph{3D Printing and Additive Manufacturing}, 11\penalty0
+  (2):\penalty0 e840--e850, 2024.
+\newblock \doi{10.1089/3dp.2022.0196}.
+
+\bibitem[Chen et~al.(2018)Chen, Huang, Wang, Antonoglou, Schrittwieser, Silver,
+  and de~Freitas]{chen2018bayesianoptimizationalphago}
+Yutian Chen, Aja Huang, Ziyu Wang, Ioannis Antonoglou, Julian Schrittwieser,
+  David Silver, and Nando de~Freitas.
+\newblock {B}ayesian optimization in {AlphaGo}.
+\newblock \emph{arXiv preprint arXiv:1812.06855}, 2018.
+\newblock \doi{10.48550/arXiv.1812.06855}.
+
+\bibitem[Ament et~al.(2023)Ament, Witte, Garg, and
+  Kusuma]{ament2023sustainable}
+Sebastian Ament, Andrew Witte, Nishant Garg, and Julius Kusuma.
+\newblock Sustainable concrete via {B}ayesian optimization.
+\newblock \emph{arXiv preprint arXiv:2310.18288}, 2023.
+\newblock \doi{10.48550/arXiv.2310.18288}.
+\newblock NeurIPS 2023 Workshop on Adaptive Experimental Design and Active
+  Learning in the Real World.
+
+\bibitem[Strieth-Kalthoff et~al.(2024)Strieth-Kalthoff, Hao, Rathore, Derasp,
+  Gaudin, Angello, Seifrid, Trushina, Guy, Liu,
+  et~al.]{striethkalthoff2024delocalized}
+Felix Strieth-Kalthoff, Han Hao, Vandana Rathore, Joshua Derasp, Th{\'e}ophile
+  Gaudin, Nicholas~H. Angello, Martin Seifrid, Ekaterina Trushina, Mason Guy,
+  Junliang Liu, et~al.
+\newblock Delocalized, asynchronous, closed-loop discovery of organic laser
+  emitters.
+\newblock \emph{Science}, 384\penalty0 (6697):\penalty0 eadk9227, 2024.
+\newblock \doi{10.1126/science.adk9227}.
+
+\bibitem[Mo et~al.(2023)Mo, Perdikaris, and Raney]{mo2023accelerated}
+Chengyang Mo, Paris Perdikaris, and Jordan~R. Raney.
+\newblock Accelerated design of architected materials with multifidelity
+  {B}ayesian optimization.
+\newblock \emph{Journal of Engineering Mechanics}, 149\penalty0 (6):\penalty0
+  04023032, 2023.
+\newblock \doi{10.1061/JENMDT.EMENG-7033}.
+
+\bibitem[Zhang et~al.(2021)Zhang, Parnell, Brabazon, and Benavoli]{zhang2021bo}
+Mimi Zhang, Andrew Parnell, Dermot Brabazon, and Alessio Benavoli.
+\newblock {B}ayesian optimisation for sequential experimental design with
+  applications in additive manufacturing.
+\newblock \emph{arXiv preprint arXiv:2107.12809}, 2021.
+\newblock \doi{10.48550/arXiv.2107.12809}.
+
+\bibitem[{SAE International}(2022)]{saej211}
+{SAE International}.
+\newblock Instrumentation for impact test, {Part}~1: Electronic
+  instrumentation.
+\newblock Surface Vehicle Recommended Practice J211/1\_202208, 2022.
+
+\bibitem[Santos(2023)]{santos2023towardanovel}
+Filipe~A. Santos.
+\newblock Toward a novel energy-dissipation metamaterial with tensegrity
+  architecture.
+\newblock \emph{Advanced Materials}, 35\penalty0 (26):\penalty0 2300639, 2023.
+\newblock \doi{10.1002/adma.202300639}.
+
+\bibitem[Cloutier(1966)]{cloutier1966landing}
+Gerald~J. Cloutier.
+\newblock Landing impact energy absorption using anisotropic crushable
+  materials.
+\newblock \emph{Journal of Spacecraft and Rockets}, 3\penalty0 (12):\penalty0
+  1755--1761, 1966.
+\newblock \doi{10.2514/3.28743}.
+
+\bibitem[Adams(2004)]{adams2004merairbag}
+Douglas~S. Adams.
+\newblock {M}ars {E}xploration {R}over airbag landing loads testing and
+  analysis.
+\newblock In \emph{45th AIAA/ASME/ASCE/AHS/ASC Structures, Structural Dynamics
+  and Materials Conference}, number AIAA 2004-1795, 2004.
+\newblock \doi{10.2514/6.2004-1795}.
+
+\bibitem[Jackson et~al.(2014)Jackson, Fasanella, and
+  Polanco]{jackson2014honeycomb}
+Karen~E. Jackson, Edwin~L. Fasanella, and Michael~A. Polanco.
+\newblock Simulating the response of a composite honeycomb energy absorber.
+  {I}: {D}ynamic crushing of components and multiterrain impacts.
+\newblock \emph{Journal of Aerospace Engineering}, 27\penalty0 (3):\penalty0
+  424--436, 2014.
+\newblock \doi{10.1061/(ASCE)AS.1943-5525.0000357}.
+
+\bibitem[Intrigila et~al.(2022)Intrigila, Micheletti, Nodargi, Artioli, and
+  Bisegna]{intrigila2022fabricationandexperimental}
+Claudio Intrigila, Andrea Micheletti, Nicola~A. Nodargi, Edoardo Artioli, and
+  Paolo Bisegna.
+\newblock Fabrication and experimental characterisation of a bistable
+  tensegrity-like unit for lattice metamaterials.
+\newblock \emph{Additive Manufacturing}, 57:\penalty0 102946, Sep 2022.
+\newblock ISSN 2214-8604.
+\newblock \doi{10.1016/j.addma.2022.102946}.
+\newblock URL \url{https://doi.org/10.1016/j.addma.2022.102946}.
+
+\bibitem[Bauer et~al.(2021)Bauer, Kraus, Crook, Rimoli, and
+  Valdevit]{bauer2021tensegrity}
+Jens Bauer, Julie~A. Kraus, Cameron Crook, Julian~J. Rimoli, and Lorenzo
+  Valdevit.
+\newblock Tensegrity metamaterials: Toward failure-resistant engineering
+  systems through delocalized deformation.
+\newblock \emph{Advanced Materials}, 33\penalty0 (10):\penalty0 2005647, 2021.
+\newblock \doi{10.1002/adma.202005647}.
+
+\bibitem[Pajunen et~al.(2021)Pajunen, Celli, and Daraio]{pajunen2021prestrain}
+Kirsti Pajunen, Paolo Celli, and Chiara Daraio.
+\newblock Prestrain-induced bandgap tuning in 3d-printed tensegrity-inspired
+  lattice structures.
+\newblock \emph{Extreme Mechanics Letters}, 44:\penalty0 101236, 2021.
+\newblock \doi{10.1016/j.eml.2021.101236}.
+
+\bibitem[Sabouni-Zawadzka et~al.(2024)Sabouni-Zawadzka, Gilewski, and
+  Zawadzki]{sabounizawadzka2024experimental}
+Anna~Al Sabouni-Zawadzka, Wojciech Gilewski, and Adam Zawadzki.
+\newblock Experimental investigations on mechanical properties of 3d-printed
+  tensegrity-inspired metamaterials based on 4-strut simplex module.
+\newblock \emph{Archives of Civil Engineering}, 70\penalty0 (2):\penalty0
+  343--357, 2024.
+\newblock \doi{10.24425/ace.2024.150987}.
+
+\bibitem[Almeida et~al.(2025)Almeida, Gulledge, Park, Momeni, Tajyar, Davami,
+  and Beck]{almeida2025highstrainrate}
+Nara Almeida, Ben Gulledge, Jesse Park, Kasra Momeni, Ali Tajyar, Keivan
+  Davami, and Sadie Beck.
+\newblock High strain rate response of {3D}-printable tensegrity-inspired
+  structures.
+\newblock \emph{International Journal of Solids and Structures}, 322:\penalty0
+  113590, 2025.
+\newblock \doi{10.1016/j.ijsolstr.2025.113590}.
+
+\bibitem[Davami et~al.(2025)Davami, Rowe, Gulledge, Park, Beheshti, Palazotto,
+  Tavangarian, and Beck]{davami2025dynamicanalysis}
+Keivan Davami, Russell Rowe, Ben Gulledge, Jesse Park, Ali Beheshti, Anthony
+  Palazotto, Fariborz Tavangarian, and Sadie Beck.
+\newblock Dynamic analysis of additively manufactured tensegrity structures.
+\newblock \emph{International Journal of Impact Engineering}, 198:\penalty0
+  105208, 2025.
+\newblock \doi{10.1016/j.ijimpeng.2024.105208}.
+
+\bibitem[Wang et~al.(2026)Wang, Zhang, Sun, Wen, and Chu]{wang2026integrated}
+Zhenyu Wang, Meiling Zhang, Jianwei Sun, Qi~Wen, and Jinkui Chu.
+\newblock Integrated fabrication and validation of tensegrity-inspired
+  rigid-flexible mechanical metamaterials.
+\newblock \emph{Additive Manufacturing}, 118:\penalty0 105107, 2026.
+\newblock \doi{10.1016/j.addma.2026.105107}.
+
+\bibitem[Arifvianto et~al.(2022)Arifvianto, Satiti, Salim, Suyitno, Nuryanti,
+  and Mahardika]{arifvianto2022mechanicalpropertiesof}
+Budi Arifvianto, Baikhati~E. Satiti, Urip~A. Salim, Suyitno, Archadian
+  Nuryanti, and Muslim Mahardika.
+\newblock Mechanical properties of the {FFF} sandwich-structured parts made of
+  {PLA}/{TPU} multi-material.
+\newblock \emph{Progress in Additive Manufacturing}, 7\penalty0 (6):\penalty0
+  1213--1223, 2022.
+\newblock \doi{10.1007/s40964-022-00295-6}.
+
+\bibitem[Ezeh and Susmel(2018)]{ezeh2018onthefatigue}
+O.~H. Ezeh and L.~Susmel.
+\newblock On the fatigue strength of {3D}-printed polylactide ({PLA}).
+\newblock \emph{Procedia Structural Integrity}, 9:\penalty0 29--36, 2018.
+\newblock \doi{10.1016/j.prostr.2018.06.007}.
+
+\bibitem[Vanaei et~al.(2021)Vanaei, Shirinbayan, Vanaei, Fitoussi, Khelladi,
+  and Tcharkhtchi]{vanaei2021multiscaledamageanalysis}
+Hamid~Reza Vanaei, Mohammadali Shirinbayan, Saeedeh Vanaei, Joseph Fitoussi,
+  Sofiane Khelladi, and Abbas Tcharkhtchi.
+\newblock Multi-scale damage analysis and fatigue behavior of {PLA}
+  manufactured by fused deposition modeling ({FDM}).
+\newblock \emph{Rapid Prototyping Journal}, 27\penalty0 (2):\penalty0 371--378,
+  2021.
+\newblock \doi{10.1108/rpj-11-2019-0300}.
+
+\bibitem[Bustihan and Botiz(2026)]{bustihan2026recentadvancesin}
+Alin Bustihan and Ioan Botiz.
+\newblock Recent advances in additively manufactured polymeric structures for
+  mechanical energy absorption.
+\newblock \emph{Polymers}, 18\penalty0 (9):\penalty0 1019, 2026.
+\newblock \doi{10.3390/polym18091019}.
+
+\bibitem[Liu et~al.(2026)Liu, Seidu, Hu, Cheng, Yan, Yang, and
+  Jiang]{liu2026threedimensionalprintedlattice}
+Jing Liu, Raphael~Kanyire Seidu, Ling-quan Hu, Cheng Cheng, Shiyang Yan, Luming
+  Yang, and Shou-xiang Jiang.
+\newblock Three-dimensional printed lattice structures for next generation of
+  wearable technology.
+\newblock \emph{Fashion and Textiles}, 13\penalty0 (1):\penalty0 15, 2026.
+\newblock \doi{10.1186/s40691-026-00466-x}.
+
+\bibitem[Shahriari et~al.(2016)Shahriari, Swersky, Wang, Adams, and
+  de~Freitas]{shahriari2016taking}
+Bobak Shahriari, Kevin Swersky, Ziyu Wang, Ryan~P. Adams, and Nando de~Freitas.
+\newblock Taking the human out of the loop: A review of {B}ayesian
+  optimization.
+\newblock \emph{Proceedings of the IEEE}, 104\penalty0 (1):\penalty0 148--175,
+  2016.
+\newblock \doi{10.1109/JPROC.2015.2494218}.
+
+\bibitem[Frazier(2018)]{frazier2018tutorial}
+Peter~I. Frazier.
+\newblock A tutorial on {B}ayesian optimization.
+\newblock \emph{arXiv preprint arXiv:1807.02811}, 2018.
+\newblock \doi{10.48550/arXiv.1807.02811}.
+
+\bibitem[Balandat et~al.(2020)Balandat, Karrer, Jiang, Daulton, Letham, Wilson,
+  and Bakshy]{balandat2020botorch}
+Maximilian Balandat, Brian Karrer, Daniel~R. Jiang, Samuel Daulton, Benjamin
+  Letham, Andrew~Gordon Wilson, and Eytan Bakshy.
+\newblock {BoTorch}: A framework for efficient {M}onte-{C}arlo {B}ayesian
+  optimization.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pages 21524--21538, 2020.
+\newblock \doi{10.48550/arXiv.1910.06403}.
+
+\bibitem[Olson et~al.(2025)Olson, Santorella, Tiao, Cakmak, Garrard, Daulton,
+  Lin, et~al.]{pmlr-v293-olson25a}
+Miles Olson, Elizabeth Santorella, Louis~C. Tiao, Sait Cakmak, Mia Garrard,
+  Samuel Daulton, Zhiyuan~Jerry Lin, et~al.
+\newblock Ax: A platform for adaptive experimentation.
+\newblock In Leman Akoglu, Carola Doerr, Jan~N. van Rijn, Roman Garnett, and
+  Jacob~R. Gardner, editors, \emph{Proceedings of the Fourth International
+  Conference on Automated Machine Learning}, volume 293 of \emph{Proceedings of
+  Machine Learning Research}, pages 21/1--25. PMLR, 08--11 Sep 2025.
+\newblock URL \url{https://proceedings.mlr.press/v293/olson25a.html}.
+
+\bibitem[Daulton et~al.(2021)Daulton, Balandat, and Bakshy]{daulton2021nehvi}
+Samuel Daulton, Maximilian Balandat, and Eytan Bakshy.
+\newblock Parallel {B}ayesian optimization of multiple noisy objectives with
+  expected hypervolume improvement.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~34, pages 2187--2200, 2021.
+\newblock \doi{10.48550/arXiv.2105.08195}.
+
+\bibitem[Biswas et~al.(2022)Biswas, Fuentes, and
+  Hoyle]{biswas2022mobotchebycheff}
+Arpan Biswas, Claudio Fuentes, and Christopher Hoyle.
+\newblock A multi-objective {B}ayesian optimization approach using the weighted
+  {T}chebycheff method.
+\newblock \emph{Journal of Mechanical Design}, 144\penalty0 (1):\penalty0
+  011703, 2022.
+\newblock \doi{10.1115/1.4051787}.
+
+\bibitem[Liu et~al.(2019)Liu, Wu, Detwiler, Panchal, and
+  Tovar]{liu2019crashworthinessbo}
+Kai Liu, Tong Wu, Duane Detwiler, Jitesh Panchal, and Andres Tovar.
+\newblock Design for crashworthiness of categorical multimaterial structures
+  using cluster analysis and {B}ayesian optimization.
+\newblock \emph{Journal of Mechanical Design}, 141\penalty0 (12):\penalty0
+  121701, 2019.
+\newblock \doi{10.1115/1.4044838}.
+
+\bibitem[Hertlein et~al.(2024)Hertlein, Vemaganti, and
+  Anand]{hertlein2024latticeimpact}
+Nathan Hertlein, Kumar Vemaganti, and Sam Anand.
+\newblock Design optimization of lattice structures under impact loading for
+  additive manufacturing.
+\newblock \emph{Journal of Mechanical Design}, 146\penalty0 (11):\penalty0
+  111701, 2024.
+\newblock \doi{10.1115/1.4065065}.
+
+\bibitem[Yoo et~al.(2021)Yoo, Hertlein, Chen, Willey, Gillman, Juhl, Anand,
+  Vemaganti, and Buskohl]{yoo2021elastomericbeams}
+David Yoo, Nathan Hertlein, Vincent~W. Chen, Carson~L. Willey, Andrew Gillman,
+  Abigail Juhl, Sam Anand, Kumar Vemaganti, and Philip~R. Buskohl.
+\newblock {B}ayesian optimization of equilibrium states in elastomeric beams.
+\newblock \emph{Journal of Mechanical Design}, 143\penalty0 (11):\penalty0
+  111702, 2021.
+\newblock \doi{10.1115/1.4050743}.
+
+\bibitem[Perdikaris et~al.(2017)Perdikaris, Raissi, Damianou, Lawrence, and
+  Karniadakis]{perdikaris2017nonlinear}
+Paris Perdikaris, Maziar Raissi, Andreas Damianou, Neil~D. Lawrence, and
+  George~Em Karniadakis.
+\newblock Nonlinear information fusion algorithms for data-efficient
+  multi-fidelity modelling.
+\newblock \emph{Proceedings of the Royal Society A}, 473\penalty0
+  (2198):\penalty0 20160751, 2017.
+\newblock \doi{10.1098/rspa.2016.0751}.
+
+\bibitem[Cao et~al.(2024)Cao, Luo, Feng, and Liu]{cao2024tensegrityprism}
+Ziying Cao, Ani Luo, Yaming Feng, and Heping Liu.
+\newblock Self-equilibrium analysis and minimal mass design of tensegrity prism
+  units.
+\newblock \emph{Journal of Applied Mechanics}, 91\penalty0 (7):\penalty0
+  071007, 2024.
+\newblock \doi{10.1115/1.4065202}.
+
+\bibitem[Bernstein(1977)]{bernstein1977listening}
+A.~D. Bernstein.
+\newblock Listening to the coefficient of restitution.
+\newblock \emph{American Journal of Physics}, 45\penalty0 (1):\penalty0 41--44,
+  1977.
+\newblock \doi{10.1119/1.10904}.
+
+\bibitem[Eriksson and Jankowiak(2021)]{eriksson2021saasbo}
+David Eriksson and Martin Jankowiak.
+\newblock High-dimensional {B}ayesian optimization with sparse axis-aligned
+  subspaces.
+\newblock In \emph{Proceedings of the Thirty-Seventh Conference on Uncertainty
+  in Artificial Intelligence (UAI)}, volume 161 of \emph{Proceedings of Machine
+  Learning Research}, pages 493--503, 2021.
+\newblock \doi{10.48550/arXiv.2103.00349}.
+\newblock URL \url{https://proceedings.mlr.press/v161/eriksson21a.html}.
+
+\bibitem[van Beek et~al.(2021)van Beek, Ghumman, Munshi, Tao, Chien,
+  Balasubramanian, Plumlee, Apley, and Chen]{vanbeek2021batchnoise}
+Anton van Beek, Umar~Farooq Ghumman, Joydeep Munshi, Siyu Tao, TeYu Chien,
+  Ganesh Balasubramanian, Matthew Plumlee, Daniel Apley, and Wei Chen.
+\newblock Scalable adaptive batch sampling in simulation-based design with
+  heteroscedastic noise.
+\newblock \emph{Journal of Mechanical Design}, 143\penalty0 (3):\penalty0
+  031709, 2021.
+\newblock \doi{10.1115/1.4049134}.
+
+\bibitem[Sobol'(1967)]{sobol1967distribution}
+I.~M. Sobol'.
+\newblock On the distribution of points in a cube and the approximate
+  evaluation of integrals.
+\newblock \emph{USSR Computational Mathematics and Mathematical Physics},
+  7\penalty0 (4):\penalty0 86--112, 1967.
+\newblock \doi{10.1016/0041-5553(67)90144-9}.
+
+\bibitem[Owen(1998)]{owen1998scrambling}
+Art~B. Owen.
+\newblock Scrambling {S}obol' and {N}iederreiter-{X}ing points.
+\newblock \emph{Journal of Complexity}, 14\penalty0 (4):\penalty0 466--489,
+  1998.
+\newblock \doi{10.1006/jcom.1998.0487}.
+
+\bibitem[Todorov et~al.(2012)Todorov, Erez, and Tassa]{todorov2012mujoco}
+Emanuel Todorov, Tom Erez, and Yuval Tassa.
+\newblock {MuJoCo}: A physics engine for model-based control.
+\newblock In \emph{2012 IEEE/RSJ International Conference on Intelligent Robots
+  and Systems}, pages 5026--5033, 2012.
+\newblock \doi{10.1109/IROS.2012.6386109}.
+
+\bibitem[McKay et~al.(1979)McKay, Beckman, and Conover]{mckay1979lhs}
+M.~D. McKay, R.~J. Beckman, and W.~J. Conover.
+\newblock A comparison of three methods for selecting values of input variables
+  in the analysis of output from a computer code.
+\newblock \emph{Technometrics}, 21\penalty0 (2):\penalty0 239--245, 1979.
+\newblock \doi{10.1080/00401706.1979.10489755}.
+
+\bibitem[Kolda et~al.(2003)Kolda, Lewis, and Torczon]{kolda2003directsearch}
+Tamara~G. Kolda, Robert~Michael Lewis, and Virginia Torczon.
+\newblock Optimization by direct search: New perspectives on some classical and
+  modern methods.
+\newblock \emph{SIAM Review}, 45\penalty0 (3):\penalty0 385--482, 2003.
+\newblock \doi{10.1137/S003614450242889}.
+
+\bibitem[Segura and Piazza(2007)]{segura2007mechanicsofambulation}
+Adriana Segura and Stephen~J. Piazza.
+\newblock Mechanics of ambulation with standard and spring-loaded crutches.
+\newblock \emph{Archives of Physical Medicine and Rehabilitation}, 88\penalty0
+  (9):\penalty0 1159--1163, 2007.
+\newblock \doi{10.1016/j.apmr.2007.05.026}.
+
+\bibitem[MacGillivray et~al.(2016)MacGillivray, Manocha, and
+  Sawatzky]{macgillivray2016theinfluenceof}
+Megan~K. MacGillivray, Ranita H.~K. Manocha, and Bonita Sawatzky.
+\newblock The influence of a polymer damper on swing-through crutch gait
+  biomechanics.
+\newblock \emph{Medical Engineering \& Physics}, 38\penalty0 (3):\penalty0
+  275--279, 2016.
+\newblock \doi{10.1016/j.medengphy.2015.12.010}.
+
+\bibitem[Gu et~al.(2026)Gu, Spyra, Walski, Elsaesser, Bierner, and
+  Dotov]{gu2026tensegritycrutches}
+Jingxian Gu, Joanna Spyra, Andrew Walski, Lyla Elsaesser, Samuel Bierner, and
+  Dobromir Dotov.
+\newblock Tensegrity crutches with compliance from a pre-stressed self-tensile
+  module improve ground reaction force profiles, speed, effort, comfort, and
+  perceived stability.
+\newblock \emph{arXiv preprint arXiv:2605.02710}, 2026.
+\newblock \doi{10.48550/arXiv.2605.02710}.
+
+\end{thebibliography}
