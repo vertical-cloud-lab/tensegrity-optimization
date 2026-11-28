@@ -228,7 +228,7 @@ variability are likewise future work (Section~\ref{sec:discussion}).
 We limit the novelty and generality claims above to this restricted
 prototype design space.
 
-\begin{figure}[!t]
+\begin{figure}[!tbp]
   \centering
   \includegraphics[width=0.52\textwidth]{figures/overview-loop.pdf}
   \caption{Closed-loop, experiment-driven design framework. Initialize and
@@ -404,7 +404,7 @@ the peak shock. We weigh every specimen to \SI{0.01}{g} but have not
 measured printed member dimensions, so the surrogate uses the commanded
 post-projection geometry (Section~S2).
 
-\begin{table}[ht]
+\begin{table}[!htbp]
   \centering
   \caption{Design variables of the $T_3$-prism campaign as the BO code
     implements them. Ranges are those of the search space before the
@@ -437,7 +437,7 @@ post-projection geometry (Section~S2).
   per-specimen.}
 \end{table}
 
-\begin{figure*}[t]
+\begin{figure*}[!tbp]
   \centering
   \includegraphics[width=\textwidth]{figures/design-space.pdf}
   \caption{Design space of the $T_3$-prism campaign. \emph{(a)} A mid-range
@@ -528,7 +528,7 @@ CFC-1000 is a higher-bandwidth diagnostic.
 Figure~\ref{fig:transmissibility-trace} shows both channels of one drop
 at both filter classes.
 
-\begin{figure}[t]
+\begin{figure}[!tbp]
   \centering
   \includegraphics[width=0.55\textwidth]{figures/analysis/transmissibility-trace-57vqhX-drop50.pdf}
   \caption{Base-plate input and top-vertex response for one
@@ -799,7 +799,7 @@ and the three prints of batch 3, Section~\ref{sec:results:audits} the
 surrogate audits, and Section~\ref{sec:results:sim} the simulated
 campaign.
 
-\begin{figure*}[t]
+\begin{figure*}[!tbp]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/bo/t3-prism-bo-front-evolution.pdf}
   \caption{Measured objective space and front evolution across the
@@ -848,7 +848,7 @@ correlation depends on the lightest specimen ($r = 0.26$ without
 mass effect. It motivated the constant-printed-mass batches that
 followed (Section~\ref{sec:results:audits}).
 
-\begin{table}[t]
+\begin{table}[!tbp]
   \centering
   \caption{Seed-batch drop-tower results: 99 stabilized drops per
     specimen (101 for autv5r) after the 2 warm-up drops, at \SI{1.524}{m} (\SI{60}{in})
@@ -996,7 +996,7 @@ specimens joined the surrogate's training set, while the third print
 and enters neither the fits, the cross-validation, nor
 Fig.~\ref{fig:front-evolution}.
 
-\begin{table*}[t]
+\begin{table*}[!tbp]
   \centering
   \caption{Model-recommended batch results, one row per Ax trial in
     ascending order, under the protocol and reporting conventions of
@@ -1066,7 +1066,7 @@ Fig.~\ref{fig:front-evolution}.
 \end{tabular}
 \end{table*}
 
-\begin{figure*}[t]
+\begin{figure*}[!tbp]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/bo/t3-prism-bo-round4-predicted-vs-actual.pdf}
   \caption{Batch-4 predictions against outcomes. Orange diamonds are the
@@ -1084,9 +1084,9 @@ Fig.~\ref{fig:front-evolution}.
   \label{fig:batch4-pred-vs-meas}
 \end{figure*}
 
-\begin{figure*}[t]
+\begin{figure*}[!tbp]
   \centering
-  \includegraphics[width=0.85\textwidth]{figures/analysis/round3-three-print.png}
+  \includegraphics[width=\textwidth]{figures/analysis/round3-three-print.png}
   \caption{Three prints of each batch-3 design. \emph{(a)} Transmissibility
     and \emph{(b)} $I_{\mathrm{reb}}$ for print 1 (circles), print 2
     (squares), and print 3 (triangles), with the designs ordered by their
@@ -1204,7 +1204,7 @@ and does not reproduce the amplification measured on hardware
 (Section~\ref{sec:discussion}). The simulated campaign therefore tests
 the optimizer only.
 
-\begin{table}[t]
+\begin{table}[!tbp]
   \centering
   \caption{Simulation-only campaign: final hypervolume after 45
     designs as a percentage of each objective pair's best-known
